@@ -7,7 +7,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@500;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
 /* Layout: peta bab di sisi kiri (laci di ponsel) + satu kolom materi; kode Java dan Python berdampingan */
 :root{
@@ -427,6 +427,186 @@ a.chip{text-decoration:none;color:var(--ink)}
   .trs{font-weight:700}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+/* ===== Tampilan v2: netral, tenang, satu aksen; garis rambut alih-alih kotak tebal ===== */
+:root{
+  --bg:#FAFAF7; --surface:#FFFFFF; --sunk:#F2F1EC; --ink:#1C1B19; --muted:#6E6B64; --line:#E7E5DF;
+  --java:#B4532A; --java-soft:#F6ECE5; --py:#2E5E8C; --py-soft:#E9EFF5; --hl:#FBE7A8; --hl-ink:#3A2C00;
+  --ok:#2F7A52; --ok-soft:#E7F2EB; --bad:#B23A2E; --bad-soft:#F8E8E5;
+  --code-bg:#17181C; --code-fg:#DCDDE1;
+  --f-display:"Inter Tight","Inter",system-ui,sans-serif;
+  --f-body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-serif:"Instrument Serif",Georgia,serif;
+  --r:12px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111110; --surface:#181816; --sunk:#201F1C; --ink:#ECEAE4; --muted:#9C988F; --line:#2A2925;
+  --java:#E39A73; --java-soft:#2B201A; --py:#8DB4DD; --py-soft:#1A2330; --hl:#5A4A1A; --hl-ink:#FFF3CC;
+  --ok:#74C69A; --ok-soft:#16261D; --bad:#EE9488; --bad-soft:#2E1A17; --code-bg:#0C0C0B;
+}}
+:root[data-theme="dark"]{
+  --bg:#111110; --surface:#181816; --sunk:#201F1C; --ink:#ECEAE4; --muted:#9C988F; --line:#2A2925;
+  --java:#E39A73; --java-soft:#2B201A; --py:#8DB4DD; --py-soft:#1A2330; --hl:#5A4A1A; --hl-ink:#FFF3CC;
+  --ok:#74C69A; --ok-soft:#16261D; --bad:#EE9488; --bad-soft:#2E1A17; --code-bg:#0C0C0B;
+}
+body{font:15.5px/1.7 var(--f-body);letter-spacing:-.003em}
+h1{font:400 clamp(2.3rem,4.6vw,3.4rem)/1.05 var(--f-serif);letter-spacing:-.01em}
+h2{font:400 1.85rem/1.15 var(--f-serif);letter-spacing:-.005em}
+h3{font:600 1.02rem/1.35 var(--f-display);letter-spacing:-.01em}
+.eyebrow{font:600 .7rem/1.4 var(--f-body);letter-spacing:.12em;color:var(--muted)}
+code{background:var(--sunk);border-radius:4px}
+a{color:var(--ink);text-decoration-color:var(--line);text-underline-offset:3px}
+a:hover{text-decoration-color:currentColor}
+
+/* kerangka */
+.app{grid-template-columns:268px minmax(0,1fr)}
+.side{background:var(--bg);border-right:1px solid var(--line);gap:26px;padding-top:28px}
+.brand-mark{width:32px;height:32px;border-radius:8px;background:var(--ink);color:var(--bg);font-size:.72rem}
+.brand b{font:600 1rem var(--f-display);letter-spacing:-.01em}
+.brand small{font-size:.74rem}
+.nav-progress{border:0;padding:0 10px;font-size:.78rem}
+.bar{height:3px;background:var(--line)}
+.bar i{background:var(--ink)}
+.nav{display:flex;flex-direction:column;gap:22px}
+.nav-group{gap:1px}
+.nav-group .eyebrow{padding:0 10px 8px;font-size:.66rem}
+.nav a{padding:5px 10px;font-size:.88rem;border-radius:6px;color:var(--muted)}
+.nav a:hover{background:transparent;color:var(--ink)}
+.nav a[aria-current="page"]{background:var(--sunk);color:var(--ink);font-weight:600}
+.nav .num{font-size:.7rem;color:var(--muted);opacity:.7}
+.nav a.sub{padding-left:30px;font-size:.84rem}
+main{padding-block:56px 110px}
+.wrap{max-width:860px;gap:44px}
+.topbar{background:var(--bg)}
+
+/* tombol */
+.btn{border:1px solid var(--line);background:transparent;border-radius:999px;padding:7px 16px;font-size:.86rem;font-weight:500;transition:border-color .15s,background .15s}
+.btn:hover:not(:disabled){border-color:var(--ink)}
+.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn.primary:hover:not(:disabled){opacity:.88}
+a.btn{color:var(--ink)} a.btn.primary{color:var(--bg)}
+.seg{border-radius:999px;padding:3px;gap:2px;background:var(--sunk);border:0}
+.seg button{border-radius:999px;padding:5px 14px;font-size:.82rem;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.chip,.term-chip{border-radius:999px;font-size:.82rem;background:transparent}
+.chip[aria-pressed="true"],.chip[aria-current="page"]{background:var(--ink);color:var(--bg)}
+
+/* beranda */
+.hero{gap:44px}
+.hero p.lead{font-size:1.06rem;line-height:1.7}
+.hero .cta{gap:10px}
+.split-card{border:0;border-radius:var(--r);background:var(--code-bg);box-shadow:0 30px 60px -30px rgba(0,0,0,.35)}
+.split-card .lbl .lj,.split-card .lbl .lp{background:transparent;color:#8B8D94;border-bottom:1px solid #26272C}
+.split-card .lbl .lj{color:#E39A73}.split-card .lbl .lp{color:#8DB4DD}
+.how{gap:0;border-top:1px solid var(--line)}
+.how div{border-top:0;padding:18px 18px 0 0;font-size:.88rem}
+.how b{font:600 .95rem var(--f-display);margin-bottom:4px}
+.path{gap:0;border-top:1px solid var(--line)}
+.lvl{background:transparent;border:0;border-radius:0;padding:20px 20px 0 0}
+.lvl h3{font:400 1.5rem var(--f-serif)}
+.lvl a{font-size:.9rem;color:var(--ink)}
+
+/* bab */
+.ch-head{gap:14px}
+.tag{border-radius:999px;font-size:.76rem;padding:2px 10px}
+.prose p{font-size:1.02rem;line-height:1.8;color:var(--ink)}
+.points{gap:0;border-top:1px solid var(--line)}
+.points li{background:transparent;border:0;border-bottom:1px solid var(--line);border-radius:0;padding:12px 18px 12px 0;font-size:.93rem}
+.tip{border-left:2px solid var(--ink);background:transparent;padding:4px 0 4px 18px;border-radius:0;color:var(--muted)}
+.tip b{color:var(--ink);font-family:var(--f-display)}
+
+/* kartu umum: lebih ringan */
+.viz,.phase,.story,.q,.gl,.score{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);box-shadow:none}
+.phase{padding:26px;gap:18px}
+.ph-h{gap:14px;align-items:baseline}
+.ph-n{width:auto;height:auto;background:none;color:var(--muted);font:400 1.5rem/1 var(--f-serif);border-radius:0}
+.ph-n::after{content:"."}
+.ph-h h3{font:400 1.45rem/1.2 var(--f-serif)}
+.ph-h p{font-size:.88rem}
+.ttabs{gap:4px;border-bottom:1px solid var(--line);padding-bottom:0}
+.ttab{border:0;border-bottom:2px solid transparent;border-radius:0;background:transparent;padding:10px 12px;margin-bottom:-1px;font-size:.9rem;color:var(--muted)}
+.ttab:hover{color:var(--ink)}
+.ttab[aria-selected="true"]{background:transparent;color:var(--ink);border-bottom-color:var(--ink)}
+.ttab span{font-size:.7rem}
+.ttab[aria-selected="true"] span{opacity:1;color:var(--muted)}
+
+/* tabel kalimat -> kode */
+.trt{border-radius:10px}
+.trr.th>div{background:transparent;font-size:.66rem;letter-spacing:.12em;border-bottom:1px solid var(--line)}
+.trs{font-size:.92rem}
+.trc{border-left:1px solid #26272C}
+.ex{border:0;background:var(--sunk);border-radius:10px;padding:18px}
+.exq{font:400 1.35rem/1.3 var(--f-serif)}
+
+/* opsi & kuis */
+.opt{background:var(--surface);border-radius:10px;font-size:.92rem}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt.code-opt{background:transparent}
+.score .big{font:400 2.6rem var(--f-serif)}
+
+/* kode */
+.pane{border-radius:10px}
+.pane.java .pane-h,.pane.python .pane-h{border-top:0;border-bottom:1px solid #26272C;color:#8B8D94;font-weight:600;letter-spacing:.1em;font-size:.66rem;padding:9px 14px}
+.pane.java .pane-h>span:first-child::before,.pane.python .pane-h>span:first-child::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:8px;vertical-align:1px}
+.pane.java .pane-h>span:first-child::before{background:#E39A73}
+.pane.python .pane-h>span:first-child::before{background:#8DB4DD}
+.copy{border-color:#2E2F35;color:#A9ABB2;border-radius:999px}
+pre.code{font-size:12.8px;line-height:1.7;padding:14px 16px 18px}
+.console{border-radius:10px}
+.rf{border-radius:10px}
+.mbox{border-radius:10px}
+.legend li{border-radius:10px;background:transparent}
+.cmp th{font-size:.66rem;letter-spacing:.12em}
+.tbl{border-radius:var(--r)}
+.note{background:var(--sunk);border-radius:8px;font-size:.92rem}
+
+/* glosarium */
+.gl-search{border-radius:999px;padding:10px 18px;font-size:.95rem}
+.gl h3{font:400 1.3rem var(--f-serif)}
+.gl .cat{font-size:.64rem;letter-spacing:.12em}
+
+/* footer bab */
+.ch-foot{padding-top:26px}
+
+@media (max-width:900px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  main{padding-block:28px 80px}
+  .side{background:var(--surface)}
+}
+@media (max-width:760px){
+  .how,.path{border-top:0}
+  .how div,.lvl{padding:16px 0 0;border-top:1px solid var(--line)}
+  .phase{padding:18px}
+  .wrap{gap:34px}
+}
+
+/* tata letak v2 */
+.cta{align-items:center;gap:22px!important}
+.tlink{font-size:.9rem;font-weight:500;color:var(--ink);text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:4px}
+.tlink:hover{text-decoration-color:var(--ink)}
+.ph-n{display:block}
+.toc{position:sticky;top:0;z-index:15;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;margin:-18px 0 -20px;padding:10px 0;background:color-mix(in srgb,var(--bg) 96%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.toc::-webkit-scrollbar{display:none}
+.toc button{flex:none;border:0;background:none;padding:5px 12px;border-radius:999px;font-size:.84rem;color:var(--muted);cursor:pointer}
+.toc button:hover{color:var(--ink);background:var(--sunk)}
+section[id],.topics,.phase,#lab{scroll-margin-top:64px}
+.steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.steps button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;border:0;border-top:2px solid var(--line);background:none;padding:10px 0 0;font-size:.82rem;color:var(--muted);cursor:pointer;transition:border-color .15s,color .15s}
+.steps button span{font:400 1.2rem/1 var(--f-serif);color:var(--ink)}
+.steps button:hover{border-top-color:var(--ink);color:var(--ink)}
+.opt.code-opt{border:1px solid var(--line);padding:10px;gap:10px}
+.code-opt pre{background:var(--sunk);color:var(--ink);border-radius:6px}
+.code-opt pre .k{color:var(--java)} .code-opt pre .s{color:var(--ok)} .code-opt pre .n{color:#9A6B00} .code-opt pre .t,.code-opt pre .f{color:var(--py)} .code-opt pre .c{color:var(--muted)}
+.code-opt pre::before{color:var(--muted)}
+.opt.code-opt.right{background:var(--ok-soft);border-color:var(--ok)} .opt.code-opt.wrong{background:var(--bad-soft);border-color:var(--bad)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .code-opt pre .n{color:#E8C66A}}
+:root[data-theme="dark"] .code-opt pre .n{color:#E8C66A}
+.tnav{padding-top:4px}
+@media (max-width:900px){.toc{top:calc(env(safe-area-inset-top,0px) + 57px)}}
+@media (max-width:760px){.steps{grid-template-columns:repeat(5,minmax(84px,1fr));overflow-x:auto;scrollbar-width:none}.steps::-webkit-scrollbar{display:none}}
+.story h3,.q b:first-child{font-weight:600}
+.story h3{font:400 1.45rem/1.2 var(--f-serif)}
+.donebox input{accent-color:var(--ink)}
 </style>
 </head>
 <body>
@@ -3863,7 +4043,7 @@ function renderHome(){
     <div class="eyebrow">Mengikuti urutan Building Java Programs (edisi 6) &amp; Building Python Programs</div>
     <h1 style="margin-top:10px">Belajar dua bahasa, satu konsep pada satu waktu</h1>
     <p class="lead">19 bab dipecah menjadi ${nTopik} topik kecil. Di setiap topik kamu menerjemahkan kalimat sehari-hari menjadi kode, membedah setiap bagiannya, lalu menonton komputer menjalankannya baris demi baris.</p>
-    <div class="row cta"><a class="btn primary" href="#bab-${next.n}" style="text-decoration:none">${done.size?'Lanjutkan':'Mulai'}: Bab ${next.n} ${next.t}</a><a class="btn" href="#kuis" style="text-decoration:none">Kuis cerita (${STORIES.length} soal)</a><a class="btn" href="#glosarium" style="text-decoration:none">Glosarium (${GL.length} istilah)</a></div>
+    <div class="row cta"><a class="btn primary" href="#bab-${next.n}" style="text-decoration:none">${done.size?'Lanjutkan':'Mulai'}: Bab ${next.n} ${next.t}</a><a class="tlink" href="#kuis">Kuis cerita · ${STORIES.length} soal</a><a class="tlink" href="#glosarium">Glosarium · ${GL.length} istilah</a></div>
   </div>
   <div class="split-card"><div class="lbl"><span class="lj">JAVA</span><span class="lp">PYTHON</span></div>
    <pre class="code" style="background:var(--code-bg)">${hl(peek,'java')}</pre><pre class="code" style="background:var(--code-bg);border-top:1px dashed #33435A">${hl(peekPy,'python')}</pre></div>
@@ -3949,7 +4129,8 @@ function topicHTML(c,ti){
   const tp=TOPICS[c.n][ti],keys=Object.keys(tp.legend),tps=TOPICS[c.n];
   const ord=perm(tp.ex.o.length,c.n*10+ti);
   const L=codeMode==='python'?'p':'j';
-  return `<article class="phase"><header class="ph-h"><span class="ph-n">1</span><div><h3>Dari kalimat ke kode</h3><p>Tulis dulu maksudmu dalam bahasa sehari-hari. Setiap kalimat menjadi satu baris kode.</p></div></header>
+  return `<div class="steps" role="list">${['Kalimat → kode','Anatomi','Eksekusi','Rumus','Mini project'].map((l,i)=>`<button role="listitem" data-ph="${i}"><span>${i+1}</span>${l}</button>`).join('')}</div>
+  <article class="phase"><header class="ph-h"><span class="ph-n">1</span><div><h3>Dari kalimat ke kode</h3><p>Tulis dulu maksudmu dalam bahasa sehari-hari. Setiap kalimat menjadi satu baris kode.</p></div></header>
    <div class="trt"><div class="trr th"><div>Kalimat manusia</div><div class="j">Java</div><div class="p">Python</div></div>
     ${tp.tr.map(r=>`<div class="trr"><div class="trs">${esc(r[0])}</div><pre class="trc" data-l="Java">${hl(r[1],'java')}</pre><pre class="trc" data-l="Python">${r[2].startsWith('(')?`<span class="c">${esc(r[2])}</span>`:hl(r[2],'python')}</pre></div>`).join('')}</div>
    <div class="ex"><div><span class="eyebrow">Giliranmu menerjemahkan</span><p class="exq">“${esc(tp.ex.q)}”</p></div>
@@ -3967,7 +4148,7 @@ function topicHTML(c,ti){
   <article class="phase"><header class="ph-h"><span class="ph-n">4</span><div><h3>Rumus praktis</h3><p>Pola sintaks yang dipakai programmer. Ganti kata seperti <code>type</code>, <code>name</code>, dan <code>value</code> dengan milikmu sendiri.</p></div></header>
    <div class="codes">${codePane('java',RUMUS[c.n+'.'+ti][0],null,false)}${codePane('python',RUMUS[c.n+'.'+ti][1],null,false)}</div><ul class="rl">${tp.rumus.i.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></article>
   ${projHTML(c,ti)}
-  <div class="tnav">${ti>0?`<button class="btn" data-go="${ti-1}">◀ ${c.n}.${ti} ${tps[ti-1].t}</button>`:'<span></span>'}${ti<tps.length-1?`<button class="btn primary" data-go="${ti+1}">${c.n}.${ti+2} ${tps[ti+1].t} ▶</button>`:'<a class="btn" href="#lab" style="text-decoration:none">Lanjut ke lab interaktif ▼</a>'}</div>`;
+  <div class="tnav">${ti>0?`<button class="btn" data-go="${ti-1}">◀ ${c.n}.${ti} ${tps[ti-1].t}</button>`:'<span></span>'}${ti<tps.length-1?`<button class="btn primary" data-go="${ti+1}">${c.n}.${ti+2} ${tps[ti+1].t} ▶</button>`:'<button class="btn" data-to="#lab">Lanjut ke lab interaktif ▼</button>'}</div>`;
 }
 
 function projHTML(c,ti){
@@ -4015,6 +4196,7 @@ function drawTopic(c,ti,focusK){
     if(t){const sol=$('#pjSol',pj),show=sol.hidden;sol.hidden=!show;t.setAttribute('aria-expanded',show);t.textContent=show?'Sembunyikan solusi':'Tampilkan solusi';t.classList.toggle('primary',!show);return}
     const b=e.target.closest('[data-copy]');if(!b)return;const txt=p[b.dataset.copy];
     try{navigator.clipboard.writeText(txt).then(()=>{b.textContent='Tersalin';setTimeout(()=>b.textContent='Salin',1400)},()=>{selectPre(b);b.textContent='Tekan Ctrl+C'})}catch(err){selectPre(b);b.textContent='Tekan Ctrl+C'}})}
+  $('.steps',host).addEventListener('click',e=>{const b=e.target.closest('[data-ph]');if(b)host.querySelectorAll('.phase')[+b.dataset.ph].scrollIntoView({behavior:'smooth',block:'start'})});
   $('.tnav',host).addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(!b)return;drawTopic(c,+b.dataset.go);$('#topics').scrollIntoView({block:'start'})});
   if(focusK){activateMark(host,focusK,true);$('#anat',host).classList.add('flash');setTimeout(()=>$('#anat')&&$('#anat').classList.remove('flash'),2200)}
 }
@@ -4023,19 +4205,20 @@ function renderChapter(c){
   const prev=CH[c.n-2],next=CH[c.n],tps=TOPICS[c.n]||[];
   return `<header class="ch-head"><div class="eyebrow">Bab ${c.n} · ${c.lvl}</div><h1>${c.t}</h1>
    <div class="tags"><span class="tag j">Java: ${c.en}</span><span class="tag p">Python: ${c.py}</span></div></header>
-  <section class="prose">${c.body.map(p=>`<p>${p}</p>`).join('')}</section>
+  <nav class="toc" aria-label="Di halaman ini">${[['Konsep','#konsep'],tps.length&&['Topik','#topics'],['Lab','#lab'],['Program','#prog'],['Istilah','#istilah'],['Kuis','#quiz']].filter(Boolean).map(([l,t])=>`<button data-to="${t}">${l}</button>`).join('')}</nav>
+  <section class="prose" id="konsep">${c.body.map(p=>`<p>${p}</p>`).join('')}</section>
   <ul class="points">${c.points.map(p=>`<li>${p}</li>`).join('')}</ul>
   ${tps.length?`<section class="topics" id="topics"><div><div class="eyebrow">Pelajari per topik</div><h2 style="margin-top:4px">${tps.length} topik di bab ini</h2></div>
    <div class="ttabs" role="tablist">${tps.map((tp,i)=>`<button class="ttab" role="tab" data-ti="${i}" aria-selected="false"><span>${c.n}.${i+1}</span>${tp.t}</button>`).join('')}</div>
    <div id="tbody" class="tbody"></div></section>`:''}
   <section class="viz" id="lab" aria-label="Visualisasi"><div class="viz-head"><h3>Lab interaktif: ${c.vizT}</h3><p>${c.vizD}</p></div><div id="vizHost" style="display:flex;flex-direction:column;gap:14px;min-width:0"></div></section>
-  <section class="section"><div class="code-tools"><h2>Program lengkap</h2><div class="seg" role="group" aria-label="Tampilan kode" id="codeSeg">
+  <section class="section" id="prog"><div class="code-tools"><h2>Program lengkap</h2><div class="seg" role="group" aria-label="Tampilan kode" id="codeSeg">
     <button data-m="both" aria-pressed="${codeMode==='both'}">Berdampingan</button><button data-m="java" aria-pressed="${codeMode==='java'}">Java</button><button data-m="python" aria-pressed="${codeMode==='python'}">Python</button></div></div>
    <div class="codes ${codeMode==='both'?'':'only-'+codeMode}" id="codes">${codePane('java',c.java,c.out)}${codePane('python',c.python,c.out)}</div></section>
   <section class="section"><h2>Java lawan Python</h2><div class="tbl"><table class="cmp"><thead><tr><th>Aspek</th><th class="j">Java</th><th class="p">Python</th></tr></thead><tbody>${c.cmp.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('')}</tbody></table></div></section>
   <div class="tip"><b>Tip mentor.</b> ${c.tip}</div>
-  <section class="section"><h2>Istilah di bab ini</h2><p style="color:var(--muted);font-size:.9rem">Istilah bertanda ◉ bisa ditunjukkan langsung di kode topik. Yang lain membuka glosarium.</p><div class="terms">${c.terms.map(id=>{const u=(GLUSE[id]||[]).find(x=>x.n===c.n);return `<button class="term-chip ${u?'in-code':''}" data-term="${id}">${u?'◉ ':''}${GLMAP[id].t}</button>`}).join('')}</div></section>
-  <section class="section"><h2>Kuis cepat</h2><div class="quiz">${c.quiz.map((q,qi)=>`<div class="q" data-q="${qi}"><b>${qi+1}. ${q.q}</b><div class="opts">${q.o.map((o,oi)=>`<button class="opt" data-o="${oi}">${o}</button>`).join('')}</div><p class="why" hidden></p></div>`).join('')}</div>
+  <section class="section" id="istilah"><h2>Istilah di bab ini</h2><p style="color:var(--muted);font-size:.9rem">Istilah bertanda ◉ bisa ditunjukkan langsung di kode topik. Yang lain membuka glosarium.</p><div class="terms">${c.terms.map(id=>{const u=(GLUSE[id]||[]).find(x=>x.n===c.n);return `<button class="term-chip ${u?'in-code':''}" data-term="${id}">${u?'◉ ':''}${GLMAP[id].t}</button>`}).join('')}</div></section>
+  <section class="section" id="quiz"><h2>Kuis cepat</h2><div class="quiz">${c.quiz.map((q,qi)=>`<div class="q" data-q="${qi}"><b>${qi+1}. ${q.q}</b><div class="opts">${q.o.map((o,oi)=>`<button class="opt" data-o="${oi}">${o}</button>`).join('')}</div><p class="why" hidden></p></div>`).join('')}</div>
    ${STORIES.some(s=>s.b===c.n)?`<a class="btn" href="#kuis-${slug(c.lvl)}" style="text-decoration:none;align-self:flex-start">Coba kuis cerita tingkat ${c.lvl} ▶</a>`:''}</section>
   <footer class="ch-foot"><label class="donebox"><input type="checkbox" id="doneBox" ${done.has(c.n)?'checked':''}> Tandai bab ini selesai</label>
    <div class="row">${prev?`<a class="btn" href="#bab-${prev.n}" style="text-decoration:none">◀ Bab ${prev.n}</a>`:''}${next?`<a class="btn primary" href="#bab-${next.n}" style="text-decoration:none">Bab ${next.n}: ${next.t} ▶</a>`:`<a class="btn primary" href="#kuis" style="text-decoration:none">Ke kuis cerita ▶</a>`}</div></footer>`;
@@ -4145,6 +4328,7 @@ function route(){
 function closeMenu(){$('#side').classList.remove('open');$('#scrim').classList.remove('open');$('#menuBtn').setAttribute('aria-expanded','false')}
 $('#menuBtn').onclick=()=>{const o=!$('#side').classList.contains('open');$('#side').classList.toggle('open',o);$('#scrim').classList.toggle('open',o);$('#menuBtn').setAttribute('aria-expanded',o)};
 $('#scrim').onclick=closeMenu;
+document.addEventListener('click',e=>{const b=e.target.closest('[data-to]');if(!b)return;const t=document.querySelector(b.dataset.to);if(t)t.scrollIntoView({behavior:'smooth',block:'start'})});
 window.addEventListener('hashchange',route);
 route();
 </script>
