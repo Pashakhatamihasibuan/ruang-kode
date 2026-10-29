@@ -1,0 +1,5 @@
+print("************************")
+print("* Nama   : Rina        *")
+print("* Jurusan: Informatika *")
+print("* Hobi   : Membaca     *")
+print("************************")
