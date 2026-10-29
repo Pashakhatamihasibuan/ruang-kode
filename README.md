@@ -1,6 +1,6 @@
-# Ruang Kode: Java & Python
+# Ruang Kode: Java, Python & SQL
 
-Media belajar visual untuk Java dan Python, dari dasar sampai lanjut, dalam bahasa Indonesia. Urutan materinya mengikuti *Building Java Programs* (edisi 6) dan *Building Python Programs*.
+Akademi pemrograman visual berbahasa Indonesia dengan tiga jalur belajar terpisah, seperti LMS bootcamp. Kurikulum setiap jalur mengikuti [roadmap.sh/java](https://roadmap.sh/java), [roadmap.sh/python](https://roadmap.sh/python), dan [roadmap.sh/sql](https://roadmap.sh/sql).
 
 **Versi online: https://ruang-kode-nine.vercel.app**
 
@@ -8,15 +8,34 @@ Bisa juga dibuka langsung dari `index.html` di browser. Tidak perlu instalasi at
 
 ## Isi
 
-- **19 bab, 44 topik.** Setiap topik punya lima langkah:
-  1. Dari kalimat ke kode: kalimat sehari-hari diterjemahkan baris demi baris, lalu latihan menerjemahkan.
-  2. Anatomi kode: bagian kode diberi nomor dan warna, klik untuk melihat istilahnya.
-  3. Eksekusi baris demi baris: isi memori dan keluaran berubah di setiap langkah.
-  4. Rumus praktis: pola sintaks asli Java dan Python.
-  5. Mini project: tugas kecil dengan solusi yang bisa disembunyikan atau ditampilkan.
-- **Lab interaktif** di setiap bab.
-- **Kuis cerita** (30 soal) per tingkat, dengan skor dan kode yang bisa disembunyikan.
-- **Glosarium** 133 istilah pemrograman, dengan tombol untuk menunjukkan istilah langsung di kode.
+| Jalur | Modul | Pelajaran | Tingkat |
+|---|---|---|---|
+| Java | 15 | 101 | Pemula sampai Profesional (OOP, koleksi, konkurensi, Maven/Gradle, JDBC, Spring Boot) |
+| Python | 14 | 99 | Pemula sampai Profesional (struktur data, OOP, type hints, pytest, asyncio, framework web) |
+| SQL | 14 | 39 | Pemula sampai Profesional (SELECT, JOIN, subquery, constraint, transaksi, index, CTE, window function) |
+
+- **Beranda** dengan progres tiap jalur dan tombol lanjutkan belajar.
+- **Halaman jalur**: peta modul berurutan, filter tingkat, daftar pelajaran per modul, dan topik roadmap yang dicakup.
+- **Halaman pelajaran**: daftar materi di samping (laci di ponsel), tandai selesai, sebelumnya dan berikutnya. Jenis pelajaran:
+  - topik lima langkah (kalimat ke kode, anatomi, eksekusi baris demi baris, rumus, mini project);
+  - konsep dan lab interaktif;
+  - konsep dengan contoh kode yang sudah diuji (Java 21, Python 3.13);
+  - praktik SQL dengan konsol yang berjalan di browser, tombol "Jelaskan langkah" (urutan FROM, WHERE, GROUP BY, HAVING, SELECT, ORDER BY, LIMIT), skema database, dan tantangan yang dinilai otomatis.
+- **20 visual baru**: JOIN baris demi baris, diagram ER, index lawan full scan, transaksi dan rollback, tingkat isolasi, simulasi SQL injection, CTE rekursif, window function, konversi tipe, garbage collection, pass by value, stack unwinding, stream, race condition, siklus build Maven, decorator, event loop.
+- **Kuis cerita** per jalur (42 soal) dan **glosarium** 157 istilah, termasuk istilah basis data.
+
+Progres tersimpan di `localStorage` browser.
+
+## Struktur kode
+
+`index.html` dihasilkan oleh `python3 build.py` dari folder `src/`:
+
+- `src/css/base.css`, `src/css/lms.css`: tampilan.
+- `src/js/data.js`: bab, topik, glosarium, kuis cerita.
+- `src/js/track-java.js`, `track-python.js`, `track-sql.js`: kurikulum per jalur.
+- `src/js/sqlengine.js`, `sqldata.js`: mesin SQL kecil dan database contoh Toko Nusantara.
+- `src/js/viz.js`, `viz2.js`: visualisasi.
+- `src/js/app.js`: router dan halaman LMS.
 
 ## Mini project
 
