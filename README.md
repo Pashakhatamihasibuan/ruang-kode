@@ -2,7 +2,9 @@
 
 Media belajar visual untuk Java dan Python, dari dasar sampai lanjut, dalam bahasa Indonesia. Urutan materinya mengikuti *Building Java Programs* (edisi 6) dan *Building Python Programs*.
 
-Buka `index.html` di browser, atau aktifkan GitHub Pages (Settings → Pages → branch `main`, folder `/`). Tidak perlu instalasi atau server.
+**Versi online: https://ruang-kode-nine.vercel.app**
+
+Bisa juga dibuka langsung dari `index.html` di browser. Tidak perlu instalasi atau server. Setiap push ke `main` otomatis di-deploy ulang ke Vercel.
 
 ## Isi
 
