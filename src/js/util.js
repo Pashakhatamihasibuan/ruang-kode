@@ -35,8 +35,48 @@ function hlSql(code){
   }
   return out;
 }
+const JSKW=new Set('const let var function return if else for while do break continue new class extends import export from default async await try catch finally throw switch case typeof instanceof in of this super null undefined true false void yield static get set delete interface type enum implements readonly public private protected abstract as keyof never unknown any declare namespace satisfies infer is'.split(' '));
+const JSTY=new Set('string number boolean bigint symbol object Array Promise Record Partial Pick Omit Readonly Map Set Date Math JSON console document window React Error Number String Object'.split(' '));
+function hlJs(code){
+  const re=/(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|(`(?:[^`\\]|\\.)*`|"(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*')|(\b\d+(?:\.\d+)?\b)|([A-Za-z_$][\w$]*)|([\s\S])/g;
+  let out='',m;
+  while((m=re.exec(code))){const [tok,com,str,num,word]=m;
+    if(com)out+=`<span class="c">${esc(com)}</span>`;else if(str)out+=`<span class="s">${esc(str)}</span>`;else if(num)out+=`<span class="n">${num}</span>`;
+    else if(word){if(JSKW.has(word))out+=`<span class="k">${word}</span>`;else if(JSTY.has(word)||/^[A-Z][a-z]/.test(word))out+=`<span class="t">${word}</span>`;else if(code[re.lastIndex]==='(')out+=`<span class="f">${word}</span>`;else out+=word}
+    else out+=esc(tok)}
+  return out;
+}
+function hlHtml(code){
+  const re=/(<!--[\s\S]*?-->)|(<\/?)([A-Za-z][\w-]*)|("[^"\n]*"|'[^'\n]*')|(\s)([A-Za-z_:@][\w:.-]*)(?==)|([\s\S])/g;
+  let out='',m,inTag=false;
+  while((m=re.exec(code))){const [tok,com,open,tag,str,sp,attr]=m;
+    if(com)out+=`<span class="c">${esc(com)}</span>`;
+    else if(open){inTag=true;out+=esc(open)+`<span class="k">${tag}</span>`}
+    else if(str&&inTag)out+=`<span class="s">${esc(str)}</span>`;
+    else if(attr&&inTag)out+=sp+`<span class="t">${attr}</span>`;
+    else{if(tok==='>')inTag=false;out+=esc(tok)}}
+  return out;
+}
+function hlCss(code){
+  const re=/(\/\*[\s\S]*?\*\/)|("[^"\n]*"|'[^'\n]*')|(#[0-9a-fA-F]{3,8}\b|-?\b\d+(?:\.\d+)?(?:px|rem|em|%|vh|vw|fr|s|ms|deg|ch)?)|(--[\w-]+|[a-z-]+)(?=\s*:)|(@[\w-]+)|([\s\S])/g;
+  let out='',m;
+  while((m=re.exec(code))){const [tok,com,str,num,prop,at]=m;
+    if(com)out+=`<span class="c">${esc(com)}</span>`;else if(str)out+=`<span class="s">${esc(str)}</span>`;else if(num)out+=`<span class="n">${num}</span>`;
+    else if(prop)out+=`<span class="t">${prop}</span>`;else if(at)out+=`<span class="k">${at}</span>`;else out+=esc(tok)}
+  return out;
+}
+function hlBash(code){
+  return code.split('\n').map(l=>{const m=/^(\s*)(\$ )?(.*)$/.exec(l);
+    if(/^\s*#/.test(l))return `<span class="c">${esc(l)}</span>`;
+    const [,ind,pr,rest]=m;const w=rest.split(/(\s+)/);
+    return esc(ind)+(pr?'<span class="c">$ </span>':'')+w.map((x,i)=>i===0&&x?`<span class="k">${esc(x)}</span>`:/^-/.test(x)?`<span class="t">${esc(x)}</span>`:/^["']/.test(x)?`<span class="s">${esc(x)}</span>`:esc(x)).join('')}).join('\n');
+}
 function hl(code,lang){
   if(lang==='sql')return hlSql(code);
+  if(lang==='js'||lang==='ts'||lang==='jsx'||lang==='tsx'||lang==='json')return hlJs(code);
+  if(lang==='html'||lang==='xml')return hlHtml(code);
+  if(lang==='css'||lang==='scss')return hlCss(code);
+  if(lang==='bash'||lang==='shell')return hlBash(code);
   if(lang==='text'||!KW[lang])return esc(code);
   const re = lang==='java'
     ? /(\/\/[^\n]*)|("(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)')|(\b\d+(?:\.\d+)?\b)|([A-Za-z_]\w*)|([\s\S])/g

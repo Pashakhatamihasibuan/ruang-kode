@@ -1,28 +1,41 @@
-# Ruang Kode: Java, Python & SQL
+# Ruang Kode: akademi coding, data & desain
 
-Akademi pemrograman visual berbahasa Indonesia dengan tiga jalur belajar terpisah, seperti LMS bootcamp. Kurikulum setiap jalur mengikuti [roadmap.sh/java](https://roadmap.sh/java), [roadmap.sh/python](https://roadmap.sh/python), dan [roadmap.sh/sql](https://roadmap.sh/sql).
+Akademi teknologi visual berbahasa Indonesia dengan 16 jalur belajar, seperti LMS bootcamp. Kurikulum setiap jalur mengikuti [roadmap.sh](https://roadmap.sh).
+
+Dikembangkan oleh **Pasha Khatami Hasibuan**.
 
 **Versi online: https://ruang-kode-nine.vercel.app**
 
 Bisa juga dibuka langsung dari `index.html` di browser. Tidak perlu instalasi atau server. Setiap push ke `main` otomatis di-deploy ulang ke Vercel.
 
-## Isi
+## Jalur belajar
 
-| Jalur | Modul | Pelajaran | Tingkat |
-|---|---|---|---|
-| Java | 15 | 101 | Pemula sampai Profesional (OOP, koleksi, konkurensi, Maven/Gradle, JDBC, Spring Boot) |
-| Python | 14 | 99 | Pemula sampai Profesional (struktur data, OOP, type hints, pytest, asyncio, framework web) |
-| SQL | 14 | 39 | Pemula sampai Profesional (SELECT, JOIN, subquery, constraint, transaksi, index, CTE, window function) |
+| Kategori | Jalur (roadmap.sh) |
+|---|---|
+| Pemrograman | Java, Python, TypeScript |
+| Web & Frontend | Frontend Pemula, HTML, CSS, Frontend, React |
+| Data | SQL, Python Analisis Data, Data Analyst, BI Analyst, Data Engineer |
+| Desain | UX Design, Design System |
+| Alat kerja | Git & GitHub |
 
-- **Beranda** dengan progres tiap jalur dan tombol lanjutkan belajar.
-- **Halaman jalur**: peta modul berurutan, filter tingkat, daftar pelajaran per modul, dan topik roadmap yang dicakup.
-- **Halaman pelajaran**: daftar materi di samping (laci di ponsel), tandai selesai, sebelumnya dan berikutnya. Jenis pelajaran:
-  - topik lima langkah (kalimat ke kode, anatomi, eksekusi baris demi baris, rumus, mini project);
-  - konsep dan lab interaktif;
-  - konsep dengan contoh kode yang sudah diuji (Java 21, Python 3.13);
-  - praktik SQL dengan konsol yang berjalan di browser, tombol "Jelaskan langkah" (urutan FROM, WHERE, GROUP BY, HAVING, SELECT, ORDER BY, LIMIT), skema database, dan tantangan yang dinilai otomatis.
-- **20 visual baru**: JOIN baris demi baris, diagram ER, index lawan full scan, transaksi dan rollback, tingkat isolasi, simulasi SQL injection, CTE rekursif, window function, konversi tipe, garbage collection, pass by value, stack unwinding, stream, race condition, siklus build Maven, decorator, event loop.
-- **Kuis cerita** per jalur (42 soal) dan **glosarium** 157 istilah, termasuk istilah basis data.
+Lima jalur karier menyusun jalur di atas dalam urutan yang disarankan: Frontend Developer, Data Analyst, Data Engineer, UI/UX Designer, dan Backend Java. Pelajaran yang sama di beberapa jalur hanya perlu dikerjakan sekali; progresnya dipakai bersama.
+
+## Fitur
+
+- **Navigasi**: menu Katalog per kategori, pencarian `Ctrl+K` (jalur, modul, pelajaran, istilah), tema terang/gelap/sistem, menu laci di ponsel.
+- **Beranda**: dashboard untuk pengguna yang kembali (lanjutkan belajar, target harian, hari beruntun, XP, soal yang perlu diulang), jalur karier, dan katalog.
+- **Halaman jalur**: tes penempatan, peta modul, ujian modul (lulus nilai 70), proyek akhir, dan sertifikat.
+- **Jenis pelajaran**:
+  - konsep dengan contoh kode yang sudah diuji (Java 21, Python 3.13 + pandas, Node 22 untuk TypeScript), tombol Jalankan, dan latihan "tebak keluaran";
+  - contoh Python bisa diedit dan dijalankan di browser dengan Pyodide (butuh internet; di versi Artifact yang membatasi unduhan, kode asli tetap menampilkan keluaran terverifikasi);
+  - praktik langsung HTML, CSS, JavaScript, dan React dengan pratinjau, konsol, dan tantangan yang diperiksa otomatis;
+  - praktik SQL di konsol browser, termasuk database skema bintang untuk BI dan proyek mini dengan beberapa tantangan;
+  - proyek akhir dengan daftar fitur, langkah kerja, berkas awal, dan pratinjau;
+  - topik lima langkah dan lab interaktif Java/Python.
+- **45 visual interaktif**, antara lain box model, flexbox, grid, event loop JavaScript, CSR/SSR/SSG, simulator Git, skema bintang, A/B test, MapReduce, Kafka, model Fogg, siklus Hook, token desain, pemeriksa kontras, dan skala tipografi.
+- **Belajar saya**: kalender aktivitas, target harian, nilai ujian, nama untuk sertifikat, cadangan dan pemulihan progres.
+- **Ulang**: setiap jawaban kuis atau ujian yang salah masuk daftar ulang sampai dijawab benar.
+- **Kuis cerita** dan **glosarium**.
 
 Progres tersimpan di `localStorage` browser.
 
@@ -30,12 +43,12 @@ Progres tersimpan di `localStorage` browser.
 
 `index.html` dihasilkan oleh `python3 build.py` dari folder `src/`:
 
-- `src/css/base.css`, `src/css/lms.css`: tampilan.
+- `src/css/base.css`, `lms.css`, `v4.css`: tampilan.
 - `src/js/data.js`: bab, topik, glosarium, kuis cerita.
-- `src/js/track-java.js`, `track-python.js`, `track-sql.js`: kurikulum per jalur.
-- `src/js/sqlengine.js`, `sqldata.js`: mesin SQL kecil dan database contoh Toko Nusantara.
-- `src/js/viz.js`, `viz2.js`: visualisasi.
-- `src/js/app.js`: router dan halaman LMS.
+- `src/js/track-*.js`: kurikulum per jalur. `track-pda.js`, `track-da.js`, dan `track-de.js` dihasilkan skrip yang menjalankan setiap contoh Python untuk mengisi keluarannya.
+- `src/js/sqlengine.js`, `sqldata.js`, `sqldata-bi.js`: mesin SQL kecil dan database contoh.
+- `src/js/viz.js`, `viz2.js`, `viz3.js`: visualisasi.
+- `src/js/app*.js`: data jalur dan progres, halaman, ruang pelajaran, navigasi dan rute.
 
 ## Mini project
 
