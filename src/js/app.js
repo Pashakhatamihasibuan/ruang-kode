@@ -74,6 +74,10 @@ const saveLms=()=>{store.set('rk-lms',LMS);updateBadges()};
 const isDone=x=>!!LMS.done[base(x).id];
 function prog(tk){const F=FLAT[tk];const d=F.filter(isDone).length;return {d,n:F.length,p:F.length?d/F.length:0}}
 function nextOf(tk){const F=FLAT[tk];return F.find(x=>!isDone(x))||F[0]}
+/* belajar berurutan: pelajaran terbuka jika pelajaran pertama, sudah selesai, atau pelajaran sebelumnya sudah selesai */
+function isOpen(x){const F=FLAT[x.t.k],i=F.indexOf(x);return i<=0||isDone(x)||isDone(F[i-1])}
+const lockOf=x=>{const F=FLAT[x.t.k];return F[F.indexOf(x)-1]};
+function modDone(tk,mi){const p=modProg(tk,mi);return p.d===p.n}
 function resumeOf(tk){const l=BYID[LMS.last[tk]];return l&&!isDone(l)?l:nextOf(tk)}
 function modProg(tk,mi){const F=FLAT[tk].filter(x=>x.mi===mi);return {d:F.filter(isDone).length,n:F.length}}
 function touch(){LMS.act[today()]=1}
@@ -83,7 +87,7 @@ function award(xp,msg){LMS.xp+=xp;touch();saveLms();toast(`<b>+${xp} XP</b> ${ms
 function markDone(x,silent){const y=base(x);if(LMS.done[y.id])return false;LMS.done[y.id]=1;LMS.days[today()]=(LMS.days[today()]||0)+1;
   const p=prog(x.t.k);if(!silent)award(10,p.d===p.n?`· Jalur ${x.t.name} selesai! 🎉`:'· Pelajaran selesai');else saveLms();return true}
 function toast(html){const t=$('#toast');if(!t)return;t.innerHTML=html;t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('on'),2600)}
-function updateBadges(){const n=Object.keys(LMS.wrong).length;document.querySelectorAll('.wrongN').forEach(b=>{b.textContent=n||'';b.hidden=!n})}
+function updateBadges(){const n=dueN();document.querySelectorAll('.wrongN').forEach(b=>{b.textContent=n||'';b.hidden=!n})}
 
 /* ---------- komponen kecil ---------- */
 const ring=(p,size=56)=>{const r=size/2-4,c=2*Math.PI*r;return `<svg class="ring" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" aria-hidden="true"><circle cx="${size/2}" cy="${size/2}" r="${r}" class="rb"/><circle cx="${size/2}" cy="${size/2}" r="${r}" class="rf" style="stroke-dasharray:${c};stroke-dashoffset:${c*(1-p)}"/></svg>`};
@@ -104,14 +108,22 @@ const qkey=s=>{let h=5381;for(const c of String(s))h=(h*33+c.charCodeAt(0))|0;re
 function quizHTML(items,seed){
   return `<div class="quiz">${items.map((q,qi)=>{const ord=perm(q.o.length,seed*13+qi);return `<div class="q" data-q="${qi}"><b>${qi+1}. ${q.q}</b><div class="opts">${ord.map(oi=>`<button class="opt" data-o="${oi}">${q.o[oi]}</button>`).join('')}</div><p class="why" hidden></p></div>`}).join('')}</div>`;
 }
+/* daftar Ulang berjarak: jawaban benar menjadwalkan soal lagi 1, 3, lalu 7 hari kemudian;
+   setelah benar di jadwal ketiga, soal dianggap dikuasai dan keluar dari daftar */
+const GAPS=[1,3,7],DAY=864e5;
+const isDue=w=>!w.due||w.due<=Date.now();
+const dueN=()=>Object.values(LMS.wrong).filter(isDue).length;
+function review(k,ok){const w=LMS.wrong[k];if(!w||!ok)return null;const b=(w.box||0)+1;
+  if(b>GAPS.length){delete LMS.wrong[k];return 'done'}w.box=b;const d=new Date();d.setHours(4,0,0,0);w.due=d.getTime()+GAPS[b-1]*DAY;return GAPS[b-1]}
 function wireQuiz(root,items,o={}){
   root.querySelectorAll('.quiz .q').forEach(qe=>qe.addEventListener('click',e=>{
     const b=e.target.closest('.opt');if(!b||b.disabled)return;const q=items[+qe.dataset.q],pick=+b.dataset.o,ok=pick===q.a,k=qkey(q.q);
     qe.querySelectorAll('.opt').forEach(x=>{x.disabled=true;const v=+x.dataset.o;if(v===q.a)x.classList.add('right');else if(v===pick)x.classList.add('wrong')});
     const w=$('.why',qe);w.hidden=false;w.innerHTML=(ok?'<b class="okc">Benar.</b> ':'<b class="badc">Belum tepat.</b> ')+q.w;
     qe.classList.add(ok?'is-ok':'is-bad');touch();
-    if(ok){delete LMS.wrong[k];if(!LMS.qok[k]){LMS.qok[k]=1;LMS.xp+=2}}else LMS.wrong[k]={q:q.q,o:q.o,a:q.a,w:q.w,ref:q.ref||(q.x&&q.x.id)||o.ref||location.hash.slice(1),t:Date.now()};
-    saveLms();if(o.onAnswer)o.onAnswer(ok,+qe.dataset.q);
+    let lv=null;
+    if(ok){lv=review(k,true);if(!LMS.qok[k]){LMS.qok[k]=1;LMS.xp+=2}}else LMS.wrong[k]={q:q.q,o:q.o,a:q.a,w:q.w,ref:q.ref||(q.x&&q.x.id)||o.ref||location.hash.slice(1),t:Date.now(),box:0,due:Date.now()};
+    saveLms();if(o.onAnswer)o.onAnswer(ok,+qe.dataset.q,lv);
   }));
 }
 function perm(n,seed){const a=[...Array(n).keys()];let s=(seed*7919+13)%233280;for(let i=n-1;i>0;i--){s=(s*9301+49297)%233280;const j=Math.floor(s/233280*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}

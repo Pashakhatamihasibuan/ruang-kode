@@ -24,14 +24,14 @@ CSS = ["base.css", "lms.css", "v4.css"]
 TRACK_JS = ["track-java.js", "track-python.js", "track-sql.js", "track-sql-extra.js",
             "track-html.js", "track-css.js", "track-fe0.js", "track-fe.js", "track-react.js",
             "track-ts.js", "track-git.js", "track-pda.js", "track-da.js", "track-bi.js",
-            "track-de.js", "track-ux.js", "track-ds.js", "track-more.js", "tips.js"]
+            "track-de.js", "track-ux.js", "track-ds.js", "track-more.js", "tips.js", "bugs.js", "traces.js"]
 RT_JS = ["viz.js", "sqlengine.js", "sqldata.js", "sqldata-bi.js", "viz2.js", "viz3.js"]
 BOOK_JS = ["data.js", "app-javapy.js", "app-extra.js"]
-CORE_JS = ["app.js", "app-pages.js", "app-lesson.js", "app-nav.js"]
+CORE_JS = ["gl.js", "app.js", "app-pages.js", "app-lesson.js", "practice.js", "tracer.js", "setup.js", "app-nav.js"]
 # urutan versi satu file (sama dengan urutan sebelum materi dipecah)
-ALL_JS = (["data.js", "util.js", "viz.js", "sqlengine.js", "sqldata.js", "sqldata-bi.js"] + TRACK_JS
+ALL_JS = (["data.js", "util.js", "gl.js", "viz.js", "sqlengine.js", "sqldata.js", "sqldata-bi.js"] + TRACK_JS
           + ["viz2.js", "viz3.js", "app.js", "app-pages.js", "app-lesson.js", "app-javapy.js",
-             "app-extra.js", "app-nav.js"])
+             "app-extra.js", "practice.js", "tracer.js", "setup.js", "app-nav.js"])
 
 DESC = ("Akademi coding, data, dan desain berbahasa Indonesia: 16 jalur mengikuti roadmap.sh, "
         "visual interaktif, editor langsung jalan, konsol SQL, ujian, dan proyek. "

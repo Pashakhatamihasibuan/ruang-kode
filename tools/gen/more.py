@@ -496,7 +496,7 @@ console.log(ambil(teratas, "stok")); // ambil(teratas, "warna") ditolak compiler
 const r: Respons = { ok: true, data: "tersimpan" };
 console.log(r.data.toUpperCase());""", lang="ts",
     pts=["T extends {...} membatasi tipe yang diterima.", "K extends keyof T menjamin nama properti valid.", "T[K] memberi tipe hasil yang tepat.", "Tipe bawaan: <code>&lt;T = string&gt;</code>."],
-    q=[["Apa arti <code>&lt;T extends { harga: number }&gt;</code>?", ["T boleh tipe apa saja yang punya properti harga bertipe number", "T harus number", "T adalah salinan harga"], 0, "extends di generik berarti batasan."],
+    q=[["Apa arti <T extends { harga: number }>?", ["T boleh tipe apa saja yang punya properti harga bertipe number", "T harus number", "T adalah salinan harga"], 0, "extends di generik berarti batasan."],
        ["Kenapa ambil(teratas, \"warna\") ditolak?", ["\"warna\" bukan keyof tipe teratas", "Fungsi tidak menerima string", "teratas bernilai null"], 0, "K dibatasi pada nama properti yang ada."]])
 lesson("ts", "Narrowing & assertion", "Validasi data dari API dengan type predicate", ["Type Predicates", "Narrowing"], [
     "Data dari <code>fetch</code> atau <code>JSON.parse</code> tidak punya jaminan bentuk. Menulis <code>as Produk</code> hanya menenangkan compiler, bukan memeriksa data. Kalau server mengirim bentuk lain, error baru muncul jauh di bagian lain program.",

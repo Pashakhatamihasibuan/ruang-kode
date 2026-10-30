@@ -1,11 +1,11 @@
 /* ===================== NAVIGASI, PENCARIAN, TEMA & RUTE ===================== */
 function megaHTML(){
   return `<div class="mega-in">${GROUPS.map(([g,n])=>`<div class="mg-col"><div class="eyebrow">${n}</div>${TRACKS.filter(t=>t.g===g).map(t=>{const p=prog(t.k);return `<a class="mg-t ${tcls(t)}" href="#${t.k}"><span class="tmark sm">${t.mark}</span><span>${t.name}</span>${p.d?`<small>${pct(p.p)}</small>`:''}</a>`}).join('')}</div>`).join('')}
-   <div class="mg-foot"><a href="#katalog">Lihat katalog lengkap →</a><span class="muted">${TRACKS.length} jalur · ${nLessons} pelajaran</span></div></div>`;
+   <div class="mg-foot"><a href="#katalog">Lihat katalog lengkap →</a><a href="#persiapan">Persiapan laptop →</a><span class="muted">${TRACKS.length} jalur · ${nLessons} pelajaran</span></div></div>`;
 }
 function drawerHTML(){
   return `<div class="dr-in"><div class="dr-h"><b>Menu</b><button class="icon-btn" id="drClose" aria-label="Tutup menu">✕</button></div>
-   <nav class="dr-nav"><a href="#beranda">Beranda</a><a href="#katalog">Katalog</a><a href="#saya">Belajar saya</a><a href="#ulang">Ulang <span class="badge wrongN" hidden></span></a><a href="#kuis">Kuis cerita</a><a href="#glosarium">Glosarium</a></nav>
+   <nav class="dr-nav"><a href="#beranda">Beranda</a><a href="#katalog">Katalog</a><a href="#saya">Belajar saya</a><a href="#ulang">Ulang <span class="badge wrongN" hidden></span></a><a href="#kuis">Kuis cerita</a><a href="#glosarium">Glosarium</a><a href="#persiapan">Persiapan laptop</a></nav>
    ${GROUPS.map(([g,n])=>`<div class="dr-g"><div class="eyebrow">${n}</div>${TRACKS.filter(t=>t.g===g).map(t=>`<a class="mg-t ${tcls(t)}" href="#${t.k}"><span class="tmark sm">${t.mark}</span><span>${t.name}</span>${prog(t.k).d?`<small>${pct(prog(t.k).p)}</small>`:''}</a>`).join('')}</div>`).join('')}</div>`;
 }
 function setMega(o){const m=$('#mega'),b=$('#catBtn');o=o??m.hidden;m.hidden=!o;if(o)m.innerHTML=megaHTML();b.setAttribute('aria-expanded',o)}
@@ -19,6 +19,8 @@ let THEME=store.get('rk-theme','auto');applyTheme(THEME);
 
 /* keadaan glosarium dipakai rute dan tautan istilah, jadi dideklarasikan di sini */
 let glState={q:'',cat:'Semua',focus:null},pendingFocus=null;
+/* event pasang aplikasi (beforeinstallprompt) disimpan agar tombol Pasang bisa memakainya */
+let INSTALL=null;
 
 /* ---------- pencarian (Ctrl+K) ---------- */
 let SIDX=null,sSel=0,sRes=[];
@@ -59,20 +61,24 @@ function route(){
   if(/^kuis-(dasar|menengah|lanjutan)$/.test(h)){location.replace('#kuis-java');return}
   const focusing=!!pendingFocus,x=BYID[h];
   let m;
-  const want=old?['book']:x?needsOf(x.t.k):TK[h]?needsOf(h):(m=/^(\w+)-(tes|ujian-\d+)$/.exec(h))&&TK[m[1]]?needsOf(m[1])
+  const want=old?['book']:x?needsOf(x.t.k):TK[h]?needsOf(h):(m=/^(\w+)-(tes|ujian-\d+|ringkasan-\d+)$/.exec(h))&&TK[m[1]]?needsOf(m[1])
     :/^kuis/.test(h)?['book','rt']:h==='glosarium'?['book']:[];
   if(!ready(want)){v.dataset.page='loading';v.innerHTML='<div class="loading" role="status"><span class="spin"></span>Memuat materi…</div>';
     need(want).then(()=>{if((location.hash||'#beranda').slice(1)===h)route()},()=>{v.innerHTML='<div class="loading err" role="alert"><p>Materi gagal dimuat. Periksa koneksi internet.</p><button class="btn primary" onclick="route()">Coba lagi</button></div>'});return}
   if(old){const y=labLesson(+old[1]);location.replace('#'+(y?y.id:'java'));return}
   shell.classList.toggle('has-ol',!!x);ol.hidden=!x;
   const page=(name,html,wire,title,tk='',cur='')=>{v.dataset.page=name;v.innerHTML=html;setNav(tk,cur);document.title=title+' · Ruang Kode';if(wire)wire()};
+  if(x&&!isOpen(x)){shell.classList.remove('has-ol');ol.hidden=true;page('locked',renderLocked(x),null,`Terkunci · ${x.title}`,x.t.k);scrollTo(0,0);return}
   if(x){v.dataset.page='lesson';ol.innerHTML=renderOutline(x);v.innerHTML=renderLesson(x);setNav(x.t.k,'');document.title=`${x.title} · ${x.t.name} · Ruang Kode`;
     if(!focusing)scrollTo(0,0);wireLesson(x);const c=$('#outline [aria-current="page"]');if(c)c.scrollIntoView({block:'center'});
     v.classList.remove('enter');void v.offsetWidth;v.classList.add('enter');return}
   if(TK[h])page('course',renderCourse(TK[h]),()=>wireCourse(TK[h]),`Jalur ${TK[h].name}`,h);
   else if((m=/^(\w+)-tes$/.exec(h))&&TK[m[1]])page('quiz',renderPlacement(TK[m[1]]),wireExam,`Tes penempatan ${TK[m[1]].name}`,m[1]);
+  else if((m=/^(\w+)-ujian-(\d+)$/.exec(h))&&TK[m[1]]&&TK[m[1]].mods[m[2]-1]&&!modDone(m[1],m[2]-1))page('locked',renderLockedExam(TK[m[1]],m[2]-1),null,'Ujian modul terkunci',m[1]);
   else if((m=/^(\w+)-ujian-(\d+)$/.exec(h))&&TK[m[1]]&&TK[m[1]].mods[m[2]-1])page('quiz',renderExam(TK[m[1]],m[2]-1),wireExam,`Ujian modul ${m[2]} ${TK[m[1]].name}`,m[1]);
+  else if((m=/^(\w+)-ringkasan-(\d+)$/.exec(h))&&TK[m[1]]&&TK[m[1]].mods[m[2]-1])page('summary',renderSummary(TK[m[1]],m[2]-1),null,`Ringkasan modul ${m[2]} ${TK[m[1]].name}`,m[1]);
   else if((m=/^(\w+)-sertifikat$/.exec(h))&&TK[m[1]]){location.replace('#'+m[1]);return}
+  else if((m=/^persiapan(?:-(\w+))?$/.exec(h))&&(!m[1]||TK[m[1]])){const tk=m[1]||'';page('setup',renderSetup(tk),()=>wireSetup(tk),'Persiapan laptop','','persiapan')}
   else if(h==='katalog')page('course',renderCatalog(),wireCatalog,'Katalog','','katalog');
   else if(h==='saya')page('quiz',renderMine(),wireMine,'Belajar saya','','saya');
   else if(h==='ulang')page('quiz',renderReview(),wireReview,'Ulang','','ulang');
@@ -109,8 +115,7 @@ addEventListener('hashchange',route);
 updateBadges();route();
 
 /* ---------- versi web: siapkan materi lebih awal dan pasang service worker (offline) ---------- */
-let INSTALL=null;
-addEventListener('beforeinstallprompt',e=>{e.preventDefault();INSTALL=e;const b=$('#instBtn');if(b)b.hidden=false});
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();INSTALL=e;document.querySelectorAll('#instBtn,#suInst').forEach(b=>b.hidden=false)});
 if(CHUNK){
   (window.requestIdleCallback||(f=>setTimeout(f,1500)))(()=>need(['rt',...recent().slice(0,2).flatMap(t=>needsOf(t.k))]).catch(()=>{}));
   if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))navigator.serviceWorker.register('/sw.js').then(r=>{

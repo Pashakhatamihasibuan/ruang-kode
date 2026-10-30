@@ -13,7 +13,7 @@ const HERO=[
   ['ts','TypeScript',`type Produk = { nama: string; harga: number };\nconst kopi: Produk = { nama: "Kopi Gayo", harga: 85000 };\nconsole.log(\`\${kopi.nama}: Rp\${kopi.harga}\`);`,'Kopi Gayo: Rp85000'],
   ['java','Java',`String nama = "Sinta";\nint umur = 21;\nSystem.out.println("Halo, " + nama + "!");`,'Halo, Sinta!']];
 function renderHome(){
-  const rs=recent(),st=streak(),td=LMS.days[today()]||0,goal=LMS.goal||3,wn=Object.keys(LMS.wrong).length;
+  const rs=recent(),st=streak(),td=LMS.days[today()]||0,goal=LMS.goal||3,wn=dueN();
   const greet=(()=>{const h=new Date().getHours();return h<11?'Selamat pagi':h<15?'Selamat siang':h<19?'Selamat sore':'Selamat malam'})();
   const hero=rs.length?`<section class="dash">
     <div class="dash-main"><div class="eyebrow">${greet}${LMS.name?', '+esc(LMS.name):''}</div><h1>Lanjutkan dari terakhir kali.</h1>
@@ -91,6 +91,7 @@ function renderCourse(t){
   </header>
   <div class="c-acts">
    <a class="c-act" href="#${t.k}-tes"><b>Tes penempatan</b><span>Sudah pernah belajar? Ukur dulu, lalu lompati modul yang sudah dikuasai.</span></a>
+   <a class="c-act" href="#persiapan-${t.k}"><b>Siapkan laptop</b><span>${esc(setupItems(t.k).map(x=>x.name).join(', '))}</span></a>
    ${projs.length?`<a class="c-act" href="#${projs[projs.length-1].id}"><b>Proyek akhir</b><span>${esc(projs[projs.length-1].title)}${isDone(projs[projs.length-1])?' · ✓ selesai':''}</span></a>`:''}</div>
   <div class="c-tools"><div class="chips" role="group" aria-label="Saring tingkat" id="lvF">${['Semua',...LVL4.filter(L=>t.mods.some(m=>m.lvl===L))].map(L=>`<button class="chip" data-l="${L}" aria-pressed="${L===lvFilter}">${L}</button>`).join('')}</div>
    <button class="tlink" id="expAll">Buka semua modul</button></div>
@@ -101,8 +102,9 @@ function renderCourse(t){
       <h3>${m.t}</h3><p>${m.d}</p>
       <div class="mod-bar"><i style="width:${mp.d/mp.n*100}%"></i></div>
       <details ${cur?'open':''}><summary>${mp.n} pelajaran · ±${FLAT[t.k].filter(x=>x.mi===mi).reduce((a,x)=>a+minOf(x),0)} menit</summary>
-       <ol class="les-list">${FLAT[t.k].filter(x=>x.mi===mi).map(x=>`<li><a href="#${x.id}" class="${isDone(x)?'done':''} ${x.id===nx.id?'next':''}"><span class="chk" aria-hidden="true"></span><span class="lt">${esc(x.title)}</span><small>${x.src?'↗ '+x.src.t.name:KIND[kindOf(x)]}</small></a></li>`).join('')}</ol>
-       ${bank>=3?`<a class="mod-exam" href="#${t.k}-ujian-${mi+1}"><span>📝 Ujian modul · ${Math.min(10,bank)} soal</span><b>${sc!=null?`Nilai terbaik ${sc}${sc>=70?' ✓':''}`:'Belum dicoba'}</b></a>`:''}
+       <ol class="les-list">${FLAT[t.k].filter(x=>x.mi===mi).map(x=>`<li><a href="#${x.id}" class="${isDone(x)?'done':isOpen(x)?'':'locked'} ${x.id===nx.id?'next':''}"><span class="chk" aria-hidden="true"></span><span class="lt">${esc(x.title)}${isOpen(x)?'':'<span class="sr">(terkunci)</span>'}</span><small>${x.src?'↗ '+x.src.t.name:KIND[kindOf(x)]}</small></a></li>`).join('')}</ol>
+       ${mp.d?`<a class="mod-sum" href="#${t.k}-ringkasan-${mi+1}">📄 Ringkasan modul${mp.d<mp.n?` · ${mp.d}/${mp.n}`:''}</a>`:''}
+       ${bank>=3?`<a class="mod-exam ${mp.d===mp.n?'':'locked'}" href="#${t.k}-ujian-${mi+1}"><span>${mp.d===mp.n?'📝':'🔒'} Ujian modul · ${Math.min(10,bank)} soal</span><b>${mp.d<mp.n?'Terbuka setelah modul selesai':sc!=null?`Nilai terbaik ${sc}${sc>=70?' ✓':''}`:'Belum dicoba'}</b></a>`:''}
        <div class="mod-nodes">${m.nodes.map(x=>`<span class="rn">${esc(x)}</span>`).join('')}</div></details></div></li>`}).join('')}</ol>`;
 }
 function wireCourse(t){
@@ -189,15 +191,34 @@ function wireMine(){
 }
 
 /* ---------- daftar ulang ---------- */
+/* ringkasan modul: poin penting dari setiap pelajaran yang sudah diselesaikan */
+function pointsOf(x){const y=base(x),l=y.l;
+  if(l.k==='lab')return CH[l.n-1].points||[];
+  if(l.k==='topic'){const [n,i]=l.ref.split('.').map(Number),tp=TOPICS[n][i];return tp.rumus?[`<code>${esc(tp.rumus.f)}</code>`,...tp.rumus.i.map(esc)]:[]}
+  return l.pts||[]}
+function renderSummary(t,mi){
+  const m=t.mods[mi],F=FLAT[t.k].filter(x=>x.mi===mi),mp=modProg(t.k,mi);
+  return `<header class="ch-head ${tcls(t)}"><nav class="crumb" aria-label="Lokasi"><a href="#beranda">Beranda</a><span>/</span><a href="#${t.k}">${t.name}</a><span>/</span><span>Modul ${mi+1}</span></nav>
+   <div class="eyebrow">Ringkasan modul ${mi+1} · ${mp.d} dari ${mp.n} pelajaran selesai</div><h1>${esc(m.t)}</h1><p class="lead muted">${m.d}</p></header>
+   <ol class="sum-list">${F.map(x=>{const p=pointsOf(x);return `<li class="${isDone(x)?'':'todo'}"><h2><a href="#${x.id}">${esc(x.title)}</a></h2>
+     ${isDone(x)?(p.length?`<ul class="points">${p.map(v=>`<li>${v}</li>`).join('')}</ul>`:'<p class="muted small">Pelajaran praktik, tidak ada poin ringkasan.</p>')
+      :`<p class="muted small">${isOpen(x)?'Selesaikan pelajaran ini untuk melihat ringkasannya.':'🔒 Terbuka setelah pelajaran sebelumnya selesai.'}</p>`}</li>`}).join('')}</ol>
+   <div class="lock-act">${mp.d===mp.n&&bankN(t.k,mi)>=3?`<a class="btn primary" href="#${t.k}-ujian-${mi+1}">📝 Uji pemahaman: ujian modul</a>`:`<a class="btn primary" href="#${nextOf(t.k).id}">Lanjutkan belajar ▶</a>`}<a class="btn" href="#${t.k}">Kurikulum</a></div>`;
+}
 function renderReview(){
-  const W=Object.entries(LMS.wrong).sort((a,b)=>b[1].t-a[1].t);EXAM={items:W.map(([k,v])=>({...v,k}))};
-  return `<header class="ch-head"><nav class="crumb" aria-label="Lokasi"><a href="#beranda">Beranda</a><span>/</span><span>Ulang</span></nav><div class="eyebrow">Pengulangan</div><h1>Soal yang perlu diulang</h1>
-   <p class="lead muted">Setiap jawaban salah di kuis dan ujian tersimpan di sini. Jawab dengan benar untuk menghapusnya dari daftar.</p></header>
-   ${W.length?`<div class="sl-act"><span class="muted">${W.length} soal</span><button class="btn" id="rvClear">Kosongkan daftar</button></div><section class="section" id="rvQ">${quizHTML(EXAM.items,11)}</section>`:'<div class="empty big">🎉 Tidak ada soal yang perlu diulang. <a href="#katalog">Lanjut belajar</a>.</div>'}`;
+  const all=Object.entries(LMS.wrong),W=all.filter(([,v])=>isDue(v)).sort((a,b)=>b[1].t-a[1].t),later=all.filter(([,v])=>!isDue(v)).sort((a,b)=>a[1].due-b[1].due);
+  EXAM={items:W.map(([k,v])=>({...v,k}))};
+  const when=ts=>{const d=Math.round((new Date(ts).setHours(0,0,0,0)-new Date().setHours(0,0,0,0))/DAY);return d<=1?'besok':`${d} hari lagi`};
+  const nextGroups=later.reduce((m,[,v])=>{const w=when(v.due);m[w]=(m[w]||0)+1;return m},{});
+  return `<header class="ch-head"><nav class="crumb" aria-label="Lokasi"><a href="#beranda">Beranda</a><span>/</span><span>Ulang</span></nav><div class="eyebrow">Pengulangan berjarak</div><h1>Soal yang perlu diulang</h1>
+   <p class="lead muted">Jawaban yang salah di kuis dan ujian masuk ke sini. Jawab benar, lalu soal yang sama muncul lagi besok, 3 hari, dan 7 hari kemudian. Mengulang dengan jeda seperti ini membuat materi lebih lama diingat.</p></header>
+   ${later.length?`<div class="rv-sched"><b>Terjadwal:</b> ${Object.entries(nextGroups).map(([w,n])=>`${n} soal ${w}`).join(' · ')}</div>`:''}
+   ${W.length?`<div class="sl-act"><span class="muted">${W.length} soal untuk hari ini</span><button class="btn" id="rvClear">Kosongkan daftar</button></div><section class="section" id="rvQ">${quizHTML(EXAM.items,11)}</section>`
+    :`<div class="empty big">🎉 Tidak ada soal untuk diulang hari ini. <a href="#katalog">Lanjut belajar</a>.</div>`}`;
 }
 function wireReview(){
   const q=$('#rvQ');if(!q)return;
   q.querySelectorAll('.q').forEach((qe,i)=>{const it=EXAM.items[i],x=BYID[it.ref];if(x)qe.insertAdjacentHTML('beforeend',`<a class="more" href="#${x.id}">Dari: ${esc(x.t.name)} · ${esc(x.title)} →</a>`)});
-  wireQuiz(q,EXAM.items,{onAnswer:(ok,i)=>{if(ok)toast('Terhapus dari daftar ulang')}});
+  wireQuiz(q,EXAM.items,{onAnswer:(ok,i,lv)=>{if(ok)toast(lv==='done'?'Dikuasai! Soal keluar dari daftar ulang':`Benar. Muncul lagi ${lv===1?'besok':lv+' hari lagi'}`);else toast('Belum tepat. Soal ini diulang lagi hari ini')}});
   $('#rvClear').onclick=()=>{LMS.wrong={};saveLms();route()};
 }

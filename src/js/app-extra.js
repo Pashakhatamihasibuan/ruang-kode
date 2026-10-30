@@ -58,32 +58,6 @@ function wireStories(tk){
 }
 
 /* ===================== GLOSARIUM ===================== */
-CATS.push('Basis Data');
-[['sql-rdbms','Basis data relasional','relational database (RDBMS)','Basis data yang menyimpan data dalam tabel-tabel yang saling terhubung lewat kunci. Contoh: PostgreSQL, MySQL, SQLite, SQL Server, Oracle.'],
- ['sql-query','Query','query','Perintah untuk meminta atau mengubah data di basis data, ditulis dalam SQL.','SELECT nama FROM pelanggan;'],
- ['sql-tabel','Tabel, baris, kolom','table, row, column','Tabel menyimpan data sejenis. Setiap baris adalah satu catatan, setiap kolom satu atribut dengan tipe data tertentu.'],
- ['sql-pk','Primary key','primary key','Kolom (atau gabungan kolom) yang nilainya unik dan tidak boleh NULL, dipakai untuk menunjuk satu baris dengan pasti.','id INTEGER PRIMARY KEY'],
- ['sql-fk','Foreign key','foreign key','Kolom yang menunjuk primary key di tabel lain. Database menolak nilai yang tidak punya pasangan.','pelanggan_id INTEGER REFERENCES pelanggan(id)'],
- ['sql-constraint','Constraint','constraint','Aturan yang dijaga database: NOT NULL, UNIQUE, CHECK, PRIMARY KEY, FOREIGN KEY, DEFAULT.','harga INTEGER CHECK (harga > 0)'],
- ['sql-null','NULL (SQL)','NULL','Penanda nilai yang tidak diketahui atau tidak ada. Bukan 0 dan bukan teks kosong. Diperiksa dengan IS NULL, bukan = NULL.','WHERE kota IS NULL'],
- ['sql-ddl','DDL dan DML','data definition / manipulation language','DDL mengatur struktur (CREATE, ALTER, DROP). DML mengubah isi data (INSERT, UPDATE, DELETE). DQL membaca data (SELECT).'],
- ['sql-where','WHERE','WHERE clause','Klausa untuk menyaring baris berdasarkan kondisi sebelum dikelompokkan atau ditampilkan.','WHERE harga > 50000'],
- ['sql-agregat','Fungsi agregat','aggregate function','Fungsi yang meringkas banyak baris menjadi satu nilai: COUNT, SUM, AVG, MIN, MAX.','SELECT AVG(harga) FROM produk;'],
- ['sql-groupby','GROUP BY dan HAVING','GROUP BY / HAVING','GROUP BY mengelompokkan baris yang nilainya sama. HAVING menyaring kelompok setelah agregat dihitung.','GROUP BY kategori HAVING COUNT(*) > 1'],
- ['sql-join','JOIN','join','Menggabungkan baris dari dua tabel berdasarkan kondisi. INNER JOIN hanya yang cocok; LEFT JOIN mempertahankan semua baris tabel kiri.','FROM pesanan s JOIN pelanggan p ON s.pelanggan_id = p.id'],
- ['sql-subquery','Subquery','subquery','Query di dalam query lain, misalnya di WHERE atau FROM. Correlated subquery merujuk baris query luarnya.','WHERE harga > (SELECT AVG(harga) FROM produk)'],
- ['sql-view','View','view','Query yang disimpan dengan nama dan bisa dipakai seperti tabel. Tidak menyimpan data sendiri.','CREATE VIEW laris AS SELECT ...;'],
- ['sql-index','Index','index','Struktur data tambahan (biasanya B-tree) agar pencarian tidak perlu membaca seluruh tabel. Mempercepat baca, sedikit memperlambat tulis.','CREATE INDEX idx_kota ON pelanggan(kota);'],
- ['sql-transaksi','Transaksi','transaction','Sekelompok perintah yang diperlakukan sebagai satu kesatuan: COMMIT menyimpan semuanya, ROLLBACK membatalkan semuanya.','BEGIN; ... COMMIT;'],
- ['sql-acid','ACID','atomicity, consistency, isolation, durability','Empat jaminan transaksi: utuh (semua atau tidak sama sekali), konsisten dengan aturan, terisolasi dari transaksi lain, dan tahan lama setelah COMMIT.'],
- ['sql-normalisasi','Normalisasi','normalization','Merancang tabel agar data tidak berulang (1NF, 2NF, 3NF), dengan memecah data ke tabel terpisah yang dihubungkan foreign key.'],
- ['sql-injection','SQL injection','SQL injection','Serangan dengan menyisipkan potongan SQL lewat input pengguna. Dicegah dengan parameter (prepared statement), bukan menyambung string.'],
- ['sql-prepared','Prepared statement','prepared statement','Query dengan placeholder (?) yang nilainya dikirim terpisah, sehingga input selalu dianggap data, bukan perintah.','SELECT * FROM akun WHERE username = ?'],
- ['sql-cte','CTE','common table expression','Query bernama sementara yang ditulis dengan WITH di awal query. CTE rekursif bisa menelusuri hierarki seperti bagan organisasi.','WITH laris AS (SELECT ...) SELECT * FROM laris;'],
- ['sql-window','Window function','window function','Fungsi yang menghitung nilai dari sekelompok baris terkait tanpa menggabungkannya: ROW_NUMBER, RANK, LAG, LEAD, SUM OVER.','RANK() OVER (PARTITION BY divisi ORDER BY gaji DESC)'],
- ['sql-explain','EXPLAIN','query plan','Perintah untuk melihat rencana eksekusi query: tabel dibaca penuh (SCAN) atau lewat index (SEARCH).','EXPLAIN QUERY PLAN SELECT ...;'],
- ['sql-procedure','Stored procedure','stored procedure','Kumpulan perintah SQL yang disimpan di server database dan dipanggil dengan nama, misalnya CALL proses_gaji().']
-].forEach(([id,t,en,d,ex])=>{const g={id,t,en,c:'Basis Data',d};if(ex)g.ex=ex;GL.push(g);GLMAP[id]=g});
 const GLUSE={};
 for(const n in TOPICS)TOPICS[n].forEach((tp,ti)=>{for(const k in tp.legend){const id=tp.legend[k][0];(GLUSE[id]=GLUSE[id]||[]);if(!GLUSE[id].some(u=>u.n==n&&u.ti===ti))GLUSE[id].push({n:+n,ti,k,t:tp.t})}});
 const topicLesson=(n,ti)=>FLAT.java.find(x=>x.l.k==='topic'&&x.l.ref===n+'.'+ti)||FLAT.python.find(x=>x.l.k==='topic'&&x.l.ref===n+'.'+ti);

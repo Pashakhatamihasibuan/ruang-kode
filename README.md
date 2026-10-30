@@ -32,7 +32,13 @@ Lima jalur karier menyusun jalur di atas dalam urutan yang disarankan: Frontend 
   - praktik SQL di konsol browser, termasuk database skema bintang untuk BI dan proyek mini dengan beberapa tantangan;
   - proyek akhir dengan daftar fitur, langkah kerja, berkas awal, dan pratinjau;
   - topik lima langkah dan lab interaktif Java/Python.
-- **Kode pemula vs kode rapi**: 74 perbandingan yang bisa dibuka-tutup di pelajaran terkait, misalnya `1_000_000` untuk angka besar, f-string, `enumerate`, `?.` dan `??`, `CASE` di SQL. Setiap pasangan kode dijalankan dan menghasilkan keluaran yang sama.
+- **Belajar berurutan**: pelajaran terbuka setelah pelajaran sebelumnya selesai, dan pelajaran baru dianggap selesai setelah semua soal kuisnya dijawab. Ujian modul terbuka setelah semua pelajaran di modul selesai. Tes penempatan tetap bisa dipakai untuk melewati modul yang sudah dikuasai.
+- **Jalankan langkah demi langkah**: 74 contoh Python, Java, JavaScript, dan TypeScript bisa diputar baris per baris, lengkap dengan isi variabel dan keluaran. Rekamannya diambil dari eksekusi sungguhan (`tools/gen/traces.py`).
+- **Latihan bertahap** di pelajaran berkode: susun baris yang diacak, isi bagian kosong, dan perbaiki kode yang error (107 soal; pesan error-nya asli dari menjalankan kode rusak, `tools/gen/bugs.py`). Setiap latihan punya petunjuk tiga tingkat.
+- **Istilah bisa disentuh**: istilah di teks pelajaran menampilkan artinya dari glosarium (201 istilah). Pesan error Python dan JavaScript dijelaskan dalam bahasa sehari-hari.
+- **Ulang berjarak**: soal yang salah muncul lagi besok, 3 hari, lalu 7 hari kemudian sampai dikuasai. Setiap modul punya halaman ringkasan.
+- **Persiapan laptop** (`#persiapan`): langkah memasang VS Code, Python, JDK, Node.js, Git, SQLite, dan Figma untuk Windows, macOS, dan Linux, disaring per jalur, plus cara memasang Ruang Kode sebagai aplikasi.
+- **Kode pemula vs kode rapi**: 74 perbandingan yang bisa dibuka-tutup di pelajaran terkait, misalnya `1_000_000` untuk angka besar, f-string, `enumerate`, `?.` dan `??`, `CASE` di SQL. 52 pasangan yang bisa dijalankan sudah diuji dan menghasilkan keluaran yang sama.
 - **45 visual interaktif**, antara lain box model, flexbox, grid, event loop JavaScript, CSR/SSR/SSG, simulator Git, skema bintang, A/B test, MapReduce, Kafka, model Fogg, siklus Hook, token desain, pemeriksa kontras, dan skala tipografi.
 - **Belajar saya**: kalender aktivitas, target harian, nilai ujian, cadangan dan pemulihan progres.
 - **Ulang**: setiap jawaban kuis atau ujian yang salah masuk daftar ulang sampai dijawab benar.
@@ -59,6 +65,8 @@ Sumber:
 - `src/js/data.js`: bab, topik, glosarium, kuis cerita.
 - `src/js/track-*.js`: kurikulum per jalur. `track-pda.js`, `track-da.js`, dan `track-de.js` dihasilkan skrip yang menjalankan setiap contoh Python untuk mengisi keluarannya.
 - `src/js/track-more.js`: 40 pelajaran tambahan untuk 13 jalur baru, dihasilkan `tools/gen/more.py` (keluaran contoh kode diisi dari hasil eksekusi).
+- `src/js/bugs.js`, `src/js/traces.js`: latihan perbaikan error dan rekaman eksekusi, dihasilkan `tools/gen/bugs.py` dan `tools/gen/traces.py` (pelacak di `tools/gen/trace/`).
+- `src/js/gl.js`, `practice.js`, `tracer.js`, `setup.js`: glosarium dan istilah di pelajaran, latihan bertahap, pemutar langkah, persiapan laptop.
 - `src/js/tips.js`: perbandingan kode pemula dan kode rapi yang ditempel ke pelajaran.
 - `src/js/sqlengine.js`, `sqldata.js`, `sqldata-bi.js`: mesin SQL kecil dan database contoh.
 - `src/js/viz.js`, `viz2.js`, `viz3.js`: visualisasi.

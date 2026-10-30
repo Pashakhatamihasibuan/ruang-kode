@@ -5,8 +5,23 @@ function renderOutline(x){
   const t=x.t,p=prog(t.k);
   return `<div class="ol-head"><a class="ol-t ${tcls(t)}" href="#${t.k}"><span class="tmark">${t.mark}</span><span><b>${t.name}</b><small>${p.d} dari ${p.n} selesai</small></span></a><div class="bar"><i style="width:${p.p*100}%"></i></div></div>
   <nav class="ol-nav" aria-label="Daftar materi ${t.name}">${t.mods.map((m,mi)=>{const mp=modProg(t.k,mi);return `<details ${mi===x.mi?'open':''}><summary><span class="ol-n">${mp.d===mp.n?'✓':mi+1}</span><span>${m.t}</span><small>${mp.d}/${mp.n}</small></summary>
-    <ol>${FLAT[t.k].filter(y=>y.mi===mi).map(y=>`<li><a href="#${y.id}" class="${isDone(y)?'done':''}" ${y.id===x.id?'aria-current="page"':''}><span class="chk" aria-hidden="true"></span>${esc(y.title)}</a></li>`).join('')}</ol></details>`}).join('')}</nav>`;
+    <ol>${FLAT[t.k].filter(y=>y.mi===mi).map(y=>`<li><a href="#${y.id}" class="${isDone(y)?'done':isOpen(y)?'':'locked'}" ${y.id===x.id?'aria-current="page"':''}><span class="chk" aria-hidden="true"></span>${esc(y.title)}${isOpen(y)?'':'<span class="sr">(terkunci)</span>'}</a></li>`).join('')}</ol></details>`}).join('')}</nav>`;
 }
+/* halaman pengganti untuk pelajaran yang belum terbuka */
+function renderLocked(x){
+  const t=x.t,need=nextOf(t.k),pv=lockOf(x);
+  return `<div class="lock-pg ${tcls(t)}"><nav class="crumb" aria-label="Lokasi"><a href="#beranda">Beranda</a><span>/</span><a href="#${t.k}">${t.name}</a><span>/</span><span>Modul ${x.mi+1}</span></nav>
+   <div class="lock-ic" aria-hidden="true">🔒</div><div class="eyebrow">Modul ${x.mi+1} · Pelajaran ${x.li+1}</div><h1>${esc(x.title)}</h1>
+   <p class="lead">Pelajaran ini belum terbuka. Materi di Ruang Kode disusun bertahap: setiap pelajaran memakai bekal dari pelajaran sebelumnya, jadi kerjakan berurutan.</p>
+   ${pv?`<p>Selesaikan dulu <b>${esc(pv.title)}</b>.</p>`:''}
+   <div class="lock-act"><a class="btn primary" href="#${need.id}">Lanjut ke ${esc(need.title)} ▶</a><a class="btn" href="#${t.k}">Lihat kurikulum</a></div>
+   <p class="muted small">Sudah menguasai materinya? Ikuti <a href="#${t.k}-tes">tes penempatan</a> untuk melewati modul yang sudah kamu kuasai.</p></div>`;
+}
+function renderLockedExam(t,mi){const mp=modProg(t.k,mi);
+  return `<div class="lock-pg ${tcls(t)}"><nav class="crumb" aria-label="Lokasi"><a href="#beranda">Beranda</a><span>/</span><a href="#${t.k}">${t.name}</a></nav>
+   <div class="lock-ic" aria-hidden="true">🔒</div><div class="eyebrow">Ujian modul ${mi+1}</div><h1>${esc(t.mods[mi].t)}</h1>
+   <p class="lead">Ujian modul terbuka setelah semua pelajaran di modul ini selesai. Saat ini ${mp.d} dari ${mp.n} pelajaran selesai.</p>
+   <div class="lock-act"><a class="btn primary" href="#${nextOf(t.k).id}">Lanjutkan belajar ▶</a><a class="btn" href="#${t.k}">Lihat kurikulum</a></div></div>`}
 function renderLesson(x){
   const {t,m,mi,li}=x,y=base(x),l=y.l,F=FLAT[t.k],i=F.indexOf(x),prev=F[i-1],next=F[i+1],dn=isDone(x);
   if(!x.src&&l.k==='see')return `<p class="empty">Pelajaran rujukan tidak ditemukan.</p>`;
@@ -25,18 +40,26 @@ function renderLesson(x){
    ${x.src?`<p class="borrow ${tcls(y.t)}"><span class="tmark sm">${y.t.mark}</span>Pelajaran ini juga ada di jalur <a href="#${y.id}">${y.t.name}</a>. Progresnya tersimpan bersama, jadi cukup dikerjakan sekali.</p>`:''}
    ${nodesHTML(l.nodes)}</header>
   <div class="l-body">${body}</div>
-  <footer class="l-foot"><div class="lf-done">${dn?'<span class="okc">✓ Pelajaran ini sudah selesai.</span> <button class="tlink" id="undo">Tandai belum selesai</button>':'<span>Sudah paham? Tandai selesai untuk mencatat progres dan mendapat 10 XP.</span>'}</div>
+  <footer class="l-foot"><div class="lf-done">${dn?'<span class="okc">✓ Pelajaran ini sudah selesai.</span> <button class="tlink" id="undo">Tandai belum selesai</button>':'<span>Sudah paham? Jawab kuisnya lalu tandai selesai untuk membuka pelajaran berikutnya (+10 XP).</span>'}</div>
+   <p class="need-q" id="needQ" role="alert" hidden></p>
    <div class="lf-nav">${prev?`<a class="btn" href="#${prev.id}" title="${esc(prev.title)}">◀ Sebelumnya</a>`:`<a class="btn" href="#${t.k}">◀ Kurikulum</a>`}
    <button class="btn primary" id="doneNext">${next?(dn?'Lanjut':'Selesai, lanjut')+' ▶':(dn?'Kembali ke kurikulum':'Selesaikan jalur 🎉')}</button></div>
    ${next?`<a class="lf-next" href="#${next.id}"><small>Berikutnya${next.mi!==mi?` · Modul ${next.mi+1}`:''}</small><b>${esc(next.title)}</b></a>`:''}
+   ${!next||next.mi!==mi?`<a class="lf-exam" href="#${t.k}-ringkasan-${mi+1}">📄 Baca ringkasan modul ${mi+1} sebelum lanjut →</a>`:''}
    ${next&&next.mi!==mi&&bankOf(t.k,mi).length>=3?`<a class="lf-exam" href="#${t.k}-ujian-${mi+1}">📝 Modul ${mi+1} selesai? Coba ujian modulnya dulu →</a>`:''}</footer>`;
 }
 function wireLesson(x){
   const {t}=x,y=base(x),l=y.l,F=FLAT[t.k],next=F[F.indexOf(x)+1];
   LMS.last[t.k]=x.id;LMS.lastAt[t.k]=Date.now();touch();saveLms();
   $('#olBtn').onclick=()=>toggleOutline();
-  $('#doneNext').onclick=()=>{markDone(x);location.hash=next?next.id:t.k};
+  /* pelajaran baru dianggap selesai setelah semua soal Cek pemahaman dijawab */
+  $('#doneNext').onclick=()=>{
+    const left=isDone(x)?[]:[...document.querySelectorAll('#view .quiz .q')].filter(q=>!q.matches('.is-ok,.is-bad'));
+    if(left.length){const m=$('#needQ');m.hidden=false;m.textContent=`Jawab dulu ${left.length} soal di bagian kuis sebelum lanjut. Jawaban salah tidak menghalangi, soalnya akan masuk daftar Ulang.`;
+      left[0].scrollIntoView({behavior:RM()?'auto':'smooth',block:'center'});left[0].classList.add('flash');setTimeout(()=>left[0].classList.remove('flash'),1600);return}
+    markDone(x);location.hash=next?next.id:t.k};
   const u=$('#undo');if(u)u.onclick=()=>{delete LMS.done[y.id];saveLms();route()};
+  linkTerms($('#view .l-body'));
   if(l.k==='lab')wireLab(l.n);
   else if(l.k==='topic')wireTopic1(l.ref,y.t.lang);
   else if(l.k==='c')wireConcept(l,y.t,x);
@@ -80,8 +103,8 @@ function conceptHTML(l,t){
    ${py?`<div class="pane python"><div class="pane-h"><span>PYTHON · bisa diedit</span><button class="copy" data-copyed>Salin</button></div>${editorHTML('pyEd',l.code,'Editor Python','python')}</div>`:pane(lang,l.code)}
    ${l.out!=null?(l.run===false?`<div><div class="eyebrow">Contoh keluaran</div><div class="console">${esc(l.out)}</div></div>`
      :`<details class="guess" id="guess"><summary>🤔 Tebak keluarannya dulu sebelum menjalankan</summary><textarea class="bk" id="gIn" placeholder="Tulis keluaran yang kamu perkirakan, satu baris per baris"></textarea><div class="sl-act"><button class="btn" id="gChk">Periksa tebakan</button></div><div id="gFb" aria-live="polite"></div></details>
-      <div class="runbox"><button class="btn primary" id="runBtn">▶ Jalankan</button>${py?'<button class="btn" id="pyReset">Kembalikan kode</button>':''}<span class="rb-hint">${py?'Ubah kodenya lalu jalankan. Kode asli menampilkan keluaran yang sudah diuji; kode yang diubah dijalankan dengan Python di browser (Pyodide).':`Keluaran kode ini sudah diuji dengan ${({java:'Java 21',ts:'Node 22 (TypeScript)',js:'Node 22',sql:'mesin SQL Ruang Kode',bash:'Bash'})[lang]||'Python 3.13'}.`}</span></div><div class="console run" id="runOut" hidden></div>`):''}</section>`:''}
-  ${ptsHTML(l)}${qHTML(l)}`;
+      <div class="runbox"><button class="btn primary" id="runBtn">▶ Jalankan</button>${trBtn(l)}${py?'<button class="btn" id="pyReset">Kembalikan kode</button>':''}<span class="rb-hint">${py?'Ubah kodenya lalu jalankan. Kode asli menampilkan keluaran yang sudah diuji; kode yang diubah dijalankan dengan Python di browser (Pyodide).':`Keluaran kode ini sudah diuji dengan ${({java:'Java 21',ts:'Node 22 (TypeScript)',js:'Node 22',sql:'mesin SQL Ruang Kode',bash:'Bash'})[lang]||'Python 3.13'}.`}</span></div><div class="console run" id="runOut" hidden></div>${tracerHTML(l,lang)}`):''}</section>`:''}
+  ${practiceHTML(l,lang)}${ptsHTML(l)}${qHTML(l)}`;
 }
 let PY=null,PYFAIL=false;
 function loadPy(){
@@ -99,7 +122,7 @@ async function runPy(code,onOut){
   out='';onOut('');
   const g=py.globals.get('dict')();
   try{await py.runPythonAsync(code,{globals:g})}catch(e){const m=String(e.message||e).trim().split('\n'),i=m.findIndex(s=>/^\s*File "<exec>"/.test(s));
-    push(i>=0?['Traceback (most recent call last):',...m.slice(i)].join('\n'):m.slice(-2).join('\n'))}
+    push(i>=0?['Traceback (most recent call last):',...m.slice(i)].join('\n'):m.slice(-2).join('\n'));const fh=pyFriendly(m.join('\n'));if(fh)push('\n💡 '+fh)}
   finally{g.destroy&&g.destroy()}
   return out;
 }
@@ -122,8 +145,41 @@ function wireConcept(l,t,x){
     if(!g){fb.innerHTML='<p class="muted">Tulis dulu tebakanmu.</p>';return}
     if(g===a){fb.innerHTML='<div class="tk-fb ok"><b>✓ Tepat sekali!</b> Kamu membaca kodenya seperti komputer.</div>';const k='g'+qkey(l.code);if(!LMS.qok[k]){LMS.qok[k]=1;award(3,'· Tebakan tepat')}}
     else{const G=g.split('\n'),A=a.split('\n'),same=A.filter((v,i)=>G[i]===v).length;fb.innerHTML=`<div class="tk-fb bad"><b>Belum tepat.</b> ${same} dari ${A.length} baris sudah cocok. Jalankan kodenya untuk membandingkan.</div>`}};
+  wirePractice(l,l.lang||t.lang);wireTracer(l);
   wireQ(l);
 }
+
+/* pesan error JavaScript yang umum, dijelaskan dalam bahasa sehari-hari */
+const JSERR=[
+  [/(\S+) is not defined/,m=>`Nama "${m[1]}" belum dibuat. Periksa ejaannya (huruf besar-kecil berpengaruh), atau buat dulu dengan let, const, atau function.`],
+  [/Cannot read propert(?:y|ies) of (undefined|null)(?: \(reading '([^']+)'\))?/,m=>`Kamu mengambil ${m[2]?`.${m[2]}`:'properti'} dari nilai yang ${m[1]==='null'?'null (kosong)':'undefined (belum ada)'}. Sering terjadi saat querySelector tidak menemukan elemen, atau data belum dimuat. Periksa nama selector atau isi variabelnya.`],
+  [/Cannot set propert(?:y|ies) of (undefined|null)/,()=>`Kamu mengisi properti pada nilai yang kosong. Biasanya elemen yang dicari dengan querySelector tidak ditemukan; cek kembali id atau class-nya.`],
+  [/(\S+) is not a function/,m=>`"${m[1]}" bukan fungsi, jadi tidak bisa dipanggil dengan (). Periksa ejaan nama method-nya, atau pastikan nilainya memang fungsi.`],
+  [/Assignment to constant variable/,()=>`Variabel const tidak boleh diisi ulang. Pakai let jika nilainya memang perlu berubah.`],
+  [/Identifier '([^']+)' has already been declared/,m=>`Nama "${m[1]}" dibuat dua kali. Hapus let/const yang kedua, atau pakai nama lain.`],
+  [/Unexpected end of input/,()=>`Kode berhenti sebelum selesai. Biasanya ada kurung kurawal }, kurung ), atau kutip yang belum ditutup.`],
+  [/Unexpected token '?([^' ]+)'?/,m=>`Ada tanda "${m[1]}" di tempat yang tidak diharapkan. Periksa tanda baca di sekitarnya: koma, titik koma, kurung, atau kutip.`],
+  [/Invalid or unexpected token/,()=>`Ada karakter yang tidak dikenali. Sering karena kutip miring (“ ”) hasil salin dari dokumen; ganti dengan kutip biasa " atau '.`],
+  [/missing \) after argument list/,()=>`Kurung tutup ) kurang saat memanggil fungsi, atau ada koma/kutip yang terlewat di antara argumen.`],
+  [/(\S+) is not iterable/,m=>`"${m[1]}" tidak bisa diulang dengan for...of atau spread (...). Pastikan nilainya array atau string.`],
+  [/Failed to fetch|NetworkError/,()=>`Permintaan ke server gagal. Periksa alamat URL dan koneksi internet.`],
+  [/Unexpected token .* in JSON|is not valid JSON|JSON\.parse/,()=>`Teks yang dibaca bukan JSON yang valid. Kunci dan teks di JSON wajib memakai kutip ganda.`]];
+const PYERR=[
+  [/NameError: name '([^']+)' is not defined/,m=>`Nama "${m[1]}" belum dibuat. Periksa ejaannya (huruf besar-kecil berpengaruh) atau buat dulu variabelnya sebelum dipakai.`],
+  [/IndentationError/,()=>`Indentasi (spasi di awal baris) tidak rapi. Isi blok setelah tanda titik dua (:) harus menjorok sama dalam, biasanya 4 spasi.`],
+  [/SyntaxError: (?:invalid syntax|expected ':')/,()=>`Penulisan kode tidak sesuai aturan Python. Periksa titik dua (:) setelah if/for/def, kurung, dan kutip di baris yang ditunjuk.`],
+  [/SyntaxError: unterminated string/,()=>`Teks belum ditutup. Pastikan kutip pembuka dan penutupnya sama.`],
+  [/SyntaxError: '\(' was never closed|SyntaxError: unexpected EOF/,()=>`Ada kurung yang belum ditutup.`],
+  [/TypeError: can only concatenate str \(not "(\w+)"\) to str/,m=>`Teks tidak bisa langsung digabung dengan ${m[1]}. Ubah dulu dengan str(...), atau pakai f-string seperti f"Total: {angka}".`],
+  [/TypeError: unsupported operand type/,()=>`Operasi ini tidak bisa dilakukan pada dua tipe data tersebut, misalnya teks ditambah angka. Samakan dulu tipenya dengan int(), float(), atau str().`],
+  [/ZeroDivisionError/,()=>`Pembagian dengan nol. Periksa dulu pembaginya dengan if sebelum membagi.`],
+  [/IndexError: list index out of range/,()=>`Indeks melewati panjang list. Ingat indeks dimulai dari 0, jadi indeks terakhir adalah len(data) - 1.`],
+  [/KeyError: (.+)/,m=>`Kunci ${m[1]} tidak ada di dictionary. Periksa ejaannya, atau pakai .get(kunci) yang mengembalikan None jika tidak ada.`],
+  [/ValueError: invalid literal for int\(\)/,()=>`Teks itu tidak bisa diubah menjadi angka bulat. Pastikan isinya hanya digit, atau pakai float() untuk angka desimal.`],
+  [/AttributeError: '(\w+)' object has no attribute '(\w+)'/,m=>`Tipe ${m[1]} tidak punya method atau atribut "${m[2]}". Periksa ejaannya atau tipe datanya.`],
+  [/ModuleNotFoundError: No module named '([^']+)'/,m=>`Modul "${m[1]}" tidak tersedia di sini. Di laptop, pasang dulu dengan pip install ${m[1]}.`]];
+const pyFriendly=msg=>{for(const [rx,f] of PYERR){const m=rx.exec(msg);if(m)return f(m)}return ''};
+function jsFriendly(msg){for(const [rx,f] of JSERR){const m=rx.exec(msg);if(m)return f(m)}return ''}
 
 /* ---------- jenis w: editor HTML/CSS/JS/React + pratinjau ---------- */
 const REACT_CDN=['https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js','https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js','https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js'];
@@ -170,7 +226,8 @@ function wireWeb(l,x){
   if(MSGH)removeEventListener('message',MSGH);
   MSGH=e=>{const d=e.data;if(!d||d.rk!==id)return;
     if(d.t==='test'){if(pending){pending(d.r);pending=null}return}
-    con.hidden=false;const line=document.createElement('div');line.className='lg-'+d.t;line.textContent=(d.t==='error'?'⚠ ':'')+d.s;log.appendChild(line);log.scrollTop=log.scrollHeight};
+    con.hidden=false;const line=document.createElement('div');line.className='lg-'+d.t;line.textContent=(d.t==='error'?'⚠ ':'')+d.s;log.appendChild(line);
+    const fr2=d.t==='error'&&jsFriendly(d.s);if(fr2){const h=document.createElement('div');h.className='lg-hint';h.textContent='💡 '+fr2;log.appendChild(h)}log.scrollTop=log.scrollHeight};
   addEventListener('message',MSGH);
   const ck=$('#wChk');if(ck)ck.onclick=()=>{const fb=$('#wFb');fb.innerHTML='<p class="muted">Memeriksa…</p>';
     const tm=setTimeout(()=>{if(pending){pending=null;fb.innerHTML='<div class="tk-fb bad"><b>Pratinjau tidak merespons.</b> Pastikan kodenya tidak error, lalu tekan Jalankan dan periksa lagi.</div>'}},2500);
