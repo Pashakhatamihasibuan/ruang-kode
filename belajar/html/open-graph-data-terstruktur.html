@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Open Graph &amp; data terstruktur · HTML · Ruang Kode</title>
+<meta name="description" content="Saat link dibagikan di WhatsApp atau media sosial, yang muncul adalah judul, deskripsi, dan gambar dari tag Open Graph (og:title, og:description,…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/html/open-graph-data-terstruktur">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Open Graph &amp; data terstruktur · HTML · Ruang Kode"><meta property="og:description" content="Saat link dibagikan di WhatsApp atau media sosial, yang muncul adalah judul, deskripsi, dan gambar dari tag Open Graph (og:title, og:description,…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/html/open-graph-data-terstruktur"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Open Graph & data terstruktur", "description": "Saat link dibagikan di WhatsApp atau media sosial, yang muncul adalah judul, deskripsi, dan gambar dari tag Open Graph (og:title, og:description,…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/html/open-graph-data-terstruktur", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "HTML", "url": "https://ruang-kode-nine.vercel.app/belajar/html"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "HTML", "item": "https://ruang-kode-nine.vercel.app/belajar/html"}, {"@type": "ListItem", "position": 3, "name": "Open Graph & data terstruktur", "item": "https://ruang-kode-nine.vercel.app/belajar/html/open-graph-data-terstruktur"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/html">HTML</a> / Modul 8</nav>
+<div class="eyebrow">HTML · Modul 8 · Konsep &amp; kode</div><h1>Open Graph &amp; data terstruktur</h1><a class="cta" href="/#html-8-4">Buka versi interaktif</a>
+<p>Saat link dibagikan di WhatsApp atau media sosial, yang muncul adalah judul, deskripsi, dan gambar dari tag <b>Open Graph</b> (<code>og:title</code>, <code>og:description</code>, <code>og:image</code>). Tanpa tag ini, pratinjau link sering kosong atau mengambil teks acak.</p>
+<p><b>Data terstruktur</b> dengan format JSON-LD dan kosakata schema.org menjelaskan isi halaman kepada mesin pencari: ini produk dengan harga sekian, ini artikel oleh penulis tertentu, ini kursus. Google memakainya untuk hasil penelusuran yang lebih kaya.</p>
+<p>Tambahkan juga <code>&lt;link rel="canonical"&gt;</code> agar halaman yang bisa diakses lewat beberapa URL dianggap satu halaman. Periksa hasilnya dengan Rich Results Test dari Google.</p>
+<div class="lbl">HTML</div><pre><code>&lt;head&gt;
+  &lt;title&gt;Kopi Gayo 250 g · Toko Nusantara&lt;/title&gt;
+  &lt;meta name=&quot;description&quot; content=&quot;Kopi arabika Gayo sangrai medium, 250 gram. Dikirim dari Aceh.&quot;&gt;
+  &lt;link rel=&quot;canonical&quot; href=&quot;https://toko.contoh.id/produk/kopi-gayo&quot;&gt;
+
+  &lt;meta property=&quot;og:type&quot; content=&quot;product&quot;&gt;
+  &lt;meta property=&quot;og:title&quot; content=&quot;Kopi Gayo 250 g&quot;&gt;
+  &lt;meta property=&quot;og:description&quot; content=&quot;Arabika Gayo sangrai medium. Rp85.000&quot;&gt;
+  &lt;meta property=&quot;og:image&quot; content=&quot;https://toko.contoh.id/img/kopi-gayo-1200x630.jpg&quot;&gt;
+
+  &lt;script type=&quot;application/ld+json&quot;&gt;
+  {
+    &quot;@context&quot;: &quot;https://schema.org&quot;,
+    &quot;@type&quot;: &quot;Product&quot;,
+    &quot;name&quot;: &quot;Kopi Gayo 250 g&quot;,
+    &quot;offers&quot;: { &quot;@type&quot;: &quot;Offer&quot;, &quot;price&quot;: 85000, &quot;priceCurrency&quot;: &quot;IDR&quot;,
+                &quot;availability&quot;: &quot;https://schema.org/InStock&quot; }
+  }
+  &lt;/script&gt;
+&lt;/head&gt;</code></pre>
+<h2>Poin penting</h2><ul><li>Open Graph mengatur pratinjau saat link dibagikan.</li><li>og:image ideal 1200×630 piksel.</li><li>JSON-LD + schema.org menjelaskan isi ke mesin pencari.</li><li>canonical menyatukan URL ganda.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Tag yang menentukan gambar pratinjau link di WhatsApp?</summary><p class="ok">Jawaban: og:image</p><p>Aplikasi chat membaca tag Open Graph.</p></details><details><summary>Apa fungsi link rel=&quot;canonical&quot;?</summary><p class="ok">Jawaban: Menunjuk URL utama agar halaman ganda dianggap satu</p><p>Mesin pencari menggabungkan sinyal ke URL kanonis.</p></details>
+<a class="cta" href="/#html-8-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/html/performa-keamanan-di-html">Performa &amp; keamanan di HTML</a></p><p>Berikutnya: <a href="/belajar/html/halaman-profil-portofolio">Halaman profil &amp; portofolio</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

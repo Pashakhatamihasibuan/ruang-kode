@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>details, summary &amp; dialog: interaksi tanpa JavaScript · HTML · Ruang Kode</title>
+<meta name="description" content="Beberapa interaksi umum sudah disediakan HTML. &lt;details&gt; dan &lt;summary&gt; membuat bagian yang bisa dibuka-tutup, misalnya FAQ, lengkap dengan dukungan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/html/details-summary-dialog-interaksi-tanpa-javascript">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="details, summary &amp; dialog: interaksi tanpa JavaScript · HTML · Ruang Kode"><meta property="og:description" content="Beberapa interaksi umum sudah disediakan HTML. &lt;details&gt; dan &lt;summary&gt; membuat bagian yang bisa dibuka-tutup, misalnya FAQ, lengkap dengan dukungan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/html/details-summary-dialog-interaksi-tanpa-javascript"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "details, summary & dialog: interaksi tanpa JavaScript", "description": "Beberapa interaksi umum sudah disediakan HTML. <details> dan <summary> membuat bagian yang bisa dibuka-tutup, misalnya FAQ, lengkap dengan dukungan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/html/details-summary-dialog-interaksi-tanpa-javascript", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "HTML", "url": "https://ruang-kode-nine.vercel.app/belajar/html"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "HTML", "item": "https://ruang-kode-nine.vercel.app/belajar/html"}, {"@type": "ListItem", "position": 3, "name": "details, summary & dialog: interaksi tanpa JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/html/details-summary-dialog-interaksi-tanpa-javascript"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/html">HTML</a> / Modul 2</nav>
+<div class="eyebrow">HTML · Modul 2 · Konsep &amp; kode</div><h1>details, summary &amp; dialog: interaksi tanpa JavaScript</h1><a class="cta" href="/#html-2-4">Buka versi interaktif</a>
+<p>Beberapa interaksi umum sudah disediakan HTML. <code>&lt;details&gt;</code> dan <code>&lt;summary&gt;</code> membuat bagian yang bisa dibuka-tutup, misalnya FAQ, lengkap dengan dukungan keyboard dan pembaca layar. Atribut <code>name</code> yang sama pada beberapa details membuatnya saling menutup seperti akordeon.</p>
+<p><code>&lt;dialog&gt;</code> membuat jendela modal. Dibuka dengan <code>showModal()</code>, ia otomatis berada di atas halaman, menutup dengan tombol Esc, dan menahan fokus di dalamnya. Form dengan <code>method="dialog"</code> di dalamnya menutup dialog saat dikirim.</p>
+<p>Atribut <code>popover</code> (didukung browser utama sejak 2024) membuat menu atau tooltip yang ditutup saat klik di luar, tanpa satu baris JavaScript pun.</p>
+<div class="lbl">HTML</div><pre><code>&lt;h2&gt;Pertanyaan umum&lt;/h2&gt;
+&lt;details name=&quot;faq&quot; open&gt;
+  &lt;summary&gt;Berapa lama pengiriman?&lt;/summary&gt;
+  &lt;p&gt;2 sampai 4 hari kerja untuk Pulau Jawa.&lt;/p&gt;
+&lt;/details&gt;
+&lt;details name=&quot;faq&quot;&gt;
+  &lt;summary&gt;Bisa bayar di tempat (COD)?&lt;/summary&gt;
+  &lt;p&gt;Bisa untuk pesanan di bawah Rp1.000.000.&lt;/p&gt;
+&lt;/details&gt;
+
+&lt;button popovertarget=&quot;menu-akun&quot;&gt;Akun ▾&lt;/button&gt;
+&lt;div id=&quot;menu-akun&quot; popover&gt;
+  &lt;a href=&quot;/pesanan&quot;&gt;Pesanan saya&lt;/a&gt;&lt;br&gt;
+  &lt;a href=&quot;/keluar&quot;&gt;Keluar&lt;/a&gt;
+&lt;/div&gt;
+
+&lt;button onclick=&quot;konfirmasi.showModal()&quot;&gt;Batalkan pesanan&lt;/button&gt;
+&lt;dialog id=&quot;konfirmasi&quot;&gt;
+  &lt;form method=&quot;dialog&quot;&gt;
+    &lt;p&gt;Yakin membatalkan pesanan #1024?&lt;/p&gt;
+    &lt;button value=&quot;tidak&quot;&gt;Kembali&lt;/button&gt;
+    &lt;button value=&quot;ya&quot;&gt;Ya, batalkan&lt;/button&gt;
+  &lt;/form&gt;
+&lt;/dialog&gt;</code></pre>
+<h2>Poin penting</h2><ul><li>details/summary: buka-tutup bawaan, aksesibel.</li><li>name yang sama: akordeon.</li><li>dialog + showModal(): modal dengan Esc dan fokus.</li><li>popover: menu yang ditutup saat klik di luar.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Elemen untuk FAQ yang bisa dibuka-tutup tanpa JavaScript?</summary><p class="ok">Jawaban: details dan summary</p><p>details menyediakan perilaku buka-tutup.</p></details><details><summary>Apa yang terjadi saat form method=&quot;dialog&quot; dikirim?</summary><p class="ok">Jawaban: Dialog tertutup</p><p>method=dialog menutup dialog induknya.</p></details>
+<a class="cta" href="/#html-2-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/html/kutipan-kode-karakter-khusus">Kutipan, kode &amp; karakter khusus</a></p><p>Berikutnya: <a href="/belajar/html/link">Link</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -34,6 +34,20 @@ HAVING COUNT(*) &gt;= 2;</code></pre>
 GROUP BY kategori HAVING AVG(harga) &gt; 50000;</code></pre>
 <div class="lbl">Salah: agregat di WHERE</div><pre><code>SELECT kategori FROM produk WHERE COUNT(*) &gt; 1 GROUP BY kategori;</code></pre>
 <h2>Tantangan</h2><ol><li>Tampilkan produk_id dan total jumlah terjual (alias total) untuk produk yang total terjualnya minimal 5, dari tabel detail_pesanan.</li></ol>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Menyaring hasil kelompok dengan HAVING</summary><p>Menyaring hasil <code>GROUP BY</code> tidak perlu subquery. <code>HAVING</code> bekerja setelah pengelompokan, sedangkan <code>WHERE</code> sebelum pengelompokan.</p><div class="lbl">KODE PEMULA</div><pre><code>SELECT * FROM (
+  SELECT kategori, COUNT(*) AS jumlah
+  FROM produk
+  GROUP BY kategori
+) AS r
+WHERE jumlah &gt;= 3
+ORDER BY kategori;</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>SELECT kategori, COUNT(*) AS jumlah
+FROM produk
+GROUP BY kategori
+HAVING COUNT(*) &gt;= 3
+ORDER BY kategori;</code></pre><div class="lbl">KELUARAN KEDUANYA</div><pre><code>kategori | jumlah
+---------+-------
+Camilan  | 3
+Minuman  | 3</code></pre></details>
 <h2>Poin penting</h2><ul><li>WHERE menyaring baris, HAVING menyaring kelompok.</li><li>HAVING boleh memakai agregat.</li><li>Urutan: WHERE → GROUP BY → HAVING.</li><li>Saring sedini mungkin dengan WHERE.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Untuk &quot;kategori yang punya lebih dari 2 produk&quot; pakai?</summary><p class="ok">Jawaban: HAVING COUNT(*) &gt; 2</p><p>Syarat atas kelompok memakai HAVING.</p></details><details><summary>Mana yang dijalankan lebih dulu?</summary><p class="ok">Jawaban: WHERE</p><p>WHERE sebelum GROUP BY, HAVING sesudahnya.</p></details>
 <a class="cta" href="/#sql-5-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/group-by">GROUP BY</a></p><p>Berikutnya: <a href="/belajar/sql/proyek-mini-ringkasan-stok-gudang">Proyek mini: Ringkasan stok gudang</a></p>

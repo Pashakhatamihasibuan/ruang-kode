@@ -36,6 +36,8 @@ $ curl -s https://api.contoh.id/health
 {&quot;status&quot;:&quot;ok&quot;}
 # crontab: jalankan ekspor setiap hari 02.00
 0 2 * * * /opt/etl/ekspor.sh &gt;&gt; /var/log/etl.log 2&gt;&amp;1</code></pre>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Satu perintah lebih baik dari rantai cat</summary><p><code>grep</code> bisa membaca file sendiri dan menghitung baris yang cocok dengan <code>-c</code>, jadi <code>cat</code> dan <code>wc</code> tidak perlu. <code>awk</code> bisa menjumlah kolom CSV tanpa membuka spreadsheet.</p><div class="lbl">KODE PEMULA</div><pre><code>cat penjualan.csv | grep Medan | wc -l</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>grep -c Medan penjualan.csv
+awk -F, &#x27;$2 == &quot;Medan&quot; { total += $3 } END { print total }&#x27; penjualan.csv</code></pre></details>
 <h2>Poin penting</h2><ul><li>head, tail, wc, grep, cut, sort, uniq, pipa.</li><li>curl, ssh, port, DNS.</li><li>cron untuk jadwal sederhana.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Perintah untuk menghitung baris berkas 5 GB tanpa membukanya?</summary><p class="ok">Jawaban: wc -l</p><p>wc membaca berkas secara stream.</p></details>
 <a class="cta" href="/#de-2-7">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/de/data-engineer-analyst-scientist">Data engineer, analyst &amp; scientist</a></p><p>Berikutnya: <a href="/belajar/de/dasar-sistem-terdistribusi">Dasar sistem terdistribusi</a></p>

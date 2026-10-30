@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ikon, ilustrasi &amp; motion yang konsisten · Design System · Ruang Kode</title>
+<meta name="description" content="Bahasa desain tidak berhenti di warna dan huruf. Ikon perlu satu gaya: ukuran grid sama (misalnya 24×24), ketebalan garis sama, sudut sama. Mencampur…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/ds/ikon-ilustrasi-motion-yang-konsisten">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Ikon, ilustrasi &amp; motion yang konsisten · Design System · Ruang Kode"><meta property="og:description" content="Bahasa desain tidak berhenti di warna dan huruf. Ikon perlu satu gaya: ukuran grid sama (misalnya 24×24), ketebalan garis sama, sudut sama. Mencampur…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/ds/ikon-ilustrasi-motion-yang-konsisten"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Ikon, ilustrasi & motion yang konsisten", "description": "Bahasa desain tidak berhenti di warna dan huruf. Ikon perlu satu gaya: ukuran grid sama (misalnya 24×24), ketebalan garis sama, sudut sama. Mencampur…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/ds/ikon-ilustrasi-motion-yang-konsisten", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Design System", "url": "https://ruang-kode-nine.vercel.app/belajar/ds"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Design System", "item": "https://ruang-kode-nine.vercel.app/belajar/ds"}, {"@type": "ListItem", "position": 3, "name": "Ikon, ilustrasi & motion yang konsisten", "item": "https://ruang-kode-nine.vercel.app/belajar/ds/ikon-ilustrasi-motion-yang-konsisten"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/ds">Design System</a> / Modul 3</nav>
+<div class="eyebrow">Design System · Modul 3 · Konsep &amp; kode</div><h1>Ikon, ilustrasi &amp; motion yang konsisten</h1><a class="cta" href="/#ds-3-2">Buka versi interaktif</a>
+<p>Bahasa desain tidak berhenti di warna dan huruf. <b>Ikon</b> perlu satu gaya: ukuran grid sama (misalnya 24×24), ketebalan garis sama, sudut sama. Mencampur ikon garis dan ikon terisi dari pustaka berbeda langsung terlihat tidak rapi.</p>
+<p><b>Ilustrasi</b> perlu aturan palet, proporsi tokoh, dan kapan dipakai (biasanya empty state dan onboarding, bukan di setiap layar). <b>Motion</b> juga bagian bahasa: durasi standar (misalnya 150 ms untuk hover, 250 ms untuk panel), kurva easing, dan arah gerak yang sama.</p>
+<p>Semua ini dibakukan sebagai token dan pedoman. Hormati <code>prefers-reduced-motion</code> agar pengguna yang sensitif terhadap gerakan tidak terganggu.</p>
+<div class="lbl">CSS</div><pre><code>:root {
+  --icon-size-sm: 16px;
+  --icon-size-md: 24px;
+  --icon-stroke: 1.75;
+
+  --motion-duration-fast: 150ms;   /* hover, fokus */
+  --motion-duration-base: 250ms;   /* panel, dropdown */
+  --motion-easing-standard: cubic-bezier(.2, 0, 0, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --motion-duration-fast: 0ms; --motion-duration-base: 0ms; }
+}
+
+.dropdown { transition: opacity var(--motion-duration-base) var(--motion-easing-standard); }</code></pre>
+<h2>Poin penting</h2><ul><li>Ikon: satu grid, satu ketebalan garis, satu gaya.</li><li>Ilustrasi punya aturan kapan dipakai.</li><li>Motion dibakukan sebagai token durasi dan easing.</li><li>Hormati prefers-reduced-motion.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa mencampur ikon dari beberapa pustaka bermasalah?</summary><p class="ok">Jawaban: Ketebalan garis dan gayanya berbeda sehingga terlihat tidak konsisten</p><p>Konsistensi visual adalah inti bahasa desain.</p></details><details><summary>Apa fungsi token durasi motion?</summary><p class="ok">Jawaban: Menyamakan kecepatan animasi di semua komponen</p><p>Durasi yang sama membuat gerak terasa satu sistem.</p></details>
+<a class="cta" href="/#ds-3-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/ds/prinsip-desain-tone-of-voice">Prinsip desain &amp; tone of voice</a></p><p>Berikutnya: <a href="/belajar/ds/token-primitif-semantik-komponen">Token: primitif, semantik, komponen</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

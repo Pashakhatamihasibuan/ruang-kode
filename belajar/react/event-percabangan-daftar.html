@@ -49,6 +49,11 @@ function App() {
   );
 }</code></pre>
 <h2>Tantangan</h2><ol><li>Centang "Hanya yang tersedia" sehingga produk habis tidak tampil.</li></ol>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Gunakan id sebagai key, bukan index</summary><p>Kalau daftar diurutkan ulang atau ada yang dihapus, key berbasis index membuat React memasangkan state ke baris yang salah, misalnya isi input pindah ke produk lain. Pakai id yang unik dan stabil.</p><div class="lbl">KODE PEMULA</div><pre><code>{produk.map((p, i) =&gt; (
+  &lt;li key={i}&gt;{p.nama}&lt;/li&gt;
+))}</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>{produk.map((p) =&gt; (
+  &lt;li key={p.id}&gt;{p.nama}&lt;/li&gt;
+))}</code></pre></details>
 <h2>Poin penting</h2><ul><li>Event camelCase, berisi fungsi.</li><li>Percabangan dengan ternary atau &&.</li><li>Daftar dengan map dan key unik yang stabil.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Prop key sebaiknya berisi?</summary><p class="ok">Jawaban: id unik dari data</p><p>key membantu React mengenali elemen antar-render.</p></details>
 <a class="cta" href="/#react-1-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/react/state-dengan-usestate">State dengan useState</a></p><p>Berikutnya: <a href="/belajar/react/useeffect-siklus-hidup">useEffect &amp; siklus hidup</a></p>

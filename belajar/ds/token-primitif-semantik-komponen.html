@@ -33,9 +33,19 @@
     &quot;primary&quot;: { &quot;bg&quot;: { &quot;$value&quot;: &quot;{color.action.primary}&quot; } }
   }
 }</code></pre>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Komponen memakai token semantik, bukan kode warna</summary><p>Kode heksa di dalam komponen harus dicari satu per satu saat brand berganti warna. Token semantik menyebut perannya, sehingga perubahan cukup di satu tempat dan mode gelap tinggal mengganti nilai token.</p><div class="lbl">KODE PEMULA</div><pre><code>.tombol-utama { background: #2563EB; color: #FFFFFF; }
+.tombol-utama:hover { background: #1D4ED8; }</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>:root {
+  --blue-600: #2563EB;  /* primitif */
+  --blue-700: #1D4ED8;
+  --color-action-primary: var(--blue-600);        /* semantik */
+  --color-action-primary-hover: var(--blue-700);
+  --color-on-action: #FFFFFF;
+}
+.tombol-utama { background: var(--color-action-primary); color: var(--color-on-action); }
+.tombol-utama:hover { background: var(--color-action-primary-hover); }</code></pre></details>
 <h2>Poin penting</h2><ul><li>Token = keputusan desain bernama.</li><li>Primitif → semantik → komponen.</li><li>Nama menurut peran: color.text.default, bukan gray900.</li><li>Format DTCG untuk pertukaran antar alat.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Nama token mana yang semantik?</summary><p class="ok">Jawaban: color.action.primary</p><p>Menjelaskan peran, bukan nilai.</p></details><details><summary>Saat membuat tema gelap, lapis mana yang berubah paling banyak?</summary><p class="ok">Jawaban: Pemetaan semantik ke primitif</p><p>Peran sama, nilai berbeda.</p></details>
-<a class="cta" href="/#ds-4-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/ds/prinsip-desain-tone-of-voice">Prinsip desain &amp; tone of voice</a></p><p>Berikutnya: <a href="/belajar/ds/warna-fungsional-kontras">Warna fungsional &amp; kontras</a></p>
+<a class="cta" href="/#ds-4-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/ds/ikon-ilustrasi-motion-yang-konsisten">Ikon, ilustrasi &amp; motion yang konsisten</a></p><p>Berikutnya: <a href="/belajar/ds/warna-fungsional-kontras">Warna fungsional &amp; kontras</a></p>
 </main>
 <footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
 </body>

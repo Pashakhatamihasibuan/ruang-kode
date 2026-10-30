@@ -72,6 +72,22 @@ Produk(nama=&#x27;Kopi Gayo&#x27;, harga=85000, tag=[])
 True
 FrozenInstanceError
 </code></pre>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Kelas data dengan @dataclass</summary><p><code>@dataclass</code> membuat <code>__init__</code>, <code>__repr__</code>, dan <code>__eq__</code> otomatis dari daftar field.</p><div class="lbl">KODE PEMULA</div><pre><code>class Produk:
+    def __init__(self, nama, harga):
+        self.nama = nama
+        self.harga = harga
+
+    def __repr__(self):
+        return f&quot;Produk(nama={self.nama!r}, harga={self.harga!r})&quot;
+
+print(Produk(&quot;Kopi Gayo&quot;, 85000))</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>from dataclasses import dataclass
+
+@dataclass
+class Produk:
+    nama: str
+    harga: int
+
+print(Produk(&quot;Kopi Gayo&quot;, 85_000))</code></pre><div class="lbl">KELUARAN KEDUANYA</div><pre><code>Produk(nama=&#x27;Kopi Gayo&#x27;, harga=85000)</code></pre></details>
 <h2>Poin penting</h2><ul><li><code>_nama</code> = konvensi internal.</li><li><code>@property</code> + setter untuk validasi.</li><li><code>@dataclass</code> mengurangi kode boilerplate.</li><li><code>frozen=True</code> membuat objek immutable.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Apa yang dibuat otomatis oleh @dataclass?</summary><p class="ok">Jawaban: __init__, __repr__, __eq__</p><p>Ketiganya dibuat dari anotasi field.</p></details><details><summary>Arti garis bawah di depan nama atribut (&lt;code&gt;_saldo&lt;/code&gt;)?</summary><p class="ok">Jawaban: Konvensi: internal, jangan diakses dari luar</p><p>Python mengandalkan kesepakatan.</p></details>
 <a class="cta" href="/#python-7-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/method-enkapsulasi">Method &amp; enkapsulasi</a></p><p>Berikutnya: <a href="/belajar/python/dunder-method-membuat-objek-terasa-bawaan">Dunder method: membuat objek terasa bawaan</a></p>

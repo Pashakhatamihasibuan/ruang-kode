@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>:has(): selector induk &amp; nesting · CSS · Ruang Kode</title>
+<meta name="description" content="Selama bertahun-tahun CSS tidak bisa memilih elemen berdasarkan isinya. :has() mengubah itu: .kartu:has(img) memilih kartu yang berisi gambar, dan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/css/has-selector-induk-nesting">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content=":has(): selector induk &amp; nesting · CSS · Ruang Kode"><meta property="og:description" content="Selama bertahun-tahun CSS tidak bisa memilih elemen berdasarkan isinya. :has() mengubah itu: .kartu:has(img) memilih kartu yang berisi gambar, dan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/css/has-selector-induk-nesting"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": ":has(): selector induk & nesting", "description": "Selama bertahun-tahun CSS tidak bisa memilih elemen berdasarkan isinya. :has() mengubah itu: .kartu:has(img) memilih kartu yang berisi gambar, dan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/css/has-selector-induk-nesting", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "CSS", "url": "https://ruang-kode-nine.vercel.app/belajar/css"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "CSS", "item": "https://ruang-kode-nine.vercel.app/belajar/css"}, {"@type": "ListItem", "position": 3, "name": ":has(): selector induk & nesting", "item": "https://ruang-kode-nine.vercel.app/belajar/css/has-selector-induk-nesting"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/css">CSS</a> / Modul 7</nav>
+<div class="eyebrow">CSS · Modul 7 · Konsep &amp; kode</div><h1>:has(): selector induk &amp; nesting</h1><a class="cta" href="/#css-7-3">Buka versi interaktif</a>
+<p>Selama bertahun-tahun CSS tidak bisa memilih elemen <b>berdasarkan isinya</b>. <code>:has()</code> mengubah itu: <code>.kartu:has(img)</code> memilih kartu yang berisi gambar, dan <code>form:has(:invalid)</code> memilih form yang masih punya isian salah.</p>
+<p>Ini membuat banyak JavaScript kecil tidak diperlukan lagi, misalnya menandai label saat checkbox di dalamnya dicentang. Hati-hati memakai <code>:has()</code> pada elemen yang sangat umum seperti <code>body</code>, karena browser harus memeriksa ulang saat isinya berubah.</p>
+<p>CSS kini juga mendukung <b>nesting</b> tanpa Sass: aturan untuk anak elemen ditulis di dalam blok induknya, dan <code>&amp;</code> merujuk induk itu sendiri.</p>
+<div class="lbl">CSS</div><pre><code>/* kartu dengan gambar memakai tata letak dua kolom */
+.kartu:has(img) { display: grid; grid-template-columns: 120px 1fr; gap: 12px; }
+
+/* tombol kirim redup selama ada isian yang salah */
+form:has(:invalid) button[type=&quot;submit&quot;] { opacity: .5; }
+
+/* label ikut tersorot saat pilihannya dicentang */
+.pilihan:has(input:checked) { border-color: var(--brand); background: var(--brand-soft); }
+
+/* nesting bawaan CSS */
+.menu {
+  display: flex;
+  &amp; a { padding: 8px 12px; }
+  &amp; a:hover { text-decoration: underline; }
+}</code></pre>
+<h2>Poin penting</h2><ul><li>:has() memilih elemen berdasarkan isinya.</li><li>Mengganti JavaScript kecil untuk status visual.</li><li>Hindari :has() pada elemen sangat umum.</li><li>Nesting bawaan dengan & tanpa Sass.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Selector untuk kartu yang berisi gambar?</summary><p class="ok">Jawaban: .kartu:has(img)</p><p>.kartu img memilih gambarnya, bukan kartunya.</p></details><details><summary>Dalam nesting CSS, &amp; merujuk ke?</summary><p class="ok">Jawaban: Selector induk</p><p>&amp; menggantikan selector blok induknya.</p></details>
+<a class="cta" href="/#css-7-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/css/transform-transisi-animasi">Transform, transisi &amp; animasi</a></p><p>Berikutnya: <a href="/belajar/css/variabel-css-tema">Variabel CSS &amp; tema</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

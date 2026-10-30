@@ -46,7 +46,14 @@ function wireLesson(x){
 }
 function toggleOutline(o){const ol=$('#outline');o=o??!ol.classList.contains('open');ol.classList.toggle('open',o);$('#scrim').classList.toggle('open',o);const b=$('#olBtn');if(b)b.setAttribute('aria-expanded',o)}
 const vizHTML=(l,hint)=>l.viz&&VIZ2[l.viz]?`<section class="viz" id="lab"><div class="viz-head"><span class="eyebrow">Visual interaktif</span><h3>${VIZ2T[l.viz]}</h3>${hint?`<p>${hint}</p>`:''}</div><div id="vizHost" class="vizhost"></div></section>`:'';
-const ptsHTML=l=>l.pts&&l.pts.length?`<section class="section"><h2>Poin penting</h2><ul class="points">${l.pts.map(p=>`<li>${p}</li>`).join('')}</ul></section>`:'';
+/* kode pemula vs kode rapi: tersembunyi sampai dibuka, agar siswa sempat menebak dulu */
+const proHTML=l=>l.pro&&l.pro.length?`<section class="section pro-sec" id="pro"><div class="sec-h row"><h2>Kode pemula vs kode rapi</h2><button class="tlink" data-proall aria-expanded="false">Buka semua</button></div>
+  <p class="muted">Dua cara menulis hal yang sama. Coba tebak dulu apa kelebihan versi rapi, lalu buka untuk membandingkan.</p>
+  ${l.pro.map(p=>{const lang=p.lang,o=p.out!=null?`<div class="pro-out"><div class="eyebrow">Keluaran keduanya sama</div><pre class="out">${esc(p.out)}</pre></div>`
+    :p.outA!=null?`<div class="pro-out two"><div><div class="eyebrow">Keluaran kode pemula</div><pre class="out">${esc(p.outA)}</pre></div><div><div class="eyebrow">Keluaran kode rapi</div><pre class="out">${esc(p.outB)}</pre></div></div>`:'';
+   return `<details class="pro"><summary><span class="pro-tag">${esc(p.tag)}</span><b>${esc(p.t)}</b></summary><div class="pro-in">
+    <div class="pro-grid"><div class="pro-a">${pane(lang,p.a,{label:'✗ KODE PEMULA'})}</div><div class="pro-b">${pane(lang,p.b,{label:'✓ KODE RAPI'})}</div></div>${o}<p class="pro-why">${p.why}</p></div></details>`}).join('')}</section>`:'';
+const ptsHTML=l=>proHTML(l)+(l.pts&&l.pts.length?`<section class="section"><h2>Poin penting</h2><ul class="points">${l.pts.map(p=>`<li>${p}</li>`).join('')}</ul></section>`:'');
 const qHTML=l=>(l.q||[]).length?`<section class="section" id="quiz"><h2>Cek pemahaman</h2>${quizHTML(l.q.map(normQ),l.t.length)}</section>`:'';
 const wireQ=l=>{const q=$('#quiz');if(q)wireQuiz(q,l.q.map(normQ))};
 
@@ -73,7 +80,7 @@ function conceptHTML(l,t){
    ${py?`<div class="pane python"><div class="pane-h"><span>PYTHON · bisa diedit</span><button class="copy" data-copyed>Salin</button></div>${editorHTML('pyEd',l.code,'Editor Python','python')}</div>`:pane(lang,l.code)}
    ${l.out!=null?(l.run===false?`<div><div class="eyebrow">Contoh keluaran</div><div class="console">${esc(l.out)}</div></div>`
      :`<details class="guess" id="guess"><summary>🤔 Tebak keluarannya dulu sebelum menjalankan</summary><textarea class="bk" id="gIn" placeholder="Tulis keluaran yang kamu perkirakan, satu baris per baris"></textarea><div class="sl-act"><button class="btn" id="gChk">Periksa tebakan</button></div><div id="gFb" aria-live="polite"></div></details>
-      <div class="runbox"><button class="btn primary" id="runBtn">▶ Jalankan</button>${py?'<button class="btn" id="pyReset">Kembalikan kode</button>':''}<span class="rb-hint">${py?'Ubah kodenya lalu jalankan. Kode asli menampilkan keluaran yang sudah diuji; kode yang diubah dijalankan dengan Python di browser (Pyodide).':`Keluaran kode ini sudah diuji dengan ${lang==='java'?'Java 21':lang==='ts'?'Node 22 (TypeScript)':'Python 3.13'}.`}</span></div><div class="console run" id="runOut" hidden></div>`):''}</section>`:''}
+      <div class="runbox"><button class="btn primary" id="runBtn">▶ Jalankan</button>${py?'<button class="btn" id="pyReset">Kembalikan kode</button>':''}<span class="rb-hint">${py?'Ubah kodenya lalu jalankan. Kode asli menampilkan keluaran yang sudah diuji; kode yang diubah dijalankan dengan Python di browser (Pyodide).':`Keluaran kode ini sudah diuji dengan ${({java:'Java 21',ts:'Node 22 (TypeScript)',js:'Node 22',sql:'mesin SQL Ruang Kode',bash:'Bash'})[lang]||'Python 3.13'}.`}</span></div><div class="console run" id="runOut" hidden></div>`):''}</section>`:''}
   ${ptsHTML(l)}${qHTML(l)}`;
 }
 let PY=null,PYFAIL=false;

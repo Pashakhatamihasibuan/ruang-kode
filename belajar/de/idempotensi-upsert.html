@@ -39,6 +39,18 @@ print(&quot;naif:&quot;, con.execute(&quot;SELECT COUNT(*), SUM(total) FROM naif
 print(&quot;aman:&quot;, con.execute(&quot;SELECT COUNT(*), SUM(total) FROM aman&quot;).fetchone())</code></pre>
 <div class="lbl">KELUARAN</div><pre><code>naif: (4, 1010000)
 aman: (2, 505000)</code></pre>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Upsert agar pipeline aman dijalankan ulang</summary><p>Pipeline yang gagal di tengah sering dijalankan ulang. <code>INSERT</code> biasa menghasilkan baris ganda, sedangkan <code>INSERT ... ON CONFLICT DO UPDATE</code> (PostgreSQL, SQLite) memperbarui baris yang sudah ada, sehingga hasilnya sama berapa kali pun dijalankan.</p><div class="lbl">KODE PEMULA</div><pre><code>import sqlite3
+db = sqlite3.connect(&quot;:memory:&quot;)
+db.execute(&quot;CREATE TABLE stok (sku TEXT, jumlah INT)&quot;)
+for _ in range(2):  # pipeline dijalankan dua kali
+    db.execute(&quot;INSERT INTO stok VALUES (&#x27;KOPI-01&#x27;, 40)&quot;)
+print(db.execute(&quot;SELECT * FROM stok&quot;).fetchall())</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>import sqlite3
+db = sqlite3.connect(&quot;:memory:&quot;)
+db.execute(&quot;CREATE TABLE stok (sku TEXT PRIMARY KEY, jumlah INT)&quot;)
+for _ in range(2):  # pipeline dijalankan dua kali
+    db.execute(&quot;&quot;&quot;INSERT INTO stok VALUES (&#x27;KOPI-01&#x27;, 40)
+                  ON CONFLICT(sku) DO UPDATE SET jumlah = excluded.jumlah&quot;&quot;&quot;)
+print(db.execute(&quot;SELECT * FROM stok&quot;).fetchall())</code></pre></details>
 <h2>Poin penting</h2><ul><li>Idempoten = aman dijalankan ulang.</li><li>Upsert, timpa partisi, kunci deduplikasi.</li><li>Uji dengan menjalankan pipeline dua kali.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa idempotensi penting?</summary><p class="ok">Jawaban: Pipeline sering dijalankan ulang setelah gagal</p><p>Tanpa itu, data ganda.</p></details>
 <a class="cta" href="/#de-5-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/de/batch-streaming-hybrid">Batch, streaming &amp; hybrid</a></p><p>Berikutnya: <a href="/belajar/de/orkestrasi-dengan-airflow">Orkestrasi dengan Airflow</a></p>

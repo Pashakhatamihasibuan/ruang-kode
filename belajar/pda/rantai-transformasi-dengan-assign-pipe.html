@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rantai transformasi dengan assign &amp; pipe · Python Analisis Data · Ruang Kode</title>
+<meta name="description" content="Kode analisis sering penuh variabel sementara: df2, df3, df_final. Method chaining menyusun langkah-langkah sebagai satu rangkaian yang dibaca dari atas…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/pda/rantai-transformasi-dengan-assign-pipe">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Rantai transformasi dengan assign &amp; pipe · Python Analisis Data · Ruang Kode"><meta property="og:description" content="Kode analisis sering penuh variabel sementara: df2, df3, df_final. Method chaining menyusun langkah-langkah sebagai satu rangkaian yang dibaca dari atas…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/pda/rantai-transformasi-dengan-assign-pipe"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Rantai transformasi dengan assign & pipe", "description": "Kode analisis sering penuh variabel sementara: df2, df3, df_final. Method chaining menyusun langkah-langkah sebagai satu rangkaian yang dibaca dari atas…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/pda/rantai-transformasi-dengan-assign-pipe", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Python Analisis Data", "url": "https://ruang-kode-nine.vercel.app/belajar/pda"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Python Analisis Data", "item": "https://ruang-kode-nine.vercel.app/belajar/pda"}, {"@type": "ListItem", "position": 3, "name": "Rantai transformasi dengan assign & pipe", "item": "https://ruang-kode-nine.vercel.app/belajar/pda/rantai-transformasi-dengan-assign-pipe"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/pda">Python Analisis Data</a> / Modul 6</nav>
+<div class="eyebrow">Python Analisis Data · Modul 6 · Konsep &amp; kode</div><h1>Rantai transformasi dengan assign &amp; pipe</h1><a class="cta" href="/#pda-6-4">Buka versi interaktif</a>
+<p>Kode analisis sering penuh variabel sementara: <code>df2</code>, <code>df3</code>, <code>df_final</code>. <b>Method chaining</b> menyusun langkah-langkah sebagai satu rangkaian yang dibaca dari atas ke bawah, dibungkus tanda kurung.</p>
+<p><code>assign</code> menambah kolom baru tanpa mengubah DataFrame asli, dan bisa menerima lambda yang merujuk kolom hasil langkah sebelumnya. <code>query</code> menyaring dengan teks yang mudah dibaca, dan <code>pipe</code> menyisipkan fungsi buatan sendiri ke dalam rantai.</p>
+<p>Rantai yang terlalu panjang juga sulit dibaca. Pecah menjadi fungsi bernama bila lebih dari 6 sampai 8 langkah.</p>
+<div class="lbl">PYTHON</div><pre><code>import pandas as pd
+pesanan = pd.DataFrame({
+    &quot;kota&quot;: [&quot;Medan&quot;, &quot;Bandung&quot;, &quot;Medan&quot;, &quot;Ambon&quot;, &quot;Bandung&quot;, &quot;Medan&quot;],
+    &quot;harga&quot;: [85000, 25000, 25000, 85000, 85000, 18000],
+    &quot;qty&quot;: [2, 4, 1, 3, 1, 5],
+})
+
+def tandai_besar(df, batas):
+    return df.assign(besar=df[&quot;total&quot;] &gt;= batas)
+
+ringkas = (
+    pesanan
+    .assign(total=lambda d: d[&quot;harga&quot;] * d[&quot;qty&quot;])
+    .query(&quot;qty &gt;= 2&quot;)
+    .pipe(tandai_besar, batas=150_000)
+    .groupby(&quot;kota&quot;, as_index=False)[&quot;total&quot;].sum()
+    .sort_values(&quot;total&quot;, ascending=False)
+)
+print(ringkas.to_string(index=False))</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>   kota  total
+  Medan 260000
+  Ambon 255000
+Bandung 100000</code></pre>
+<h2>Poin penting</h2><ul><li>Method chaining: langkah dibaca dari atas ke bawah.</li><li>assign menambah kolom tanpa mengubah aslinya.</li><li>query untuk filter yang mudah dibaca.</li><li>pipe menyisipkan fungsi sendiri.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa assign memakai lambda d: d[&quot;harga&quot;] * d[&quot;qty&quot;]?</summary><p class="ok">Jawaban: Agar merujuk DataFrame pada langkah itu di dalam rantai</p><p>Lambda menerima DataFrame hasil langkah sebelumnya.</p></details><details><summary>Fungsi untuk menyisipkan fungsi buatan sendiri ke rantai?</summary><p class="ok">Jawaban: pipe</p><p>pipe(f, ...) memanggil f(df, ...).</p></details>
+<a class="cta" href="/#pda-6-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pda/pivot-table-crosstab-melt">pivot_table, crosstab &amp; melt</a></p><p>Berikutnya: <a href="/belajar/pda/pemusatan-sebaran">Pemusatan &amp; sebaran</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

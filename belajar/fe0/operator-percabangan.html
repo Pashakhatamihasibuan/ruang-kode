@@ -42,6 +42,13 @@ console.log(&quot;0&quot; == 0, &quot;0&quot; === 0);
 const kupon = null;
 console.log(kupon ?? &quot;tanpa kupon&quot;);</code></pre>
 <h2>Tantangan</h2><ol><li>Ubah total menjadi 80000 dan pastikan konsol mencetak "Ongkir: 5000".</li></ol>
+<h2>Kode pemula vs kode rapi</h2><details><summary>|| dan ?? berbeda saat nilainya 0</summary><p><code>||</code> menganggap <code>0</code> dan <code>""</code> sebagai kosong, sehingga stok 0 malah diganti 10. <code>??</code> hanya mengganti <code>null</code> dan <code>undefined</code>. Gunakan juga <code>===</code>, bukan <code>==</code>, agar <code>0 == ""</code> tidak dianggap sama.</p><div class="lbl">KODE PEMULA</div><pre><code>const stok = 0;
+const tampil = stok || 10;
+console.log(tampil);
+console.log(0 == &quot;&quot;);</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>const stok = 0;
+const tampil = stok ?? 10;
+console.log(tampil);
+console.log(0 === &quot;&quot;);</code></pre></details>
 <h2>Poin penting</h2><ul><li>Pakai === dan !==, hindari ==.</li><li>Ternary untuk pilihan singkat.</li><li>?? memberi cadangan untuk null/undefined.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>&quot;0&quot; === 0 bernilai?</summary><p class="ok">Jawaban: false</p><p>=== juga membandingkan tipe.</p></details>
 <a class="cta" href="/#fe0-4-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe0/variabel-tipe-data">Variabel &amp; tipe data</a></p><p>Berikutnya: <a href="/belajar/fe0/fungsi">Fungsi</a></p>

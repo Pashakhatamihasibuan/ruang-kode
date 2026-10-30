@@ -41,6 +41,12 @@ function App() {
     &lt;/div&gt;
   );
 }</code></pre>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Nilai turunan tidak perlu state dan effect</summary><p>Total yang bisa dihitung dari state lain cukup dihitung saat render. Menyimpannya di state lalu menyinkronkan dengan <code>useEffect</code> menambah satu render ekstra dan rawan tidak sinkron.</p><div class="lbl">KODE PEMULA</div><pre><code>const [keranjang, setKeranjang] = useState([]);
+const [total, setTotal] = useState(0);
+useEffect(() =&gt; {
+  setTotal(keranjang.reduce((t, b) =&gt; t + b.harga, 0));
+}, [keranjang]);</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>const [keranjang, setKeranjang] = useState([]);
+const total = keranjang.reduce((t, b) =&gt; t + b.harga, 0);</code></pre></details>
 <h2>Poin penting</h2><ul><li>useEffect untuk efek samping setelah render.</li><li>[] sekali, [x] setiap x berubah, tanpa array setiap render.</li><li>Kembalikan cleanup untuk timer dan langganan.</li><li>Nilai turunan dihitung saat render, bukan lewat efek.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>useEffect(fn, []) dijalankan?</summary><p class="ok">Jawaban: Sekali setelah render pertama</p><p>Dependensi kosong berarti tidak ada yang ditunggu berubah.</p></details>
 <a class="cta" href="/#react-2-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/react/event-percabangan-daftar">Event, percabangan &amp; daftar</a></p><p>Berikutnya: <a href="/belajar/react/useref-usememo-usecallback">useRef, useMemo &amp; useCallback</a></p>

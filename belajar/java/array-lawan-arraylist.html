@@ -53,6 +53,12 @@ public class Banding {
 10 true
 List.of tidak bisa diubah
 </code></pre>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Daftar tetap cukup dengan List.of</summary><p><code>List.of</code> (Java 9) membuat daftar dalam satu baris. Daftarnya tidak bisa diubah, sehingga aman dibagikan ke bagian program lain. Kalau perlu menambah isi, bungkus dengan <code>new ArrayList&lt;&gt;(List.of(...))</code>.</p><div class="lbl">KODE PEMULA</div><pre><code>ArrayList&lt;String&gt; kota = new ArrayList&lt;String&gt;();
+kota.add(&quot;Medan&quot;);
+kota.add(&quot;Bandung&quot;);
+kota.add(&quot;Makassar&quot;);
+System.out.println(kota);</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>var kota = List.of(&quot;Medan&quot;, &quot;Bandung&quot;, &quot;Makassar&quot;);
+System.out.println(kota);</code></pre><div class="lbl">KELUARAN KEDUANYA</div><pre><code>[Medan, Bandung, Makassar]</code></pre></details>
 <h2>Poin penting</h2><ul><li>Array: ukuran tetap, <code>length</code>, bisa primitif.</li><li>ArrayList: ukuran dinamis, <code>size()</code>, hanya objek.</li><li><code>List.of(...)</code> membuat list immutable.</li><li>Tulis tipe variabel sebagai interface: <code>List&lt;T&gt; x = new ArrayList&lt;&gt;()</code>.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Cara mendapat jumlah elemen ArrayList?</summary><p class="ok">Jawaban: list.size()</p><p>ArrayList memakai method size().</p></details><details><summary>Bisakah &lt;code&gt;ArrayList&amp;lt;int&amp;gt;&lt;/code&gt;?</summary><p class="ok">Jawaban: Tidak, pakai ArrayList&lt;Integer&gt;</p><p>Generics hanya menerima tipe objek.</p></details>
 <a class="cta" href="/#java-7-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/arraylist">ArrayList</a></p><p>Berikutnya: <a href="/belajar/java/add-sisip-hapus">add, sisip, hapus</a></p>

@@ -30,9 +30,12 @@ $ git reset --soft HEAD~1          # batalkan commit terakhir (lokal)
 $ git revert a71be04
 [main 9d0e3f7] Revert &quot;style: warna tombol beli&quot;
  1 file changed, 1 insertion(+), 1 deletion(-)</code></pre>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Membatalkan commit yang sudah di-push</summary><p><code>reset --hard</code> menghapus commit dari riwayat dan membuat repositori teman tidak sinkron. Untuk commit yang sudah dibagikan, <code>revert</code> membuat commit baru yang membalikkan perubahan tanpa mengubah riwayat.</p><div class="lbl">KODE PEMULA</div><pre><code>git reset --hard HEAD~1
+git push --force</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>git revert HEAD
+git push</code></pre></details>
 <h2>Poin penting</h2><ul><li>restore: berkas di working directory atau staging.</li><li>reset: hapus commit lokal (--soft simpan, --hard buang).</li><li>revert: commit pembalik, aman untuk riwayat bersama.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Commit salah sudah di-push ke main tim. Cara aman membatalkannya?</summary><p class="ok">Jawaban: git revert</p><p>Revert tidak menulis ulang riwayat yang sudah dimiliki orang lain.</p></details><details><summary>git reset --soft HEAD~1 melakukan apa?</summary><p class="ok">Jawaban: Membatalkan commit terakhir, perubahan tetap di staging</p><p>--soft menjaga perubahanmu.</p></details>
-<a class="cta" href="/#git-2-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/git/gitignore">.gitignore</a></p><p>Berikutnya: <a href="/belajar/git/branch-merge">Branch &amp; merge</a></p>
+<a class="cta" href="/#git-2-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/git/gitignore">.gitignore</a></p><p>Berikutnya: <a href="/belajar/git/tag-rilis-dengan-semantic-versioning">Tag &amp; rilis dengan semantic versioning</a></p>
 </main>
 <footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
 </body>

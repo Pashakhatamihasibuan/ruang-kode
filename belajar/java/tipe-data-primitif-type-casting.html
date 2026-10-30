@@ -48,6 +48,17 @@
 3
 3.5
 </code></pre>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Angka besar lebih mudah dibaca dengan garis bawah</summary><p>Sejak Java 7, garis bawah boleh ditulis di antara digit: <code>1_000_000</code>. Compiler mengabaikannya, nilainya tetap sama, tetapi mata manusia langsung tahu itu satu juta, bukan seratus ribu.</p><div class="lbl">KODE PEMULA</div><pre><code>long harga = 1000000;
+long ongkir = 25000;
+System.out.println(harga + ongkir);</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>long harga = 1_000_000;
+long ongkir = 25_000;
+System.out.println(harga + ongkir);</code></pre><div class="lbl">KELUARAN KEDUANYA</div><pre><code>1025000</code></pre></details><details><summary>Hasil perkalian int bisa meluap tanpa peringatan</summary><p>Perkalian dua <code>int</code> tetap bertipe <code>int</code>, walaupun hasilnya disimpan ke <code>long</code>. Kalau melewati ±2,1 miliar, angkanya berputar menjadi negatif. Ubah salah satu operand menjadi <code>long</code> (akhiran <code>L</code>) sebelum dikalikan, atau pakai <code>Math.multiplyExact</code> agar luapan langsung jadi error.</p><div class="lbl">KODE PEMULA</div><pre><code>int hargaSatuan = 2_500_000;
+int jumlah = 1_000;
+long total = hargaSatuan * jumlah;
+System.out.println(total);</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>int hargaSatuan = 2_500_000;
+int jumlah = 1_000;
+long total = (long) hargaSatuan * jumlah;
+System.out.println(total);</code></pre></details>
 <h2>Poin penting</h2><ul><li>Urutan widening: byte → short → int → long → float → double.</li><li>Cast <code>(int)</code> memotong pecahan, bukan membulatkan. Pakai <code>Math.round</code> untuk pembulatan.</li><li>Narrowing di luar rentang menghasilkan overflow: angkanya "berputar" menjadi nilai aneh.</li><li><code>String</code> bukan tipe primitif. Untuk mengubah teks ke angka pakai <code>Integer.parseInt("42")</code>.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Apa hasil &lt;code&gt;(int) 4.8&lt;/code&gt;?</summary><p class="ok">Jawaban: 4</p><p>Cast ke int membuang bagian pecahan tanpa membulatkan.</p></details><details><summary>Mana yang butuh cast eksplisit?</summary><p class="ok">Jawaban: double ke int</p><p>double ke int adalah narrowing: informasi bisa hilang, jadi Java meminta cast.</p></details>
 <a class="cta" href="/#java-1-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/variabel">Variabel</a></p><p>Berikutnya: <a href="/belajar/java/ekspresi-operator">Ekspresi &amp; operator</a></p>

@@ -37,6 +37,20 @@ FROM detail_pesanan;</code></pre>
 )
 SELECT kategori, nama, harga FROM urut WHERE no = 1;</code></pre>
 <h2>Tantangan</h2><ol><li>Tampilkan nama karyawan, divisi, gaji, dan peringkat gaji di divisinya (alias peringkat, pakai DENSE_RANK, gaji tertinggi = 1).</li></ol>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Peringkat tanpa subquery berkorelasi</summary><p>Subquery berkorelasi dijalankan ulang untuk setiap baris. Window function menghitung peringkat semua baris dalam satu kali jalan.</p><div class="lbl">KODE PEMULA</div><pre><code>SELECT nama, harga,
+       (SELECT COUNT(*) FROM produk p2 WHERE p2.harga &gt; p1.harga) + 1 AS peringkat
+FROM produk p1
+ORDER BY peringkat
+LIMIT 4;</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>SELECT nama, harga,
+       RANK() OVER (ORDER BY harga DESC) AS peringkat
+FROM produk
+ORDER BY peringkat
+LIMIT 4;</code></pre><div class="lbl">KELUARAN KEDUANYA</div><pre><code>nama           | harga  | peringkat
+---------------+--------+----------
+Madu Hutan     | 120000 | 1
+Kopi Gayo      | 85000  | 2
+Rendang Kaleng | 75000  | 3
+Kacang Mete    | 60000  | 4</code></pre></details>
 <h2>Poin penting</h2><ul><li>Window function tidak mengurangi jumlah baris.</li><li>OVER (PARTITION BY ... ORDER BY ...).</li><li>ROW_NUMBER unik; RANK melompat; DENSE_RANK rapat.</li><li>Top-N per kelompok: ROW_NUMBER di CTE, lalu WHERE no &lt;= N.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Nilai 100, 100, 90 dengan RANK menghasilkan?</summary><p class="ok">Jawaban: 1, 1, 3</p><p>RANK melompat setelah nilai kembar.</p></details><details><summary>Perbedaan GROUP BY dengan window function?</summary><p class="ok">Jawaban: GROUP BY menggabungkan baris; window tetap mempertahankan setiap baris</p><p>Window menambah kolom tanpa menghilangkan baris.</p></details>
 <a class="cta" href="/#sql-14-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/query-rekursif">Query rekursif</a></p><p>Berikutnya: <a href="/belajar/sql/lead-lag-running-total">LEAD, LAG &amp; running total</a></p>

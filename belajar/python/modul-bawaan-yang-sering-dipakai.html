@@ -46,6 +46,14 @@ print(list(itertools.combinations(&quot;ABC&quot;, 2)))</code></pre>
 82.33333333333333 80
 [(&#x27;A&#x27;, &#x27;B&#x27;), (&#x27;A&#x27;, &#x27;C&#x27;), (&#x27;B&#x27;, &#x27;C&#x27;)]
 </code></pre>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Memeriksa &quot;ada yang&quot; dan &quot;semuanya&quot;</summary><p><code>any</code> dan <code>all</code> menggantikan loop dengan variabel penanda. Keduanya berhenti begitu jawabannya sudah pasti.</p><div class="lbl">KODE PEMULA</div><pre><code>stok = [5, 0, 12, 7]
+ada_habis = False
+for s in stok:
+    if s == 0:
+        ada_habis = True
+        break
+print(ada_habis)</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>stok = [5, 0, 12, 7]
+print(any(s == 0 for s in stok))</code></pre><div class="lbl">KELUARAN KEDUANYA</div><pre><code>True</code></pre></details>
 <h2>Poin penting</h2><ul><li>Cek pustaka standar sebelum memasang paket.</li><li><code>json.dumps</code>/<code>loads</code>: dict ↔ teks JSON.</li><li><code>random.seed</code> membuat hasil acak bisa diulang.</li><li><code>datetime.timedelta</code> untuk menambah hari.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Modul untuk mengubah dict menjadi teks JSON?</summary><p class="ok">Jawaban: json</p><p>json.dumps menghasilkan string JSON.</p></details><details><summary>Fungsi agar hasil random sama setiap kali dijalankan?</summary><p class="ok">Jawaban: random.seed()</p><p>Seed menetapkan titik awal generator.</p></details>
 <a class="cta" href="/#python-6-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/import-modul-buatan-sendiri">Import &amp; modul buatan sendiri</a></p><p>Berikutnya: <a href="/belajar/python/pip-pypi-virtual-environment">pip, PyPI &amp; virtual environment</a></p>

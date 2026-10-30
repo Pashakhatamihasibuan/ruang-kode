@@ -29,9 +29,16 @@ body { background: var(--bg); color: var(--teks); font-family: sans-serif; trans
 .kartu { border: 2px solid var(--aksen); border-radius: var(--radius); padding: 12px 16px; }
 button { background: var(--aksen); color: var(--bg); border: 0; padding: 6px 14px; border-radius: 99px; }</code></pre>
 <h2>Tantangan</h2><ol><li>Ganti <code>--radius</code> menjadi <code>0px</code> agar kartu bersudut tajam.</li></ol>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Warna disimpan di satu tempat</summary><p>Kode warna yang diulang di banyak tempat sulit diganti dan mudah berbeda sedikit. Custom property menyimpannya sekali, dan tema gelap cukup mengganti nilainya.</p><div class="lbl">KODE PEMULA</div><pre><code>.tombol { background: #255DA2; }
+.tautan { color: #255DA2; }
+.badge  { border-color: #255da2; }</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>:root { --warna-utama: #255DA2; }
+@media (prefers-color-scheme: dark) { :root { --warna-utama: #79ACEE; } }
+.tombol { background: var(--warna-utama); }
+.tautan { color: var(--warna-utama); }
+.badge  { border-color: var(--warna-utama); }</code></pre></details>
 <h2>Poin penting</h2><ul><li>--nama untuk mendefinisikan, var(--nama) untuk memakai.</li><li>Variabel CSS bisa diubah saat halaman berjalan.</li><li>Dasar tema gelap dan design token.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Cara memakai variabel --aksen?</summary><p class="ok">Jawaban: var(--aksen)</p><p>Fungsi var() membaca custom property.</p></details>
-<a class="cta" href="/#css-8-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/css/transform-transisi-animasi">Transform, transisi &amp; animasi</a></p><p>Berikutnya: <a href="/belajar/css/bem-sass-css-modules-performa">BEM, Sass, CSS Modules &amp; performa</a></p>
+<a class="cta" href="/#css-8-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/css/has-selector-induk-nesting">:has(): selector induk &amp; nesting</a></p><p>Berikutnya: <a href="/belajar/css/bem-sass-css-modules-performa">BEM, Sass, CSS Modules &amp; performa</a></p>
 </main>
 <footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
 </body>

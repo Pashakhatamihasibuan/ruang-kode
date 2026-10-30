@@ -59,6 +59,9 @@ habis
 True True
 333328333350000
 </code></pre>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Menjumlah tanpa membuat list</summary><p>Tanda kurung siku membuat seluruh list di memori dulu. Tanpa kurung siku, generator menghasilkan angka satu per satu, sehingga hemat memori untuk data besar.</p><div class="lbl">KODE PEMULA</div><pre><code>total = sum([x * x for x in range(1_000_000)])
+print(total)</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>total = sum(x * x for x in range(1_000_000))
+print(total)</code></pre><div class="lbl">KELUARAN KEDUANYA</div><pre><code>333332833333500000</code></pre></details>
 <h2>Poin penting</h2><ul><li>Iterator: <code>iter()</code> lalu <code>next()</code> sampai StopIteration.</li><li><code>yield</code> menyerahkan nilai dan menjeda fungsi.</li><li>Generator hemat memori karena lazy.</li><li>Generator hanya bisa dilalui sekali.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Apa yang dilakukan &lt;code&gt;yield&lt;/code&gt;?</summary><p class="ok">Jawaban: Menyerahkan nilai lalu menjeda fungsi</p><p>Fungsi melanjutkan dari titik yang sama saat next() berikutnya.</p></details><details><summary>Keunggulan generator dibanding list?</summary><p class="ok">Jawaban: Hemat memori karena nilai dibuat saat dibutuhkan</p><p>Nilai tidak disimpan semuanya sekaligus.</p></details>
 <a class="cta" href="/#python-8-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/list-dict-set-comprehension">List, dict &amp; set comprehension</a></p><p>Berikutnya: <a href="/belajar/python/pemrograman-fungsional">Pemrograman Fungsional</a></p>

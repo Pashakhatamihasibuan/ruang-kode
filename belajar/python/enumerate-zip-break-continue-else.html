@@ -58,6 +58,15 @@ mangga: 15000
 durian tidak ada
 [10, 7, 4, 1] [&#x27;mangga&#x27;, &#x27;jeruk&#x27;, &#x27;apel&#x27;]
 </code></pre>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Nomor urut tanpa range(len())</summary><p><code>enumerate</code> memberi nomor dan isinya sekaligus, dan bisa dimulai dari 1. <code>zip</code> berjalan di beberapa list bersamaan.</p><div class="lbl">KODE PEMULA</div><pre><code>nama = [&quot;Sari&quot;, &quot;Budi&quot;, &quot;Rina&quot;]
+nilai = [90, 78, 85]
+for i in range(len(nama)):
+    print(str(i + 1) + &quot;. &quot; + nama[i] + &quot;: &quot; + str(nilai[i]))</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>nama = [&quot;Sari&quot;, &quot;Budi&quot;, &quot;Rina&quot;]
+nilai = [90, 78, 85]
+for no, (n, v) in enumerate(zip(nama, nilai), start=1):
+    print(f&quot;{no}. {n}: {v}&quot;)</code></pre><div class="lbl">KELUARAN KEDUANYA</div><pre><code>1. Sari: 90
+2. Budi: 78
+3. Rina: 85</code></pre></details>
 <h2>Poin penting</h2><ul><li><code>enumerate</code> memberi pasangan (indeks, nilai).</li><li><code>zip</code> berjalan di atas beberapa koleksi sekaligus.</li><li><code>for ... else</code>: else jalan jika tidak ada break.</li><li><code>range</code> hemat memori.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kapan blok &lt;code&gt;else&lt;/code&gt; pada for dijalankan?</summary><p class="ok">Jawaban: Jika loop selesai tanpa break</p><p>Break melewati blok else.</p></details><details><summary>Fungsi untuk mendapat indeks dan nilai sekaligus?</summary><p class="ok">Jawaban: enumerate</p><p>enumerate menghasilkan pasangan indeks dan nilai.</p></details>
 <a class="cta" href="/#python-3-12">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/masalah-fencepost">Masalah fencepost</a></p><p>Berikutnya: <a href="/belajar/python/array">Array</a></p>

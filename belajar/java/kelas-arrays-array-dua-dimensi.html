@@ -51,6 +51,20 @@ public class Tabel {
 . . X
 [[0, 1, 0], [0, 0, 1]]
 </code></pre>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Mencetak dan mengurutkan array</summary><p>Kelas <code>Arrays</code> sudah punya <code>sort</code> dan <code>toString</code>. Tidak perlu menulis algoritma pengurutan dan loop pencetak sendiri, kecuali sedang belajar algoritmanya.</p><div class="lbl">KODE PEMULA</div><pre><code>int[] nilai = {78, 92, 65};
+for (int i = 0; i &lt; nilai.length; i++)
+    for (int j = 0; j &lt; nilai.length - 1 - i; j++)
+        if (nilai[j] &gt; nilai[j + 1]) {
+            int t = nilai[j]; nilai[j] = nilai[j + 1]; nilai[j + 1] = t;
+        }
+System.out.print(&quot;[&quot;);
+for (int i = 0; i &lt; nilai.length; i++) {
+    System.out.print(nilai[i]);
+    if (i &lt; nilai.length - 1) System.out.print(&quot;, &quot;);
+}
+System.out.println(&quot;]&quot;);</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>int[] nilai = {78, 92, 65};
+Arrays.sort(nilai);
+System.out.println(Arrays.toString(nilai));</code></pre><div class="lbl">KELUARAN KEDUANYA</div><pre><code>[65, 78, 92]</code></pre></details>
 <h2>Poin penting</h2><ul><li>Mencetak array langsung menampilkan alamat aneh. Pakai <code>Arrays.toString</code>.</li><li><code>Arrays.sort</code> mengurutkan di tempat (array asli berubah).</li><li>Array 2D: <code>tipe[][] nama = new tipe[baris][kolom];</code></li><li>Elemen array angka otomatis bernilai 0 saat dibuat.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Bagaimana mengakses kolom ke-3 di baris pertama &lt;code&gt;grid&lt;/code&gt;?</summary><p class="ok">Jawaban: grid[0][2]</p><p>Indeks mulai dari 0: baris 0, kolom 2.</p></details><details><summary>Isi awal &lt;code&gt;new int[3]&lt;/code&gt;?</summary><p class="ok">Jawaban: [0, 0, 0]</p><p>Elemen bertipe angka diisi 0 secara otomatis.</p></details>
 <a class="cta" href="/#java-4-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/referensi-dua-nama-satu-array">Referensi (dua nama, satu array)</a></p><p>Berikutnya: <a href="/belajar/java/kelas-objek">Kelas &amp; Objek</a></p>

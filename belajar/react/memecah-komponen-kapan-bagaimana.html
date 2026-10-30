@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Memecah komponen: kapan &amp; bagaimana · React · Ruang Kode</title>
+<meta name="description" content="Komponen 400 baris yang mengambil data, mengatur form, dan menggambar tabel sulit diuji dan diubah. Pecah komponen saat ada bagian yang dipakai ulang,…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/react/memecah-komponen-kapan-bagaimana">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Memecah komponen: kapan &amp; bagaimana · React · Ruang Kode"><meta property="og:description" content="Komponen 400 baris yang mengambil data, mengatur form, dan menggambar tabel sulit diuji dan diubah. Pecah komponen saat ada bagian yang dipakai ulang,…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/react/memecah-komponen-kapan-bagaimana"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Memecah komponen: kapan & bagaimana", "description": "Komponen 400 baris yang mengambil data, mengatur form, dan menggambar tabel sulit diuji dan diubah. Pecah komponen saat ada bagian yang dipakai ulang,…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/react/memecah-komponen-kapan-bagaimana", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "React", "url": "https://ruang-kode-nine.vercel.app/belajar/react"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "React", "item": "https://ruang-kode-nine.vercel.app/belajar/react"}, {"@type": "ListItem", "position": 3, "name": "Memecah komponen: kapan & bagaimana", "item": "https://ruang-kode-nine.vercel.app/belajar/react/memecah-komponen-kapan-bagaimana"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/react">React</a> / Modul 3</nav>
+<div class="eyebrow">React · Modul 3 · Konsep &amp; kode</div><h1>Memecah komponen: kapan &amp; bagaimana</h1><a class="cta" href="/#react-3-3">Buka versi interaktif</a>
+<p>Komponen 400 baris yang mengambil data, mengatur form, dan menggambar tabel sulit diuji dan diubah. Pecah komponen saat ada bagian yang <b>dipakai ulang</b>, punya <b>tanggung jawab berbeda</b>, atau punya <b>state sendiri</b> yang tidak perlu diketahui induknya.</p>
+<p>Pola yang sering dipakai: komponen induk mengurus data dan state, komponen anak hanya menerima props dan menampilkan. Komponen anak seperti ini mudah diuji dan bisa dipakai di Storybook.</p>
+<p>Jangan memecah terlalu dini. Tiga baris JSX yang hanya muncul sekali tidak perlu menjadi komponen sendiri. Simpan state sedekat mungkin dengan komponen yang memakainya, dan naikkan hanya saat dua komponen saudara membutuhkannya.</p>
+<div class="lbl">JSX</div><pre><code>// Sebelum: satu komponen mengurus semuanya
+function HalamanKeranjang() { /* fetch, state kupon, tabel, ringkasan, tombol bayar ... 300 baris */ }
+
+// Sesudah: induk mengurus data, anak menampilkan
+function HalamanKeranjang() {
+  const { barang, ubahJumlah, hapus } = useKeranjang();   // custom hook
+  const total = hitungTotal(barang);                      // fungsi murni, mudah diuji
+  return (
+    &lt;main&gt;
+      &lt;TabelKeranjang barang={barang} onUbah={ubahJumlah} onHapus={hapus} /&gt;
+      &lt;KotakKupon /&gt;                                       {/* state kupon tinggal di sini */}
+      &lt;Ringkasan total={total} /&gt;
+    &lt;/main&gt;
+  );
+}</code></pre>
+<h2>Poin penting</h2><ul><li>Pecah saat dipakai ulang, beda tanggung jawab, atau punya state sendiri.</li><li>Induk mengurus data, anak menampilkan.</li><li>Logika ke custom hook dan fungsi murni.</li><li>Jangan memecah terlalu dini; state sedekat mungkin.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Di mana sebaiknya state input kupon disimpan?</summary><p class="ok">Jawaban: Di KotakKupon, karena hanya dipakai di sana</p><p>State disimpan sedekat mungkin dengan pemakainya.</p></details><details><summary>Keuntungan memindahkan hitungTotal ke fungsi murni?</summary><p class="ok">Jawaban: Bisa diuji tanpa merender komponen</p><p>Fungsi murni mudah diuji dan dipakai ulang.</p></details>
+<a class="cta" href="/#react-3-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/react/portal-error-boundary-suspense">Portal, error boundary &amp; suspense</a></p><p>Berikutnya: <a href="/belajar/react/input-terkendali">Input terkendali</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

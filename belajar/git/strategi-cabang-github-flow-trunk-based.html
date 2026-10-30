@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Strategi cabang: GitHub Flow &amp; trunk-based · Git &amp; GitHub · Ruang Kode</title>
+<meta name="description" content="Tim perlu kesepakatan cara memakai cabang. GitHub Flow paling sederhana: main selalu siap rilis; setiap pekerjaan dibuat di cabang pendek, dibuka pull…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/git/strategi-cabang-github-flow-trunk-based">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Strategi cabang: GitHub Flow &amp; trunk-based · Git &amp; GitHub · Ruang Kode"><meta property="og:description" content="Tim perlu kesepakatan cara memakai cabang. GitHub Flow paling sederhana: main selalu siap rilis; setiap pekerjaan dibuat di cabang pendek, dibuka pull…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/git/strategi-cabang-github-flow-trunk-based"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Strategi cabang: GitHub Flow & trunk-based", "description": "Tim perlu kesepakatan cara memakai cabang. GitHub Flow paling sederhana: main selalu siap rilis; setiap pekerjaan dibuat di cabang pendek, dibuka pull…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/git/strategi-cabang-github-flow-trunk-based", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Git & GitHub", "url": "https://ruang-kode-nine.vercel.app/belajar/git"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Git & GitHub", "item": "https://ruang-kode-nine.vercel.app/belajar/git"}, {"@type": "ListItem", "position": 3, "name": "Strategi cabang: GitHub Flow & trunk-based", "item": "https://ruang-kode-nine.vercel.app/belajar/git/strategi-cabang-github-flow-trunk-based"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/git">Git &amp; GitHub</a> / Modul 3</nav>
+<div class="eyebrow">Git &amp; GitHub · Modul 3 · Konsep &amp; kode</div><h1>Strategi cabang: GitHub Flow &amp; trunk-based</h1><a class="cta" href="/#git-3-4">Buka versi interaktif</a>
+<p>Tim perlu kesepakatan cara memakai cabang. <b>GitHub Flow</b> paling sederhana: <code>main</code> selalu siap rilis; setiap pekerjaan dibuat di cabang pendek, dibuka pull request, ditinjau, lalu digabung dan dirilis.</p>
+<p><b>Trunk-based development</b> lebih ekstrem: cabang hidup paling lama sehari atau dua hari, dan fitur yang belum selesai disembunyikan dengan <b>feature flag</b>. Cocok untuk tim yang rilis berkali-kali sehari dengan tes otomatis yang kuat.</p>
+<p><b>Git Flow</b> memakai cabang <code>develop</code>, <code>release/*</code>, dan <code>hotfix/*</code>. Masih dipakai untuk produk dengan jadwal rilis berversi (misalnya aplikasi desktop), tetapi terlalu berat untuk kebanyakan aplikasi web. Apa pun pilihannya, beri nama cabang yang jelas.</p>
+<div class="lbl">TERMINAL</div><pre><code># GitHub Flow sehari-hari
+git switch main
+git pull
+git switch -c fitur/filter-harga      # nama cabang: jenis/ringkasan
+# ... ubah kode, commit kecil-kecil ...
+git push -u origin fitur/filter-harga
+gh pr create --fill                   # buka pull request
+# setelah disetujui dan digabung:
+git switch main &amp;&amp; git pull
+git branch -d fitur/filter-harga</code></pre>
+<h2>Poin penting</h2><ul><li>GitHub Flow: main selalu siap rilis, cabang pendek + PR.</li><li>Trunk-based: cabang 1-2 hari + feature flag.</li><li>Git Flow: untuk rilis berversi, lebih berat.</li><li>Nama cabang: jenis/ringkasan.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Ciri utama trunk-based development?</summary><p class="ok">Jawaban: Cabang sangat pendek dan fitur belum jadi disembunyikan dengan feature flag</p><p>Integrasi sering mengurangi konflik besar.</p></details><details><summary>Dalam GitHub Flow, kondisi cabang main seharusnya?</summary><p class="ok">Jawaban: Selalu siap dirilis</p><p>Semua perubahan masuk lewat PR yang sudah ditinjau.</p></details>
+<a class="cta" href="/#git-3-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/git/stash-rebase">Stash &amp; rebase</a></p><p>Berikutnya: <a href="/belajar/git/remote-push-pull">Remote, push &amp; pull</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

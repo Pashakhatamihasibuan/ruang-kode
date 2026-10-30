@@ -46,6 +46,15 @@ Kirim ke Bandung
 false
 Kota belum diisi
 </code></pre>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Nilai cadangan untuk null</summary><p><code>Objects.requireNonNullElse</code> (Java 9) mengembalikan nilai cadangan kalau nilainya null. Satu baris, tanpa if-else.</p><div class="lbl">KODE PEMULA</div><pre><code>String nama = null;
+String sapaan;
+if (nama != null) {
+    sapaan = nama;
+} else {
+    sapaan = &quot;Tamu&quot;;
+}
+System.out.println(&quot;Halo, &quot; + sapaan);</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>String nama = null;
+System.out.println(&quot;Halo, &quot; + Objects.requireNonNullElse(nama, &quot;Tamu&quot;));</code></pre><div class="lbl">KELUARAN KEDUANYA</div><pre><code>Halo, Tamu</code></pre></details>
 <h2>Poin penting</h2><ul><li><code>Optional.ofNullable(x)</code> membungkus nilai yang mungkin null.</li><li><code>orElse</code> memberi nilai cadangan.</li><li><code>map</code> hanya berjalan jika ada isi.</li><li>Jangan memanggil <code>get()</code> tanpa memeriksa isinya.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>&lt;code&gt;Optional.empty().orElse(&quot;x&quot;)&lt;/code&gt;?</summary><p class="ok">Jawaban: &quot;x&quot;</p><p>Optional kosong, jadi nilai cadangan dipakai.</p></details><details><summary>Tempat terbaik memakai Optional?</summary><p class="ok">Jawaban: Tipe kembalian method</p><p>Itu tujuan awal Optional dirancang.</p></details>
 <a class="cta" href="/#java-11-6">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/stream-api-method-chaining">Stream API &amp; method chaining</a></p><p>Berikutnya: <a href="/belajar/java/package-modul">Package &amp; modul</a></p>

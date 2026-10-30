@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Deret waktu: resample &amp; rolling · Python Analisis Data · Ruang Kode</title>
+<meta name="description" content="Data transaksi harian sering perlu diringkas per minggu atau per bulan. Jadikan kolom tanggal sebagai indeks, lalu resample(&quot;W&quot;) atau resample(&quot;ME&quot;)…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/pda/deret-waktu-resample-rolling">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Deret waktu: resample &amp; rolling · Python Analisis Data · Ruang Kode"><meta property="og:description" content="Data transaksi harian sering perlu diringkas per minggu atau per bulan. Jadikan kolom tanggal sebagai indeks, lalu resample(&quot;W&quot;) atau resample(&quot;ME&quot;)…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/pda/deret-waktu-resample-rolling"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Deret waktu: resample & rolling", "description": "Data transaksi harian sering perlu diringkas per minggu atau per bulan. Jadikan kolom tanggal sebagai indeks, lalu resample(\"W\") atau resample(\"ME\")…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/pda/deret-waktu-resample-rolling", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Python Analisis Data", "url": "https://ruang-kode-nine.vercel.app/belajar/pda"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Python Analisis Data", "item": "https://ruang-kode-nine.vercel.app/belajar/pda"}, {"@type": "ListItem", "position": 3, "name": "Deret waktu: resample & rolling", "item": "https://ruang-kode-nine.vercel.app/belajar/pda/deret-waktu-resample-rolling"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/pda">Python Analisis Data</a> / Modul 7</nav>
+<div class="eyebrow">Python Analisis Data · Modul 7 · Konsep &amp; kode</div><h1>Deret waktu: resample &amp; rolling</h1><a class="cta" href="/#pda-7-4">Buka versi interaktif</a>
+<p>Data transaksi harian sering perlu diringkas per minggu atau per bulan. Jadikan kolom tanggal sebagai indeks, lalu <code>resample("W")</code> atau <code>resample("ME")</code> mengelompokkan berdasarkan periode waktu, mirip <code>groupby</code> untuk tanggal.</p>
+<p><code>rolling(3)</code> membuat jendela bergeser, misalnya rata-rata 3 hari terakhir. Rata-rata bergerak menghaluskan naik-turun harian sehingga tren lebih mudah terlihat. Tiga baris pertama bernilai kosong karena jendelanya belum penuh, kecuali kamu menetapkan <code>min_periods</code>.</p>
+<p><code>pct_change()</code> menghitung perubahan persen dari periode sebelumnya, berguna untuk melihat pertumbuhan.</p>
+<div class="lbl">PYTHON</div><pre><code>import pandas as pd
+df = pd.DataFrame({&quot;tanggal&quot;: pd.date_range(&quot;2024-01-01&quot;, periods=10, freq=&quot;D&quot;), &quot;omzet&quot;: [120, 95, 130, 88, 150, 101, 115, 99, 140, 105]})
+harian = df.set_index(&quot;tanggal&quot;)[&quot;omzet&quot;]
+print(harian.resample(&quot;W&quot;).sum().to_string())
+print(harian.rolling(3).mean().round(1).tolist())
+print((harian.pct_change() * 100).round(1).head(4).tolist())</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>tanggal
+2024-01-07    799
+2024-01-14    344
+Freq: W-SUN
+[nan, nan, 115.0, 104.3, 122.7, 113.0, 122.0, 105.0, 118.0, 114.7]
+[nan, -20.8, 36.8, -32.3]</code></pre>
+<h2>Poin penting</h2><ul><li>Tanggal sebagai indeks, lalu resample per periode.</li><li>rolling(n) untuk jendela bergeser.</li><li>Rata-rata bergerak menghaluskan data harian.</li><li>pct_change() untuk pertumbuhan.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa rolling(3).mean() menghasilkan NaN di dua baris pertama?</summary><p class="ok">Jawaban: Jendela 3 hari belum penuh</p><p>Atur min_periods jika ingin tetap dihitung.</p></details><details><summary>resample(&quot;W&quot;).sum() menghasilkan?</summary><p class="ok">Jawaban: Jumlah omzet per minggu</p><p>resample mengelompokkan berdasarkan periode waktu.</p></details>
+<a class="cta" href="/#pda-7-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pda/korelasi">Korelasi</a></p><p>Berikutnya: <a href="/belajar/pda/memilih-grafik-yang-tepat">Memilih grafik yang tepat</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Format kolom &amp; partisi: Parquet · Data Engineer · Ruang Kode</title>
+<meta name="description" content="CSV mudah dibaca manusia, tetapi lambat dan boros untuk analitik: setiap kueri harus membaca seluruh baris, dan tipe datanya hilang. Parquet menyimpan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/de/format-kolom-partisi-parquet">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Format kolom &amp; partisi: Parquet · Data Engineer · Ruang Kode"><meta property="og:description" content="CSV mudah dibaca manusia, tetapi lambat dan boros untuk analitik: setiap kueri harus membaca seluruh baris, dan tipe datanya hilang. Parquet menyimpan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/de/format-kolom-partisi-parquet"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Format kolom & partisi: Parquet", "description": "CSV mudah dibaca manusia, tetapi lambat dan boros untuk analitik: setiap kueri harus membaca seluruh baris, dan tipe datanya hilang. Parquet menyimpan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/de/format-kolom-partisi-parquet", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Engineer", "url": "https://ruang-kode-nine.vercel.app/belajar/de"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Engineer", "item": "https://ruang-kode-nine.vercel.app/belajar/de"}, {"@type": "ListItem", "position": 3, "name": "Format kolom & partisi: Parquet", "item": "https://ruang-kode-nine.vercel.app/belajar/de/format-kolom-partisi-parquet"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/de">Data Engineer</a> / Modul 4</nav>
+<div class="eyebrow">Data Engineer · Modul 4 · Konsep &amp; kode</div><h1>Format kolom &amp; partisi: Parquet</h1><a class="cta" href="/#de-4-4">Buka versi interaktif</a>
+<p>CSV mudah dibaca manusia, tetapi lambat dan boros untuk analitik: setiap kueri harus membaca seluruh baris, dan tipe datanya hilang. <b>Parquet</b> menyimpan data per kolom dengan kompresi dan skema, sehingga kueri yang hanya butuh dua kolom cukup membaca dua kolom itu.</p>
+<p><b>Partisi</b> membagi data ke folder berdasarkan kolom yang sering difilter, biasanya tanggal: <code>tahun=2024/bulan=05/</code>. Mesin kueri seperti Spark, DuckDB, atau BigQuery melewati folder yang tidak relevan (partition pruning).</p>
+<p>Hati-hati dengan terlalu banyak partisi kecil: ribuan file berukuran beberapa kilobyte justru memperlambat. Targetkan file sekitar 128 MB sampai 1 GB, dan pilih kolom partisi dengan jumlah nilai yang wajar.</p>
+<div class="lbl">CONTOH</div><pre><code># menulis data penjualan sebagai Parquet berpartisi (pandas + pyarrow)
+df.to_parquet(&quot;gudang/penjualan&quot;, partition_cols=[&quot;tahun&quot;, &quot;bulan&quot;], index=False)
+
+# struktur yang dihasilkan
+gudang/penjualan/
+  tahun=2024/bulan=4/part-0.parquet
+  tahun=2024/bulan=5/part-0.parquet
+  tahun=2024/bulan=6/part-0.parquet
+
+-- DuckDB hanya membaca folder bulan=5 dan dua kolom
+SELECT kota, SUM(total) AS omzet
+FROM read_parquet(&#x27;gudang/penjualan/*/*/*.parquet&#x27;, hive_partitioning = true)
+WHERE tahun = 2024 AND bulan = 5
+GROUP BY kota;</code></pre>
+<h2>Poin penting</h2><ul><li>Parquet: per kolom, terkompresi, menyimpan skema.</li><li>Kueri hanya membaca kolom yang dibutuhkan.</li><li>Partisi per tanggal memungkinkan partition pruning.</li><li>Hindari terlalu banyak file kecil.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa Parquet lebih cepat dari CSV untuk SELECT dua kolom?</summary><p class="ok">Jawaban: Data disimpan per kolom, jadi kolom lain tidak dibaca</p><p>Penyimpanan kolom membaca hanya yang diperlukan.</p></details><details><summary>Apa itu partition pruning?</summary><p class="ok">Jawaban: Melewati folder partisi yang tidak cocok dengan filter</p><p>Mesin kueri tidak membaca data yang pasti tidak relevan.</p></details>
+<a class="cta" href="/#de-4-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/de/warehouse-lake-lakehouse-mesh">Warehouse, lake, lakehouse &amp; mesh</a></p><p>Berikutnya: <a href="/belajar/de/batch-streaming-hybrid">Batch, streaming &amp; hybrid</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

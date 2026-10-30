@@ -24,7 +24,7 @@ CSS = ["base.css", "lms.css", "v4.css"]
 TRACK_JS = ["track-java.js", "track-python.js", "track-sql.js", "track-sql-extra.js",
             "track-html.js", "track-css.js", "track-fe0.js", "track-fe.js", "track-react.js",
             "track-ts.js", "track-git.js", "track-pda.js", "track-da.js", "track-bi.js",
-            "track-de.js", "track-ux.js", "track-ds.js", "tips.js"]
+            "track-de.js", "track-ux.js", "track-ds.js", "track-more.js", "tips.js"]
 RT_JS = ["viz.js", "sqlengine.js", "sqldata.js", "sqldata-bi.js", "viz2.js", "viz3.js"]
 BOOK_JS = ["data.js", "app-javapy.js", "app-extra.js"]
 CORE_JS = ["app.js", "app-pages.js", "app-lesson.js", "app-nav.js"]

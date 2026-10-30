@@ -26,12 +26,13 @@ Lima jalur karier menyusun jalur di atas dalam urutan yang disarankan: Frontend 
 - **Beranda**: dashboard untuk pengguna yang kembali (lanjutkan belajar, target harian, hari beruntun, XP, soal yang perlu diulang), jalur karier, dan katalog.
 - **Halaman jalur**: tes penempatan, peta modul, ujian modul (lulus nilai 70), dan proyek akhir.
 - **Jenis pelajaran**:
-  - konsep dengan contoh kode yang sudah diuji (Java 21, Python 3.13 + pandas, Node 22 untuk TypeScript), tombol Jalankan, dan latihan "tebak keluaran";
+  - konsep dengan contoh kode yang sudah diuji (Java 21, Python 3.13 + pandas, Node 22 untuk JavaScript dan TypeScript), tombol Jalankan, dan latihan "tebak keluaran";
   - contoh Python bisa diedit dan dijalankan di browser dengan Pyodide (butuh internet; di versi Artifact yang membatasi unduhan, kode asli tetap menampilkan keluaran terverifikasi);
   - praktik langsung HTML, CSS, JavaScript, dan React dengan pratinjau, konsol, dan tantangan yang diperiksa otomatis;
   - praktik SQL di konsol browser, termasuk database skema bintang untuk BI dan proyek mini dengan beberapa tantangan;
   - proyek akhir dengan daftar fitur, langkah kerja, berkas awal, dan pratinjau;
   - topik lima langkah dan lab interaktif Java/Python.
+- **Kode pemula vs kode rapi**: 74 perbandingan yang bisa dibuka-tutup di pelajaran terkait, misalnya `1_000_000` untuk angka besar, f-string, `enumerate`, `?.` dan `??`, `CASE` di SQL. Setiap pasangan kode dijalankan dan menghasilkan keluaran yang sama.
 - **45 visual interaktif**, antara lain box model, flexbox, grid, event loop JavaScript, CSR/SSR/SSG, simulator Git, skema bintang, A/B test, MapReduce, Kafka, model Fogg, siklus Hook, token desain, pemeriksa kontras, dan skala tipografi.
 - **Belajar saya**: kalender aktivitas, target harian, nilai ujian, cadangan dan pemulihan progres.
 - **Ulang**: setiap jawaban kuis atau ujian yang salah masuk daftar ulang sampai dijawab benar.
@@ -57,6 +58,7 @@ Sumber:
 - `src/css/base.css`, `lms.css`, `v4.css`: tampilan.
 - `src/js/data.js`: bab, topik, glosarium, kuis cerita.
 - `src/js/track-*.js`: kurikulum per jalur. `track-pda.js`, `track-da.js`, dan `track-de.js` dihasilkan skrip yang menjalankan setiap contoh Python untuk mengisi keluarannya.
+- `src/js/track-more.js`: 40 pelajaran tambahan untuk 13 jalur baru, dihasilkan `tools/gen/more.py` (keluaran contoh kode diisi dari hasil eksekusi).
 - `src/js/tips.js`: perbandingan kode pemula dan kode rapi yang ditempel ke pelajaran.
 - `src/js/sqlengine.js`, `sqldata.js`, `sqldata-bi.js`: mesin SQL kecil dan database contoh.
 - `src/js/viz.js`, `viz2.js`, `viz3.js`: visualisasi.

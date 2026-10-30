@@ -67,6 +67,15 @@ kunci dipasang
 kunci dilepas ZeroDivisionError
 program lanjut
 </code></pre>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Membuka file dengan with</summary><p>Kalau terjadi error sebelum <code>close()</code>, file tetap terbuka. Blok <code>with</code> menutup file otomatis dalam keadaan apa pun.</p><div class="lbl">KODE PEMULA</div><pre><code>f = open(&quot;catatan.txt&quot;, &quot;w&quot;)
+f.write(&quot;belajar Python&quot;)
+f.close()
+f = open(&quot;catatan.txt&quot;)
+print(f.read())
+f.close()</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>with open(&quot;catatan.txt&quot;, &quot;w&quot;) as f:
+    f.write(&quot;belajar Python&quot;)
+with open(&quot;catatan.txt&quot;) as f:
+    print(f.read())</code></pre><div class="lbl">KELUARAN KEDUANYA</div><pre><code>belajar Python</code></pre></details>
 <h2>Poin penting</h2><ul><li><code>with</code> menjamin pembersihan meski ada error.</li><li>Context manager = <code>__enter__</code> + <code>__exit__</code>.</li><li><code>@contextmanager</code>: persiapan → yield → pembersihan.</li><li><code>__exit__</code> yang mengembalikan True menelan exception.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Setelah blok &lt;code&gt;with open(...) as f&lt;/code&gt; selesai, file?</summary><p class="ok">Jawaban: Tertutup otomatis</p><p>Itulah tujuan with.</p></details><details><summary>Method yang dipanggil saat keluar dari with?</summary><p class="ok">Jawaban: __exit__</p><p>__exit__ menerima info exception jika ada.</p></details>
 <a class="cta" href="/#python-5-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/raise-exception-buatan-sendiri-else-finally">raise, exception buatan sendiri &amp; else/finally</a></p><p>Berikutnya: <a href="/belajar/python/pathlib-modul-glob">pathlib &amp; modul glob</a></p>

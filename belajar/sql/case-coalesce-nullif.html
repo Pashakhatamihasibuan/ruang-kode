@@ -34,6 +34,19 @@ FROM pesanan;</code></pre>
 <div class="lbl">COALESCE</div><pre><code>SELECT nama, COALESCE(kota, &#x27;Belum diisi&#x27;) AS kota FROM pelanggan;</code></pre>
 <div class="lbl">NULLIF mencegah bagi nol</div><pre><code>SELECT nama, stok, harga / NULLIF(stok, 0) AS harga_per_stok FROM produk;</code></pre>
 <h2>Tantangan</h2><ol><li>Tampilkan nama produk dan status stok (alias status_stok): 'habis' jika stok 0, 'menipis' jika stok di bawah 50, selain itu 'aman'.</li></ol>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Nilai cadangan untuk NULL</summary><p><code>COALESCE</code> mengambil nilai pertama yang tidak NULL. Lebih pendek dari <code>CASE WHEN ... IS NULL</code>.</p><div class="lbl">KODE PEMULA</div><pre><code>SELECT nama,
+       CASE WHEN kota IS NULL THEN &#x27;Belum diisi&#x27; ELSE kota END AS kota
+FROM pelanggan
+ORDER BY id
+LIMIT 4;</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>SELECT nama, COALESCE(kota, &#x27;Belum diisi&#x27;) AS kota
+FROM pelanggan
+ORDER BY id
+LIMIT 4;</code></pre><div class="lbl">KELUARAN KEDUANYA</div><pre><code>nama  | kota
+------+---------
+Andi  | Jakarta
+Budi  | Bandung
+Citra | Surabaya
+Dewi  | Jakarta</code></pre></details>
 <h2>Poin penting</h2><ul><li>CASE WHEN ... THEN ... ELSE ... END.</li><li>Kondisi dicek berurutan; yang pertama benar dipakai.</li><li>COALESCE = nilai cadangan untuk NULL.</li><li>NULLIF(x, 0) mencegah pembagian dengan nol.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>&lt;code&gt;COALESCE(NULL, NULL, &#x27;x&#x27;, &#x27;y&#x27;)&lt;/code&gt;?</summary><p class="ok">Jawaban: &#x27;x&#x27;</p><p>Nilai pertama yang tidak NULL.</p></details><details><summary>CASE tanpa ELSE dan tidak ada kondisi yang cocok menghasilkan?</summary><p class="ok">Jawaban: NULL</p><p>ELSE bawaan adalah NULL.</p></details>
 <a class="cta" href="/#sql-9-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/fungsi-tanggal-waktu">Fungsi tanggal &amp; waktu</a></p><p>Berikutnya: <a href="/belajar/sql/proyek-mini-merapikan-laporan">Proyek mini: Merapikan laporan</a></p>

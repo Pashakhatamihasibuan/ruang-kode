@@ -29,6 +29,7 @@
 PivotTable
  Baris : kota          Kolom : kategori
  Nilai : Sum of omzet  Filter: bulan = Oktober</code></pre>
+<h2>Kode pemula vs kode rapi</h2><details><summary>XLOOKUP menggantikan VLOOKUP</summary><p>VLOOKUP memakai nomor kolom yang rusak saat ada kolom disisipkan, hanya bisa mencari ke kanan, dan bawaannya mencocokkan perkiraan. XLOOKUP (Excel 365 dan Google Sheets) menunjuk kolom langsung, bisa ke kiri, dan punya nilai cadangan bila tidak ditemukan.</p><div class="lbl">KODE PEMULA</div><pre><code>=VLOOKUP(A2; Produk!A:D; 4; FALSE)</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>=XLOOKUP(A2; Produk!A:A; Produk!D:D; &quot;Tidak ada&quot;)</code></pre></details>
 <h2>Poin penting</h2><ul><li>VLOOKUP dengan FALSE; XLOOKUP lebih fleksibel.</li><li>PivotTable = GROUP BY versi spreadsheet.</li><li>PivotChart sesuai pertanyaan.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa argumen terakhir VLOOKUP sebaiknya FALSE?</summary><p class="ok">Jawaban: Agar pencocokan persis, bukan perkiraan</p><p>TRUE mencari perkiraan dan butuh data terurut.</p></details>
 <a class="cta" href="/#da-2-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/da/teks-tanggal-trim-proper-substitute-datedif">Teks &amp; tanggal: TRIM, PROPER, SUBSTITUTE, DATEDIF</a></p><p>Berikutnya: <a href="/belajar/da/python-atau-r">Python atau R?</a></p>

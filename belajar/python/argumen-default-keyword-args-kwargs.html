@@ -55,6 +55,19 @@ Selamat pagi, Citra!
 nama=Eko, kota=Medan
 [1] [2]
 </code></pre>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Jangan pakai list sebagai nilai default</summary><p>Nilai default dibuat sekali saja saat fungsi didefinisikan. List default akhirnya dipakai bersama oleh setiap panggilan, sehingga isi keranjang pembeli sebelumnya ikut terbawa. Pakai <code>None</code> lalu buat list baru di dalam fungsi.</p><div class="lbl">KODE PEMULA</div><pre><code>def tambah(barang, keranjang=[]):
+    keranjang.append(barang)
+    return keranjang
+
+print(tambah(&quot;kopi&quot;))
+print(tambah(&quot;teh&quot;))</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>def tambah(barang, keranjang=None):
+    if keranjang is None:
+        keranjang = []
+    keranjang.append(barang)
+    return keranjang
+
+print(tambah(&quot;kopi&quot;))
+print(tambah(&quot;teh&quot;))</code></pre></details>
 <h2>Poin penting</h2><ul><li>Parameter default ditulis setelah parameter wajib.</li><li>Keyword argument membuat pemanggilan jelas.</li><li><code>*args</code> → tuple, <code>**kwargs</code> → dict.</li><li>Hindari default yang bisa diubah (list/dict).</li></ul>
 <h2>Cek pemahaman</h2><details><summary>&lt;code&gt;def f(*args)&lt;/code&gt;, isi args saat &lt;code&gt;f(1, 2, 3)&lt;/code&gt;?</summary><p class="ok">Jawaban: (1, 2, 3)</p><p>*args dikumpulkan menjadi tuple.</p></details><details><summary>Kenapa &lt;code&gt;def f(x=[])&lt;/code&gt; berbahaya?</summary><p class="ok">Jawaban: List default dipakai bersama semua pemanggilan</p><p>Default dievaluasi sekali saat fungsi didefinisikan.</p></details>
 <a class="cta" href="/#python-2-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/parameter-return">Parameter &amp; return</a></p><p>Berikutnya: <a href="/belajar/python/scope-variabel-aturan-legb">Scope variabel: aturan LEGB</a></p>

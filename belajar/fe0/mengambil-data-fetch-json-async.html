@@ -47,9 +47,24 @@ async function muatProduk() {
 document.querySelector(&quot;#muat&quot;).addEventListener(&quot;click&quot;, muatProduk);
 console.log(&quot;Kode di bawah fetch tetap jalan duluan.&quot;);</code></pre>
 <h2>Tantangan</h2><ol><li>Klik tombol "Muat produk" sampai daftar terisi.</li></ol>
+<h2>Kode pemula vs kode rapi</h2><details><summary>async/await lebih mudah dibaca dari rantai then</summary><p>Kedua versi melakukan hal yang sama. Dengan <code>async</code>/<code>await</code>, kode asinkron dibaca dari atas ke bawah dan error ditangkap dengan <code>try/catch</code> biasa. Di sini <code>ambil</code> meniru <code>fetch</code> agar bisa dijalankan tanpa internet.</p><div class="lbl">KODE PEMULA</div><pre><code>const ambil = () =&gt; Promise.resolve({ json: () =&gt; Promise.resolve({ nama: &quot;Kopi Gayo&quot; }) });
+ambil()
+  .then((res) =&gt; res.json())
+  .then((data) =&gt; console.log(data.nama))
+  .catch((err) =&gt; console.log(&quot;Gagal:&quot;, err.message));</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>const ambil = () =&gt; Promise.resolve({ json: () =&gt; Promise.resolve({ nama: &quot;Kopi Gayo&quot; }) });
+async function tampilkan() {
+  try {
+    const res = await ambil();
+    const data = await res.json();
+    console.log(data.nama);
+  } catch (err) {
+    console.log(&quot;Gagal:&quot;, err.message);
+  }
+}
+tampilkan();</code></pre><div class="lbl">KELUARAN KEDUANYA</div><pre><code>Kopi Gayo</code></pre></details>
 <h2>Poin penting</h2><ul><li>JSON adalah format tukar data.</li><li>fetch mengembalikan Promise.</li><li>async/await membuat kode asinkron terbaca berurutan.</li><li>Selalu tangani error dengan try/catch.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Apa yang dikembalikan fetch?</summary><p class="ok">Jawaban: Promise</p><p>Hasilnya ditunggu dengan await atau .then().</p></details>
-<a class="cta" href="/#fe0-4-6">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe0/dom-event">DOM &amp; event</a></p><p>Berikutnya: <a href="/belajar/fe0/npm-package-json">npm &amp; package.json</a></p>
+<a class="cta" href="/#fe0-4-6">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe0/dom-event">DOM &amp; event</a></p><p>Berikutnya: <a href="/belajar/fe0/perulangan-for-for-of-while">Perulangan: for, for...of &amp; while</a></p>
 </main>
 <footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
 </body>

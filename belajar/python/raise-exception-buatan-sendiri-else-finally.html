@@ -64,6 +64,17 @@ memproses -5
 input salah: jumlah harus positif
 sisa 30000
 </code></pre>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Tangkap error yang spesifik</summary><p><code>except:</code> tanpa nama menangkap semua hal, termasuk salah ketik nama variabel dan Ctrl+C, sehingga bug tersembunyi. Sebutkan jenis error yang memang kamu harapkan.</p><div class="lbl">KODE PEMULA</div><pre><code>teks = &quot;12a&quot;
+try:
+    jumlah = int(teks)
+except:
+    jumlah = 0
+print(jumlah)</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>teks = &quot;12a&quot;
+try:
+    jumlah = int(teks)
+except ValueError:
+    jumlah = 0
+print(jumlah)</code></pre><div class="lbl">KELUARAN KEDUANYA</div><pre><code>0</code></pre></details>
 <h2>Poin penting</h2><ul><li><code>raise</code> melempar exception.</li><li>Exception buatan sendiri: <code>class NamaError(Exception)</code>.</li><li>else jalan jika tidak ada error, finally selalu jalan.</li><li>Tangkap jenis exception yang spesifik.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Blok yang dijalankan hanya jika try sukses?</summary><p class="ok">Jawaban: else</p><p>else melengkapi try saat tidak ada exception.</p></details><details><summary>Exception yang tidak ditangkap di fungsi akan?</summary><p class="ok">Jawaban: Naik ke pemanggil</p><p>Ia naik terus sampai ada except yang cocok.</p></details>
 <a class="cta" href="/#python-5-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/menangani-error-exception">Menangani error (exception)</a></p><p>Berikutnya: <a href="/belajar/python/context-manager-with">Context manager: with</a></p>

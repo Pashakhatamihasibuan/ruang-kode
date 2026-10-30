@@ -49,6 +49,13 @@ public class DekIter {
 VIP [Ani, Bayu]
 [80, 90]
 </code></pre>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Menghapus isi list sambil melooping</summary><p>Menghapus elemen di dalam for-each membuat iterator bingung dan Java melempar <code>ConcurrentModificationException</code>. <code>removeIf</code> menghapus dengan aman dalam satu baris.</p><div class="lbl">KODE PEMULA</div><pre><code>List&lt;Integer&gt; stok = new ArrayList&lt;&gt;(List.of(5, 0, 12, 0, 7));
+for (Integer s : stok) {
+    if (s == 0) stok.remove(s);
+}
+System.out.println(stok);</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>List&lt;Integer&gt; stok = new ArrayList&lt;&gt;(List.of(5, 0, 12, 0, 7));
+stok.removeIf(s -&gt; s == 0);
+System.out.println(stok);</code></pre></details>
 <h2>Poin penting</h2><ul><li><code>ArrayDeque</code> lebih disarankan daripada <code>Stack</code> dan <code>LinkedList</code>.</li><li>Stack: push/pop/peek. Queue: offer/poll/peek.</li><li><code>offerFirst</code>/<code>offerLast</code> memilih ujung.</li><li>Hapus saat iterasi hanya lewat <code>iterator.remove()</code> atau <code>removeIf</code>.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Struktur yang bisa ditambah dari kedua ujung?</summary><p class="ok">Jawaban: Deque</p><p>Deque = double-ended queue.</p></details><details><summary>Menghapus elemen list di dalam for-each biasanya memicu?</summary><p class="ok">Jawaban: ConcurrentModificationException</p><p>Gunakan iterator.remove() atau list.removeIf(...).</p></details>
 <a class="cta" href="/#java-7-11">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/queue-fifo">Queue (FIFO)</a></p><p>Berikutnya: <a href="/belajar/java/generics-kode-yang-aman-tipe">Generics: kode yang aman tipe</a></p>

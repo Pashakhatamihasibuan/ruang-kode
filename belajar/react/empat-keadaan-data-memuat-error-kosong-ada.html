@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Empat keadaan data: memuat, error, kosong, ada · React · Ruang Kode</title>
+<meta name="description" content="Komponen yang mengambil data punya setidaknya empat keadaan: memuat, error, kosong, dan ada data. Pemula sering hanya menulis keadaan terakhir, sehingga…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/react/empat-keadaan-data-memuat-error-kosong-ada">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Empat keadaan data: memuat, error, kosong, ada · React · Ruang Kode"><meta property="og:description" content="Komponen yang mengambil data punya setidaknya empat keadaan: memuat, error, kosong, dan ada data. Pemula sering hanya menulis keadaan terakhir, sehingga…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/react/empat-keadaan-data-memuat-error-kosong-ada"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Empat keadaan data: memuat, error, kosong, ada", "description": "Komponen yang mengambil data punya setidaknya empat keadaan: memuat, error, kosong, dan ada data. Pemula sering hanya menulis keadaan terakhir, sehingga…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/react/empat-keadaan-data-memuat-error-kosong-ada", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "React", "url": "https://ruang-kode-nine.vercel.app/belajar/react"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "React", "item": "https://ruang-kode-nine.vercel.app/belajar/react"}, {"@type": "ListItem", "position": 3, "name": "Empat keadaan data: memuat, error, kosong, ada", "item": "https://ruang-kode-nine.vercel.app/belajar/react/empat-keadaan-data-memuat-error-kosong-ada"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/react">React</a> / Modul 6</nav>
+<div class="eyebrow">React · Modul 6 · Konsep &amp; kode</div><h1>Empat keadaan data: memuat, error, kosong, ada</h1><a class="cta" href="/#react-6-3">Buka versi interaktif</a>
+<p>Komponen yang mengambil data punya setidaknya empat keadaan: <b>memuat</b>, <b>error</b>, <b>kosong</b>, dan <b>ada data</b>. Pemula sering hanya menulis keadaan terakhir, sehingga pengguna melihat layar putih saat koneksi lambat atau saat belum ada data.</p>
+<p>Tangani keempatnya secara eksplisit dan berurutan. Gunakan skeleton yang menyerupai bentuk isi agar layar tidak meloncat, pesan error yang bisa ditindaklanjuti dengan tombol coba lagi, dan empty state yang mengajak bertindak.</p>
+<p>Pustaka seperti TanStack Query sudah menyediakan <code>isPending</code>, <code>isError</code>, dan <code>refetch</code>, sehingga kamu tinggal menampilkan setiap keadaan.</p>
+<div class="lbl">JSX</div><pre><code>function DaftarPesanan() {
+  const { data, isPending, isError, refetch } = useQuery({
+    queryKey: [&quot;pesanan&quot;],
+    queryFn: () =&gt; fetch(&quot;/api/pesanan&quot;).then((r) =&gt; r.json()),
+  });
+
+  if (isPending) return &lt;SkeletonList baris={3} /&gt;;
+  if (isError) return (
+    &lt;div role=&quot;alert&quot;&gt;
+      Pesanan gagal dimuat. &lt;button onClick={() =&gt; refetch()}&gt;Coba lagi&lt;/button&gt;
+    &lt;/div&gt;
+  );
+  if (data.length === 0) return (
+    &lt;EmptyState judul=&quot;Belum ada pesanan&quot; aksi={&lt;a href=&quot;/katalog&quot;&gt;Mulai belanja&lt;/a&gt;} /&gt;
+  );
+  return &lt;ul&gt;{data.map((p) =&gt; &lt;li key={p.id}&gt;{p.nomor}&lt;/li&gt;)}&lt;/ul&gt;;
+}</code></pre>
+<h2>Poin penting</h2><ul><li>Empat keadaan: memuat, error, kosong, ada data.</li><li>Skeleton mencegah layar meloncat.</li><li>Error disertai tombol coba lagi.</li><li>Empty state mengajak bertindak.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Apa yang terlihat pengguna jika keadaan memuat tidak ditangani?</summary><p class="ok">Jawaban: Layar kosong atau error karena data belum ada</p><p>Komponen mencoba merender data yang belum tersedia.</p></details><details><summary>Empty state yang baik berisi?</summary><p class="ok">Jawaban: Penjelasan singkat dan aksi berikutnya</p><p>Empty state adalah kesempatan mengarahkan pengguna.</p></details>
+<a class="cta" href="/#react-6-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/react/tanstack-query-swr-graphql">TanStack Query, SWR &amp; GraphQL</a></p><p>Berikutnya: <a href="/belajar/react/menata-komponen">Menata komponen</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

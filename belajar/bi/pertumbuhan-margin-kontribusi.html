@@ -42,6 +42,17 @@ GROUP BY p.nama ORDER BY margin_persen DESC;</code></pre>
 FROM fakta_penjualan f JOIN dim_toko t ON t.toko_id = f.toko_id
 GROUP BY t.wilayah ORDER BY omzet DESC;</code></pre>
 <h2>Tantangan</h2><ol><li>Tampilkan kuartal dan jumlah transaksi (kolom transaksi) per kuartal dari dim_tanggal, urut kuartal.</li></ol>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Hindari pembagian dengan nol memakai NULLIF</summary><p>Kalau penyebutnya 0, sebagian database menghentikan query dengan error. <code>NULLIF(x, 0)</code> mengubah 0 menjadi NULL, sehingga hasil baginya NULL dan query tetap berjalan.</p><div class="lbl">KODE PEMULA</div><pre><code>SELECT nama, stok, harga / stok AS harga_per_stok
+FROM produk
+WHERE kategori = &#x27;Minuman&#x27;
+ORDER BY nama;</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>SELECT nama, stok, harga / NULLIF(stok, 0) AS harga_per_stok
+FROM produk
+WHERE kategori = &#x27;Minuman&#x27;
+ORDER BY nama;</code></pre><div class="lbl">KELUARAN KEDUANYA</div><pre><code>nama       | stok | harga_per_stok
+-----------+------+-------------------
+Kopi Gayo  | 40   | 2125
+Madu Hutan | 15   | 8000
+Teh Melati | 120  | 208.33333333333334</code></pre></details>
 <h2>Poin penting</h2><ul><li>MoM: LAG(...) OVER (ORDER BY periode).</li><li>Margin = (omzet − HPP) / omzet.</li><li>Kontribusi: SUM(x) / SUM(SUM(x)) OVER ().</li><li>Persentase selalu dengan angka absolut.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Fungsi untuk mengambil nilai periode sebelumnya?</summary><p class="ok">Jawaban: LAG</p><p>LEAD mengambil periode berikutnya.</p></details>
 <a class="cta" href="/#bi-2-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/bi/metrik-kpi-skema-bintang">Metrik, KPI &amp; skema bintang</a></p><p>Berikutnya: <a href="/belajar/bi/clv-analisis-kohort">CLV &amp; analisis kohort</a></p>

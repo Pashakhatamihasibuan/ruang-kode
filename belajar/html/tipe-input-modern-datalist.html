@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tipe input modern &amp; datalist · HTML · Ruang Kode</title>
+<meta name="description" content="Memilih type yang tepat memberi banyak hal gratis. type=&quot;email&quot; memeriksa format email, type=&quot;tel&quot; menampilkan papan angka telepon di HP, type=&quot;date&quot;…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/html/tipe-input-modern-datalist">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Tipe input modern &amp; datalist · HTML · Ruang Kode"><meta property="og:description" content="Memilih type yang tepat memberi banyak hal gratis. type=&quot;email&quot; memeriksa format email, type=&quot;tel&quot; menampilkan papan angka telepon di HP, type=&quot;date&quot;…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/html/tipe-input-modern-datalist"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Tipe input modern & datalist", "description": "Memilih type yang tepat memberi banyak hal gratis. type=\"email\" memeriksa format email, type=\"tel\" menampilkan papan angka telepon di HP, type=\"date\"…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/html/tipe-input-modern-datalist", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "HTML", "url": "https://ruang-kode-nine.vercel.app/belajar/html"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "HTML", "item": "https://ruang-kode-nine.vercel.app/belajar/html"}, {"@type": "ListItem", "position": 3, "name": "Tipe input modern & datalist", "item": "https://ruang-kode-nine.vercel.app/belajar/html/tipe-input-modern-datalist"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/html">HTML</a> / Modul 5</nav>
+<div class="eyebrow">HTML · Modul 5 · Konsep &amp; kode</div><h1>Tipe input modern &amp; datalist</h1><a class="cta" href="/#html-5-4">Buka versi interaktif</a>
+<p>Memilih <code>type</code> yang tepat memberi banyak hal gratis. <code>type="email"</code> memeriksa format email, <code>type="tel"</code> menampilkan papan angka telepon di HP, <code>type="date"</code> memberi pemilih tanggal, dan <code>type="range"</code> membuat slider.</p>
+<p><code>inputmode</code> mengatur keyboard tanpa mengubah validasi, misalnya <code>inputmode="numeric"</code> untuk kode OTP. <code>autocomplete</code> membantu browser dan pengelola kata sandi mengisi otomatis, misalnya <code>autocomplete="one-time-code"</code> untuk OTP dari SMS.</p>
+<p><code>&lt;datalist&gt;</code> memberi saran sambil tetap mengizinkan isian bebas, cocok untuk nama kota. Untuk daftar yang wajib dipilih, tetap pakai <code>&lt;select&gt;</code>.</p>
+<div class="lbl">HTML</div><pre><code>&lt;form&gt;
+  &lt;label for=&quot;email&quot;&gt;Email&lt;/label&gt;
+  &lt;input id=&quot;email&quot; type=&quot;email&quot; autocomplete=&quot;email&quot; required&gt;
+
+  &lt;label for=&quot;otp&quot;&gt;Kode OTP&lt;/label&gt;
+  &lt;input id=&quot;otp&quot; inputmode=&quot;numeric&quot; autocomplete=&quot;one-time-code&quot; pattern=&quot;[0-9]{6}&quot; maxlength=&quot;6&quot;&gt;
+
+  &lt;label for=&quot;kirim&quot;&gt;Tanggal kirim&lt;/label&gt;
+  &lt;input id=&quot;kirim&quot; type=&quot;date&quot; min=&quot;2026-11-01&quot;&gt;
+
+  &lt;label for=&quot;budget&quot;&gt;Budget maksimal: &lt;output id=&quot;nilai&quot;&gt;500000&lt;/output&gt;&lt;/label&gt;
+  &lt;input id=&quot;budget&quot; type=&quot;range&quot; min=&quot;50000&quot; max=&quot;2000000&quot; step=&quot;50000&quot; value=&quot;500000&quot;
+         oninput=&quot;nilai.value = this.value&quot;&gt;
+
+  &lt;label for=&quot;kota&quot;&gt;Kota&lt;/label&gt;
+  &lt;input id=&quot;kota&quot; list=&quot;daftar-kota&quot; autocomplete=&quot;address-level2&quot;&gt;
+  &lt;datalist id=&quot;daftar-kota&quot;&gt;
+    &lt;option value=&quot;Medan&quot;&gt;&lt;option value=&quot;Bandung&quot;&gt;&lt;option value=&quot;Makassar&quot;&gt;
+  &lt;/datalist&gt;
+&lt;/form&gt;</code></pre>
+<h2>Poin penting</h2><ul><li>type yang tepat memberi validasi dan keyboard yang sesuai.</li><li>inputmode mengatur keyboard tanpa validasi.</li><li>autocomplete=one-time-code untuk OTP.</li><li>datalist: saran dengan isian bebas.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Atribut agar HP menampilkan keyboard angka untuk OTP?</summary><p class="ok">Jawaban: inputmode=&quot;numeric&quot;</p><p>inputmode menentukan jenis keyboard virtual.</p></details><details><summary>Beda datalist dan select?</summary><p class="ok">Jawaban: datalist memberi saran tetapi isian bebas tetap boleh</p><p>select hanya menerima pilihan yang tersedia.</p></details>
+<a class="cta" href="/#html-5-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/html/unggah-file">Unggah file</a></p><p>Berikutnya: <a href="/belajar/html/elemen-semantik">Elemen semantik</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

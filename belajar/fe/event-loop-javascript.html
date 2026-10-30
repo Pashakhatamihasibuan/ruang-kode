@@ -26,6 +26,23 @@
 setTimeout(() =&gt; console.log(&quot;4. setTimeout (macrotask)&quot;), 0);
 Promise.resolve().then(() =&gt; console.log(&quot;3. promise (microtask)&quot;));
 console.log(&quot;2. selesai kode sinkron&quot;);</code></pre>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Jalankan permintaan bersamaan dengan Promise.all</summary><p>Tiga <code>await</code> berturut-turut menunggu satu per satu. Kalau permintaannya tidak saling bergantung, <code>Promise.all</code> menjalankannya bersamaan, sehingga waktu tunggunya hanya selama permintaan terlama.</p><div class="lbl">KODE PEMULA</div><pre><code>const tunda = (ms, v) =&gt; new Promise((r) =&gt; setTimeout(() =&gt; r(v), ms));
+(async () =&gt; {
+  const mulai = Date.now();
+  const produk = await tunda(300, &quot;produk&quot;);
+  const ulasan = await tunda(300, &quot;ulasan&quot;);
+  const stok = await tunda(300, &quot;stok&quot;);
+  console.log(produk, ulasan, stok);
+  console.log(&quot;±&quot; + Math.round((Date.now() - mulai) / 100) * 100 + &quot; ms&quot;);
+})();</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>const tunda = (ms, v) =&gt; new Promise((r) =&gt; setTimeout(() =&gt; r(v), ms));
+(async () =&gt; {
+  const mulai = Date.now();
+  const [produk, ulasan, stok] = await Promise.all([
+    tunda(300, &quot;produk&quot;), tunda(300, &quot;ulasan&quot;), tunda(300, &quot;stok&quot;),
+  ]);
+  console.log(produk, ulasan, stok);
+  console.log(&quot;±&quot; + Math.round((Date.now() - mulai) / 100) * 100 + &quot; ms&quot;);
+})();</code></pre></details>
 <h2>Poin penting</h2><ul><li>Satu thread, tidak memblokir lewat antrean callback.</li><li>Urutan: sinkron, semua microtask, lalu macrotask.</li><li>setTimeout 0 tetap menunggu kode sinkron dan microtask.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Mana yang jalan lebih dulu: Promise.then atau setTimeout 0?</summary><p class="ok">Jawaban: Promise.then</p><p>Microtask didahulukan.</p></details>
 <a class="cta" href="/#fe-3-7">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe/cara-browser-menggambar-halaman">Cara browser menggambar halaman</a></p><p>Berikutnya: <a href="/belajar/fe/modul-es">Modul ES</a></p>

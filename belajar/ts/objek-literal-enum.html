@@ -35,6 +35,15 @@ console.log(Kurir.SiCepat, Object.keys(Kurir).length);
 // pesanan.status = &quot;hilang&quot;;  // error: Type &#x27;&quot;hilang&quot;&#x27; is not assignable to type &#x27;Status&#x27;.</code></pre>
 <div class="lbl">KELUARAN</div><pre><code>101 dikirim tanpa catatan
 sicepat 3</code></pre>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Union string sebagai pengganti enum</summary><p><code>enum</code> menghasilkan kode JavaScript tambahan. Union literal seperti <code>"baru" | "dikirim"</code> sama amannya, tanpa kode tambahan, dan nilainya bisa langsung dibandingkan dengan string dari API.</p><div class="lbl">KODE PEMULA</div><pre><code>enum Status { Baru = &quot;baru&quot;, Dikirim = &quot;dikirim&quot;, Selesai = &quot;selesai&quot; }
+function label(s: Status): string {
+  return s === Status.Dikirim ? &quot;Dalam perjalanan&quot; : &quot;Lainnya&quot;;
+}
+console.log(label(Status.Dikirim));</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>type Status = &quot;baru&quot; | &quot;dikirim&quot; | &quot;selesai&quot;;
+function label(s: Status): string {
+  return s === &quot;dikirim&quot; ? &quot;Dalam perjalanan&quot; : &quot;Lainnya&quot;;
+}
+console.log(label(&quot;dikirim&quot;));</code></pre><div class="lbl">KELUARAN KEDUANYA</div><pre><code>Dalam perjalanan</code></pre></details>
 <h2>Poin penting</h2><ul><li>? untuk properti opsional, readonly untuk tidak bisa diubah.</li><li>Literal union membatasi nilai yang sah.</li><li>Enum membuat objek di JavaScript; literal union tidak.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Tipe &quot;a&quot; | &quot;b&quot; disebut?</summary><p class="ok">Jawaban: Union literal type</p><p>Gabungan beberapa nilai literal.</p></details>
 <a class="cta" href="/#ts-2-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/ts/primitif-array-tuple">Primitif, array &amp; tuple</a></p><p>Berikutnya: <a href="/belajar/ts/any-unknown-never-void">any, unknown, never &amp; void</a></p>

@@ -41,6 +41,27 @@ FROM nilai n JOIN pelanggan p ON p.id = n.pelanggan_id, rata
 WHERE n.total &gt; rata.r
 ORDER BY n.total DESC;</code></pre>
 <h2>Tantangan</h2><ol><li>Dengan CTE bernama stok_kategori yang berisi kategori dan SUM(stok) AS total, tampilkan kategori yang total stoknya di atas 100.</li></ol>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Beri nama pada subquery dengan WITH</summary><p>Subquery bertingkat dibaca dari dalam ke luar. CTE dibaca dari atas ke bawah seperti langkah-langkah, dan setiap langkah punya nama.</p><div class="lbl">KODE PEMULA</div><pre><code>SELECT p.nama, t.total
+FROM (
+  SELECT pelanggan_id, COUNT(*) AS total
+  FROM pesanan
+  GROUP BY pelanggan_id
+) AS t
+JOIN pelanggan p ON p.id = t.pelanggan_id
+WHERE t.total &gt;= 2
+ORDER BY t.total DESC, p.nama;</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>WITH jumlah_pesanan AS (
+  SELECT pelanggan_id, COUNT(*) AS total
+  FROM pesanan
+  GROUP BY pelanggan_id
+)
+SELECT p.nama, j.total
+FROM jumlah_pesanan j
+JOIN pelanggan p ON p.id = j.pelanggan_id
+WHERE j.total &gt;= 2
+ORDER BY j.total DESC, p.nama;</code></pre><div class="lbl">KELUARAN KEDUANYA</div><pre><code>nama | total
+-----+------
+Andi | 3
+Budi | 2</code></pre></details>
 <h2>Poin penting</h2><ul><li>WITH nama AS (query) SELECT ... FROM nama.</li><li>Beberapa CTE dipisah koma.</li><li>CTE hanya berlaku untuk satu statement.</li><li>Pilih CTE demi keterbacaan.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Berapa lama CTE hidup?</summary><p class="ok">Jawaban: Selama satu statement</p><p>Berbeda dengan view yang tersimpan.</p></details><details><summary>Bolehkah CTE kedua memakai CTE pertama?</summary><p class="ok">Jawaban: Ya</p><p>Itulah keunggulan CTE berantai.</p></details>
 <a class="cta" href="/#sql-14-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/teknik-optimasi-query">Teknik optimasi query</a></p><p>Berikutnya: <a href="/belajar/sql/query-rekursif">Query rekursif</a></p>

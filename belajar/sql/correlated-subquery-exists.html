@@ -33,6 +33,19 @@ WHERE NOT EXISTS (SELECT 1 FROM pesanan s WHERE s.pelanggan_id = p.id);</code></
   (SELECT COUNT(*) FROM pesanan s WHERE s.pelanggan_id = p.id) AS banyak_pesanan
 FROM pelanggan p ORDER BY banyak_pesanan DESC;</code></pre>
 <h2>Tantangan</h2><ol><li>Tampilkan nama produk yang pernah dipesan minimal sekali, memakai EXISTS.</li></ol>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Cek keberadaan dengan EXISTS</summary><p><code>EXISTS</code> berhenti begitu satu baris cocok ditemukan, sedangkan <code>COUNT(*) &gt; 0</code> menghitung semuanya dulu.</p><div class="lbl">KODE PEMULA</div><pre><code>SELECT nama FROM pelanggan c
+WHERE (SELECT COUNT(*) FROM pesanan o WHERE o.pelanggan_id = c.id) &gt; 0
+ORDER BY nama
+LIMIT 5;</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>SELECT nama FROM pelanggan c
+WHERE EXISTS (SELECT 1 FROM pesanan o WHERE o.pelanggan_id = c.id)
+ORDER BY nama
+LIMIT 5;</code></pre><div class="lbl">KELUARAN KEDUANYA</div><pre><code>nama
+-----
+Andi
+Budi
+Citra
+Dewi
+Eko</code></pre></details>
 <h2>Poin penting</h2><ul><li>Correlated = memakai kolom query luar.</li><li>Dihitung ulang per baris luar.</li><li>EXISTS benar jika ada minimal satu baris.</li><li>Bisa ditulis ulang dengan JOIN untuk performa.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Ciri correlated subquery?</summary><p class="ok">Jawaban: Memakai kolom dari query luar</p><p>Ia bergantung pada baris luar.</p></details><details><summary>&lt;code&gt;SELECT 1&lt;/code&gt; di dalam EXISTS dipakai karena?</summary><p class="ok">Jawaban: Isi kolom tidak penting, hanya ada tidaknya baris</p><p>EXISTS hanya peduli ada atau tidak.</p></details>
 <a class="cta" href="/#sql-8-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/subquery-skalar-kolom-tabel">Subquery skalar, kolom &amp; tabel</a></p><p>Berikutnya: <a href="/belajar/sql/proyek-mini-mencari-produk-istimewa">Proyek mini: Mencari produk istimewa</a></p>

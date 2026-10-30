@@ -57,6 +57,19 @@ public class Generik {
 6.5
 Isi: [a, b]
 </code></pre>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Menghitung kemunculan dengan merge</summary><p>Pola "kalau kunci sudah ada tambah satu, kalau belum isi satu" bisa diganti <code>Map.merge</code>. Diamond <code>&lt;&gt;</code> juga membuat tipe tidak perlu ditulis dua kali.</p><div class="lbl">KODE PEMULA</div><pre><code>String[] belanja = {&quot;kopi&quot;, &quot;teh&quot;, &quot;kopi&quot;, &quot;gula&quot;, &quot;kopi&quot;};
+TreeMap&lt;String, Integer&gt; hitung = new TreeMap&lt;String, Integer&gt;();
+for (String b : belanja) {
+    if (hitung.containsKey(b)) {
+        hitung.put(b, hitung.get(b) + 1);
+    } else {
+        hitung.put(b, 1);
+    }
+}
+System.out.println(hitung);</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>String[] belanja = {&quot;kopi&quot;, &quot;teh&quot;, &quot;kopi&quot;, &quot;gula&quot;, &quot;kopi&quot;};
+Map&lt;String, Integer&gt; hitung = new TreeMap&lt;&gt;();
+for (String b : belanja) hitung.merge(b, 1, Integer::sum);
+System.out.println(hitung);</code></pre><div class="lbl">KELUARAN KEDUANYA</div><pre><code>{gula=1, kopi=3, teh=1}</code></pre></details>
 <h2>Poin penting</h2><ul><li>Generics memindahkan kesalahan tipe dari runtime ke waktu kompilasi.</li><li>Nama parameter tipe yang lazim: T (type), E (element), K/V (key/value).</li><li><code>&lt;&gt;</code> (diamond) membiarkan compiler menebak tipe di sisi kanan.</li><li>Generics tidak menerima primitif: pakai Integer, Double, dan lainnya.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Keuntungan utama generics?</summary><p class="ok">Jawaban: Kesalahan tipe ketahuan saat kompilasi</p><p>Compiler memeriksa tipe sehingga cast tidak diperlukan.</p></details><details><summary>&lt;code&gt;&amp;lt;T extends Number&amp;gt;&lt;/code&gt; berarti?</summary><p class="ok">Jawaban: T harus subclass Number atau Number itu sendiri</p><p>Ini disebut bounded type parameter.</p></details>
 <a class="cta" href="/#java-8-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/deque-iterator">Deque &amp; Iterator</a></p><p>Berikutnya: <a href="/belajar/java/menangani-error-exception">Menangani error (exception)</a></p>

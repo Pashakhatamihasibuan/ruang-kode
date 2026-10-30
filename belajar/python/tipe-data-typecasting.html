@@ -51,6 +51,18 @@ False False False True False
 TypeError: can only concatenate str (not &quot;int&quot;) to str
 255
 </code></pre>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Angka besar lebih mudah dibaca dengan garis bawah</summary><p>Python (3.6+) mengizinkan garis bawah di antara digit. <code>1_000_000</code> sama persis dengan <code>1000000</code>, tetapi jauh lebih mudah dibaca orang lain.</p><div class="lbl">KODE PEMULA</div><pre><code>harga = 1000000
+ongkir = 25000
+print(harga + ongkir)</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>harga = 1_000_000
+ongkir = 25_000
+print(harga + ongkir)</code></pre><div class="lbl">KELUARAN KEDUANYA</div><pre><code>1025000</code></pre></details><details><summary>Format rupiah tanpa loop</summary><p>Format spec <code>:,</code> di f-string menambahkan pemisah ribuan. Ganti koma menjadi titik untuk gaya Indonesia.</p><div class="lbl">KODE PEMULA</div><pre><code>harga = 1250000
+s = str(harga)
+hasil = &quot;&quot;
+while len(s) &gt; 3:
+    hasil = &quot;.&quot; + s[-3:] + hasil
+    s = s[:-3]
+print(&quot;Rp&quot; + s + hasil)</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>harga = 1_250_000
+print(f&quot;Rp{harga:,}&quot;.replace(&quot;,&quot;, &quot;.&quot;))</code></pre><div class="lbl">KELUARAN KEDUANYA</div><pre><code>Rp1.250.000</code></pre></details>
 <h2>Poin penting</h2><ul><li>Dinamis: tipe melekat pada nilai, bukan pada nama variabel.</li><li>Kuat: tipe berbeda tidak dicampur diam-diam.</li><li><code>int()</code> memotong, <code>round()</code> membulatkan.</li><li><code>input()</code> selalu menghasilkan str; ubah dulu sebelum dihitung.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Hasil &lt;code&gt;int(7.8)&lt;/code&gt;?</summary><p class="ok">Jawaban: 7</p><p>int() membuang pecahan.</p></details><details><summary>Apa yang terjadi pada &lt;code&gt;&quot;10&quot; + 5&lt;/code&gt;?</summary><p class="ok">Jawaban: TypeError</p><p>Python tidak mengubah tipe secara diam-diam.</p></details>
 <a class="cta" href="/#python-1-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/variabel">Variabel</a></p><p>Berikutnya: <a href="/belajar/python/ekspresi-operator">Ekspresi &amp; operator</a></p>

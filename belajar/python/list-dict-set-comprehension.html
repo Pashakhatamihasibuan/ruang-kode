@@ -48,6 +48,14 @@ print([x for baris in matriks for x in baris])</code></pre>
 [&#x27;genap&#x27;, &#x27;ganjil&#x27;, &#x27;genap&#x27;, &#x27;ganjil&#x27;]
 [1, 2, 3, 4, 5, 6]
 </code></pre>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Membuat list baru dari list lain</summary><p>Pola "buat list kosong, loop, if, append" bisa ditulis sebagai comprehension. Lebih pendek dan biasanya lebih cepat.</p><div class="lbl">KODE PEMULA</div><pre><code>harga = [12000, 45000, 8000, 30000]
+mahal = []
+for h in harga:
+    if h &gt;= 10000:
+        mahal.append(h * 2)
+print(mahal)</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>harga = [12_000, 45_000, 8_000, 30_000]
+mahal = [h * 2 for h in harga if h &gt;= 10_000]
+print(mahal)</code></pre><div class="lbl">KELUARAN KEDUANYA</div><pre><code>[24000, 90000, 60000]</code></pre></details>
 <h2>Poin penting</h2><ul><li><code>[f(x) for x in data if syarat(x)]</code>.</li><li>Dict comprehension: <code>{k: v for ...}</code>.</li><li>if di akhir = saring; if-else di depan = pilih nilai.</li><li>Utamakan keterbacaan.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Hasil &lt;code&gt;[x*2 for x in [1,2,3] if x != 2]&lt;/code&gt;?</summary><p class="ok">Jawaban: [2, 6]</p><p>2 disaring, lalu 1 dan 3 dikali dua.</p></details><details><summary>Kurung untuk set comprehension?</summary><p class="ok">Jawaban: { } tanpa titik dua</p><p>Kurung kurawal tanpa pasangan kunci:nilai.</p></details>
 <a class="cta" href="/#python-8-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/paradigma-prosedural-oop-fungsional">Paradigma: prosedural, OOP, fungsional</a></p><p>Berikutnya: <a href="/belajar/python/iterator-generator">Iterator &amp; generator</a></p>

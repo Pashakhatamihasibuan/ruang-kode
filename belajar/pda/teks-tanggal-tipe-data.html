@@ -40,6 +40,12 @@ print(df[&quot;harga&quot;].sum())</code></pre>
 1   Bandung   25000 2024-10-15     10
 2  Surabaya  120000 2024-11-03     11
 230000</code></pre>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Method .str untuk seluruh kolom teks</summary><p>Aksesor <code>.str</code> menjalankan method teks untuk seluruh kolom tanpa <code>apply</code> dan lambda, dan tidak error saat ada nilai kosong.</p><div class="lbl">KODE PEMULA</div><pre><code>import pandas as pd
+nama = pd.Series([&quot;  sari &quot;, &quot;BUDI&quot;, &quot;rina  &quot;])
+rapi = nama.apply(lambda s: s.strip().title())
+print(rapi.tolist())</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>import pandas as pd
+nama = pd.Series([&quot;  sari &quot;, &quot;BUDI&quot;, &quot;rina  &quot;])
+print(nama.str.strip().str.title().tolist())</code></pre><div class="lbl">KELUARAN KEDUANYA</div><pre><code>[&#x27;Sari&#x27;, &#x27;Budi&#x27;, &#x27;Rina&#x27;]</code></pre></details>
 <h2>Poin penting</h2><ul><li>.str untuk operasi teks per kolom.</li><li>Bersihkan simbol lalu astype/to_numeric.</li><li>to_datetime + .dt untuk komponen tanggal.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa &quot;01/10/2024&quot; perlu format eksplisit?</summary><p class="ok">Jawaban: Bisa dibaca 10 Januari atau 1 Oktober</p><p>Format hari/bulan berbeda dengan konvensi AS.</p></details>
 <a class="cta" href="/#pda-5-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pda/nilai-hilang-isna-dropna-fillna-ffill">Nilai hilang: isna, dropna, fillna, ffill</a></p><p>Berikutnya: <a href="/belajar/pda/duplikat-encoding-kategori">Duplikat &amp; encoding kategori</a></p>

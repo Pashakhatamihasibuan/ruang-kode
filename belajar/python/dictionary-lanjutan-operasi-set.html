@@ -49,6 +49,23 @@ madu  15
 {&#x27;Jakarta&#x27;: [&#x27;Andi&#x27;, &#x27;Dewi&#x27;], &#x27;Bandung&#x27;: [&#x27;Budi&#x27;]}
 [&#x27;Budi&#x27;] [&#x27;Andi&#x27;, &#x27;Citra&#x27;] [&#x27;Andi&#x27;, &#x27;Budi&#x27;, &#x27;Citra&#x27;, &#x27;Dewi&#x27;]
 </code></pre>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Menghitung kemunculan</summary><p><code>collections.Counter</code> menghitung isi list dalam satu baris dan bisa langsung memberi yang paling sering muncul.</p><div class="lbl">KODE PEMULA</div><pre><code>belanja = [&quot;kopi&quot;, &quot;teh&quot;, &quot;kopi&quot;, &quot;gula&quot;, &quot;kopi&quot;, &quot;teh&quot;]
+hitung = {}
+for b in belanja:
+    if b in hitung:
+        hitung[b] = hitung[b] + 1
+    else:
+        hitung[b] = 1
+print(hitung)</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>from collections import Counter
+belanja = [&quot;kopi&quot;, &quot;teh&quot;, &quot;kopi&quot;, &quot;gula&quot;, &quot;kopi&quot;, &quot;teh&quot;]
+hitung = Counter(belanja)
+print(dict(hitung))</code></pre><div class="lbl">KELUARAN KEDUANYA</div><pre><code>{&#x27;kopi&#x27;: 3, &#x27;teh&#x27;: 2, &#x27;gula&#x27;: 1}</code></pre></details><details><summary>Membuang duplikat tanpa mengacak urutan</summary><p><code>set</code> membuang duplikat tetapi urutannya tidak terjamin. <code>dict.fromkeys</code> juga membuang duplikat dan tetap menjaga urutan kemunculan pertama.</p><div class="lbl">KODE PEMULA</div><pre><code>kota = [&quot;Medan&quot;, &quot;Bandung&quot;, &quot;Medan&quot;, &quot;Ambon&quot;, &quot;Bandung&quot;]
+unik = []
+for k in kota:
+    if k not in unik:
+        unik.append(k)
+print(unik)</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>kota = [&quot;Medan&quot;, &quot;Bandung&quot;, &quot;Medan&quot;, &quot;Ambon&quot;, &quot;Bandung&quot;]
+print(list(dict.fromkeys(kota)))</code></pre><div class="lbl">KELUARAN KEDUANYA</div><pre><code>[&#x27;Medan&#x27;, &#x27;Bandung&#x27;, &#x27;Ambon&#x27;]</code></pre></details>
 <h2>Poin penting</h2><ul><li><code>get(k, default)</code> mencegah KeyError.</li><li><code>items()</code> untuk loop kunci dan nilai.</li><li>Counter untuk menghitung, defaultdict untuk mengelompokkan.</li><li>Set: <code>&amp;</code> irisan, <code>|</code> gabungan, <code>-</code> selisih.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>&lt;code&gt;{&quot;a&quot;:1}.get(&quot;b&quot;, 0)&lt;/code&gt; menghasilkan?</summary><p class="ok">Jawaban: 0</p><p>Nilai cadangan dikembalikan jika kunci tidak ada.</p></details><details><summary>Operator set untuk anggota yang ada di kedua himpunan?</summary><p class="ok">Jawaban: &amp;</p><p>&amp; adalah irisan.</p></details>
 <a class="cta" href="/#python-4-12">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/map-menghitung-kemunculan">Map: menghitung kemunculan</a></p><p>Berikutnya: <a href="/belajar/python/pemrosesan-file">Pemrosesan File</a></p>

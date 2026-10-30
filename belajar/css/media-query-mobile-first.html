@@ -32,6 +32,9 @@
 @media (prefers-color-scheme: dark) {
   .tata &gt; * { background: #1A2330; color: #ECEAE4; }
 }</code></pre>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Ukuran huruf yang ikut lebar layar dengan clamp()</summary><p><code>clamp(min, ideal, maks)</code> membuat judul membesar mulus mengikuti lebar layar dan tidak pernah lebih kecil atau lebih besar dari batasnya. Tidak perlu tiga media query.</p><div class="lbl">KODE PEMULA</div><pre><code>h1 { font-size: 24px; }
+@media (min-width: 600px) { h1 { font-size: 32px; } }
+@media (min-width: 1000px) { h1 { font-size: 44px; } }</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>h1 { font-size: clamp(1.5rem, 1rem + 2.5vw, 2.75rem); }</code></pre></details>
 <h2>Poin penting</h2><ul><li>Mobile-first: gaya dasar untuk ponsel, min-width untuk layar lebar.</li><li>Media query bisa memeriksa tema gelap dan preferensi animasi.</li><li>Selalu pasang meta viewport di HTML.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Mobile-first memakai media query?</summary><p class="ok">Jawaban: min-width</p><p>Gaya bertambah saat layar melebar.</p></details>
 <a class="cta" href="/#css-6-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/css/grid">Grid</a></p><p>Berikutnya: <a href="/belajar/css/container-query">Container query</a></p>

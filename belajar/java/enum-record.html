@@ -51,6 +51,21 @@ true
 BARU(0) DIKIRIM(1) SELESAI(2)
 Diterima
 </code></pre>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Kelas data cukup ditulis sebagai record</summary><p>Kelas yang hanya membawa data biasanya butuh field, konstruktor, getter, <code>equals</code>, <code>hashCode</code>, dan <code>toString</code>. <code>record</code> (Java 16) membuat semuanya otomatis dan nilainya tidak bisa diubah.</p><div class="lbl">KODE PEMULA</div><pre><code>class Produk {
+    private final String nama;
+    private final int harga;
+    Produk(String nama, int harga) { this.nama = nama; this.harga = harga; }
+    String nama() { return nama; }
+    int harga() { return harga; }
+    @Override public String toString() { return &quot;Produk[nama=&quot; + nama + &quot;, harga=&quot; + harga + &quot;]&quot;; }
+}
+Produk p = new Produk(&quot;Kopi Gayo&quot;, 85_000);
+System.out.println(p);
+System.out.println(p.harga());</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>record Produk(String nama, int harga) {}
+Produk p = new Produk(&quot;Kopi Gayo&quot;, 85_000);
+System.out.println(p);
+System.out.println(p.harga());</code></pre><div class="lbl">KELUARAN KEDUANYA</div><pre><code>Produk[nama=Kopi Gayo, harga=85000]
+85000</code></pre></details>
 <h2>Poin penting</h2><ul><li><code>Status.values()</code> memberi semua nilai enum berurutan.</li><li>Enum aman dipakai di switch.</li><li>Record immutable: field-nya final dan tidak ada setter.</li><li>Getter record memakai nama field: <code>p.barang()</code>, bukan <code>getBarang()</code>.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Apa yang otomatis dibuat Java untuk record?</summary><p class="ok">Jawaban: Konstruktor, getter, equals, toString</p><p>Record dirancang sebagai pembawa data immutable.</p></details><details><summary>Kenapa enum lebih baik daripada String untuk status?</summary><p class="ok">Jawaban: Nilai di luar daftar ditolak compiler</p><p>Salah ketik ketahuan saat kompilasi.</p></details>
 <a class="cta" href="/#java-6-6">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/overloading-overriding-binding">Overloading, overriding &amp; binding</a></p><p>Berikutnya: <a href="/belajar/java/kelas-bersarang-initializer-block">Kelas bersarang &amp; initializer block</a></p>

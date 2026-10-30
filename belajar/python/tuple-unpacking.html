@@ -57,6 +57,18 @@ print(type(satu).__name__, type((5)).__name__)</code></pre>
 tuple tidak bisa diubah
 tuple int
 </code></pre>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Menukar dua variabel</summary><p>Python bisa membongkar tuple di sisi kiri, jadi menukar nilai tidak perlu variabel sementara. Tanda <code>*</code> menampung sisanya.</p><div class="lbl">KODE PEMULA</div><pre><code>a = 5
+b = 9
+sementara = a
+a = b
+b = sementara
+antrean = [&quot;Sari&quot;, &quot;Budi&quot;, &quot;Rina&quot;, &quot;Dewi&quot;]
+pertama = antrean[0]
+sisa = antrean[1:]
+print(a, b, pertama, sisa)</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>a, b = 5, 9
+a, b = b, a
+pertama, *sisa = [&quot;Sari&quot;, &quot;Budi&quot;, &quot;Rina&quot;, &quot;Dewi&quot;]
+print(a, b, pertama, sisa)</code></pre><div class="lbl">KELUARAN KEDUANYA</div><pre><code>9 5 Sari [&#x27;Budi&#x27;, &#x27;Rina&#x27;, &#x27;Dewi&#x27;]</code></pre></details>
 <h2>Poin penting</h2><ul><li>Tuple immutable, list mutable.</li><li>Tuple bisa menjadi kunci dict.</li><li>Unpacking: <code>a, b = pasangan</code>; bintang menangkap sisa.</li><li>Tuple satu elemen butuh koma: <code>(5,)</code>.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Mana yang bisa menjadi kunci dictionary?</summary><p class="ok">Jawaban: (1, 2)</p><p>Kunci dict harus immutable (hashable).</p></details><details><summary>Cara menukar nilai a dan b?</summary><p class="ok">Jawaban: a, b = b, a</p><p>Unpacking tuple menukar keduanya sekaligus.</p></details>
 <a class="cta" href="/#python-4-8">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/menghapus-sambil-berjalan-mundur">Menghapus sambil berjalan mundur</a></p><p>Berikutnya: <a href="/belajar/python/java-collections-framework">Java Collections Framework</a></p>

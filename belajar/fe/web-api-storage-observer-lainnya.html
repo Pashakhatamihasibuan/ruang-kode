@@ -39,9 +39,16 @@ const io = new IntersectionObserver(es =&gt; es.forEach(en =&gt; {
 }), { root: document.getElementById(&quot;area&quot;) });
 io.observe(document.getElementById(&quot;target&quot;));</code></pre>
 <h2>Tantangan</h2><ol><li>Gulir kotak di pratinjau sampai teks "Saya muncul saat terlihat" tampak.</li></ol>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Salin objek bersarang dengan structuredClone</summary><p>Spread hanya menyalin lapisan teratas, sehingga objek di dalamnya masih dipakai bersama. <code>structuredClone</code> (bawaan browser dan Node 17+) menyalin seluruh isi, termasuk tanggal dan Map.</p><div class="lbl">KODE PEMULA</div><pre><code>const asli = { nama: &quot;Sari&quot;, alamat: { kota: &quot;Medan&quot; } };
+const salinan = { ...asli };
+salinan.alamat.kota = &quot;Bandung&quot;;
+console.log(asli.alamat.kota);</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>const asli = { nama: &quot;Sari&quot;, alamat: { kota: &quot;Medan&quot; } };
+const salinan = structuredClone(asli);
+salinan.alamat.kota = &quot;Bandung&quot;;
+console.log(asli.alamat.kota);</code></pre></details>
 <h2>Poin penting</h2><ul><li>localStorage untuk data kecil yang bertahan.</li><li>IntersectionObserver untuk mendeteksi elemen terlihat.</li><li>Bungkus akses storage dengan try/catch.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>API yang tepat untuk lazy load saat elemen terlihat?</summary><p class="ok">Jawaban: IntersectionObserver</p><p>Lebih hemat daripada memantau scroll terus-menerus.</p></details>
-<a class="cta" href="/#fe-3-9">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe/modul-es">Modul ES</a></p><p>Berikutnya: <a href="/belajar/fe/bundler-vite">Bundler &amp; Vite</a></p>
+<a class="cta" href="/#fe-3-9">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe/modul-es">Modul ES</a></p><p>Berikutnya: <a href="/belajar/fe/closure-fungsi-yang-mengingat">Closure: fungsi yang mengingat</a></p>
 </main>
 <footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
 </body>

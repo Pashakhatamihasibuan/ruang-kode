@@ -30,6 +30,17 @@
 .galeri div { background: #E9EFF5; border-radius: 10px; padding: 18px 10px; text-align: center; }
 .galeri .besar { grid-column: span 2; background: #F6ECE5; }</code></pre>
 <h2>Tantangan</h2><ol><li>Buat kotak "Kopi Gayo" juga membentang 2 baris.</li></ol>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Menengahkan isi dalam dua baris</summary><p>Trik lama memakai <code>position</code> dan <code>transform</code>. Grid dengan <code>place-items: center</code> menengahkan isi secara horizontal dan vertikal.</p><div class="lbl">KODE PEMULA</div><pre><code>.wadah { position: relative; height: 300px; }
+.isi {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>.wadah {
+  display: grid;
+  place-items: center;
+  height: 300px;
+}</code></pre></details>
 <h2>Poin penting</h2><ul><li>Grid untuk dua arah, flexbox untuk satu arah.</li><li>fr = bagian dari sisa ruang.</li><li>repeat(auto-fill, minmax(…, 1fr)) membuat galeri responsif.</li><li>span membentangkan item.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Unit grid untuk &quot;bagian dari sisa ruang&quot;?</summary><p class="ok">Jawaban: fr</p><p>fr = fraction.</p></details>
 <a class="cta" href="/#css-5-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/css/flexbox">Flexbox</a></p><p>Berikutnya: <a href="/belajar/css/media-query-mobile-first">Media query &amp; mobile-first</a></p>

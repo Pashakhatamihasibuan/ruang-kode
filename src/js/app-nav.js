@@ -86,6 +86,7 @@ function route(){
 /* ---------- peristiwa global ---------- */
 document.addEventListener('click',e=>{
   const c=e.target.closest('.copy[data-copy]');if(c){copyFrom(c);return}
+  const pa=e.target.closest('[data-proall]');if(pa){const o=pa.getAttribute('aria-expanded')!=='true';pa.closest('.pro-sec').querySelectorAll('details.pro').forEach(d=>d.open=o);pa.setAttribute('aria-expanded',o);pa.textContent=o?'Tutup semua':'Buka semua';return}
   const sa=e.target.closest('#sList a');if(sa){e.preventDefault();goSearch(sa);return}
   const tg=e.target.closest('[data-term]');if(tg&&!tg.closest('.gl')){glState={q:'',cat:'Semua',focus:tg.dataset.term};location.hash='glosarium';return}
   const b=e.target.closest('[data-to]');if(b){const t=document.querySelector(b.dataset.to);if(t)t.scrollIntoView({behavior:RM()?'auto':'smooth',block:'start'})}

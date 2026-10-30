@@ -41,6 +41,11 @@ try { gagal(&quot;stok habis&quot;); } catch (e) { console.log((e as Error).mess
 <div class="lbl">KELUARAN</div><pre><code>LOG: mulai
 4 3 0
 stok habis</code></pre>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Pakai unknown, bukan any</summary><p><code>any</code> mematikan pemeriksaan tipe, sehingga salah ketik baru ketahuan saat program jalan. <code>unknown</code> memaksa kamu memeriksa tipenya dulu, lalu TypeScript membantumu sepenuhnya.</p><div class="lbl">KODE PEMULA</div><pre><code>const data: any = JSON.parse(&#x27;{&quot;harga&quot;: 85000}&#x27;);
+console.log(data.hargaa * 2);</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>const data: unknown = JSON.parse(&#x27;{&quot;harga&quot;: 85000}&#x27;);
+if (typeof data === &quot;object&quot; &amp;&amp; data !== null &amp;&amp; &quot;harga&quot; in data &amp;&amp; typeof data.harga === &quot;number&quot;) {
+  console.log(data.harga * 2);
+}</code></pre></details>
 <h2>Poin penting</h2><ul><li>Hindari any.</li><li>unknown wajib diperiksa sebelum dipakai.</li><li>void: tidak mengembalikan nilai.</li><li>never: tidak mungkin terjadi.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Data JSON dari luar sebaiknya diberi tipe awal?</summary><p class="ok">Jawaban: unknown</p><p>Paksa pemeriksaan sebelum dipakai.</p></details>
 <a class="cta" href="/#ts-2-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/ts/objek-literal-enum">Objek, literal &amp; enum</a></p><p>Berikutnya: <a href="/belajar/ts/menulis-tipe-fungsi">Menulis tipe fungsi</a></p>

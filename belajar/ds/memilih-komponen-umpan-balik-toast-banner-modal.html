@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Memilih komponen umpan balik: toast, banner, modal · Design System · Ruang Kode</title>
+<meta name="description" content="Design system yang matang tidak hanya menyediakan komponen, tetapi juga menjelaskan kapan setiap komponen dipakai. Tiga komponen umpan balik yang sering…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/ds/memilih-komponen-umpan-balik-toast-banner-modal">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Memilih komponen umpan balik: toast, banner, modal · Design System · Ruang Kode"><meta property="og:description" content="Design system yang matang tidak hanya menyediakan komponen, tetapi juga menjelaskan kapan setiap komponen dipakai. Tiga komponen umpan balik yang sering…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/ds/memilih-komponen-umpan-balik-toast-banner-modal"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Memilih komponen umpan balik: toast, banner, modal", "description": "Design system yang matang tidak hanya menyediakan komponen, tetapi juga menjelaskan kapan setiap komponen dipakai. Tiga komponen umpan balik yang sering…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/ds/memilih-komponen-umpan-balik-toast-banner-modal", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Design System", "url": "https://ruang-kode-nine.vercel.app/belajar/ds"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Design System", "item": "https://ruang-kode-nine.vercel.app/belajar/ds"}, {"@type": "ListItem", "position": 3, "name": "Memilih komponen umpan balik: toast, banner, modal", "item": "https://ruang-kode-nine.vercel.app/belajar/ds/memilih-komponen-umpan-balik-toast-banner-modal"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/ds">Design System</a> / Modul 5</nav>
+<div class="eyebrow">Design System · Modul 5 · Konsep &amp; kode</div><h1>Memilih komponen umpan balik: toast, banner, modal</h1><a class="cta" href="/#ds-5-3">Buka versi interaktif</a>
+<p>Design system yang matang tidak hanya menyediakan komponen, tetapi juga menjelaskan <b>kapan</b> setiap komponen dipakai. Tiga komponen umpan balik yang sering tertukar adalah toast, banner, dan modal.</p>
+<p><b>Toast</b> untuk konfirmasi ringan yang tidak butuh tindakan ("Alamat disimpan"), hilang sendiri, dan diumumkan lewat <code>role="status"</code>. <b>Banner</b> untuk informasi yang tetap relevan selama pengguna di halaman itu ("Koneksi terputus"). <b>Modal</b> hanya untuk keputusan yang harus dijawab sebelum lanjut, karena memblokir seluruh halaman.</p>
+<p>Modal yang baik memindahkan fokus ke dalamnya, mengunci fokus selama terbuka, bisa ditutup dengan Esc, dan mengembalikan fokus ke tombol pemicunya. Elemen <code>&lt;dialog&gt;</code> dengan <code>showModal()</code> memberi sebagian besar perilaku ini secara bawaan.</p>
+<div class="lbl">HTML</div><pre><code>&lt;!-- Toast: konfirmasi ringan, tidak memblokir --&gt;
+&lt;div class=&quot;toast&quot; role=&quot;status&quot;&gt;Alamat disimpan&lt;/div&gt;
+
+&lt;!-- Banner: informasi selama di halaman ini --&gt;
+&lt;div class=&quot;banner banner--warning&quot; role=&quot;alert&quot;&gt;
+  Koneksi terputus. Perubahan akan dikirim saat online kembali.
+&lt;/div&gt;
+
+&lt;!-- Modal: keputusan yang harus dijawab --&gt;
+&lt;dialog id=&quot;hapus&quot; aria-labelledby=&quot;hapus-judul&quot;&gt;
+  &lt;h2 id=&quot;hapus-judul&quot;&gt;Hapus alamat &quot;Rumah&quot;?&lt;/h2&gt;
+  &lt;p&gt;Alamat ini tidak bisa dikembalikan.&lt;/p&gt;
+  &lt;button value=&quot;batal&quot;&gt;Batal&lt;/button&gt;
+  &lt;button value=&quot;hapus&quot; class=&quot;danger&quot;&gt;Hapus alamat&lt;/button&gt;
+&lt;/dialog&gt;</code></pre>
+<h2>Poin penting</h2><ul><li>Toast: konfirmasi ringan, hilang sendiri, role=status.</li><li>Banner: informasi yang tetap relevan di halaman.</li><li>Modal: hanya untuk keputusan yang memblokir.</li><li>Modal mengelola fokus dan bisa ditutup dengan Esc.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>&quot;Pesanan berhasil disimpan&quot; paling cocok ditampilkan sebagai?</summary><p class="ok">Jawaban: Toast</p><p>Konfirmasi ringan tidak perlu memblokir pengguna.</p></details><details><summary>Kapan modal tepat dipakai?</summary><p class="ok">Jawaban: Saat pengguna harus memutuskan sebelum lanjut, misalnya konfirmasi hapus</p><p>Modal memblokir, jadi pakai hanya untuk keputusan penting.</p></details>
+<a class="cta" href="/#ds-5-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/ds/anatomi-komponen-form-umpan-balik">Anatomi komponen form &amp; umpan balik</a></p><p>Berikutnya: <a href="/belajar/ds/dokumentasi-katalog-komponen">Dokumentasi &amp; katalog komponen</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

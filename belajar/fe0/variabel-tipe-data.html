@@ -33,6 +33,11 @@ console.log(typeof nama, typeof saldo, typeof aktif);
 console.log(0.1 + 0.2);          // pecahan biner tidak selalu tepat
 console.log(&quot;5&quot; + 3, &quot;5&quot; - 3);   // + menyambung string, - mengubah ke angka</code></pre>
 <h2>Tantangan</h2><ol><li>Buat variabel <code>kota</code> berisi "Bandung" lalu cetak dengan console.log.</li></ol>
+<h2>Kode pemula vs kode rapi</h2><details><summary>Template literal untuk menyusun teks</summary><p>Backtick dan <code>${...}</code> menyisipkan nilai langsung ke teks, tanpa tanda <code>+</code> dan tanda kutip yang mudah tertukar. <code>toLocaleString("id-ID")</code> memberi pemisah ribuan gaya Indonesia.</p><div class="lbl">KODE PEMULA</div><pre><code>var nama = &quot;Sari&quot;;
+var total = 1250000;
+console.log(&quot;Halo &quot; + nama + &quot;, totalmu Rp&quot; + total + &quot;.&quot;);</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>const nama = &quot;Sari&quot;;
+const total = 1_250_000;
+console.log(`Halo ${nama}, totalmu Rp${total.toLocaleString(&quot;id-ID&quot;)}.`);</code></pre></details>
 <h2>Poin penting</h2><ul><li>const untuk nilai tetap, let untuk nilai yang berubah.</li><li>typeof memeriksa tipe.</li><li>Template literal: `Halo ${nama}`.</li><li>"5" + 3 menghasilkan "53"; hati-hati dengan konversi otomatis.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Hasil &quot;5&quot; + 3 di JavaScript?</summary><p class="ok">Jawaban: &quot;53&quot;</p><p>+ dengan string menjadi penyambungan.</p></details><details><summary>Kapan memakai const?</summary><p class="ok">Jawaban: Saat variabel tidak akan diberi nilai baru</p><p>Default-lah ke const, pakai let bila perlu.</p></details>
 <a class="cta" href="/#fe0-4-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe0/apa-kerja-frontend-developer">Apa kerja frontend developer?</a></p><p>Berikutnya: <a href="/belajar/fe0/operator-percabangan">Operator &amp; percabangan</a></p>

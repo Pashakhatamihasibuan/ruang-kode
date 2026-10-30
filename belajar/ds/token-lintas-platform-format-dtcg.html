@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Token lintas platform: format DTCG · Design System · Ruang Kode</title>
+<meta name="description" content="Token yang hanya hidup di Figma atau hanya di CSS akan cepat berbeda. Solusinya: simpan token di satu berkas sumber, lalu hasilkan CSS, kode Android, dan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/ds/token-lintas-platform-format-dtcg">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Token lintas platform: format DTCG · Design System · Ruang Kode"><meta property="og:description" content="Token yang hanya hidup di Figma atau hanya di CSS akan cepat berbeda. Solusinya: simpan token di satu berkas sumber, lalu hasilkan CSS, kode Android, dan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/ds/token-lintas-platform-format-dtcg"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Token lintas platform: format DTCG", "description": "Token yang hanya hidup di Figma atau hanya di CSS akan cepat berbeda. Solusinya: simpan token di satu berkas sumber, lalu hasilkan CSS, kode Android, dan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/ds/token-lintas-platform-format-dtcg", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Design System", "url": "https://ruang-kode-nine.vercel.app/belajar/ds"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Design System", "item": "https://ruang-kode-nine.vercel.app/belajar/ds"}, {"@type": "ListItem", "position": 3, "name": "Token lintas platform: format DTCG", "item": "https://ruang-kode-nine.vercel.app/belajar/ds/token-lintas-platform-format-dtcg"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/ds">Design System</a> / Modul 4</nav>
+<div class="eyebrow">Design System · Modul 4 · Konsep &amp; kode</div><h1>Token lintas platform: format DTCG</h1><a class="cta" href="/#ds-4-5">Buka versi interaktif</a>
+<p>Token yang hanya hidup di Figma atau hanya di CSS akan cepat berbeda. Solusinya: simpan token di satu berkas sumber, lalu <b>hasilkan</b> CSS, kode Android, dan iOS darinya.</p>
+<p>Format yang kini dipakai banyak alat adalah format <b>DTCG</b> (Design Tokens Community Group, W3C). Versi stabil pertamanya, 2025.10, dirilis Oktober 2025. Setiap token punya <code>$value</code> dan <code>$type</code>, dan token bisa merujuk token lain dengan kurung kurawal.</p>
+<p>Alat seperti Style Dictionary atau Tokens Studio membaca berkas ini dan menulis variabel CSS, berkas Kotlin, Swift, dan lainnya. Perubahan warna brand cukup di satu tempat, lalu semua platform ikut berubah lewat pipeline build.</p>
+<div class="lbl">JSON</div><pre><code>{
+  &quot;color&quot;: {
+    &quot;blue&quot;: {
+      &quot;600&quot;: { &quot;$value&quot;: &quot;#2563EB&quot;, &quot;$type&quot;: &quot;color&quot; }
+    },
+    &quot;action&quot;: {
+      &quot;primary&quot;: { &quot;$value&quot;: &quot;{color.blue.600}&quot;, &quot;$type&quot;: &quot;color&quot;,
+                   &quot;$description&quot;: &quot;Latar tombol utama&quot; }
+    }
+  },
+  &quot;space&quot;: {
+    &quot;md&quot;: { &quot;$value&quot;: &quot;16px&quot;, &quot;$type&quot;: &quot;dimension&quot; }
+  }
+}
+
+/* hasil build untuk web */
+:root {
+  --color-blue-600: #2563EB;
+  --color-action-primary: var(--color-blue-600);
+  --space-md: 16px;
+}</code></pre>
+<h2>Poin penting</h2><ul><li>Satu sumber token, banyak keluaran platform.</li><li>DTCG: $value, $type, dan rujukan {token.lain}.</li><li>Style Dictionary / Tokens Studio menghasilkan kode.</li><li>Perubahan brand cukup di satu berkas.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Apa arti &quot;$value&quot;: &quot;{color.blue.600}&quot;?</summary><p class="ok">Jawaban: Token ini merujuk nilai token color.blue.600</p><p>Kurung kurawal adalah rujukan antartoken.</p></details><details><summary>Keuntungan utama berkas token tunggal?</summary><p class="ok">Jawaban: Web, Android, dan iOS memakai nilai yang sama</p><p>Satu sumber mencegah nilai berbeda di tiap platform.</p></details>
+<a class="cta" href="/#ds-4-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/ds/mode-gelap-dengan-token-css">Mode gelap dengan token CSS</a></p><p>Berikutnya: <a href="/belajar/ds/komponen-tombol-lengkap-dengan-state">Komponen tombol lengkap dengan state</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

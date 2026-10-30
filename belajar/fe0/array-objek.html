@@ -39,6 +39,25 @@ const { harga } = produk[0];
 const baru = [...produk, { nama: &quot;Madu&quot;, harga: 120000, stok: 15 }];
 console.log(harga, baru.length);</code></pre>
 <h2>Tantangan</h2><ol><li>Cetak array harga semua produk memakai <code>map</code>.</li></ol>
+<h2>Kode pemula vs kode rapi</h2><details><summary>map, filter, dan reduce</summary><p>Ketiga method ini mengganti loop dengan variabel penampung. Kodenya terbaca sebagai langkah: saring, ubah, jumlahkan.</p><div class="lbl">KODE PEMULA</div><pre><code>const keranjang = [{ nama: &quot;Kopi&quot;, harga: 85000, qty: 1 }, { nama: &quot;Teh&quot;, harga: 25000, qty: 0 }, { nama: &quot;Gula&quot;, harga: 18000, qty: 2 }];
+let total = 0;
+for (let i = 0; i &lt; keranjang.length; i++) {
+  if (keranjang[i].qty &gt; 0) {
+    total = total + keranjang[i].harga * keranjang[i].qty;
+  }
+}
+console.log(total);</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>const keranjang = [{ nama: &quot;Kopi&quot;, harga: 85_000, qty: 1 }, { nama: &quot;Teh&quot;, harga: 25_000, qty: 0 }, { nama: &quot;Gula&quot;, harga: 18_000, qty: 2 }];
+const total = keranjang
+  .filter((b) =&gt; b.qty &gt; 0)
+  .reduce((jml, b) =&gt; jml + b.harga * b.qty, 0);
+console.log(total);</code></pre><div class="lbl">KELUARAN KEDUANYA</div><pre><code>121000</code></pre></details><details><summary>Destructuring dan spread</summary><p>Destructuring mengambil beberapa properti sekaligus, dan spread <code>...</code> menyalin objek sambil mengubah sebagian isinya tanpa mengubah aslinya.</p><div class="lbl">KODE PEMULA</div><pre><code>const produk = { nama: &quot;Kopi&quot;, harga: 85000, stok: 40 };
+const nama = produk.nama;
+const harga = produk.harga;
+const baru = { nama: produk.nama, harga: produk.harga, stok: 39 };
+console.log(nama, harga, baru, produk.stok);</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>const produk = { nama: &quot;Kopi&quot;, harga: 85_000, stok: 40 };
+const { nama, harga } = produk;
+const baru = { ...produk, stok: 39 };
+console.log(nama, harga, baru, produk.stok);</code></pre><div class="lbl">KELUARAN KEDUANYA</div><pre><code>Kopi 85000 { nama: &#x27;Kopi&#x27;, harga: 85000, stok: 39 } 40</code></pre></details>
 <h2>Poin penting</h2><ul><li>Array berurutan, objek kunci-nilai.</li><li>map, filter, reduce, find adalah alat utama.</li><li>Destructuring dan spread meringkas kode.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Metode untuk menyaring elemen yang memenuhi syarat?</summary><p class="ok">Jawaban: filter</p><p>filter mengembalikan array baru yang lolos syarat.</p></details>
 <a class="cta" href="/#fe0-4-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe0/fungsi">Fungsi</a></p><p>Berikutnya: <a href="/belajar/fe0/dom-event">DOM &amp; event</a></p>

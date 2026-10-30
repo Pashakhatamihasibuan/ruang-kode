@@ -28,6 +28,7 @@
 =SUMIFS(E2:E9;B2:B9;&quot;Jakarta&quot;)      → omzet Jakarta
 =IF(E2&gt;=300000;&quot;Besar&quot;;&quot;Biasa&quot;)     → label transaksi
 =MAX(E2:E9)-MIN(E2:E9)              → rentang omzet</code></pre>
+<h2>Kode pemula vs kode rapi</h2><details><summary>IFS menggantikan IF bersarang</summary><p>IF di dalam IF di dalam IF sulit dibaca dan mudah salah tutup kurung. IFS menuliskan setiap syarat dan hasilnya berpasangan dari atas ke bawah.</p><div class="lbl">KODE PEMULA</div><pre><code>=IF(B2&gt;=85; &quot;A&quot;; IF(B2&gt;=70; &quot;B&quot;; IF(B2&gt;=55; &quot;C&quot;; &quot;D&quot;)))</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>=IFS(B2&gt;=85; &quot;A&quot;; B2&gt;=70; &quot;B&quot;; B2&gt;=55; &quot;C&quot;; TRUE; &quot;D&quot;)</code></pre></details>
 <h2>Poin penting</h2><ul><li>Rumus diawali =, rujuk rentang.</li><li>SUM/AVERAGE/COUNT/MIN/MAX + versi IF/IFS.</li><li>IF untuk kolom keputusan; pemisah ; di lokal Indonesia.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Rumus menghitung jumlah transaksi dari Bandung?</summary><p class="ok">Jawaban: =COUNTIF(B2:B9;&quot;Bandung&quot;)</p><p>COUNTIF menghitung sel yang memenuhi kondisi.</p></details>
 <a class="cta" href="/#da-2-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/da/jenis-data-skala-ukur">Jenis data &amp; skala ukur</a></p><p>Berikutnya: <a href="/belajar/da/teks-tanggal-trim-proper-substitute-datedif">Teks &amp; tanggal: TRIM, PROPER, SUBSTITUTE, DATEDIF</a></p>
