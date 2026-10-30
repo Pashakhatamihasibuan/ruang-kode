@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Metrik, KPI &amp; skema bintang · BI Analyst · Ruang Kode</title>
+<meta name="description" content="Metrik adalah angka yang diukur (omzet, jumlah transaksi). KPI adalah metrik yang dipilih untuk mengukur keberhasilan tujuan tertentu, lengkap dengan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/bi/metrik-kpi-skema-bintang">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Metrik, KPI &amp; skema bintang · BI Analyst · Ruang Kode"><meta property="og:description" content="Metrik adalah angka yang diukur (omzet, jumlah transaksi). KPI adalah metrik yang dipilih untuk mengukur keberhasilan tujuan tertentu, lengkap dengan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/bi/metrik-kpi-skema-bintang"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Metrik, KPI & skema bintang", "description": "Metrik adalah angka yang diukur (omzet, jumlah transaksi). KPI adalah metrik yang dipilih untuk mengukur keberhasilan tujuan tertentu, lengkap dengan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/bi/metrik-kpi-skema-bintang", "learningResourceType": "Praktik SQL", "isPartOf": {"@type": "Course", "name": "BI Analyst", "url": "https://ruang-kode-nine.vercel.app/belajar/bi"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "BI Analyst", "item": "https://ruang-kode-nine.vercel.app/belajar/bi"}, {"@type": "ListItem", "position": 3, "name": "Metrik, KPI & skema bintang", "item": "https://ruang-kode-nine.vercel.app/belajar/bi/metrik-kpi-skema-bintang"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/bi">BI Analyst</a> / Modul 2</nav>
+<div class="eyebrow">BI Analyst · Modul 2 · Praktik SQL</div><h1>Metrik, KPI &amp; skema bintang</h1><a class="cta" href="/#bi-2-1">Buka versi interaktif</a>
+<p><b>Metrik</b> adalah angka yang diukur (omzet, jumlah transaksi). <b>KPI</b> adalah metrik yang dipilih untuk mengukur keberhasilan tujuan tertentu, lengkap dengan target: "omzet kuartal 2 Rp 65 juta".</p>
+<p>KPI yang baik itu spesifik, terukur, bisa dipengaruhi tim, dan punya pembanding (target, periode lalu). Hindari <b>vanity metric</b> seperti jumlah unduhan tanpa melihat pengguna aktif.</p>
+<p>Database latihan jalur ini memakai <b>skema bintang</b>: tabel <code>fakta_penjualan</code> berisi angka transaksi, dikelilingi tabel dimensi <code>dim_tanggal</code>, <code>dim_produk</code>, <code>dim_toko</code>. Omzet bersih = jumlah × harga × (100 − diskon) / 100.</p>
+<div class="lbl">Isi tabel fakta</div><pre><code>SELECT * FROM fakta_penjualan LIMIT 10;</code></pre>
+<div class="lbl">Omzet bersih total &amp; jumlah transaksi</div><pre><code>SELECT COUNT(*) AS transaksi,
+       SUM(f.jumlah * f.harga * (100 - f.diskon_persen) / 100) AS omzet_bersih
+FROM fakta_penjualan f;</code></pre>
+<div class="lbl">Rata-rata nilai transaksi per toko</div><pre><code>SELECT t.nama AS toko,
+       COUNT(*) AS transaksi,
+       ROUND(AVG(f.jumlah * f.harga * (100 - f.diskon_persen) / 100)) AS rata_transaksi
+FROM fakta_penjualan f
+JOIN dim_toko t ON t.toko_id = f.toko_id
+GROUP BY t.nama
+ORDER BY rata_transaksi DESC;</code></pre>
+<h2>Tantangan</h2><ol><li>Hitung total jumlah barang terjual (kolom total_unit) per kategori produk, urutkan dari yang terbesar.</li></ol>
+<h2>Poin penting</h2><ul><li>KPI = metrik + tujuan + target.</li><li>Hindari vanity metric.</li><li>Fakta berisi angka; dimensi berisi konteks.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Mana yang KPI?</summary><p class="ok">Jawaban: Omzet kuartal 2 mencapai Rp 65 juta</p><p>Terhubung tujuan dan punya target.</p></details>
+<a class="cta" href="/#bi-2-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/bi/berpikir-seperti-pemilik-bisnis">Berpikir seperti pemilik bisnis</a></p><p>Berikutnya: <a href="/belajar/bi/pertumbuhan-margin-kontribusi">Pertumbuhan, margin &amp; kontribusi</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

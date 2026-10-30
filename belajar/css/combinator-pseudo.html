@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Combinator &amp; pseudo · CSS · Ruang Kode</title>
+<meta name="description" content="Combinator memilih berdasarkan hubungan: nav a (keturunan), ul &gt; li (anak langsung), h2 + p (saudara tepat setelahnya), h2 ~ p (semua saudara…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/css/combinator-pseudo">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Combinator &amp; pseudo · CSS · Ruang Kode"><meta property="og:description" content="Combinator memilih berdasarkan hubungan: nav a (keturunan), ul &gt; li (anak langsung), h2 + p (saudara tepat setelahnya), h2 ~ p (semua saudara…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/css/combinator-pseudo"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Combinator & pseudo", "description": "Combinator memilih berdasarkan hubungan: nav a (keturunan), ul > li (anak langsung), h2 + p (saudara tepat setelahnya), h2 ~ p (semua saudara…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/css/combinator-pseudo", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "CSS", "url": "https://ruang-kode-nine.vercel.app/belajar/css"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "CSS", "item": "https://ruang-kode-nine.vercel.app/belajar/css"}, {"@type": "ListItem", "position": 3, "name": "Combinator & pseudo", "item": "https://ruang-kode-nine.vercel.app/belajar/css/combinator-pseudo"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/css">CSS</a> / Modul 7</nav>
+<div class="eyebrow">CSS · Modul 7 · Praktik langsung</div><h1>Combinator &amp; pseudo</h1><a class="cta" href="/#css-7-1">Buka versi interaktif</a>
+<p>Combinator memilih berdasarkan hubungan: <code>nav a</code> (keturunan), <code>ul &gt; li</code> (anak langsung), <code>h2 + p</code> (saudara tepat setelahnya), <code>h2 ~ p</code> (semua saudara setelahnya). Selector atribut: <code>a[href^="https"]</code>, <code>input[type="email"]</code>.</p>
+<p><b>Pseudo-class</b> memilih keadaan: <code>:hover</code>, <code>:focus-visible</code>, <code>:checked</code>, <code>:nth-child(2n)</code>, <code>:not(.aktif)</code>, <code>:has(img)</code>. <b>Pseudo-element</b> menata bagian elemen: <code>::before</code>, <code>::after</code>, <code>::first-letter</code>, <code>::placeholder</code>.</p>
+<div class="lbl">HTML</div><pre><code>&lt;ul class=&quot;daftar&quot;&gt;
+  &lt;li&gt;Kopi Gayo&lt;/li&gt;&lt;li class=&quot;habis&quot;&gt;Rendang Kaleng&lt;/li&gt;&lt;li&gt;Teh Melati&lt;/li&gt;&lt;li&gt;Keripik&lt;/li&gt;
+&lt;/ul&gt;
+&lt;a href=&quot;https://roadmap.sh&quot;&gt;Tautan luar&lt;/a&gt; · &lt;a href=&quot;#bawah&quot;&gt;Tautan dalam&lt;/a&gt;</code></pre>
+<div class="lbl">CSS</div><pre><code>.daftar &gt; li { padding: 6px; font: 14px sans-serif; }
+.daftar &gt; li:nth-child(even) { background: #F2F1EC; }
+.daftar li:not(.habis):hover { background: #FBE7A8; }
+.habis::after { content: &quot; (habis)&quot;; color: #B23A2E; font-size: 12px; }
+a[href^=&quot;https&quot;]::after { content: &quot; ↗&quot;; }</code></pre>
+<h2>Tantangan</h2><ol><li>Buat baris pertama daftar bercetak tebal memakai <code>:first-child</code>.</li></ol>
+<h2>Poin penting</h2><ul><li>spasi = keturunan, > = anak langsung, + = saudara berikutnya, ~ = semua saudara berikutnya.</li><li>Pseudo-class untuk keadaan, pseudo-element untuk bagian.</li><li>:has() memilih induk berdasarkan isinya.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Selector untuk baris genap?</summary><p class="ok">Jawaban: :nth-child(even)</p><p>Atau :nth-child(2n).</p></details>
+<a class="cta" href="/#css-7-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/css/container-query">Container query</a></p><p>Berikutnya: <a href="/belajar/css/transform-transisi-animasi">Transform, transisi &amp; animasi</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

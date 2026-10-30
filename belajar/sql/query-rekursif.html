@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Query rekursif · SQL · Ruang Kode</title>
+<meta name="description" content="WITH RECURSIVE membuat CTE yang memanggil dirinya sendiri, cocok untuk data berbentuk hierarki atau pohon: struktur organisasi, kategori bertingkat, atau…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/sql/query-rekursif">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Query rekursif · SQL · Ruang Kode"><meta property="og:description" content="WITH RECURSIVE membuat CTE yang memanggil dirinya sendiri, cocok untuk data berbentuk hierarki atau pohon: struktur organisasi, kategori bertingkat, atau…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/sql/query-rekursif"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Query rekursif", "description": "WITH RECURSIVE membuat CTE yang memanggil dirinya sendiri, cocok untuk data berbentuk hierarki atau pohon: struktur organisasi, kategori bertingkat, atau…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/sql/query-rekursif", "learningResourceType": "Praktik SQL", "isPartOf": {"@type": "Course", "name": "SQL", "url": "https://ruang-kode-nine.vercel.app/belajar/sql"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "SQL", "item": "https://ruang-kode-nine.vercel.app/belajar/sql"}, {"@type": "ListItem", "position": 3, "name": "Query rekursif", "item": "https://ruang-kode-nine.vercel.app/belajar/sql/query-rekursif"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/sql">SQL</a> / Modul 14</nav>
+<div class="eyebrow">SQL · Modul 14 · Praktik SQL</div><h1>Query rekursif</h1><a class="cta" href="/#sql-14-2">Buka versi interaktif</a>
+<p><code>WITH RECURSIVE</code> membuat CTE yang memanggil dirinya sendiri, cocok untuk data berbentuk hierarki atau pohon: struktur organisasi, kategori bertingkat, atau rute.</p>
+<p>Bentuknya selalu dua bagian yang digabung <code>UNION ALL</code>. <b>Anchor</b> adalah titik awal (misalnya direktur yang tidak punya atasan). <b>Bagian rekursif</b> men-JOIN tabel dengan hasil putaran sebelumnya untuk menemukan tingkat berikutnya. Proses berulang sampai putaran baru tidak menghasilkan baris lagi.</p>
+<p>Pastikan ada kondisi berhenti. Tanpa itu, rekursi bisa berjalan tanpa akhir; simulator ini menghentikannya setelah 1000 putaran.</p>
+<div class="lbl">Deret angka 1 sampai 10</div><pre><code>WITH RECURSIVE angka(n) AS (
+  SELECT 1
+  UNION ALL
+  SELECT n + 1 FROM angka WHERE n &lt; 10
+)
+SELECT n FROM angka;</code></pre>
+<div class="lbl">Struktur organisasi</div><pre><code>WITH RECURSIVE bagan AS (
+  SELECT id, nama, jabatan, 0 AS tingkat, nama AS jalur
+  FROM karyawan WHERE atasan_id IS NULL
+  UNION ALL
+  SELECT k.id, k.nama, k.jabatan, b.tingkat + 1, b.jalur || &#x27; &gt; &#x27; || k.nama
+  FROM karyawan k JOIN bagan b ON k.atasan_id = b.id
+)
+SELECT tingkat, nama, jabatan, jalur FROM bagan ORDER BY jalur;</code></pre>
+<div class="lbl">Kalender 7 hari</div><pre><code>WITH RECURSIVE hari(t) AS (
+  SELECT &#x27;2024-11-01&#x27;
+  UNION ALL
+  SELECT DATE(t, &#x27;+1 day&#x27;) FROM hari WHERE t &lt; &#x27;2024-11-07&#x27;
+)
+SELECT t, STRFTIME(&#x27;%w&#x27;, t) AS hari_ke FROM hari;</code></pre>
+<h2>Tantangan</h2><ol><li>Dengan WITH RECURSIVE, tampilkan nama semua bawahan (langsung maupun tidak langsung) dari Umi (id 3). Satu kolom: nama.</li></ol>
+<h2>Poin penting</h2><ul><li>Anchor UNION ALL bagian rekursif.</li><li>Bagian rekursif men-JOIN hasil putaran sebelumnya.</li><li>Berhenti saat putaran tidak menghasilkan baris.</li><li>Cocok untuk pohon dan hierarki.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Bagian yang dijalankan sekali di awal CTE rekursif?</summary><p class="ok">Jawaban: Anchor</p><p>Anchor adalah titik awal.</p></details><details><summary>Kapan rekursi berhenti?</summary><p class="ok">Jawaban: Saat putaran baru tidak menghasilkan baris</p><p>Itulah kondisi berhentinya.</p></details>
+<a class="cta" href="/#sql-14-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/cte-with">CTE: WITH</a></p><p>Berikutnya: <a href="/belajar/sql/window-function-row-number-rank-dense-rank">Window function: ROW_NUMBER, RANK, DENSE_RANK</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

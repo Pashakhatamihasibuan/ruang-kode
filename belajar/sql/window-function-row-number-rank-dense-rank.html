@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Window function: ROW_NUMBER, RANK, DENSE_RANK · SQL · Ruang Kode</title>
+<meta name="description" content="Window function menghitung nilai berdasarkan sekelompok baris yang berkaitan, tetapi tidak menggabungkan baris seperti GROUP BY. Setiap baris tetap…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/sql/window-function-row-number-rank-dense-rank">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Window function: ROW_NUMBER, RANK, DENSE_RANK · SQL · Ruang Kode"><meta property="og:description" content="Window function menghitung nilai berdasarkan sekelompok baris yang berkaitan, tetapi tidak menggabungkan baris seperti GROUP BY. Setiap baris tetap…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/sql/window-function-row-number-rank-dense-rank"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Window function: ROW_NUMBER, RANK, DENSE_RANK", "description": "Window function menghitung nilai berdasarkan sekelompok baris yang berkaitan, tetapi tidak menggabungkan baris seperti GROUP BY. Setiap baris tetap…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/sql/window-function-row-number-rank-dense-rank", "learningResourceType": "Praktik SQL", "isPartOf": {"@type": "Course", "name": "SQL", "url": "https://ruang-kode-nine.vercel.app/belajar/sql"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "SQL", "item": "https://ruang-kode-nine.vercel.app/belajar/sql"}, {"@type": "ListItem", "position": 3, "name": "Window function: ROW_NUMBER, RANK, DENSE_RANK", "item": "https://ruang-kode-nine.vercel.app/belajar/sql/window-function-row-number-rank-dense-rank"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/sql">SQL</a> / Modul 14</nav>
+<div class="eyebrow">SQL · Modul 14 · Praktik SQL</div><h1>Window function: ROW_NUMBER, RANK, DENSE_RANK</h1><a class="cta" href="/#sql-14-3">Buka versi interaktif</a>
+<p><b>Window function</b> menghitung nilai berdasarkan sekelompok baris yang berkaitan, tetapi <i>tidak</i> menggabungkan baris seperti GROUP BY. Setiap baris tetap muncul, dengan kolom tambahan hasil perhitungan. Sintaksnya: <code>fungsi() OVER (PARTITION BY ... ORDER BY ...)</code>.</p>
+<p><code>PARTITION BY</code> membagi baris menjadi kelompok (jendela), dan <code>ORDER BY</code> di dalam OVER menentukan urutan di setiap kelompok. <code>ROW_NUMBER</code> memberi nomor urut 1, 2, 3 tanpa kembar. <code>RANK</code> memberi peringkat yang sama untuk nilai sama lalu melompat (1, 1, 3). <code>DENSE_RANK</code> tidak melompat (1, 1, 2).</p>
+<p>Pola terkenal: "ambil N teratas per kelompok", misalnya produk termahal di setiap kategori. Hitung ROW_NUMBER per kategori di CTE, lalu saring nomor 1.</p>
+<div class="lbl">Peringkat harga dalam kategori</div><pre><code>SELECT nama, kategori, harga,
+  ROW_NUMBER() OVER (PARTITION BY kategori ORDER BY harga DESC) AS no,
+  RANK() OVER (PARTITION BY kategori ORDER BY harga DESC) AS peringkat
+FROM produk;</code></pre>
+<div class="lbl">RANK vs DENSE_RANK pada nilai kembar</div><pre><code>SELECT pesanan_id, produk_id, jumlah,
+  RANK() OVER (ORDER BY jumlah DESC) AS rank_,
+  DENSE_RANK() OVER (ORDER BY jumlah DESC) AS dense
+FROM detail_pesanan;</code></pre>
+<div class="lbl">Termahal per kategori</div><pre><code>WITH urut AS (
+  SELECT nama, kategori, harga,
+         ROW_NUMBER() OVER (PARTITION BY kategori ORDER BY harga DESC) AS no
+  FROM produk
+)
+SELECT kategori, nama, harga FROM urut WHERE no = 1;</code></pre>
+<h2>Tantangan</h2><ol><li>Tampilkan nama karyawan, divisi, gaji, dan peringkat gaji di divisinya (alias peringkat, pakai DENSE_RANK, gaji tertinggi = 1).</li></ol>
+<h2>Poin penting</h2><ul><li>Window function tidak mengurangi jumlah baris.</li><li>OVER (PARTITION BY ... ORDER BY ...).</li><li>ROW_NUMBER unik; RANK melompat; DENSE_RANK rapat.</li><li>Top-N per kelompok: ROW_NUMBER di CTE, lalu WHERE no &lt;= N.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Nilai 100, 100, 90 dengan RANK menghasilkan?</summary><p class="ok">Jawaban: 1, 1, 3</p><p>RANK melompat setelah nilai kembar.</p></details><details><summary>Perbedaan GROUP BY dengan window function?</summary><p class="ok">Jawaban: GROUP BY menggabungkan baris; window tetap mempertahankan setiap baris</p><p>Window menambah kolom tanpa menghilangkan baris.</p></details>
+<a class="cta" href="/#sql-14-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/query-rekursif">Query rekursif</a></p><p>Berikutnya: <a href="/belajar/sql/lead-lag-running-total">LEAD, LAG &amp; running total</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

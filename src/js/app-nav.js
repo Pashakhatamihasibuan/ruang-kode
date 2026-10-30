@@ -17,6 +17,9 @@ const THEMES=['auto','light','dark'],THL={auto:'Tema: ikuti sistem',light:'Tema:
 function applyTheme(t){const r=document.documentElement;if(t==='auto')delete r.dataset.theme;else r.dataset.theme=t;const b=$('#themeBtn');if(b){b.textContent=THI[t];b.title=THL[t];b.setAttribute('aria-label',THL[t])}}
 let THEME=store.get('rk-theme','auto');applyTheme(THEME);
 
+/* keadaan glosarium dipakai rute dan tautan istilah, jadi dideklarasikan di sini */
+let glState={q:'',cat:'Semua',focus:null},pendingFocus=null;
+
 /* ---------- pencarian (Ctrl+K) ---------- */
 let SIDX=null,sSel=0,sRes=[];
 function searchIndex(){
@@ -24,7 +27,7 @@ function searchIndex(){
   TRACKS.forEach(t=>{SIDX.push({k:'Jalur',t:t.name,s:t.h,h:'#'+t.k,tr:t});
     t.mods.forEach((m,mi)=>SIDX.push({k:'Modul',t:m.t,s:`${t.name} · Modul ${mi+1}`,h:'#'+FLAT[t.k].find(x=>x.mi===mi).id,tr:t}));
     FLAT[t.k].forEach(x=>{if(!x.src)SIDX.push({k:KIND[kindOf(x)],t:x.title,s:`${t.name} · Modul ${x.mi+1}`,h:'#'+x.id,tr:t,n:(x.l.nodes||[]).join(' ')})})});
-  GL.forEach(g=>SIDX.push({k:'Istilah',t:g.t,s:g.en,h:'#glosarium',g:g.id}));
+  if(typeof GL!=='undefined')GL.forEach(g=>SIDX.push({k:'Istilah',t:g.t,s:g.en,h:'#glosarium',g:g.id}));
   [['Belajar saya','#saya'],['Daftar ulang soal','#ulang'],['Kuis cerita','#kuis'],['Katalog','#katalog']].forEach(([t,h])=>SIDX.push({k:'Halaman',t,s:'',h}));
   return SIDX;
 }
@@ -34,7 +37,7 @@ function doSearch(q){
   return searchIndex().map(e=>{const T=fold(e.t),all=T+' '+fold(e.s)+' '+fold(e.n||'');if(!w.every(x=>all.includes(x)))return null;
     let sc=(T.startsWith(w[0])?30:0)+(w.every(x=>T.includes(x))?20:0)+({Jalur:15,Modul:8,Halaman:6}[e.k]||0)-T.length/20;return {e,sc}}).filter(Boolean).sort((a,b)=>b.sc-a.sc).slice(0,30).map(r=>r.e);
 }
-function openSearch(){const p=$('#palette');p.hidden=false;$('#scrim').classList.add('open');const i=$('#sQ');i.value='';drawSearch('');setTimeout(()=>i.focus(),10)}
+function openSearch(){const p=$('#palette');p.hidden=false;if(!ready(['book']))need(['book']).then(()=>{SIDX=null;if(!p.hidden)drawSearch($('#sQ').value)},()=>{});$('#scrim').classList.add('open');const i=$('#sQ');i.value='';drawSearch('');setTimeout(()=>i.focus(),10)}
 function closeSearch(){$('#palette').hidden=true;$('#scrim').classList.remove('open')}
 function drawSearch(q){sRes=q.trim()?doSearch(q):TRACKS.filter(t=>LMS.last[t.k]).map(t=>({k:'Lanjutkan',t:resumeOf(t.k).title,s:t.name,h:'#'+resumeOf(t.k).id,tr:t}));sSel=0;
   $('#sList').innerHTML=sRes.length?sRes.map((r,i)=>`<li role="option" id="so${i}" aria-selected="${i===0}"><a href="${r.h}" data-g="${r.g||''}" class="${r.tr?tcls(r.tr):''}"><span class="s-k">${esc(r.k)}</span><span class="s-t"><b>${esc(r.t)}</b><small>${esc(r.s)}</small></span></a></li>`).join('')
@@ -53,10 +56,14 @@ function route(){
   let h=(location.hash||'#beranda').slice(1);
   const v=$('#view'),ol=$('#outline'),shell=$('#shell');
   const old=/^bab-(\d+)$/.exec(h);
-  if(old){const x=labLesson(+old[1]);location.replace('#'+(x?x.id:'java'));return}
   if(/^kuis-(dasar|menengah|lanjutan)$/.test(h)){location.replace('#kuis-java');return}
   const focusing=!!pendingFocus,x=BYID[h];
   let m;
+  const want=old?['book']:x?needsOf(x.t.k):TK[h]?needsOf(h):(m=/^(\w+)-(tes|ujian-\d+)$/.exec(h))&&TK[m[1]]?needsOf(m[1])
+    :/^kuis/.test(h)?['book','rt']:h==='glosarium'?['book']:[];
+  if(!ready(want)){v.dataset.page='loading';v.innerHTML='<div class="loading" role="status"><span class="spin"></span>Memuat materi…</div>';
+    need(want).then(()=>{if((location.hash||'#beranda').slice(1)===h)route()},()=>{v.innerHTML='<div class="loading err" role="alert"><p>Materi gagal dimuat. Periksa koneksi internet.</p><button class="btn primary" onclick="route()">Coba lagi</button></div>'});return}
+  if(old){const y=labLesson(+old[1]);location.replace('#'+(y?y.id:'java'));return}
   shell.classList.toggle('has-ol',!!x);ol.hidden=!x;
   const page=(name,html,wire,title,tk='',cur='')=>{v.dataset.page=name;v.innerHTML=html;setNav(tk,cur);document.title=title+' · Ruang Kode';if(wire)wire()};
   if(x){v.dataset.page='lesson';ol.innerHTML=renderOutline(x);v.innerHTML=renderLesson(x);setNav(x.t.k,'');document.title=`${x.title} · ${x.t.name} · Ruang Kode`;
@@ -65,7 +72,7 @@ function route(){
   if(TK[h])page('course',renderCourse(TK[h]),()=>wireCourse(TK[h]),`Jalur ${TK[h].name}`,h);
   else if((m=/^(\w+)-tes$/.exec(h))&&TK[m[1]])page('quiz',renderPlacement(TK[m[1]]),wireExam,`Tes penempatan ${TK[m[1]].name}`,m[1]);
   else if((m=/^(\w+)-ujian-(\d+)$/.exec(h))&&TK[m[1]]&&TK[m[1]].mods[m[2]-1])page('quiz',renderExam(TK[m[1]],m[2]-1),wireExam,`Ujian modul ${m[2]} ${TK[m[1]].name}`,m[1]);
-  else if((m=/^(\w+)-sertifikat$/.exec(h))&&TK[m[1]])page('quiz',renderCert(TK[m[1]]),()=>wireCert(TK[m[1]]),`Sertifikat ${TK[m[1]].name}`,m[1]);
+  else if((m=/^(\w+)-sertifikat$/.exec(h))&&TK[m[1]]){location.replace('#'+m[1]);return}
   else if(h==='katalog')page('course',renderCatalog(),wireCatalog,'Katalog','','katalog');
   else if(h==='saya')page('quiz',renderMine(),wireMine,'Belajar saya','','saya');
   else if(h==='ulang')page('quiz',renderReview(),wireReview,'Ulang','','ulang');
@@ -99,3 +106,12 @@ document.addEventListener('keydown',e=>{
 addEventListener('scroll',()=>{const p=$('#rprog');if(!p)return;const d=document.documentElement,mx=d.scrollHeight-innerHeight;p.style.transform=`scaleX(${mx>0&&BYID[location.hash.slice(1)]?Math.min(1,scrollY/mx):0})`},{passive:true});
 addEventListener('hashchange',route);
 updateBadges();route();
+
+/* ---------- versi web: siapkan materi lebih awal dan pasang service worker (offline) ---------- */
+let INSTALL=null;
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();INSTALL=e;const b=$('#instBtn');if(b)b.hidden=false});
+if(CHUNK){
+  (window.requestIdleCallback||(f=>setTimeout(f,1500)))(()=>need(['rt',...recent().slice(0,2).flatMap(t=>needsOf(t.k))]).catch(()=>{}));
+  if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))navigator.serviceWorker.register('/sw.js').then(r=>{
+    if(!navigator.serviceWorker.controller)r.addEventListener('updatefound',()=>{const w=r.installing;if(w)w.addEventListener('statechange',()=>{if(w.state==='activated')toast('Ruang Kode siap dipakai offline')})})}).catch(()=>{});
+}

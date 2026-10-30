@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Checked, unchecked &amp; exception buatan sendiri · Java · Ruang Kode</title>
+<meta name="description" content="Exception di Java terbagi dua. Checked exception (turunan Exception, misalnya IOException) wajib ditangani dengan try-catch atau dideklarasikan dengan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/java/checked-unchecked-exception-buatan-sendiri">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Checked, unchecked &amp; exception buatan sendiri · Java · Ruang Kode"><meta property="og:description" content="Exception di Java terbagi dua. Checked exception (turunan Exception, misalnya IOException) wajib ditangani dengan try-catch atau dideklarasikan dengan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/java/checked-unchecked-exception-buatan-sendiri"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Checked, unchecked & exception buatan sendiri", "description": "Exception di Java terbagi dua. Checked exception (turunan Exception, misalnya IOException) wajib ditangani dengan try-catch atau dideklarasikan dengan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/java/checked-unchecked-exception-buatan-sendiri", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Java", "url": "https://ruang-kode-nine.vercel.app/belajar/java"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Java", "item": "https://ruang-kode-nine.vercel.app/belajar/java"}, {"@type": "ListItem", "position": 3, "name": "Checked, unchecked & exception buatan sendiri", "item": "https://ruang-kode-nine.vercel.app/belajar/java/checked-unchecked-exception-buatan-sendiri"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/java">Java</a> / Modul 8</nav>
+<div class="eyebrow">Java · Modul 8 · Konsep &amp; kode</div><h1>Checked, unchecked &amp; exception buatan sendiri</h1><a class="cta" href="/#java-8-3">Buka versi interaktif</a>
+<p>Exception di Java terbagi dua. <b>Checked exception</b> (turunan <code>Exception</code>, misalnya <code>IOException</code>) wajib ditangani dengan try-catch atau dideklarasikan dengan <code>throws</code>; compiler memaksanya. <b>Unchecked exception</b> (turunan <code>RuntimeException</code>, misalnya <code>NullPointerException</code>) biasanya tanda bug dan tidak wajib ditangkap.</p>
+<p>Saat exception dilempar, Java mencari <code>catch</code> yang cocok mulai dari method saat ini, lalu naik ke pemanggilnya, dan seterusnya. Proses naik tumpukan pemanggilan ini disebut <b>stack unwinding</b>. Kalau sampai main tidak ada yang menangkap, program berhenti dan mencetak stack trace.</p>
+<p>Buat exception sendiri dengan menurunkan <code>Exception</code> atau <code>RuntimeException</code> agar pesan kesalahan bermakna bagi domainmu. Blok <code>finally</code> selalu dijalankan, dan <code>try-with-resources</code> menutup file atau koneksi secara otomatis.</p>
+<div class="lbl">JAVA</div><pre><code>class SaldoKurangException extends Exception {
+    SaldoKurangException(long kurang) {
+        super(&quot;Saldo kurang Rp&quot; + kurang);
+    }
+}
+
+public class Atm {
+    static long saldo = 50_000;
+
+    static void tarik(long jumlah) throws SaldoKurangException {
+        if (jumlah &gt; saldo) throw new SaldoKurangException(jumlah - saldo);
+        saldo -= jumlah;
+    }
+    static void layani(long jumlah) throws SaldoKurangException {
+        System.out.println(&quot;Memproses &quot; + jumlah);
+        tarik(jumlah);                    // exception naik dari sini
+        System.out.println(&quot;Berhasil&quot;);
+    }
+
+    public static void main(String[] args) {
+        try {
+            layani(20_000);
+            layani(80_000);
+        } catch (SaldoKurangException e) {
+            System.out.println(&quot;Gagal: &quot; + e.getMessage());
+        } finally {
+            System.out.println(&quot;Sisa saldo &quot; + saldo);
+        }
+    }
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Memproses 20000
+Berhasil
+Memproses 80000
+Gagal: Saldo kurang Rp50000
+Sisa saldo 30000
+</code></pre>
+<h2>Poin penting</h2><ul><li>Checked: wajib ditangani atau dideklarasikan dengan throws.</li><li>Unchecked (RuntimeException): biasanya bug, perbaiki kodenya.</li><li>Exception naik ke pemanggil sampai ada catch yang cocok.</li><li><code>finally</code> selalu berjalan, cocok untuk membereskan sumber daya.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa &quot;Berhasil&quot; tidak tercetak untuk 80.000?</summary><p class="ok">Jawaban: Exception melompati sisa method dan naik ke catch</p><p>Setelah throw, sisa baris di method itu dilewati.</p></details><details><summary>&lt;code&gt;IOException&lt;/code&gt; termasuk?</summary><p class="ok">Jawaban: Checked</p><p>Compiler memaksa kamu menanganinya.</p></details>
+<a class="cta" href="/#java-8-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/menangani-error-exception">Menangani error (exception)</a></p><p>Berikutnya: <a href="/belajar/java/anotasi">Anotasi</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Event, percabangan &amp; daftar · React · Ruang Kode</title>
+<meta name="description" content="Event di React ditulis camelCase: onClick, onChange, onSubmit, dan diberi fungsi, bukan pemanggilan fungsi: onClick={hapus}, bukan onClick={hapus()}.">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/react/event-percabangan-daftar">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Event, percabangan &amp; daftar · React · Ruang Kode"><meta property="og:description" content="Event di React ditulis camelCase: onClick, onChange, onSubmit, dan diberi fungsi, bukan pemanggilan fungsi: onClick={hapus}, bukan onClick={hapus()}.">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/react/event-percabangan-daftar"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Event, percabangan & daftar", "description": "Event di React ditulis camelCase: onClick, onChange, onSubmit, dan diberi fungsi, bukan pemanggilan fungsi: onClick={hapus}, bukan onClick={hapus()}.", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/react/event-percabangan-daftar", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "React", "url": "https://ruang-kode-nine.vercel.app/belajar/react"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "React", "item": "https://ruang-kode-nine.vercel.app/belajar/react"}, {"@type": "ListItem", "position": 3, "name": "Event, percabangan & daftar", "item": "https://ruang-kode-nine.vercel.app/belajar/react/event-percabangan-daftar"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/react">React</a> / Modul 1</nav>
+<div class="eyebrow">React · Modul 1 · Praktik langsung</div><h1>Event, percabangan &amp; daftar</h1><a class="cta" href="/#react-1-4">Buka versi interaktif</a>
+<p>Event di React ditulis camelCase: <code>onClick</code>, <code>onChange</code>, <code>onSubmit</code>, dan diberi fungsi, bukan pemanggilan fungsi: <code>onClick={hapus}</code>, bukan <code>onClick={hapus()}</code>.</p>
+<p>Percabangan memakai JavaScript biasa: <code>{stok &gt; 0 ? &lt;Beli /&gt; : &lt;Habis /&gt;}</code> atau <code>{promo &amp;&amp; &lt;Badge /&gt;}</code>. Hati-hati: <code>{0 &amp;&amp; ...}</code> menampilkan angka 0.</p>
+<p>Daftar dibuat dengan <code>map</code>. Setiap elemen wajib punya <code>key</code> unik dan stabil, biasanya id dari data. Jangan pakai indeks array jika urutan bisa berubah.</p>
+<div class="lbl">CSS</div><pre><code>body{font:14px system-ui,sans-serif}.ok{color:#2F7A52}.habis{color:#B23A2E}</code></pre>
+<div class="lbl">JSX</div><pre><code>const PRODUK = [
+  { id: 1, nama: &quot;Kopi Gayo&quot;, stok: 40 },
+  { id: 7, nama: &quot;Rendang Kaleng&quot;, stok: 0 },
+  { id: 2, nama: &quot;Teh Melati&quot;, stok: 120 },
+];
+
+function App() {
+  const [hanyaAda, setHanyaAda] = useState(false);
+  const daftar = hanyaAda ? PRODUK.filter(p =&gt; p.stok &gt; 0) : PRODUK;
+  return (
+    &lt;div&gt;
+      &lt;label&gt;
+        &lt;input type=&quot;checkbox&quot; checked={hanyaAda} onChange={e =&gt; setHanyaAda(e.target.checked)} /&gt;
+        {&quot; &quot;}Hanya yang tersedia
+      &lt;/label&gt;
+      &lt;ul&gt;
+        {daftar.map(p =&gt; (
+          &lt;li key={p.id}&gt;
+            {p.nama} {p.stok &gt; 0 ? &lt;span className=&quot;ok&quot;&gt;tersedia&lt;/span&gt; : &lt;span className=&quot;habis&quot;&gt;habis&lt;/span&gt;}
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+<h2>Tantangan</h2><ol><li>Centang "Hanya yang tersedia" sehingga produk habis tidak tampil.</li></ol>
+<h2>Poin penting</h2><ul><li>Event camelCase, berisi fungsi.</li><li>Percabangan dengan ternary atau &&.</li><li>Daftar dengan map dan key unik yang stabil.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Prop key sebaiknya berisi?</summary><p class="ok">Jawaban: id unik dari data</p><p>key membantu React mengenali elemen antar-render.</p></details>
+<a class="cta" href="/#react-1-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/react/state-dengan-usestate">State dengan useState</a></p><p>Berikutnya: <a href="/belajar/react/useeffect-siklus-hidup">useEffect &amp; siklus hidup</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

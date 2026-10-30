@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Portal, error boundary &amp; suspense · React · Ruang Kode</title>
+<meta name="description" content="Portal merender anak ke node DOM lain, misalnya modal yang harus berada di luar elemen dengan overflow tersembunyi: ReactDOM.createPortal(isi,…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/react/portal-error-boundary-suspense">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Portal, error boundary &amp; suspense · React · Ruang Kode"><meta property="og:description" content="Portal merender anak ke node DOM lain, misalnya modal yang harus berada di luar elemen dengan overflow tersembunyi: ReactDOM.createPortal(isi,…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/react/portal-error-boundary-suspense"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Portal, error boundary & suspense", "description": "Portal merender anak ke node DOM lain, misalnya modal yang harus berada di luar elemen dengan overflow tersembunyi: ReactDOM.createPortal(isi,…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/react/portal-error-boundary-suspense", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "React", "url": "https://ruang-kode-nine.vercel.app/belajar/react"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "React", "item": "https://ruang-kode-nine.vercel.app/belajar/react"}, {"@type": "ListItem", "position": 3, "name": "Portal, error boundary & suspense", "item": "https://ruang-kode-nine.vercel.app/belajar/react/portal-error-boundary-suspense"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/react">React</a> / Modul 3</nav>
+<div class="eyebrow">React · Modul 3 · Praktik langsung</div><h1>Portal, error boundary &amp; suspense</h1><a class="cta" href="/#react-3-2">Buka versi interaktif</a>
+<p><b>Portal</b> merender anak ke node DOM lain, misalnya modal yang harus berada di luar elemen dengan overflow tersembunyi: <code>ReactDOM.createPortal(isi, document.body)</code>.</p>
+<p><b>Error boundary</b> menangkap error saat render di komponen anak dan menampilkan cadangan, sehingga satu komponen rusak tidak membuat seluruh aplikasi putih. Saat ini error boundary masih ditulis sebagai komponen kelas.</p>
+<p><b>Suspense</b> menampilkan cadangan (misalnya loader) selama anak menunggu kode atau data, dipakai bersama <code>React.lazy</code> atau framework seperti Next.js.</p>
+<div class="lbl">CSS</div><pre><code>body{font:14px system-ui,sans-serif}.modal{position:fixed;inset:20% 10% auto;background:#fff;border:1px solid #ccc;border-radius:12px;padding:12px;box-shadow:0 20px 40px #0003}.err{color:#B23A2E}</code></pre>
+<div class="lbl">JSX</div><pre><code>class Pengaman extends React.Component {
+  constructor(p) { super(p); this.state = { error: null }; }
+  static getDerivedStateFromError(error) { return { error }; }
+  render() {
+    return this.state.error
+      ? &lt;p className=&quot;err&quot;&gt;Ups, bagian ini gagal dimuat: {this.state.error.message}&lt;/p&gt;
+      : this.props.children;
+  }
+}
+
+function Rusak() { throw new Error(&quot;data harga kosong&quot;); }
+
+function Modal({ onTutup }) {
+  return ReactDOM.createPortal(
+    &lt;div className=&quot;modal&quot;&gt;&lt;p&gt;Saya dirender di document.body lewat portal.&lt;/p&gt;&lt;button onClick={onTutup}&gt;Tutup&lt;/button&gt;&lt;/div&gt;,
+    document.body
+  );
+}
+
+function App() {
+  const [buka, setBuka] = useState(false);
+  return (
+    &lt;div&gt;
+      &lt;button onClick={() =&gt; setBuka(true)}&gt;Buka modal&lt;/button&gt;
+      {buka &amp;&amp; &lt;Modal onTutup={() =&gt; setBuka(false)} /&gt;}
+      &lt;Pengaman&gt;&lt;Rusak /&gt;&lt;/Pengaman&gt;
+      &lt;p&gt;Bagian lain tetap jalan.&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+<h2>Poin penting</h2><ul><li>Portal merender ke luar pohon DOM induk.</li><li>Error boundary mencegah satu error merusak seluruh aplikasi.</li><li>Suspense menampilkan cadangan saat menunggu.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Tanpa error boundary, error render di satu komponen menyebabkan?</summary><p class="ok">Jawaban: Seluruh pohon React dilepas (layar kosong)</p><p>Karena itu pasang error boundary di titik penting.</p></details>
+<a class="cta" href="/#react-3-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/react/komposisi-render-props-hoc">Komposisi, render props &amp; HOC</a></p><p>Berikutnya: <a href="/belajar/react/input-terkendali">Input terkendali</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

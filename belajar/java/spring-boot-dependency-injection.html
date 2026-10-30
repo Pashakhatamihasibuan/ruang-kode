@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Spring Boot &amp; dependency injection · Java · Ruang Kode</title>
+<meta name="description" content="Dependency injection (DI) berarti sebuah kelas tidak membuat sendiri objek yang ia butuhkan, melainkan menerimanya dari luar, biasanya lewat konstruktor.…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/java/spring-boot-dependency-injection">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Spring Boot &amp; dependency injection · Java · Ruang Kode"><meta property="og:description" content="Dependency injection (DI) berarti sebuah kelas tidak membuat sendiri objek yang ia butuhkan, melainkan menerimanya dari luar, biasanya lewat konstruktor.…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/java/spring-boot-dependency-injection"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Spring Boot & dependency injection", "description": "Dependency injection (DI) berarti sebuah kelas tidak membuat sendiri objek yang ia butuhkan, melainkan menerimanya dari luar, biasanya lewat konstruktor.…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/java/spring-boot-dependency-injection", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Java", "url": "https://ruang-kode-nine.vercel.app/belajar/java"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Java", "item": "https://ruang-kode-nine.vercel.app/belajar/java"}, {"@type": "ListItem", "position": 3, "name": "Spring Boot & dependency injection", "item": "https://ruang-kode-nine.vercel.app/belajar/java/spring-boot-dependency-injection"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/java">Java</a> / Modul 15</nav>
+<div class="eyebrow">Java · Modul 15 · Konsep &amp; kode</div><h1>Spring Boot &amp; dependency injection</h1><a class="cta" href="/#java-15-3">Buka versi interaktif</a>
+<p><b>Dependency injection</b> (DI) berarti sebuah kelas tidak membuat sendiri objek yang ia butuhkan, melainkan menerimanya dari luar, biasanya lewat konstruktor. Hasilnya: kelas lebih mudah diuji (dependency bisa diganti mock) dan bagian-bagian aplikasi tidak saling terikat erat.</p>
+<p><b>Spring Boot</b> adalah framework Java paling populer untuk membuat REST API dan aplikasi web. Ia punya <i>container</i> yang membuat dan menyambungkan objek (bean) secara otomatis. Kelas bertanda <code>@Service</code>, <code>@Repository</code>, atau <code>@RestController</code> dikelola Spring, dan dependency-nya disuntikkan lewat konstruktor.</p>
+<p>Dengan beberapa anotasi, sebuah method menjadi endpoint HTTP: <code>@GetMapping("/produk")</code> menangani GET, dan objek yang dikembalikan otomatis diubah menjadi JSON.</p>
+<div class="lbl">JAVA</div><pre><code>@SpringBootApplication
+public class TokoApp {
+    public static void main(String[] args) {
+        SpringApplication.run(TokoApp.class, args);
+    }
+}
+
+@Service
+class ProdukService {
+    private final ProdukRepository repo;
+    ProdukService(ProdukRepository repo) {   // disuntikkan Spring
+        this.repo = repo;
+    }
+    List&lt;Produk&gt; minuman() { return repo.findByKategoriOrderByHargaAsc(&quot;Minuman&quot;); }
+}
+
+@RestController
+@RequestMapping(&quot;/api/produk&quot;)
+class ProdukController {
+    private final ProdukService service;
+    ProdukController(ProdukService service) { this.service = service; }
+
+    @GetMapping(&quot;/minuman&quot;)
+    List&lt;Produk&gt; daftarMinuman() { return service.minuman(); }
+}
+// GET http://localhost:8080/api/produk/minuman -&gt; [{&quot;id&quot;:2,&quot;nama&quot;:&quot;Teh Melati&quot;,...}]</code></pre>
+<h2>Poin penting</h2><ul><li>DI: terima dependency lewat konstruktor, jangan <code>new</code> sendiri.</li><li>Lapisan umum: Controller → Service → Repository.</li><li>Spring Boot menyiapkan server web (Tomcat) secara otomatis.</li><li>Objek yang dikembalikan controller diubah menjadi JSON.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Manfaat utama dependency injection?</summary><p class="ok">Jawaban: Kelas mudah diuji dan tidak terikat erat</p><p>Dependency bisa diganti, misalnya dengan mock.</p></details><details><summary>Anotasi untuk endpoint HTTP GET?</summary><p class="ok">Jawaban: @GetMapping</p><p>@GetMapping memetakan request GET ke method.</p></details>
+<a class="cta" href="/#java-15-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/orm-hibernate-spring-data-jpa-ebean">ORM: Hibernate, Spring Data JPA, Ebean</a></p><p>Berikutnya: <a href="/belajar/java/framework-web-lain-quarkus-javalin-play">Framework web lain: Quarkus, Javalin, Play</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

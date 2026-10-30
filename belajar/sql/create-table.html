@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CREATE TABLE · SQL · Ruang Kode</title>
+<meta name="description" content="CREATE TABLE membuat tabel baru: nama tabel, lalu daftar kolom beserta tipe data dan aturannya. Perintah yang mengatur struktur seperti ini disebut DDL…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/sql/create-table">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="CREATE TABLE · SQL · Ruang Kode"><meta property="og:description" content="CREATE TABLE membuat tabel baru: nama tabel, lalu daftar kolom beserta tipe data dan aturannya. Perintah yang mengatur struktur seperti ini disebut DDL…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/sql/create-table"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "CREATE TABLE", "description": "CREATE TABLE membuat tabel baru: nama tabel, lalu daftar kolom beserta tipe data dan aturannya. Perintah yang mengatur struktur seperti ini disebut DDL…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/sql/create-table", "learningResourceType": "Praktik SQL", "isPartOf": {"@type": "Course", "name": "SQL", "url": "https://ruang-kode-nine.vercel.app/belajar/sql"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "SQL", "item": "https://ruang-kode-nine.vercel.app/belajar/sql"}, {"@type": "ListItem", "position": 3, "name": "CREATE TABLE", "item": "https://ruang-kode-nine.vercel.app/belajar/sql/create-table"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/sql">SQL</a> / Modul 6</nav>
+<div class="eyebrow">SQL · Modul 6 · Praktik SQL</div><h1>CREATE TABLE</h1><a class="cta" href="/#sql-6-1">Buka versi interaktif</a>
+<p><code>CREATE TABLE</code> membuat tabel baru: nama tabel, lalu daftar kolom beserta tipe data dan aturannya. Perintah yang mengatur struktur seperti ini disebut <b>DDL</b> (Data Definition Language).</p>
+<p>Rancang tabel dengan hati-hati: beri setiap tabel primary key, pilih tipe data yang tepat, dan tambahkan aturan (constraint) untuk menjaga data tetap benar sejak awal. Memperbaiki data yang terlanjur kotor jauh lebih mahal.</p>
+<p><code>CREATE TABLE IF NOT EXISTS</code> tidak error jika tabel sudah ada. <code>CREATE TABLE baru AS SELECT ...</code> membuat tabel dari hasil query, berguna untuk salinan atau laporan.</p>
+<div class="lbl">Buat tabel kategori</div><pre><code>CREATE TABLE kategori (
+  id INTEGER PRIMARY KEY,
+  nama TEXT NOT NULL UNIQUE,
+  aktif INTEGER DEFAULT 1
+);
+INSERT INTO kategori (nama) VALUES (&#x27;Minuman&#x27;), (&#x27;Camilan&#x27;);
+SELECT * FROM kategori;</code></pre>
+<div class="lbl">Tabel dari hasil query</div><pre><code>CREATE TABLE produk_mahal AS
+SELECT nama, harga FROM produk WHERE harga &gt; 70000;
+SELECT * FROM produk_mahal;</code></pre>
+<h2>Tantangan</h2><ol><li>Buat tabel ulasan dengan kolom id (INTEGER PRIMARY KEY), produk_id (INTEGER), bintang (INTEGER), dan komentar (TEXT). Lalu tambahkan satu ulasan: produk 1, bintang 5, komentar Mantap.</li></ol>
+<h2>Poin penting</h2><ul><li>CREATE TABLE nama (kolom tipe aturan, ...).</li><li>Setiap tabel butuh primary key.</li><li>IF NOT EXISTS mencegah error tabel ganda.</li><li>CREATE TABLE ... AS SELECT menyalin hasil query.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>DDL adalah singkatan dari?</summary><p class="ok">Jawaban: Data Definition Language</p><p>DDL mengatur struktur.</p></details><details><summary>Aturan yang membuat kolom wajib diisi?</summary><p class="ok">Jawaban: NOT NULL</p><p>NOT NULL menolak nilai kosong.</p></details>
+<a class="cta" href="/#sql-6-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/proyek-mini-ringkasan-stok-gudang">Proyek mini: Ringkasan stok gudang</a></p><p>Berikutnya: <a href="/belajar/sql/alter-drop-truncate">ALTER, DROP &amp; TRUNCATE</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

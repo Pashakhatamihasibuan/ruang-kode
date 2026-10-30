@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Self join &amp; cross join · SQL · Ruang Kode</title>
+<meta name="description" content="Self join menggabungkan tabel dengan dirinya sendiri. Contoh klasiknya hierarki karyawan: kolom atasan_id menunjuk id di tabel yang sama. Kuncinya adalah…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/sql/self-join-cross-join">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Self join &amp; cross join · SQL · Ruang Kode"><meta property="og:description" content="Self join menggabungkan tabel dengan dirinya sendiri. Contoh klasiknya hierarki karyawan: kolom atasan_id menunjuk id di tabel yang sama. Kuncinya adalah…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/sql/self-join-cross-join"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Self join & cross join", "description": "Self join menggabungkan tabel dengan dirinya sendiri. Contoh klasiknya hierarki karyawan: kolom atasan_id menunjuk id di tabel yang sama. Kuncinya adalah…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/sql/self-join-cross-join", "learningResourceType": "Praktik SQL", "isPartOf": {"@type": "Course", "name": "SQL", "url": "https://ruang-kode-nine.vercel.app/belajar/sql"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "SQL", "item": "https://ruang-kode-nine.vercel.app/belajar/sql"}, {"@type": "ListItem", "position": 3, "name": "Self join & cross join", "item": "https://ruang-kode-nine.vercel.app/belajar/sql/self-join-cross-join"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/sql">SQL</a> / Modul 7</nav>
+<div class="eyebrow">SQL · Modul 7 · Praktik SQL</div><h1>Self join &amp; cross join</h1><a class="cta" href="/#sql-7-3">Buka versi interaktif</a>
+<p><b>Self join</b> menggabungkan tabel dengan dirinya sendiri. Contoh klasiknya hierarki karyawan: kolom <code>atasan_id</code> menunjuk <code>id</code> di tabel yang sama. Kuncinya adalah memberi dua alias berbeda, misalnya <code>k</code> untuk karyawan dan <code>a</code> untuk atasan.</p>
+<p><b>Cross join</b> memasangkan setiap baris kiri dengan <i>setiap</i> baris kanan tanpa syarat. Hasilnya disebut produk kartesius: 8 pelanggan × 8 produk = 64 baris. Berguna untuk membuat kombinasi, misalnya semua ukuran × semua warna.</p>
+<p>Hati-hati: lupa menulis kondisi ON pada join gaya lama (<code>FROM a, b</code>) diam-diam menghasilkan cross join yang sangat besar.</p>
+<div class="lbl">Karyawan dan atasannya</div><pre><code>SELECT k.nama AS karyawan, k.jabatan, a.nama AS atasan
+FROM karyawan k
+LEFT JOIN karyawan a ON k.atasan_id = a.id;</code></pre>
+<div class="lbl">Rekan satu atasan</div><pre><code>SELECT x.nama, y.nama AS rekan
+FROM karyawan x JOIN karyawan y
+  ON x.atasan_id = y.atasan_id AND x.id &lt; y.id;</code></pre>
+<div class="lbl">Cross join: kombinasi</div><pre><code>SELECT u.ukuran, w.warna
+FROM (SELECT &#x27;S&#x27; AS ukuran UNION ALL SELECT &#x27;M&#x27; UNION ALL SELECT &#x27;L&#x27;) u
+CROSS JOIN (SELECT &#x27;Merah&#x27; AS warna UNION ALL SELECT &#x27;Hitam&#x27;) w;</code></pre>
+<div class="lbl">Jumlah baris produk kartesius</div><pre><code>SELECT COUNT(*) AS kombinasi FROM pelanggan CROSS JOIN produk;</code></pre>
+<h2>Tantangan</h2><ol><li>Tampilkan nama setiap karyawan dan nama atasannya (kolom karyawan dan atasan) hanya untuk karyawan yang punya atasan.</li></ol>
+<h2>Poin penting</h2><ul><li>Self join butuh dua alias.</li><li>Cross join = semua kombinasi (kartesius).</li><li>Jumlah baris cross join = baris kiri × baris kanan.</li><li>Selalu tulis kondisi ON.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Cross join 3 baris dengan 4 baris menghasilkan?</summary><p class="ok">Jawaban: 12 baris</p><p>3 × 4 = 12.</p></details><details><summary>Kenapa self join butuh alias?</summary><p class="ok">Jawaban: Agar dua &quot;salinan&quot; tabel bisa dibedakan</p><p>Satu tabel berperan dua kali.</p></details>
+<a class="cta" href="/#sql-7-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/left-right-full-outer-join">LEFT, RIGHT &amp; FULL OUTER JOIN</a></p><p>Berikutnya: <a href="/belajar/sql/join-banyak-tabel">JOIN banyak tabel</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

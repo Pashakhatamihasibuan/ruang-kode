@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fungsi · Frontend Pemula · Ruang Kode</title>
+<meta name="description" content="Fungsi membungkus langkah agar bisa dipakai ulang. Ada dua bentuk umum: deklarasi function hitung(a, b) { ... } dan arrow function const hitung = (a, b)…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/fe0/fungsi">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Fungsi · Frontend Pemula · Ruang Kode"><meta property="og:description" content="Fungsi membungkus langkah agar bisa dipakai ulang. Ada dua bentuk umum: deklarasi function hitung(a, b) { ... } dan arrow function const hitung = (a, b)…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/fe0/fungsi"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Fungsi", "description": "Fungsi membungkus langkah agar bisa dipakai ulang. Ada dua bentuk umum: deklarasi function hitung(a, b) { ... } dan arrow function const hitung = (a, b)…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/fe0/fungsi", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "Frontend Pemula", "url": "https://ruang-kode-nine.vercel.app/belajar/fe0"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Frontend Pemula", "item": "https://ruang-kode-nine.vercel.app/belajar/fe0"}, {"@type": "ListItem", "position": 3, "name": "Fungsi", "item": "https://ruang-kode-nine.vercel.app/belajar/fe0/fungsi"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/fe0">Frontend Pemula</a> / Modul 4</nav>
+<div class="eyebrow">Frontend Pemula · Modul 4 · Praktik langsung</div><h1>Fungsi</h1><a class="cta" href="/#fe0-4-3">Buka versi interaktif</a>
+<p>Fungsi membungkus langkah agar bisa dipakai ulang. Ada dua bentuk umum: deklarasi <code>function hitung(a, b) { ... }</code> dan <b>arrow function</b> <code>const hitung = (a, b) =&gt; a + b</code>.</p>
+<p>Parameter bisa punya nilai bawaan: <code>(harga, diskon = 0) =&gt; ...</code>. Fungsi adalah nilai biasa, jadi bisa dikirim ke fungsi lain (callback), misalnya ke <code>setTimeout</code> atau <code>addEventListener</code>.</p>
+<div class="lbl">HTML</div><pre><code>&lt;p&gt;Lihat panel Konsol.&lt;/p&gt;</code></pre>
+<div class="lbl">JAVASCRIPT</div><pre><code>function rupiah(n) {
+  return &quot;Rp&quot; + n.toLocaleString(&quot;id-ID&quot;);
+}
+const hargaAkhir = (harga, diskon = 0) =&gt; harga - harga * diskon;
+
+console.log(rupiah(85000));
+console.log(rupiah(hargaAkhir(85000, 0.2)));
+console.log(rupiah(hargaAkhir(25000)));
+
+// fungsi sebagai argumen (callback)
+setTimeout(() =&gt; console.log(&quot;Pesan ini muncul 1 detik kemudian&quot;), 1000);</code></pre>
+<h2>Tantangan</h2><ol><li>Buat fungsi <code>pajak(n)</code> yang mengembalikan 11% dari n, lalu cetak <code>pajak(100000)</code> (hasilnya 11000).</li></ol>
+<h2>Poin penting</h2><ul><li>function deklarasi dan arrow function.</li><li>Parameter bawaan: (x = 0).</li><li>Fungsi bisa dikirim sebagai callback.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Bentuk arrow function yang benar?</summary><p class="ok">Jawaban: const f = (a, b) =&gt; a + b</p><p>Parameter lebih dari satu dalam kurung.</p></details>
+<a class="cta" href="/#fe0-4-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe0/operator-percabangan">Operator &amp; percabangan</a></p><p>Berikutnya: <a href="/belajar/fe0/array-objek">Array &amp; objek</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

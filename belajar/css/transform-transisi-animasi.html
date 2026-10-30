@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Transform, transisi &amp; animasi · CSS · Ruang Kode</title>
+<meta name="description" content="transform menggeser (translate), memutar (rotate), dan mengubah skala (scale) tanpa mengganggu tata letak elemen lain.">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/css/transform-transisi-animasi">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Transform, transisi &amp; animasi · CSS · Ruang Kode"><meta property="og:description" content="transform menggeser (translate), memutar (rotate), dan mengubah skala (scale) tanpa mengganggu tata letak elemen lain.">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/css/transform-transisi-animasi"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Transform, transisi & animasi", "description": "transform menggeser (translate), memutar (rotate), dan mengubah skala (scale) tanpa mengganggu tata letak elemen lain.", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/css/transform-transisi-animasi", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "CSS", "url": "https://ruang-kode-nine.vercel.app/belajar/css"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "CSS", "item": "https://ruang-kode-nine.vercel.app/belajar/css"}, {"@type": "ListItem", "position": 3, "name": "Transform, transisi & animasi", "item": "https://ruang-kode-nine.vercel.app/belajar/css/transform-transisi-animasi"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/css">CSS</a> / Modul 7</nav>
+<div class="eyebrow">CSS · Modul 7 · Praktik langsung</div><h1>Transform, transisi &amp; animasi</h1><a class="cta" href="/#css-7-2">Buka versi interaktif</a>
+<p><code>transform</code> menggeser (<code>translate</code>), memutar (<code>rotate</code>), dan mengubah skala (<code>scale</code>) tanpa mengganggu tata letak elemen lain.</p>
+<p><code>transition</code> menghaluskan perubahan nilai, misalnya saat hover: <code>transition: transform .2s ease</code>. <code>@keyframes</code> membuat animasi bertahap yang bisa berulang.</p>
+<p>Animasikan <code>transform</code> dan <code>opacity</code> saja bila bisa, karena paling ringan untuk browser. Hormati <code>prefers-reduced-motion</code>.</p>
+<div class="lbl">HTML</div><pre><code>&lt;button class=&quot;tombol&quot;&gt;Arahkan kursor&lt;/button&gt;
+&lt;div class=&quot;loader&quot; aria-label=&quot;Memuat&quot;&gt;&lt;/div&gt;</code></pre>
+<div class="lbl">CSS</div><pre><code>.tombol { padding: 10px 18px; border: 0; border-radius: 99px; background: #1C1B19; color: #fff; transition: transform .2s ease, box-shadow .2s; }
+.tombol:hover { transform: translateY(-3px) scale(1.04); box-shadow: 0 8px 18px rgb(0 0 0 / 25%); }
+.loader { width: 28px; height: 28px; margin-top: 16px; border: 3px solid #ddd; border-top-color: #2E5E8C; border-radius: 50%; animation: putar 1s linear infinite; }
+@keyframes putar { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .loader { animation-duration: 3s; } }</code></pre>
+<h2>Poin penting</h2><ul><li>transform tidak menggeser elemen lain.</li><li>transition untuk perubahan halus, keyframes untuk animasi bertahap.</li><li>Animasikan transform dan opacity.</li><li>Hormati prefers-reduced-motion.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Properti yang paling ringan dianimasikan?</summary><p class="ok">Jawaban: transform dan opacity</p><p>Keduanya tidak memicu hitung ulang tata letak.</p></details>
+<a class="cta" href="/#css-7-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/css/combinator-pseudo">Combinator &amp; pseudo</a></p><p>Berikutnya: <a href="/belajar/css/variabel-css-tema">Variabel CSS &amp; tema</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

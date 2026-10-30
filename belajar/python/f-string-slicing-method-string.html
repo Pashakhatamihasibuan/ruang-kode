@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>f-string, slicing &amp; method string · Python · Ruang Kode</title>
+<meta name="description" content="f-string adalah cara paling nyaman menyusun teks: tulis f sebelum kutip, lalu ekspresi di dalam kurung kurawal. Kamu juga bisa mengatur format: {harga:,}…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/python/f-string-slicing-method-string">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="f-string, slicing &amp; method string · Python · Ruang Kode"><meta property="og:description" content="f-string adalah cara paling nyaman menyusun teks: tulis f sebelum kutip, lalu ekspresi di dalam kurung kurawal. Kamu juga bisa mengatur format: {harga:,}…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/python/f-string-slicing-method-string"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "f-string, slicing & method string", "description": "f-string adalah cara paling nyaman menyusun teks: tulis f sebelum kutip, lalu ekspresi di dalam kurung kurawal. Kamu juga bisa mengatur format: {harga:,}…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/python/f-string-slicing-method-string", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Python", "url": "https://ruang-kode-nine.vercel.app/belajar/python"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Python", "item": "https://ruang-kode-nine.vercel.app/belajar/python"}, {"@type": "ListItem", "position": 3, "name": "f-string, slicing & method string", "item": "https://ruang-kode-nine.vercel.app/belajar/python/f-string-slicing-method-string"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/python">Python</a> / Modul 2</nav>
+<div class="eyebrow">Python · Modul 2 · Konsep &amp; kode</div><h1>f-string, slicing &amp; method string</h1><a class="cta" href="/#python-2-6">Buka versi interaktif</a>
+<p><b>f-string</b> adalah cara paling nyaman menyusun teks: tulis <code>f</code> sebelum kutip, lalu ekspresi di dalam kurung kurawal. Kamu juga bisa mengatur format: <code>{harga:,}</code> memberi pemisah ribuan, <code>{x:.2f}</code> dua angka di belakang koma, <code>{nama:&gt;10}</code> rata kanan selebar 10.</p>
+<p><b>Slicing</b> mengambil potongan string dengan <code>s[awal:akhir:langkah]</code>. Indeks negatif dihitung dari belakang: <code>s[-1]</code> huruf terakhir, <code>s[::-1]</code> membalik string.</p>
+<p>String immutable, jadi method seperti <code>upper</code>, <code>strip</code>, <code>replace</code> mengembalikan string baru. Method yang paling sering dipakai: <code>split</code> dan <code>join</code> untuk memecah dan menggabung, <code>startswith</code>, <code>find</code>, serta <code>count</code>.</p>
+<div class="lbl">PYTHON</div><pre><code>nama = &quot;  budi santoso &quot;
+rapi = nama.strip().title()
+print(rapi)
+print(rapi[:4], rapi[-7:], rapi[::-1])
+
+harga = 1250000
+print(f&quot;Harga: Rp{harga:,}&quot;.replace(&quot;,&quot;, &quot;.&quot;))
+print(f&quot;Rata-rata: {85.666:.2f}&quot;)
+print(f&quot;[{&#x27;kopi&#x27;:&gt;8}] [{&#x27;teh&#x27;:&lt;6}] [{7:03d}]&quot;)
+
+kalimat = &quot;saya belajar python dan sql&quot;
+kata = kalimat.split()
+print(len(kata), kata[2])
+print(&quot;-&quot;.join(kata))
+print(kalimat.count(&quot;a&quot;), kalimat.find(&quot;python&quot;))
+print(kalimat.startswith(&quot;saya&quot;), &quot;SQL&quot; in kalimat.upper())</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Budi Santoso
+Budi Santoso osotnaS iduB
+Harga: Rp1.250.000
+Rata-rata: 85.67
+[    kopi] [teh   ] [007]
+5 python
+saya-belajar-python-dan-sql
+5 13
+True True
+</code></pre>
+<h2>Poin penting</h2><ul><li>f-string: <code>f"{ekspresi:format}"</code>.</li><li>Slicing <code>[a:b]</code> mengambil a sampai sebelum b.</li><li><code>s[::-1]</code> membalik string.</li><li><code>"pemisah".join(list)</code> kebalikan dari <code>split</code>.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Hasil &lt;code&gt;&quot;python&quot;[1:4]&lt;/code&gt;?</summary><p class="ok">Jawaban: &quot;yth&quot;</p><p>Indeks 1 sampai sebelum 4.</p></details><details><summary>Format f-string untuk dua desimal?</summary><p class="ok">Jawaban: {x:.2f}</p><p>.2f = float dengan dua angka di belakang koma.</p></details>
+<a class="cta" href="/#python-2-6">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/string">String</a></p><p>Berikutnya: <a href="/belajar/python/eksekusi-bersyarat">Eksekusi Bersyarat</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

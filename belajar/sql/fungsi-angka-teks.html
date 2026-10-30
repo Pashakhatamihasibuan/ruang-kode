@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fungsi angka &amp; teks · SQL · Ruang Kode</title>
+<meta name="description" content="Fungsi angka: ABS nilai mutlak, ROUND(x, n) membulatkan ke n desimal, CEILING/CEIL ke atas, FLOOR ke bawah, MOD(a, b) atau a % b sisa bagi.">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/sql/fungsi-angka-teks">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Fungsi angka &amp; teks · SQL · Ruang Kode"><meta property="og:description" content="Fungsi angka: ABS nilai mutlak, ROUND(x, n) membulatkan ke n desimal, CEILING/CEIL ke atas, FLOOR ke bawah, MOD(a, b) atau a % b sisa bagi.">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/sql/fungsi-angka-teks"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Fungsi angka & teks", "description": "Fungsi angka: ABS nilai mutlak, ROUND(x, n) membulatkan ke n desimal, CEILING/CEIL ke atas, FLOOR ke bawah, MOD(a, b) atau a % b sisa bagi.", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/sql/fungsi-angka-teks", "learningResourceType": "Praktik SQL", "isPartOf": {"@type": "Course", "name": "SQL", "url": "https://ruang-kode-nine.vercel.app/belajar/sql"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "SQL", "item": "https://ruang-kode-nine.vercel.app/belajar/sql"}, {"@type": "ListItem", "position": 3, "name": "Fungsi angka & teks", "item": "https://ruang-kode-nine.vercel.app/belajar/sql/fungsi-angka-teks"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/sql">SQL</a> / Modul 9</nav>
+<div class="eyebrow">SQL · Modul 9 · Praktik SQL</div><h1>Fungsi angka &amp; teks</h1><a class="cta" href="/#sql-9-1">Buka versi interaktif</a>
+<p>Fungsi <b>angka</b>: <code>ABS</code> nilai mutlak, <code>ROUND(x, n)</code> membulatkan ke n desimal, <code>CEILING</code>/<code>CEIL</code> ke atas, <code>FLOOR</code> ke bawah, <code>MOD(a, b)</code> atau <code>a % b</code> sisa bagi.</p>
+<p>Fungsi <b>teks</b>: <code>UPPER</code>/<code>LOWER</code> mengubah huruf, <code>LENGTH</code> panjang teks, <code>SUBSTRING(teks, mulai, panjang)</code> mengambil potongan (posisi mulai dari 1), <code>REPLACE</code> mengganti, dan <code>CONCAT</code> atau operator <code>||</code> untuk menyambung.</p>
+<p>Nama fungsi sedikit berbeda antar database (misalnya <code>LEN</code> di SQL Server, <code>CHAR_LENGTH</code> di MySQL), tetapi konsepnya sama. Simulator ini menerima beberapa variasi nama yang umum.</p>
+<div class="lbl">Fungsi angka</div><pre><code>SELECT ABS(-7) AS mutlak, ROUND(85000 * 1.11, -2) AS bulat_ratusan,
+       CEILING(4.1) AS atas, FLOOR(4.9) AS bawah, MOD(17, 5) AS sisa;</code></pre>
+<div class="lbl">Harga per 1000 dibulatkan</div><pre><code>SELECT nama, ROUND(harga / 1000.0, 1) AS ribu FROM produk;</code></pre>
+<div class="lbl">Fungsi teks</div><pre><code>SELECT UPPER(nama) AS besar, LOWER(kategori) AS kecil, LENGTH(nama) AS panjang,
+       SUBSTRING(nama, 1, 4) AS awal, REPLACE(nama, &#x27; &#x27;, &#x27;_&#x27;) AS slug
+FROM produk;</code></pre>
+<div class="lbl">Menyambung teks</div><pre><code>SELECT CONCAT(nama, &#x27; (&#x27;, kota, &#x27;)&#x27;) AS label, nama || &#x27; - &#x27; || COALESCE(kota, &#x27;?&#x27;) AS label2
+FROM pelanggan;</code></pre>
+<h2>Tantangan</h2><ol><li>Tampilkan nama pelanggan dalam huruf besar (alias nama_besar) dan 3 huruf pertama kotanya (alias kode_kota), untuk pelanggan yang kotanya tidak NULL.</li></ol>
+<h2>Poin penting</h2><ul><li>ROUND, CEILING, FLOOR, ABS, MOD untuk angka.</li><li>UPPER, LOWER, LENGTH, SUBSTRING, REPLACE, CONCAT untuk teks.</li><li>SUBSTRING dimulai dari posisi 1.</li><li>CONCAT mengabaikan NULL; || dengan NULL menghasilkan NULL.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>&lt;code&gt;SUBSTRING(&#x27;Jakarta&#x27;, 2, 3)&lt;/code&gt;?</summary><p class="ok">Jawaban: &#x27;aka&#x27;</p><p>Mulai huruf ke-2, ambil 3 huruf.</p></details><details><summary>&lt;code&gt;FLOOR(7.9)&lt;/code&gt;?</summary><p class="ok">Jawaban: 7</p><p>FLOOR selalu ke bawah.</p></details>
+<a class="cta" href="/#sql-9-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/proyek-mini-mencari-produk-istimewa">Proyek mini: Mencari produk istimewa</a></p><p>Berikutnya: <a href="/belajar/sql/fungsi-tanggal-waktu">Fungsi tanggal &amp; waktu</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

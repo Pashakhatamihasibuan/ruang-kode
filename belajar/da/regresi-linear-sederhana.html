@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Regresi linear sederhana · Data Analyst · Ruang Kode</title>
+<meta name="description" content="Regresi linear mencari garis y = a + b·x yang paling dekat dengan data. Koefisien b menjawab: jika x naik 1, y naik berapa rata-rata?">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/da/regresi-linear-sederhana">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Regresi linear sederhana · Data Analyst · Ruang Kode"><meta property="og:description" content="Regresi linear mencari garis y = a + b·x yang paling dekat dengan data. Koefisien b menjawab: jika x naik 1, y naik berapa rata-rata?">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/da/regresi-linear-sederhana"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Regresi linear sederhana", "description": "Regresi linear mencari garis y = a + b·x yang paling dekat dengan data. Koefisien b menjawab: jika x naik 1, y naik berapa rata-rata?", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/da/regresi-linear-sederhana", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Analyst", "url": "https://ruang-kode-nine.vercel.app/belajar/da"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Analyst", "item": "https://ruang-kode-nine.vercel.app/belajar/da"}, {"@type": "ListItem", "position": 3, "name": "Regresi linear sederhana", "item": "https://ruang-kode-nine.vercel.app/belajar/da/regresi-linear-sederhana"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/da">Data Analyst</a> / Modul 5</nav>
+<div class="eyebrow">Data Analyst · Modul 5 · Konsep &amp; kode</div><h1>Regresi linear sederhana</h1><a class="cta" href="/#da-5-5">Buka versi interaktif</a>
+<p>Regresi linear mencari garis <code>y = a + b·x</code> yang paling dekat dengan data. Koefisien <b>b</b> menjawab: jika x naik 1, y naik berapa rata-rata?</p>
+<p><b>R²</b> menyatakan berapa bagian variasi y yang dijelaskan oleh x (0 sampai 1).</p>
+<p>Contoh di bawah menghitung regresi dengan NumPy: setiap tambahan Rp 1 juta iklan berasosiasi dengan sekian pengunjung tambahan.</p>
+<div class="lbl">PYTHON</div><pre><code>import numpy as np
+
+iklan = np.array([1, 2, 3, 4, 5, 6])          # juta rupiah
+pengunjung = np.array([120, 190, 260, 300, 390, 450])
+
+b, a = np.polyfit(iklan, pengunjung, 1)
+prediksi = a + b * iklan
+r2 = 1 - ((pengunjung - prediksi) ** 2).sum() / ((pengunjung - pengunjung.mean()) ** 2).sum()
+print(f&quot;pengunjung = {a:.1f} + {b:.1f} x iklan&quot;)
+print(f&quot;R2 = {r2:.3f}&quot;)
+print(&quot;prediksi iklan 8 juta:&quot;, round(a + b * 8))</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>pengunjung = 56.0 + 65.4 x iklan
+R2 = 0.994
+prediksi iklan 8 juta: 579</code></pre>
+<h2>Poin penting</h2><ul><li>y = a + b·x; b = perubahan y per satuan x.</li><li>R² = proporsi variasi yang dijelaskan.</li><li>Prediksi di luar rentang data berisiko.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Memprediksi untuk iklan Rp 50 juta dari data 1-6 juta berisiko karena?</summary><p class="ok">Jawaban: Di luar rentang data (ekstrapolasi)</p><p>Hubungan bisa berubah di luar rentang yang diamati.</p></details>
+<a class="cta" href="/#da-5-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/da/rentang-varians-bentuk-distribusi">Rentang, varians &amp; bentuk distribusi</a></p><p>Berikutnya: <a href="/belajar/da/funnel-stacked-chart">Funnel &amp; stacked chart</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

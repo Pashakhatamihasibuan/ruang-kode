@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Keamanan &amp; privasi data · Data Engineer · Ruang Kode</title>
+<meta name="description" content="Autentikasi memastikan siapa kamu; otorisasi menentukan apa yang boleh kamu akses. Terapkan prinsip least privilege: akun pipeline hanya boleh menulis ke…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/de/keamanan-privasi-data">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Keamanan &amp; privasi data · Data Engineer · Ruang Kode"><meta property="og:description" content="Autentikasi memastikan siapa kamu; otorisasi menentukan apa yang boleh kamu akses. Terapkan prinsip least privilege: akun pipeline hanya boleh menulis ke…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/de/keamanan-privasi-data"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Keamanan & privasi data", "description": "Autentikasi memastikan siapa kamu; otorisasi menentukan apa yang boleh kamu akses. Terapkan prinsip least privilege: akun pipeline hanya boleh menulis ke…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/de/keamanan-privasi-data", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Engineer", "url": "https://ruang-kode-nine.vercel.app/belajar/de"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Engineer", "item": "https://ruang-kode-nine.vercel.app/belajar/de"}, {"@type": "ListItem", "position": 3, "name": "Keamanan & privasi data", "item": "https://ruang-kode-nine.vercel.app/belajar/de/keamanan-privasi-data"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/de">Data Engineer</a> / Modul 9</nav>
+<div class="eyebrow">Data Engineer · Modul 9 · Konsep &amp; kode</div><h1>Keamanan &amp; privasi data</h1><a class="cta" href="/#de-9-3">Buka versi interaktif</a>
+<p><b>Autentikasi</b> memastikan siapa kamu; <b>otorisasi</b> menentukan apa yang boleh kamu akses. Terapkan prinsip <b>least privilege</b>: akun pipeline hanya boleh menulis ke dataset miliknya.</p>
+<p>Enkripsi data saat disimpan (at rest) dan saat dikirim (in transit, TLS). <b>Masking</b> menyamarkan kolom sensitif (nomor HP, NIK) untuk pengguna yang tidak berhak, dan data uji di lingkungan pengembangan sebaiknya disamarkan atau sintetis.</p>
+<p>Regulasi: UU PDP di Indonesia, GDPR di Eropa, dan EU AI Act untuk sistem AI. Catat dasar hukum dan masa retensi setiap data pribadi.</p>
+<div class="lbl">SQL</div><pre><code>-- BigQuery: view dengan masking untuk analis
+CREATE VIEW analitik.pelanggan_aman AS
+SELECT
+  pelanggan_id,
+  kota,
+  CONCAT(SUBSTR(no_hp, 1, 4), &#x27;****&#x27;, SUBSTR(no_hp, -3)) AS no_hp,
+  TO_HEX(SHA256(email)) AS email_hash
+FROM mentah.pelanggan;
+
+GRANT SELECT ON analitik.pelanggan_aman TO &#x27;group:analis@toko.id&#x27;;
+-- tabel mentah.pelanggan hanya untuk service account pipeline</code></pre>
+<h2>Poin penting</h2><ul><li>Autentikasi vs otorisasi; least privilege.</li><li>Enkripsi at rest & in transit; masking.</li><li>UU PDP, GDPR, EU AI Act; catat retensi.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Analis butuh analisis per kota tetapi tidak boleh melihat nomor HP. Solusinya?</summary><p class="ok">Jawaban: View dengan kolom HP disamarkan</p><p>Masking memberi data yang cukup tanpa membuka data pribadi.</p></details>
+<a class="cta" href="/#de-9-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/de/tes-pipeline-observabilitas-data">Tes pipeline &amp; observabilitas data</a></p><p>Berikutnya: <a href="/belajar/de/pipeline-penjualan-harian-toko-nusantara">Pipeline penjualan harian Toko Nusantara</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>raise, exception buatan sendiri &amp; else/finally · Python · Ruang Kode</title>
+<meta name="description" content="Kamu bisa melempar exception sendiri dengan raise ketika fungsi menerima data yang tidak masuk akal. Buat kelas exception khusus dengan menurunkan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/python/raise-exception-buatan-sendiri-else-finally">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="raise, exception buatan sendiri &amp; else/finally · Python · Ruang Kode"><meta property="og:description" content="Kamu bisa melempar exception sendiri dengan raise ketika fungsi menerima data yang tidak masuk akal. Buat kelas exception khusus dengan menurunkan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/python/raise-exception-buatan-sendiri-else-finally"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "raise, exception buatan sendiri & else/finally", "description": "Kamu bisa melempar exception sendiri dengan raise ketika fungsi menerima data yang tidak masuk akal. Buat kelas exception khusus dengan menurunkan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/python/raise-exception-buatan-sendiri-else-finally", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Python", "url": "https://ruang-kode-nine.vercel.app/belajar/python"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Python", "item": "https://ruang-kode-nine.vercel.app/belajar/python"}, {"@type": "ListItem", "position": 3, "name": "raise, exception buatan sendiri & else/finally", "item": "https://ruang-kode-nine.vercel.app/belajar/python/raise-exception-buatan-sendiri-else-finally"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/python">Python</a> / Modul 5</nav>
+<div class="eyebrow">Python · Modul 5 · Konsep &amp; kode</div><h1>raise, exception buatan sendiri &amp; else/finally</h1><a class="cta" href="/#python-5-4">Buka versi interaktif</a>
+<p>Kamu bisa melempar exception sendiri dengan <code>raise</code> ketika fungsi menerima data yang tidak masuk akal. Buat kelas exception khusus dengan menurunkan <code>Exception</code>, supaya pemanggil bisa menangkap jenis kesalahan yang spesifik.</p>
+<p>Exception yang tidak ditangkap akan "naik" ke fungsi pemanggil, lalu pemanggilnya, dan seterusnya, sampai ada <code>except</code> yang cocok. Kalau tidak ada sama sekali, program berhenti dan menampilkan <i>traceback</i>: jejak lengkap pemanggilan dari bawah ke atas.</p>
+<p>Struktur lengkapnya: <code>try</code> (kode yang mungkin gagal), <code>except</code> (penanganan), <code>else</code> (jalan jika tidak ada error), dan <code>finally</code> (selalu jalan). Tangkap exception yang spesifik; <code>except:</code> kosong bisa menyembunyikan bug.</p>
+<div class="lbl">PYTHON</div><pre><code>class SaldoKurang(Exception):
+    def __init__(self, kurang):
+        super().__init__(f&quot;saldo kurang Rp{kurang:,}&quot;)
+        self.kurang = kurang
+
+saldo = 50_000
+
+def tarik(jumlah):
+    global saldo
+    if jumlah &lt;= 0:
+        raise ValueError(&quot;jumlah harus positif&quot;)
+    if jumlah &gt; saldo:
+        raise SaldoKurang(jumlah - saldo)
+    saldo -= jumlah
+
+def layani(jumlah):
+    print(&quot;memproses&quot;, jumlah)
+    tarik(jumlah)
+    print(&quot;berhasil&quot;)
+
+for j in [20_000, 80_000, -5]:
+    try:
+        layani(j)
+    except SaldoKurang as e:
+        print(&quot;gagal:&quot;, e)
+    except ValueError as e:
+        print(&quot;input salah:&quot;, e)
+    else:
+        print(&quot;transaksi tercatat&quot;)
+    finally:
+        print(&quot;sisa&quot;, saldo)</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>memproses 20000
+berhasil
+transaksi tercatat
+sisa 30000
+memproses 80000
+gagal: saldo kurang Rp50,000
+sisa 30000
+memproses -5
+input salah: jumlah harus positif
+sisa 30000
+</code></pre>
+<h2>Poin penting</h2><ul><li><code>raise</code> melempar exception.</li><li>Exception buatan sendiri: <code>class NamaError(Exception)</code>.</li><li>else jalan jika tidak ada error, finally selalu jalan.</li><li>Tangkap jenis exception yang spesifik.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Blok yang dijalankan hanya jika try sukses?</summary><p class="ok">Jawaban: else</p><p>else melengkapi try saat tidak ada exception.</p></details><details><summary>Exception yang tidak ditangkap di fungsi akan?</summary><p class="ok">Jawaban: Naik ke pemanggil</p><p>Ia naik terus sampai ada except yang cocok.</p></details>
+<a class="cta" href="/#python-5-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/menangani-error-exception">Menangani error (exception)</a></p><p>Berikutnya: <a href="/belajar/python/context-manager-with">Context manager: with</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dashboard kinerja penjualan semester 1 · BI Analyst · Ruang Kode</title>
+<meta name="description" content="Manajemen Toko Nusantara ingin tahu toko dan produk mana yang mendorong pertumbuhan semester 1 2024, dan di mana margin tergerus diskon. Bangun model…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/bi/dashboard-kinerja-penjualan-semester-1">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Dashboard kinerja penjualan semester 1 · BI Analyst · Ruang Kode"><meta property="og:description" content="Manajemen Toko Nusantara ingin tahu toko dan produk mana yang mendorong pertumbuhan semester 1 2024, dan di mana margin tergerus diskon. Bangun model…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/bi/dashboard-kinerja-penjualan-semester-1"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Dashboard kinerja penjualan semester 1", "description": "Manajemen Toko Nusantara ingin tahu toko dan produk mana yang mendorong pertumbuhan semester 1 2024, dan di mana margin tergerus diskon. Bangun model…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/bi/dashboard-kinerja-penjualan-semester-1", "learningResourceType": "Proyek akhir", "isPartOf": {"@type": "Course", "name": "BI Analyst", "url": "https://ruang-kode-nine.vercel.app/belajar/bi"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "BI Analyst", "item": "https://ruang-kode-nine.vercel.app/belajar/bi"}, {"@type": "ListItem", "position": 3, "name": "Dashboard kinerja penjualan semester 1", "item": "https://ruang-kode-nine.vercel.app/belajar/bi/dashboard-kinerja-penjualan-semester-1"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/bi">BI Analyst</a> / Modul 9</nav>
+<div class="eyebrow">BI Analyst · Modul 9 · Proyek akhir</div><h1>Dashboard kinerja penjualan semester 1</h1><a class="cta" href="/#bi-9-1">Buka versi interaktif</a>
+<p>Manajemen Toko Nusantara ingin tahu toko dan produk mana yang mendorong pertumbuhan semester 1 2024, dan di mana margin tergerus diskon. Bangun model data, metrik, dan dashboard satu halaman beserta rekomendasi.</p>
+<p><b>Teknologi:</b> SQL + Power BI/Tableau</p>
+<h2>Fitur yang dibuat</h2><ul><li>Dokumen definisi metrik: omzet bersih, margin, MoM, kontribusi</li><li>Query SQL untuk setiap metrik dari skema bintang</li><li>Pemeriksaan kualitas data sebelum dashboard</li><li>4 KPI dengan pembanding di bagian atas</li><li>Tren bulanan dengan moving average</li><li>Matriks toko x kategori dengan margin</li><li>Tata letak versi ponsel</li><li>Ringkasan 5 kalimat: konteks, temuan, implikasi, rekomendasi</li></ul>
+<h2>Langkah kerja</h2><ol><li>Definisikan metrik bersama pemangku kepentingan.</li><li>Tulis query dan uji kualitas data.</li><li>Bangun model di alat BI dan buat measure.</li><li>Susun dashboard, minta masukan, perbaiki.</li><li>Tulis ringkasan dan presentasikan.</li></ol>
+<div class="lbl">metrik.sql</div><pre><code>-- KPI ringkas semester 1
+WITH f AS (
+  SELECT f.*, d.bulan, d.kuartal, t.wilayah, p.kategori, p.hpp,
+         f.jumlah * f.harga * (100 - f.diskon_persen) / 100 AS omzet
+  FROM fakta_penjualan f
+  JOIN dim_tanggal d ON d.tanggal_id = f.tanggal_id
+  JOIN dim_toko t    ON t.toko_id    = f.toko_id
+  JOIN dim_produk p  ON p.produk_id  = f.produk_id
+)
+SELECT kuartal,
+       SUM(omzet) AS omzet,
+       ROUND(100.0 * (SUM(omzet) - SUM(jumlah * hpp)) / SUM(omzet), 1) AS margin_persen,
+       COUNT(*) AS transaksi
+FROM f GROUP BY kuartal ORDER BY kuartal;</code></pre>
+<a class="cta" href="/#bi-9-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/bi/portofolio-wawancara-bi">Portofolio &amp; wawancara BI</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

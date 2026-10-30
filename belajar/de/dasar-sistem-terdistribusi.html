@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dasar sistem terdistribusi · Data Engineer · Ruang Kode</title>
+<meta name="description" content="Saat data dibagi ke banyak mesin, masalah baru muncul: mesin bisa mati, jaringan bisa terputus, dan jam tiap mesin tidak sama persis. Sistem dirancang…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/de/dasar-sistem-terdistribusi">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Dasar sistem terdistribusi · Data Engineer · Ruang Kode"><meta property="og:description" content="Saat data dibagi ke banyak mesin, masalah baru muncul: mesin bisa mati, jaringan bisa terputus, dan jam tiap mesin tidak sama persis. Sistem dirancang…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/de/dasar-sistem-terdistribusi"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Dasar sistem terdistribusi", "description": "Saat data dibagi ke banyak mesin, masalah baru muncul: mesin bisa mati, jaringan bisa terputus, dan jam tiap mesin tidak sama persis. Sistem dirancang…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/de/dasar-sistem-terdistribusi", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Engineer", "url": "https://ruang-kode-nine.vercel.app/belajar/de"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Engineer", "item": "https://ruang-kode-nine.vercel.app/belajar/de"}, {"@type": "ListItem", "position": 3, "name": "Dasar sistem terdistribusi", "item": "https://ruang-kode-nine.vercel.app/belajar/de/dasar-sistem-terdistribusi"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/de">Data Engineer</a> / Modul 2</nav>
+<div class="eyebrow">Data Engineer · Modul 2 · Konsep &amp; kode</div><h1>Dasar sistem terdistribusi</h1><a class="cta" href="/#de-2-8">Buka versi interaktif</a>
+<p>Saat data dibagi ke banyak mesin, masalah baru muncul: mesin bisa mati, jaringan bisa terputus, dan jam tiap mesin tidak sama persis. Sistem dirancang dengan asumsi kegagalan pasti terjadi.</p>
+<p>Konsep kunci: <b>replikasi</b> (salinan data di beberapa mesin), <b>partisi/sharding</b> (data dibagi menurut kunci), <b>konsensus</b> (mesin sepakat siapa pemimpin), dan <b>idempotensi</b> (mengulang operasi tidak mengubah hasil).</p>
+<p>Struktur data yang sering muncul di sistem data: hash (partisi), B-tree (indeks database), LSM-tree (Cassandra, RocksDB), dan bloom filter (cek cepat "mungkin ada").</p>
+<div class="lbl">CONTOH</div><pre><code>Partisi berdasarkan hash(pelanggan_id) % 4
+  node-0: pelanggan 4, 8, 12 ...
+  node-1: pelanggan 1, 5, 9 ...
+  node-2: pelanggan 2, 6, 10 ...
+  node-3: pelanggan 3, 7, 11 ...
+Replikasi 3x: setiap partisi disalin ke 3 node
+node-2 mati → salinan di node lain mengambil alih</code></pre>
+<h2>Poin penting</h2><ul><li>Rancang dengan asumsi kegagalan.</li><li>Replikasi, partisi, konsensus, idempotensi.</li><li>Hash, B-tree, LSM-tree, bloom filter.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Tujuan utama replikasi?</summary><p class="ok">Jawaban: Data tetap tersedia saat satu mesin mati</p><p>Salinan lain mengambil alih.</p></details>
+<a class="cta" href="/#de-2-8">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/de/linux-shell-untuk-data">Linux &amp; shell untuk data</a></p><p>Berikutnya: <a href="/belajar/de/oltp-vs-olap-penyimpanan-kolom">OLTP vs OLAP &amp; penyimpanan kolom</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

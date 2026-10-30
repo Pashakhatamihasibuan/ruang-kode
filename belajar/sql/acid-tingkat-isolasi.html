@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ACID &amp; tingkat isolasi · SQL · Ruang Kode</title>
+<meta name="description" content="Transaksi yang baik memenuhi ACID. Atomicity: semua atau tidak sama sekali. Consistency: data selalu berpindah dari keadaan valid ke keadaan valid, semua…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/sql/acid-tingkat-isolasi">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="ACID &amp; tingkat isolasi · SQL · Ruang Kode"><meta property="og:description" content="Transaksi yang baik memenuhi ACID. Atomicity: semua atau tidak sama sekali. Consistency: data selalu berpindah dari keadaan valid ke keadaan valid, semua…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/sql/acid-tingkat-isolasi"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "ACID & tingkat isolasi", "description": "Transaksi yang baik memenuhi ACID. Atomicity: semua atau tidak sama sekali. Consistency: data selalu berpindah dari keadaan valid ke keadaan valid, semua…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/sql/acid-tingkat-isolasi", "learningResourceType": "Praktik SQL", "isPartOf": {"@type": "Course", "name": "SQL", "url": "https://ruang-kode-nine.vercel.app/belajar/sql"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "SQL", "item": "https://ruang-kode-nine.vercel.app/belajar/sql"}, {"@type": "ListItem", "position": 3, "name": "ACID & tingkat isolasi", "item": "https://ruang-kode-nine.vercel.app/belajar/sql/acid-tingkat-isolasi"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/sql">SQL</a> / Modul 11</nav>
+<div class="eyebrow">SQL · Modul 11 · Praktik SQL</div><h1>ACID &amp; tingkat isolasi</h1><a class="cta" href="/#sql-11-2">Buka versi interaktif</a>
+<p>Transaksi yang baik memenuhi <b>ACID</b>. <b>Atomicity</b>: semua atau tidak sama sekali. <b>Consistency</b>: data selalu berpindah dari keadaan valid ke keadaan valid, semua constraint terpenuhi. <b>Isolation</b>: transaksi yang berjalan bersamaan tidak saling mengacaukan. <b>Durability</b>: setelah COMMIT, data bertahan meski server mati.</p>
+<p>Isolasi sempurna itu mahal, jadi database menawarkan beberapa <b>tingkat isolasi</b>. Dari yang paling longgar: <code>READ UNCOMMITTED</code> (bisa membaca data yang belum di-commit, disebut dirty read), <code>READ COMMITTED</code> (default PostgreSQL), <code>REPEATABLE READ</code> (default MySQL InnoDB), dan <code>SERIALIZABLE</code> (paling ketat, seolah transaksi berjalan bergiliran).</p>
+<p>Semakin ketat, semakin sedikit anomali (dirty read, non-repeatable read, phantom read), tetapi semakin besar kemungkinan transaksi saling menunggu atau dibatalkan. Simulator ini berjalan untuk satu pengguna, jadi bagian ini dipelajari lewat visualisasi dan contoh sintaks.</p>
+<div class="lbl">Atomicity: satu gagal, semua batal</div><pre><code>BEGIN;
+UPDATE rekening SET saldo = saldo + 100000 WHERE id = 2;
+UPDATE rekening SET saldo = saldo - 900000 WHERE id = 1;
+-- perintah kedua melanggar CHECK (saldo &gt;= 0)
+ROLLBACK;
+SELECT * FROM rekening;</code></pre>
+<h2>Poin penting</h2><ul><li>ACID: Atomicity, Consistency, Isolation, Durability.</li><li>Empat tingkat isolasi: READ UNCOMMITTED → SERIALIZABLE.</li><li>Anomali: dirty read, non-repeatable read, phantom read.</li><li>Lebih ketat = lebih aman, tetapi lebih banyak saling tunggu.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Huruf ACID yang menjamin data tetap ada setelah COMMIT walau server mati?</summary><p class="ok">Jawaban: Durability</p><p>Durability = tahan lama.</p></details><details><summary>Membaca data transaksi lain yang belum di-commit disebut?</summary><p class="ok">Jawaban: Dirty read</p><p>Hanya terjadi di READ UNCOMMITTED.</p></details>
+<a class="cta" href="/#sql-11-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/begin-commit-rollback-savepoint">BEGIN, COMMIT, ROLLBACK &amp; SAVEPOINT</a></p><p>Berikutnya: <a href="/belajar/sql/grant-revoke-sql-injection">GRANT, REVOKE &amp; SQL injection</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Primary key &amp; foreign key · SQL · Ruang Kode</title>
+<meta name="description" content="Primary key (PK) adalah kolom (atau gabungan kolom) yang nilainya unik dan tidak boleh NULL. Ia menjadi identitas setiap baris, seperti NIK untuk…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/sql/primary-key-foreign-key">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Primary key &amp; foreign key · SQL · Ruang Kode"><meta property="og:description" content="Primary key (PK) adalah kolom (atau gabungan kolom) yang nilainya unik dan tidak boleh NULL. Ia menjadi identitas setiap baris, seperti NIK untuk…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/sql/primary-key-foreign-key"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Primary key & foreign key", "description": "Primary key (PK) adalah kolom (atau gabungan kolom) yang nilainya unik dan tidak boleh NULL. Ia menjadi identitas setiap baris, seperti NIK untuk…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/sql/primary-key-foreign-key", "learningResourceType": "Praktik SQL", "isPartOf": {"@type": "Course", "name": "SQL", "url": "https://ruang-kode-nine.vercel.app/belajar/sql"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "SQL", "item": "https://ruang-kode-nine.vercel.app/belajar/sql"}, {"@type": "ListItem", "position": 3, "name": "Primary key & foreign key", "item": "https://ruang-kode-nine.vercel.app/belajar/sql/primary-key-foreign-key"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/sql">SQL</a> / Modul 6</nav>
+<div class="eyebrow">SQL · Modul 6 · Praktik SQL</div><h1>Primary key &amp; foreign key</h1><a class="cta" href="/#sql-6-3">Buka versi interaktif</a>
+<p><b>Primary key</b> (PK) adalah kolom (atau gabungan kolom) yang nilainya unik dan tidak boleh NULL. Ia menjadi identitas setiap baris, seperti NIK untuk penduduk. Tabel detail_pesanan memakai PK gabungan (pesanan_id, produk_id), karena satu produk hanya muncul sekali dalam satu pesanan.</p>
+<p><b>Foreign key</b> (FK) adalah kolom yang menunjuk primary key tabel lain. <code>pesanan.pelanggan_id</code> menunjuk <code>pelanggan.id</code>. Database menjaga <b>integritas referensial</b>: kamu tidak bisa membuat pesanan untuk pelanggan yang tidak ada, dan tidak bisa menghapus pelanggan yang masih punya pesanan.</p>
+<p>Perilaku saat induk dihapus bisa diatur: <code>ON DELETE CASCADE</code> ikut menghapus anak, <code>ON DELETE SET NULL</code> mengosongkan rujukannya. Diagram di bawah menunjukkan relasi di database Toko Nusantara.</p>
+<div class="lbl">Pesanan untuk pelanggan yang tidak ada</div><pre><code>INSERT INTO pesanan (pelanggan_id, tanggal) VALUES (99, &#x27;2024-12-01&#x27;);</code></pre>
+<div class="lbl">Primary key kembar</div><pre><code>INSERT INTO produk (id, nama, kategori, harga) VALUES (1, &#x27;Kopi Lain&#x27;, &#x27;Minuman&#x27;, 50000);</code></pre>
+<div class="lbl">Foreign key dengan CASCADE</div><pre><code>CREATE TABLE alamat (
+  id INTEGER PRIMARY KEY,
+  pelanggan_id INTEGER REFERENCES pelanggan(id) ON DELETE CASCADE,
+  jalan TEXT
+);
+INSERT INTO pelanggan (id, nama) VALUES (50, &#x27;Uji&#x27;);
+INSERT INTO alamat (pelanggan_id, jalan) VALUES (50, &#x27;Jl. Merdeka 1&#x27;);
+DELETE FROM pelanggan WHERE id = 50;
+SELECT COUNT(*) AS alamat_tersisa FROM alamat;</code></pre>
+<h2>Tantangan</h2><ol><li>Buat tabel favorit dengan kolom pelanggan_id yang merujuk pelanggan(id) dan produk_id yang merujuk produk(id), dengan primary key gabungan keduanya. Lalu catat bahwa pelanggan 2 menyukai produk 6.</li></ol>
+<h2>Poin penting</h2><ul><li>PK: unik + tidak NULL, identitas baris.</li><li>FK: menunjuk PK tabel lain.</li><li>Integritas referensial dijaga database.</li><li>ON DELETE CASCADE / SET NULL mengatur efek penghapusan induk.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kolom pesanan.pelanggan_id adalah?</summary><p class="ok">Jawaban: Foreign key</p><p>Ia menunjuk pelanggan.id.</p></details><details><summary>Menghapus pelanggan yang masih punya pesanan (tanpa CASCADE)?</summary><p class="ok">Jawaban: Ditolak</p><p>FK mencegah rujukan yatim.</p></details>
+<a class="cta" href="/#sql-6-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/alter-drop-truncate">ALTER, DROP &amp; TRUNCATE</a></p><p>Berikutnya: <a href="/belajar/sql/unique-not-null-check">UNIQUE, NOT NULL &amp; CHECK</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

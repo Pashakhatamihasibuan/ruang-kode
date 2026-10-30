@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>JOIN banyak tabel · SQL · Ruang Kode</title>
+<meta name="description" content="Pertanyaan bisnis sering membutuhkan beberapa tabel sekaligus. &quot;Berapa total belanja tiap pelanggan?&quot; melibatkan pelanggan → pesanan → detail_pesanan →…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/sql/join-banyak-tabel">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="JOIN banyak tabel · SQL · Ruang Kode"><meta property="og:description" content="Pertanyaan bisnis sering membutuhkan beberapa tabel sekaligus. &quot;Berapa total belanja tiap pelanggan?&quot; melibatkan pelanggan → pesanan → detail_pesanan →…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/sql/join-banyak-tabel"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "JOIN banyak tabel", "description": "Pertanyaan bisnis sering membutuhkan beberapa tabel sekaligus. \"Berapa total belanja tiap pelanggan?\" melibatkan pelanggan → pesanan → detail_pesanan →…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/sql/join-banyak-tabel", "learningResourceType": "Praktik SQL", "isPartOf": {"@type": "Course", "name": "SQL", "url": "https://ruang-kode-nine.vercel.app/belajar/sql"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "SQL", "item": "https://ruang-kode-nine.vercel.app/belajar/sql"}, {"@type": "ListItem", "position": 3, "name": "JOIN banyak tabel", "item": "https://ruang-kode-nine.vercel.app/belajar/sql/join-banyak-tabel"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/sql">SQL</a> / Modul 7</nav>
+<div class="eyebrow">SQL · Modul 7 · Praktik SQL</div><h1>JOIN banyak tabel</h1><a class="cta" href="/#sql-7-4">Buka versi interaktif</a>
+<p>Pertanyaan bisnis sering membutuhkan beberapa tabel sekaligus. "Berapa total belanja tiap pelanggan?" melibatkan pelanggan → pesanan → detail_pesanan → produk. Tulis JOIN satu per satu mengikuti jalur relasi.</p>
+<p>Bacalah query seperti rantai: setiap JOIN menambah satu tabel dan satu kondisi ON yang menghubungkannya dengan tabel sebelumnya. Setelah semua tergabung, gunakan WHERE, GROUP BY, dan ORDER BY seperti biasa.</p>
+<p>Kesalahan umum adalah lupa satu kondisi ON sehingga baris berlipat ganda. Jika jumlah hasil tiba-tiba terlalu besar, periksa kembali setiap kondisi ON.</p>
+<div class="lbl">Total belanja per pelanggan (tanpa yang batal)</div><pre><code>SELECT p.nama, SUM(d.jumlah * pr.harga) AS total
+FROM pelanggan p
+JOIN pesanan s ON s.pelanggan_id = p.id
+JOIN detail_pesanan d ON d.pesanan_id = s.id
+JOIN produk pr ON pr.id = d.produk_id
+WHERE s.status &lt;&gt; &#x27;batal&#x27;
+GROUP BY p.id, p.nama
+ORDER BY total DESC;</code></pre>
+<div class="lbl">Isi pesanan lengkap</div><pre><code>SELECT s.id, p.nama AS pembeli, pr.nama AS produk, d.jumlah
+FROM pesanan s
+JOIN pelanggan p ON p.id = s.pelanggan_id
+JOIN detail_pesanan d ON d.pesanan_id = s.id
+JOIN produk pr ON pr.id = d.produk_id
+WHERE s.id IN (101, 104)
+ORDER BY s.id, pr.nama;</code></pre>
+<h2>Tantangan</h2><ol><li>Tampilkan kategori produk dan total pendapatan per kategori (alias pendapatan = jumlah * harga) dari semua pesanan berstatus selesai.</li></ol>
+<h2>Poin penting</h2><ul><li>Ikuti jalur relasi tabel demi tabel.</li><li>Satu JOIN = satu kondisi ON.</li><li>Hasil terlalu besar? Periksa kondisi ON.</li><li>Agregasi dilakukan setelah semua tabel tergabung.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Berapa JOIN untuk menggabungkan 4 tabel?</summary><p class="ok">Jawaban: 3</p><p>Setiap JOIN menambah satu tabel.</p></details><details><summary>Gejala lupa kondisi ON?</summary><p class="ok">Jawaban: Baris berlipat ganda</p><p>Tanpa syarat, terjadi kombinasi kartesius.</p></details>
+<a class="cta" href="/#sql-7-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/self-join-cross-join">Self join &amp; cross join</a></p><p>Berikutnya: <a href="/belajar/sql/proyek-mini-laporan-pesanan-pelanggan">Proyek mini: Laporan pesanan pelanggan</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Access specifier: public, private, protected · Java · Ruang Kode</title>
+<meta name="description" content="Access specifier menentukan siapa yang boleh melihat sebuah kelas, field, atau method. Ada empat tingkat: public (semua orang), protected (paket yang…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/java/access-specifier-public-private-protected">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Access specifier: public, private, protected · Java · Ruang Kode"><meta property="og:description" content="Access specifier menentukan siapa yang boleh melihat sebuah kelas, field, atau method. Ada empat tingkat: public (semua orang), protected (paket yang…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/java/access-specifier-public-private-protected"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Access specifier: public, private, protected", "description": "Access specifier menentukan siapa yang boleh melihat sebuah kelas, field, atau method. Ada empat tingkat: public (semua orang), protected (paket yang…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/java/access-specifier-public-private-protected", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Java", "url": "https://ruang-kode-nine.vercel.app/belajar/java"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Java", "item": "https://ruang-kode-nine.vercel.app/belajar/java"}, {"@type": "ListItem", "position": 3, "name": "Access specifier: public, private, protected", "item": "https://ruang-kode-nine.vercel.app/belajar/java/access-specifier-public-private-protected"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/java">Java</a> / Modul 5</nav>
+<div class="eyebrow">Java · Modul 5 · Konsep &amp; kode</div><h1>Access specifier: public, private, protected</h1><a class="cta" href="/#java-5-4">Buka versi interaktif</a>
+<p><b>Access specifier</b> menentukan siapa yang boleh melihat sebuah kelas, field, atau method. Ada empat tingkat: <code>public</code> (semua orang), <code>protected</code> (paket yang sama dan subclass), tanpa kata kunci atau <i>package-private</i> (hanya paket yang sama), dan <code>private</code> (hanya kelas itu sendiri).</p>
+<p>Aturan praktis bootcamp: buat semua field <code>private</code>, lalu sediakan method <code>public</code> untuk akses yang memang diizinkan. Dengan begitu, aturan seperti "saldo tidak boleh negatif" dijaga di satu tempat.</p>
+<p>Jika kode di luar kelas mencoba mengakses field private, compiler langsung menolak. Itu jauh lebih baik daripada bug yang baru ketahuan saat aplikasi sudah dipakai.</p>
+<div class="lbl">JAVA</div><pre><code>class Rekening {
+    private long saldo;              // hanya kelas ini yang boleh mengubah
+    public final String pemilik;
+
+    public Rekening(String pemilik) {
+        this.pemilik = pemilik;
+    }
+    public void setor(long jumlah) {
+        if (jumlah &gt; 0) saldo += jumlah;
+    }
+    public boolean tarik(long jumlah) {
+        if (jumlah &lt;= 0 || jumlah &gt; saldo) return false;
+        saldo -= jumlah;
+        return true;
+    }
+    public long getSaldo() { return saldo; }
+}
+
+public class Bank {
+    public static void main(String[] args) {
+        Rekening r = new Rekening(&quot;Andi&quot;);
+        r.setor(100_000);
+        System.out.println(r.tarik(250_000));
+        System.out.println(r.tarik(40_000));
+        System.out.println(r.pemilik + &quot;: &quot; + r.getSaldo());
+        // r.saldo = 999_999;  // error: saldo has private access
+    }
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>false
+true
+Andi: 60000
+</code></pre>
+<h2>Poin penting</h2><ul><li><code>private</code> &lt; package-private &lt; <code>protected</code> &lt; <code>public</code>.</li><li>Field private + method public = enkapsulasi.</li><li>Satu file boleh punya banyak kelas, tapi hanya satu yang public dan namanya sama dengan file.</li><li>Getter tanpa setter membuat nilai hanya bisa dibaca dari luar.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Siapa yang bisa mengakses field &lt;code&gt;private&lt;/code&gt;?</summary><p class="ok">Jawaban: Hanya kelas pemiliknya</p><p>private paling ketat: hanya kelas itu sendiri.</p></details><details><summary>Kenapa saldo dibuat private?</summary><p class="ok">Jawaban: Supaya aturan perubahan saldo dijaga di satu tempat</p><p>Semua perubahan lewat setor/tarik yang memeriksa aturan.</p></details>
+<a class="cta" href="/#java-5-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/method-enkapsulasi">Method &amp; enkapsulasi</a></p><p>Berikutnya: <a href="/belajar/java/kata-kunci-static-final">Kata kunci static &amp; final</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Membaca CSV, Excel, JSON &amp; web · Python Analisis Data · Ruang Kode</title>
+<meta name="description" content="pd.read_csv adalah pintu masuk paling umum. Parameter penting: sep (pemisah, CSV Indonesia sering memakai titik koma), decimal, parse_dates, dan usecols.">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/pda/membaca-csv-excel-json-web">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Membaca CSV, Excel, JSON &amp; web · Python Analisis Data · Ruang Kode"><meta property="og:description" content="pd.read_csv adalah pintu masuk paling umum. Parameter penting: sep (pemisah, CSV Indonesia sering memakai titik koma), decimal, parse_dates, dan usecols.">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/pda/membaca-csv-excel-json-web"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Membaca CSV, Excel, JSON & web", "description": "pd.read_csv adalah pintu masuk paling umum. Parameter penting: sep (pemisah, CSV Indonesia sering memakai titik koma), decimal, parse_dates, dan usecols.", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/pda/membaca-csv-excel-json-web", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Python Analisis Data", "url": "https://ruang-kode-nine.vercel.app/belajar/pda"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Python Analisis Data", "item": "https://ruang-kode-nine.vercel.app/belajar/pda"}, {"@type": "ListItem", "position": 3, "name": "Membaca CSV, Excel, JSON & web", "item": "https://ruang-kode-nine.vercel.app/belajar/pda/membaca-csv-excel-json-web"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/pda">Python Analisis Data</a> / Modul 4</nav>
+<div class="eyebrow">Python Analisis Data · Modul 4 · Konsep &amp; kode</div><h1>Membaca CSV, Excel, JSON &amp; web</h1><a class="cta" href="/#pda-4-2">Buka versi interaktif</a>
+<p><code>pd.read_csv</code> adalah pintu masuk paling umum. Parameter penting: <code>sep</code> (pemisah, CSV Indonesia sering memakai titik koma), <code>decimal</code>, <code>parse_dates</code>, dan <code>usecols</code>.</p>
+<p>Sumber lain: <code>read_excel</code> (butuh openpyxl), <code>read_json</code>, <code>read_parquet</code> (format kolom yang cepat dan hemat), <code>read_sql</code>. Untuk API, ambil dengan <code>requests.get(url).json()</code> lalu <code>pd.json_normalize</code>.</p>
+<p>Contoh di bawah membaca CSV dari teks dengan <code>io.StringIO</code>, persis seperti membaca berkas.</p>
+<div class="lbl">PYTHON</div><pre><code>import io
+import pandas as pd
+
+csv = &quot;&quot;&quot;tanggal;kota;omzet
+2024-10-01;Jakarta;255000,5
+2024-10-02;Bandung;250000
+2024-10-03;Surabaya;170000&quot;&quot;&quot;
+
+df = pd.read_csv(io.StringIO(csv), sep=&quot;;&quot;, decimal=&quot;,&quot;, parse_dates=[&quot;tanggal&quot;])
+print(df)
+print(df[&quot;tanggal&quot;].dt.day_name().tolist())
+
+data_api = [{&quot;id&quot;: 1, &quot;kota&quot;: {&quot;nama&quot;: &quot;Medan&quot;, &quot;prov&quot;: &quot;Sumut&quot;}},
+            {&quot;id&quot;: 2, &quot;kota&quot;: {&quot;nama&quot;: &quot;Bogor&quot;, &quot;prov&quot;: &quot;Jabar&quot;}}]
+print(pd.json_normalize(data_api))</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>     tanggal      kota     omzet
+0 2024-10-01   Jakarta  255000.5
+1 2024-10-02   Bandung  250000.0
+2 2024-10-03  Surabaya  170000.0
+[&#x27;Tuesday&#x27;, &#x27;Wednesday&#x27;, &#x27;Thursday&#x27;]
+   id kota.nama kota.prov
+0   1     Medan     Sumut
+1   2     Bogor     Jabar</code></pre>
+<h2>Poin penting</h2><ul><li>read_csv: sep, decimal, parse_dates, usecols.</li><li>read_excel, read_json, read_parquet, read_sql.</li><li>json_normalize untuk JSON bersarang dari API.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>CSV dari Excel Indonesia memakai ; dan koma desimal. Parameter yang perlu?</summary><p class="ok">Jawaban: sep=&quot;;&quot;, decimal=&quot;,&quot;</p><p>Pengaturan regional memengaruhi format ekspor.</p></details>
+<a class="cta" href="/#pda-4-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pda/series-dataframe">Series &amp; DataFrame</a></p><p>Berikutnya: <a href="/belajar/pda/memilih-menyaring-loc-iloc-query">Memilih &amp; menyaring: loc, iloc, query</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

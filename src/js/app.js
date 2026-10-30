@@ -2,7 +2,7 @@
    16 jalur dalam 5 kategori, mengikuti roadmap.sh. Rute:
    #beranda, #katalog, #saya, #ulang, #kuis[-tk], #glosarium,
    #<tk> (halaman jalur), #<tk>-M-L (pelajaran), #<tk>-tes (tes penempatan),
-   #<tk>-ujian-M (ujian modul), #<tk>-sertifikat. */
+   #<tk>-ujian-M (ujian modul). */
 const GROUPS=[
   ['prog','Pemrograman','Bahasa untuk membangun aplikasi, backend, dan otomasi.'],
   ['web','Web & Frontend','Membangun situs dan aplikasi web yang cepat dan mudah dipakai.'],
@@ -37,7 +37,7 @@ const LVL4=['Pemula','Menengah','Lanjutan','Profesional'];
 const KIND={lab:'Konsep & lab',topic:'Topik 5 langkah',c:'Konsep & kode',s:'Praktik SQL',w:'Praktik langsung',proj:'Proyek akhir',mini:'Proyek mini'};
 const MIN={lab:15,topic:12,c:8,s:10,w:12,proj:60};
 const lid=(tk,mi,li)=>`${tk}-${mi+1}-${li+1}`;
-function lessonTitle(l){if(l.k==='lab')return CH[l.n-1].t;if(l.k==='topic'){const [n,i]=l.ref.split('.').map(Number);return TOPICS[n][i].t}return l.t}
+function lessonTitle(l){if(l._t)return l._t;if(l.k==='lab')return CH[l.n-1].t;if(l.k==='topic'){const [n,i]=l.ref.split('.').map(Number);return TOPICS[n][i].t}return l.t}
 const FLAT=Object.fromEntries(TRACKS.map(t=>[t.k,t.mods.flatMap((m,mi)=>m.lessons.map((l,li)=>({t,m,mi,l,li,id:lid(t.k,mi,li),title:l.k==='see'?'':lessonTitle(l)})))]));
 const BYID=Object.fromEntries(Object.values(FLAT).flat().map(x=>[x.id,x]));
 /* pelajaran "see" meminjam pelajaran jalur lain; progresnya ikut pelajaran asal */
@@ -48,6 +48,22 @@ const kindOf=x=>{const y=base(x);return y.l.mini?'mini':y.l.k};
 const minOf=x=>MIN[base(x).l.k]||10;
 const hours=t=>Math.max(1,Math.round(FLAT[t.k].reduce((a,x)=>a+minOf(x),0)/60));
 const nLessons=Object.values(FLAT).flat().length;
+
+/* ---------- materi per bagian ----------
+   Versi web memuat isi pelajaran per jalur saat dibutuhkan (RK_CHUNKS dari build.py).
+   Versi satu file (Artifact) sudah memuat semuanya, jadi need() langsung selesai. */
+const CHUNK=window.RK_CHUNKS||null,READY={},LOADING={};
+function need(keys){
+  if(!CHUNK)return Promise.resolve();
+  return Promise.all(keys.filter(k=>CHUNK[k]&&!READY[k]).map(k=>LOADING[k]||(LOADING[k]=new Promise((res,rej)=>{
+    const s=document.createElement('script');s.src=CHUNK[k];s.onload=()=>{READY[k]=1;res()};s.onerror=()=>{delete LOADING[k];s.remove();rej(new Error(k))};document.head.appendChild(s)}))));
+}
+const ready=keys=>!CHUNK||keys.every(k=>READY[k]||!CHUNK[k]);
+/* isi satu jalur: bagian yang dibutuhkan halaman jalur, ujian, dan pelajarannya */
+function needsOf(tk){const s=new Set(['rt','t:'+tk]);FLAT[tk].forEach(x=>{if(x.src)s.add('t:'+x.src.t.k)});
+  if([...s].some(k=>k==='t:java'||k==='t:python'))s.add('book');return [...s]}
+function RKfill(tk,bodies){let i=0;TK[tk].mods.forEach(m=>m.lessons.forEach(l=>Object.assign(l,bodies[i++])))}
+const bankN=(tk,mi)=>FLAT[tk].filter(x=>x.mi===mi).reduce((a,x)=>{const l=base(x).l;return a+(l.qn!=null?l.qn:l.k==='lab'?CH[l.n-1].quiz.length:(l.q||[]).length)},0);
 
 /* ---------- progres ---------- */
 const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
@@ -65,7 +81,7 @@ function streak(){let n=0;const d=new Date();const key=x=>`${x.getFullYear()}-${
   if(!LMS.act[key(d)])d.setDate(d.getDate()-1);while(LMS.act[key(d)]){n++;d.setDate(d.getDate()-1)}return n}
 function award(xp,msg){LMS.xp+=xp;touch();saveLms();toast(`<b>+${xp} XP</b> ${msg||''}`)}
 function markDone(x,silent){const y=base(x);if(LMS.done[y.id])return false;LMS.done[y.id]=1;LMS.days[today()]=(LMS.days[today()]||0)+1;
-  const p=prog(x.t.k);if(!silent)award(10,p.d===p.n?`· Jalur ${x.t.name} selesai! Ambil sertifikatmu.`:'· Pelajaran selesai');else saveLms();return true}
+  const p=prog(x.t.k);if(!silent)award(10,p.d===p.n?`· Jalur ${x.t.name} selesai! 🎉`:'· Pelajaran selesai');else saveLms();return true}
 function toast(html){const t=$('#toast');if(!t)return;t.innerHTML=html;t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('on'),2600)}
 function updateBadges(){const n=Object.keys(LMS.wrong).length;document.querySelectorAll('.wrongN').forEach(b=>{b.textContent=n||'';b.hidden=!n})}
 

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Operator · SQL · Ruang Kode</title>
+<meta name="description" content="SQL punya operator aritmetika (+ - * / %), perbandingan (= &lt;&gt; != &lt; &gt; &lt;= &gt;=), logika (AND, OR, NOT), dan penyambung teks || (di MySQL memakai fungsi…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/sql/operator">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Operator · SQL · Ruang Kode"><meta property="og:description" content="SQL punya operator aritmetika (+ - * / %), perbandingan (= &lt;&gt; != &lt; &gt; &lt;= &gt;=), logika (AND, OR, NOT), dan penyambung teks || (di MySQL memakai fungsi…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/sql/operator"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Operator", "description": "SQL punya operator aritmetika (+ - * / %), perbandingan (= <> != < > <= >=), logika (AND, OR, NOT), dan penyambung teks || (di MySQL memakai fungsi…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/sql/operator", "learningResourceType": "Praktik SQL", "isPartOf": {"@type": "Course", "name": "SQL", "url": "https://ruang-kode-nine.vercel.app/belajar/sql"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "SQL", "item": "https://ruang-kode-nine.vercel.app/belajar/sql"}, {"@type": "ListItem", "position": 3, "name": "Operator", "item": "https://ruang-kode-nine.vercel.app/belajar/sql/operator"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/sql">SQL</a> / Modul 2</nav>
+<div class="eyebrow">SQL · Modul 2 · Praktik SQL</div><h1>Operator</h1><a class="cta" href="/#sql-2-3">Buka versi interaktif</a>
+<p>SQL punya operator <b>aritmetika</b> (<code>+ - * / %</code>), <b>perbandingan</b> (<code>= &lt;&gt; != &lt; &gt; &lt;= &gt;=</code>), <b>logika</b> (<code>AND</code>, <code>OR</code>, <code>NOT</code>), dan penyambung teks <code>||</code> (di MySQL memakai fungsi CONCAT).</p>
+<p>Ada juga operator khusus yang sangat sering dipakai: <code>BETWEEN a AND b</code> untuk rentang (termasuk kedua ujung), <code>IN (...)</code> untuk daftar pilihan, <code>LIKE</code> untuk pola teks dengan <code>%</code> (apa saja) dan <code>_</code> (satu karakter), serta <code>IS NULL</code>.</p>
+<p>Perhatikan prioritas: <code>AND</code> dikerjakan sebelum <code>OR</code>. Selalu pakai kurung saat mencampur keduanya agar maksudmu jelas. Dan ingat, <code>= NULL</code> tidak pernah benar; gunakan <code>IS NULL</code>.</p>
+<div class="lbl">Aritmetika: nilai stok</div><pre><code>SELECT nama, harga, stok, harga * stok AS nilai_stok FROM produk;</code></pre>
+<div class="lbl">Perbandingan &amp; logika</div><pre><code>SELECT nama, kategori, harga FROM produk
+WHERE (kategori = &#x27;Minuman&#x27; OR kategori = &#x27;Camilan&#x27;) AND harga &lt; 50000;</code></pre>
+<div class="lbl">BETWEEN, IN, LIKE</div><pre><code>SELECT nama, harga FROM produk
+WHERE harga BETWEEN 20000 AND 90000
+  AND kategori IN (&#x27;Minuman&#x27;, &#x27;Bumbu&#x27;)
+  AND nama LIKE &#x27;%a%&#x27;;</code></pre>
+<div class="lbl">NULL perlu IS NULL</div><pre><code>SELECT nama FROM pelanggan WHERE kota IS NULL;</code></pre>
+<h2>Tantangan</h2><ol><li>Tampilkan nama dan harga produk yang namanya diawali huruf K dan harganya kurang dari 50000.</li></ol>
+<h2>Poin penting</h2><ul><li>AND sebelum OR; pakai kurung.</li><li>BETWEEN termasuk kedua batas.</li><li>LIKE: % = apa saja, _ = satu karakter.</li><li>NULL dibandingkan dengan IS NULL / IS NOT NULL.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>&lt;code&gt;nama LIKE &#x27;K_p%&#x27;&lt;/code&gt; cocok dengan?</summary><p class="ok">Jawaban: Kopi Gayo</p><p>K, satu huruf apa saja, p, lalu apa saja.</p></details><details><summary>Hasil &lt;code&gt;kota = NULL&lt;/code&gt; untuk baris yang kotanya kosong?</summary><p class="ok">Jawaban: NULL (tidak diketahui), jadi baris tidak terpilih</p><p>Perbandingan dengan NULL menghasilkan NULL.</p></details>
+<a class="cta" href="/#sql-2-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/tipe-data">Tipe data</a></p><p>Berikutnya: <a href="/belajar/sql/select-from">SELECT &amp; FROM</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

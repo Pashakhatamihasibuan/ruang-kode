@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Unggah file · HTML · Ruang Kode</title>
+<meta name="description" content="&lt;input type=&quot;file&quot;&gt; memungkinkan pengguna memilih file. Atribut accept membatasi jenisnya (misalnya image/* atau .pdf) dan multiple mengizinkan banyak…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/html/unggah-file">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Unggah file · HTML · Ruang Kode"><meta property="og:description" content="&lt;input type=&quot;file&quot;&gt; memungkinkan pengguna memilih file. Atribut accept membatasi jenisnya (misalnya image/* atau .pdf) dan multiple mengizinkan banyak…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/html/unggah-file"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Unggah file", "description": "<input type=\"file\"> memungkinkan pengguna memilih file. Atribut accept membatasi jenisnya (misalnya image/* atau .pdf) dan multiple mengizinkan banyak…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/html/unggah-file", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "HTML", "url": "https://ruang-kode-nine.vercel.app/belajar/html"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "HTML", "item": "https://ruang-kode-nine.vercel.app/belajar/html"}, {"@type": "ListItem", "position": 3, "name": "Unggah file", "item": "https://ruang-kode-nine.vercel.app/belajar/html/unggah-file"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/html">HTML</a> / Modul 5</nav>
+<div class="eyebrow">HTML · Modul 5 · Praktik langsung</div><h1>Unggah file</h1><a class="cta" href="/#html-5-3">Buka versi interaktif</a>
+<p><code>&lt;input type="file"&gt;</code> memungkinkan pengguna memilih file. Atribut <code>accept</code> membatasi jenisnya (misalnya <code>image/*</code> atau <code>.pdf</code>) dan <code>multiple</code> mengizinkan banyak file.</p>
+<p>Form yang mengunggah file harus memakai <code>method="post"</code> dan <code>enctype="multipart/form-data"</code>. Seperti validasi lain, server tetap harus memeriksa ukuran dan jenis file karena atribut accept mudah dilewati.</p>
+<div class="lbl">HTML</div><pre><code>&lt;form method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;
+  &lt;label for=&quot;foto&quot;&gt;Foto bukti transfer (JPG/PNG)&lt;/label&gt;&lt;br&gt;
+  &lt;input id=&quot;foto&quot; name=&quot;foto&quot; type=&quot;file&quot; accept=&quot;image/png,image/jpeg&quot;&gt;
+  &lt;p id=&quot;info&quot;&gt;Belum ada file.&lt;/p&gt;
+&lt;/form&gt;
+&lt;script&gt;
+document.getElementById(&#x27;foto&#x27;).onchange = e =&gt; {
+  const f = e.target.files[0];
+  document.getElementById(&#x27;info&#x27;).textContent =
+    f ? f.name + &#x27; (&#x27; + Math.round(f.size / 1024) + &#x27; KB)&#x27; : &#x27;Belum ada file.&#x27;;
+};
+&lt;/script&gt;</code></pre>
+<h2>Poin penting</h2><ul><li>type="file" untuk memilih file.</li><li>accept membatasi jenis, multiple untuk banyak file.</li><li>Wajib enctype="multipart/form-data" dan method post.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>enctype yang wajib untuk unggah file?</summary><p class="ok">Jawaban: multipart/form-data</p><p>Hanya multipart yang bisa membawa isi file.</p></details>
+<a class="cta" href="/#html-5-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/html/validasi-bawaan">Validasi bawaan</a></p><p>Berikutnya: <a href="/belajar/html/elemen-semantik">Elemen semantik</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

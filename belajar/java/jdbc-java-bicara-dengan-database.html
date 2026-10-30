@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>JDBC: Java bicara dengan database · Java · Ruang Kode</title>
+<meta name="description" content="JDBC (Java Database Connectivity) adalah API standar untuk menjalankan SQL dari Java. Alurnya: buka Connection dengan URL database, siapkan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/java/jdbc-java-bicara-dengan-database">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="JDBC: Java bicara dengan database · Java · Ruang Kode"><meta property="og:description" content="JDBC (Java Database Connectivity) adalah API standar untuk menjalankan SQL dari Java. Alurnya: buka Connection dengan URL database, siapkan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/java/jdbc-java-bicara-dengan-database"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "JDBC: Java bicara dengan database", "description": "JDBC (Java Database Connectivity) adalah API standar untuk menjalankan SQL dari Java. Alurnya: buka Connection dengan URL database, siapkan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/java/jdbc-java-bicara-dengan-database", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Java", "url": "https://ruang-kode-nine.vercel.app/belajar/java"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Java", "item": "https://ruang-kode-nine.vercel.app/belajar/java"}, {"@type": "ListItem", "position": 3, "name": "JDBC: Java bicara dengan database", "item": "https://ruang-kode-nine.vercel.app/belajar/java/jdbc-java-bicara-dengan-database"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/java">Java</a> / Modul 15</nav>
+<div class="eyebrow">Java · Modul 15 · Konsep &amp; kode</div><h1>JDBC: Java bicara dengan database</h1><a class="cta" href="/#java-15-1">Buka versi interaktif</a>
+<p><b>JDBC</b> (Java Database Connectivity) adalah API standar untuk menjalankan SQL dari Java. Alurnya: buka <code>Connection</code> dengan URL database, siapkan <code>PreparedStatement</code>, jalankan, lalu baca <code>ResultSet</code> baris demi baris.</p>
+<p>Selalu pakai <code>PreparedStatement</code> dengan tanda tanya <code>?</code> sebagai tempat nilai. Jangan menyambung input pengguna langsung ke string SQL, karena itu membuka celah <b>SQL injection</b>. Materi SQL di jalur SQL menjelaskan serangan ini secara visual.</p>
+<p>Bungkus koneksi dengan try-with-resources supaya tertutup otomatis. Di aplikasi sungguhan, koneksi diambil dari <i>connection pool</i> seperti HikariCP agar tidak membuat koneksi baru setiap query.</p>
+<div class="lbl">JAVA</div><pre><code>import java.sql.*;
+
+public class DaftarProduk {
+    public static void main(String[] args) throws SQLException {
+        String url = &quot;jdbc:postgresql://localhost:5432/toko&quot;;
+        String sql = &quot;SELECT nama, harga FROM produk WHERE kategori = ? AND harga &lt;= ? ORDER BY harga&quot;;
+
+        try (Connection con = DriverManager.getConnection(url, &quot;app&quot;, &quot;rahasia&quot;);
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, &quot;Minuman&quot;);
+            ps.setInt(2, 100_000);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    System.out.println(rs.getString(&quot;nama&quot;) + &quot; &quot; + rs.getInt(&quot;harga&quot;));
+                }
+            }
+        }
+    }
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Teh Melati 25000
+Kopi Gayo 85000
+</code></pre>
+<h2>Poin penting</h2><ul><li>Connection → PreparedStatement → ResultSet.</li><li>Tanda <code>?</code> diisi dengan <code>setString</code>, <code>setInt</code>, dan lainnya.</li><li><code>executeQuery</code> untuk SELECT, <code>executeUpdate</code> untuk INSERT/UPDATE/DELETE.</li><li>Jangan pernah menyambung input pengguna ke SQL.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Cara aman memasukkan input pengguna ke query?</summary><p class="ok">Jawaban: PreparedStatement dengan ?</p><p>Nilai dikirim terpisah dari perintah SQL.</p></details><details><summary>Method ResultSet untuk pindah ke baris berikutnya?</summary><p class="ok">Jawaban: next()</p><p>rs.next() mengembalikan false jika baris habis.</p></details>
+<a class="cta" href="/#java-15-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/mocking-jenis-tes-lain">Mocking &amp; jenis tes lain</a></p><p>Berikutnya: <a href="/belajar/java/orm-hibernate-spring-data-jpa-ebean">ORM: Hibernate, Spring Data JPA, Ebean</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

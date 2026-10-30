@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fungsi agregat · SQL · Ruang Kode</title>
+<meta name="description" content="Fungsi agregat merangkum banyak baris menjadi satu nilai. COUNT menghitung, SUM menjumlah, AVG merata-rata, MIN dan MAX mencari nilai terkecil dan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/sql/fungsi-agregat">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Fungsi agregat · SQL · Ruang Kode"><meta property="og:description" content="Fungsi agregat merangkum banyak baris menjadi satu nilai. COUNT menghitung, SUM menjumlah, AVG merata-rata, MIN dan MAX mencari nilai terkecil dan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/sql/fungsi-agregat"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Fungsi agregat", "description": "Fungsi agregat merangkum banyak baris menjadi satu nilai. COUNT menghitung, SUM menjumlah, AVG merata-rata, MIN dan MAX mencari nilai terkecil dan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/sql/fungsi-agregat", "learningResourceType": "Praktik SQL", "isPartOf": {"@type": "Course", "name": "SQL", "url": "https://ruang-kode-nine.vercel.app/belajar/sql"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "SQL", "item": "https://ruang-kode-nine.vercel.app/belajar/sql"}, {"@type": "ListItem", "position": 3, "name": "Fungsi agregat", "item": "https://ruang-kode-nine.vercel.app/belajar/sql/fungsi-agregat"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/sql">SQL</a> / Modul 5</nav>
+<div class="eyebrow">SQL · Modul 5 · Praktik SQL</div><h1>Fungsi agregat</h1><a class="cta" href="/#sql-5-1">Buka versi interaktif</a>
+<p><b>Fungsi agregat</b> merangkum banyak baris menjadi satu nilai. <code>COUNT</code> menghitung, <code>SUM</code> menjumlah, <code>AVG</code> merata-rata, <code>MIN</code> dan <code>MAX</code> mencari nilai terkecil dan terbesar.</p>
+<p>Perbedaan penting: <code>COUNT(*)</code> menghitung semua baris, sedangkan <code>COUNT(kolom)</code> hanya menghitung baris yang kolom itu tidak NULL. <code>COUNT(DISTINCT kolom)</code> menghitung nilai yang berbeda saja.</p>
+<p>Semua fungsi agregat selain COUNT(*) mengabaikan NULL. Jadi AVG dari (10, NULL, 20) adalah 15, bukan 10.</p>
+<div class="lbl">Ringkasan produk</div><pre><code>SELECT COUNT(*) AS jumlah, SUM(stok) AS total_stok, AVG(harga) AS rata,
+       MIN(harga) AS termurah, MAX(harga) AS termahal
+FROM produk;</code></pre>
+<div class="lbl">COUNT(*) vs COUNT(kolom)</div><pre><code>SELECT COUNT(*) AS semua, COUNT(kota) AS ada_kota, COUNT(DISTINCT kota) AS kota_berbeda FROM pelanggan;</code></pre>
+<div class="lbl">Agregat dengan WHERE</div><pre><code>SELECT SUM(jumlah) AS kopi_terjual FROM detail_pesanan WHERE produk_id = 1;</code></pre>
+<h2>Tantangan</h2><ol><li>Hitung jumlah pesanan yang statusnya selesai (satu kolom bernama jumlah).</li></ol>
+<h2>Poin penting</h2><ul><li>COUNT, SUM, AVG, MIN, MAX merangkum banyak baris.</li><li>COUNT(*) semua baris; COUNT(kolom) hanya yang tidak NULL.</li><li>Agregat mengabaikan NULL.</li><li>WHERE dijalankan sebelum agregasi.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>&lt;code&gt;COUNT(kota)&lt;/code&gt; jika 1 dari 8 pelanggan kotanya NULL?</summary><p class="ok">Jawaban: 7</p><p>NULL tidak dihitung.</p></details><details><summary>Fungsi untuk rata-rata?</summary><p class="ok">Jawaban: AVG</p><p>AVG adalah nama standar SQL.</p></details>
+<a class="cta" href="/#sql-5-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/update-delete">UPDATE &amp; DELETE</a></p><p>Berikutnya: <a href="/belajar/sql/group-by">GROUP BY</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

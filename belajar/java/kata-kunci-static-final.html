@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kata kunci static &amp; final · Java · Ruang Kode</title>
+<meta name="description" content="static berarti &quot;milik kelas, bukan milik objek&quot;. Field static hanya ada satu salinan yang dipakai bersama semua objek. Method static bisa dipanggil tanpa…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/java/kata-kunci-static-final">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Kata kunci static &amp; final · Java · Ruang Kode"><meta property="og:description" content="static berarti &quot;milik kelas, bukan milik objek&quot;. Field static hanya ada satu salinan yang dipakai bersama semua objek. Method static bisa dipanggil tanpa…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/java/kata-kunci-static-final"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Kata kunci static & final", "description": "static berarti \"milik kelas, bukan milik objek\". Field static hanya ada satu salinan yang dipakai bersama semua objek. Method static bisa dipanggil tanpa…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/java/kata-kunci-static-final", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Java", "url": "https://ruang-kode-nine.vercel.app/belajar/java"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Java", "item": "https://ruang-kode-nine.vercel.app/belajar/java"}, {"@type": "ListItem", "position": 3, "name": "Kata kunci static & final", "item": "https://ruang-kode-nine.vercel.app/belajar/java/kata-kunci-static-final"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/java">Java</a> / Modul 5</nav>
+<div class="eyebrow">Java · Modul 5 · Konsep &amp; kode</div><h1>Kata kunci static &amp; final</h1><a class="cta" href="/#java-5-5">Buka versi interaktif</a>
+<p><code>static</code> berarti "milik kelas, bukan milik objek". Field static hanya ada satu salinan yang dipakai bersama semua objek. Method static bisa dipanggil tanpa membuat objek, seperti <code>Math.max</code>. Karena tidak terikat objek, method static tidak bisa memakai <code>this</code>.</p>
+<p><code>final</code> berarti "tidak bisa diubah lagi". Variabel final hanya bisa diisi sekali. Method final tidak bisa di-override, dan kelas final tidak bisa diturunkan (contohnya <code>String</code>).</p>
+<p>Gabungan <code>static final</code> dipakai untuk konstanta, ditulis HURUF_BESAR dengan garis bawah, misalnya <code>static final double PAJAK = 0.11;</code>.</p>
+<div class="lbl">JAVA</div><pre><code>class Siswa {
+    static int jumlah = 0;          // satu untuk semua objek
+    static final int MAKS = 30;     // konstanta
+    final String nis;               // diisi sekali di konstruktor
+    String nama;
+
+    Siswa(String nis, String nama) {
+        this.nis = nis;
+        this.nama = nama;
+        jumlah++;
+    }
+    static boolean kelasPenuh() {
+        return jumlah &gt;= MAKS;
+    }
+}
+
+public class Sekolah {
+    public static void main(String[] args) {
+        new Siswa(&quot;001&quot;, &quot;Rina&quot;);
+        new Siswa(&quot;002&quot;, &quot;Sandi&quot;);
+        Siswa s = new Siswa(&quot;003&quot;, &quot;Tari&quot;);
+        s.nama = &quot;Tari A.&quot;;          // boleh: bukan final
+        // s.nis = &quot;999&quot;;            // error: cannot assign a value to final variable
+        System.out.println(Siswa.jumlah);
+        System.out.println(Siswa.kelasPenuh());
+        System.out.println(s.nis + &quot; &quot; + s.nama);
+    }
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>3
+false
+003 Tari A.
+</code></pre>
+<h2>Poin penting</h2><ul><li>Akses anggota static lewat nama kelas: <code>Siswa.jumlah</code>.</li><li>Method static tidak bisa langsung memakai field non-static.</li><li>final pada referensi objek: referensinya tetap, tapi isi objeknya masih bisa berubah.</li><li>Konstanta: <code>static final</code> + HURUF_BESAR.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Jika 3 objek Siswa dibuat, berapa salinan field static &lt;code&gt;jumlah&lt;/code&gt;?</summary><p class="ok">Jawaban: 1</p><p>Field static milik kelas, hanya satu salinan.</p></details><details><summary>Kelas final berarti?</summary><p class="ok">Jawaban: Tidak bisa diturunkan</p><p>Kelas final tidak bisa punya subclass.</p></details>
+<a class="cta" href="/#java-5-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/access-specifier-public-private-protected">Access specifier: public, private, protected</a></p><p>Berikutnya: <a href="/belajar/java/siklus-hidup-objek-garbage-collector">Siklus hidup objek &amp; garbage collector</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

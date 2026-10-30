@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Strategi autentikasi · Frontend · Ruang Kode</title>
+<meta name="description" content="Session cookie: server menyimpan sesi dan browser menyimpan id-nya di cookie HttpOnly; Secure; SameSite yang tidak bisa dibaca JavaScript. Cara paling…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/fe/strategi-autentikasi">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Strategi autentikasi · Frontend · Ruang Kode"><meta property="og:description" content="Session cookie: server menyimpan sesi dan browser menyimpan id-nya di cookie HttpOnly; Secure; SameSite yang tidak bisa dibaca JavaScript. Cara paling…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/fe/strategi-autentikasi"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Strategi autentikasi", "description": "Session cookie: server menyimpan sesi dan browser menyimpan id-nya di cookie HttpOnly; Secure; SameSite yang tidak bisa dibaca JavaScript. Cara paling…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/fe/strategi-autentikasi", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Frontend", "url": "https://ruang-kode-nine.vercel.app/belajar/fe"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Frontend", "item": "https://ruang-kode-nine.vercel.app/belajar/fe"}, {"@type": "ListItem", "position": 3, "name": "Strategi autentikasi", "item": "https://ruang-kode-nine.vercel.app/belajar/fe/strategi-autentikasi"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/fe">Frontend</a> / Modul 8</nav>
+<div class="eyebrow">Frontend · Modul 8 · Konsep &amp; kode</div><h1>Strategi autentikasi</h1><a class="cta" href="/#fe-8-3">Buka versi interaktif</a>
+<p><b>Session cookie</b>: server menyimpan sesi dan browser menyimpan id-nya di cookie <code>HttpOnly; Secure; SameSite</code> yang tidak bisa dibaca JavaScript. Cara paling aman untuk aplikasi web biasa.</p>
+<p><b>Token (JWT)</b>: server memberi token bertanda tangan yang dikirim di header Authorization. Cocok untuk API dan aplikasi mobile, tapi jangan simpan di localStorage jika situs rentan XSS. <b>OAuth / OpenID Connect</b> untuk "Masuk dengan Google". <b>Passkey</b> menggantikan kata sandi dengan kunci di perangkat.</p>
+<div class="lbl">CONTOH</div><pre><code># Login berhasil, server mengirim cookie sesi:
+Set-Cookie: sid=8f2c1e...; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=86400
+
+# Permintaan berikutnya otomatis membawa cookie:
+GET /akun
+Cookie: sid=8f2c1e...
+
+# Alternatif token untuk API:
+GET /api/pesanan
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...</code></pre>
+<h2>Poin penting</h2><ul><li>Cookie HttpOnly + Secure + SameSite untuk sesi web.</li><li>JWT untuk API/mobile; hati-hati tempat penyimpanannya.</li><li>OAuth/OIDC untuk login pihak ketiga.</li><li>Passkey: tanpa kata sandi.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Flag cookie yang mencegah JavaScript membacanya?</summary><p class="ok">Jawaban: HttpOnly</p><p>Melindungi sesi dari XSS.</p></details>
+<a class="cta" href="/#fe-8-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe/xss-risiko-owasp">XSS &amp; risiko OWASP</a></p><p>Berikutnya: <a href="/belajar/fe/core-web-vitals-lighthouse">Core Web Vitals &amp; Lighthouse</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

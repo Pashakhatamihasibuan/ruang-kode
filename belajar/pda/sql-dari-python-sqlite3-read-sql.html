@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SQL dari Python: sqlite3 &amp; read_sql · Python Analisis Data · Ruang Kode</title>
+<meta name="description" content="Banyak data perusahaan tinggal di database. Modul sqlite3 bawaan Python cukup untuk berlatih; di kantor biasanya memakai SQLAlchemy untuk terhubung ke…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/pda/sql-dari-python-sqlite3-read-sql">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="SQL dari Python: sqlite3 &amp; read_sql · Python Analisis Data · Ruang Kode"><meta property="og:description" content="Banyak data perusahaan tinggal di database. Modul sqlite3 bawaan Python cukup untuk berlatih; di kantor biasanya memakai SQLAlchemy untuk terhubung ke…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/pda/sql-dari-python-sqlite3-read-sql"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "SQL dari Python: sqlite3 & read_sql", "description": "Banyak data perusahaan tinggal di database. Modul sqlite3 bawaan Python cukup untuk berlatih; di kantor biasanya memakai SQLAlchemy untuk terhubung ke…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/pda/sql-dari-python-sqlite3-read-sql", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Python Analisis Data", "url": "https://ruang-kode-nine.vercel.app/belajar/pda"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Python Analisis Data", "item": "https://ruang-kode-nine.vercel.app/belajar/pda"}, {"@type": "ListItem", "position": 3, "name": "SQL dari Python: sqlite3 & read_sql", "item": "https://ruang-kode-nine.vercel.app/belajar/pda/sql-dari-python-sqlite3-read-sql"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/pda">Python Analisis Data</a> / Modul 9</nav>
+<div class="eyebrow">Python Analisis Data · Modul 9 · Konsep &amp; kode</div><h1>SQL dari Python: sqlite3 &amp; read_sql</h1><a class="cta" href="/#pda-9-1">Buka versi interaktif</a>
+<p>Banyak data perusahaan tinggal di database. Modul <code>sqlite3</code> bawaan Python cukup untuk berlatih; di kantor biasanya memakai <b>SQLAlchemy</b> untuk terhubung ke PostgreSQL atau MySQL.</p>
+<p><code>pd.read_sql(query, koneksi)</code> menjalankan query lalu mengembalikan DataFrame. Biarkan database melakukan penyaringan dan agregasi berat; pandas untuk langkah lanjutan.</p>
+<p><b>DuckDB</b> adalah database analitik di dalam proses yang bisa menjalankan SQL langsung ke berkas Parquet atau DataFrame, sangat cepat untuk jutaan baris.</p>
+<div class="lbl">PYTHON</div><pre><code>import sqlite3
+import pandas as pd
+
+con = sqlite3.connect(&quot;:memory:&quot;)
+con.executescript(&quot;&quot;&quot;
+CREATE TABLE pesanan(id INTEGER, kota TEXT, total INTEGER);
+INSERT INTO pesanan VALUES (1,&#x27;Jakarta&#x27;,255000),(2,&#x27;Bandung&#x27;,250000),
+  (3,&#x27;Jakarta&#x27;,375000),(4,&#x27;Medan&#x27;,340000);
+&quot;&quot;&quot;)
+q = &quot;SELECT kota, COUNT(*) AS n, SUM(total) AS omzet FROM pesanan GROUP BY kota ORDER BY omzet DESC&quot;
+df = pd.read_sql(q, con)
+print(df)
+print(df[&quot;omzet&quot;].sum())</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>      kota  n   omzet
+0  Jakarta  2  630000
+1    Medan  1  340000
+2  Bandung  1  250000
+1220000</code></pre>
+<h2>Poin penting</h2><ul><li>sqlite3 untuk latihan, SQLAlchemy untuk produksi.</li><li>read_sql → DataFrame.</li><li>DuckDB: SQL cepat untuk berkas lokal.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Siapa yang sebaiknya melakukan agregasi jutaan baris?</summary><p class="ok">Jawaban: Database, lewat SQL</p><p>Hanya kirim hasil ringkas ke Python.</p></details>
+<a class="cta" href="/#pda-9-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pda/grafik-interaktif-dashboard">Grafik interaktif &amp; dashboard</a></p><p>Berikutnya: <a href="/belajar/pda/polars-dask-pyspark">Polars, Dask &amp; PySpark</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

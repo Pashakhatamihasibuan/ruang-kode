@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rentang, varians &amp; bentuk distribusi · Data Analyst · Ruang Kode</title>
+<meta name="description" content="Rentang = maksimum − minimum, mudah dihitung tetapi sangat peka outlier. Varians adalah rata-rata kuadrat jarak dari mean; simpangan baku adalah akar…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/da/rentang-varians-bentuk-distribusi">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Rentang, varians &amp; bentuk distribusi · Data Analyst · Ruang Kode"><meta property="og:description" content="Rentang = maksimum − minimum, mudah dihitung tetapi sangat peka outlier. Varians adalah rata-rata kuadrat jarak dari mean; simpangan baku adalah akar…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/da/rentang-varians-bentuk-distribusi"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Rentang, varians & bentuk distribusi", "description": "Rentang = maksimum − minimum, mudah dihitung tetapi sangat peka outlier. Varians adalah rata-rata kuadrat jarak dari mean; simpangan baku adalah akar…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/da/rentang-varians-bentuk-distribusi", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Analyst", "url": "https://ruang-kode-nine.vercel.app/belajar/da"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Analyst", "item": "https://ruang-kode-nine.vercel.app/belajar/da"}, {"@type": "ListItem", "position": 3, "name": "Rentang, varians & bentuk distribusi", "item": "https://ruang-kode-nine.vercel.app/belajar/da/rentang-varians-bentuk-distribusi"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/da">Data Analyst</a> / Modul 5</nav>
+<div class="eyebrow">Data Analyst · Modul 5 · Konsep &amp; kode</div><h1>Rentang, varians &amp; bentuk distribusi</h1><a class="cta" href="/#da-5-2">Buka versi interaktif</a>
+<p><b>Rentang</b> = maksimum − minimum, mudah dihitung tetapi sangat peka outlier. <b>Varians</b> adalah rata-rata kuadrat jarak dari mean; <b>simpangan baku</b> adalah akar varians sehingga satuannya sama dengan data.</p>
+<p><b>Skewness</b> mengukur kemiringan: positif berarti ekor panjang ke kanan (pendapatan, nilai belanja), mean &gt; median. <b>Kurtosis</b> mengukur seberapa tebal ekor; kurtosis tinggi berarti nilai ekstrem lebih sering muncul.</p>
+<p>Data yang sangat miring sebaiknya diringkas dengan median dan kuartil, atau ditransformasi log sebelum dianalisis.</p>
+<div class="lbl">PYTHON</div><pre><code>import pandas as pd
+import numpy as np
+
+belanja = pd.Series([45, 60, 62, 70, 75, 80, 85, 95, 110, 150, 320], name=&quot;ribu&quot;)
+print(&quot;rentang :&quot;, belanja.max() - belanja.min())
+print(&quot;varians :&quot;, round(belanja.var(), 1))
+print(&quot;std     :&quot;, round(belanja.std(), 1))
+print(&quot;mean vs median:&quot;, round(belanja.mean(), 1), belanja.median())
+print(&quot;skew    :&quot;, round(belanja.skew(), 2))
+print(&quot;kurtosis:&quot;, round(belanja.kurt(), 2))
+print(&quot;skew log:&quot;, round(np.log(belanja).skew(), 2))</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>rentang : 275
+varians : 5899.8
+std     : 76.8
+mean vs median: 104.7 80.0
+skew    : 2.59
+kurtosis: 7.29
+skew log: 1.43</code></pre>
+<h2>Poin penting</h2><ul><li>Rentang peka outlier; std satuannya sama dengan data.</li><li>Skew positif: ekor kanan, mean > median.</li><li>Transformasi log mengurangi kemiringan.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Distribusi nilai belanja dengan mean jauh di atas median biasanya?</summary><p class="ok">Jawaban: Miring ke kanan (skew positif)</p><p>Beberapa pembeli besar menarik mean ke kanan.</p></details>
+<a class="cta" href="/#da-5-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/da/api-web-scraping">API &amp; web scraping</a></p><p>Berikutnya: <a href="/belajar/da/regresi-linear-sederhana">Regresi linear sederhana</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

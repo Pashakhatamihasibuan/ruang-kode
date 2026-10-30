@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CASE, COALESCE &amp; NULLIF · SQL · Ruang Kode</title>
+<meta name="description" content="CASE adalah if-else di dalam SQL. Bentuknya CASE WHEN kondisi THEN nilai ... ELSE nilai END. Ia bisa dipakai di SELECT untuk membuat label, di ORDER BY…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/sql/case-coalesce-nullif">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="CASE, COALESCE &amp; NULLIF · SQL · Ruang Kode"><meta property="og:description" content="CASE adalah if-else di dalam SQL. Bentuknya CASE WHEN kondisi THEN nilai ... ELSE nilai END. Ia bisa dipakai di SELECT untuk membuat label, di ORDER BY…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/sql/case-coalesce-nullif"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "CASE, COALESCE & NULLIF", "description": "CASE adalah if-else di dalam SQL. Bentuknya CASE WHEN kondisi THEN nilai ... ELSE nilai END. Ia bisa dipakai di SELECT untuk membuat label, di ORDER BY…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/sql/case-coalesce-nullif", "learningResourceType": "Praktik SQL", "isPartOf": {"@type": "Course", "name": "SQL", "url": "https://ruang-kode-nine.vercel.app/belajar/sql"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "SQL", "item": "https://ruang-kode-nine.vercel.app/belajar/sql"}, {"@type": "ListItem", "position": 3, "name": "CASE, COALESCE & NULLIF", "item": "https://ruang-kode-nine.vercel.app/belajar/sql/case-coalesce-nullif"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/sql">SQL</a> / Modul 9</nav>
+<div class="eyebrow">SQL · Modul 9 · Praktik SQL</div><h1>CASE, COALESCE &amp; NULLIF</h1><a class="cta" href="/#sql-9-3">Buka versi interaktif</a>
+<p><code>CASE</code> adalah if-else di dalam SQL. Bentuknya <code>CASE WHEN kondisi THEN nilai ... ELSE nilai END</code>. Ia bisa dipakai di SELECT untuk membuat label, di ORDER BY untuk urutan khusus, bahkan di dalam SUM untuk menghitung bersyarat.</p>
+<p><code>COALESCE(a, b, c)</code> mengembalikan nilai pertama yang tidak NULL. Sangat berguna untuk memberi nilai cadangan: <code>COALESCE(kota, 'Belum diisi')</code>.</p>
+<p><code>NULLIF(a, b)</code> mengembalikan NULL jika a sama dengan b. Trik klasiknya mencegah pembagian dengan nol: <code>total / NULLIF(jumlah, 0)</code>.</p>
+<div class="lbl">Label dengan CASE</div><pre><code>SELECT nama, harga,
+  CASE WHEN harga &gt;= 75000 THEN &#x27;premium&#x27;
+       WHEN harga &gt;= 30000 THEN &#x27;menengah&#x27;
+       ELSE &#x27;hemat&#x27; END AS kelas
+FROM produk;</code></pre>
+<div class="lbl">Menghitung bersyarat</div><pre><code>SELECT COUNT(*) AS semua,
+  SUM(CASE WHEN status = &#x27;selesai&#x27; THEN 1 ELSE 0 END) AS selesai,
+  SUM(CASE WHEN status = &#x27;batal&#x27; THEN 1 ELSE 0 END) AS batal
+FROM pesanan;</code></pre>
+<div class="lbl">COALESCE</div><pre><code>SELECT nama, COALESCE(kota, &#x27;Belum diisi&#x27;) AS kota FROM pelanggan;</code></pre>
+<div class="lbl">NULLIF mencegah bagi nol</div><pre><code>SELECT nama, stok, harga / NULLIF(stok, 0) AS harga_per_stok FROM produk;</code></pre>
+<h2>Tantangan</h2><ol><li>Tampilkan nama produk dan status stok (alias status_stok): 'habis' jika stok 0, 'menipis' jika stok di bawah 50, selain itu 'aman'.</li></ol>
+<h2>Poin penting</h2><ul><li>CASE WHEN ... THEN ... ELSE ... END.</li><li>Kondisi dicek berurutan; yang pertama benar dipakai.</li><li>COALESCE = nilai cadangan untuk NULL.</li><li>NULLIF(x, 0) mencegah pembagian dengan nol.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>&lt;code&gt;COALESCE(NULL, NULL, &#x27;x&#x27;, &#x27;y&#x27;)&lt;/code&gt;?</summary><p class="ok">Jawaban: &#x27;x&#x27;</p><p>Nilai pertama yang tidak NULL.</p></details><details><summary>CASE tanpa ELSE dan tidak ada kondisi yang cocok menghasilkan?</summary><p class="ok">Jawaban: NULL</p><p>ELSE bawaan adalah NULL.</p></details>
+<a class="cta" href="/#sql-9-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/fungsi-tanggal-waktu">Fungsi tanggal &amp; waktu</a></p><p>Berikutnya: <a href="/belajar/sql/proyek-mini-merapikan-laporan">Proyek mini: Merapikan laporan</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

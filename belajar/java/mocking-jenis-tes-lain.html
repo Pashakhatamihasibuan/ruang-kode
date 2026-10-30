@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mocking &amp; jenis tes lain · Java · Ruang Kode</title>
+<meta name="description" content="Kadang kelas yang diuji bergantung pada database atau API luar. Mockito membuat mock: objek tiruan yang perilakunya kamu atur…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/java/mocking-jenis-tes-lain">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Mocking &amp; jenis tes lain · Java · Ruang Kode"><meta property="og:description" content="Kadang kelas yang diuji bergantung pada database atau API luar. Mockito membuat mock: objek tiruan yang perilakunya kamu atur…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/java/mocking-jenis-tes-lain"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Mocking & jenis tes lain", "description": "Kadang kelas yang diuji bergantung pada database atau API luar. Mockito membuat mock: objek tiruan yang perilakunya kamu atur…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/java/mocking-jenis-tes-lain", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Java", "url": "https://ruang-kode-nine.vercel.app/belajar/java"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Java", "item": "https://ruang-kode-nine.vercel.app/belajar/java"}, {"@type": "ListItem", "position": 3, "name": "Mocking & jenis tes lain", "item": "https://ruang-kode-nine.vercel.app/belajar/java/mocking-jenis-tes-lain"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/java">Java</a> / Modul 14</nav>
+<div class="eyebrow">Java · Modul 14 · Konsep &amp; kode</div><h1>Mocking &amp; jenis tes lain</h1><a class="cta" href="/#java-14-4">Buka versi interaktif</a>
+<p>Kadang kelas yang diuji bergantung pada database atau API luar. <b>Mockito</b> membuat <i>mock</i>: objek tiruan yang perilakunya kamu atur (<code>when(...).thenReturn(...)</code>), lalu kamu periksa apakah ia dipanggil dengan benar (<code>verify</code>). Tes jadi cepat dan tidak bergantung pada sistem lain.</p>
+<p><b>Cucumber JVM</b> menulis skenario tes dalam bahasa mirip kalimat (Given, When, Then) sehingga bisa dibaca orang bisnis. <b>REST Assured</b> menguji REST API dengan gaya berantai: kirim request, periksa status dan isi JSON.</p>
+<p><b>JMeter</b> menguji beban: mensimulasikan ribuan pengguna sekaligus untuk melihat apakah aplikasi tetap cepat. Bersama unit test, ini membentuk piramida tes: banyak unit test, lebih sedikit tes integrasi, dan sedikit tes end-to-end.</p>
+<div class="lbl">JAVA</div><pre><code>// Mockito: uji LayananPesanan tanpa database sungguhan
+@Test
+void totalDihitungDariRepo() {
+    RepoProduk repo = mock(RepoProduk.class);
+    when(repo.harga(&quot;KOPI&quot;)).thenReturn(85_000L);
+
+    LayananPesanan layanan = new LayananPesanan(repo);
+    assertEquals(170_000L, layanan.total(&quot;KOPI&quot;, 2));
+    verify(repo).harga(&quot;KOPI&quot;);
+}
+
+// REST Assured: uji endpoint API
+given().when().get(&quot;/api/produk/1&quot;)
+       .then().statusCode(200)
+       .body(&quot;nama&quot;, equalTo(&quot;Kopi Gayo&quot;));
+
+# Cucumber: skenario dalam bahasa manusia
+Scenario: Diskon member
+  Given pelanggan adalah member
+  When ia membeli Kopi Gayo seharga 85000
+  Then total yang dibayar adalah 76500</code></pre>
+<h2>Poin penting</h2><ul><li>Mock menggantikan dependensi yang lambat atau tidak stabil.</li><li><code>when...thenReturn</code> mengatur, <code>verify</code> memeriksa interaksi.</li><li>REST Assured untuk tes API, Cucumber untuk skenario bisnis, JMeter untuk tes beban.</li><li>Piramida tes: banyak unit, sedikit end-to-end.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kegunaan mock?</summary><p class="ok">Jawaban: Menggantikan dependensi luar saat tes</p><p>Tes fokus pada satu kelas saja.</p></details><details><summary>Alat untuk mensimulasikan ribuan pengguna?</summary><p class="ok">Jawaban: JMeter</p><p>JMeter dipakai untuk load test.</p></details>
+<a class="cta" href="/#java-14-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/unit-test-dengan-junit-5">Unit test dengan JUnit 5</a></p><p>Berikutnya: <a href="/belajar/java/jdbc-java-bicara-dengan-database">JDBC: Java bicara dengan database</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

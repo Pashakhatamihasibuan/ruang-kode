@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Design system mini &quot;Celengan&quot; · Design System · Ruang Kode</title>
+<meta name="description" content="Rapikan aplikasi tabungan fiktif yang tumbuh tanpa aturan menjadi design system mini: token tiga lapis, lima komponen inti dengan semua state, mode…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/ds/design-system-mini-celengan">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Design system mini &quot;Celengan&quot; · Design System · Ruang Kode"><meta property="og:description" content="Rapikan aplikasi tabungan fiktif yang tumbuh tanpa aturan menjadi design system mini: token tiga lapis, lima komponen inti dengan semua state, mode…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/ds/design-system-mini-celengan"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Design system mini \"Celengan\"", "description": "Rapikan aplikasi tabungan fiktif yang tumbuh tanpa aturan menjadi design system mini: token tiga lapis, lima komponen inti dengan semua state, mode…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/ds/design-system-mini-celengan", "learningResourceType": "Proyek akhir", "isPartOf": {"@type": "Course", "name": "Design System", "url": "https://ruang-kode-nine.vercel.app/belajar/ds"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Design System", "item": "https://ruang-kode-nine.vercel.app/belajar/ds"}, {"@type": "ListItem", "position": 3, "name": "Design system mini \"Celengan\"", "item": "https://ruang-kode-nine.vercel.app/belajar/ds/design-system-mini-celengan"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/ds">Design System</a> / Modul 7</nav>
+<div class="eyebrow">Design System · Modul 7 · Proyek akhir</div><h1>Design system mini &quot;Celengan&quot;</h1><a class="cta" href="/#ds-7-1">Buka versi interaktif</a>
+<p>Rapikan aplikasi tabungan fiktif yang tumbuh tanpa aturan menjadi design system mini: token tiga lapis, lima komponen inti dengan semua state, mode gelap, dan dokumentasi.</p>
+<p><b>Teknologi:</b> Figma + CSS + Storybook</p>
+<h2>Fitur yang dibuat</h2><ul><li>Audit visual dengan jumlah warna, ukuran huruf, dan varian tombol sebelum-sesudah</li><li>Token primitif, semantik, komponen dalam format DTCG</li><li>Mode gelap hanya dengan mengganti token semantik</li><li>Komponen Button, TextField, Checkbox, Modal, Toast dengan semua state</li><li>Kontras semua pasangan teks lulus WCAG 2.2 AA</li><li>Halaman dokumentasi: kapan dipakai, kapan tidak, contoh benar/salah</li><li>Changelog dengan semantic versioning</li><li>Pilot di satu layar dan catatan hasilnya</li></ul>
+<h2>Langkah kerja</h2><ol><li>Audit dan tentukan token.</li><li>Bangun komponen di Figma dan CSS.</li><li>Uji kontras dan keyboard.</li><li>Tulis dokumentasi, rilis v1.0.0.</li></ol>
+<div class="lbl">tokens.json</div><pre><code>{
+  &quot;teal&quot;: { &quot;700&quot;: { &quot;$type&quot;: &quot;color&quot;, &quot;$value&quot;: &quot;#0F766E&quot; }, &quot;300&quot;: { &quot;$type&quot;: &quot;color&quot;, &quot;$value&quot;: &quot;#5EEAD4&quot; } },
+  &quot;gray&quot;: { &quot;50&quot;: { &quot;$type&quot;: &quot;color&quot;, &quot;$value&quot;: &quot;#F6F7F5&quot; }, &quot;900&quot;: { &quot;$type&quot;: &quot;color&quot;, &quot;$value&quot;: &quot;#1C1B19&quot; } },
+  &quot;color&quot;: {
+    &quot;bg&quot;:     { &quot;$value&quot;: &quot;{gray.50}&quot; },
+    &quot;text&quot;:   { &quot;default&quot;: { &quot;$value&quot;: &quot;{gray.900}&quot; } },
+    &quot;action&quot;: { &quot;primary&quot;: { &quot;$value&quot;: &quot;{teal.700}&quot; } }
+  },
+  &quot;space&quot;: { &quot;100&quot;: { &quot;$type&quot;: &quot;dimension&quot;, &quot;$value&quot;: &quot;8px&quot; }, &quot;200&quot;: { &quot;$type&quot;: &quot;dimension&quot;, &quot;$value&quot;: &quot;16px&quot; } },
+  &quot;button&quot;: { &quot;primary&quot;: { &quot;bg&quot;: { &quot;$value&quot;: &quot;{color.action.primary}&quot; }, &quot;radius&quot;: { &quot;$value&quot;: &quot;12px&quot; } } }
+}</code></pre>
+<a class="cta" href="/#ds-7-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/ds/versi-kontribusi-metrik-adopsi">Versi, kontribusi &amp; metrik adopsi</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

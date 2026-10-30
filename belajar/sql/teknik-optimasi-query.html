@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Teknik optimasi query · SQL · Ruang Kode</title>
+<meta name="description" content="Langkah pertama optimasi adalah mengukur, bukan menebak. Pakai EXPLAIN (atau EXPLAIN ANALYZE di PostgreSQL yang juga menjalankan query dan mencatat…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/sql/teknik-optimasi-query">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Teknik optimasi query · SQL · Ruang Kode"><meta property="og:description" content="Langkah pertama optimasi adalah mengukur, bukan menebak. Pakai EXPLAIN (atau EXPLAIN ANALYZE di PostgreSQL yang juga menjalankan query dan mencatat…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/sql/teknik-optimasi-query"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Teknik optimasi query", "description": "Langkah pertama optimasi adalah mengukur, bukan menebak. Pakai EXPLAIN (atau EXPLAIN ANALYZE di PostgreSQL yang juga menjalankan query dan mencatat…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/sql/teknik-optimasi-query", "learningResourceType": "Praktik SQL", "isPartOf": {"@type": "Course", "name": "SQL", "url": "https://ruang-kode-nine.vercel.app/belajar/sql"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "SQL", "item": "https://ruang-kode-nine.vercel.app/belajar/sql"}, {"@type": "ListItem", "position": 3, "name": "Teknik optimasi query", "item": "https://ruang-kode-nine.vercel.app/belajar/sql/teknik-optimasi-query"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/sql">SQL</a> / Modul 13</nav>
+<div class="eyebrow">SQL · Modul 13 · Praktik SQL</div><h1>Teknik optimasi query</h1><a class="cta" href="/#sql-13-1">Buka versi interaktif</a>
+<p>Langkah pertama optimasi adalah <b>mengukur</b>, bukan menebak. Pakai <code>EXPLAIN</code> (atau <code>EXPLAIN ANALYZE</code> di PostgreSQL yang juga menjalankan query dan mencatat waktunya) untuk melihat bagian mana yang membaca banyak baris.</p>
+<p>Teknik yang paling sering berdampak: <b>index</b> pada kolom di WHERE dan kondisi JOIN; <b>selective projection</b>, yaitu memilih kolom yang dibutuhkan saja, bukan <code>SELECT *</code>; <b>menyaring sedini mungkin</b> dengan WHERE; mengganti subquery berkorelasi yang berat dengan JOIN atau CTE; dan memakai <code>LIMIT</code> untuk tampilan berhalaman.</p>
+<p>Hindari membungkus kolom berindeks dengan fungsi di WHERE, misalnya <code>WHERE UPPER(kota) = 'JAKARTA'</code>, karena index pada kota tidak bisa dipakai. Hindari juga <code>LIKE '%kata'</code> (wildcard di depan) untuk pencarian di tabel besar.</p>
+<div class="lbl">Index pada kolom JOIN</div><pre><code>CREATE INDEX idx_pesanan_pelanggan ON pesanan(pelanggan_id);
+EXPLAIN QUERY PLAN
+SELECT p.nama, s.id FROM pelanggan p JOIN pesanan s ON s.pelanggan_id = p.id WHERE s.pelanggan_id = 1;</code></pre>
+<div class="lbl">Fungsi di kolom mematikan index</div><pre><code>CREATE INDEX idx_kota ON pelanggan(kota);
+EXPLAIN QUERY PLAN SELECT nama FROM pelanggan WHERE UPPER(kota) = &#x27;JAKARTA&#x27;;</code></pre>
+<div class="lbl">Lebih baik: bandingkan kolom apa adanya</div><pre><code>CREATE INDEX idx_kota ON pelanggan(kota);
+EXPLAIN QUERY PLAN SELECT nama FROM pelanggan WHERE kota = &#x27;Jakarta&#x27;;</code></pre>
+<div class="lbl">Subquery berkorelasi ditulis ulang dengan JOIN + GROUP BY</div><pre><code>SELECT p.nama, COUNT(s.id) AS banyak_pesanan
+FROM pelanggan p LEFT JOIN pesanan s ON s.pelanggan_id = p.id
+GROUP BY p.id, p.nama
+ORDER BY banyak_pesanan DESC;</code></pre>
+<h2>Tantangan</h2><ol><li>Tulis query efisien yang hanya mengambil kolom nama dan harga dari 3 produk termahal kategori Minuman.</li></ol>
+<h2>Poin penting</h2><ul><li>Ukur dengan EXPLAIN sebelum mengoptimasi.</li><li>Index kolom WHERE dan JOIN.</li><li>Pilih kolom seperlunya; saring sedini mungkin.</li><li>Jangan bungkus kolom berindeks dengan fungsi.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa &lt;code&gt;WHERE UPPER(kota) = ...&lt;/code&gt; bisa lambat?</summary><p class="ok">Jawaban: Index pada kota tidak bisa dipakai</p><p>Database harus menghitung UPPER untuk setiap baris.</p></details><details><summary>Arti selective projection?</summary><p class="ok">Jawaban: Memilih kolom yang dibutuhkan saja</p><p>Lebih sedikit data dibaca dan dikirim.</p></details>
+<a class="cta" href="/#sql-13-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/stored-procedure-function">Stored procedure &amp; function</a></p><p>Berikutnya: <a href="/belajar/sql/cte-with">CTE: WITH</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

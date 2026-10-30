@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>pathlib &amp; modul glob · Python · Ruang Kode</title>
+<meta name="description" content="Modul pathlib menyediakan objek Path untuk mengelola lokasi file dengan cara yang rapi dan lintas sistem operasi. Gabungkan path dengan operator /, ambil…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/python/pathlib-modul-glob">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="pathlib &amp; modul glob · Python · Ruang Kode"><meta property="og:description" content="Modul pathlib menyediakan objek Path untuk mengelola lokasi file dengan cara yang rapi dan lintas sistem operasi. Gabungkan path dengan operator /, ambil…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/python/pathlib-modul-glob"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "pathlib & modul glob", "description": "Modul pathlib menyediakan objek Path untuk mengelola lokasi file dengan cara yang rapi dan lintas sistem operasi. Gabungkan path dengan operator /, ambil…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/python/pathlib-modul-glob", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Python", "url": "https://ruang-kode-nine.vercel.app/belajar/python"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Python", "item": "https://ruang-kode-nine.vercel.app/belajar/python"}, {"@type": "ListItem", "position": 3, "name": "pathlib & modul glob", "item": "https://ruang-kode-nine.vercel.app/belajar/python/pathlib-modul-glob"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/python">Python</a> / Modul 5</nav>
+<div class="eyebrow">Python · Modul 5 · Konsep &amp; kode</div><h1>pathlib &amp; modul glob</h1><a class="cta" href="/#python-5-6">Buka versi interaktif</a>
+<p>Modul <code>pathlib</code> menyediakan objek <code>Path</code> untuk mengelola lokasi file dengan cara yang rapi dan lintas sistem operasi. Gabungkan path dengan operator <code>/</code>, ambil nama file dengan <code>.name</code>, ekstensi dengan <code>.suffix</code>, dan baca tulis dengan <code>read_text</code>/<code>write_text</code>.</p>
+<p>Untuk mencari banyak file sekaligus dengan pola, pakai <b>glob</b>. Tanda <code>*</code> cocok dengan apa saja, <code>?</code> satu karakter, dan <code>**</code> masuk ke semua subfolder. Tersedia sebagai modul <code>glob</code> dan juga method <code>Path.glob</code>/<code>rglob</code>.</p>
+<p>Contoh kebutuhan nyata: mengumpulkan semua laporan CSV di folder bulanan, mengganti nama foto secara massal, atau menghapus file sementara.</p>
+<div class="lbl">PYTHON</div><pre><code>from pathlib import Path
+import glob
+
+folder = Path(&quot;laporan&quot;)
+folder.mkdir(exist_ok=True)
+for bulan in [&quot;jan&quot;, &quot;feb&quot;, &quot;mar&quot;]:
+    (folder / f&quot;penjualan_{bulan}.csv&quot;).write_text(&quot;produk,jumlah\nkopi,10\n&quot;)
+(folder / &quot;catatan.txt&quot;).write_text(&quot;rahasia&quot;)
+
+csv = sorted(folder.glob(&quot;*.csv&quot;))
+print([p.name for p in csv])
+print(csv[0].stem, csv[0].suffix)
+
+print(sorted(glob.glob(&quot;laporan/penjualan_?a?.csv&quot;)))
+
+total = sum(len(p.read_text().splitlines()) - 1 for p in csv)
+print(&quot;total baris data:&quot;, total)
+
+for p in folder.iterdir():
+    p.unlink()
+folder.rmdir()
+print(folder.exists())</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>[&#x27;penjualan_feb.csv&#x27;, &#x27;penjualan_jan.csv&#x27;, &#x27;penjualan_mar.csv&#x27;]
+penjualan_feb .csv
+[&#x27;laporan/penjualan_jan.csv&#x27;, &#x27;laporan/penjualan_mar.csv&#x27;]
+total baris data: 3
+False
+</code></pre>
+<h2>Poin penting</h2><ul><li><code>Path("a") / "b.txt"</code> menggabung path.</li><li><code>.name</code>, <code>.stem</code>, <code>.suffix</code> untuk bagian nama.</li><li>Pola glob: <code>*</code>, <code>?</code>, <code>**</code>.</li><li><code>rglob</code> mencari di semua subfolder.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Pola glob untuk semua file CSV?</summary><p class="ok">Jawaban: *.csv</p><p>Bintang cocok dengan nama apa pun.</p></details><details><summary>&lt;code&gt;Path(&quot;data/laporan.csv&quot;).suffix&lt;/code&gt;?</summary><p class="ok">Jawaban: &quot;.csv&quot;</p><p>suffix adalah ekstensi termasuk titiknya.</p></details>
+<a class="cta" href="/#python-5-6">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/context-manager-with">Context manager: with</a></p><p>Berikutnya: <a href="/belajar/python/import-modul-buatan-sendiri">Import &amp; modul buatan sendiri</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

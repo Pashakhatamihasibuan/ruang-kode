@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Generics: kode yang aman tipe · Java · Ruang Kode</title>
+<meta name="description" content="Generics membuat kelas dan method bisa bekerja dengan berbagai tipe sambil tetap diperiksa compiler. List&lt;String&gt; hanya menerima String, sehingga kamu…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/java/generics-kode-yang-aman-tipe">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Generics: kode yang aman tipe · Java · Ruang Kode"><meta property="og:description" content="Generics membuat kelas dan method bisa bekerja dengan berbagai tipe sambil tetap diperiksa compiler. List&lt;String&gt; hanya menerima String, sehingga kamu…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/java/generics-kode-yang-aman-tipe"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Generics: kode yang aman tipe", "description": "Generics membuat kelas dan method bisa bekerja dengan berbagai tipe sambil tetap diperiksa compiler. List<String> hanya menerima String, sehingga kamu…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/java/generics-kode-yang-aman-tipe", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Java", "url": "https://ruang-kode-nine.vercel.app/belajar/java"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Java", "item": "https://ruang-kode-nine.vercel.app/belajar/java"}, {"@type": "ListItem", "position": 3, "name": "Generics: kode yang aman tipe", "item": "https://ruang-kode-nine.vercel.app/belajar/java/generics-kode-yang-aman-tipe"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/java">Java</a> / Modul 8</nav>
+<div class="eyebrow">Java · Modul 8 · Konsep &amp; kode</div><h1>Generics: kode yang aman tipe</h1><a class="cta" href="/#java-8-1">Buka versi interaktif</a>
+<p><b>Generics</b> membuat kelas dan method bisa bekerja dengan berbagai tipe sambil tetap diperiksa compiler. <code>List&lt;String&gt;</code> hanya menerima String, sehingga kamu tidak perlu cast dan tidak akan kemasukan tipe lain.</p>
+<p>Kamu bisa membuat kelas generik sendiri dengan parameter tipe seperti <code>&lt;T&gt;</code>. Huruf T adalah penampung yang diganti tipe sungguhan saat kelas dipakai: <code>Kotak&lt;Integer&gt;</code>, <code>Kotak&lt;String&gt;</code>.</p>
+<p>Batas tipe (<i>bounded type</i>) seperti <code>&lt;T extends Number&gt;</code> berarti T harus Number atau turunannya, sehingga method di dalamnya boleh memanggil <code>doubleValue()</code>. Wildcard <code>?</code> dipakai pada parameter yang menerima "list berisi tipe apa pun".</p>
+<div class="lbl">JAVA</div><pre><code>import java.util.List;
+
+class Kotak&lt;T&gt; {
+    private final T isi;
+    Kotak(T isi) { this.isi = isi; }
+    T ambil() { return isi; }
+}
+
+public class Generik {
+    static &lt;T&gt; T pertama(List&lt;T&gt; data) {
+        return data.get(0);
+    }
+    static &lt;T extends Number&gt; double jumlah(List&lt;T&gt; angka) {
+        double total = 0;
+        for (T x : angka) total += x.doubleValue();
+        return total;
+    }
+    static void cetak(List&lt;?&gt; apaSaja) {
+        System.out.println(&quot;Isi: &quot; + apaSaja);
+    }
+
+    public static void main(String[] args) {
+        Kotak&lt;String&gt; k = new Kotak&lt;&gt;(&quot;rahasia&quot;);
+        String s = k.ambil();             // tanpa cast
+        System.out.println(s.toUpperCase());
+        System.out.println(pertama(List.of(3, 1, 2)));
+        System.out.println(jumlah(List.of(1.5, 2, 3L)));
+        cetak(List.of(&#x27;a&#x27;, &#x27;b&#x27;));
+    }
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>RAHASIA
+3
+6.5
+Isi: [a, b]
+</code></pre>
+<h2>Poin penting</h2><ul><li>Generics memindahkan kesalahan tipe dari runtime ke waktu kompilasi.</li><li>Nama parameter tipe yang lazim: T (type), E (element), K/V (key/value).</li><li><code>&lt;&gt;</code> (diamond) membiarkan compiler menebak tipe di sisi kanan.</li><li>Generics tidak menerima primitif: pakai Integer, Double, dan lainnya.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Keuntungan utama generics?</summary><p class="ok">Jawaban: Kesalahan tipe ketahuan saat kompilasi</p><p>Compiler memeriksa tipe sehingga cast tidak diperlukan.</p></details><details><summary>&lt;code&gt;&amp;lt;T extends Number&amp;gt;&lt;/code&gt; berarti?</summary><p class="ok">Jawaban: T harus subclass Number atau Number itu sendiri</p><p>Ini disebut bounded type parameter.</p></details>
+<a class="cta" href="/#java-8-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/deque-iterator">Deque &amp; Iterator</a></p><p>Berikutnya: <a href="/belajar/java/menangani-error-exception">Menangani error (exception)</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

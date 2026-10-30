@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bundler &amp; Vite · Frontend · Ruang Kode</title>
+<meta name="description" content="Kode modern terdiri dari ratusan modul, JSX, dan TypeScript yang tidak bisa langsung dijalankan browser lama. Bundler menggabungkan dan mengoptimasi…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/fe/bundler-vite">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Bundler &amp; Vite · Frontend · Ruang Kode"><meta property="og:description" content="Kode modern terdiri dari ratusan modul, JSX, dan TypeScript yang tidak bisa langsung dijalankan browser lama. Bundler menggabungkan dan mengoptimasi…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/fe/bundler-vite"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Bundler & Vite", "description": "Kode modern terdiri dari ratusan modul, JSX, dan TypeScript yang tidak bisa langsung dijalankan browser lama. Bundler menggabungkan dan mengoptimasi…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/fe/bundler-vite", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Frontend", "url": "https://ruang-kode-nine.vercel.app/belajar/fe"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Frontend", "item": "https://ruang-kode-nine.vercel.app/belajar/fe"}, {"@type": "ListItem", "position": 3, "name": "Bundler & Vite", "item": "https://ruang-kode-nine.vercel.app/belajar/fe/bundler-vite"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/fe">Frontend</a> / Modul 5</nav>
+<div class="eyebrow">Frontend · Modul 5 · Konsep &amp; kode</div><h1>Bundler &amp; Vite</h1><a class="cta" href="/#fe-5-2">Buka versi interaktif</a>
+<p>Kode modern terdiri dari ratusan modul, JSX, dan TypeScript yang tidak bisa langsung dijalankan browser lama. <b>Bundler</b> menggabungkan dan mengoptimasi semuanya: menghapus kode yang tidak dipakai (tree shaking), memecah file (code splitting), dan mengecilkan ukuran (minify).</p>
+<p><b>Vite</b> kini menjadi pilihan utama: saat pengembangan ia menyajikan modul ES langsung sehingga sangat cepat, dan saat build ia memakai Rollup (atau Rolldown). <b>esbuild</b> dan <b>SWC</b> adalah kompiler super cepat yang ditulis dengan Go dan Rust.</p>
+<p>Selain npm, ada <b>pnpm</b> (hemat ruang disk), <b>Yarn</b>, dan <b>Bun</b> (runtime sekaligus package manager yang sangat cepat).</p>
+<div class="lbl">JAVASCRIPT</div><pre><code>// vite.config.js
+import { defineConfig } from &quot;vite&quot;;
+import react from &quot;@vitejs/plugin-react&quot;;
+
+export default defineConfig({
+  plugins: [react()],
+  build: {
+    sourcemap: true,
+    rollupOptions: { output: { manualChunks: { react: [&quot;react&quot;, &quot;react-dom&quot;] } } },
+  },
+});
+// $ npm run build
+// dist/assets/react-8f2c.js   142 kB │ gzip: 45 kB
+// dist/assets/index-1b7d.js    18 kB │ gzip:  6 kB</code></pre>
+<h2>Poin penting</h2><ul><li>Bundler: gabung, tree shaking, code splitting, minify.</li><li>Vite cepat saat dev, Rollup/Rolldown saat build.</li><li>esbuild dan SWC adalah kompiler cepat.</li><li>pnpm, Yarn, Bun alternatif npm.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Tree shaking berarti?</summary><p class="ok">Jawaban: Membuang kode yang tidak dipakai</p><p>Hanya kode yang di-import yang ikut.</p></details>
+<a class="cta" href="/#fe-5-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe/web-api-storage-observer-lainnya">Web API: storage, observer &amp; lainnya</a></p><p>Berikutnya: <a href="/belajar/fe/linter-formatter">Linter &amp; formatter</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

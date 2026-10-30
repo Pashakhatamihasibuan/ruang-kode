@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tipe data primitif &amp; type casting · Java · Ruang Kode</title>
+<meta name="description" content="Java punya delapan tipe primitif: byte, short, int, long untuk bilangan bulat, float dan double untuk pecahan, char untuk satu huruf, dan boolean untuk…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/java/tipe-data-primitif-type-casting">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Tipe data primitif &amp; type casting · Java · Ruang Kode"><meta property="og:description" content="Java punya delapan tipe primitif: byte, short, int, long untuk bilangan bulat, float dan double untuk pecahan, char untuk satu huruf, dan boolean untuk…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/java/tipe-data-primitif-type-casting"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Tipe data primitif & type casting", "description": "Java punya delapan tipe primitif: byte, short, int, long untuk bilangan bulat, float dan double untuk pecahan, char untuk satu huruf, dan boolean untuk…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/java/tipe-data-primitif-type-casting", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Java", "url": "https://ruang-kode-nine.vercel.app/belajar/java"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Java", "item": "https://ruang-kode-nine.vercel.app/belajar/java"}, {"@type": "ListItem", "position": 3, "name": "Tipe data primitif & type casting", "item": "https://ruang-kode-nine.vercel.app/belajar/java/tipe-data-primitif-type-casting"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/java">Java</a> / Modul 1</nav>
+<div class="eyebrow">Java · Modul 1 · Konsep &amp; kode</div><h1>Tipe data primitif &amp; type casting</h1><a class="cta" href="/#java-1-4">Buka versi interaktif</a>
+<p>Java punya delapan <b>tipe primitif</b>: <code>byte</code>, <code>short</code>, <code>int</code>, <code>long</code> untuk bilangan bulat, <code>float</code> dan <code>double</code> untuk pecahan, <code>char</code> untuk satu huruf, dan <code>boolean</code> untuk benar/salah. Setiap tipe punya ukuran tetap di memori, sehingga rentang nilainya terbatas.</p>
+<p>Memindahkan nilai dari tipe kecil ke tipe besar disebut <b>widening</b> dan terjadi otomatis, karena tidak ada informasi yang hilang. Sebaliknya, dari tipe besar ke tipe kecil disebut <b>narrowing</b>. Java memaksa kamu menulis <b>cast</b> eksplisit seperti <code>(int) 9.99</code>, sebagai tanda kamu sadar ada bagian yang bisa terbuang.</p>
+<p>Hati-hati dengan pembagian. <code>7 / 2</code> menghasilkan <code>3</code> karena kedua operand bertipe int. Ubah salah satunya menjadi double, misalnya <code>(double) 7 / 2</code>, untuk mendapat <code>3.5</code>.</p>
+<div class="lbl">JAVA</div><pre><code>public class Casting {
+    public static void main(String[] args) {
+        int jumlah = 7;
+        double rata = jumlah;          // widening: otomatis
+        double harga = 9.99;
+        int dibulatkan = (int) harga;  // narrowing: buang pecahan
+        long besar = 3_000_000_000L;
+        int kecil = (int) besar;       // nilai meluap (overflow)
+        char huruf = &#x27;A&#x27;;
+        int kode = huruf;              // char -&gt; int: kode Unicode
+
+        System.out.println(rata);
+        System.out.println(dibulatkan);
+        System.out.println(kecil);
+        System.out.println(kode);
+        System.out.println(7 / 2);
+        System.out.println((double) 7 / 2);
+    }
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>7.0
+9
+-1294967296
+65
+3
+3.5
+</code></pre>
+<h2>Poin penting</h2><ul><li>Urutan widening: byte → short → int → long → float → double.</li><li>Cast <code>(int)</code> memotong pecahan, bukan membulatkan. Pakai <code>Math.round</code> untuk pembulatan.</li><li>Narrowing di luar rentang menghasilkan overflow: angkanya "berputar" menjadi nilai aneh.</li><li><code>String</code> bukan tipe primitif. Untuk mengubah teks ke angka pakai <code>Integer.parseInt("42")</code>.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Apa hasil &lt;code&gt;(int) 4.8&lt;/code&gt;?</summary><p class="ok">Jawaban: 4</p><p>Cast ke int membuang bagian pecahan tanpa membulatkan.</p></details><details><summary>Mana yang butuh cast eksplisit?</summary><p class="ok">Jawaban: double ke int</p><p>double ke int adalah narrowing: informasi bisa hilang, jadi Java meminta cast.</p></details>
+<a class="cta" href="/#java-1-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/variabel">Variabel</a></p><p>Berikutnya: <a href="/belajar/java/ekspresi-operator">Ekspresi &amp; operator</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Memuat JavaScript · HTML · Ruang Kode</title>
+<meta name="description" content="JavaScript ditulis di &lt;script&gt;, baik langsung maupun dari file: &lt;script src=&quot;app.js&quot;&gt;&lt;/script&gt;. Browser menghentikan pembacaan HTML saat bertemu script…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/html/memuat-javascript">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Memuat JavaScript · HTML · Ruang Kode"><meta property="og:description" content="JavaScript ditulis di &lt;script&gt;, baik langsung maupun dari file: &lt;script src=&quot;app.js&quot;&gt;&lt;/script&gt;. Browser menghentikan pembacaan HTML saat bertemu script…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/html/memuat-javascript"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Memuat JavaScript", "description": "JavaScript ditulis di <script>, baik langsung maupun dari file: <script src=\"app.js\"></script>. Browser menghentikan pembacaan HTML saat bertemu script…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/html/memuat-javascript", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "HTML", "url": "https://ruang-kode-nine.vercel.app/belajar/html"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "HTML", "item": "https://ruang-kode-nine.vercel.app/belajar/html"}, {"@type": "ListItem", "position": 3, "name": "Memuat JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/html/memuat-javascript"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/html">HTML</a> / Modul 7</nav>
+<div class="eyebrow">HTML · Modul 7 · Praktik langsung</div><h1>Memuat JavaScript</h1><a class="cta" href="/#html-7-2">Buka versi interaktif</a>
+<p>JavaScript ditulis di <code>&lt;script&gt;</code>, baik langsung maupun dari file: <code>&lt;script src="app.js"&gt;&lt;/script&gt;</code>. Browser menghentikan pembacaan HTML saat bertemu script biasa sampai script selesai diunduh dan dijalankan.</p>
+<p>Karena itu, taruh script di <b>akhir body</b>, atau pakai <code>defer</code> di head: file diunduh paralel dan dijalankan setelah HTML selesai dibaca, sesuai urutan. <code>async</code> menjalankan secepatnya tanpa urutan, cocok untuk skrip analitik. <code>type="module"</code> otomatis bersifat defer.</p>
+<div class="lbl">HTML</div><pre><code>&lt;button id=&quot;sapa&quot;&gt;Sapa saya&lt;/button&gt;
+&lt;p id=&quot;pesan&quot;&gt;&lt;/p&gt;
+&lt;script&gt;
+  // Script di akhir body: elemen di atas sudah ada
+  document.getElementById(&#x27;sapa&#x27;).addEventListener(&#x27;click&#x27;, () =&gt; {
+    const jam = new Date().getHours();
+    const waktu = jam &lt; 11 ? &#x27;pagi&#x27; : jam &lt; 15 ? &#x27;siang&#x27; : jam &lt; 18 ? &#x27;sore&#x27; : &#x27;malam&#x27;;
+    document.getElementById(&#x27;pesan&#x27;).textContent = &#x27;Selamat &#x27; + waktu + &#x27;!&#x27;;
+  });
+&lt;/script&gt;</code></pre>
+<h2>Tantangan</h2><ol><li>Ubah agar tombol juga mengganti teks tombol menjadi "Sudah disapa".</li></ol>
+<h2>Poin penting</h2><ul><li>Script biasa menghentikan pembacaan HTML.</li><li>defer: unduh paralel, jalan setelah HTML siap, berurutan.</li><li>async: jalan secepatnya tanpa urutan.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Atribut agar script di head menunggu HTML selesai dibaca?</summary><p class="ok">Jawaban: defer</p><p>defer menjalankan setelah dokumen selesai diurai.</p></details>
+<a class="cta" href="/#html-7-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/html/memasang-css">Memasang CSS</a></p><p>Berikutnya: <a href="/belajar/html/aksesibilitas-dasar">Aksesibilitas dasar</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

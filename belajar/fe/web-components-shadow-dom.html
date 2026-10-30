@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Web Components &amp; Shadow DOM · Frontend · Ruang Kode</title>
+<meta name="description" content="Web Components adalah komponen bawaan browser tanpa framework. Custom element mendefinisikan tag sendiri seperti &lt;kartu-produk&gt;. Shadow DOM membungkus…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/fe/web-components-shadow-dom">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Web Components &amp; Shadow DOM · Frontend · Ruang Kode"><meta property="og:description" content="Web Components adalah komponen bawaan browser tanpa framework. Custom element mendefinisikan tag sendiri seperti &lt;kartu-produk&gt;. Shadow DOM membungkus…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/fe/web-components-shadow-dom"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Web Components & Shadow DOM", "description": "Web Components adalah komponen bawaan browser tanpa framework. Custom element mendefinisikan tag sendiri seperti <kartu-produk>. Shadow DOM membungkus…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/fe/web-components-shadow-dom", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "Frontend", "url": "https://ruang-kode-nine.vercel.app/belajar/fe"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Frontend", "item": "https://ruang-kode-nine.vercel.app/belajar/fe"}, {"@type": "ListItem", "position": 3, "name": "Web Components & Shadow DOM", "item": "https://ruang-kode-nine.vercel.app/belajar/fe/web-components-shadow-dom"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/fe">Frontend</a> / Modul 10</nav>
+<div class="eyebrow">Frontend · Modul 10 · Praktik langsung</div><h1>Web Components &amp; Shadow DOM</h1><a class="cta" href="/#fe-10-1">Buka versi interaktif</a>
+<p><b>Web Components</b> adalah komponen bawaan browser tanpa framework. <b>Custom element</b> mendefinisikan tag sendiri seperti <code>&lt;kartu-produk&gt;</code>. <b>Shadow DOM</b> membungkus HTML dan CSS-nya sehingga tidak bocor ke luar dan tidak terganggu gaya luar. <b>&lt;template&gt;</b> menyimpan potongan HTML yang belum dirender.</p>
+<p>Web Components bisa dipakai di React, Vue, atau HTML biasa, cocok untuk design system lintas framework.</p>
+<div class="lbl">HTML</div><pre><code>&lt;kartu-produk nama=&quot;Kopi Gayo&quot; harga=&quot;85000&quot;&gt;&lt;/kartu-produk&gt;
+&lt;kartu-produk nama=&quot;Teh Melati&quot; harga=&quot;25000&quot;&gt;&lt;/kartu-produk&gt;
+&lt;p class=&quot;kartu&quot;&gt;Paragraf luar dengan class kartu tidak terpengaruh gaya di dalam komponen.&lt;/p&gt;</code></pre>
+<div class="lbl">JAVASCRIPT</div><pre><code>class KartuProduk extends HTMLElement {
+  connectedCallback() {
+    const root = this.attachShadow({ mode: &quot;open&quot; });
+    const harga = Number(this.getAttribute(&quot;harga&quot;)).toLocaleString(&quot;id-ID&quot;);
+    root.innerHTML = `
+      &lt;style&gt;.kartu{border:1px solid #2E5E8C;border-radius:10px;padding:8px 12px;margin:6px 0;font:14px sans-serif}
+             b{color:#2E5E8C}&lt;/style&gt;
+      &lt;div class=&quot;kartu&quot;&gt;&lt;b&gt;${this.getAttribute(&quot;nama&quot;)}&lt;/b&gt; · Rp${harga}&lt;/div&gt;`;
+  }
+}
+customElements.define(&quot;kartu-produk&quot;, KartuProduk);</code></pre>
+<h2>Tantangan</h2><ol><li>Tambahkan satu &lt;kartu-produk&gt; lagi untuk "Madu Hutan" seharga 120000.</li></ol>
+<h2>Poin penting</h2><ul><li>customElements.define membuat tag baru (wajib ada tanda hubung).</li><li>Shadow DOM mengisolasi HTML dan CSS.</li><li>Bisa dipakai di framework mana pun.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Syarat nama custom element?</summary><p class="ok">Jawaban: Mengandung tanda hubung</p><p>Contoh: kartu-produk.</p></details>
+<a class="cta" href="/#fe-10-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe/core-web-vitals-lighthouse">Core Web Vitals &amp; Lighthouse</a></p><p>Berikutnya: <a href="/belajar/fe/pwa-service-worker">PWA &amp; service worker</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

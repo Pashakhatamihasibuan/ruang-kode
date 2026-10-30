@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dashboard cuaca &amp; kualitas udara · Frontend · Ruang Kode</title>
+<meta name="description" content="Bangun aplikasi yang menampilkan cuaca dan kualitas udara beberapa kota Indonesia dari API publik, lengkap dengan pencarian, favorit, mode gelap, dan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/fe/dashboard-cuaca-kualitas-udara">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Dashboard cuaca &amp; kualitas udara · Frontend · Ruang Kode"><meta property="og:description" content="Bangun aplikasi yang menampilkan cuaca dan kualitas udara beberapa kota Indonesia dari API publik, lengkap dengan pencarian, favorit, mode gelap, dan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/fe/dashboard-cuaca-kualitas-udara"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Dashboard cuaca & kualitas udara", "description": "Bangun aplikasi yang menampilkan cuaca dan kualitas udara beberapa kota Indonesia dari API publik, lengkap dengan pencarian, favorit, mode gelap, dan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/fe/dashboard-cuaca-kualitas-udara", "learningResourceType": "Proyek akhir", "isPartOf": {"@type": "Course", "name": "Frontend", "url": "https://ruang-kode-nine.vercel.app/belajar/fe"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Frontend", "item": "https://ruang-kode-nine.vercel.app/belajar/fe"}, {"@type": "ListItem", "position": 3, "name": "Dashboard cuaca & kualitas udara", "item": "https://ruang-kode-nine.vercel.app/belajar/fe/dashboard-cuaca-kualitas-udara"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/fe">Frontend</a> / Modul 13</nav>
+<div class="eyebrow">Frontend · Modul 13 · Proyek akhir</div><h1>Dashboard cuaca &amp; kualitas udara</h1><a class="cta" href="/#fe-13-1">Buka versi interaktif</a>
+<p>Bangun aplikasi yang menampilkan cuaca dan kualitas udara beberapa kota Indonesia dari API publik, lengkap dengan pencarian, favorit, mode gelap, dan dukungan offline sederhana.</p>
+<p><b>Teknologi:</b> React + Vite + TypeScript</p>
+<h2>Fitur yang dibuat</h2><ul><li>Proyek Vite + React + TypeScript dengan ESLint dan Prettier</li><li>Pencarian kota dengan debounce dan keadaan loading/error</li><li>Data diambil dengan TanStack Query (cache dan retry)</li><li>Kota favorit tersimpan di localStorage</li><li>Mode gelap dengan variabel CSS dan prefers-color-scheme</li><li>Skor Lighthouse performa dan aksesibilitas minimal 90</li><li>Minimal 3 unit test (Vitest) dan 1 tes E2E (Playwright)</li><li>Kunci API (jika ada) tidak bocor ke kode frontend</li><li>Terbit di Vercel/Netlify dengan deploy otomatis dari GitHub</li></ul>
+<h2>Langkah kerja</h2><ol><li>Rancang tampilan di kertas atau Figma.</li><li>Bangun komponen dengan data tiruan.</li><li>Sambungkan API dan tangani semua keadaan.</li><li>Ukur dengan Lighthouse, tulis tes, lalu terbitkan.</li></ol>
+<div class="lbl">src/hooks/useCuaca.ts</div><pre><code>import { useQuery } from &quot;@tanstack/react-query&quot;;
+
+export type Cuaca = { kota: string; suhu: number; kondisi: string };
+
+export function useCuaca(lat: number, lon: number) {
+  return useQuery({
+    queryKey: [&quot;cuaca&quot;, lat, lon],
+    queryFn: async (): Promise&lt;Cuaca&gt; =&gt; {
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&amp;longitude=${lon}&amp;current=temperature_2m,weather_code`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(&quot;Gagal memuat cuaca&quot;);
+      const j = await res.json();
+      return { kota: `${lat},${lon}`, suhu: j.current.temperature_2m, kondisi: String(j.current.weather_code) };
+    },
+    staleTime: 10 * 60 * 1000,
+  });
+}</code></pre>
+<a class="cta" href="/#fe-13-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe/membangun-fitur-ai-di-frontend">Membangun fitur AI di frontend</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

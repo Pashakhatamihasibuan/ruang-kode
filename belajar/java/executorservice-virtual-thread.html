@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ExecutorService &amp; virtual thread · Java · Ruang Kode</title>
+<meta name="description" content="Membuat new Thread untuk setiap tugas itu boros. ExecutorService mengelola kumpulan thread (thread pool): kamu cukup menyerahkan tugas, dan executor yang…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/java/executorservice-virtual-thread">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="ExecutorService &amp; virtual thread · Java · Ruang Kode"><meta property="og:description" content="Membuat new Thread untuk setiap tugas itu boros. ExecutorService mengelola kumpulan thread (thread pool): kamu cukup menyerahkan tugas, dan executor yang…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/java/executorservice-virtual-thread"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "ExecutorService & virtual thread", "description": "Membuat new Thread untuk setiap tugas itu boros. ExecutorService mengelola kumpulan thread (thread pool): kamu cukup menyerahkan tugas, dan executor yang…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/java/executorservice-virtual-thread", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Java", "url": "https://ruang-kode-nine.vercel.app/belajar/java"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Java", "item": "https://ruang-kode-nine.vercel.app/belajar/java"}, {"@type": "ListItem", "position": 3, "name": "ExecutorService & virtual thread", "item": "https://ruang-kode-nine.vercel.app/belajar/java/executorservice-virtual-thread"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/java">Java</a> / Modul 13</nav>
+<div class="eyebrow">Java · Modul 13 · Konsep &amp; kode</div><h1>ExecutorService &amp; virtual thread</h1><a class="cta" href="/#java-13-2">Buka versi interaktif</a>
+<p>Membuat <code>new Thread</code> untuk setiap tugas itu boros. <b>ExecutorService</b> mengelola kumpulan thread (thread pool): kamu cukup menyerahkan tugas, dan executor yang mengatur thread mana yang mengerjakannya. Hasil tugas bisa diambil lewat <code>Future</code>.</p>
+<p>Java 21 memperkenalkan <b>virtual thread</b>: thread ringan yang dikelola JVM, bukan sistem operasi. Kamu bisa membuat ratusan ribu virtual thread sekaligus. Ini cocok untuk server yang banyak menunggu I/O, misalnya memanggil database atau API, karena saat menunggu, virtual thread tidak memakan thread sistem.</p>
+<p>Cara memakainya hampir sama: <code>Executors.newVirtualThreadPerTaskExecutor()</code>. Kode tetap ditulis gaya biasa (blocking), tanpa callback yang rumit.</p>
+<div class="lbl">JAVA</div><pre><code>import java.util.*;
+import java.util.concurrent.*;
+
+public class Pekerja {
+    static int hitungHarga(int id) throws InterruptedException {
+        Thread.sleep(100);                 // pura-pura memanggil database
+        return id * 1000;
+    }
+
+    public static void main(String[] args) throws Exception {
+        try (ExecutorService ex = Executors.newVirtualThreadPerTaskExecutor()) {
+            List&lt;Future&lt;Integer&gt;&gt; hasil = new ArrayList&lt;&gt;();
+            for (int i = 1; i &lt;= 10_000; i++) {
+                final int id = i;
+                hasil.add(ex.submit(() -&gt; hitungHarga(id)));
+            }
+            long total = 0;
+            for (Future&lt;Integer&gt; f : hasil) total += f.get();
+            System.out.println(&quot;Total: &quot; + total);
+        }
+        // 10.000 tugas x 100 ms selesai sekitar sepersekian detik,
+        // karena virtual thread yang menunggu tidak memblokir thread OS.
+    }
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Total: 50005000000
+</code></pre>
+<h2>Poin penting</h2><ul><li>Thread pool menghindari biaya membuat thread berulang.</li><li><code>submit</code> mengembalikan <code>Future</code>; <code>get()</code> menunggu hasilnya.</li><li>Virtual thread (Java 21) cocok untuk tugas yang banyak menunggu I/O.</li><li>ExecutorService dalam try-with-resources ditutup otomatis setelah semua tugas selesai.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Keunggulan virtual thread?</summary><p class="ok">Jawaban: Sangat ringan, bisa dibuat ratusan ribu</p><p>Cocok untuk banyak tugas yang menunggu I/O.</p></details><details><summary>Objek yang mewakili hasil tugas yang belum selesai?</summary><p class="ok">Jawaban: Future</p><p>Future.get() menunggu dan mengambil hasilnya.</p></details>
+<a class="cta" href="/#java-13-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/thread-race-condition">Thread &amp; race condition</a></p><p>Berikutnya: <a href="/belajar/java/volatile-java-memory-model">volatile &amp; Java Memory Model</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

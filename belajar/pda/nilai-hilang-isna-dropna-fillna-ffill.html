@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nilai hilang: isna, dropna, fillna, ffill · Python Analisis Data · Ruang Kode</title>
+<meta name="description" content="Data nyata hampir selalu bolong. Hitung dulu dengan df.isna().sum(), lalu putuskan: buang baris (dropna) jika sedikit dan acak, atau isi (fillna) dengan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/pda/nilai-hilang-isna-dropna-fillna-ffill">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Nilai hilang: isna, dropna, fillna, ffill · Python Analisis Data · Ruang Kode"><meta property="og:description" content="Data nyata hampir selalu bolong. Hitung dulu dengan df.isna().sum(), lalu putuskan: buang baris (dropna) jika sedikit dan acak, atau isi (fillna) dengan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/pda/nilai-hilang-isna-dropna-fillna-ffill"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Nilai hilang: isna, dropna, fillna, ffill", "description": "Data nyata hampir selalu bolong. Hitung dulu dengan df.isna().sum(), lalu putuskan: buang baris (dropna) jika sedikit dan acak, atau isi (fillna) dengan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/pda/nilai-hilang-isna-dropna-fillna-ffill", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Python Analisis Data", "url": "https://ruang-kode-nine.vercel.app/belajar/pda"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Python Analisis Data", "item": "https://ruang-kode-nine.vercel.app/belajar/pda"}, {"@type": "ListItem", "position": 3, "name": "Nilai hilang: isna, dropna, fillna, ffill", "item": "https://ruang-kode-nine.vercel.app/belajar/pda/nilai-hilang-isna-dropna-fillna-ffill"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/pda">Python Analisis Data</a> / Modul 5</nav>
+<div class="eyebrow">Python Analisis Data · Modul 5 · Konsep &amp; kode</div><h1>Nilai hilang: isna, dropna, fillna, ffill</h1><a class="cta" href="/#pda-5-1">Buka versi interaktif</a>
+<p>Data nyata hampir selalu bolong. Hitung dulu dengan <code>df.isna().sum()</code>, lalu putuskan: <b>buang</b> baris (<code>dropna</code>) jika sedikit dan acak, atau <b>isi</b> (<code>fillna</code>) dengan nilai masuk akal seperti median atau "Tidak diketahui".</p>
+<p>Untuk data berurutan waktu, <code>ffill</code> mengisi dengan nilai sebelumnya (misalnya harga terakhir yang diketahui), <code>bfill</code> dengan nilai sesudahnya.</p>
+<p>Catat setiap keputusan pembersihan; cara mengisi nilai hilang bisa mengubah kesimpulan.</p>
+<div class="lbl">PYTHON</div><pre><code>import pandas as pd
+import numpy as np
+
+df = pd.DataFrame({
+    &quot;kota&quot;: [&quot;Jakarta&quot;, None, &quot;Bandung&quot;, &quot;Medan&quot;, None],
+    &quot;umur&quot;: [24, 31, np.nan, 45, 29],
+    &quot;harga_kopi&quot;: [85000, np.nan, np.nan, 90000, 88000],
+})
+print(df.isna().sum())
+print(df.dropna().shape)
+
+df[&quot;kota&quot;] = df[&quot;kota&quot;].fillna(&quot;Tidak diketahui&quot;)
+df[&quot;umur&quot;] = df[&quot;umur&quot;].fillna(df[&quot;umur&quot;].median())
+df[&quot;harga_kopi&quot;] = df[&quot;harga_kopi&quot;].ffill()
+print(df)</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>kota          2
+umur          1
+harga_kopi    2
+dtype: int64
+(2, 3)
+              kota  umur  harga_kopi
+0          Jakarta  24.0     85000.0
+1  Tidak diketahui  31.0     85000.0
+2          Bandung  30.0     85000.0
+3            Medan  45.0     90000.0
+4  Tidak diketahui  29.0     88000.0</code></pre>
+<h2>Poin penting</h2><ul><li>Hitung dulu: isna().sum().</li><li>dropna jika sedikit; fillna jika masuk akal.</li><li>ffill/bfill untuk deret waktu.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Untuk kolom umur yang punya outlier, isian yang lebih aman?</summary><p class="ok">Jawaban: Median</p><p>Median tidak terseret nilai ekstrem.</p></details>
+<a class="cta" href="/#pda-5-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pda/memilih-menyaring-loc-iloc-query">Memilih &amp; menyaring: loc, iloc, query</a></p><p>Berikutnya: <a href="/belajar/pda/teks-tanggal-tipe-data">Teks, tanggal &amp; tipe data</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

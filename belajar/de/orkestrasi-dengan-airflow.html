@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Orkestrasi dengan Airflow · Data Engineer · Ruang Kode</title>
+<meta name="description" content="Orkestrator menjadwalkan tugas, mengatur urutan (A sebelum B), mencoba ulang saat gagal, dan memberi tampilan status. Apache Airflow paling populer;…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/de/orkestrasi-dengan-airflow">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Orkestrasi dengan Airflow · Data Engineer · Ruang Kode"><meta property="og:description" content="Orkestrator menjadwalkan tugas, mengatur urutan (A sebelum B), mencoba ulang saat gagal, dan memberi tampilan status. Apache Airflow paling populer;…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/de/orkestrasi-dengan-airflow"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Orkestrasi dengan Airflow", "description": "Orkestrator menjadwalkan tugas, mengatur urutan (A sebelum B), mencoba ulang saat gagal, dan memberi tampilan status. Apache Airflow paling populer;…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/de/orkestrasi-dengan-airflow", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Engineer", "url": "https://ruang-kode-nine.vercel.app/belajar/de"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Engineer", "item": "https://ruang-kode-nine.vercel.app/belajar/de"}, {"@type": "ListItem", "position": 3, "name": "Orkestrasi dengan Airflow", "item": "https://ruang-kode-nine.vercel.app/belajar/de/orkestrasi-dengan-airflow"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/de">Data Engineer</a> / Modul 5</nav>
+<div class="eyebrow">Data Engineer · Modul 5 · Konsep &amp; kode</div><h1>Orkestrasi dengan Airflow</h1><a class="cta" href="/#de-5-3">Buka versi interaktif</a>
+<p><b>Orkestrator</b> menjadwalkan tugas, mengatur urutan (A sebelum B), mencoba ulang saat gagal, dan memberi tampilan status. <b>Apache Airflow</b> paling populer; alternatifnya Prefect, Dagster, dan Luigi.</p>
+<p>Pipeline Airflow ditulis sebagai <b>DAG</b> (directed acyclic graph) dalam Python. Setiap tugas idealnya idempoten dan menerima tanggal eksekusi sebagai parameter, sehingga bisa <b>backfill</b> ke tanggal lampau.</p>
+<p>Orkestrator mengatur, tidak memproses data berat. Pekerjaan berat diserahkan ke warehouse, Spark, atau dbt.</p>
+<div class="lbl">PYTHON</div><pre><code>from datetime import datetime
+from airflow.decorators import dag, task
+
+@dag(schedule=&quot;0 2 * * *&quot;, start_date=datetime(2024, 1, 1), catchup=False,
+     default_args={&quot;retries&quot;: 3})
+def penjualan_harian():
+
+    @task
+    def ekstrak(ds=None):
+        return salin_dari_postgres(tanggal=ds, ke=f&quot;s3://toko-lake/bronze/transaksi/dt={ds}/&quot;)
+
+    @task
+    def muat(path: str, ds=None):
+        timpa_partisi(&quot;silver.transaksi&quot;, tanggal=ds, sumber=path)   # idempoten
+
+    @task
+    def transformasi():
+        jalankan(&quot;dbt build --select marts.penjualan&quot;)
+
+    muat(ekstrak()) &gt;&gt; transformasi()
+
+penjualan_harian()</code></pre>
+<h2>Poin penting</h2><ul><li>Orkestrator: jadwal, urutan, retry, status.</li><li>DAG Python; tugas idempoten berparameter tanggal.</li><li>Orkestrator mengatur, mesin lain memproses.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Backfill di Airflow berarti?</summary><p class="ok">Jawaban: Menjalankan DAG untuk tanggal-tanggal lampau</p><p>Mudah jika tugas berparameter tanggal dan idempoten.</p></details>
+<a class="cta" href="/#de-5-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/de/idempotensi-upsert">Idempotensi &amp; upsert</a></p><p>Berikutnya: <a href="/belajar/de/reverse-etl">Reverse ETL</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>.gitignore · Git &amp; GitHub · Ruang Kode</title>
+<meta name="description" content="Tidak semua berkas pantas masuk repositori: folder node_modules (bisa dipasang ulang), hasil build dist/, berkas sistem .DS_Store, dan terutama rahasia…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/git/gitignore">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content=".gitignore · Git &amp; GitHub · Ruang Kode"><meta property="og:description" content="Tidak semua berkas pantas masuk repositori: folder node_modules (bisa dipasang ulang), hasil build dist/, berkas sistem .DS_Store, dan terutama rahasia…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/git/gitignore"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": ".gitignore", "description": "Tidak semua berkas pantas masuk repositori: folder node_modules (bisa dipasang ulang), hasil build dist/, berkas sistem .DS_Store, dan terutama rahasia…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/git/gitignore", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Git & GitHub", "url": "https://ruang-kode-nine.vercel.app/belajar/git"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Git & GitHub", "item": "https://ruang-kode-nine.vercel.app/belajar/git"}, {"@type": "ListItem", "position": 3, "name": ".gitignore", "item": "https://ruang-kode-nine.vercel.app/belajar/git/gitignore"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/git">Git &amp; GitHub</a> / Modul 2</nav>
+<div class="eyebrow">Git &amp; GitHub · Modul 2 · Konsep &amp; kode</div><h1>.gitignore</h1><a class="cta" href="/#git-2-3">Buka versi interaktif</a>
+<p>Tidak semua berkas pantas masuk repositori: folder <code>node_modules</code> (bisa dipasang ulang), hasil build <code>dist/</code>, berkas sistem <code>.DS_Store</code>, dan terutama <b>rahasia</b> seperti <code>.env</code> yang berisi kunci API.</p>
+<p>Tuliskan pola nama berkas di <code>.gitignore</code> di akar proyek. Git akan berhenti menampilkannya sebagai untracked. Tanda <code>!</code> membuat pengecualian.</p>
+<p>Penting: .gitignore tidak berlaku untuk berkas yang <b>sudah</b> di-commit. Kalau kunci API terlanjur masuk riwayat, ganti kuncinya, karena riwayat Git bisa dibaca siapa pun yang punya salinan.</p>
+<div class="lbl">CONTOH</div><pre><code># dependensi dan hasil build
+node_modules/
+dist/
+
+# rahasia: jangan pernah di-commit
+.env
+.env.*
+!.env.example
+
+# berkas sistem dan editor
+.DS_Store
+.vscode/
+*.log</code></pre>
+<h2>Poin penting</h2><ul><li>Abaikan dependensi, hasil build, log, dan rahasia.</li><li>Pola: folder/, *.ext, ! untuk pengecualian.</li><li>Berkas yang terlanjur di-commit tetap ada di riwayat.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Berkas .env.example pada contoh di atas?</summary><p class="ok">Jawaban: Tetap dilacak karena pola !</p><p>Berkas contoh tanpa nilai rahasia boleh dibagikan.</p></details><details><summary>Kunci API terlanjur di-commit lalu ditambahkan ke .gitignore. Apa yang harus dilakukan?</summary><p class="ok">Jawaban: Ganti (rotate) kuncinya</p><p>Riwayat lama masih memuat kunci itu.</p></details>
+<a class="cta" href="/#git-2-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/git/riwayat-perbedaan-log-dan-diff">Riwayat &amp; perbedaan: log dan diff</a></p><p>Berikutnya: <a href="/belajar/git/membatalkan-perubahan">Membatalkan perubahan</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

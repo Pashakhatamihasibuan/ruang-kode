@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pencarian &amp; Pengurutan · Python · Ruang Kode</title>
+<meta name="description" content="Pencarian linear memeriksa elemen satu per satu dari depan. Mudah, tapi untuk sejuta data bisa butuh sejuta langkah. Binary search jauh lebih cepat:…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/python/pencarian-pengurutan">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Pencarian &amp; Pengurutan · Python · Ruang Kode"><meta property="og:description" content="Pencarian linear memeriksa elemen satu per satu dari depan. Mudah, tapi untuk sejuta data bisa butuh sejuta langkah. Binary search jauh lebih cepat:…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/python/pencarian-pengurutan"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Pencarian & Pengurutan", "description": "Pencarian linear memeriksa elemen satu per satu dari depan. Mudah, tapi untuk sejuta data bisa butuh sejuta langkah. Binary search jauh lebih cepat:…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/python/pencarian-pengurutan", "learningResourceType": "Konsep & lab", "isPartOf": {"@type": "Course", "name": "Python", "url": "https://ruang-kode-nine.vercel.app/belajar/python"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Python", "item": "https://ruang-kode-nine.vercel.app/belajar/python"}, {"@type": "ListItem", "position": 3, "name": "Pencarian & Pengurutan", "item": "https://ruang-kode-nine.vercel.app/belajar/python/pencarian-pengurutan"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/python">Python</a> / Modul 9</nav>
+<div class="eyebrow">Python · Modul 9 · Konsep &amp; lab</div><h1>Pencarian &amp; Pengurutan</h1><a class="cta" href="/#python-9-4">Buka versi interaktif</a>
+<p><b>Pencarian linear</b> memeriksa elemen satu per satu dari depan. Mudah, tapi untuk sejuta data bisa butuh sejuta langkah. <b>Binary search</b> jauh lebih cepat: lihat elemen tengah, lalu buang separuh data yang pasti tidak berisi target. Syaratnya, data harus sudah terurut.</p>
+<p>Kecepatan algoritma diukur dengan notasi <b>Big-O</b>, yaitu bagaimana jumlah langkah tumbuh seiring jumlah data <i>n</i>. Linear search O(n), binary search O(log n). Untuk sejuta data, log₂ hanya sekitar 20 langkah.</p>
+<p><b>Selection sort</b> mencari elemen terkecil lalu menukarnya ke depan, diulang untuk setiap posisi. Hasilnya O(n²). <b>Merge sort</b> membagi data menjadi dua, mengurutkan masing-masing secara rekursif, lalu menggabungkannya, dengan hasil O(n log n). Dalam praktik, pakai pengurutan bawaan bahasa.</p>
+<div class="lbl">PYTHON</div><pre><code>def cari_biner(a, target):
+    # data HARUS sudah terurut
+    kiri, kanan = 0, len(a) - 1
+    while kiri &lt;= kanan:
+        tengah = (kiri + kanan) // 2
+        if a[tengah] == target:
+            return tengah
+        elif a[tengah] &lt; target:
+            kiri = tengah + 1
+        else:
+            kanan = tengah - 1
+    return -1   # tidak ditemukan
+
+def selection_sort(a):
+    for i in range(len(a) - 1):
+        m = i
+        for j in range(i + 1, len(a)):
+            if a[j] &lt; a[m]:
+                m = j
+        a[i], a[m] = a[m], a[i]   # tukar</code></pre>
+<h2>Poin penting</h2><ul><li>Binary search pada data acak memberi jawaban yang salah.</li><li>O(1) konstan, O(log n) logaritmik, O(n) linear, O(n²) kuadratik.</li><li><code>Arrays.sort</code> dan <code>sorted()</code> sudah sangat dioptimalkan.</li><li>Python bisa menukar tanpa variabel bantu: <code>a, b = b, a</code>.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Binary search pada 1.000.000 data terurut butuh paling banyak sekitar...</summary><p class="ok">Jawaban: 20 langkah</p><p>Setiap langkah membagi dua: 2²⁰ ≈ 1 juta, jadi sekitar 20 langkah.</p></details><details><summary>Kompleksitas selection sort adalah...</summary><p class="ok">Jawaban: O(n²)</p><p>Ada loop di dalam loop yang masing-masing berjalan sekitar n kali.</p></details>
+<a class="cta" href="/#python-9-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/rekursi-pada-angka">Rekursi pada angka</a></p><p>Berikutnya: <a href="/belajar/python/binary-search">Binary search</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

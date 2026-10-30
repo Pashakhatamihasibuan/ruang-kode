@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aturan tata letak yang baik · UX Design · Ruang Kode</title>
+<meta name="description" content="Kebanyakan layar terasa &quot;berantakan&quot; karena empat hal: jarak tidak konsisten, terlalu banyak gaya huruf, perataan tidak sejajar, dan tidak ada hierarki.…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/ux/aturan-tata-letak-yang-baik">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Aturan tata letak yang baik · UX Design · Ruang Kode"><meta property="og:description" content="Kebanyakan layar terasa &quot;berantakan&quot; karena empat hal: jarak tidak konsisten, terlalu banyak gaya huruf, perataan tidak sejajar, dan tidak ada hierarki.…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/ux/aturan-tata-letak-yang-baik"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Aturan tata letak yang baik", "description": "Kebanyakan layar terasa \"berantakan\" karena empat hal: jarak tidak konsisten, terlalu banyak gaya huruf, perataan tidak sejajar, dan tidak ada hierarki.…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/ux/aturan-tata-letak-yang-baik", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "UX Design", "url": "https://ruang-kode-nine.vercel.app/belajar/ux"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "UX Design", "item": "https://ruang-kode-nine.vercel.app/belajar/ux"}, {"@type": "ListItem", "position": 3, "name": "Aturan tata letak yang baik", "item": "https://ruang-kode-nine.vercel.app/belajar/ux/aturan-tata-letak-yang-baik"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/ux">UX Design</a> / Modul 6</nav>
+<div class="eyebrow">UX Design · Modul 6 · Praktik langsung</div><h1>Aturan tata letak yang baik</h1><a class="cta" href="/#ux-6-1">Buka versi interaktif</a>
+<p>Kebanyakan layar terasa "berantakan" karena empat hal: jarak tidak konsisten, terlalu banyak gaya huruf, perataan tidak sejajar, dan tidak ada hierarki. Pakai skala jarak kelipatan 8 (8, 16, 24, 32), maksimal dua ukuran teks per kartu, dan satu garis rata kiri.</p>
+<p>Hukum <b>proximity</b> Gestalt: elemen yang berdekatan dianggap satu kelompok. Jarak di dalam kartu harus lebih kecil daripada jarak antarkartu.</p>
+<p>Ubah kode di bawah: rapikan jarak dengan variabel <code>--s</code> dan lihat pratinjaunya. Tugas: beri tombol kelas <code>utama</code> agar menjadi aksi utama.</p>
+<div class="lbl">HTML</div><pre><code>&lt;div class=&quot;kartu&quot;&gt;
+  &lt;p class=&quot;label&quot;&gt;Target tabungan&lt;/p&gt;
+  &lt;h2&gt;Dana Darurat&lt;/h2&gt;
+  &lt;p class=&quot;angka&quot;&gt;Rp 2.400.000 &lt;span&gt;dari Rp 6.000.000&lt;/span&gt;&lt;/p&gt;
+  &lt;div class=&quot;bar&quot;&gt;&lt;i style=&quot;width:40%&quot;&gt;&lt;/i&gt;&lt;/div&gt;
+  &lt;button&gt;Tambah setoran&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+<div class="lbl">CSS</div><pre><code>:root{--s:8px;--aksen:#0f766e}
+body{font:16px/1.5 system-ui,sans-serif;padding:calc(var(--s)*3);background:#f6f7f5}
+.kartu{background:#fff;border-radius:16px;padding:calc(var(--s)*3);max-width:320px;display:grid;gap:calc(var(--s)*1.5);box-shadow:0 1px 3px rgb(0 0 0/.08)}
+.label{margin:0;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:#5b6360}
+h2{margin:0;font-size:22px}
+.angka{margin:0;font-weight:600}.angka span{font-weight:400;color:#5b6360}
+.bar{height:8px;border-radius:8px;background:#e3e7e4}.bar i{display:block;height:100%;border-radius:8px;background:var(--aksen)}
+button{min-height:48px;border-radius:12px;border:1px solid #c9cfcc;background:#fff;font:inherit}
+button.utama{background:var(--aksen);color:#fff;border-color:transparent;font-weight:600}</code></pre>
+<h2>Tantangan</h2><ol><li>Jadikan tombol "Tambah setoran" sebagai aksi utama dengan menambahkan kelas utama.</li></ol>
+<h2>Poin penting</h2><ul><li>Jarak kelipatan 8, konsisten.</li><li>Proximity: jarak dalam kelompok < jarak antarkelompok.</li><li>Satu aksi utama yang menonjol.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Menurut prinsip proximity, jarak di dalam kartu sebaiknya?</summary><p class="ok">Jawaban: Lebih kecil daripada jarak antarkartu</p><p>Agar isi kartu terbaca sebagai satu kelompok.</p></details>
+<a class="cta" href="/#ux-6-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/ux/user-story-peta-pengalaman">User story &amp; peta pengalaman</a></p><p>Berikutnya: <a href="/belajar/ux/fidelity-prototipe-alat-desain">Fidelity prototipe &amp; alat desain</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

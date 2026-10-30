@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Django: aplikasi web lengkap · Python · Ruang Kode</title>
+<meta name="description" content="Django memakai pola MTV: Model (struktur data dan tabel database), Template (tampilan HTML), dan View (logika yang menerima request dan mengembalikan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/python/django-aplikasi-web-lengkap">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Django: aplikasi web lengkap · Python · Ruang Kode"><meta property="og:description" content="Django memakai pola MTV: Model (struktur data dan tabel database), Template (tampilan HTML), dan View (logika yang menerima request dan mengembalikan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/python/django-aplikasi-web-lengkap"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Django: aplikasi web lengkap", "description": "Django memakai pola MTV: Model (struktur data dan tabel database), Template (tampilan HTML), dan View (logika yang menerima request dan mengembalikan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/python/django-aplikasi-web-lengkap", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Python", "url": "https://ruang-kode-nine.vercel.app/belajar/python"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Python", "item": "https://ruang-kode-nine.vercel.app/belajar/python"}, {"@type": "ListItem", "position": 3, "name": "Django: aplikasi web lengkap", "item": "https://ruang-kode-nine.vercel.app/belajar/python/django-aplikasi-web-lengkap"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/python">Python</a> / Modul 14</nav>
+<div class="eyebrow">Python · Modul 14 · Konsep &amp; kode</div><h1>Django: aplikasi web lengkap</h1><a class="cta" href="/#python-14-3">Buka versi interaktif</a>
+<p><b>Django</b> memakai pola <b>MTV</b>: <i>Model</i> (struktur data dan tabel database), <i>Template</i> (tampilan HTML), dan <i>View</i> (logika yang menerima request dan mengembalikan response). URL dipetakan ke view lewat file <code>urls.py</code>.</p>
+<p>Model Django adalah ORM: kelas Python yang otomatis menjadi tabel. Perintah <code>makemigrations</code> dan <code>migrate</code> membuat dan memperbarui tabel sesuai model. Query ditulis dengan gaya Python: <code>Produk.objects.filter(harga__gt=50000)</code>.</p>
+<p>Daftarkan model di <code>admin.py</code>, dan kamu langsung mendapat panel admin untuk menambah, mengubah, dan menghapus data. Untuk REST API, tim biasanya menambahkan Django REST Framework.</p>
+<div class="lbl">PYTHON</div><pre><code># models.py
+from django.db import models
+
+class Produk(models.Model):
+    nama = models.CharField(max_length=100)
+    kategori = models.CharField(max_length=50)
+    harga = models.PositiveIntegerField()
+
+    def __str__(self):
+        return self.nama
+
+# views.py
+from django.shortcuts import render
+from .models import Produk
+
+def daftar_mahal(request):
+    produk = Produk.objects.filter(harga__gt=50000).order_by(&quot;-harga&quot;)
+    return render(request, &quot;toko/daftar.html&quot;, {&quot;produk&quot;: produk})
+
+# urls.py
+from django.urls import path
+from . import views
+urlpatterns = [path(&quot;mahal/&quot;, views.daftar_mahal)]
+
+# admin.py
+from django.contrib import admin
+admin.site.register(Produk)
+
+# Terminal
+# django-admin startproject toko_site
+# python manage.py makemigrations &amp;&amp; python manage.py migrate
+# python manage.py createsuperuser
+# python manage.py runserver      -&gt; http://127.0.0.1:8000/admin</code></pre>
+<h2>Poin penting</h2><ul><li>MTV: Model, Template, View.</li><li>ORM: <code>Model.objects.filter(...)</code>.</li><li>Migrasi menjaga tabel sesuai model.</li><li>Panel admin otomatis dari model.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Perintah untuk menerapkan perubahan model ke database?</summary><p class="ok">Jawaban: migrate</p><p>makemigrations membuat rencana, migrate menjalankannya.</p></details><details><summary>&lt;code&gt;harga__gt=50000&lt;/code&gt; berarti?</summary><p class="ok">Jawaban: harga &gt; 50000</p><p>gt = greater than.</p></details>
+<a class="cta" href="/#python-14-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/membuat-rest-api-flask-fastapi">Membuat REST API: Flask &amp; FastAPI</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

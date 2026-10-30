@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pertumbuhan, margin &amp; kontribusi · BI Analyst · Ruang Kode</title>
+<meta name="description" content="Metrik turunan yang paling sering diminta: pertumbuhan dibanding periode lalu (month-over-month), margin kotor = (omzet − HPP) / omzet, dan kontribusi =…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/bi/pertumbuhan-margin-kontribusi">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Pertumbuhan, margin &amp; kontribusi · BI Analyst · Ruang Kode"><meta property="og:description" content="Metrik turunan yang paling sering diminta: pertumbuhan dibanding periode lalu (month-over-month), margin kotor = (omzet − HPP) / omzet, dan kontribusi =…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/bi/pertumbuhan-margin-kontribusi"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Pertumbuhan, margin & kontribusi", "description": "Metrik turunan yang paling sering diminta: pertumbuhan dibanding periode lalu (month-over-month), margin kotor = (omzet − HPP) / omzet, dan kontribusi =…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/bi/pertumbuhan-margin-kontribusi", "learningResourceType": "Praktik SQL", "isPartOf": {"@type": "Course", "name": "BI Analyst", "url": "https://ruang-kode-nine.vercel.app/belajar/bi"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "BI Analyst", "item": "https://ruang-kode-nine.vercel.app/belajar/bi"}, {"@type": "ListItem", "position": 3, "name": "Pertumbuhan, margin & kontribusi", "item": "https://ruang-kode-nine.vercel.app/belajar/bi/pertumbuhan-margin-kontribusi"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/bi">BI Analyst</a> / Modul 2</nav>
+<div class="eyebrow">BI Analyst · Modul 2 · Praktik SQL</div><h1>Pertumbuhan, margin &amp; kontribusi</h1><a class="cta" href="/#bi-2-2">Buka versi interaktif</a>
+<p>Metrik turunan yang paling sering diminta: <b>pertumbuhan</b> dibanding periode lalu (month-over-month), <b>margin kotor</b> = (omzet − HPP) / omzet, dan <b>kontribusi</b> = bagian satu kelompok terhadap total.</p>
+<p>Window function membuat semuanya bisa dihitung dalam satu query: <code>LAG</code> untuk periode lalu, <code>SUM(...) OVER ()</code> untuk total keseluruhan.</p>
+<p>Selalu tampilkan angka absolut di samping persentase. "Naik 200%" bisa berarti dari 1 menjadi 3 transaksi.</p>
+<div class="lbl">Pertumbuhan omzet bulanan</div><pre><code>WITH b AS (
+  SELECT d.bulan, d.nama_bulan, SUM(f.jumlah * f.harga * (100 - f.diskon_persen) / 100) AS omzet
+  FROM fakta_penjualan f JOIN dim_tanggal d ON d.tanggal_id = f.tanggal_id
+  GROUP BY d.bulan, d.nama_bulan
+)
+SELECT nama_bulan, omzet,
+       LAG(omzet) OVER (ORDER BY bulan) AS bulan_lalu,
+       ROUND(100.0 * (omzet - LAG(omzet) OVER (ORDER BY bulan)) / LAG(omzet) OVER (ORDER BY bulan), 1) AS tumbuh_persen
+FROM b ORDER BY bulan;</code></pre>
+<div class="lbl">Margin kotor per produk</div><pre><code>SELECT p.nama,
+       SUM(f.jumlah * f.harga * (100 - f.diskon_persen) / 100) AS omzet,
+       SUM(f.jumlah * p.hpp) AS hpp,
+       ROUND(100.0 * (SUM(f.jumlah * f.harga * (100 - f.diskon_persen) / 100) - SUM(f.jumlah * p.hpp)) / SUM(f.jumlah * f.harga * (100 - f.diskon_persen) / 100), 1) AS margin_persen
+FROM fakta_penjualan f JOIN dim_produk p ON p.produk_id = f.produk_id
+GROUP BY p.nama ORDER BY margin_persen DESC;</code></pre>
+<div class="lbl">Kontribusi tiap wilayah</div><pre><code>SELECT t.wilayah, SUM(f.jumlah * f.harga * (100 - f.diskon_persen) / 100) AS omzet,
+       ROUND(100.0 * SUM(f.jumlah * f.harga * (100 - f.diskon_persen) / 100) / SUM(SUM(f.jumlah * f.harga * (100 - f.diskon_persen) / 100)) OVER (), 1) AS kontribusi_persen
+FROM fakta_penjualan f JOIN dim_toko t ON t.toko_id = f.toko_id
+GROUP BY t.wilayah ORDER BY omzet DESC;</code></pre>
+<h2>Tantangan</h2><ol><li>Tampilkan kuartal dan jumlah transaksi (kolom transaksi) per kuartal dari dim_tanggal, urut kuartal.</li></ol>
+<h2>Poin penting</h2><ul><li>MoM: LAG(...) OVER (ORDER BY periode).</li><li>Margin = (omzet − HPP) / omzet.</li><li>Kontribusi: SUM(x) / SUM(SUM(x)) OVER ().</li><li>Persentase selalu dengan angka absolut.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Fungsi untuk mengambil nilai periode sebelumnya?</summary><p class="ok">Jawaban: LAG</p><p>LEAD mengambil periode berikutnya.</p></details>
+<a class="cta" href="/#bi-2-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/bi/metrik-kpi-skema-bintang">Metrik, KPI &amp; skema bintang</a></p><p>Berikutnya: <a href="/belajar/bi/clv-analisis-kohort">CLV &amp; analisis kohort</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

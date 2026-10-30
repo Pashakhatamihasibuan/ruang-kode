@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tabel fakta &amp; dimensi · BI Analyst · Ruang Kode</title>
+<meta name="description" content="Tabel fakta menyimpan peristiwa yang diukur (setiap baris penjualan) dengan angka dan kunci ke dimensi. Tabel dimensi menyimpan konteks deskriptif:…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/bi/tabel-fakta-dimensi">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Tabel fakta &amp; dimensi · BI Analyst · Ruang Kode"><meta property="og:description" content="Tabel fakta menyimpan peristiwa yang diukur (setiap baris penjualan) dengan angka dan kunci ke dimensi. Tabel dimensi menyimpan konteks deskriptif:…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/bi/tabel-fakta-dimensi"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Tabel fakta & dimensi", "description": "Tabel fakta menyimpan peristiwa yang diukur (setiap baris penjualan) dengan angka dan kunci ke dimensi. Tabel dimensi menyimpan konteks deskriptif:…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/bi/tabel-fakta-dimensi", "learningResourceType": "Praktik SQL", "isPartOf": {"@type": "Course", "name": "BI Analyst", "url": "https://ruang-kode-nine.vercel.app/belajar/bi"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "BI Analyst", "item": "https://ruang-kode-nine.vercel.app/belajar/bi"}, {"@type": "ListItem", "position": 3, "name": "Tabel fakta & dimensi", "item": "https://ruang-kode-nine.vercel.app/belajar/bi/tabel-fakta-dimensi"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/bi">BI Analyst</a> / Modul 4</nav>
+<div class="eyebrow">BI Analyst · Modul 4 · Praktik SQL</div><h1>Tabel fakta &amp; dimensi</h1><a class="cta" href="/#bi-4-1">Buka versi interaktif</a>
+<p><b>Tabel fakta</b> menyimpan peristiwa yang diukur (setiap baris penjualan) dengan angka dan kunci ke dimensi. <b>Tabel dimensi</b> menyimpan konteks deskriptif: kapan, apa, di mana, siapa.</p>
+<p><b>Skema bintang</b> menghubungkan fakta langsung ke dimensi yang didenormalisasi (kota dan wilayah ada di satu tabel toko). <b>Skema snowflake</b> menormalisasi dimensi lebih lanjut (tabel kota terpisah), lebih hemat ruang tetapi query lebih rumit. Alat BI seperti Power BI bekerja paling baik dengan skema bintang.</p>
+<p>Tentukan <b>grain</b> (butir) fakta lebih dulu: "satu baris = satu produk dalam satu transaksi di satu toko per hari". Semua angka di fakta harus sesuai grain itu.</p>
+<div class="lbl">Bentuk dimensi toko</div><pre><code>SELECT * FROM dim_toko;</code></pre>
+<div class="lbl">Query bintang: wilayah x kategori</div><pre><code>SELECT t.wilayah, p.kategori, SUM(f.jumlah * f.harga * (100 - f.diskon_persen) / 100) AS omzet
+FROM fakta_penjualan f
+JOIN dim_toko t ON t.toko_id = f.toko_id
+JOIN dim_produk p ON p.produk_id = f.produk_id
+GROUP BY t.wilayah, p.kategori
+ORDER BY t.wilayah, omzet DESC;</code></pre>
+<h2>Tantangan</h2><ol><li>Tampilkan nama toko dan omzet bersih (kolom omzet) hanya untuk kuartal 2, urutkan dari terbesar.</li></ol>
+<h2>Poin penting</h2><ul><li>Fakta = angka peristiwa; dimensi = konteks.</li><li>Bintang: dimensi didenormalisasi; snowflake: dinormalisasi.</li><li>Tetapkan grain sebelum membangun fakta.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kolom &quot;wilayah&quot; sebaiknya disimpan di?</summary><p class="ok">Jawaban: Dimensi toko</p><p>Atribut deskriptif toko.</p></details>
+<a class="cta" href="/#bi-4-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/bi/musiman-peramalan-sederhana">Musiman &amp; peramalan sederhana</a></p><p>Berikutnya: <a href="/belajar/bi/memeriksa-kualitas-data">Memeriksa kualitas data</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

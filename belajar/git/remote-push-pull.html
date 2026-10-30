@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Remote, push &amp; pull · Git &amp; GitHub · Ruang Kode</title>
+<meta name="description" content="Remote adalah salinan repositori di server, biasanya diberi nama origin. Hubungkan dengan git remote add origin URL, lalu kirim commit dengan git push -u…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/git/remote-push-pull">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Remote, push &amp; pull · Git &amp; GitHub · Ruang Kode"><meta property="og:description" content="Remote adalah salinan repositori di server, biasanya diberi nama origin. Hubungkan dengan git remote add origin URL, lalu kirim commit dengan git push -u…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/git/remote-push-pull"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Remote, push & pull", "description": "Remote adalah salinan repositori di server, biasanya diberi nama origin. Hubungkan dengan git remote add origin URL, lalu kirim commit dengan git push -u…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/git/remote-push-pull", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Git & GitHub", "url": "https://ruang-kode-nine.vercel.app/belajar/git"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Git & GitHub", "item": "https://ruang-kode-nine.vercel.app/belajar/git"}, {"@type": "ListItem", "position": 3, "name": "Remote, push & pull", "item": "https://ruang-kode-nine.vercel.app/belajar/git/remote-push-pull"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/git">Git &amp; GitHub</a> / Modul 4</nav>
+<div class="eyebrow">Git &amp; GitHub · Modul 4 · Konsep &amp; kode</div><h1>Remote, push &amp; pull</h1><a class="cta" href="/#git-4-1">Buka versi interaktif</a>
+<p><b>Remote</b> adalah salinan repositori di server, biasanya diberi nama <code>origin</code>. Hubungkan dengan <code>git remote add origin URL</code>, lalu kirim commit dengan <code>git push -u origin main</code> (flag <code>-u</code> cukup sekali).</p>
+<p><code>git fetch</code> mengunduh commit baru dari remote tanpa mengubah cabangmu. <code>git pull</code> = fetch + merge. Biasakan pull sebelum mulai bekerja.</p>
+<p><code>git clone URL</code> mengunduh repositori lengkap beserta riwayatnya. Untuk autentikasi, GitHub memakai kunci SSH atau token, bukan kata sandi akun.</p>
+<div class="lbl">TERMINAL</div><pre><code>$ git remote add origin git@github.com:sariw/toko-nusantara.git
+$ git push -u origin main
+Enumerating objects: 9, done.
+To github.com:sariw/toko-nusantara.git
+ * [new branch]      main -&gt; main
+branch &#x27;main&#x27; set up to track &#x27;origin/main&#x27;.
+
+$ git pull
+Updating c4e8b21..e02f7aa
+Fast-forward
+ README.md | 12 ++++++++++++
+
+$ git clone https://github.com/sariw/toko-nusantara.git</code></pre>
+<h2>Poin penting</h2><ul><li>origin = nama remote default.</li><li>push mengirim, fetch mengunduh, pull = fetch + merge.</li><li>clone untuk salinan baru.</li><li>Pakai SSH key atau token.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Apa beda git fetch dan git pull?</summary><p class="ok">Jawaban: fetch hanya mengunduh, pull mengunduh lalu menggabung</p><p>fetch aman karena tidak mengubah cabangmu.</p></details><details><summary>Flag -u pada git push -u origin main untuk?</summary><p class="ok">Jawaban: Mengatur cabang upstream agar push/pull berikutnya cukup tanpa argumen</p><p>Setelah itu cukup git push.</p></details>
+<a class="cta" href="/#git-4-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/git/stash-rebase">Stash &amp; rebase</a></p><p>Berikutnya: <a href="/belajar/git/fork-pull-request">Fork &amp; pull request</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

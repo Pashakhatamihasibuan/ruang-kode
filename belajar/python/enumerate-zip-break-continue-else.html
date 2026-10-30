@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>enumerate, zip, break, continue, else · Python · Ruang Kode</title>
+<meta name="description" content="Python mendorong loop yang langsung berjalan di atas data, bukan di atas indeks. Jika kamu butuh indeks sekaligus nilainya, pakai enumerate. Jika ingin…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/python/enumerate-zip-break-continue-else">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="enumerate, zip, break, continue, else · Python · Ruang Kode"><meta property="og:description" content="Python mendorong loop yang langsung berjalan di atas data, bukan di atas indeks. Jika kamu butuh indeks sekaligus nilainya, pakai enumerate. Jika ingin…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/python/enumerate-zip-break-continue-else"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "enumerate, zip, break, continue, else", "description": "Python mendorong loop yang langsung berjalan di atas data, bukan di atas indeks. Jika kamu butuh indeks sekaligus nilainya, pakai enumerate. Jika ingin…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/python/enumerate-zip-break-continue-else", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Python", "url": "https://ruang-kode-nine.vercel.app/belajar/python"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Python", "item": "https://ruang-kode-nine.vercel.app/belajar/python"}, {"@type": "ListItem", "position": 3, "name": "enumerate, zip, break, continue, else", "item": "https://ruang-kode-nine.vercel.app/belajar/python/enumerate-zip-break-continue-else"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/python">Python</a> / Modul 3</nav>
+<div class="eyebrow">Python · Modul 3 · Konsep &amp; kode</div><h1>enumerate, zip, break, continue, else</h1><a class="cta" href="/#python-3-12">Buka versi interaktif</a>
+<p>Python mendorong loop yang langsung berjalan di atas data, bukan di atas indeks. Jika kamu butuh indeks sekaligus nilainya, pakai <code>enumerate</code>. Jika ingin berjalan di atas dua list sekaligus, pakai <code>zip</code>.</p>
+<p><code>break</code> menghentikan loop seketika, sedangkan <code>continue</code> melompat ke putaran berikutnya. Loop di Python juga boleh punya blok <code>else</code>, yang dijalankan hanya jika loop selesai <i>tanpa</i> break. Ini rapi untuk pola "cari, dan kalau tidak ketemu lakukan sesuatu".</p>
+<p><code>range(awal, akhir, langkah)</code> menghasilkan deret angka tanpa menyimpannya semua di memori. <code>reversed</code> dan <code>sorted</code> membantu berjalan terbalik atau berurutan tanpa mengubah data asli.</p>
+<div class="lbl">PYTHON</div><pre><code>buah = [&quot;apel&quot;, &quot;jeruk&quot;, &quot;mangga&quot;]
+for i, b in enumerate(buah, start=1):
+    print(i, b)
+
+harga = [12000, 8000, 15000]
+for b, h in zip(buah, harga):
+    print(f&quot;{b}: {h}&quot;)
+
+ganjil = []
+for n in range(1, 10):
+    if n % 2 == 0:
+        continue
+    if n &gt; 7:
+        break
+    ganjil.append(n)
+print(ganjil)
+
+target = &quot;durian&quot;
+for b in buah:
+    if b == target:
+        print(&quot;ketemu&quot;)
+        break
+else:
+    print(target, &quot;tidak ada&quot;)
+
+print(list(range(10, 0, -3)), list(reversed(buah)))</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>1 apel
+2 jeruk
+3 mangga
+apel: 12000
+jeruk: 8000
+mangga: 15000
+[1, 3, 5, 7]
+durian tidak ada
+[10, 7, 4, 1] [&#x27;mangga&#x27;, &#x27;jeruk&#x27;, &#x27;apel&#x27;]
+</code></pre>
+<h2>Poin penting</h2><ul><li><code>enumerate</code> memberi pasangan (indeks, nilai).</li><li><code>zip</code> berjalan di atas beberapa koleksi sekaligus.</li><li><code>for ... else</code>: else jalan jika tidak ada break.</li><li><code>range</code> hemat memori.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kapan blok &lt;code&gt;else&lt;/code&gt; pada for dijalankan?</summary><p class="ok">Jawaban: Jika loop selesai tanpa break</p><p>Break melewati blok else.</p></details><details><summary>Fungsi untuk mendapat indeks dan nilai sekaligus?</summary><p class="ok">Jawaban: enumerate</p><p>enumerate menghasilkan pasangan indeks dan nilai.</p></details>
+<a class="cta" href="/#python-3-12">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/masalah-fencepost">Masalah fencepost</a></p><p>Berikutnya: <a href="/belajar/python/array">Array</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

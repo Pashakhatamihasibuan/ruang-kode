@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Container query · CSS · Ruang Kode</title>
+<meta name="description" content="Media query melihat lebar layar. Container query melihat lebar wadah komponen, sehingga kartu yang sama bisa tampil berbeda di sidebar sempit dan di area…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/css/container-query">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Container query · CSS · Ruang Kode"><meta property="og:description" content="Media query melihat lebar layar. Container query melihat lebar wadah komponen, sehingga kartu yang sama bisa tampil berbeda di sidebar sempit dan di area…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/css/container-query"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Container query", "description": "Media query melihat lebar layar. Container query melihat lebar wadah komponen, sehingga kartu yang sama bisa tampil berbeda di sidebar sempit dan di area…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/css/container-query", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "CSS", "url": "https://ruang-kode-nine.vercel.app/belajar/css"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "CSS", "item": "https://ruang-kode-nine.vercel.app/belajar/css"}, {"@type": "ListItem", "position": 3, "name": "Container query", "item": "https://ruang-kode-nine.vercel.app/belajar/css/container-query"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/css">CSS</a> / Modul 6</nav>
+<div class="eyebrow">CSS · Modul 6 · Praktik langsung</div><h1>Container query</h1><a class="cta" href="/#css-6-2">Buka versi interaktif</a>
+<p>Media query melihat lebar <b>layar</b>. Container query melihat lebar <b>wadah</b> komponen, sehingga kartu yang sama bisa tampil berbeda di sidebar sempit dan di area utama yang lebar.</p>
+<p>Tandai wadah dengan <code>container-type: inline-size</code>, lalu tulis <code>@container (min-width: 300px) { ... }</code>. Gambar responsif cukup diberi <code>max-width: 100%</code> dan <code>height: auto</code>; <code>object-fit: cover</code> memotong gambar agar pas tanpa gepeng.</p>
+<div class="lbl">HTML</div><pre><code>&lt;div class=&quot;sempit wadah&quot;&gt;&lt;div class=&quot;kartu&quot;&gt;&lt;div class=&quot;img&quot;&gt;&lt;/div&gt;&lt;p&gt;Kopi Gayo&lt;br&gt;&lt;b&gt;Rp85.000&lt;/b&gt;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;lebar wadah&quot;&gt;&lt;div class=&quot;kartu&quot;&gt;&lt;div class=&quot;img&quot;&gt;&lt;/div&gt;&lt;p&gt;Kopi Gayo&lt;br&gt;&lt;b&gt;Rp85.000&lt;/b&gt;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</code></pre>
+<div class="lbl">CSS</div><pre><code>.wadah { container-type: inline-size; margin-bottom: 10px; font: 13px sans-serif; }
+.sempit { width: 180px; } .lebar { width: 100%; max-width: 420px; }
+.kartu { display: grid; gap: 8px; border: 1px solid #ddd; border-radius: 10px; padding: 8px; }
+.img { background: linear-gradient(135deg,#B4532A,#2E5E8C); aspect-ratio: 16/9; border-radius: 6px; }
+@container (min-width: 300px) {
+  .kartu { grid-template-columns: 120px 1fr; align-items: center; }
+}</code></pre>
+<h2>Poin penting</h2><ul><li>Container query melihat lebar wadah, bukan layar.</li><li>container-type: inline-size menandai wadah.</li><li>max-width:100% dan object-fit menjaga gambar tetap rapi.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kapan container query lebih cocok dari media query?</summary><p class="ok">Jawaban: Komponen dipakai di wadah berbeda lebar</p><p>Komponen menyesuaikan tempatnya.</p></details>
+<a class="cta" href="/#css-6-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/css/media-query-mobile-first">Media query &amp; mobile-first</a></p><p>Berikutnya: <a href="/belajar/css/combinator-pseudo">Combinator &amp; pseudo</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

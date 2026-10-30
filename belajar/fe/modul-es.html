@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Modul ES · Frontend · Ruang Kode</title>
+<meta name="description" content="Kode besar dipecah menjadi modul: satu file satu tanggung jawab. export membagikan fungsi atau nilai, import memakainya. Ada named export (bisa banyak)…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/fe/modul-es">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Modul ES · Frontend · Ruang Kode"><meta property="og:description" content="Kode besar dipecah menjadi modul: satu file satu tanggung jawab. export membagikan fungsi atau nilai, import memakainya. Ada named export (bisa banyak)…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/fe/modul-es"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Modul ES", "description": "Kode besar dipecah menjadi modul: satu file satu tanggung jawab. export membagikan fungsi atau nilai, import memakainya. Ada named export (bisa banyak)…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/fe/modul-es", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Frontend", "url": "https://ruang-kode-nine.vercel.app/belajar/fe"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Frontend", "item": "https://ruang-kode-nine.vercel.app/belajar/fe"}, {"@type": "ListItem", "position": 3, "name": "Modul ES", "item": "https://ruang-kode-nine.vercel.app/belajar/fe/modul-es"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/fe">Frontend</a> / Modul 3</nav>
+<div class="eyebrow">Frontend · Modul 3 · Konsep &amp; kode</div><h1>Modul ES</h1><a class="cta" href="/#fe-3-8">Buka versi interaktif</a>
+<p>Kode besar dipecah menjadi <b>modul</b>: satu file satu tanggung jawab. <code>export</code> membagikan fungsi atau nilai, <code>import</code> memakainya. Ada named export (bisa banyak) dan default export (satu per file).</p>
+<p>Di browser, pakai <code>&lt;script type="module"&gt;</code>. Modul otomatis memakai mode ketat dan bersifat defer. <code>import()</code> dinamis memuat modul hanya saat dibutuhkan, cara dasar code splitting.</p>
+<div class="lbl">JAVASCRIPT</div><pre><code>// format.js
+export const rupiah = n =&gt; &quot;Rp&quot; + n.toLocaleString(&quot;id-ID&quot;);
+export default function judul(s) { return s[0].toUpperCase() + s.slice(1); }
+
+// main.js
+import judul, { rupiah } from &quot;./format.js&quot;;
+console.log(judul(&quot;kopi&quot;), rupiah(85000));   // Kopi Rp85.000
+
+// muat grafik hanya saat tombol diklik
+document.querySelector(&quot;#lihat&quot;).onclick = async () =&gt; {
+  const { gambarGrafik } = await import(&quot;./grafik.js&quot;);
+  gambarGrafik();
+};</code></pre>
+<h2>Poin penting</h2><ul><li>export/import untuk membagi kode.</li><li>Named export banyak, default export satu.</li><li>type="module" di browser.</li><li>import() dinamis untuk memuat saat perlu.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Sintaks memakai named export rupiah?</summary><p class="ok">Jawaban: import { rupiah } from &quot;./format.js&quot;</p><p>Named export memakai kurung kurawal.</p></details>
+<a class="cta" href="/#fe-3-8">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe/event-loop-javascript">Event loop JavaScript</a></p><p>Berikutnya: <a href="/belajar/fe/web-api-storage-observer-lainnya">Web API: storage, observer &amp; lainnya</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

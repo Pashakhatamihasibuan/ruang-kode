@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kelas Math &amp; operasi angka · Java · Ruang Kode</title>
+<meta name="description" content="Selain operator + - * / %, Java menyediakan kelas Math berisi method statis yang siap pakai: pangkat, akar, nilai mutlak, pembulatan, minimum, dan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/java/kelas-math-operasi-angka">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Kelas Math &amp; operasi angka · Java · Ruang Kode"><meta property="og:description" content="Selain operator + - * / %, Java menyediakan kelas Math berisi method statis yang siap pakai: pangkat, akar, nilai mutlak, pembulatan, minimum, dan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/java/kelas-math-operasi-angka"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Kelas Math & operasi angka", "description": "Selain operator + - * / %, Java menyediakan kelas Math berisi method statis yang siap pakai: pangkat, akar, nilai mutlak, pembulatan, minimum, dan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/java/kelas-math-operasi-angka", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Java", "url": "https://ruang-kode-nine.vercel.app/belajar/java"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Java", "item": "https://ruang-kode-nine.vercel.app/belajar/java"}, {"@type": "ListItem", "position": 3, "name": "Kelas Math & operasi angka", "item": "https://ruang-kode-nine.vercel.app/belajar/java/kelas-math-operasi-angka"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/java">Java</a> / Modul 1</nav>
+<div class="eyebrow">Java · Modul 1 · Konsep &amp; kode</div><h1>Kelas Math &amp; operasi angka</h1><a class="cta" href="/#java-1-6">Buka versi interaktif</a>
+<p>Selain operator <code>+ - * / %</code>, Java menyediakan kelas <code>Math</code> berisi method statis yang siap pakai: pangkat, akar, nilai mutlak, pembulatan, minimum, dan maksimum. Kamu tidak perlu membuat objeknya, cukup panggil <code>Math.namaMethod(...)</code>.</p>
+<p>Ada tiga cara membulatkan: <code>Math.round</code> ke bilangan bulat terdekat, <code>Math.floor</code> selalu ke bawah, dan <code>Math.ceil</code> selalu ke atas. Untuk angka acak, pakai <code>Math.random()</code> yang menghasilkan double dari 0.0 sampai sebelum 1.0, atau kelas <code>Random</code>.</p>
+<p>Untuk uang, hindari double karena pecahan biner tidak selalu tepat (0.1 + 0.2 tidak persis 0.3). Di aplikasi sungguhan, programmer memakai <code>BigDecimal</code> atau menyimpan nilai dalam satuan terkecil (rupiah tanpa koma).</p>
+<div class="lbl">JAVA</div><pre><code>public class Hitung {
+    public static void main(String[] args) {
+        System.out.println(Math.pow(2, 10));
+        System.out.println(Math.sqrt(144));
+        System.out.println(Math.abs(-25));
+        System.out.println(Math.max(17, 42));
+        System.out.println(Math.round(2.5));
+        System.out.println(Math.floor(2.9));
+        System.out.println(Math.ceil(2.1));
+        System.out.println(0.1 + 0.2);
+        int dadu = (int) (Math.random() * 6) + 1;
+        System.out.println(dadu &gt;= 1 &amp;&amp; dadu &lt;= 6);
+    }
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>1024.0
+12.0
+25
+42
+3
+2.0
+3.0
+0.30000000000000004
+true
+</code></pre>
+<h2>Poin penting</h2><ul><li><code>Math.pow</code> dan <code>Math.sqrt</code> selalu mengembalikan double.</li><li>Rumus angka acak 1 sampai n: <code>(int)(Math.random() * n) + 1</code>.</li><li>Perhatikan <code>0.1 + 0.2</code>: double menyimpan pecahan secara mendekati.</li><li><code>%</code> (modulus) berguna untuk cek genap/ganjil: <code>x % 2 == 0</code>.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>&lt;code&gt;Math.ceil(4.01)&lt;/code&gt; menghasilkan?</summary><p class="ok">Jawaban: 5.0</p><p>ceil selalu membulatkan ke atas dan mengembalikan double.</p></details><details><summary>Kenapa double kurang cocok untuk menyimpan saldo bank?</summary><p class="ok">Jawaban: Pecahannya tidak selalu tepat</p><p>Pecahan biner membuat 0.1 + 0.2 bukan tepat 0.3. Pakai BigDecimal atau satuan terkecil.</p></details>
+<a class="cta" href="/#java-1-6">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/ekspresi-operator">Ekspresi &amp; operator</a></p><p>Berikutnya: <a href="/belajar/java/membaca-input-pengguna">Membaca input pengguna</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

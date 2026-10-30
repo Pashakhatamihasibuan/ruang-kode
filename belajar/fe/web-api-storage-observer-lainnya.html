@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Web API: storage, observer &amp; lainnya · Frontend · Ruang Kode</title>
+<meta name="description" content="Browser menyediakan banyak Web API: localStorage menyimpan data kecil yang bertahan setelah browser ditutup, IntersectionObserver memberi tahu saat…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/fe/web-api-storage-observer-lainnya">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Web API: storage, observer &amp; lainnya · Frontend · Ruang Kode"><meta property="og:description" content="Browser menyediakan banyak Web API: localStorage menyimpan data kecil yang bertahan setelah browser ditutup, IntersectionObserver memberi tahu saat…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/fe/web-api-storage-observer-lainnya"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Web API: storage, observer & lainnya", "description": "Browser menyediakan banyak Web API: localStorage menyimpan data kecil yang bertahan setelah browser ditutup, IntersectionObserver memberi tahu saat…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/fe/web-api-storage-observer-lainnya", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "Frontend", "url": "https://ruang-kode-nine.vercel.app/belajar/fe"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Frontend", "item": "https://ruang-kode-nine.vercel.app/belajar/fe"}, {"@type": "ListItem", "position": 3, "name": "Web API: storage, observer & lainnya", "item": "https://ruang-kode-nine.vercel.app/belajar/fe/web-api-storage-observer-lainnya"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/fe">Frontend</a> / Modul 3</nav>
+<div class="eyebrow">Frontend · Modul 3 · Praktik langsung</div><h1>Web API: storage, observer &amp; lainnya</h1><a class="cta" href="/#fe-3-9">Buka versi interaktif</a>
+<p>Browser menyediakan banyak <b>Web API</b>: <code>localStorage</code> menyimpan data kecil yang bertahan setelah browser ditutup, <code>IntersectionObserver</code> memberi tahu saat elemen masuk layar (untuk lazy load atau animasi muncul), <code>Clipboard</code>, <code>Geolocation</code>, <code>Notification</code>, dan lainnya.</p>
+<p>Selalu periksa ketersediaan API dan bungkus akses storage dengan try/catch, karena bisa ditolak di mode privat.</p>
+<div class="lbl">HTML</div><pre><code>&lt;p&gt;Kunjungan ke pratinjau ini: &lt;b id=&quot;n&quot;&gt;?&lt;/b&gt;&lt;/p&gt;
+&lt;div style=&quot;height:220px;overflow:auto;border:1px solid #ddd&quot; id=&quot;area&quot;&gt;
+  &lt;div style=&quot;height:300px&quot;&gt;&lt;/div&gt;
+  &lt;p id=&quot;target&quot; class=&quot;kotak&quot;&gt;Saya muncul saat terlihat&lt;/p&gt;
+  &lt;div style=&quot;height:60px&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+<div class="lbl">CSS</div><pre><code>body{font:14px system-ui,sans-serif}.kotak{opacity:0;transform:translateY(20px);transition:all .5s;background:#E9EFF5;padding:10px;border-radius:8px}.kotak.tampak{opacity:1;transform:none}</code></pre>
+<div class="lbl">JAVASCRIPT</div><pre><code>try {
+  const n = Number(localStorage.getItem(&quot;kunjungan&quot;) || 0) + 1;
+  localStorage.setItem(&quot;kunjungan&quot;, n);
+  document.getElementById(&quot;n&quot;).textContent = n;
+} catch (e) { document.getElementById(&quot;n&quot;).textContent = &quot;storage tidak tersedia&quot;; }
+
+const io = new IntersectionObserver(es =&gt; es.forEach(en =&gt; {
+  if (en.isIntersecting) en.target.classList.add(&quot;tampak&quot;);
+}), { root: document.getElementById(&quot;area&quot;) });
+io.observe(document.getElementById(&quot;target&quot;));</code></pre>
+<h2>Tantangan</h2><ol><li>Gulir kotak di pratinjau sampai teks "Saya muncul saat terlihat" tampak.</li></ol>
+<h2>Poin penting</h2><ul><li>localStorage untuk data kecil yang bertahan.</li><li>IntersectionObserver untuk mendeteksi elemen terlihat.</li><li>Bungkus akses storage dengan try/catch.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>API yang tepat untuk lazy load saat elemen terlihat?</summary><p class="ok">Jawaban: IntersectionObserver</p><p>Lebih hemat daripada memantau scroll terus-menerus.</p></details>
+<a class="cta" href="/#fe-3-9">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe/modul-es">Modul ES</a></p><p>Berikutnya: <a href="/belajar/fe/bundler-vite">Bundler &amp; Vite</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

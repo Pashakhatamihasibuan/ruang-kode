@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pipeline penjualan harian Toko Nusantara · Data Engineer · Ruang Kode</title>
+<meta name="description" content="Bangun pipeline yang setiap malam mengambil transaksi dari database kasir, menyimpannya di lake (bronze/silver), memodelkan skema bintang dengan dbt, dan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/de/pipeline-penjualan-harian-toko-nusantara">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Pipeline penjualan harian Toko Nusantara · Data Engineer · Ruang Kode"><meta property="og:description" content="Bangun pipeline yang setiap malam mengambil transaksi dari database kasir, menyimpannya di lake (bronze/silver), memodelkan skema bintang dengan dbt, dan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/de/pipeline-penjualan-harian-toko-nusantara"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Pipeline penjualan harian Toko Nusantara", "description": "Bangun pipeline yang setiap malam mengambil transaksi dari database kasir, menyimpannya di lake (bronze/silver), memodelkan skema bintang dengan dbt, dan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/de/pipeline-penjualan-harian-toko-nusantara", "learningResourceType": "Proyek akhir", "isPartOf": {"@type": "Course", "name": "Data Engineer", "url": "https://ruang-kode-nine.vercel.app/belajar/de"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Engineer", "item": "https://ruang-kode-nine.vercel.app/belajar/de"}, {"@type": "ListItem", "position": 3, "name": "Pipeline penjualan harian Toko Nusantara", "item": "https://ruang-kode-nine.vercel.app/belajar/de/pipeline-penjualan-harian-toko-nusantara"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/de">Data Engineer</a> / Modul 10</nav>
+<div class="eyebrow">Data Engineer · Modul 10 · Proyek akhir</div><h1>Pipeline penjualan harian Toko Nusantara</h1><a class="cta" href="/#de-10-1">Buka versi interaktif</a>
+<p>Bangun pipeline yang setiap malam mengambil transaksi dari database kasir, menyimpannya di lake (bronze/silver), memodelkan skema bintang dengan dbt, dan memperbarui dashboard, lengkap dengan tes dan peringatan.</p>
+<p><b>Teknologi:</b> Python + Airflow + dbt + Postgres/BigQuery</p>
+<h2>Fitur yang dibuat</h2><ul><li>Ekstraksi inkremental per tanggal dari Postgres</li><li>Penyimpanan Parquet terpartisi tanggal (bronze → silver)</li><li>Pemuatan idempoten: dijalankan dua kali hasilnya sama</li><li>DAG Airflow dengan retry dan backfill</li><li>Model dbt fakta_penjualan + dim_produk + dim_toko + dim_pelanggan (SCD tipe 2)</li><li>dbt tests: not_null, unique, relationships, rentang nilai</li><li>Pemeriksaan kesegaran dan volume dengan peringatan</li><li>README dengan diagram arsitektur dan cara menjalankan lewat Docker Compose</li></ul>
+<h2>Langkah kerja</h2><ol><li>Siapkan Postgres dan data contoh dengan Docker Compose.</li><li>Tulis ekstraksi inkremental dan simpan ke Parquet.</li><li>Buat DAG Airflow dan uji backfill 7 hari.</li><li>Bangun model dbt dan tesnya.</li><li>Tambahkan pemeriksaan kualitas dan dokumentasi.</li></ol>
+<div class="lbl">docker-compose.yml</div><pre><code>services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_PASSWORD: rahasia
+    ports: [&quot;5432:5432&quot;]
+  airflow:
+    image: apache/airflow:2.10.3
+    command: standalone
+    volumes: [&quot;./dags:/opt/airflow/dags&quot;, &quot;./lake:/data/lake&quot;]
+    ports: [&quot;8080:8080&quot;]</code></pre>
+<div class="lbl">models/marts/fakta_penjualan.sql</div><pre><code>{{ config(materialized=&#x27;incremental&#x27;, unique_key=&#x27;id&#x27;) }}
+SELECT t.id, d.tanggal_id, t.produk_id, t.toko_id, p.sk AS pelanggan_sk,
+       t.jumlah, t.harga, t.diskon_persen
+FROM {{ ref(&#x27;stg_transaksi&#x27;) }} t
+JOIN {{ ref(&#x27;dim_tanggal&#x27;) }} d ON d.tanggal = t.tanggal
+JOIN {{ ref(&#x27;dim_pelanggan&#x27;) }} p
+  ON p.pelanggan_id = t.pelanggan_id
+ AND t.tanggal &gt;= p.berlaku_dari AND t.tanggal &lt; p.berlaku_sampai
+{% if is_incremental() %}
+WHERE t.tanggal &gt;= (SELECT MAX(tanggal) FROM {{ this }})
+{% endif %}</code></pre>
+<a class="cta" href="/#de-10-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/de/keamanan-privasi-data">Keamanan &amp; privasi data</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

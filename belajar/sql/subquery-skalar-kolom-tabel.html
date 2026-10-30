@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Subquery skalar, kolom &amp; tabel · SQL · Ruang Kode</title>
+<meta name="description" content="Subquery adalah SELECT di dalam kurung yang dipakai oleh query lain. Bentuknya menentukan di mana ia boleh dipakai. Skalar mengembalikan satu nilai, bisa…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/sql/subquery-skalar-kolom-tabel">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Subquery skalar, kolom &amp; tabel · SQL · Ruang Kode"><meta property="og:description" content="Subquery adalah SELECT di dalam kurung yang dipakai oleh query lain. Bentuknya menentukan di mana ia boleh dipakai. Skalar mengembalikan satu nilai, bisa…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/sql/subquery-skalar-kolom-tabel"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Subquery skalar, kolom & tabel", "description": "Subquery adalah SELECT di dalam kurung yang dipakai oleh query lain. Bentuknya menentukan di mana ia boleh dipakai. Skalar mengembalikan satu nilai, bisa…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/sql/subquery-skalar-kolom-tabel", "learningResourceType": "Praktik SQL", "isPartOf": {"@type": "Course", "name": "SQL", "url": "https://ruang-kode-nine.vercel.app/belajar/sql"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "SQL", "item": "https://ruang-kode-nine.vercel.app/belajar/sql"}, {"@type": "ListItem", "position": 3, "name": "Subquery skalar, kolom & tabel", "item": "https://ruang-kode-nine.vercel.app/belajar/sql/subquery-skalar-kolom-tabel"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/sql">SQL</a> / Modul 8</nav>
+<div class="eyebrow">SQL · Modul 8 · Praktik SQL</div><h1>Subquery skalar, kolom &amp; tabel</h1><a class="cta" href="/#sql-8-1">Buka versi interaktif</a>
+<p><b>Subquery</b> adalah SELECT di dalam kurung yang dipakai oleh query lain. Bentuknya menentukan di mana ia boleh dipakai. <b>Skalar</b> mengembalikan satu nilai, bisa dipakai di mana pun nilai tunggal diperlukan, misalnya <code>WHERE harga &gt; (SELECT AVG(harga) FROM produk)</code>.</p>
+<p>Subquery <b>kolom</b> mengembalikan satu kolom banyak baris, dipakai bersama <code>IN</code>, <code>ANY</code>, atau <code>ALL</code>. Subquery <b>tabel</b> mengembalikan banyak kolom dan baris, dipakai di FROM sebagai tabel sementara (wajib diberi alias).</p>
+<p>Subquery bisa <b>bersarang</b> beberapa tingkat. Database menjalankan yang paling dalam lebih dulu. Jika sudah lebih dari dua tingkat, pertimbangkan CTE (WITH) agar lebih mudah dibaca.</p>
+<div class="lbl">Skalar: di atas rata-rata</div><pre><code>SELECT nama, harga FROM produk
+WHERE harga &gt; (SELECT AVG(harga) FROM produk);</code></pre>
+<div class="lbl">Kolom: pelanggan yang pernah memesan</div><pre><code>SELECT nama FROM pelanggan
+WHERE id IN (SELECT pelanggan_id FROM pesanan);</code></pre>
+<div class="lbl">Tabel: di FROM</div><pre><code>SELECT kategori, rata FROM (
+  SELECT kategori, AVG(harga) AS rata FROM produk GROUP BY kategori
+) AS t
+WHERE rata &gt; 40000;</code></pre>
+<div class="lbl">Bersarang: pembeli Kopi Gayo</div><pre><code>SELECT nama FROM pelanggan WHERE id IN (
+  SELECT pelanggan_id FROM pesanan WHERE id IN (
+    SELECT pesanan_id FROM detail_pesanan WHERE produk_id = (
+      SELECT id FROM produk WHERE nama = &#x27;Kopi Gayo&#x27;)));</code></pre>
+<h2>Tantangan</h2><ol><li>Tampilkan nama dan harga produk termahal memakai subquery skalar MAX.</li></ol>
+<h2>Poin penting</h2><ul><li>Skalar = satu nilai; kolom = satu kolom; tabel = banyak kolom.</li><li>Subquery di FROM wajib alias.</li><li>IN untuk subquery kolom.</li><li>Bersarang dijalankan dari dalam ke luar.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Subquery di &lt;code&gt;WHERE harga &amp;gt; (...)&lt;/code&gt; harus mengembalikan?</summary><p class="ok">Jawaban: Satu nilai</p><p>Perbandingan &gt; butuh nilai tunggal.</p></details><details><summary>Operator untuk subquery yang mengembalikan banyak baris?</summary><p class="ok">Jawaban: IN</p><p>IN memeriksa keanggotaan.</p></details>
+<a class="cta" href="/#sql-8-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/proyek-mini-laporan-pesanan-pelanggan">Proyek mini: Laporan pesanan pelanggan</a></p><p>Berikutnya: <a href="/belajar/sql/correlated-subquery-exists">Correlated subquery &amp; EXISTS</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

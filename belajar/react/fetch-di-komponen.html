@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fetch di komponen · React · Ruang Kode</title>
+<meta name="description" content="Pola dasar mengambil data: simpan data, loading, dan error di state, panggil API di useEffect, dan tampilkan ketiga keadaan itu. Abaikan respons yang…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/react/fetch-di-komponen">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Fetch di komponen · React · Ruang Kode"><meta property="og:description" content="Pola dasar mengambil data: simpan data, loading, dan error di state, panggil API di useEffect, dan tampilkan ketiga keadaan itu. Abaikan respons yang…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/react/fetch-di-komponen"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Fetch di komponen", "description": "Pola dasar mengambil data: simpan data, loading, dan error di state, panggil API di useEffect, dan tampilkan ketiga keadaan itu. Abaikan respons yang…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/react/fetch-di-komponen", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "React", "url": "https://ruang-kode-nine.vercel.app/belajar/react"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "React", "item": "https://ruang-kode-nine.vercel.app/belajar/react"}, {"@type": "ListItem", "position": 3, "name": "Fetch di komponen", "item": "https://ruang-kode-nine.vercel.app/belajar/react/fetch-di-komponen"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/react">React</a> / Modul 6</nav>
+<div class="eyebrow">React · Modul 6 · Praktik langsung</div><h1>Fetch di komponen</h1><a class="cta" href="/#react-6-1">Buka versi interaktif</a>
+<p>Pola dasar mengambil data: simpan <b>data</b>, <b>loading</b>, dan <b>error</b> di state, panggil API di <code>useEffect</code>, dan tampilkan ketiga keadaan itu. Abaikan respons yang datang setelah komponen hilang atau parameter berubah.</p>
+<p>Axios adalah alternatif fetch dengan fitur interceptor dan JSON otomatis. Contoh di bawah memakai API tiruan agar berjalan di mana saja.</p>
+<div class="lbl">CSS</div><pre><code>body{font:14px system-ui,sans-serif}.err{color:#B23A2E}button{margin-right:4px}</code></pre>
+<div class="lbl">JSX</div><pre><code>const DB = { kopi: [&quot;Kopi Gayo&quot;, &quot;Kopi Toraja&quot;], teh: [&quot;Teh Melati&quot;, &quot;Teh Hijau&quot;] };
+const api = kat =&gt; new Promise((ok, gagal) =&gt; setTimeout(() =&gt;
+  kat === &quot;error&quot; ? gagal(new Error(&quot;Server sedang sibuk&quot;)) : ok(DB[kat] || []), 700));
+
+function App() {
+  const [kat, setKat] = useState(&quot;kopi&quot;);
+  const [st, setSt] = useState({ loading: true, data: [], error: null });
+  useEffect(() =&gt; {
+    let aktif = true;
+    setSt(s =&gt; ({ ...s, loading: true, error: null }));
+    api(kat).then(data =&gt; aktif &amp;&amp; setSt({ loading: false, data, error: null }))
+            .catch(error =&gt; aktif &amp;&amp; setSt({ loading: false, data: [], error }));
+    return () =&gt; { aktif = false; };
+  }, [kat]);
+  return (
+    &lt;div&gt;
+      {[&quot;kopi&quot;, &quot;teh&quot;, &quot;error&quot;].map(k =&gt; &lt;button key={k} onClick={() =&gt; setKat(k)}&gt;{k}&lt;/button&gt;)}
+      {st.loading ? &lt;p&gt;Memuat…&lt;/p&gt; : st.error ? &lt;p className=&quot;err&quot;&gt;{st.error.message}&lt;/p&gt;
+        : &lt;ul&gt;{st.data.map(n =&gt; &lt;li key={n}&gt;{n}&lt;/li&gt;)}&lt;/ul&gt;}
+    &lt;/div&gt;
+  );
+}</code></pre>
+<h2>Poin penting</h2><ul><li>Tangani tiga keadaan: loading, error, data.</li><li>Abaikan respons usang dengan flag atau AbortController.</li><li>Axios: alternatif fetch dengan fitur tambahan.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa perlu flag aktif di contoh?</summary><p class="ok">Jawaban: Mencegah respons lama menimpa data baru</p><p>Ini mencegah race condition.</p></details>
+<a class="cta" href="/#react-6-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/react/zustand-jotai-kawan-kawan">Zustand, Jotai &amp; kawan-kawan</a></p><p>Berikutnya: <a href="/belajar/react/tanstack-query-swr-graphql">TanStack Query, SWR &amp; GraphQL</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

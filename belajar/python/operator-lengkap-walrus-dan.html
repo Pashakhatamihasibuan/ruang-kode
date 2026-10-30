@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Operator lengkap: //, **, walrus, dan @ · Python · Ruang Kode</title>
+<meta name="description" content="Selain + - * /, Python punya // (pembagian bulat ke bawah), % (sisa bagi), dan ** (pangkat). Ingat, / di Python 3 selalu menghasilkan float: 7 / 2 = 3.5.">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/python/operator-lengkap-walrus-dan">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Operator lengkap: //, **, walrus, dan @ · Python · Ruang Kode"><meta property="og:description" content="Selain + - * /, Python punya // (pembagian bulat ke bawah), % (sisa bagi), dan ** (pangkat). Ingat, / di Python 3 selalu menghasilkan float: 7 / 2 = 3.5.">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/python/operator-lengkap-walrus-dan"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Operator lengkap: //, **, walrus, dan @", "description": "Selain + - * /, Python punya // (pembagian bulat ke bawah), % (sisa bagi), dan ** (pangkat). Ingat, / di Python 3 selalu menghasilkan float: 7 / 2 = 3.5.", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/python/operator-lengkap-walrus-dan", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Python", "url": "https://ruang-kode-nine.vercel.app/belajar/python"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Python", "item": "https://ruang-kode-nine.vercel.app/belajar/python"}, {"@type": "ListItem", "position": 3, "name": "Operator lengkap: //, **, walrus, dan @", "item": "https://ruang-kode-nine.vercel.app/belajar/python/operator-lengkap-walrus-dan"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/python">Python</a> / Modul 1</nav>
+<div class="eyebrow">Python · Modul 1 · Konsep &amp; kode</div><h1>Operator lengkap: //, **, walrus, dan @</h1><a class="cta" href="/#python-1-6">Buka versi interaktif</a>
+<p>Selain <code>+ - * /</code>, Python punya <code>//</code> (pembagian bulat ke bawah), <code>%</code> (sisa bagi), dan <code>**</code> (pangkat). Ingat, <code>/</code> di Python 3 selalu menghasilkan float: <code>7 / 2</code> = 3.5.</p>
+<p>Operator perbandingan bisa dirangkai seperti di matematika: <code>0 &lt;= nilai &lt;= 100</code>. Operator identitas <code>is</code> memeriksa apakah dua nama menunjuk objek yang sama, sedangkan <code>==</code> memeriksa isinya. Pakai <code>is</code> hanya untuk <code>None</code>. Operator keanggotaan <code>in</code> memeriksa apakah elemen ada di dalam koleksi.</p>
+<p>Operator <b>walrus</b> <code>:=</code> (Python 3.8) memberi nilai sekaligus memakainya dalam ekspresi. Operator <b>@</b> adalah perkalian matriks, dipakai pustaka seperti NumPy; kelas buatanmu bisa mendukungnya dengan method <code>__matmul__</code>.</p>
+<div class="lbl">PYTHON</div><pre><code>print(7 / 2, 7 // 2, 7 % 2, 2 ** 10)
+print(-7 // 2)              # dibulatkan ke bawah, bukan ke nol
+
+nilai = 85
+print(0 &lt;= nilai &lt;= 100)
+print(&quot;a&quot; in &quot;kata&quot;, 3 in [1, 2, 3])
+
+data = None
+print(data is None)
+
+skor = [70, 95, 88]
+if (n := len(skor)) &gt; 2:
+    print(f&quot;ada {n} skor&quot;)
+
+class Matriks:
+    def __init__(self, baris):
+        self.b = baris
+    def __matmul__(self, lain):
+        return Matriks([[sum(a * b for a, b in zip(r, k)) for k in zip(*lain.b)] for r in self.b])
+
+A = Matriks([[1, 2], [3, 4]])
+B = Matriks([[5, 6], [7, 8]])
+print((A @ B).b)</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>3.5 3 1 1024
+-4
+True
+True True
+True
+ada 3 skor
+[[19, 22], [43, 50]]
+</code></pre>
+<h2>Poin penting</h2><ul><li><code>/</code> selalu float, <code>//</code> bulat ke bawah.</li><li>Perbandingan berantai: <code>a &lt; b &lt; c</code>.</li><li><code>is</code> untuk None, <code>==</code> untuk isi.</li><li><code>@</code> = perkalian matriks lewat <code>__matmul__</code>.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Hasil &lt;code&gt;17 // 5&lt;/code&gt;?</summary><p class="ok">Jawaban: 3</p><p>Pembagian bulat ke bawah.</p></details><details><summary>Cara benar memeriksa variabel kosong (None)?</summary><p class="ok">Jawaban: x is None</p><p>None adalah objek tunggal, jadi gunakan is.</p></details>
+<a class="cta" href="/#python-1-6">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/ekspresi-operator">Ekspresi &amp; operator</a></p><p>Berikutnya: <a href="/belajar/python/membaca-input-pengguna">Membaca input pengguna</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

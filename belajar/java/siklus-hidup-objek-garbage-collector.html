@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Siklus hidup objek &amp; garbage collector · Java · Ruang Kode</title>
+<meta name="description" content="Setiap new membuat objek baru di area memori bernama heap. Variabel hanya menyimpan referensi (alamat) ke objek itu. Objek bisa punya banyak referensi…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/java/siklus-hidup-objek-garbage-collector">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Siklus hidup objek &amp; garbage collector · Java · Ruang Kode"><meta property="og:description" content="Setiap new membuat objek baru di area memori bernama heap. Variabel hanya menyimpan referensi (alamat) ke objek itu. Objek bisa punya banyak referensi…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/java/siklus-hidup-objek-garbage-collector"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Siklus hidup objek & garbage collector", "description": "Setiap new membuat objek baru di area memori bernama heap. Variabel hanya menyimpan referensi (alamat) ke objek itu. Objek bisa punya banyak referensi…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/java/siklus-hidup-objek-garbage-collector", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Java", "url": "https://ruang-kode-nine.vercel.app/belajar/java"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Java", "item": "https://ruang-kode-nine.vercel.app/belajar/java"}, {"@type": "ListItem", "position": 3, "name": "Siklus hidup objek & garbage collector", "item": "https://ruang-kode-nine.vercel.app/belajar/java/siklus-hidup-objek-garbage-collector"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/java">Java</a> / Modul 5</nav>
+<div class="eyebrow">Java · Modul 5 · Konsep &amp; kode</div><h1>Siklus hidup objek &amp; garbage collector</h1><a class="cta" href="/#java-5-6">Buka versi interaktif</a>
+<p>Setiap <code>new</code> membuat objek baru di area memori bernama <b>heap</b>. Variabel hanya menyimpan <b>referensi</b> (alamat) ke objek itu. Objek bisa punya banyak referensi sekaligus.</p>
+<p>Ketika tidak ada lagi referensi yang menunjuk sebuah objek, objek itu <b>tidak terjangkau</b>. Di Java kamu tidak menghapus objek secara manual. <b>Garbage collector</b> (GC) milik JVM berkala mencari objek tak terjangkau lalu membebaskan memorinya.</p>
+<p>Siklus hidupnya: dibuat (<code>new</code> + konstruktor), dipakai, tidak terjangkau, lalu dibersihkan GC. Kamu tidak bisa memastikan kapan GC berjalan, jadi jangan menaruh logika penting di sana. Untuk menutup file atau koneksi, pakai <code>try-with-resources</code>.</p>
+<div class="lbl">JAVA</div><pre><code>class Kotak {
+    String label;
+    Kotak(String label) {
+        this.label = label;
+        System.out.println(&quot;Dibuat: &quot; + label);
+    }
+}
+
+public class Siklus {
+    public static void main(String[] args) {
+        Kotak a = new Kotak(&quot;A&quot;);
+        Kotak b = new Kotak(&quot;B&quot;);
+        Kotak c = a;          // dua referensi ke objek A
+        a = null;             // A masih dijangkau lewat c
+        b = null;             // B tidak terjangkau lagi -&gt; calon GC
+        System.out.println(c.label);
+        c = new Kotak(&quot;C&quot;);   // A kini juga tidak terjangkau
+        System.out.println(c.label);
+    }
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Dibuat: A
+Dibuat: B
+A
+Dibuat: C
+C
+</code></pre>
+<h2>Poin penting</h2><ul><li>Variabel menyimpan referensi, objeknya ada di heap.</li><li>Objek tanpa referensi menjadi calon garbage collection.</li><li><code>null</code> berarti referensi tidak menunjuk objek apa pun.</li><li>GC berjalan otomatis; jangan bergantung pada waktunya.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Setelah &lt;code&gt;b = null&lt;/code&gt;, objek B...</summary><p class="ok">Jawaban: Menjadi calon dibersihkan GC</p><p>GC yang menentukan kapan memorinya dibebaskan.</p></details><details><summary>Dua variabel menunjuk objek yang sama, lalu salah satunya diisi null. Objeknya?</summary><p class="ok">Jawaban: Masih hidup</p><p>Masih ada satu referensi yang menjangkaunya.</p></details>
+<a class="cta" href="/#java-5-6">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/kata-kunci-static-final">Kata kunci static &amp; final</a></p><p>Berikutnya: <a href="/belajar/java/pass-by-value-juga-untuk-objek">Pass by value (juga untuk objek)</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

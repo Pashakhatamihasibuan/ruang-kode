@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Investigasi penurunan konversi toko online · Data Analyst · Ruang Kode</title>
+<meta name="description" content="Konversi toko online Toko Nusantara turun dari 9,8% menjadi 8,2% dalam sebulan. Gunakan data funnel, transaksi, dan ulasan untuk menemukan penyebabnya…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/da/investigasi-penurunan-konversi-toko-online">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Investigasi penurunan konversi toko online · Data Analyst · Ruang Kode"><meta property="og:description" content="Konversi toko online Toko Nusantara turun dari 9,8% menjadi 8,2% dalam sebulan. Gunakan data funnel, transaksi, dan ulasan untuk menemukan penyebabnya…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/da/investigasi-penurunan-konversi-toko-online"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Investigasi penurunan konversi toko online", "description": "Konversi toko online Toko Nusantara turun dari 9,8% menjadi 8,2% dalam sebulan. Gunakan data funnel, transaksi, dan ulasan untuk menemukan penyebabnya…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/da/investigasi-penurunan-konversi-toko-online", "learningResourceType": "Proyek akhir", "isPartOf": {"@type": "Course", "name": "Data Analyst", "url": "https://ruang-kode-nine.vercel.app/belajar/da"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Analyst", "item": "https://ruang-kode-nine.vercel.app/belajar/da"}, {"@type": "ListItem", "position": 3, "name": "Investigasi penurunan konversi toko online", "item": "https://ruang-kode-nine.vercel.app/belajar/da/investigasi-penurunan-konversi-toko-online"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/da">Data Analyst</a> / Modul 8</nav>
+<div class="eyebrow">Data Analyst · Modul 8 · Proyek akhir</div><h1>Investigasi penurunan konversi toko online</h1><a class="cta" href="/#da-8-1">Buka versi interaktif</a>
+<p>Konversi toko online Toko Nusantara turun dari 9,8% menjadi 8,2% dalam sebulan. Gunakan data funnel, transaksi, dan ulasan untuk menemukan penyebabnya dan merekomendasikan perbaikan.</p>
+<p><b>Teknologi:</b> SQL + Python + Spreadsheet</p>
+<h2>Fitur yang dibuat</h2><ul><li>Pertanyaan bisnis dan hipotesis tertulis di awal</li><li>Data diambil dengan SQL dan dibersihkan dengan pandas</li><li>Funnel per tahap dan per perangkat (Android, iOS, desktop)</li><li>Segmentasi pelanggan baru vs lama</li><li>Uji statistik selisih konversi sebelum dan sesudah</li><li>Analisis kata ulasan dengan pendekatan MapReduce sederhana</li><li>Dua grafik utama dengan judul berupa kesimpulan</li><li>Rekomendasi preskriptif beserta perkiraan dampaknya</li></ul>
+<h2>Langkah kerja</h2><ol><li>Tulis pertanyaan dan hipotesis.</li><li>Kumpulkan dan bersihkan data.</li><li>Analisis deskriptif lalu diagnostik.</li><li>Uji hipotesis.</li><li>Susun rekomendasi dan presentasi 5 slide.</li></ol>
+<div class="lbl">funnel.sql</div><pre><code>SELECT perangkat,
+       COUNT(*) FILTER (WHERE tahap &gt;= 1) AS kunjungan,
+       COUNT(*) FILTER (WHERE tahap &gt;= 3) AS keranjang,
+       COUNT(*) FILTER (WHERE tahap &gt;= 5) AS bayar,
+       ROUND(100.0 * COUNT(*) FILTER (WHERE tahap &gt;= 5) / COUNT(*), 2) AS konversi
+FROM sesi
+WHERE tanggal &gt;= DATE &#x27;2026-09-01&#x27;
+GROUP BY perangkat;</code></pre>
+<a class="cta" href="/#da-8-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/da/peta-machine-learning-untuk-analis">Peta machine learning untuk analis</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

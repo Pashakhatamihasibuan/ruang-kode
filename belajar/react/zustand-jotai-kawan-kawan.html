@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Zustand, Jotai &amp; kawan-kawan · React · Ruang Kode</title>
+<meta name="description" content="Context cukup untuk data yang jarang berubah. Untuk state global yang sering berubah (keranjang, filter, data pengguna), pustaka state management lebih…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/react/zustand-jotai-kawan-kawan">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Zustand, Jotai &amp; kawan-kawan · React · Ruang Kode"><meta property="og:description" content="Context cukup untuk data yang jarang berubah. Untuk state global yang sering berubah (keranjang, filter, data pengguna), pustaka state management lebih…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/react/zustand-jotai-kawan-kawan"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Zustand, Jotai & kawan-kawan", "description": "Context cukup untuk data yang jarang berubah. Untuk state global yang sering berubah (keranjang, filter, data pengguna), pustaka state management lebih…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/react/zustand-jotai-kawan-kawan", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "React", "url": "https://ruang-kode-nine.vercel.app/belajar/react"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "React", "item": "https://ruang-kode-nine.vercel.app/belajar/react"}, {"@type": "ListItem", "position": 3, "name": "Zustand, Jotai & kawan-kawan", "item": "https://ruang-kode-nine.vercel.app/belajar/react/zustand-jotai-kawan-kawan"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/react">React</a> / Modul 5</nav>
+<div class="eyebrow">React · Modul 5 · Konsep &amp; kode</div><h1>Zustand, Jotai &amp; kawan-kawan</h1><a class="cta" href="/#react-5-2">Buka versi interaktif</a>
+<p>Context cukup untuk data yang jarang berubah. Untuk state global yang sering berubah (keranjang, filter, data pengguna), pustaka state management lebih praktis dan efisien.</p>
+<p><b>Zustand</b> membuat store kecil dengan satu fungsi, tanpa provider. <b>Jotai</b> memecah state menjadi atom-atom kecil. <b>Redux Toolkit</b> masih banyak dipakai di perusahaan besar. <b>MobX</b> memakai pendekatan observable. Untuk data dari server, gunakan TanStack Query (modul berikutnya), bukan store global.</p>
+<div class="lbl">JAVASCRIPT</div><pre><code>import { create } from &quot;zustand&quot;;
+
+export const useKeranjang = create(set =&gt; ({
+  isi: [],
+  tambah: produk =&gt; set(s =&gt; ({ isi: [...s.isi, produk] })),
+  kosongkan: () =&gt; set({ isi: [] }),
+}));
+
+// di komponen mana pun, tanpa Provider:
+function Ikon() {
+  const jumlah = useKeranjang(s =&gt; s.isi.length);   // hanya render ulang jika jumlah berubah
+  return &lt;span&gt;🛒 {jumlah}&lt;/span&gt;;
+}</code></pre>
+<h2>Poin penting</h2><ul><li>Context untuk data yang jarang berubah.</li><li>Zustand: store sederhana tanpa provider.</li><li>Pilih selector agar render ulang seminimal mungkin.</li><li>Data server ditangani pustaka data fetching.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Data produk dari API sebaiknya dikelola dengan?</summary><p class="ok">Jawaban: TanStack Query / SWR</p><p>Pustaka data fetching menangani cache dan muat ulang.</p></details>
+<a class="cta" href="/#react-5-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/react/react-router">React Router</a></p><p>Berikutnya: <a href="/belajar/react/fetch-di-komponen">Fetch di komponen</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

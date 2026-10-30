@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ALTER, DROP &amp; TRUNCATE · SQL · Ruang Kode</title>
+<meta name="description" content="ALTER TABLE mengubah struktur tabel yang sudah ada: menambah kolom (ADD COLUMN), menghapus kolom (DROP COLUMN), mengganti nama kolom atau tabel (RENAME),…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/sql/alter-drop-truncate">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="ALTER, DROP &amp; TRUNCATE · SQL · Ruang Kode"><meta property="og:description" content="ALTER TABLE mengubah struktur tabel yang sudah ada: menambah kolom (ADD COLUMN), menghapus kolom (DROP COLUMN), mengganti nama kolom atau tabel (RENAME),…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/sql/alter-drop-truncate"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "ALTER, DROP & TRUNCATE", "description": "ALTER TABLE mengubah struktur tabel yang sudah ada: menambah kolom (ADD COLUMN), menghapus kolom (DROP COLUMN), mengganti nama kolom atau tabel (RENAME),…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/sql/alter-drop-truncate", "learningResourceType": "Praktik SQL", "isPartOf": {"@type": "Course", "name": "SQL", "url": "https://ruang-kode-nine.vercel.app/belajar/sql"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "SQL", "item": "https://ruang-kode-nine.vercel.app/belajar/sql"}, {"@type": "ListItem", "position": 3, "name": "ALTER, DROP & TRUNCATE", "item": "https://ruang-kode-nine.vercel.app/belajar/sql/alter-drop-truncate"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/sql">SQL</a> / Modul 6</nav>
+<div class="eyebrow">SQL · Modul 6 · Praktik SQL</div><h1>ALTER, DROP &amp; TRUNCATE</h1><a class="cta" href="/#sql-6-2">Buka versi interaktif</a>
+<p><code>ALTER TABLE</code> mengubah struktur tabel yang sudah ada: menambah kolom (<code>ADD COLUMN</code>), menghapus kolom (<code>DROP COLUMN</code>), mengganti nama kolom atau tabel (<code>RENAME</code>), dan mengubah tipe kolom.</p>
+<p><code>DROP TABLE</code> menghapus tabel beserta seluruh isinya dan strukturnya. <code>TRUNCATE TABLE</code> mengosongkan semua baris tetapi strukturnya tetap, biasanya jauh lebih cepat daripada DELETE tanpa WHERE dan mereset penghitung id. (SQLite asli tidak punya TRUNCATE; simulator ini menyediakannya agar kamu bisa mencoba.)</p>
+<p>Perintah-perintah ini sulit dibatalkan. Di perusahaan, perubahan struktur dilakukan lewat file <b>migrasi</b> yang ditinjau tim, bukan diketik langsung di database produksi.</p>
+<div class="lbl">Tambah kolom</div><pre><code>ALTER TABLE produk ADD COLUMN berat_gram INTEGER DEFAULT 250;
+SELECT nama, berat_gram FROM produk LIMIT 3;</code></pre>
+<div class="lbl">Ganti nama kolom</div><pre><code>ALTER TABLE pelanggan RENAME COLUMN kota TO domisili;
+SELECT nama, domisili FROM pelanggan LIMIT 3;</code></pre>
+<div class="lbl">TRUNCATE: kosongkan isi</div><pre><code>TRUNCATE TABLE detail_pesanan;
+SELECT COUNT(*) AS sisa FROM detail_pesanan;</code></pre>
+<div class="lbl">DROP ditolak karena masih dirujuk</div><pre><code>DROP TABLE pelanggan;</code></pre>
+<h2>Tantangan</h2><ol><li>Tambahkan kolom email bertipe TEXT ke tabel pelanggan.</li></ol>
+<h2>Poin penting</h2><ul><li>ALTER: ADD/DROP/RENAME COLUMN, RENAME TO.</li><li>DROP = struktur dan isi hilang.</li><li>TRUNCATE = isi hilang, struktur tetap.</li><li>Perubahan struktur lewat migrasi yang ditinjau.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Perintah yang menghapus semua baris tapi tabelnya tetap ada?</summary><p class="ok">Jawaban: TRUNCATE TABLE</p><p>TRUNCATE mengosongkan isi.</p></details><details><summary>Menambah kolom baru memakai?</summary><p class="ok">Jawaban: ALTER TABLE ... ADD COLUMN</p><p>ALTER mengubah struktur.</p></details>
+<a class="cta" href="/#sql-6-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/create-table">CREATE TABLE</a></p><p>Berikutnya: <a href="/belajar/sql/primary-key-foreign-key">Primary key &amp; foreign key</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

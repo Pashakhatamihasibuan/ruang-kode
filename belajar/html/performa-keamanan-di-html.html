@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Performa &amp; keamanan di HTML · HTML · Ruang Kode</title>
+<meta name="description" content="HTML juga menentukan seberapa cepat halaman tampil. Priority hints seperti fetchpriority=&quot;high&quot; memberi tahu browser gambar mana yang paling penting…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/html/performa-keamanan-di-html">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Performa &amp; keamanan di HTML · HTML · Ruang Kode"><meta property="og:description" content="HTML juga menentukan seberapa cepat halaman tampil. Priority hints seperti fetchpriority=&quot;high&quot; memberi tahu browser gambar mana yang paling penting…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/html/performa-keamanan-di-html"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Performa & keamanan di HTML", "description": "HTML juga menentukan seberapa cepat halaman tampil. Priority hints seperti fetchpriority=\"high\" memberi tahu browser gambar mana yang paling penting…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/html/performa-keamanan-di-html", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "HTML", "url": "https://ruang-kode-nine.vercel.app/belajar/html"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "HTML", "item": "https://ruang-kode-nine.vercel.app/belajar/html"}, {"@type": "ListItem", "position": 3, "name": "Performa & keamanan di HTML", "item": "https://ruang-kode-nine.vercel.app/belajar/html/performa-keamanan-di-html"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/html">HTML</a> / Modul 8</nav>
+<div class="eyebrow">HTML · Modul 8 · Konsep &amp; kode</div><h1>Performa &amp; keamanan di HTML</h1><a class="cta" href="/#html-8-3">Buka versi interaktif</a>
+<p>HTML juga menentukan seberapa cepat halaman tampil. <b>Priority hints</b> seperti <code>fetchpriority="high"</code> memberi tahu browser gambar mana yang paling penting (misalnya gambar utama di atas), dan <code>&lt;link rel="preload"&gt;</code> meminta file kritis diunduh lebih awal.</p>
+<p><b>Content Security Policy</b> (CSP) adalah daftar sumber yang diizinkan memuat script, gaya, dan gambar. Jika penyerang berhasil menyisipkan script dari domain lain, browser menolaknya. CSP biasanya dikirim lewat header HTTP, tapi bisa juga lewat meta tag.</p>
+<div class="lbl">HTML</div><pre><code>&lt;head&gt;
+  &lt;!-- unduh font utama lebih awal --&gt;
+  &lt;link rel=&quot;preload&quot; href=&quot;/font/inter.woff2&quot; as=&quot;font&quot; type=&quot;font/woff2&quot; crossorigin&gt;
+  &lt;!-- hanya izinkan script dari situs sendiri --&gt;
+  &lt;meta http-equiv=&quot;Content-Security-Policy&quot;
+        content=&quot;default-src &#x27;self&#x27;; img-src &#x27;self&#x27; https://cdn.tokonusantara.id&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;img src=&quot;/img/banner.webp&quot; fetchpriority=&quot;high&quot; width=&quot;1200&quot; height=&quot;400&quot; alt=&quot;Promo kopi Oktober&quot;&gt;
+  &lt;img src=&quot;/img/footer.webp&quot; loading=&quot;lazy&quot; width=&quot;600&quot; height=&quot;200&quot; alt=&quot;&quot;&gt;
+&lt;/body&gt;</code></pre>
+<h2>Poin penting</h2><ul><li>fetchpriority="high" untuk gambar utama di layar pertama.</li><li>loading="lazy" untuk gambar di bawah.</li><li>preload untuk file kritis seperti font.</li><li>CSP membatasi sumber script dan gaya.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Gunanya CSP?</summary><p class="ok">Jawaban: Membatasi sumber script/gaya yang boleh dimuat</p><p>CSP mempersempit dampak serangan XSS.</p></details>
+<a class="cta" href="/#html-8-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/html/meta-tag-seo-dasar">Meta tag &amp; SEO dasar</a></p><p>Berikutnya: <a href="/belajar/html/halaman-profil-portofolio">Halaman profil &amp; portofolio</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

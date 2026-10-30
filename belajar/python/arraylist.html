@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ArrayList · Python · Ruang Kode</title>
+<meta name="description" content="Array berukuran tetap sering merepotkan. ArrayList adalah daftar yang bisa tumbuh dan menyusut sendiri. Kamu bisa add, remove, get, dan set tanpa…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/python/arraylist">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="ArrayList · Python · Ruang Kode"><meta property="og:description" content="Array berukuran tetap sering merepotkan. ArrayList adalah daftar yang bisa tumbuh dan menyusut sendiri. Kamu bisa add, remove, get, dan set tanpa…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/python/arraylist"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "ArrayList", "description": "Array berukuran tetap sering merepotkan. ArrayList adalah daftar yang bisa tumbuh dan menyusut sendiri. Kamu bisa add, remove, get, dan set tanpa…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/python/arraylist", "learningResourceType": "Konsep & lab", "isPartOf": {"@type": "Course", "name": "Python", "url": "https://ruang-kode-nine.vercel.app/belajar/python"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Python", "item": "https://ruang-kode-nine.vercel.app/belajar/python"}, {"@type": "ListItem", "position": 3, "name": "ArrayList", "item": "https://ruang-kode-nine.vercel.app/belajar/python/arraylist"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/python">Python</a> / Modul 4</nav>
+<div class="eyebrow">Python · Modul 4 · Konsep &amp; lab</div><h1>ArrayList</h1><a class="cta" href="/#python-4-5">Buka versi interaktif</a>
+<p>Array berukuran tetap sering merepotkan. <code>ArrayList</code> adalah daftar yang bisa tumbuh dan menyusut sendiri. Kamu bisa <code>add</code>, <code>remove</code>, <code>get</code>, dan <code>set</code> tanpa memikirkan ukuran. List bawaan Python sudah bekerja seperti ini sejak awal.</p>
+<p>ArrayList memakai <b>generics</b>: <code>ArrayList&lt;String&gt;</code> berarti daftar yang hanya berisi String. Generics hanya menerima tipe objek, jadi untuk angka kamu memakai <b>wrapper class</b> <code>Integer</code>, <code>Double</code>, dan seterusnya. Java mengubah <code>int</code> ke <code>Integer</code> secara otomatis (autoboxing).</p>
+<p>Menyisip atau menghapus di tengah membuat elemen di belakangnya <b>bergeser</b>. Akibatnya, menghapus elemen sambil berjalan maju dengan loop indeks bisa melewatkan elemen. Solusinya: jalan mundur dari belakang, atau buat list baru.</p>
+<div class="lbl">PYTHON</div><pre><code>def main():
+    buah = []
+    buah.append(&quot;apel&quot;)
+    buah.append(&quot;jeruk&quot;)
+    buah.insert(1, &quot;mangga&quot;)     # sisip di indeks 1
+    print(buah)                  # [&#x27;apel&#x27;, &#x27;mangga&#x27;, &#x27;jeruk&#x27;]
+
+    buah.pop(0)                  # sisanya bergeser ke kiri
+    print(buah[0] + &quot;, ukuran&quot;, len(buah))
+
+    angka = [i * i for i in range(1, 6)]
+    print(angka)
+
+main()</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>[&#x27;apel&#x27;, &#x27;mangga&#x27;, &#x27;jeruk&#x27;]
+mangga, ukuran 2
+[1, 4, 9, 16, 25]</code></pre>
+<h2>Poin penting</h2><ul><li><code>list.size()</code> di Java, <code>len(lst)</code> di Python.</li><li><code>remove(1)</code> menghapus indeks 1. <code>remove("a")</code> menghapus nilai "a".</li><li><code>contains</code> / <code>in</code> untuk mengecek keberadaan.</li><li>Python: list comprehension <code>[x * 2 for x in a]</code> membuat list baru dengan ringkas.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>List berisi [a, b, c, d]. Setelah <code>remove(1)</code>, isinya menjadi...</summary><p class="ok">Jawaban: [a, c, d]</p><p>Indeks 1 adalah b. Setelah dihapus, c dan d bergeser ke kiri.</p></details><details><summary>Mengapa <code>ArrayList&lt;int&gt;</code> tidak boleh di Java?</summary><p class="ok">Jawaban: Generics hanya menerima tipe objek, jadi pakai Integer</p><p>Tipe primitif bukan objek. Wrapper class Integer membungkusnya.</p></details>
+<a class="cta" href="/#python-4-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/referensi-dua-nama-satu-array">Referensi (dua nama, satu array)</a></p><p>Berikutnya: <a href="/belajar/python/add-sisip-hapus">add, sisip, hapus</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

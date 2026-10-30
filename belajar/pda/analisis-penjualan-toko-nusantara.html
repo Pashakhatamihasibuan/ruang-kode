@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Analisis penjualan Toko Nusantara · Python Analisis Data · Ruang Kode</title>
+<meta name="description" content="Kamu menerima ekspor kasir tiga bulan (CSV berantakan). Bersihkan, analisis, dan sajikan tiga rekomendasi untuk manajer toko dalam notebook yang rapi.">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/pda/analisis-penjualan-toko-nusantara">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Analisis penjualan Toko Nusantara · Python Analisis Data · Ruang Kode"><meta property="og:description" content="Kamu menerima ekspor kasir tiga bulan (CSV berantakan). Bersihkan, analisis, dan sajikan tiga rekomendasi untuk manajer toko dalam notebook yang rapi.">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/pda/analisis-penjualan-toko-nusantara"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Analisis penjualan Toko Nusantara", "description": "Kamu menerima ekspor kasir tiga bulan (CSV berantakan). Bersihkan, analisis, dan sajikan tiga rekomendasi untuk manajer toko dalam notebook yang rapi.", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/pda/analisis-penjualan-toko-nusantara", "learningResourceType": "Proyek akhir", "isPartOf": {"@type": "Course", "name": "Python Analisis Data", "url": "https://ruang-kode-nine.vercel.app/belajar/pda"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Python Analisis Data", "item": "https://ruang-kode-nine.vercel.app/belajar/pda"}, {"@type": "ListItem", "position": 3, "name": "Analisis penjualan Toko Nusantara", "item": "https://ruang-kode-nine.vercel.app/belajar/pda/analisis-penjualan-toko-nusantara"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/pda">Python Analisis Data</a> / Modul 10</nav>
+<div class="eyebrow">Python Analisis Data · Modul 10 · Proyek akhir</div><h1>Analisis penjualan Toko Nusantara</h1><a class="cta" href="/#pda-10-1">Buka versi interaktif</a>
+<p>Kamu menerima ekspor kasir tiga bulan (CSV berantakan). Bersihkan, analisis, dan sajikan tiga rekomendasi untuk manajer toko dalam notebook yang rapi.</p>
+<p><b>Teknologi:</b> Python + pandas + Seaborn</p>
+<h2>Fitur yang dibuat</h2><ul><li>Membaca CSV dengan sep ; dan desimal koma</li><li>Membersihkan teks kota, harga &quot;Rp&quot;, dan tanggal dd/mm/yyyy</li><li>Menangani nilai hilang dan transaksi ganda, dengan catatan keputusan</li><li>Omzet per kota, per produk, per minggu dengan groupby</li><li>Pivot kota x produk</li><li>Deteksi outlier dengan IQR dan penjelasannya</li><li>Tiga grafik yang menjawab tiga pertanyaan bisnis</li><li>Ringkasan eksekutif 5 kalimat</li></ul>
+<h2>Langkah kerja</h2><ol><li>Baca dan inspeksi data.</li><li>Bersihkan dan catat keputusan.</li><li>Eksplorasi dengan groupby, pivot, statistik.</li><li>Buat grafik dan tulis rekomendasi.</li></ol>
+<div class="lbl">analisis.py</div><pre><code>import pandas as pd
+
+df = pd.read_csv(&quot;penjualan_q4.csv&quot;, sep=&quot;;&quot;, decimal=&quot;,&quot;)
+df[&quot;kota&quot;] = df[&quot;kota&quot;].str.strip().str.title().fillna(&quot;Tidak diketahui&quot;)
+df[&quot;harga&quot;] = pd.to_numeric(df[&quot;harga&quot;].str.replace(r&quot;[^0-9]&quot;, &quot;&quot;, regex=True))
+df[&quot;tanggal&quot;] = pd.to_datetime(df[&quot;tanggal&quot;], format=&quot;%d/%m/%Y&quot;)
+df = df.drop_duplicates(subset=&quot;id_trx&quot;)
+df[&quot;omzet&quot;] = df[&quot;harga&quot;] * df[&quot;jumlah&quot;]
+
+mingguan = df.set_index(&quot;tanggal&quot;).resample(&quot;W&quot;)[&quot;omzet&quot;].sum()
+per_kota = df.groupby(&quot;kota&quot;)[&quot;omzet&quot;].sum().sort_values(ascending=False)
+q1, q3 = df[&quot;omzet&quot;].quantile([.25, .75])
+outlier = df[df[&quot;omzet&quot;] &gt; q3 + 1.5 * (q3 - q1)]
+print(per_kota.head(), mingguan.tail(), len(outlier))</code></pre>
+<a class="cta" href="/#pda-10-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pda/pengantar-scikit-learn">Pengantar scikit-learn</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

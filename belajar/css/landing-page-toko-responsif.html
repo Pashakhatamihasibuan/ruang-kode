@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Landing page toko responsif · CSS · Ruang Kode</title>
+<meta name="description" content="Tata ulang halaman produk Toko Nusantara menjadi landing page yang rapi di ponsel dan desktop, dengan tema terang-gelap memakai variabel CSS.">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/css/landing-page-toko-responsif">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Landing page toko responsif · CSS · Ruang Kode"><meta property="og:description" content="Tata ulang halaman produk Toko Nusantara menjadi landing page yang rapi di ponsel dan desktop, dengan tema terang-gelap memakai variabel CSS.">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/css/landing-page-toko-responsif"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Landing page toko responsif", "description": "Tata ulang halaman produk Toko Nusantara menjadi landing page yang rapi di ponsel dan desktop, dengan tema terang-gelap memakai variabel CSS.", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/css/landing-page-toko-responsif", "learningResourceType": "Proyek akhir", "isPartOf": {"@type": "Course", "name": "CSS", "url": "https://ruang-kode-nine.vercel.app/belajar/css"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "CSS", "item": "https://ruang-kode-nine.vercel.app/belajar/css"}, {"@type": "ListItem", "position": 3, "name": "Landing page toko responsif", "item": "https://ruang-kode-nine.vercel.app/belajar/css/landing-page-toko-responsif"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/css">CSS</a> / Modul 9</nav>
+<div class="eyebrow">CSS · Modul 9 · Proyek akhir</div><h1>Landing page toko responsif</h1><a class="cta" href="/#css-9-1">Buka versi interaktif</a>
+<p>Tata ulang halaman produk Toko Nusantara menjadi landing page yang rapi di ponsel dan desktop, dengan tema terang-gelap memakai variabel CSS.</p>
+<p><b>Teknologi:</b> HTML + CSS</p>
+<h2>Fitur yang dibuat</h2><ul><li>Variabel CSS untuk warna, radius, dan jarak di :root</li><li>Tema gelap otomatis lewat prefers-color-scheme</li><li>Header dengan flexbox: logo kiri, menu kanan, pindah baris di ponsel</li><li>Galeri produk dengan grid auto-fill minmax</li><li>Kartu produk dengan penamaan BEM dan efek hover memakai transform</li><li>Tipografi: clamp untuk judul, panjang baris maksimal 65ch</li><li>Fokus keyboard terlihat (:focus-visible)</li><li>Tidak ada scroll horizontal di lebar 360px</li></ul>
+<h2>Langkah kerja</h2><ol><li>Tulis HTML semantik terlebih dahulu.</li><li>Definisikan variabel di :root, lalu versi gelapnya.</li><li>Bangun header (flex) dan galeri (grid).</li><li>Uji di 360px, 768px, dan 1280px.</li></ol>
+<div class="lbl">gaya.css</div><pre><code>:root{--bg:#FAFAF7;--teks:#1C1B19;--redup:#6E6B64;--aksen:#B4532A;--kartu:#fff;--garis:#E7E5DF;--r:14px}
+@media (prefers-color-scheme:dark){:root{--bg:#111110;--teks:#ECEAE4;--redup:#9C988F;--aksen:#E39A73;--kartu:#181816;--garis:#2A2925}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--teks);font:16px/1.6 system-ui,sans-serif}
+.header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;padding:16px max(16px,4vw);border-bottom:1px solid var(--garis)}
+.header__menu{display:flex;gap:16px}
+.header__menu a{color:var(--teks);text-decoration:none}
+.hero{padding:48px max(16px,4vw)}
+.hero__judul{font:400 clamp(2rem,6vw,3.5rem)/1.05 Georgia,serif;max-width:18ch;margin:0}
+.hero__teks{color:var(--redup);max-width:65ch}
+.galeri{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;padding:0 max(16px,4vw) 48px}
+.kartu{background:var(--kartu);border:1px solid var(--garis);border-radius:var(--r);padding:16px;transition:transform .2s,box-shadow .2s}
+.kartu:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgb(0 0 0/.12)}
+.kartu__harga{color:var(--aksen);font-weight:600}
+.kartu--promo{border-color:var(--aksen)}
+a:focus-visible,button:focus-visible{outline:3px solid var(--aksen);outline-offset:2px}</code></pre>
+<div class="lbl">index.html</div><pre><code>&lt;header class=&quot;header&quot;&gt;
+  &lt;strong&gt;Toko Nusantara&lt;/strong&gt;
+  &lt;nav class=&quot;header__menu&quot;&gt;&lt;a href=&quot;#produk&quot;&gt;Produk&lt;/a&gt;&lt;a href=&quot;#kontak&quot;&gt;Kontak&lt;/a&gt;&lt;/nav&gt;
+&lt;/header&gt;
+&lt;main&gt;
+  &lt;section class=&quot;hero&quot;&gt;
+    &lt;h1 class=&quot;hero__judul&quot;&gt;Rasa Nusantara, diantar ke rumahmu&lt;/h1&gt;
+    &lt;p class=&quot;hero__teks&quot;&gt;Kopi, teh, dan camilan dari petani lokal.&lt;/p&gt;
+  &lt;/section&gt;
+  &lt;section class=&quot;galeri&quot; id=&quot;produk&quot;&gt;
+    &lt;article class=&quot;kartu kartu--promo&quot;&gt;&lt;h2&gt;Kopi Gayo&lt;/h2&gt;&lt;p class=&quot;kartu__harga&quot;&gt;Rp85.000&lt;/p&gt;&lt;/article&gt;
+    &lt;article class=&quot;kartu&quot;&gt;&lt;h2&gt;Teh Melati&lt;/h2&gt;&lt;p class=&quot;kartu__harga&quot;&gt;Rp25.000&lt;/p&gt;&lt;/article&gt;
+    &lt;article class=&quot;kartu&quot;&gt;&lt;h2&gt;Madu Hutan&lt;/h2&gt;&lt;p class=&quot;kartu__harga&quot;&gt;Rp120.000&lt;/p&gt;&lt;/article&gt;
+  &lt;/section&gt;
+&lt;/main&gt;</code></pre>
+<a class="cta" href="/#css-9-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/css/bem-sass-css-modules-performa">BEM, Sass, CSS Modules &amp; performa</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

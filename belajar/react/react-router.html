@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>React Router · React · Ruang Kode</title>
+<meta name="description" content="Aplikasi React biasanya satu halaman HTML (SPA). Router memetakan alamat URL ke komponen tanpa memuat ulang halaman, sehingga tombol back browser tetap…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/react/react-router">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="React Router · React · Ruang Kode"><meta property="og:description" content="Aplikasi React biasanya satu halaman HTML (SPA). Router memetakan alamat URL ke komponen tanpa memuat ulang halaman, sehingga tombol back browser tetap…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/react/react-router"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "React Router", "description": "Aplikasi React biasanya satu halaman HTML (SPA). Router memetakan alamat URL ke komponen tanpa memuat ulang halaman, sehingga tombol back browser tetap…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/react/react-router", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "React", "url": "https://ruang-kode-nine.vercel.app/belajar/react"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "React", "item": "https://ruang-kode-nine.vercel.app/belajar/react"}, {"@type": "ListItem", "position": 3, "name": "React Router", "item": "https://ruang-kode-nine.vercel.app/belajar/react/react-router"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/react">React</a> / Modul 5</nav>
+<div class="eyebrow">React · Modul 5 · Konsep &amp; kode</div><h1>React Router</h1><a class="cta" href="/#react-5-1">Buka versi interaktif</a>
+<p>Aplikasi React biasanya satu halaman HTML (SPA). <b>Router</b> memetakan alamat URL ke komponen tanpa memuat ulang halaman, sehingga tombol back browser tetap bekerja.</p>
+<p>Dengan React Router: definisikan rute, pakai <code>&lt;Link&gt;</code> alih-alih <code>&lt;a&gt;</code>, baca parameter dengan <code>useParams</code>, dan pindah halaman lewat kode dengan <code>useNavigate</code>. TanStack Router adalah alternatif dengan dukungan TypeScript yang lebih ketat.</p>
+<div class="lbl">JSX</div><pre><code>import { createBrowserRouter, RouterProvider, Link, useParams, Outlet } from &quot;react-router-dom&quot;;
+
+function Layout() {
+  return (&lt;&gt;&lt;nav&gt;&lt;Link to=&quot;/&quot;&gt;Beranda&lt;/Link&gt; · &lt;Link to=&quot;/produk/1&quot;&gt;Kopi Gayo&lt;/Link&gt;&lt;/nav&gt;&lt;Outlet /&gt;&lt;/&gt;);
+}
+function DetailProduk() {
+  const { id } = useParams();          // &quot;/produk/1&quot; → id = &quot;1&quot;
+  return &lt;h1&gt;Produk #{id}&lt;/h1&gt;;
+}
+
+const router = createBrowserRouter([
+  { path: &quot;/&quot;, element: &lt;Layout /&gt;, children: [
+    { index: true, element: &lt;h1&gt;Beranda&lt;/h1&gt; },
+    { path: &quot;produk/:id&quot;, element: &lt;DetailProduk /&gt; },
+    { path: &quot;*&quot;, element: &lt;h1&gt;Halaman tidak ditemukan&lt;/h1&gt; },
+  ]},
+]);
+
+export default function App() { return &lt;RouterProvider router={router} /&gt;; }</code></pre>
+<h2>Poin penting</h2><ul><li>Router memetakan URL ke komponen.</li><li>Link mencegah muat ulang halaman.</li><li>useParams membaca bagian dinamis URL.</li><li>Rute * untuk halaman 404.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa pakai Link, bukan a?</summary><p class="ok">Jawaban: Agar pindah halaman tanpa memuat ulang</p><p>Link ditangani router di sisi klien.</p></details>
+<a class="cta" href="/#react-5-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/react/react-hook-form-zod">React Hook Form &amp; Zod</a></p><p>Berikutnya: <a href="/belajar/react/zustand-jotai-kawan-kawan">Zustand, Jotai &amp; kawan-kawan</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

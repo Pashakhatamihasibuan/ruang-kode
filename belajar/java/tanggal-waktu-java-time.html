@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tanggal &amp; waktu (java.time) · Java · Ruang Kode</title>
+<meta name="description" content="Paket java.time (Java 8+) menggantikan Date dan Calendar yang membingungkan. Kelas utamanya: LocalDate (tanggal saja), LocalTime (jam saja),…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/java/tanggal-waktu-java-time">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Tanggal &amp; waktu (java.time) · Java · Ruang Kode"><meta property="og:description" content="Paket java.time (Java 8+) menggantikan Date dan Calendar yang membingungkan. Kelas utamanya: LocalDate (tanggal saja), LocalTime (jam saja),…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/java/tanggal-waktu-java-time"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Tanggal & waktu (java.time)", "description": "Paket java.time (Java 8+) menggantikan Date dan Calendar yang membingungkan. Kelas utamanya: LocalDate (tanggal saja), LocalTime (jam saja),…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/java/tanggal-waktu-java-time", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Java", "url": "https://ruang-kode-nine.vercel.app/belajar/java"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Java", "item": "https://ruang-kode-nine.vercel.app/belajar/java"}, {"@type": "ListItem", "position": 3, "name": "Tanggal & waktu (java.time)", "item": "https://ruang-kode-nine.vercel.app/belajar/java/tanggal-waktu-java-time"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/java">Java</a> / Modul 12</nav>
+<div class="eyebrow">Java · Modul 12 · Konsep &amp; kode</div><h1>Tanggal &amp; waktu (java.time)</h1><a class="cta" href="/#java-12-5">Buka versi interaktif</a>
+<p>Paket <code>java.time</code> (Java 8+) menggantikan <code>Date</code> dan <code>Calendar</code> yang membingungkan. Kelas utamanya: <code>LocalDate</code> (tanggal saja), <code>LocalTime</code> (jam saja), <code>LocalDateTime</code> (keduanya), dan <code>ZonedDateTime</code> (dengan zona waktu seperti Asia/Jakarta).</p>
+<p>Semua objek java.time immutable. Method seperti <code>plusDays</code> mengembalikan tanggal baru. Untuk selisih, pakai <code>Period</code> (tahun/bulan/hari) atau <code>ChronoUnit.DAYS.between</code>. Untuk tampilan, pakai <code>DateTimeFormatter</code>.</p>
+<p>Simpan waktu di server dalam UTC atau dengan zona yang jelas, lalu ubah ke zona pengguna saat ditampilkan. Ini menghindari bug saat aplikasi dipakai lintas zona waktu.</p>
+<div class="lbl">JAVA</div><pre><code>import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+
+public class Waktu {
+    public static void main(String[] args) {
+        LocalDate pesan = LocalDate.of(2024, 10, 28);
+        LocalDate tiba = pesan.plusDays(5);
+        System.out.println(tiba);
+        System.out.println(tiba.getDayOfWeek());
+        System.out.println(ChronoUnit.DAYS.between(pesan, tiba));
+
+        DateTimeFormatter f = DateTimeFormatter.ofPattern(&quot;dd/MM/yyyy&quot;);
+        System.out.println(tiba.format(f));
+
+        Period umur = Period.between(LocalDate.of(2005, 8, 17), LocalDate.of(2024, 10, 28));
+        System.out.println(umur.getYears() + &quot; tahun &quot; + umur.getMonths() + &quot; bulan&quot;);
+
+        ZonedDateTime jkt = LocalDateTime.of(2024, 10, 28, 9, 0).atZone(ZoneId.of(&quot;Asia/Jakarta&quot;));
+        System.out.println(jkt.withZoneSameInstant(ZoneId.of(&quot;Asia/Tokyo&quot;)).toLocalTime());
+    }
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>2024-11-02
+SATURDAY
+5
+02/11/2024
+19 tahun 2 bulan
+11:00
+</code></pre>
+<h2>Poin penting</h2><ul><li>LocalDate/LocalTime/LocalDateTime tanpa zona; ZonedDateTime dengan zona.</li><li>Objek java.time immutable: simpan hasil plusX.</li><li>Format dengan <code>DateTimeFormatter.ofPattern</code>.</li><li><code>ChronoUnit.DAYS.between(a, b)</code> untuk selisih hari.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>&lt;code&gt;tanggal.plusDays(3)&lt;/code&gt; mengubah objek &lt;code&gt;tanggal&lt;/code&gt;?</summary><p class="ok">Jawaban: Tidak, menghasilkan objek baru</p><p>Semua kelas java.time immutable.</p></details><details><summary>Kelas untuk tanggal tanpa jam?</summary><p class="ok">Jawaban: LocalDate</p><p>LocalDate hanya menyimpan tahun, bulan, hari.</p></details>
+<a class="cta" href="/#java-12-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/file-modern-dengan-java-nio">File modern dengan java.nio</a></p><p>Berikutnya: <a href="/belajar/java/regular-expression">Regular expression</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

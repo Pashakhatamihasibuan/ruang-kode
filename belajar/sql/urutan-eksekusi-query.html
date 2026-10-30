@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Urutan eksekusi query · SQL · Ruang Kode</title>
+<meta name="description" content="Query ditulis dimulai dari SELECT, tetapi database tidak menjalankannya dari SELECT. Urutan logisnya: FROM (ambil tabel dan gabungan), WHERE (saring…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/sql/urutan-eksekusi-query">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Urutan eksekusi query · SQL · Ruang Kode"><meta property="og:description" content="Query ditulis dimulai dari SELECT, tetapi database tidak menjalankannya dari SELECT. Urutan logisnya: FROM (ambil tabel dan gabungan), WHERE (saring…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/sql/urutan-eksekusi-query"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Urutan eksekusi query", "description": "Query ditulis dimulai dari SELECT, tetapi database tidak menjalankannya dari SELECT. Urutan logisnya: FROM (ambil tabel dan gabungan), WHERE (saring…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/sql/urutan-eksekusi-query", "learningResourceType": "Praktik SQL", "isPartOf": {"@type": "Course", "name": "SQL", "url": "https://ruang-kode-nine.vercel.app/belajar/sql"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "SQL", "item": "https://ruang-kode-nine.vercel.app/belajar/sql"}, {"@type": "ListItem", "position": 3, "name": "Urutan eksekusi query", "item": "https://ruang-kode-nine.vercel.app/belajar/sql/urutan-eksekusi-query"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/sql">SQL</a> / Modul 3</nav>
+<div class="eyebrow">SQL · Modul 3 · Praktik SQL</div><h1>Urutan eksekusi query</h1><a class="cta" href="/#sql-3-4">Buka versi interaktif</a>
+<p>Query ditulis dimulai dari SELECT, tetapi database tidak menjalankannya dari SELECT. Urutan logisnya: <b>FROM</b> (ambil tabel dan gabungan), <b>WHERE</b> (saring baris), <b>GROUP BY</b> (kelompokkan), <b>HAVING</b> (saring kelompok), <b>SELECT</b> (hitung kolom hasil), <b>DISTINCT</b>, <b>ORDER BY</b> (urutkan), lalu <b>LIMIT</b>.</p>
+<p>Urutan ini menjelaskan banyak "keanehan". Alias yang dibuat di SELECT tidak bisa dipakai di WHERE, karena WHERE berjalan lebih dulu. Sebaliknya, ORDER BY boleh memakai alias karena berjalan setelah SELECT.</p>
+<p>Putar visualisasi di bawah langkah demi langkah. Di setiap pelajaran SQL berikutnya, tombol <b>Jelaskan langkah</b> di editor juga bisa memvisualisasikan query buatanmu sendiri.</p>
+<div class="lbl">Query lengkap dengan semua klausa</div><pre><code>SELECT kategori, COUNT(*) AS jumlah, AVG(harga) AS rata
+FROM produk
+WHERE stok &gt; 0
+GROUP BY kategori
+HAVING COUNT(*) &gt;= 2
+ORDER BY rata DESC
+LIMIT 2;</code></pre>
+<div class="lbl">Alias di ORDER BY boleh</div><pre><code>SELECT nama, harga * stok AS nilai FROM produk ORDER BY nilai DESC;</code></pre>
+<h2>Tantangan</h2><ol><li>Tampilkan nama dan nilai stok (harga * stok, alias nilai) untuk produk yang stoknya lebih dari 0, urut dari nilai terbesar.</li></ol>
+<h2>Poin penting</h2><ul><li>Urutan: FROM → WHERE → GROUP BY → HAVING → SELECT → DISTINCT → ORDER BY → LIMIT.</li><li>Alias SELECT tidak bisa dipakai di WHERE (di kebanyakan database).</li><li>ORDER BY bisa memakai alias.</li><li>Pahami urutan ini untuk membaca query rumit.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Klausa yang dijalankan paling awal?</summary><p class="ok">Jawaban: FROM</p><p>Database harus tahu dulu tabel sumbernya.</p></details><details><summary>Kenapa &lt;code&gt;WHERE nilai &amp;gt; 100&lt;/code&gt; gagal jika nilai adalah alias di SELECT?</summary><p class="ok">Jawaban: WHERE berjalan sebelum SELECT membuat alias</p><p>Pada tahap WHERE, alias belum ada.</p></details>
+<a class="cta" href="/#sql-3-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/order-by-limit-distinct">ORDER BY, LIMIT &amp; DISTINCT</a></p><p>Berikutnya: <a href="/belajar/sql/proyek-mini-katalog-toko-nusantara">Proyek mini: Katalog Toko Nusantara</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

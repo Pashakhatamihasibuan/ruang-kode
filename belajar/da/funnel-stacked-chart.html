@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Funnel &amp; stacked chart · Data Analyst · Ruang Kode</title>
+<meta name="description" content="Funnel menunjukkan berapa yang tersisa di setiap tahap proses: kunjungan → lihat produk → keranjang → bayar. Hitung tingkat konversi antar tahap untuk…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/da/funnel-stacked-chart">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Funnel &amp; stacked chart · Data Analyst · Ruang Kode"><meta property="og:description" content="Funnel menunjukkan berapa yang tersisa di setiap tahap proses: kunjungan → lihat produk → keranjang → bayar. Hitung tingkat konversi antar tahap untuk…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/da/funnel-stacked-chart"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Funnel & stacked chart", "description": "Funnel menunjukkan berapa yang tersisa di setiap tahap proses: kunjungan → lihat produk → keranjang → bayar. Hitung tingkat konversi antar tahap untuk…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/da/funnel-stacked-chart", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Analyst", "url": "https://ruang-kode-nine.vercel.app/belajar/da"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Analyst", "item": "https://ruang-kode-nine.vercel.app/belajar/da"}, {"@type": "ListItem", "position": 3, "name": "Funnel & stacked chart", "item": "https://ruang-kode-nine.vercel.app/belajar/da/funnel-stacked-chart"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/da">Data Analyst</a> / Modul 6</nav>
+<div class="eyebrow">Data Analyst · Modul 6 · Konsep &amp; kode</div><h1>Funnel &amp; stacked chart</h1><a class="cta" href="/#da-6-6">Buka versi interaktif</a>
+<p><b>Funnel</b> menunjukkan berapa yang tersisa di setiap tahap proses: kunjungan → lihat produk → keranjang → bayar. Hitung tingkat konversi antar tahap untuk menemukan kebocoran terbesar.</p>
+<p><b>Stacked bar</b> menunjukkan komposisi dan total sekaligus. Versi 100% menonjolkan proporsi. Pie hanya layak untuk 2-3 bagian; mata manusia buruk membandingkan sudut.</p>
+<p>Contoh di bawah menghitung konversi tiap tahap funnel; tahap dengan konversi terendah adalah prioritas perbaikan.</p>
+<div class="lbl">PYTHON</div><pre><code>import pandas as pd
+
+funnel = pd.DataFrame({
+    &quot;tahap&quot;: [&quot;Kunjungan&quot;, &quot;Lihat produk&quot;, &quot;Keranjang&quot;, &quot;Checkout&quot;, &quot;Bayar&quot;],
+    &quot;pengguna&quot;: [10000, 6200, 1900, 1100, 820],
+})
+funnel[&quot;dari_awal_%&quot;] = (funnel[&quot;pengguna&quot;] / funnel[&quot;pengguna&quot;].iloc[0] * 100).round(1)
+funnel[&quot;dari_sebelumnya_%&quot;] = (funnel[&quot;pengguna&quot;] / funnel[&quot;pengguna&quot;].shift() * 100).round(1)
+print(funnel.to_string(index=False))
+bocor = funnel.loc[funnel[&quot;dari_sebelumnya_%&quot;].idxmin(), &quot;tahap&quot;]
+print(&quot;kebocoran terbesar sebelum:&quot;, bocor)</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>       tahap  pengguna  dari_awal_%  dari_sebelumnya_%
+   Kunjungan     10000        100.0                NaN
+Lihat produk      6200         62.0               62.0
+   Keranjang      1900         19.0               30.6
+    Checkout      1100         11.0               57.9
+       Bayar       820          8.2               74.5
+kebocoran terbesar sebelum: Keranjang</code></pre>
+<h2>Poin penting</h2><ul><li>Funnel: konversi antar tahap.</li><li>Stacked: komposisi + total.</li><li>Pie hanya untuk 2-3 bagian.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Dari funnel di atas, tahap mana yang paling perlu diperbaiki?</summary><p class="ok">Jawaban: Lihat produk → Keranjang</p><p>Hanya 30,6% yang lanjut ke keranjang.</p></details>
+<a class="cta" href="/#da-6-6">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/da/regresi-linear-sederhana">Regresi linear sederhana</a></p><p>Berikutnya: <a href="/belajar/da/big-data-mapreduce-spark">Big data, MapReduce &amp; Spark</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

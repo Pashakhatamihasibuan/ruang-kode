@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Decorator · Python · Ruang Kode</title>
+<meta name="description" content="Decorator adalah fungsi yang menerima fungsi lain lalu mengembalikan versi yang &quot;dibungkus&quot; dengan perilaku tambahan, tanpa mengubah kode aslinya. Contoh…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/python/decorator">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Decorator · Python · Ruang Kode"><meta property="og:description" content="Decorator adalah fungsi yang menerima fungsi lain lalu mengembalikan versi yang &quot;dibungkus&quot; dengan perilaku tambahan, tanpa mengubah kode aslinya. Contoh…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/python/decorator"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Decorator", "description": "Decorator adalah fungsi yang menerima fungsi lain lalu mengembalikan versi yang \"dibungkus\" dengan perilaku tambahan, tanpa mengubah kode aslinya. Contoh…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/python/decorator", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Python", "url": "https://ruang-kode-nine.vercel.app/belajar/python"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Python", "item": "https://ruang-kode-nine.vercel.app/belajar/python"}, {"@type": "ListItem", "position": 3, "name": "Decorator", "item": "https://ruang-kode-nine.vercel.app/belajar/python/decorator"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/python">Python</a> / Modul 8</nav>
+<div class="eyebrow">Python · Modul 8 · Konsep &amp; kode</div><h1>Decorator</h1><a class="cta" href="/#python-8-6">Buka versi interaktif</a>
+<p><b>Decorator</b> adalah fungsi yang menerima fungsi lain lalu mengembalikan versi yang "dibungkus" dengan perilaku tambahan, tanpa mengubah kode aslinya. Contoh kegunaannya: mencatat log, mengukur waktu, memeriksa login, atau menyimpan hasil (cache).</p>
+<p>Menulis <code>@catat</code> di atas <code>def bayar</code> sama artinya dengan <code>bayar = catat(bayar)</code>. Decorator bekerja berkat dua sifat Python: fungsi adalah objek yang bisa dioper, dan closure yang mengingat fungsi asli.</p>
+<p>Gunakan <code>functools.wraps</code> di dalam decorator agar nama dan dokumentasi fungsi asli tetap terjaga. Pustaka standar juga punya decorator siap pakai seperti <code>@functools.lru_cache</code> untuk menyimpan hasil pemanggilan.</p>
+<div class="lbl">PYTHON</div><pre><code>import functools, time
+
+def catat(fungsi):
+    @functools.wraps(fungsi)
+    def pembungkus(*args, **kwargs):
+        print(f&quot;-&gt; {fungsi.__name__}{args}&quot;)
+        hasil = fungsi(*args, **kwargs)
+        print(f&quot;&lt;- {hasil}&quot;)
+        return hasil
+    return pembungkus
+
+def ulangi(n):                      # decorator dengan parameter
+    def dekor(fungsi):
+        @functools.wraps(fungsi)
+        def pembungkus(*args):
+            return [fungsi(*args) for _ in range(n)]
+        return pembungkus
+    return dekor
+
+@catat
+def bayar(harga, diskon=0):
+    return harga - diskon
+
+bayar(85000, 5000)
+print(bayar.__name__)
+
+@ulangi(3)
+def sapa(nama):
+    return f&quot;hai {nama}&quot;
+print(sapa(&quot;Rina&quot;))
+
+@functools.lru_cache
+def fib(n):
+    return n if n &lt; 2 else fib(n - 1) + fib(n - 2)
+print(fib(80))</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>-&gt; bayar(85000, 5000)
+&lt;- 80000
+bayar
+[&#x27;hai Rina&#x27;, &#x27;hai Rina&#x27;, &#x27;hai Rina&#x27;]
+23416728348467685
+</code></pre>
+<h2>Poin penting</h2><ul><li><code>@d</code> di atas fungsi = <code>f = d(f)</code>.</li><li>Decorator mengembalikan fungsi pembungkus.</li><li><code>functools.wraps</code> menjaga nama fungsi asli.</li><li><code>lru_cache</code> mempercepat fungsi rekursif yang berulang.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>&lt;code&gt;@catat&lt;/code&gt; di atas &lt;code&gt;def f&lt;/code&gt; setara dengan?</summary><p class="ok">Jawaban: f = catat(f)</p><p>Decorator hanyalah gula sintaks.</p></details><details><summary>Decorator bawaan untuk menyimpan hasil pemanggilan fungsi?</summary><p class="ok">Jawaban: @lru_cache</p><p>lru_cache adalah memoization siap pakai.</p></details>
+<a class="cta" href="/#python-8-6">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/filter-map-reduce">filter, map, reduce</a></p><p>Berikutnya: <a href="/belajar/python/regular-expression-modul-re">Regular expression (modul re)</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

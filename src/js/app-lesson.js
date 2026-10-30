@@ -87,9 +87,12 @@ function loadPy(){
 async function runPy(code,onOut){
   const py=await loadPy();let out='';const push=s=>{out+=s+'\n';onOut(out)};
   py.setStdout({batched:push});py.setStderr({batched:push});
-  await py.loadPackagesFromImports(code);
+  const bad=[];await py.loadPackagesFromImports(code,{messageCallback:m=>{if(/^Loading /.test(m)&&!out)onOut('Memuat paket '+m.slice(8)+'…')},errorCallback:m=>bad.push(m)});
+  if(bad.length){const n=[...new Set(bad.join(' ').match(/[a-z_]+(?=-\d)/g)||[])].join(', ');push(`Paket ${n||"yang dibutuhkan kode ini"} gagal diunduh. Periksa koneksi internet lalu jalankan lagi.`);return out}
+  out='';onOut('');
   const g=py.globals.get('dict')();
-  try{await py.runPythonAsync(code,{globals:g})}catch(e){const m=String(e.message||e).trim().split('\n');push(m.slice(m.findIndex(s=>/^\s*File "<exec>"/.test(s))>=0?-4:-2).join('\n'))}
+  try{await py.runPythonAsync(code,{globals:g})}catch(e){const m=String(e.message||e).trim().split('\n'),i=m.findIndex(s=>/^\s*File "<exec>"/.test(s));
+    push(i>=0?['Traceback (most recent call last):',...m.slice(i)].join('\n'):m.slice(-2).join('\n'))}
   finally{g.destroy&&g.destroy()}
   return out;
 }

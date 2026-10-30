@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lingkungan: pip, conda, uv &amp; venv · Python Analisis Data · Ruang Kode</title>
+<meta name="description" content="Setiap proyek analisis sebaiknya punya lingkungan virtual sendiri agar versi pandas proyek A tidak bertabrakan dengan proyek B.">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/pda/lingkungan-pip-conda-uv-venv">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Lingkungan: pip, conda, uv &amp; venv · Python Analisis Data · Ruang Kode"><meta property="og:description" content="Setiap proyek analisis sebaiknya punya lingkungan virtual sendiri agar versi pandas proyek A tidak bertabrakan dengan proyek B.">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/pda/lingkungan-pip-conda-uv-venv"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Lingkungan: pip, conda, uv & venv", "description": "Setiap proyek analisis sebaiknya punya lingkungan virtual sendiri agar versi pandas proyek A tidak bertabrakan dengan proyek B.", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/pda/lingkungan-pip-conda-uv-venv", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Python Analisis Data", "url": "https://ruang-kode-nine.vercel.app/belajar/pda"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Python Analisis Data", "item": "https://ruang-kode-nine.vercel.app/belajar/pda"}, {"@type": "ListItem", "position": 3, "name": "Lingkungan: pip, conda, uv & venv", "item": "https://ruang-kode-nine.vercel.app/belajar/pda/lingkungan-pip-conda-uv-venv"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/pda">Python Analisis Data</a> / Modul 1</nav>
+<div class="eyebrow">Python Analisis Data · Modul 1 · Konsep &amp; kode</div><h1>Lingkungan: pip, conda, uv &amp; venv</h1><a class="cta" href="/#pda-1-2">Buka versi interaktif</a>
+<p>Setiap proyek analisis sebaiknya punya <b>lingkungan virtual</b> sendiri agar versi pandas proyek A tidak bertabrakan dengan proyek B.</p>
+<p><b>venv + pip</b> adalah bawaan Python. <b>conda</b> populer di dunia data karena juga mengelola pustaka non-Python. <b>uv</b> adalah pengelola paket baru yang sangat cepat dan kini banyak dipakai.</p>
+<p>Catat dependensi di <code>requirements.txt</code> atau <code>pyproject.toml</code> agar rekan bisa mengulang analisismu persis.</p>
+<div class="lbl">TERMINAL</div><pre><code>python -m venv .venv
+source .venv/bin/activate      # Windows: .venv\Scripts\activate
+pip install pandas matplotlib seaborn jupyterlab
+pip freeze &gt; requirements.txt
+
+# alternatif cepat dengan uv
+uv venv &amp;&amp; uv pip install pandas seaborn
+
+jupyter lab</code></pre>
+<h2>Poin penting</h2><ul><li>Satu proyek, satu lingkungan.</li><li>venv+pip bawaan; conda; uv cepat.</li><li>Simpan daftar dependensi.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa memakai lingkungan virtual?</summary><p class="ok">Jawaban: Versi pustaka antarproyek tidak bertabrakan</p><p>Setiap proyek mengunci versinya sendiri.</p></details>
+<a class="cta" href="/#pda-1-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pda/alur-analisis-data-dengan-python">Alur analisis data dengan Python</a></p><p>Berikutnya: <a href="/belajar/pda/array-numpy-operasi-vektor">Array NumPy &amp; operasi vektor</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

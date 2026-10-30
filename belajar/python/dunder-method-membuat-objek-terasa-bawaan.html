@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dunder method: membuat objek terasa bawaan · Python · Ruang Kode</title>
+<meta name="description" content="Dunder method (double underscore) adalah method khusus dengan nama diapit dua garis bawah, seperti __init__. Python memanggilnya secara otomatis untuk…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/python/dunder-method-membuat-objek-terasa-bawaan">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Dunder method: membuat objek terasa bawaan · Python · Ruang Kode"><meta property="og:description" content="Dunder method (double underscore) adalah method khusus dengan nama diapit dua garis bawah, seperti __init__. Python memanggilnya secara otomatis untuk…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/python/dunder-method-membuat-objek-terasa-bawaan"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Dunder method: membuat objek terasa bawaan", "description": "Dunder method (double underscore) adalah method khusus dengan nama diapit dua garis bawah, seperti __init__. Python memanggilnya secara otomatis untuk…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/python/dunder-method-membuat-objek-terasa-bawaan", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Python", "url": "https://ruang-kode-nine.vercel.app/belajar/python"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Python", "item": "https://ruang-kode-nine.vercel.app/belajar/python"}, {"@type": "ListItem", "position": 3, "name": "Dunder method: membuat objek terasa bawaan", "item": "https://ruang-kode-nine.vercel.app/belajar/python/dunder-method-membuat-objek-terasa-bawaan"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/python">Python</a> / Modul 7</nav>
+<div class="eyebrow">Python · Modul 7 · Konsep &amp; kode</div><h1>Dunder method: membuat objek terasa bawaan</h1><a class="cta" href="/#python-7-5">Buka versi interaktif</a>
+<p><b>Dunder method</b> (double underscore) adalah method khusus dengan nama diapit dua garis bawah, seperti <code>__init__</code>. Python memanggilnya secara otomatis untuk operasi tertentu. Dengan mengisinya, objek buatanmu bisa dipakai seperti tipe bawaan.</p>
+<p><code>__str__</code> menentukan tampilan untuk <code>print</code>, <code>__repr__</code> untuk tampilan debug. <code>__len__</code> membuat <code>len(obj)</code> bekerja, <code>__getitem__</code> membuat <code>obj[i]</code> bekerja, dan <code>__iter__</code> membuat objek bisa dipakai di for.</p>
+<p>Operator juga punya dunder: <code>__add__</code> untuk +, <code>__eq__</code> untuk ==, <code>__lt__</code> untuk &lt; (yang juga membuat <code>sorted</code> bekerja). Teknik ini disebut <i>operator overloading</i>.</p>
+<div class="lbl">PYTHON</div><pre><code>class Uang:
+    def __init__(self, rupiah):
+        self.rupiah = rupiah
+    def __str__(self):
+        return f&quot;Rp{self.rupiah:,}&quot;.replace(&quot;,&quot;, &quot;.&quot;)
+    def __repr__(self):
+        return f&quot;Uang({self.rupiah})&quot;
+    def __add__(self, lain):
+        return Uang(self.rupiah + lain.rupiah)
+    def __eq__(self, lain):
+        return self.rupiah == lain.rupiah
+    def __lt__(self, lain):
+        return self.rupiah &lt; lain.rupiah
+
+class Keranjang:
+    def __init__(self):
+        self.isi = []
+    def tambah(self, nama, harga):
+        self.isi.append((nama, Uang(harga)))
+    def __len__(self):
+        return len(self.isi)
+    def __getitem__(self, i):
+        return self.isi[i]
+    def __iter__(self):
+        return iter(self.isi)
+
+k = Keranjang()
+k.tambah(&quot;kopi&quot;, 85000)
+k.tambah(&quot;teh&quot;, 25000)
+print(len(k), k[1][0])
+total = Uang(0)
+for nama, harga in k:
+    total = total + harga
+print(total)
+print(sorted([Uang(5), Uang(2), Uang(9)]))
+print(Uang(100) == Uang(100))</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>2 teh
+Rp110.000
+[Uang(2), Uang(5), Uang(9)]
+True
+</code></pre>
+<h2>Poin penting</h2><ul><li><code>__str__</code> untuk pengguna, <code>__repr__</code> untuk programmer.</li><li><code>__len__</code>, <code>__getitem__</code>, <code>__iter__</code> membuat objek mirip koleksi.</li><li><code>__add__</code>, <code>__eq__</code>, <code>__lt__</code> untuk operator.</li><li>Jangan memanggil dunder langsung; biarkan Python yang memanggil.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Dunder yang dipanggil oleh &lt;code&gt;len(obj)&lt;/code&gt;?</summary><p class="ok">Jawaban: __len__</p><p>len() memanggil obj.__len__().</p></details><details><summary>Supaya &lt;code&gt;sorted&lt;/code&gt; bisa mengurutkan objekmu, minimal isi?</summary><p class="ok">Jawaban: __lt__</p><p>sorted membandingkan dengan operator &lt;.</p></details>
+<a class="cta" href="/#python-7-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/enkapsulasi-property-dataclass">Enkapsulasi: property &amp; dataclass</a></p><p>Berikutnya: <a href="/belajar/python/pewarisan-interface">Pewarisan &amp; Interface</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

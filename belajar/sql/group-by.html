@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GROUP BY · SQL · Ruang Kode</title>
+<meta name="description" content="GROUP BY membagi baris menjadi kelompok berdasarkan nilai kolom tertentu, lalu fungsi agregat dihitung per kelompok. Misalnya jumlah produk per kategori,…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/sql/group-by">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="GROUP BY · SQL · Ruang Kode"><meta property="og:description" content="GROUP BY membagi baris menjadi kelompok berdasarkan nilai kolom tertentu, lalu fungsi agregat dihitung per kelompok. Misalnya jumlah produk per kategori,…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/sql/group-by"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "GROUP BY", "description": "GROUP BY membagi baris menjadi kelompok berdasarkan nilai kolom tertentu, lalu fungsi agregat dihitung per kelompok. Misalnya jumlah produk per kategori,…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/sql/group-by", "learningResourceType": "Praktik SQL", "isPartOf": {"@type": "Course", "name": "SQL", "url": "https://ruang-kode-nine.vercel.app/belajar/sql"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "SQL", "item": "https://ruang-kode-nine.vercel.app/belajar/sql"}, {"@type": "ListItem", "position": 3, "name": "GROUP BY", "item": "https://ruang-kode-nine.vercel.app/belajar/sql/group-by"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/sql">SQL</a> / Modul 5</nav>
+<div class="eyebrow">SQL · Modul 5 · Praktik SQL</div><h1>GROUP BY</h1><a class="cta" href="/#sql-5-2">Buka versi interaktif</a>
+<p><code>GROUP BY</code> membagi baris menjadi kelompok berdasarkan nilai kolom tertentu, lalu fungsi agregat dihitung <i>per kelompok</i>. Misalnya jumlah produk per kategori, atau total belanja per pelanggan.</p>
+<p>Aturan emas: setiap kolom di SELECT harus berupa kolom yang ada di GROUP BY, atau dibungkus fungsi agregat. PostgreSQL menolak query yang melanggar aturan ini, sedangkan SQLite dan MySQL lama diam-diam mengambil nilai dari baris sembarang. Jangan bergantung pada perilaku itu.</p>
+<p>Kamu bisa mengelompokkan berdasarkan beberapa kolom, atau berdasarkan ekspresi seperti bulan dari tanggal.</p>
+<div class="lbl">Jumlah produk per kategori</div><pre><code>SELECT kategori, COUNT(*) AS jumlah, SUM(stok) AS total_stok
+FROM produk GROUP BY kategori;</code></pre>
+<div class="lbl">Pesanan per pelanggan</div><pre><code>SELECT pelanggan_id, COUNT(*) AS banyak_pesanan
+FROM pesanan GROUP BY pelanggan_id ORDER BY banyak_pesanan DESC;</code></pre>
+<div class="lbl">Per bulan</div><pre><code>SELECT strftime(&#x27;%Y-%m&#x27;, tanggal) AS bulan, COUNT(*) AS pesanan
+FROM pesanan GROUP BY bulan ORDER BY bulan;</code></pre>
+<div class="lbl">Dua kolom</div><pre><code>SELECT pelanggan_id, status, COUNT(*) AS n FROM pesanan
+GROUP BY pelanggan_id, status ORDER BY pelanggan_id;</code></pre>
+<h2>Tantangan</h2><ol><li>Tampilkan setiap status pesanan beserta banyaknya pesanan (kolom status dan jumlah).</li></ol>
+<h2>Poin penting</h2><ul><li>GROUP BY = satu baris hasil per kelompok.</li><li>Kolom SELECT: ada di GROUP BY atau di dalam agregat.</li><li>Boleh mengelompokkan dengan ekspresi.</li><li>ORDER BY tetap diperlukan untuk urutan.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>&lt;code&gt;SELECT kategori, nama, COUNT(*) FROM produk GROUP BY kategori&lt;/code&gt; bermasalah karena?</summary><p class="ok">Jawaban: nama tidak di GROUP BY dan tidak diagregasi</p><p>Satu kategori punya banyak nama.</p></details><details><summary>Jumlah baris hasil GROUP BY kategori jika ada 4 kategori?</summary><p class="ok">Jawaban: 4</p><p>Satu baris per kelompok.</p></details>
+<a class="cta" href="/#sql-5-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/fungsi-agregat">Fungsi agregat</a></p><p>Berikutnya: <a href="/belajar/sql/having">HAVING</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

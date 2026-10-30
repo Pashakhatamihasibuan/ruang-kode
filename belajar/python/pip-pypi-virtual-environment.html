@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>pip, PyPI &amp; virtual environment · Python · Ruang Kode</title>
+<meta name="description" content="PyPI (Python Package Index) adalah gudang ratusan ribu paket Python. pip adalah alat bawaan untuk memasangnya: pip install requests. Daftar dependensi…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/python/pip-pypi-virtual-environment">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="pip, PyPI &amp; virtual environment · Python · Ruang Kode"><meta property="og:description" content="PyPI (Python Package Index) adalah gudang ratusan ribu paket Python. pip adalah alat bawaan untuk memasangnya: pip install requests. Daftar dependensi…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/python/pip-pypi-virtual-environment"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "pip, PyPI & virtual environment", "description": "PyPI (Python Package Index) adalah gudang ratusan ribu paket Python. pip adalah alat bawaan untuk memasangnya: pip install requests. Daftar dependensi…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/python/pip-pypi-virtual-environment", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Python", "url": "https://ruang-kode-nine.vercel.app/belajar/python"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Python", "item": "https://ruang-kode-nine.vercel.app/belajar/python"}, {"@type": "ListItem", "position": 3, "name": "pip, PyPI & virtual environment", "item": "https://ruang-kode-nine.vercel.app/belajar/python/pip-pypi-virtual-environment"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/python">Python</a> / Modul 6</nav>
+<div class="eyebrow">Python · Modul 6 · Konsep &amp; kode</div><h1>pip, PyPI &amp; virtual environment</h1><a class="cta" href="/#python-6-3">Buka versi interaktif</a>
+<p><b>PyPI</b> (Python Package Index) adalah gudang ratusan ribu paket Python. <b>pip</b> adalah alat bawaan untuk memasangnya: <code>pip install requests</code>. Daftar dependensi proyek biasanya dicatat di <code>requirements.txt</code>.</p>
+<p>Masalahnya, jika semua proyek memasang paket ke tempat yang sama, versi bisa bentrok: proyek A butuh Django 4, proyek B butuh Django 5. <b>Virtual environment</b> (venv) memberi setiap proyek folder paketnya sendiri yang terisolasi. Aktifkan sebelum memasang paket.</p>
+<p><b>uv</b> adalah pengelola paket modern yang ditulis dengan Rust dan jauh lebih cepat dari pip. Ia bisa membuat venv, memasang paket, bahkan memasang versi Python sendiri. <b>virtualenv</b> adalah pendahulu venv yang masih banyak dipakai.</p>
+<div class="lbl">CONTOH</div><pre><code># 1. Buat dan aktifkan virtual environment
+python -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
+
+# 2. Pasang paket dari PyPI
+pip install requests==2.32.3
+pip list
+pip freeze &gt; requirements.txt      # catat versi persis
+
+# 3. Di komputer lain / server
+pip install -r requirements.txt
+
+# Cara modern dengan uv (jauh lebih cepat)
+uv venv
+uv pip install requests
+uv add pandas                      # tambah ke pyproject.toml
+uv run main.py
+
+deactivate                         # keluar dari venv</code></pre>
+<h2>Poin penting</h2><ul><li>Satu proyek = satu virtual environment.</li><li><code>requirements.txt</code> mencatat dependensi.</li><li>Jangan commit folder <code>.venv</code> ke Git.</li><li>uv: alternatif pip yang sangat cepat.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa memakai virtual environment?</summary><p class="ok">Jawaban: Agar paket tiap proyek tidak bentrok</p><p>Setiap proyek punya versi paketnya sendiri.</p></details><details><summary>Perintah memasang semua paket dari requirements.txt?</summary><p class="ok">Jawaban: pip install -r requirements.txt</p><p>-r membaca daftar dari file.</p></details>
+<a class="cta" href="/#python-6-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/modul-bawaan-yang-sering-dipakai">Modul bawaan yang sering dipakai</a></p><p>Berikutnya: <a href="/belajar/python/pyproject-toml-poetry-pipenv-pdm-conda-pyenv">pyproject.toml, Poetry, pipenv, PDM, Conda, pyenv</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

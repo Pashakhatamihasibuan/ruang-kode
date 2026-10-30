@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CLV &amp; analisis kohort · BI Analyst · Ruang Kode</title>
+<meta name="description" content="Customer Lifetime Value (CLV) memperkirakan total keuntungan dari satu pelanggan selama hubungannya: rata-rata nilai pesanan × frekuensi per tahun × lama…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/bi/clv-analisis-kohort">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="CLV &amp; analisis kohort · BI Analyst · Ruang Kode"><meta property="og:description" content="Customer Lifetime Value (CLV) memperkirakan total keuntungan dari satu pelanggan selama hubungannya: rata-rata nilai pesanan × frekuensi per tahun × lama…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/bi/clv-analisis-kohort"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "CLV & analisis kohort", "description": "Customer Lifetime Value (CLV) memperkirakan total keuntungan dari satu pelanggan selama hubungannya: rata-rata nilai pesanan × frekuensi per tahun × lama…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/bi/clv-analisis-kohort", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "BI Analyst", "url": "https://ruang-kode-nine.vercel.app/belajar/bi"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "BI Analyst", "item": "https://ruang-kode-nine.vercel.app/belajar/bi"}, {"@type": "ListItem", "position": 3, "name": "CLV & analisis kohort", "item": "https://ruang-kode-nine.vercel.app/belajar/bi/clv-analisis-kohort"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/bi">BI Analyst</a> / Modul 2</nav>
+<div class="eyebrow">BI Analyst · Modul 2 · Konsep &amp; kode</div><h1>CLV &amp; analisis kohort</h1><a class="cta" href="/#bi-2-3">Buka versi interaktif</a>
+<p><b>Customer Lifetime Value</b> (CLV) memperkirakan total keuntungan dari satu pelanggan selama hubungannya: rata-rata nilai pesanan × frekuensi per tahun × lama bertahan × margin. CLV menentukan berapa biaya akuisisi (CAC) yang masih masuk akal.</p>
+<p><b>Analisis kohort</b> mengelompokkan pelanggan menurut bulan pertama mereka membeli, lalu melacak berapa persen yang kembali di bulan ke-1, ke-2, dan seterusnya. Hasilnya tabel segitiga yang memperlihatkan apakah retensi membaik.</p>
+<p>Kohort lebih jujur daripada angka total: pertumbuhan pengguna baru bisa menyembunyikan retensi yang memburuk.</p>
+<div class="lbl">SQL</div><pre><code>-- kohort berdasarkan bulan pembelian pertama (PostgreSQL)
+WITH pertama AS (
+  SELECT pelanggan_id, DATE_TRUNC(&#x27;month&#x27;, MIN(tanggal)) AS kohort
+  FROM pesanan GROUP BY pelanggan_id
+)
+SELECT p.kohort,
+       DATE_PART(&#x27;month&#x27;, AGE(DATE_TRUNC(&#x27;month&#x27;, o.tanggal), p.kohort)) AS bulan_ke,
+       COUNT(DISTINCT o.pelanggan_id) AS pelanggan
+FROM pesanan o JOIN pertama p USING (pelanggan_id)
+GROUP BY 1, 2 ORDER BY 1, 2;
+
+kohort   bulan_ke 0  1    2    3
+Jan      100%       38%  29%  25%
+Feb      100%       41%  33%
+Mar      100%       45%</code></pre>
+<h2>Poin penting</h2><ul><li>CLV ≈ nilai pesanan × frekuensi × lama × margin.</li><li>CLV dibanding CAC menentukan anggaran akuisisi.</li><li>Kohort: retensi per bulan bergabung.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Dari tabel kohort, apa kesimpulannya?</summary><p class="ok">Jawaban: Retensi bulan ke-1 membaik dari Jan ke Mar</p><p>38% → 41% → 45%.</p></details>
+<a class="cta" href="/#bi-2-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/bi/pertumbuhan-margin-kontribusi">Pertumbuhan, margin &amp; kontribusi</a></p><p>Berikutnya: <a href="/belajar/bi/sampel-p-value-selang-kepercayaan">Sampel, p-value &amp; selang kepercayaan</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

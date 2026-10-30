@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Partial, Pick, Omit, Readonly &amp; Record · TypeScript · Ruang Kode</title>
+<meta name="description" content="Utility types membuat tipe baru dari tipe lama. Partial&lt;T&gt; membuat semua properti opsional (cocok untuk data update), Pick&lt;T, K&gt; mengambil sebagian…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/ts/partial-pick-omit-readonly-record">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Partial, Pick, Omit, Readonly &amp; Record · TypeScript · Ruang Kode"><meta property="og:description" content="Utility types membuat tipe baru dari tipe lama. Partial&lt;T&gt; membuat semua properti opsional (cocok untuk data update), Pick&lt;T, K&gt; mengambil sebagian…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/ts/partial-pick-omit-readonly-record"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Partial, Pick, Omit, Readonly & Record", "description": "Utility types membuat tipe baru dari tipe lama. Partial<T> membuat semua properti opsional (cocok untuk data update), Pick<T, K> mengambil sebagian…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/ts/partial-pick-omit-readonly-record", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "TypeScript", "url": "https://ruang-kode-nine.vercel.app/belajar/ts"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "TypeScript", "item": "https://ruang-kode-nine.vercel.app/belajar/ts"}, {"@type": "ListItem", "position": 3, "name": "Partial, Pick, Omit, Readonly & Record", "item": "https://ruang-kode-nine.vercel.app/belajar/ts/partial-pick-omit-readonly-record"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/ts">TypeScript</a> / Modul 8</nav>
+<div class="eyebrow">TypeScript · Modul 8 · Konsep &amp; kode</div><h1>Partial, Pick, Omit, Readonly &amp; Record</h1><a class="cta" href="/#ts-8-1">Buka versi interaktif</a>
+<p>Utility types membuat tipe baru dari tipe lama. <code>Partial&lt;T&gt;</code> membuat semua properti opsional (cocok untuk data update), <code>Pick&lt;T, K&gt;</code> mengambil sebagian properti, <code>Omit&lt;T, K&gt;</code> membuang sebagian, <code>Readonly&lt;T&gt;</code> membuat tidak bisa diubah, dan <code>Record&lt;K, V&gt;</code> membuat objek berkunci K bernilai V.</p>
+<div class="lbl">TYPESCRIPT</div><pre><code>interface Produk { id: number; nama: string; harga: number; stok: number }
+
+type UbahProduk = Partial&lt;Omit&lt;Produk, &quot;id&quot;&gt;&gt;;
+type Ringkas = Pick&lt;Produk, &quot;nama&quot; | &quot;harga&quot;&gt;;
+type StokPerKota = Record&lt;&quot;Jakarta&quot; | &quot;Bandung&quot;, number&gt;;
+
+function ubah(p: Produk, perubahan: UbahProduk): Produk {
+  return { ...p, ...perubahan };
+}
+
+const kopi: Readonly&lt;Produk&gt; = { id: 1, nama: &quot;Kopi Gayo&quot;, harga: 85000, stok: 40 };
+const baru = ubah(kopi, { harga: 80000 });
+const r: Ringkas = { nama: baru.nama, harga: baru.harga };
+const stok: StokPerKota = { Jakarta: 25, Bandung: 15 };
+console.log(r, stok.Bandung);
+// kopi.harga = 1;   // error: Cannot assign to &#x27;harga&#x27; because it is a read-only property.</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>{ nama: &#x27;Kopi Gayo&#x27;, harga: 80000 } 15</code></pre>
+<h2>Poin penting</h2><ul><li>Partial: semua opsional.</li><li>Pick/Omit: ambil/buang properti.</li><li>Readonly: tidak bisa diubah.</li><li>Record: peta kunci ke nilai.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Tipe untuk data update yang semua kolomnya opsional?</summary><p class="ok">Jawaban: Partial&lt;T&gt;</p><p>Partial membuat semua properti opsional.</p></details>
+<a class="cta" href="/#ts-8-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/ts/fungsi-tipe-generik">Fungsi &amp; tipe generik</a></p><p>Berikutnya: <a href="/belajar/ts/exclude-extract-returntype-lainnya">Exclude, Extract, ReturnType &amp; lainnya</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

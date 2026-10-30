@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Database toko buku online · SQL · Ruang Kode</title>
+<meta name="description" content="Rancang database toko buku &quot;Pustaka Nusantara&quot;: buku, penulis, pelanggan, pesanan. Isi data contoh, lalu jawab pertanyaan bisnis dengan query.">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/sql/database-toko-buku-online">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Database toko buku online · SQL · Ruang Kode"><meta property="og:description" content="Rancang database toko buku &quot;Pustaka Nusantara&quot;: buku, penulis, pelanggan, pesanan. Isi data contoh, lalu jawab pertanyaan bisnis dengan query.">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/sql/database-toko-buku-online"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Database toko buku online", "description": "Rancang database toko buku \"Pustaka Nusantara\": buku, penulis, pelanggan, pesanan. Isi data contoh, lalu jawab pertanyaan bisnis dengan query.", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/sql/database-toko-buku-online", "learningResourceType": "Proyek akhir", "isPartOf": {"@type": "Course", "name": "SQL", "url": "https://ruang-kode-nine.vercel.app/belajar/sql"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "SQL", "item": "https://ruang-kode-nine.vercel.app/belajar/sql"}, {"@type": "ListItem", "position": 3, "name": "Database toko buku online", "item": "https://ruang-kode-nine.vercel.app/belajar/sql/database-toko-buku-online"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/sql">SQL</a> / Modul 15</nav>
+<div class="eyebrow">SQL · Modul 15 · Proyek akhir</div><h1>Database toko buku online</h1><a class="cta" href="/#sql-15-1">Buka versi interaktif</a>
+<p>Rancang database toko buku "Pustaka Nusantara": buku, penulis, pelanggan, pesanan. Isi data contoh, lalu jawab pertanyaan bisnis dengan query.</p>
+<p><b>Teknologi:</b> SQL (PostgreSQL/SQLite)</p>
+<h2>Fitur yang dibuat</h2><ul><li>Diagram ERD dengan relasi banyak-ke-banyak buku-penulis</li><li>CREATE TABLE dengan PRIMARY KEY, FOREIGN KEY, CHECK, NOT NULL</li><li>Minimal 20 buku, 10 penulis, 15 pelanggan, 40 pesanan</li><li>Index untuk kolom yang sering dicari</li><li>View laporan_penjualan_bulanan</li><li>Transaksi pemesanan yang mengurangi stok secara atomik</li><li>Query: 5 penulis terlaris, pelanggan tanpa pesanan 90 hari, pertumbuhan MoM</li><li>Window function untuk peringkat buku per genre</li></ul>
+<h2>Langkah kerja</h2><ol><li>Rancang ERD dan normalisasi sampai 3NF.</li><li>Tulis DDL dan data contoh.</li><li>Tambah index, view, dan transaksi.</li><li>Jawab pertanyaan bisnis.</li></ol>
+<div class="lbl">skema.sql</div><pre><code>CREATE TABLE penulis (id INTEGER PRIMARY KEY, nama TEXT NOT NULL);
+CREATE TABLE buku (
+  id INTEGER PRIMARY KEY,
+  judul TEXT NOT NULL,
+  genre TEXT,
+  harga INTEGER CHECK (harga &gt; 0),
+  stok INTEGER NOT NULL DEFAULT 0 CHECK (stok &gt;= 0)
+);
+CREATE TABLE buku_penulis (
+  buku_id INTEGER REFERENCES buku(id),
+  penulis_id INTEGER REFERENCES penulis(id),
+  PRIMARY KEY (buku_id, penulis_id)
+);
+INSERT INTO penulis VALUES (1,&#x27;Andrea Hirata&#x27;),(2,&#x27;Dee Lestari&#x27;),(3,&#x27;Tere Liye&#x27;);
+INSERT INTO buku VALUES (1,&#x27;Laskar Pelangi&#x27;,&#x27;Novel&#x27;,89000,12),(2,&#x27;Supernova&#x27;,&#x27;Novel&#x27;,99000,5),(3,&#x27;Hujan&#x27;,&#x27;Novel&#x27;,95000,0);
+INSERT INTO buku_penulis VALUES (1,1),(2,2),(3,3);
+SELECT b.judul, p.nama, b.stok FROM buku b
+JOIN buku_penulis bp ON bp.buku_id = b.id
+JOIN penulis p ON p.id = bp.penulis_id
+ORDER BY b.judul;</code></pre>
+<a class="cta" href="/#sql-15-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/proyek-mini-peringkat-tren">Proyek mini: Peringkat &amp; tren</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

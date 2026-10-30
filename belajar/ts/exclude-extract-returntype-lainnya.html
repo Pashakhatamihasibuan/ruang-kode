@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Exclude, Extract, ReturnType &amp; lainnya · TypeScript · Ruang Kode</title>
+<meta name="description" content="Untuk union: Exclude&lt;U, X&gt; membuang anggota, Extract&lt;U, X&gt; mengambil anggota yang cocok, NonNullable&lt;T&gt; membuang null dan undefined.">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/ts/exclude-extract-returntype-lainnya">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Exclude, Extract, ReturnType &amp; lainnya · TypeScript · Ruang Kode"><meta property="og:description" content="Untuk union: Exclude&lt;U, X&gt; membuang anggota, Extract&lt;U, X&gt; mengambil anggota yang cocok, NonNullable&lt;T&gt; membuang null dan undefined.">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/ts/exclude-extract-returntype-lainnya"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Exclude, Extract, ReturnType & lainnya", "description": "Untuk union: Exclude<U, X> membuang anggota, Extract<U, X> mengambil anggota yang cocok, NonNullable<T> membuang null dan undefined.", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/ts/exclude-extract-returntype-lainnya", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "TypeScript", "url": "https://ruang-kode-nine.vercel.app/belajar/ts"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "TypeScript", "item": "https://ruang-kode-nine.vercel.app/belajar/ts"}, {"@type": "ListItem", "position": 3, "name": "Exclude, Extract, ReturnType & lainnya", "item": "https://ruang-kode-nine.vercel.app/belajar/ts/exclude-extract-returntype-lainnya"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/ts">TypeScript</a> / Modul 8</nav>
+<div class="eyebrow">TypeScript · Modul 8 · Konsep &amp; kode</div><h1>Exclude, Extract, ReturnType &amp; lainnya</h1><a class="cta" href="/#ts-8-2">Buka versi interaktif</a>
+<p>Untuk union: <code>Exclude&lt;U, X&gt;</code> membuang anggota, <code>Extract&lt;U, X&gt;</code> mengambil anggota yang cocok, <code>NonNullable&lt;T&gt;</code> membuang null dan undefined.</p>
+<p>Untuk fungsi dan kelas: <code>ReturnType</code>, <code>Parameters</code>, <code>InstanceType</code>, dan <code>Awaited</code> (isi dari Promise). Ini berguna saat memakai fungsi pustaka yang tipenya tidak diekspor.</p>
+<div class="lbl">TYPESCRIPT</div><pre><code>type Status = &quot;baru&quot; | &quot;dikirim&quot; | &quot;selesai&quot; | &quot;batal&quot;;
+type Aktif = Exclude&lt;Status, &quot;selesai&quot; | &quot;batal&quot;&gt;;          // &quot;baru&quot; | &quot;dikirim&quot;
+type Final = Extract&lt;Status, &quot;selesai&quot; | &quot;batal&quot; | &quot;x&quot;&gt;;   // &quot;selesai&quot; | &quot;batal&quot;
+
+async function ambilPesanan(id: number) {
+  return { id, status: &quot;dikirim&quot; as Status, total: 135000 };
+}
+type Pesanan = Awaited&lt;ReturnType&lt;typeof ambilPesanan&gt;&gt;;
+type Arg = Parameters&lt;typeof ambilPesanan&gt;;                 // [id: number]
+
+const a: Aktif = &quot;dikirim&quot;;
+const f: Final = &quot;batal&quot;;
+const args: Arg = [101];
+ambilPesanan(...args).then((p: Pesanan) =&gt; console.log(a, f, p.total));</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>dikirim batal 135000</code></pre>
+<h2>Poin penting</h2><ul><li>Exclude/Extract untuk anggota union.</li><li>NonNullable membuang null/undefined.</li><li>ReturnType, Parameters, InstanceType, Awaited untuk fungsi dan kelas.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Tipe isi dari Promise&lt;string&gt;?</summary><p class="ok">Jawaban: Awaited&lt;Promise&lt;string&gt;&gt; = string</p><p>Awaited membuka Promise.</p></details>
+<a class="cta" href="/#ts-8-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/ts/partial-pick-omit-readonly-record">Partial, Pick, Omit, Readonly &amp; Record</a></p><p>Berikutnya: <a href="/belajar/ts/keyof-mapped-conditional-types">keyof, mapped &amp; conditional types</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

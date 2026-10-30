@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BEM, Sass, CSS Modules &amp; performa · CSS · Ruang Kode</title>
+<meta name="description" content="Di proyek besar, nama class mudah bentrok. BEM (Block__Element--Modifier) memberi aturan penamaan: .kartu, .kartu__judul, .kartu--promo. Specificity…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/css/bem-sass-css-modules-performa">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="BEM, Sass, CSS Modules &amp; performa · CSS · Ruang Kode"><meta property="og:description" content="Di proyek besar, nama class mudah bentrok. BEM (Block__Element--Modifier) memberi aturan penamaan: .kartu, .kartu__judul, .kartu--promo. Specificity…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/css/bem-sass-css-modules-performa"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "BEM, Sass, CSS Modules & performa", "description": "Di proyek besar, nama class mudah bentrok. BEM (Block__Element--Modifier) memberi aturan penamaan: .kartu, .kartu__judul, .kartu--promo. Specificity…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/css/bem-sass-css-modules-performa", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "CSS", "url": "https://ruang-kode-nine.vercel.app/belajar/css"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "CSS", "item": "https://ruang-kode-nine.vercel.app/belajar/css"}, {"@type": "ListItem", "position": 3, "name": "BEM, Sass, CSS Modules & performa", "item": "https://ruang-kode-nine.vercel.app/belajar/css/bem-sass-css-modules-performa"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/css">CSS</a> / Modul 8</nav>
+<div class="eyebrow">CSS · Modul 8 · Konsep &amp; kode</div><h1>BEM, Sass, CSS Modules &amp; performa</h1><a class="cta" href="/#css-8-2">Buka versi interaktif</a>
+<p>Di proyek besar, nama class mudah bentrok. <b>BEM</b> (Block__Element--Modifier) memberi aturan penamaan: <code>.kartu</code>, <code>.kartu__judul</code>, <code>.kartu--promo</code>. Specificity tetap rendah dan maksud setiap class jelas.</p>
+<p><b>Sass</b> menambah fitur seperti nesting, mixin, dan fungsi, lalu dikompilasi menjadi CSS biasa. <b>PostCSS</b> memproses CSS dengan plugin, misalnya menambahkan prefix browser otomatis. <b>CSS Modules</b> dan <b>CSS-in-JS</b> membuat nama class unik per komponen secara otomatis.</p>
+<p>Untuk performa: kirim CSS sekecil mungkin, hapus aturan yang tidak dipakai, dan muat CSS kritis lebih awal karena CSS menghambat tampilnya halaman.</p>
+<div class="lbl">KODE</div><pre><code>// Sass dengan penamaan BEM
+$aksen: #B4532A;
+
+@mixin kartu-dasar {
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.kartu {
+  @include kartu-dasar;
+  border: 1px solid #ddd;
+
+  &amp;__judul { font-weight: 600; }        // .kartu__judul
+  &amp;--promo { border-color: $aksen; }    // .kartu--promo
+}</code></pre>
+<h2>Poin penting</h2><ul><li>BEM: blok__elemen--modifier.</li><li>Sass dikompilasi menjadi CSS biasa.</li><li>CSS Modules membuat nama class unik otomatis.</li><li>CSS menghambat tampil halaman: jaga tetap ramping.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Dalam BEM, .tombol--besar adalah?</summary><p class="ok">Jawaban: Modifier dari blok tombol</p><p>Dua tanda hubung untuk modifier.</p></details>
+<a class="cta" href="/#css-8-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/css/variabel-css-tema">Variabel CSS &amp; tema</a></p><p>Berikutnya: <a href="/belajar/css/landing-page-toko-responsif">Landing page toko responsif</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

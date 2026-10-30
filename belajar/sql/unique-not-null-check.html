@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>UNIQUE, NOT NULL &amp; CHECK · SQL · Ruang Kode</title>
+<meta name="description" content="Constraint adalah aturan yang dijaga oleh database itu sendiri, sehingga data salah ditolak dari mana pun asalnya: aplikasi web, aplikasi mobile, atau…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/sql/unique-not-null-check">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="UNIQUE, NOT NULL &amp; CHECK · SQL · Ruang Kode"><meta property="og:description" content="Constraint adalah aturan yang dijaga oleh database itu sendiri, sehingga data salah ditolak dari mana pun asalnya: aplikasi web, aplikasi mobile, atau…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/sql/unique-not-null-check"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "UNIQUE, NOT NULL & CHECK", "description": "Constraint adalah aturan yang dijaga oleh database itu sendiri, sehingga data salah ditolak dari mana pun asalnya: aplikasi web, aplikasi mobile, atau…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/sql/unique-not-null-check", "learningResourceType": "Praktik SQL", "isPartOf": {"@type": "Course", "name": "SQL", "url": "https://ruang-kode-nine.vercel.app/belajar/sql"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "SQL", "item": "https://ruang-kode-nine.vercel.app/belajar/sql"}, {"@type": "ListItem", "position": 3, "name": "UNIQUE, NOT NULL & CHECK", "item": "https://ruang-kode-nine.vercel.app/belajar/sql/unique-not-null-check"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/sql">SQL</a> / Modul 6</nav>
+<div class="eyebrow">SQL · Modul 6 · Praktik SQL</div><h1>UNIQUE, NOT NULL &amp; CHECK</h1><a class="cta" href="/#sql-6-4">Buka versi interaktif</a>
+<p><b>Constraint</b> adalah aturan yang dijaga oleh database itu sendiri, sehingga data salah ditolak dari mana pun asalnya: aplikasi web, aplikasi mobile, atau admin yang mengetik query.</p>
+<p><code>NOT NULL</code> mewajibkan kolom diisi. <code>UNIQUE</code> melarang nilai kembar, misalnya email. <code>CHECK (kondisi)</code> memastikan nilai memenuhi syarat, misalnya <code>harga &gt; 0</code> atau <code>bintang BETWEEN 1 AND 5</code>. <code>DEFAULT</code> memberi nilai bawaan.</p>
+<p>Coba jalankan contoh di bawah dan baca pesan error-nya. Pesan seperti ini adalah teman: ia menghentikan data rusak sebelum masuk.</p>
+<div class="lbl">Harga negatif ditolak CHECK</div><pre><code>INSERT INTO produk (nama, kategori, harga) VALUES (&#x27;Promo&#x27;, &#x27;Camilan&#x27;, -1000);</code></pre>
+<div class="lbl">Saldo tidak boleh minus</div><pre><code>UPDATE rekening SET saldo = saldo - 1000000 WHERE id = 1;</code></pre>
+<div class="lbl">UNIQUE menolak duplikat</div><pre><code>CREATE TABLE akun (
+  id INTEGER PRIMARY KEY,
+  email TEXT NOT NULL UNIQUE,
+  umur INTEGER CHECK (umur &gt;= 13)
+);
+INSERT INTO akun (email, umur) VALUES (&#x27;rina@mail.com&#x27;, 20);
+INSERT INTO akun (email, umur) VALUES (&#x27;rina@mail.com&#x27;, 25);</code></pre>
+<div class="lbl">NOT NULL menolak kosong</div><pre><code>INSERT INTO pesanan (pelanggan_id) VALUES (1);</code></pre>
+<h2>Tantangan</h2><ol><li>Buat tabel voucher dengan kolom kode (TEXT, NOT NULL, UNIQUE) dan potongan (INTEGER) yang harus antara 1 dan 100 (pakai CHECK). Tambahkan voucher HEMAT10 dengan potongan 10.</li></ol>
+<h2>Poin penting</h2><ul><li>Constraint dijaga database, bukan hanya aplikasi.</li><li>NOT NULL, UNIQUE, CHECK, DEFAULT, PK, FK.</li><li>Pesan error constraint membantu menemukan data salah.</li><li>Tambahkan constraint sejak awal desain tabel.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Aturan agar email tidak kembar?</summary><p class="ok">Jawaban: UNIQUE</p><p>UNIQUE melarang duplikat.</p></details><details><summary>&lt;code&gt;CHECK (stok &amp;gt;= 0)&lt;/code&gt; mencegah?</summary><p class="ok">Jawaban: Stok negatif</p><p>CHECK menguji kondisi.</p></details>
+<a class="cta" href="/#sql-6-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/primary-key-foreign-key">Primary key &amp; foreign key</a></p><p>Berikutnya: <a href="/belajar/sql/inner-join">INNER JOIN</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

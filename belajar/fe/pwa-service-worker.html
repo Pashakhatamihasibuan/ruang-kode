@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PWA &amp; service worker · Frontend · Ruang Kode</title>
+<meta name="description" content="Progressive Web App adalah situs yang bisa dipasang di layar utama, bekerja offline, dan mengirim notifikasi. Syaratnya: HTTPS, file manifest.webmanifest…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/fe/pwa-service-worker">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="PWA &amp; service worker · Frontend · Ruang Kode"><meta property="og:description" content="Progressive Web App adalah situs yang bisa dipasang di layar utama, bekerja offline, dan mengirim notifikasi. Syaratnya: HTTPS, file manifest.webmanifest…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/fe/pwa-service-worker"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "PWA & service worker", "description": "Progressive Web App adalah situs yang bisa dipasang di layar utama, bekerja offline, dan mengirim notifikasi. Syaratnya: HTTPS, file manifest.webmanifest…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/fe/pwa-service-worker", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Frontend", "url": "https://ruang-kode-nine.vercel.app/belajar/fe"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Frontend", "item": "https://ruang-kode-nine.vercel.app/belajar/fe"}, {"@type": "ListItem", "position": 3, "name": "PWA & service worker", "item": "https://ruang-kode-nine.vercel.app/belajar/fe/pwa-service-worker"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/fe">Frontend</a> / Modul 10</nav>
+<div class="eyebrow">Frontend · Modul 10 · Konsep &amp; kode</div><h1>PWA &amp; service worker</h1><a class="cta" href="/#fe-10-2">Buka versi interaktif</a>
+<p><b>Progressive Web App</b> adalah situs yang bisa dipasang di layar utama, bekerja offline, dan mengirim notifikasi. Syaratnya: HTTPS, file <code>manifest.webmanifest</code> (nama, ikon, warna), dan <b>service worker</b>.</p>
+<p>Service worker adalah script yang berjalan di latar belakang dan bisa mencegat permintaan jaringan. Dengan itu, halaman dan aset bisa diambil dari cache saat sinyal hilang, hal yang penting di daerah dengan koneksi tidak stabil.</p>
+<div class="lbl">JAVASCRIPT</div><pre><code>// sw.js — cache dulu, jaringan kemudian
+const CACHE = &quot;toko-v1&quot;;
+self.addEventListener(&quot;install&quot;, e =&gt; {
+  e.waitUntil(caches.open(CACHE).then(c =&gt; c.addAll([&quot;/&quot;, &quot;/app.js&quot;, &quot;/gaya.css&quot;, &quot;/offline.html&quot;])));
+});
+self.addEventListener(&quot;fetch&quot;, e =&gt; {
+  e.respondWith(
+    caches.match(e.request).then(hit =&gt; hit || fetch(e.request).catch(() =&gt; caches.match(&quot;/offline.html&quot;)))
+  );
+});
+
+// main.js
+if (&quot;serviceWorker&quot; in navigator) navigator.serviceWorker.register(&quot;/sw.js&quot;);</code></pre>
+<h2>Poin penting</h2><ul><li>PWA: HTTPS + manifest + service worker.</li><li>Service worker mencegat request dan memakai cache.</li><li>Penting untuk pengguna dengan koneksi tidak stabil.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Komponen PWA yang memungkinkan offline?</summary><p class="ok">Jawaban: Service worker</p><p>Ia menyajikan dari cache saat offline.</p></details>
+<a class="cta" href="/#fe-10-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe/web-components-shadow-dom">Web Components &amp; Shadow DOM</a></p><p>Berikutnya: <a href="/belajar/fe/csr-ssr-ssg">CSR, SSR &amp; SSG</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

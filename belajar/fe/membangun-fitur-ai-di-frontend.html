@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Membangun fitur AI di frontend · Frontend · Ruang Kode</title>
+<meta name="description" content="Fitur AI di aplikasi (chatbot, ringkasan, pencarian semantik) memanggil API model dari penyedia seperti Anthropic, OpenAI, atau Google. Kunci API tidak…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/fe/membangun-fitur-ai-di-frontend">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Membangun fitur AI di frontend · Frontend · Ruang Kode"><meta property="og:description" content="Fitur AI di aplikasi (chatbot, ringkasan, pencarian semantik) memanggil API model dari penyedia seperti Anthropic, OpenAI, atau Google. Kunci API tidak…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/fe/membangun-fitur-ai-di-frontend"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Membangun fitur AI di frontend", "description": "Fitur AI di aplikasi (chatbot, ringkasan, pencarian semantik) memanggil API model dari penyedia seperti Anthropic, OpenAI, atau Google. Kunci API tidak…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/fe/membangun-fitur-ai-di-frontend", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Frontend", "url": "https://ruang-kode-nine.vercel.app/belajar/fe"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Frontend", "item": "https://ruang-kode-nine.vercel.app/belajar/fe"}, {"@type": "ListItem", "position": 3, "name": "Membangun fitur AI di frontend", "item": "https://ruang-kode-nine.vercel.app/belajar/fe/membangun-fitur-ai-di-frontend"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/fe">Frontend</a> / Modul 12</nav>
+<div class="eyebrow">Frontend · Modul 12 · Konsep &amp; kode</div><h1>Membangun fitur AI di frontend</h1><a class="cta" href="/#fe-12-2">Buka versi interaktif</a>
+<p>Fitur AI di aplikasi (chatbot, ringkasan, pencarian semantik) memanggil API model dari penyedia seperti Anthropic, OpenAI, atau Google. <b>Kunci API tidak boleh ada di kode frontend</b>; panggil lewat server atau fungsi serverless milikmu.</p>
+<p>Jawaban model dikirim bertahap (<b>streaming</b>) agar pengguna langsung melihat teks muncul, bukan menunggu jawaban utuh. Di frontend, baca stream dengan <code>response.body.getReader()</code>.</p>
+<div class="lbl">JAVASCRIPT</div><pre><code>// Frontend: membaca jawaban yang di-stream dari server kita sendiri
+async function tanya(pertanyaan, tulis) {
+  const res = await fetch(&quot;/api/tanya&quot;, { method: &quot;POST&quot;, body: JSON.stringify({ pertanyaan }) });
+  const reader = res.body.getReader();
+  const dec = new TextDecoder();
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    tulis(dec.decode(value, { stream: true }));   // tampilkan potongan teks segera
+  }
+}
+// Server (/api/tanya) yang memegang kunci API dan meneruskan stream dari penyedia model.</code></pre>
+<h2>Poin penting</h2><ul><li>Kunci API selalu di server.</li><li>Streaming membuat jawaban terasa cepat.</li><li>Tampilkan status, tangani error, dan beri tahu bahwa jawaban bisa keliru.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Di mana kunci API model AI disimpan?</summary><p class="ok">Jawaban: Di server/fungsi serverless</p><p>Kode frontend bisa dibaca siapa pun.</p></details>
+<a class="cta" href="/#fe-12-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe/llm-asisten-coding">LLM &amp; asisten coding</a></p><p>Berikutnya: <a href="/belajar/fe/dashboard-cuaca-kualitas-udara">Dashboard cuaca &amp; kualitas udara</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Testing dengan pytest · Python · Ruang Kode</title>
+<meta name="description" content="pytest adalah framework tes paling populer di Python. Tes ditulis sebagai fungsi biasa yang namanya diawali test_, di file yang namanya diawali test_.…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/python/testing-dengan-pytest">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Testing dengan pytest · Python · Ruang Kode"><meta property="og:description" content="pytest adalah framework tes paling populer di Python. Tes ditulis sebagai fungsi biasa yang namanya diawali test_, di file yang namanya diawali test_.…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/python/testing-dengan-pytest"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Testing dengan pytest", "description": "pytest adalah framework tes paling populer di Python. Tes ditulis sebagai fungsi biasa yang namanya diawali test_, di file yang namanya diawali test_.…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/python/testing-dengan-pytest", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Python", "url": "https://ruang-kode-nine.vercel.app/belajar/python"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Python", "item": "https://ruang-kode-nine.vercel.app/belajar/python"}, {"@type": "ListItem", "position": 3, "name": "Testing dengan pytest", "item": "https://ruang-kode-nine.vercel.app/belajar/python/testing-dengan-pytest"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/python">Python</a> / Modul 12</nav>
+<div class="eyebrow">Python · Modul 12 · Konsep &amp; kode</div><h1>Testing dengan pytest</h1><a class="cta" href="/#python-12-3">Buka versi interaktif</a>
+<p><b>pytest</b> adalah framework tes paling populer di Python. Tes ditulis sebagai fungsi biasa yang namanya diawali <code>test_</code>, di file yang namanya diawali <code>test_</code>. Pemeriksaan cukup memakai <code>assert</code> biasa, dan pytest menampilkan detail nilai yang berbeda saat gagal.</p>
+<p><code>pytest.raises</code> memeriksa bahwa sebuah exception dilempar. <code>@pytest.mark.parametrize</code> menjalankan satu tes dengan banyak data. <b>Fixture</b> menyiapkan data atau sumber daya yang dipakai bersama beberapa tes, misalnya database sementara.</p>
+<p>Jalankan semua tes dengan perintah <code>pytest</code> di folder proyek. Tambahkan <code>-v</code> untuk melihat nama setiap tes, dan pasang <code>pytest-cov</code> untuk mengukur seberapa banyak kode yang teruji.</p>
+<div class="lbl">PYTHON</div><pre><code># toko.py
+def diskon(harga, persen):
+    if not 0 &lt;= persen &lt;= 100:
+        raise ValueError(&quot;persen harus 0..100&quot;)
+    return harga - harga * persen // 100
+
+# test_toko.py
+import pytest
+from toko import diskon
+
+def test_diskon_sepuluh_persen():
+    assert diskon(50_000, 10) == 45_000
+
+def test_persen_salah():
+    with pytest.raises(ValueError):
+        diskon(1000, 150)
+
+@pytest.mark.parametrize(&quot;harga, persen, harapan&quot;, [
+    (100_000, 0, 100_000),
+    (100_000, 100, 0),
+    (80_000, 25, 60_000),
+])
+def test_banyak_kasus(harga, persen, harapan):
+    assert diskon(harga, persen) == harapan
+
+@pytest.fixture
+def keranjang():
+    return [(&quot;kopi&quot;, 85_000), (&quot;teh&quot;, 25_000)]
+
+def test_total(keranjang):
+    assert sum(h for _, h in keranjang) == 110_000
+
+# $ pytest -v
+# test_toko.py::test_diskon_sepuluh_persen PASSED
+# test_toko.py::test_persen_salah PASSED
+# test_toko.py::test_banyak_kasus[100000-0-100000] PASSED   ... (3 kasus)
+# test_toko.py::test_total PASSED
+# ===== 6 passed in 0.02s =====</code></pre>
+<h2>Poin penting</h2><ul><li>File dan fungsi tes diawali <code>test_</code>.</li><li>Cukup <code>assert</code> biasa.</li><li><code>parametrize</code> untuk banyak data, <code>fixture</code> untuk persiapan bersama.</li><li><code>pytest-cov</code> untuk mengukur cakupan tes.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Cara pytest mengenali fungsi tes?</summary><p class="ok">Jawaban: Nama diawali test_</p><p>Konvensi nama test_.</p></details><details><summary>Fitur untuk menyiapkan data yang dipakai banyak tes?</summary><p class="ok">Jawaban: fixture</p><p>Fixture disuntikkan lewat nama parameter.</p></details>
+<a class="cta" href="/#python-12-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/docstring-komentar-sphinx">Docstring, komentar &amp; Sphinx</a></p><p>Berikutnya: <a href="/belajar/python/unittest-doctest-tox">unittest, doctest &amp; tox</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

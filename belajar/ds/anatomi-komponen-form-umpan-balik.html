@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Anatomi komponen form &amp; umpan balik · Design System · Ruang Kode</title>
+<meta name="description" content="Kolom isian sistem selalu punya label yang terlihat (bukan hanya placeholder), teks bantuan opsional, dan pesan error yang terhubung lewat…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/ds/anatomi-komponen-form-umpan-balik">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Anatomi komponen form &amp; umpan balik · Design System · Ruang Kode"><meta property="og:description" content="Kolom isian sistem selalu punya label yang terlihat (bukan hanya placeholder), teks bantuan opsional, dan pesan error yang terhubung lewat…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/ds/anatomi-komponen-form-umpan-balik"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Anatomi komponen form & umpan balik", "description": "Kolom isian sistem selalu punya label yang terlihat (bukan hanya placeholder), teks bantuan opsional, dan pesan error yang terhubung lewat…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/ds/anatomi-komponen-form-umpan-balik", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Design System", "url": "https://ruang-kode-nine.vercel.app/belajar/ds"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Design System", "item": "https://ruang-kode-nine.vercel.app/belajar/ds"}, {"@type": "ListItem", "position": 3, "name": "Anatomi komponen form & umpan balik", "item": "https://ruang-kode-nine.vercel.app/belajar/ds/anatomi-komponen-form-umpan-balik"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/ds">Design System</a> / Modul 5</nav>
+<div class="eyebrow">Design System · Modul 5 · Konsep &amp; kode</div><h1>Anatomi komponen form &amp; umpan balik</h1><a class="cta" href="/#ds-5-2">Buka versi interaktif</a>
+<p>Kolom isian sistem selalu punya <b>label</b> yang terlihat (bukan hanya placeholder), teks bantuan opsional, dan pesan error yang terhubung lewat <code>aria-describedby</code>. Switch dipakai untuk pengaturan yang langsung berlaku; checkbox untuk pilihan yang dikirim bersama form.</p>
+<p>Komponen umpan balik dibedakan menurut tingkat gangguan: <b>toast</b> untuk konfirmasi ringan yang hilang sendiri, <b>banner</b> untuk informasi penting di halaman, <b>modal</b> untuk keputusan yang menghentikan alur. Modal harus menjebak fokus di dalamnya dan bisa ditutup dengan Esc.</p>
+<p>Setiap komponen diuji aksesibilitasnya: keyboard, pembaca layar, kontras, dan zoom 200%. Alat otomatis seperti axe menemukan sekitar sepertiga masalah; sisanya perlu diuji manual.</p>
+<div class="lbl">HTML</div><pre><code>&lt;div class=&quot;field&quot;&gt;
+  &lt;label for=&quot;nominal&quot;&gt;Nominal setoran&lt;/label&gt;
+  &lt;input id=&quot;nominal&quot; inputmode=&quot;numeric&quot; aria-describedby=&quot;nominal-bantu nominal-err&quot; aria-invalid=&quot;true&quot;&gt;
+  &lt;p id=&quot;nominal-bantu&quot; class=&quot;bantu&quot;&gt;Minimal Rp 10.000&lt;/p&gt;
+  &lt;p id=&quot;nominal-err&quot; class=&quot;err&quot;&gt;Nominal kurang dari Rp 10.000.&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;dialog id=&quot;konfirmasi&quot; aria-labelledby=&quot;k-judul&quot;&gt;
+  &lt;h2 id=&quot;k-judul&quot;&gt;Hentikan autodebet?&lt;/h2&gt;
+  &lt;p&gt;Setoran tanggal 25 tidak akan dipotong.&lt;/p&gt;
+  &lt;button&gt;Hentikan&lt;/button&gt; &lt;button autofocus&gt;Batal&lt;/button&gt;
+&lt;/dialog&gt;</code></pre>
+<h2>Poin penting</h2><ul><li>Label terlihat + bantuan + error via aria-describedby.</li><li>Toast < banner < modal dalam tingkat gangguan.</li><li>Modal: fokus terjebak, Esc menutup.</li><li>Uji keyboard, pembaca layar, kontras, zoom.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Komponen yang tepat untuk &quot;Setoran berhasil disimpan&quot;?</summary><p class="ok">Jawaban: Toast</p><p>Konfirmasi ringan tidak perlu menghentikan alur.</p></details>
+<a class="cta" href="/#ds-5-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/ds/komponen-tombol-lengkap-dengan-state">Komponen tombol lengkap dengan state</a></p><p>Berikutnya: <a href="/belajar/ds/dokumentasi-katalog-komponen">Dokumentasi &amp; katalog komponen</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aksesibilitas dasar · HTML · Ruang Kode</title>
+<meta name="description" content="Aksesibilitas berarti halaman bisa dipakai oleh semua orang, termasuk pengguna pembaca layar, pengguna keyboard, dan orang dengan penglihatan rendah. Di…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/html/aksesibilitas-dasar">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Aksesibilitas dasar · HTML · Ruang Kode"><meta property="og:description" content="Aksesibilitas berarti halaman bisa dipakai oleh semua orang, termasuk pengguna pembaca layar, pengguna keyboard, dan orang dengan penglihatan rendah. Di…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/html/aksesibilitas-dasar"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Aksesibilitas dasar", "description": "Aksesibilitas berarti halaman bisa dipakai oleh semua orang, termasuk pengguna pembaca layar, pengguna keyboard, dan orang dengan penglihatan rendah. Di…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/html/aksesibilitas-dasar", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "HTML", "url": "https://ruang-kode-nine.vercel.app/belajar/html"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "HTML", "item": "https://ruang-kode-nine.vercel.app/belajar/html"}, {"@type": "ListItem", "position": 3, "name": "Aksesibilitas dasar", "item": "https://ruang-kode-nine.vercel.app/belajar/html/aksesibilitas-dasar"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/html">HTML</a> / Modul 8</nav>
+<div class="eyebrow">HTML · Modul 8 · Praktik langsung</div><h1>Aksesibilitas dasar</h1><a class="cta" href="/#html-8-1">Buka versi interaktif</a>
+<p>Aksesibilitas berarti halaman bisa dipakai oleh semua orang, termasuk pengguna pembaca layar, pengguna keyboard, dan orang dengan penglihatan rendah. Di Indonesia ada jutaan penyandang disabilitas yang juga berbelanja dan belajar online.</p>
+<p>Mulai dari dasar yang paling berdampak: elemen yang tepat (button untuk aksi, a untuk pindah halaman), alt pada gambar, label pada input, urutan judul yang rapi, kontras warna cukup, dan fokus keyboard yang terlihat.</p>
+<p>Atribut ARIA seperti <code>aria-label</code> atau <code>aria-live</code> hanya dipakai jika HTML biasa tidak cukup. Aturan pertama ARIA: jangan pakai ARIA jika ada elemen HTML yang sudah punya makna itu.</p>
+<div class="lbl">HTML</div><pre><code>&lt;!-- Kurang baik: div tidak bisa difokus keyboard --&gt;
+&lt;div onclick=&quot;alert(&#x27;dibeli&#x27;)&quot; class=&quot;tombol&quot;&gt;Beli&lt;/div&gt;
+
+&lt;!-- Baik: button bisa difokus dan ditekan dengan Enter/Spasi --&gt;
+&lt;button class=&quot;tombol&quot; onclick=&quot;document.getElementById(&#x27;st&#x27;).textContent=&#x27;Masuk keranjang&#x27;&quot;&gt;Beli&lt;/button&gt;
+&lt;p id=&quot;st&quot; aria-live=&quot;polite&quot;&gt;&lt;/p&gt;
+
+&lt;!-- Tombol ikon butuh nama yang bisa dibacakan --&gt;
+&lt;button class=&quot;ikon&quot; aria-label=&quot;Tutup&quot;&gt;✕&lt;/button&gt;</code></pre>
+<div class="lbl">CSS</div><pre><code>.tombol{display:inline-block;background:#1C1B19;color:#fff;border:0;padding:8px 14px;border-radius:999px;cursor:pointer;margin:4px}.ikon{border:1px solid #ccc;border-radius:50%;width:32px;height:32px}button:focus-visible{outline:3px solid #2E5E8C;outline-offset:2px}</code></pre>
+<h2>Tantangan</h2><ol><li>Ganti div "Beli" yang pertama menjadi elemen <code>button</code>, sehingga tidak ada lagi div dengan onclick.</li></ol>
+<h2>Poin penting</h2><ul><li>Pakai elemen asli: button untuk aksi, a untuk navigasi.</li><li>alt, label, dan urutan judul adalah dasar terpenting.</li><li>Fokus keyboard harus terlihat.</li><li>ARIA hanya jika HTML biasa tidak cukup.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa div onclick buruk?</summary><p class="ok">Jawaban: Tidak bisa difokus dan ditekan dengan keyboard</p><p>button sudah punya perilaku keyboard bawaan.</p></details><details><summary>Tombol berisi ikon saja perlu?</summary><p class="ok">Jawaban: aria-label</p><p>aria-label memberi nama yang dibacakan.</p></details>
+<a class="cta" href="/#html-8-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/html/memuat-javascript">Memuat JavaScript</a></p><p>Berikutnya: <a href="/belajar/html/meta-tag-seo-dasar">Meta tag &amp; SEO dasar</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

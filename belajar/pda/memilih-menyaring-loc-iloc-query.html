@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Memilih &amp; menyaring: loc, iloc, query · Python Analisis Data · Ruang Kode</title>
+<meta name="description" content="df[&quot;kolom&quot;] memilih satu kolom, df[[&quot;a&quot;,&quot;b&quot;]] beberapa kolom.">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/pda/memilih-menyaring-loc-iloc-query">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Memilih &amp; menyaring: loc, iloc, query · Python Analisis Data · Ruang Kode"><meta property="og:description" content="df[&quot;kolom&quot;] memilih satu kolom, df[[&quot;a&quot;,&quot;b&quot;]] beberapa kolom.">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/pda/memilih-menyaring-loc-iloc-query"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Memilih & menyaring: loc, iloc, query", "description": "df[\"kolom\"] memilih satu kolom, df[[\"a\",\"b\"]] beberapa kolom.", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/pda/memilih-menyaring-loc-iloc-query", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Python Analisis Data", "url": "https://ruang-kode-nine.vercel.app/belajar/pda"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Python Analisis Data", "item": "https://ruang-kode-nine.vercel.app/belajar/pda"}, {"@type": "ListItem", "position": 3, "name": "Memilih & menyaring: loc, iloc, query", "item": "https://ruang-kode-nine.vercel.app/belajar/pda/memilih-menyaring-loc-iloc-query"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/pda">Python Analisis Data</a> / Modul 4</nav>
+<div class="eyebrow">Python Analisis Data · Modul 4 · Konsep &amp; kode</div><h1>Memilih &amp; menyaring: loc, iloc, query</h1><a class="cta" href="/#pda-4-3">Buka versi interaktif</a>
+<p><code>df["kolom"]</code> memilih satu kolom, <code>df[["a","b"]]</code> beberapa kolom.</p>
+<p><code>loc</code> memilih berdasarkan <b>label</b> dan kondisi: <code>df.loc[df["kota"]=="Jakarta", ["produk","jumlah"]]</code>. <code>iloc</code> berdasarkan <b>posisi</b>: <code>df.iloc[0:3]</code>.</p>
+<p><code>query</code> menulis kondisi seperti kalimat: <code>df.query("jumlah &gt;= 5 and kota != 'Medan'")</code>. <code>isin</code> untuk daftar nilai.</p>
+<div class="lbl">PYTHON</div><pre><code>import pandas as pd
+penjualan = pd.DataFrame({
+    &quot;tanggal&quot;: [&quot;2024-10-01&quot;,&quot;2024-10-01&quot;,&quot;2024-10-02&quot;,&quot;2024-10-03&quot;,&quot;2024-10-03&quot;,&quot;2024-10-04&quot;,&quot;2024-10-05&quot;,&quot;2024-10-05&quot;],
+    &quot;kota&quot;: [&quot;Jakarta&quot;,&quot;Bandung&quot;,&quot;Jakarta&quot;,&quot;Surabaya&quot;,&quot;Bandung&quot;,&quot;Jakarta&quot;,&quot;Medan&quot;,&quot;Surabaya&quot;],
+    &quot;produk&quot;: [&quot;Kopi Gayo&quot;,&quot;Teh Melati&quot;,&quot;Keripik&quot;,&quot;Kopi Gayo&quot;,&quot;Madu Hutan&quot;,&quot;Teh Melati&quot;,&quot;Kopi Gayo&quot;,&quot;Keripik&quot;],
+    &quot;jumlah&quot;: [3, 10, 25, 2, 1, 6, 4, 30],
+    &quot;harga&quot;: [85000, 25000, 15000, 85000, 120000, 25000, 85000, 15000],
+})
+
+print(penjualan.loc[penjualan[&quot;kota&quot;] == &quot;Jakarta&quot;, [&quot;produk&quot;, &quot;jumlah&quot;]])
+print(penjualan.iloc[0:2, 1:3])
+print(penjualan.query(&quot;jumlah &gt;= 10&quot;)[[&quot;kota&quot;, &quot;produk&quot;, &quot;jumlah&quot;]])
+print(penjualan[penjualan[&quot;produk&quot;].isin([&quot;Madu Hutan&quot;, &quot;Keripik&quot;])].shape[0])</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>       produk  jumlah
+0   Kopi Gayo       3
+2     Keripik      25
+5  Teh Melati       6
+      kota      produk
+0  Jakarta   Kopi Gayo
+1  Bandung  Teh Melati
+       kota      produk  jumlah
+1   Bandung  Teh Melati      10
+2   Jakarta     Keripik      25
+7  Surabaya     Keripik      30
+3</code></pre>
+<h2>Poin penting</h2><ul><li>loc = label/kondisi; iloc = posisi.</li><li>query untuk kondisi yang mudah dibaca.</li><li>isin untuk beberapa nilai.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>df.iloc[0:2] mengambil?</summary><p class="ok">Jawaban: Dua baris pertama berdasarkan posisi</p><p>iloc memakai posisi, ujung kanan tidak termasuk.</p></details>
+<a class="cta" href="/#pda-4-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pda/membaca-csv-excel-json-web">Membaca CSV, Excel, JSON &amp; web</a></p><p>Berikutnya: <a href="/belajar/pda/nilai-hilang-isna-dropna-fillna-ffill">Nilai hilang: isna, dropna, fillna, ffill</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

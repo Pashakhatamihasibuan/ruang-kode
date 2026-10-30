@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Siklus hidup data engineering · Data Engineer · Ruang Kode</title>
+<meta name="description" content="Data engineer membangun dan merawat jalur yang membawa data dari tempat ia lahir ke tempat ia dipakai. Siklusnya: generation (aplikasi, sensor, kasir),…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/de/siklus-hidup-data-engineering">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Siklus hidup data engineering · Data Engineer · Ruang Kode"><meta property="og:description" content="Data engineer membangun dan merawat jalur yang membawa data dari tempat ia lahir ke tempat ia dipakai. Siklusnya: generation (aplikasi, sensor, kasir),…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/de/siklus-hidup-data-engineering"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Siklus hidup data engineering", "description": "Data engineer membangun dan merawat jalur yang membawa data dari tempat ia lahir ke tempat ia dipakai. Siklusnya: generation (aplikasi, sensor, kasir),…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/de/siklus-hidup-data-engineering", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Engineer", "url": "https://ruang-kode-nine.vercel.app/belajar/de"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Engineer", "item": "https://ruang-kode-nine.vercel.app/belajar/de"}, {"@type": "ListItem", "position": 3, "name": "Siklus hidup data engineering", "item": "https://ruang-kode-nine.vercel.app/belajar/de/siklus-hidup-data-engineering"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/de">Data Engineer</a> / Modul 1</nav>
+<div class="eyebrow">Data Engineer · Modul 1 · Konsep &amp; kode</div><h1>Siklus hidup data engineering</h1><a class="cta" href="/#de-1-1">Buka versi interaktif</a>
+<p>Data engineer membangun dan merawat jalur yang membawa data dari tempat ia lahir ke tempat ia dipakai. Siklusnya: <b>generation</b> (aplikasi, sensor, kasir), <b>ingestion</b> (mengambil data), <b>storage</b> (lake, warehouse), <b>transformation</b> (membersihkan, menggabungkan, memodelkan), dan <b>serving</b> (dashboard, model ML, reverse ETL ke aplikasi).</p>
+<p>Di bawahnya ada lapisan yang selalu hadir: keamanan, manajemen data (kualitas, metadata, lineage), DataOps (otomasi, monitoring), orkestrasi, dan rekayasa perangkat lunak.</p>
+<p>Coba visualisasi di atas untuk melihat data mengalir dari sumber ke dashboard.</p>
+<div class="lbl">CONTOH</div><pre><code>Sumber            Ingestion          Storage            Transform        Serving
+Kasir (Postgres) ─ CDC/Debezium ─┐
+Aplikasi (event) ─ Kafka ────────┼─▶ Lake (S3/GCS) ─▶ dbt di warehouse ─▶ Dashboard BI
+CSV pemasok ───── Airflow ───────┘    Parquet           (BigQuery)       Model ML
+                                                                          Reverse ETL → CRM</code></pre>
+<h2>Poin penting</h2><ul><li>Generation → ingestion → storage → transformation → serving.</li><li>Lapisan bawah: keamanan, manajemen data, DataOps, orkestrasi.</li><li>Data engineer melayani analis, BI, dan data scientist.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Mengirim skor pelanggan dari warehouse kembali ke CRM disebut?</summary><p class="ok">Jawaban: Reverse ETL</p><p>Data mengalir balik ke alat operasional.</p></details>
+<a class="cta" href="/#de-1-1">Kerjakan latihannya di aplikasi</a><p>Berikutnya: <a href="/belajar/de/data-engineer-analyst-scientist">Data engineer, analyst &amp; scientist</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

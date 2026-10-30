@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Token: primitif, semantik, komponen · Design System · Ruang Kode</title>
+<meta name="description" content="Design token adalah keputusan desain yang diberi nama: warna, ukuran huruf, jarak, radius, bayangan, durasi animasi. Token disimpan sekali, lalu diekspor…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/ds/token-primitif-semantik-komponen">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Token: primitif, semantik, komponen · Design System · Ruang Kode"><meta property="og:description" content="Design token adalah keputusan desain yang diberi nama: warna, ukuran huruf, jarak, radius, bayangan, durasi animasi. Token disimpan sekali, lalu diekspor…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/ds/token-primitif-semantik-komponen"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Token: primitif, semantik, komponen", "description": "Design token adalah keputusan desain yang diberi nama: warna, ukuran huruf, jarak, radius, bayangan, durasi animasi. Token disimpan sekali, lalu diekspor…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/ds/token-primitif-semantik-komponen", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Design System", "url": "https://ruang-kode-nine.vercel.app/belajar/ds"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Design System", "item": "https://ruang-kode-nine.vercel.app/belajar/ds"}, {"@type": "ListItem", "position": 3, "name": "Token: primitif, semantik, komponen", "item": "https://ruang-kode-nine.vercel.app/belajar/ds/token-primitif-semantik-komponen"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/ds">Design System</a> / Modul 4</nav>
+<div class="eyebrow">Design System · Modul 4 · Konsep &amp; kode</div><h1>Token: primitif, semantik, komponen</h1><a class="cta" href="/#ds-4-1">Buka versi interaktif</a>
+<p><b>Design token</b> adalah keputusan desain yang diberi nama: warna, ukuran huruf, jarak, radius, bayangan, durasi animasi. Token disimpan sekali, lalu diekspor ke CSS, Android, iOS, dan Figma.</p>
+<p>Susun tiga lapis. <b>Primitif</b>: nilai mentah (<code>teal.700 = #0F766E</code>). <b>Semantik</b>: peran (<code>color.action.primary → teal.700</code>). <b>Komponen</b>: pemakaian spesifik (<code>button.primary.bg → color.action.primary</code>). Komponen hanya boleh merujuk token semantik atau komponen.</p>
+<p>Format pertukaran yang kini dipakai banyak alat adalah spesifikasi <b>DTCG</b> (Design Tokens Community Group), versi stabil 2025.10. Lihat visualisasi: ganti tema dan perhatikan hanya lapis primitif yang berubah.</p>
+<div class="lbl">JSON</div><pre><code>{
+  &quot;teal&quot;:  { &quot;700&quot;: { &quot;$type&quot;: &quot;color&quot;, &quot;$value&quot;: &quot;#0F766E&quot; },
+             &quot;300&quot;: { &quot;$type&quot;: &quot;color&quot;, &quot;$value&quot;: &quot;#5EEAD4&quot; } },
+  &quot;color&quot;: {
+    &quot;action&quot;: { &quot;primary&quot;: { &quot;$value&quot;: &quot;{teal.700}&quot; } },
+    &quot;text&quot;:   { &quot;default&quot;: { &quot;$value&quot;: &quot;{gray.900}&quot; } }
+  },
+  &quot;button&quot;: {
+    &quot;primary&quot;: { &quot;bg&quot;: { &quot;$value&quot;: &quot;{color.action.primary}&quot; } }
+  }
+}</code></pre>
+<h2>Poin penting</h2><ul><li>Token = keputusan desain bernama.</li><li>Primitif → semantik → komponen.</li><li>Nama menurut peran: color.text.default, bukan gray900.</li><li>Format DTCG untuk pertukaran antar alat.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Nama token mana yang semantik?</summary><p class="ok">Jawaban: color.action.primary</p><p>Menjelaskan peran, bukan nilai.</p></details><details><summary>Saat membuat tema gelap, lapis mana yang berubah paling banyak?</summary><p class="ok">Jawaban: Pemetaan semantik ke primitif</p><p>Peran sama, nilai berbeda.</p></details>
+<a class="cta" href="/#ds-4-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/ds/prinsip-desain-tone-of-voice">Prinsip desain &amp; tone of voice</a></p><p>Berikutnya: <a href="/belajar/ds/warna-fungsional-kontras">Warna fungsional &amp; kontras</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

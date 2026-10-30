@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tipe data · SQL · Ruang Kode</title>
+<meta name="description" content="Setiap kolom punya tipe data yang menentukan nilai apa yang boleh disimpan. Tipe yang paling umum: INTEGER untuk bilangan bulat, DECIMAL(p,s)/NUMERIC…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/sql/tipe-data">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Tipe data · SQL · Ruang Kode"><meta property="og:description" content="Setiap kolom punya tipe data yang menentukan nilai apa yang boleh disimpan. Tipe yang paling umum: INTEGER untuk bilangan bulat, DECIMAL(p,s)/NUMERIC…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/sql/tipe-data"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Tipe data", "description": "Setiap kolom punya tipe data yang menentukan nilai apa yang boleh disimpan. Tipe yang paling umum: INTEGER untuk bilangan bulat, DECIMAL(p,s)/NUMERIC…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/sql/tipe-data", "learningResourceType": "Praktik SQL", "isPartOf": {"@type": "Course", "name": "SQL", "url": "https://ruang-kode-nine.vercel.app/belajar/sql"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "SQL", "item": "https://ruang-kode-nine.vercel.app/belajar/sql"}, {"@type": "ListItem", "position": 3, "name": "Tipe data", "item": "https://ruang-kode-nine.vercel.app/belajar/sql/tipe-data"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/sql">SQL</a> / Modul 2</nav>
+<div class="eyebrow">SQL · Modul 2 · Praktik SQL</div><h1>Tipe data</h1><a class="cta" href="/#sql-2-2">Buka versi interaktif</a>
+<p>Setiap kolom punya <b>tipe data</b> yang menentukan nilai apa yang boleh disimpan. Tipe yang paling umum: <code>INTEGER</code> untuk bilangan bulat, <code>DECIMAL(p,s)</code>/<code>NUMERIC</code> untuk angka pecahan yang presisi seperti uang, <code>REAL</code>/<code>FLOAT</code> untuk pecahan perkiraan, <code>VARCHAR(n)</code>/<code>TEXT</code> untuk teks, <code>DATE</code>, <code>TIME</code>, <code>TIMESTAMP</code> untuk waktu, dan <code>BOOLEAN</code>.</p>
+<p>Nama tipe sedikit berbeda antar database. PostgreSQL punya <code>SERIAL</code> dan <code>JSONB</code>, MySQL punya <code>TINYINT</code> dan <code>DATETIME</code>. Simulator di kursus ini mengikuti SQLite yang lebih longgar: tipe kolom memberi "afinitas", misalnya teks <code>'42'</code> yang dimasukkan ke kolom INTEGER otomatis disimpan sebagai angka.</p>
+<p><code>NULL</code> bukan nol dan bukan teks kosong, melainkan tanda "nilainya tidak diketahui". Fungsi <code>typeof</code> dan <code>CAST</code> membantu melihat dan mengubah tipe.</p>
+<div class="lbl">Melihat tipe setiap nilai</div><pre><code>SELECT typeof(42), typeof(3.14), typeof(&#x27;teks&#x27;), typeof(NULL);</code></pre>
+<div class="lbl">Mengubah tipe dengan CAST</div><pre><code>SELECT CAST(&#x27;125&#x27; AS INTEGER) + 5 AS angka,
+       CAST(9.99 AS INTEGER) AS dipotong,
+       CAST(2024 AS TEXT) || &#x27;-10&#x27; AS teks;</code></pre>
+<div class="lbl">Tanggal disimpan sebagai teks berformat ISO</div><pre><code>SELECT nama, bergabung FROM pelanggan WHERE bergabung &gt;= &#x27;2024-01-01&#x27;;</code></pre>
+<h2>Tantangan</h2><ol><li>Tampilkan nama produk dan harganya dalam ribuan (harga dibagi 1000, diubah menjadi INTEGER) dengan nama kolom ribu.</li></ol>
+<h2>Poin penting</h2><ul><li>Pilih tipe sekecil mungkin yang cukup.</li><li>Uang: DECIMAL atau INTEGER dalam satuan terkecil, bukan FLOAT.</li><li>Tanggal ditulis format ISO: YYYY-MM-DD.</li><li>NULL = tidak diketahui, bukan 0.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Tipe paling tepat untuk menyimpan harga Rp85.000,50?</summary><p class="ok">Jawaban: DECIMAL(12,2)</p><p>DECIMAL presisi untuk uang.</p></details><details><summary>Apakah NULL sama dengan 0?</summary><p class="ok">Jawaban: Tidak, NULL berarti tidak diketahui</p><p>NULL adalah ketiadaan nilai.</p></details>
+<a class="cta" href="/#sql-2-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/sintaks-kata-kunci-sql">Sintaks &amp; kata kunci SQL</a></p><p>Berikutnya: <a href="/belajar/sql/operator">Operator</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

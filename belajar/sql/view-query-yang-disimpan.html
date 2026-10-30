@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>View: query yang disimpan · SQL · Ruang Kode</title>
+<meta name="description" content="View adalah query SELECT yang disimpan dengan sebuah nama, lalu dipakai seperti tabel. View tidak menyimpan data sendiri: setiap kali dipanggil, query…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/sql/view-query-yang-disimpan">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="View: query yang disimpan · SQL · Ruang Kode"><meta property="og:description" content="View adalah query SELECT yang disimpan dengan sebuah nama, lalu dipakai seperti tabel. View tidak menyimpan data sendiri: setiap kali dipanggil, query…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/sql/view-query-yang-disimpan"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "View: query yang disimpan", "description": "View adalah query SELECT yang disimpan dengan sebuah nama, lalu dipakai seperti tabel. View tidak menyimpan data sendiri: setiap kali dipanggil, query…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/sql/view-query-yang-disimpan", "learningResourceType": "Praktik SQL", "isPartOf": {"@type": "Course", "name": "SQL", "url": "https://ruang-kode-nine.vercel.app/belajar/sql"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "SQL", "item": "https://ruang-kode-nine.vercel.app/belajar/sql"}, {"@type": "ListItem", "position": 3, "name": "View: query yang disimpan", "item": "https://ruang-kode-nine.vercel.app/belajar/sql/view-query-yang-disimpan"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/sql">SQL</a> / Modul 10</nav>
+<div class="eyebrow">SQL · Modul 10 · Praktik SQL</div><h1>View: query yang disimpan</h1><a class="cta" href="/#sql-10-1">Buka versi interaktif</a>
+<p><b>View</b> adalah query SELECT yang disimpan dengan sebuah nama, lalu dipakai seperti tabel. View tidak menyimpan data sendiri: setiap kali dipanggil, query aslinya dijalankan ulang, sehingga hasilnya selalu mengikuti data terbaru.</p>
+<p>Kegunaannya: menyederhanakan query rumit yang sering dipakai (misalnya laporan penjualan dengan 4 JOIN), memberi nama yang bermakna, dan membatasi akses, misalnya tim marketing hanya diberi akses ke view tanpa kolom sensitif.</p>
+<p>Buat dengan <code>CREATE VIEW</code>, ubah dengan <code>CREATE OR REPLACE VIEW</code> (PostgreSQL/MySQL) atau DROP lalu CREATE ulang, dan hapus dengan <code>DROP VIEW</code>. Menghapus view tidak menyentuh tabel aslinya.</p>
+<div class="lbl">Buat view laporan</div><pre><code>CREATE VIEW v_penjualan AS
+SELECT s.id AS pesanan, p.nama AS pembeli, SUM(d.jumlah * pr.harga) AS total
+FROM pesanan s
+JOIN pelanggan p ON p.id = s.pelanggan_id
+JOIN detail_pesanan d ON d.pesanan_id = s.id
+JOIN produk pr ON pr.id = d.produk_id
+GROUP BY s.id, p.nama;
+SELECT * FROM v_penjualan WHERE total &gt; 100000 ORDER BY total DESC;</code></pre>
+<div class="lbl">View selalu mengikuti data terbaru</div><pre><code>CREATE VIEW v_habis AS SELECT nama FROM produk WHERE stok = 0;
+UPDATE produk SET stok = 0 WHERE id = 6;
+SELECT * FROM v_habis;</code></pre>
+<div class="lbl">Ubah lalu hapus</div><pre><code>CREATE VIEW v_kota AS SELECT DISTINCT kota FROM pelanggan;
+CREATE OR REPLACE VIEW v_kota AS SELECT DISTINCT kota FROM pelanggan WHERE kota IS NOT NULL;
+SELECT * FROM v_kota;
+DROP VIEW v_kota;</code></pre>
+<h2>Tantangan</h2><ol><li>Buat view bernama v_minuman berisi nama dan harga produk berkategori Minuman.</li></ol>
+<h2>Poin penting</h2><ul><li>View = query bernama, dipakai seperti tabel.</li><li>Data tidak disalin; selalu terbaru.</li><li>Untuk menyederhanakan dan membatasi akses.</li><li>DROP VIEW tidak menghapus tabel.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Data di view disimpan di mana?</summary><p class="ok">Jawaban: Tetap di tabel asal; view menjalankan ulang query</p><p>View hanyalah query tersimpan.</p></details><details><summary>Cara mengubah definisi view di PostgreSQL?</summary><p class="ok">Jawaban: CREATE OR REPLACE VIEW</p><p>Definisi diganti dengan query baru.</p></details>
+<a class="cta" href="/#sql-10-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/proyek-mini-merapikan-laporan">Proyek mini: Merapikan laporan</a></p><p>Berikutnya: <a href="/belajar/sql/index-mempercepat-pencarian">Index: mempercepat pencarian</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

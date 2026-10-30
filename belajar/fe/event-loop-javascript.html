@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Event loop JavaScript · Frontend · Ruang Kode</title>
+<meta name="description" content="JavaScript di browser berjalan di satu thread. Agar halaman tidak membeku saat menunggu jaringan atau timer, pekerjaan yang menunggu diserahkan ke…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/fe/event-loop-javascript">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Event loop JavaScript · Frontend · Ruang Kode"><meta property="og:description" content="JavaScript di browser berjalan di satu thread. Agar halaman tidak membeku saat menunggu jaringan atau timer, pekerjaan yang menunggu diserahkan ke…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/fe/event-loop-javascript"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Event loop JavaScript", "description": "JavaScript di browser berjalan di satu thread. Agar halaman tidak membeku saat menunggu jaringan atau timer, pekerjaan yang menunggu diserahkan ke…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/fe/event-loop-javascript", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "Frontend", "url": "https://ruang-kode-nine.vercel.app/belajar/fe"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Frontend", "item": "https://ruang-kode-nine.vercel.app/belajar/fe"}, {"@type": "ListItem", "position": 3, "name": "Event loop JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/fe/event-loop-javascript"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/fe">Frontend</a> / Modul 3</nav>
+<div class="eyebrow">Frontend · Modul 3 · Praktik langsung</div><h1>Event loop JavaScript</h1><a class="cta" href="/#fe-3-7">Buka versi interaktif</a>
+<p>JavaScript di browser berjalan di <b>satu thread</b>. Agar halaman tidak membeku saat menunggu jaringan atau timer, pekerjaan yang menunggu diserahkan ke browser, lalu callback-nya diantrekan.</p>
+<p>Ada dua antrean: <b>microtask</b> (Promise, await) dan <b>macrotask</b> (setTimeout, event klik). Setelah kode sinkron selesai, semua microtask dijalankan dulu, baru satu macrotask, dan seterusnya. Tebak urutan keluaran sebelum menjalankan.</p>
+<div class="lbl">HTML</div><pre><code>&lt;p&gt;Lihat panel Konsol.&lt;/p&gt;</code></pre>
+<div class="lbl">JAVASCRIPT</div><pre><code>console.log(&quot;1. mulai&quot;);
+setTimeout(() =&gt; console.log(&quot;4. setTimeout (macrotask)&quot;), 0);
+Promise.resolve().then(() =&gt; console.log(&quot;3. promise (microtask)&quot;));
+console.log(&quot;2. selesai kode sinkron&quot;);</code></pre>
+<h2>Poin penting</h2><ul><li>Satu thread, tidak memblokir lewat antrean callback.</li><li>Urutan: sinkron, semua microtask, lalu macrotask.</li><li>setTimeout 0 tetap menunggu kode sinkron dan microtask.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Mana yang jalan lebih dulu: Promise.then atau setTimeout 0?</summary><p class="ok">Jawaban: Promise.then</p><p>Microtask didahulukan.</p></details>
+<a class="cta" href="/#fe-3-7">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe/cara-browser-menggambar-halaman">Cara browser menggambar halaman</a></p><p>Berikutnya: <a href="/belajar/fe/modul-es">Modul ES</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

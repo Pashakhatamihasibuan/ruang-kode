@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Docker, Kubernetes &amp; Terraform · Data Engineer · Ruang Kode</title>
+<meta name="description" content="Docker membungkus kode beserta dependensinya dalam image, sehingga job berjalan sama di laptop dan server. Kubernetes menjalankan dan mengatur banyak…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/de/docker-kubernetes-terraform">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Docker, Kubernetes &amp; Terraform · Data Engineer · Ruang Kode"><meta property="og:description" content="Docker membungkus kode beserta dependensinya dalam image, sehingga job berjalan sama di laptop dan server. Kubernetes menjalankan dan mengatur banyak…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/de/docker-kubernetes-terraform"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Docker, Kubernetes & Terraform", "description": "Docker membungkus kode beserta dependensinya dalam image, sehingga job berjalan sama di laptop dan server. Kubernetes menjalankan dan mengatur banyak…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/de/docker-kubernetes-terraform", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Engineer", "url": "https://ruang-kode-nine.vercel.app/belajar/de"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Engineer", "item": "https://ruang-kode-nine.vercel.app/belajar/de"}, {"@type": "ListItem", "position": 3, "name": "Docker, Kubernetes & Terraform", "item": "https://ruang-kode-nine.vercel.app/belajar/de/docker-kubernetes-terraform"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/de">Data Engineer</a> / Modul 8</nav>
+<div class="eyebrow">Data Engineer · Modul 8 · Konsep &amp; kode</div><h1>Docker, Kubernetes &amp; Terraform</h1><a class="cta" href="/#de-8-2">Buka versi interaktif</a>
+<p><b>Docker</b> membungkus kode beserta dependensinya dalam image, sehingga job berjalan sama di laptop dan server. <b>Kubernetes</b> menjalankan dan mengatur banyak kontainer: penjadwalan, restart otomatis, skala.</p>
+<p><b>Infrastructure as Code</b> (Terraform, OpenTofu, AWS CDK) menulis bucket, dataset, dan izin akses sebagai kode yang direview di pull request, alih-alih klik di konsol.</p>
+<p><b>CI/CD</b> menjalankan tes (unit, dbt test) di setiap PR dan menerapkan perubahan otomatis setelah digabung.</p>
+<div class="lbl">CONTOH</div><pre><code># Dockerfile untuk job ETL
+FROM python:3.12-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY etl/ etl/
+CMD [&quot;python&quot;, &quot;-m&quot;, &quot;etl.penjualan_harian&quot;]
+
+# Terraform: bucket lake
+resource &quot;google_storage_bucket&quot; &quot;lake&quot; {
+  name     = &quot;toko-lake&quot;
+  location = &quot;asia-southeast2&quot;   # Jakarta
+  uniform_bucket_level_access = true
+}</code></pre>
+<h2>Poin penting</h2><ul><li>Docker: lingkungan sama di mana saja.</li><li>Kubernetes: mengatur banyak kontainer.</li><li>IaC + CI/CD: infrastruktur direview dan diuji.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Keuntungan utama Terraform dibanding klik di konsol?</summary><p class="ok">Jawaban: Perubahan infrastruktur bisa direview, diulang, dan dilacak</p><p>Infrastruktur menjadi kode di Git.</p></details>
+<a class="cta" href="/#de-8-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/de/peta-layanan-cloud-untuk-data">Peta layanan cloud untuk data</a></p><p>Berikutnya: <a href="/belajar/de/tes-pipeline-observabilitas-data">Tes pipeline &amp; observabilitas data</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

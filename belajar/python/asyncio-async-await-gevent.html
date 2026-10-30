@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>asyncio, async/await &amp; gevent · Python · Ruang Kode</title>
+<meta name="description" content="asyncio menjalankan banyak tugas I/O secara bergantian dalam satu thread, dikendalikan oleh event loop. Fungsi yang ditulis dengan async def disebut…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/python/asyncio-async-await-gevent">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="asyncio, async/await &amp; gevent · Python · Ruang Kode"><meta property="og:description" content="asyncio menjalankan banyak tugas I/O secara bergantian dalam satu thread, dikendalikan oleh event loop. Fungsi yang ditulis dengan async def disebut…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/python/asyncio-async-await-gevent"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "asyncio, async/await & gevent", "description": "asyncio menjalankan banyak tugas I/O secara bergantian dalam satu thread, dikendalikan oleh event loop. Fungsi yang ditulis dengan async def disebut…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/python/asyncio-async-await-gevent", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Python", "url": "https://ruang-kode-nine.vercel.app/belajar/python"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Python", "item": "https://ruang-kode-nine.vercel.app/belajar/python"}, {"@type": "ListItem", "position": 3, "name": "asyncio, async/await & gevent", "item": "https://ruang-kode-nine.vercel.app/belajar/python/asyncio-async-await-gevent"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/python">Python</a> / Modul 13</nav>
+<div class="eyebrow">Python · Modul 13 · Konsep &amp; kode</div><h1>asyncio, async/await &amp; gevent</h1><a class="cta" href="/#python-13-3">Buka versi interaktif</a>
+<p><b>asyncio</b> menjalankan banyak tugas I/O secara bergantian dalam <b>satu thread</b>, dikendalikan oleh <b>event loop</b>. Fungsi yang ditulis dengan <code>async def</code> disebut coroutine. Di dalamnya, <code>await</code> berarti "tunggu hasil ini, dan selama menunggu, silakan jalankan tugas lain".</p>
+<p><code>asyncio.gather</code> menjalankan beberapa coroutine bersamaan dan mengumpulkan hasilnya. Karena hanya satu thread, tidak ada race condition di antara titik <code>await</code>. Ini membuat asyncio sangat efisien untuk server yang melayani ribuan koneksi.</p>
+<p>Syaratnya, pustaka yang dipakai juga harus mendukung async, misalnya <code>httpx</code> atau <code>aiohttp</code> untuk HTTP. <b>gevent</b> adalah pendekatan lama: ia "menambal" pustaka standar agar kode sinkron biasa otomatis bergantian seperti async (greenlet).</p>
+<div class="lbl">PYTHON</div><pre><code>import asyncio, time
+
+async def ambil(nama, detik):
+    print(f&quot;mulai {nama}&quot;)
+    await asyncio.sleep(detik)        # menunggu tanpa memblokir
+    print(f&quot;selesai {nama}&quot;)
+    return f&quot;{nama}:{detik}s&quot;
+
+async def main():
+    mulai = time.perf_counter()
+    hasil = await asyncio.gather(
+        ambil(&quot;cuaca&quot;, 0.3),
+        ambil(&quot;kurs&quot;, 0.1),
+        ambil(&quot;berita&quot;, 0.2),
+    )
+    print(hasil)
+    print(&quot;total sekitar&quot;, round(time.perf_counter() - mulai, 1), &quot;detik&quot;)
+
+asyncio.run(main())</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>mulai cuaca
+mulai kurs
+mulai berita
+selesai kurs
+selesai berita
+selesai cuaca
+[&#x27;cuaca:0.3s&#x27;, &#x27;kurs:0.1s&#x27;, &#x27;berita:0.2s&#x27;]
+total sekitar 0.3 detik
+</code></pre>
+<h2>Poin penting</h2><ul><li><code>async def</code> membuat coroutine; <code>await</code> menyerahkan giliran.</li><li>Event loop menjalankan tugas bergantian dalam satu thread.</li><li><code>asyncio.gather</code> untuk menjalankan bersamaan.</li><li>Ringkasan: CPU berat → multiprocessing; I/O banyak → asyncio atau thread.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Total waktu tiga tugas 0.3, 0.1, 0.2 detik dengan gather?</summary><p class="ok">Jawaban: Sekitar 0.3 detik</p><p>Semua menunggu bersamaan; total = yang paling lama.</p></details><details><summary>Apa yang terjadi saat coroutine bertemu &lt;code&gt;await asyncio.sleep(1)&lt;/code&gt;?</summary><p class="ok">Jawaban: Event loop menjalankan tugas lain dulu</p><p>Itulah inti asyncio.</p></details>
+<a class="cta" href="/#python-13-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/multiprocessing">Multiprocessing</a></p><p>Berikutnya: <a href="/belajar/python/peta-framework-web-python">Peta framework web Python</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

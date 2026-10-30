@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Optional: mengganti null dengan aman · Java · Ruang Kode</title>
+<meta name="description" content="NullPointerException adalah salah satu bug paling sering di Java. Optional&lt;T&gt; adalah wadah yang mungkin berisi nilai, mungkin kosong. Dengan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/java/optional-mengganti-null-dengan-aman">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Optional: mengganti null dengan aman · Java · Ruang Kode"><meta property="og:description" content="NullPointerException adalah salah satu bug paling sering di Java. Optional&lt;T&gt; adalah wadah yang mungkin berisi nilai, mungkin kosong. Dengan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/java/optional-mengganti-null-dengan-aman"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Optional: mengganti null dengan aman", "description": "NullPointerException adalah salah satu bug paling sering di Java. Optional<T> adalah wadah yang mungkin berisi nilai, mungkin kosong. Dengan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/java/optional-mengganti-null-dengan-aman", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Java", "url": "https://ruang-kode-nine.vercel.app/belajar/java"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Java", "item": "https://ruang-kode-nine.vercel.app/belajar/java"}, {"@type": "ListItem", "position": 3, "name": "Optional: mengganti null dengan aman", "item": "https://ruang-kode-nine.vercel.app/belajar/java/optional-mengganti-null-dengan-aman"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/java">Java</a> / Modul 11</nav>
+<div class="eyebrow">Java · Modul 11 · Konsep &amp; kode</div><h1>Optional: mengganti null dengan aman</h1><a class="cta" href="/#java-11-6">Buka versi interaktif</a>
+<p><code>NullPointerException</code> adalah salah satu bug paling sering di Java. <code>Optional&lt;T&gt;</code> adalah wadah yang mungkin berisi nilai, mungkin kosong. Dengan mengembalikan Optional, method memberi tahu pemanggilnya secara jelas: "hasilnya bisa tidak ada, tangani itu".</p>
+<p>Daripada memeriksa <code>if (x != null)</code>, kamu merangkai operasi: <code>map</code> untuk mengubah isi jika ada, <code>filter</code> untuk menyaring, <code>orElse</code> untuk nilai cadangan, dan <code>ifPresent</code> untuk menjalankan sesuatu hanya jika ada isinya.</p>
+<p>Pakai Optional sebagai tipe kembalian method. Jangan memakainya untuk field atau parameter, dan hindari <code>get()</code> tanpa pemeriksaan karena akan melempar exception jika kosong.</p>
+<div class="lbl">JAVA</div><pre><code>import java.util.*;
+
+public class Opsional {
+    static Map&lt;String, String&gt; kotaPelanggan = Map.of(&quot;Andi&quot;, &quot;Jakarta&quot;, &quot;Budi&quot;, &quot;Bandung&quot;);
+
+    static Optional&lt;String&gt; cariKota(String nama) {
+        return Optional.ofNullable(kotaPelanggan.get(nama));
+    }
+
+    public static void main(String[] args) {
+        System.out.println(cariKota(&quot;Andi&quot;).map(String::toUpperCase).orElse(&quot;-&quot;));
+        System.out.println(cariKota(&quot;Gita&quot;).map(String::toUpperCase).orElse(&quot;-&quot;));
+        cariKota(&quot;Budi&quot;).ifPresent(k -&gt; System.out.println(&quot;Kirim ke &quot; + k));
+        System.out.println(cariKota(&quot;Andi&quot;).filter(k -&gt; k.startsWith(&quot;B&quot;)).isPresent());
+        String kota = cariKota(&quot;Zaki&quot;).orElseGet(() -&gt; &quot;Kota belum diisi&quot;);
+        System.out.println(kota);
+    }
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>JAKARTA
+-
+Kirim ke Bandung
+false
+Kota belum diisi
+</code></pre>
+<h2>Poin penting</h2><ul><li><code>Optional.ofNullable(x)</code> membungkus nilai yang mungkin null.</li><li><code>orElse</code> memberi nilai cadangan.</li><li><code>map</code> hanya berjalan jika ada isi.</li><li>Jangan memanggil <code>get()</code> tanpa memeriksa isinya.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>&lt;code&gt;Optional.empty().orElse(&quot;x&quot;)&lt;/code&gt;?</summary><p class="ok">Jawaban: &quot;x&quot;</p><p>Optional kosong, jadi nilai cadangan dipakai.</p></details><details><summary>Tempat terbaik memakai Optional?</summary><p class="ok">Jawaban: Tipe kembalian method</p><p>Itu tujuan awal Optional dirancang.</p></details>
+<a class="cta" href="/#java-11-6">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/stream-api-method-chaining">Stream API &amp; method chaining</a></p><p>Berikutnya: <a href="/belajar/java/package-modul">Package &amp; modul</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>List, dict &amp; set comprehension · Python · Ruang Kode</title>
+<meta name="description" content="Comprehension adalah cara Pythonic membuat koleksi baru dari koleksi lain dalam satu baris: [ekspresi for item in data if syarat]. Bacanya seperti…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/python/list-dict-set-comprehension">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="List, dict &amp; set comprehension · Python · Ruang Kode"><meta property="og:description" content="Comprehension adalah cara Pythonic membuat koleksi baru dari koleksi lain dalam satu baris: [ekspresi for item in data if syarat]. Bacanya seperti…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/python/list-dict-set-comprehension"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "List, dict & set comprehension", "description": "Comprehension adalah cara Pythonic membuat koleksi baru dari koleksi lain dalam satu baris: [ekspresi for item in data if syarat]. Bacanya seperti…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/python/list-dict-set-comprehension", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Python", "url": "https://ruang-kode-nine.vercel.app/belajar/python"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Python", "item": "https://ruang-kode-nine.vercel.app/belajar/python"}, {"@type": "ListItem", "position": 3, "name": "List, dict & set comprehension", "item": "https://ruang-kode-nine.vercel.app/belajar/python/list-dict-set-comprehension"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/python">Python</a> / Modul 8</nav>
+<div class="eyebrow">Python · Modul 8 · Konsep &amp; kode</div><h1>List, dict &amp; set comprehension</h1><a class="cta" href="/#python-8-1">Buka versi interaktif</a>
+<p><b>Comprehension</b> adalah cara Pythonic membuat koleksi baru dari koleksi lain dalam satu baris: <code>[ekspresi for item in data if syarat]</code>. Bacanya seperti kalimat: "ambil ekspresi untuk setiap item di data, jika syarat terpenuhi".</p>
+<p>Bentuk yang sama tersedia untuk dictionary <code>{k: v for ...}</code> dan set <code>{x for ...}</code>. Comprehension biasanya lebih cepat dan lebih mudah dibaca daripada loop dengan <code>append</code>.</p>
+<p>Tapi jangan berlebihan. Jika comprehension butuh dua loop bersarang dan beberapa syarat, tulis ulang sebagai loop biasa demi keterbacaan.</p>
+<div class="lbl">PYTHON</div><pre><code>harga = {&quot;kopi&quot;: 85000, &quot;teh&quot;: 25000, &quot;keripik&quot;: 15000, &quot;madu&quot;: 120000}
+
+kuadrat = [n * n for n in range(1, 6)]
+print(kuadrat)
+
+mahal = [nama for nama, h in harga.items() if h &gt; 50000]
+print(mahal)
+
+diskon = {nama: h * 9 // 10 for nama, h in harga.items()}
+print(diskon[&quot;kopi&quot;])
+
+huruf_awal = {nama[0] for nama in harga}
+print(sorted(huruf_awal))
+
+label = [&quot;genap&quot; if n % 2 == 0 else &quot;ganjil&quot; for n in range(4)]
+print(label)
+
+matriks = [[1, 2, 3], [4, 5, 6]]
+print([x for baris in matriks for x in baris])</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>[1, 4, 9, 16, 25]
+[&#x27;kopi&#x27;, &#x27;madu&#x27;]
+76500
+[&#x27;k&#x27;, &#x27;m&#x27;, &#x27;t&#x27;]
+[&#x27;genap&#x27;, &#x27;ganjil&#x27;, &#x27;genap&#x27;, &#x27;ganjil&#x27;]
+[1, 2, 3, 4, 5, 6]
+</code></pre>
+<h2>Poin penting</h2><ul><li><code>[f(x) for x in data if syarat(x)]</code>.</li><li>Dict comprehension: <code>{k: v for ...}</code>.</li><li>if di akhir = saring; if-else di depan = pilih nilai.</li><li>Utamakan keterbacaan.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Hasil &lt;code&gt;[x*2 for x in [1,2,3] if x != 2]&lt;/code&gt;?</summary><p class="ok">Jawaban: [2, 6]</p><p>2 disaring, lalu 1 dan 3 dikali dua.</p></details><details><summary>Kurung untuk set comprehension?</summary><p class="ok">Jawaban: { } tanpa titik dua</p><p>Kurung kurawal tanpa pasangan kunci:nilai.</p></details>
+<a class="cta" href="/#python-8-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/paradigma-prosedural-oop-fungsional">Paradigma: prosedural, OOP, fungsional</a></p><p>Berikutnya: <a href="/belajar/python/iterator-generator">Iterator &amp; generator</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

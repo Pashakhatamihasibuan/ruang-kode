@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Komponen &amp; JSX · React · Ruang Kode</title>
+<meta name="description" content="React membangun antarmuka dari komponen: fungsi yang mengembalikan tampilan. Nama komponen diawali huruf kapital, misalnya KartuProduk, dan dipakai…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/react/komponen-jsx">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Komponen &amp; JSX · React · Ruang Kode"><meta property="og:description" content="React membangun antarmuka dari komponen: fungsi yang mengembalikan tampilan. Nama komponen diawali huruf kapital, misalnya KartuProduk, dan dipakai…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/react/komponen-jsx"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Komponen & JSX", "description": "React membangun antarmuka dari komponen: fungsi yang mengembalikan tampilan. Nama komponen diawali huruf kapital, misalnya KartuProduk, dan dipakai…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/react/komponen-jsx", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "React", "url": "https://ruang-kode-nine.vercel.app/belajar/react"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "React", "item": "https://ruang-kode-nine.vercel.app/belajar/react"}, {"@type": "ListItem", "position": 3, "name": "Komponen & JSX", "item": "https://ruang-kode-nine.vercel.app/belajar/react/komponen-jsx"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/react">React</a> / Modul 1</nav>
+<div class="eyebrow">React · Modul 1 · Praktik langsung</div><h1>Komponen &amp; JSX</h1><a class="cta" href="/#react-1-1">Buka versi interaktif</a>
+<p>React membangun antarmuka dari <b>komponen</b>: fungsi yang mengembalikan tampilan. Nama komponen diawali huruf kapital, misalnya <code>KartuProduk</code>, dan dipakai seperti tag HTML: <code>&lt;KartuProduk /&gt;</code>.</p>
+<p>Tampilan ditulis dengan <b>JSX</b>, sintaks mirip HTML di dalam JavaScript. Perbedaannya: <code>className</code> pengganti class, <code>htmlFor</code> pengganti for, setiap tag harus ditutup, dan ekspresi JavaScript ditulis di dalam <code>{ }</code>. Satu komponen harus mengembalikan satu elemen induk, atau fragment <code>&lt;&gt;...&lt;/&gt;</code>.</p>
+<p>Proyek nyata biasanya dibuat dengan <code>npm create vite@latest</code>. Di sini, pratinjau langsung menjalankan komponen <code>App</code>.</p>
+<div class="lbl">CSS</div><pre><code>body{font:14px system-ui,sans-serif}.kartu{border:1px solid #ddd;border-radius:10px;padding:8px 12px;margin:6px 0}</code></pre>
+<div class="lbl">JSX</div><pre><code>function KartuProduk() {
+  const nama = &quot;Kopi Gayo&quot;;
+  const harga = 85000;
+  return (
+    &lt;div className=&quot;kartu&quot;&gt;
+      &lt;h3&gt;{nama}&lt;/h3&gt;
+      &lt;p&gt;Rp{harga.toLocaleString(&quot;id-ID&quot;)}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+function App() {
+  return (
+    &lt;&gt;
+      &lt;h2&gt;Produk pilihan&lt;/h2&gt;
+      &lt;KartuProduk /&gt;
+      &lt;KartuProduk /&gt;
+    &lt;/&gt;
+  );
+}</code></pre>
+<h2>Tantangan</h2><ol><li>Tampilkan <b>tiga</b> kartu produk.</li></ol>
+<h2>Poin penting</h2><ul><li>Komponen = fungsi yang mengembalikan JSX.</li><li>Nama komponen diawali huruf kapital.</li><li>className, htmlFor, dan tag tertutup di JSX.</li><li>{ } untuk ekspresi JavaScript.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Atribut class di JSX ditulis?</summary><p class="ok">Jawaban: className</p><p>class adalah kata kunci di JavaScript.</p></details><details><summary>Kenapa nama komponen harus kapital?</summary><p class="ok">Jawaban: Agar dibedakan dari tag HTML biasa</p><p>&lt;kartu&gt; dianggap tag HTML, &lt;Kartu&gt; dianggap komponen.</p></details>
+<a class="cta" href="/#react-1-1">Kerjakan latihannya di aplikasi</a><p>Berikutnya: <a href="/belajar/react/props">Props</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

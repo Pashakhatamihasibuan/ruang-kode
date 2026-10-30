@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ORM: Hibernate, Spring Data JPA, Ebean · Java · Ruang Kode</title>
+<meta name="description" content="Menulis JDBC untuk setiap tabel itu melelahkan. ORM (Object-Relational Mapping) memetakan kelas Java ke tabel database: satu objek = satu baris, satu…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/java/orm-hibernate-spring-data-jpa-ebean">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="ORM: Hibernate, Spring Data JPA, Ebean · Java · Ruang Kode"><meta property="og:description" content="Menulis JDBC untuk setiap tabel itu melelahkan. ORM (Object-Relational Mapping) memetakan kelas Java ke tabel database: satu objek = satu baris, satu…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/java/orm-hibernate-spring-data-jpa-ebean"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "ORM: Hibernate, Spring Data JPA, Ebean", "description": "Menulis JDBC untuk setiap tabel itu melelahkan. ORM (Object-Relational Mapping) memetakan kelas Java ke tabel database: satu objek = satu baris, satu…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/java/orm-hibernate-spring-data-jpa-ebean", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Java", "url": "https://ruang-kode-nine.vercel.app/belajar/java"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Java", "item": "https://ruang-kode-nine.vercel.app/belajar/java"}, {"@type": "ListItem", "position": 3, "name": "ORM: Hibernate, Spring Data JPA, Ebean", "item": "https://ruang-kode-nine.vercel.app/belajar/java/orm-hibernate-spring-data-jpa-ebean"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/java">Java</a> / Modul 15</nav>
+<div class="eyebrow">Java · Modul 15 · Konsep &amp; kode</div><h1>ORM: Hibernate, Spring Data JPA, Ebean</h1><a class="cta" href="/#java-15-2">Buka versi interaktif</a>
+<p>Menulis JDBC untuk setiap tabel itu melelahkan. <b>ORM</b> (Object-Relational Mapping) memetakan kelas Java ke tabel database: satu objek = satu baris, satu field = satu kolom. Kamu bekerja dengan objek, ORM yang menulis SQL-nya.</p>
+<p><b>JPA</b> adalah standar anotasinya (<code>@Entity</code>, <code>@Id</code>, <code>@ManyToOne</code>), dan <b>Hibernate</b> adalah implementasi paling populer. <b>Spring Data JPA</b> melangkah lebih jauh: cukup tulis interface repository, dan query seperti <code>findByKategori</code> dibuat otomatis dari nama method.</p>
+<p><b>Ebean</b> adalah ORM alternatif yang lebih sederhana. Apa pun ORM-nya, tetap pahami SQL: kamu perlu membaca query yang dihasilkan untuk menemukan masalah performa seperti N+1 query.</p>
+<div class="lbl">JAVA</div><pre><code>@Entity
+@Table(name = &quot;produk&quot;)
+public class Produk {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String nama;
+    private String kategori;
+    private Integer harga;
+    // getter &amp; setter
+}
+
+public interface ProdukRepository extends JpaRepository&lt;Produk, Long&gt; {
+    List&lt;Produk&gt; findByKategoriOrderByHargaAsc(String kategori);
+
+    @Query(&quot;SELECT p FROM Produk p WHERE p.harga &gt; :min&quot;)
+    List&lt;Produk&gt; mahalDari(@Param(&quot;min&quot;) int min);
+}
+
+// Pemakaian di service
+List&lt;Produk&gt; minuman = repo.findByKategoriOrderByHargaAsc(&quot;Minuman&quot;);
+// SQL yang dibuat: select ... from produk where kategori=? order by harga asc</code></pre>
+<h2>Poin penting</h2><ul><li>ORM memetakan kelas ke tabel.</li><li>JPA = standar, Hibernate = implementasi.</li><li>Spring Data membuat query dari nama method.</li><li>Tetap periksa SQL yang dihasilkan ORM.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Anotasi yang menandai kelas sebagai tabel?</summary><p class="ok">Jawaban: @Entity</p><p>@Entity menandai kelas sebagai entitas JPA.</p></details><details><summary>&lt;code&gt;findByKategori&lt;/code&gt; di Spring Data artinya?</summary><p class="ok">Jawaban: Query dibuat otomatis dari nama method</p><p>Spring Data mengurai nama method.</p></details>
+<a class="cta" href="/#java-15-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/jdbc-java-bicara-dengan-database">JDBC: Java bicara dengan database</a></p><p>Berikutnya: <a href="/belajar/java/spring-boot-dependency-injection">Spring Boot &amp; dependency injection</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

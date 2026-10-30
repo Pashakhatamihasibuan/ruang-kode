@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Index: mempercepat pencarian · SQL · Ruang Kode</title>
+<meta name="description" content="Tanpa index, mencari pelanggan dari kota tertentu berarti database membaca setiap baris (full table scan). Untuk 10 juta baris, itu lambat. Index adalah…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/sql/index-mempercepat-pencarian">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Index: mempercepat pencarian · SQL · Ruang Kode"><meta property="og:description" content="Tanpa index, mencari pelanggan dari kota tertentu berarti database membaca setiap baris (full table scan). Untuk 10 juta baris, itu lambat. Index adalah…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/sql/index-mempercepat-pencarian"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Index: mempercepat pencarian", "description": "Tanpa index, mencari pelanggan dari kota tertentu berarti database membaca setiap baris (full table scan). Untuk 10 juta baris, itu lambat. Index adalah…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/sql/index-mempercepat-pencarian", "learningResourceType": "Praktik SQL", "isPartOf": {"@type": "Course", "name": "SQL", "url": "https://ruang-kode-nine.vercel.app/belajar/sql"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "SQL", "item": "https://ruang-kode-nine.vercel.app/belajar/sql"}, {"@type": "ListItem", "position": 3, "name": "Index: mempercepat pencarian", "item": "https://ruang-kode-nine.vercel.app/belajar/sql/index-mempercepat-pencarian"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/sql">SQL</a> / Modul 10</nav>
+<div class="eyebrow">SQL · Modul 10 · Praktik SQL</div><h1>Index: mempercepat pencarian</h1><a class="cta" href="/#sql-10-2">Buka versi interaktif</a>
+<p>Tanpa index, mencari pelanggan dari kota tertentu berarti database membaca <b>setiap baris</b> (full table scan). Untuk 10 juta baris, itu lambat. <b>Index</b> adalah struktur tambahan yang menyimpan nilai kolom secara terurut beserta penunjuk ke barisnya, seperti indeks di belakang buku. Database bisa langsung melompat ke lokasi yang tepat dengan pencarian biner.</p>
+<p>Index mempercepat WHERE, JOIN, dan ORDER BY pada kolom yang diindeks, tetapi ada harganya: memakan ruang dan memperlambat INSERT, UPDATE, DELETE karena index juga harus diperbarui. Jadi buat index untuk kolom yang sering dicari, bukan untuk semua kolom.</p>
+<p>Gunakan <code>EXPLAIN QUERY PLAN</code> (SQLite) atau <code>EXPLAIN</code> (PostgreSQL/MySQL) untuk melihat apakah database melakukan SCAN (baca semua) atau SEARCH (memakai index).</p>
+<div class="lbl">Sebelum index: SCAN</div><pre><code>EXPLAIN QUERY PLAN SELECT * FROM pelanggan WHERE kota = &#x27;Jakarta&#x27;;</code></pre>
+<div class="lbl">Buat index lalu cek lagi</div><pre><code>CREATE INDEX idx_pelanggan_kota ON pelanggan(kota);
+EXPLAIN QUERY PLAN SELECT * FROM pelanggan WHERE kota = &#x27;Jakarta&#x27;;</code></pre>
+<div class="lbl">Primary key sudah terindeks</div><pre><code>EXPLAIN QUERY PLAN SELECT * FROM produk WHERE id = 3;</code></pre>
+<div class="lbl">UNIQUE index menolak duplikat</div><pre><code>CREATE UNIQUE INDEX idx_produk_nama ON produk(nama);
+INSERT INTO produk (nama, kategori, harga) VALUES (&#x27;Kopi Gayo&#x27;, &#x27;Minuman&#x27;, 1000);</code></pre>
+<div class="lbl">Hapus index</div><pre><code>CREATE INDEX idx_tmp ON pesanan(status);
+DROP INDEX idx_tmp;</code></pre>
+<h2>Tantangan</h2><ol><li>Buat index bernama idx_pesanan_tanggal pada kolom tanggal di tabel pesanan.</li></ol>
+<h2>Poin penting</h2><ul><li>Index = daftar terurut + penunjuk baris.</li><li>SCAN membaca semua; SEARCH memakai index.</li><li>Index mempercepat baca, memperlambat tulis.</li><li>Index kolom yang sering ada di WHERE dan JOIN.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kerugian membuat terlalu banyak index?</summary><p class="ok">Jawaban: INSERT/UPDATE lebih lambat dan butuh ruang</p><p>Setiap index ikut diperbarui saat data berubah.</p></details><details><summary>Perintah untuk melihat rencana eksekusi?</summary><p class="ok">Jawaban: EXPLAIN</p><p>EXPLAIN menunjukkan cara database menjalankan query.</p></details>
+<a class="cta" href="/#sql-10-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/view-query-yang-disimpan">View: query yang disimpan</a></p><p>Berikutnya: <a href="/belajar/sql/begin-commit-rollback-savepoint">BEGIN, COMMIT, ROLLBACK &amp; SAVEPOINT</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

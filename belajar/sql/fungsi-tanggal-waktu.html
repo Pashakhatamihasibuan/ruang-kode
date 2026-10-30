@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fungsi tanggal &amp; waktu · SQL · Ruang Kode</title>
+<meta name="description" content="Setiap database punya fungsi tanggal sendiri. Di SQLite (dan simulator ini) tanggal disimpan sebagai teks ISO YYYY-MM-DD, lalu diolah dengan DATE, TIME,…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/sql/fungsi-tanggal-waktu">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Fungsi tanggal &amp; waktu · SQL · Ruang Kode"><meta property="og:description" content="Setiap database punya fungsi tanggal sendiri. Di SQLite (dan simulator ini) tanggal disimpan sebagai teks ISO YYYY-MM-DD, lalu diolah dengan DATE, TIME,…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/sql/fungsi-tanggal-waktu"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Fungsi tanggal & waktu", "description": "Setiap database punya fungsi tanggal sendiri. Di SQLite (dan simulator ini) tanggal disimpan sebagai teks ISO YYYY-MM-DD, lalu diolah dengan DATE, TIME,…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/sql/fungsi-tanggal-waktu", "learningResourceType": "Praktik SQL", "isPartOf": {"@type": "Course", "name": "SQL", "url": "https://ruang-kode-nine.vercel.app/belajar/sql"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "SQL", "item": "https://ruang-kode-nine.vercel.app/belajar/sql"}, {"@type": "ListItem", "position": 3, "name": "Fungsi tanggal & waktu", "item": "https://ruang-kode-nine.vercel.app/belajar/sql/fungsi-tanggal-waktu"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/sql">SQL</a> / Modul 9</nav>
+<div class="eyebrow">SQL · Modul 9 · Praktik SQL</div><h1>Fungsi tanggal &amp; waktu</h1><a class="cta" href="/#sql-9-2">Buka versi interaktif</a>
+<p>Setiap database punya fungsi tanggal sendiri. Di SQLite (dan simulator ini) tanggal disimpan sebagai teks ISO <code>YYYY-MM-DD</code>, lalu diolah dengan <code>DATE</code>, <code>TIME</code>, <code>DATETIME</code>/<code>TIMESTAMP</code>, dan <code>STRFTIME</code>. Contoh: <code>DATE('2024-10-28', '+7 days')</code>.</p>
+<p>SQL Server memakai <code>DATEADD(day, 7, tanggal)</code> untuk menambah dan <code>DATEPART(month, tanggal)</code> untuk mengambil bagian tanggal. PostgreSQL memakai <code>tanggal + INTERVAL '7 days'</code> dan <code>EXTRACT(MONTH FROM tanggal)</code>. Simulator ini juga menerima DATEADD, DATEPART, DATEDIFF, dan EXTRACT supaya kamu bisa mencoba gaya-gaya itu.</p>
+<p>Tanggal ISO bisa dibandingkan dan diurutkan seperti teks biasa karena urutannya tahun, bulan, lalu hari. Itu sebabnya format ini sangat dianjurkan.</p>
+<div class="lbl">Gaya SQLite</div><pre><code>SELECT DATE(&#x27;2024-10-28&#x27;, &#x27;+7 days&#x27;) AS seminggu,
+       DATE(&#x27;2024-10-28&#x27;, &#x27;start of month&#x27;) AS awal_bulan,
+       STRFTIME(&#x27;%d/%m/%Y&#x27;, &#x27;2024-10-28&#x27;) AS format_indo;</code></pre>
+<div class="lbl">Gaya SQL Server: DATEADD &amp; DATEPART</div><pre><code>SELECT id, tanggal,
+       DATEADD(day, 3, tanggal) AS estimasi_tiba,
+       DATEPART(month, tanggal) AS bulan
+FROM pesanan;</code></pre>
+<div class="lbl">Selisih hari &amp; EXTRACT</div><pre><code>SELECT nama, bergabung,
+       DATEDIFF(day, bergabung, &#x27;2024-12-31&#x27;) AS hari_menjadi_member,
+       EXTRACT(YEAR FROM bergabung) AS tahun
+FROM pelanggan;</code></pre>
+<div class="lbl">Waktu sekarang</div><pre><code>SELECT CURRENT_DATE AS hari_ini, CURRENT_TIMESTAMP AS sekarang;</code></pre>
+<h2>Tantangan</h2><ol><li>Tampilkan id pesanan dan tanggal jatuh tempo (alias jatuh_tempo) yaitu 14 hari setelah tanggal pesanan, untuk pesanan berstatus baru.</li></ol>
+<h2>Poin penting</h2><ul><li>Simpan tanggal dalam format ISO.</li><li>SQLite: DATE/STRFTIME dengan pengubah teks.</li><li>SQL Server: DATEADD, DATEPART, DATEDIFF.</li><li>PostgreSQL: INTERVAL dan EXTRACT.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>&lt;code&gt;DATE(&#x27;2024-01-31&#x27;, &#x27;+1 day&#x27;)&lt;/code&gt;?</summary><p class="ok">Jawaban: &#x27;2024-02-01&#x27;</p><p>Fungsi tanggal paham panjang bulan.</p></details><details><summary>Kenapa format YYYY-MM-DD bisa diurutkan seperti teks?</summary><p class="ok">Jawaban: Urutan karakternya tahun, bulan, hari</p><p>Bagian terbesar di depan.</p></details>
+<a class="cta" href="/#sql-9-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/fungsi-angka-teks">Fungsi angka &amp; teks</a></p><p>Berikutnya: <a href="/belajar/sql/case-coalesce-nullif">CASE, COALESCE &amp; NULLIF</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

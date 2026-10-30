@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Toko online mini · React · Ruang Kode</title>
+<meta name="description" content="Bangun aplikasi katalog dan keranjang Toko Nusantara dengan React. Data produk diambil dari API (boleh tiruan), keranjang tersimpan di localStorage.">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/react/toko-online-mini">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Toko online mini · React · Ruang Kode"><meta property="og:description" content="Bangun aplikasi katalog dan keranjang Toko Nusantara dengan React. Data produk diambil dari API (boleh tiruan), keranjang tersimpan di localStorage.">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/react/toko-online-mini"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Toko online mini", "description": "Bangun aplikasi katalog dan keranjang Toko Nusantara dengan React. Data produk diambil dari API (boleh tiruan), keranjang tersimpan di localStorage.", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/react/toko-online-mini", "learningResourceType": "Proyek akhir", "isPartOf": {"@type": "Course", "name": "React", "url": "https://ruang-kode-nine.vercel.app/belajar/react"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "React", "item": "https://ruang-kode-nine.vercel.app/belajar/react"}, {"@type": "ListItem", "position": 3, "name": "Toko online mini", "item": "https://ruang-kode-nine.vercel.app/belajar/react/toko-online-mini"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/react">React</a> / Modul 9</nav>
+<div class="eyebrow">React · Modul 9 · Proyek akhir</div><h1>Toko online mini</h1><a class="cta" href="/#react-9-1">Buka versi interaktif</a>
+<p>Bangun aplikasi katalog dan keranjang Toko Nusantara dengan React. Data produk diambil dari API (boleh tiruan), keranjang tersimpan di localStorage.</p>
+<p><b>Teknologi:</b> React</p>
+<h2>Fitur yang dibuat</h2><ul><li>Komponen terpisah: App, DaftarProduk, KartuProduk, Keranjang</li><li>Filter kategori dan pencarian nama (controlled input)</li><li>Keadaan loading dan error saat mengambil data</li><li>Keranjang dengan useReducer: tambah, kurangi, hapus, total harga</li><li>Keranjang tersimpan dengan custom hook useLocalStorage</li><li>Daftar memakai key yang stabil</li><li>Minimal dua tes dengan Vitest + React Testing Library</li><li>Terbit di Vercel atau Netlify</li></ul>
+<h2>Langkah kerja</h2><ol><li>Buat proyek: npm create vite@latest toko -- --template react.</li><li>Bangun komponen dengan data statis dulu.</li><li>Tambahkan state, reducer, dan data API.</li><li>Tulis tes, lalu terbitkan.</li></ol>
+<div class="lbl">src/App.jsx</div><pre><code>import { useEffect, useReducer, useState } from &quot;react&quot;;
+
+const PRODUK = [
+  { id: 1, nama: &quot;Kopi Gayo&quot;, kategori: &quot;Minuman&quot;, harga: 85000 },
+  { id: 2, nama: &quot;Teh Melati&quot;, kategori: &quot;Minuman&quot;, harga: 25000 },
+  { id: 3, nama: &quot;Keripik Singkong&quot;, kategori: &quot;Camilan&quot;, harga: 15000 },
+];
+const ambil = () =&gt; new Promise(r =&gt; setTimeout(() =&gt; r(PRODUK), 500));
+
+function keranjang(state, a) {
+  switch (a.type) {
+    case &quot;tambah&quot;: return { ...state, [a.id]: (state[a.id] || 0) + 1 };
+    case &quot;kurang&quot;: {
+      const n = (state[a.id] || 0) - 1, s = { ...state };
+      if (n &lt;= 0) delete s[a.id]; else s[a.id] = n;
+      return s;
+    }
+    default: return state;
+  }
+}
+
+export default function App() {
+  const [produk, setProduk] = useState(null);
+  const [cari, setCari] = useState(&quot;&quot;);
+  const [isi, dispatch] = useReducer(keranjang, {}, () =&gt; JSON.parse(localStorage.getItem(&quot;krj&quot;) || &quot;{}&quot;));
+  useEffect(() =&gt; { ambil().then(setProduk); }, []);
+  useEffect(() =&gt; { localStorage.setItem(&quot;krj&quot;, JSON.stringify(isi)); }, [isi]);
+  if (!produk) return &lt;p&gt;Memuat…&lt;/p&gt;;
+  const tampil = produk.filter(p =&gt; p.nama.toLowerCase().includes(cari.toLowerCase()));
+  const total = Object.entries(isi).reduce((t, [id, n]) =&gt; t + n * produk.find(p =&gt; p.id === +id).harga, 0);
+  return (
+    &lt;main&gt;
+      &lt;input value={cari} onChange={e =&gt; setCari(e.target.value)} placeholder=&quot;Cari produk&quot; aria-label=&quot;Cari produk&quot; /&gt;
+      &lt;ul&gt;{tampil.map(p =&gt; (
+        &lt;li key={p.id}&gt;{p.nama} · Rp{p.harga.toLocaleString(&quot;id-ID&quot;)}
+          &lt;button onClick={() =&gt; dispatch({ type: &quot;kurang&quot;, id: p.id })}&gt;−&lt;/button&gt;
+          {isi[p.id] || 0}
+          &lt;button onClick={() =&gt; dispatch({ type: &quot;tambah&quot;, id: p.id })}&gt;+&lt;/button&gt;
+        &lt;/li&gt;))}
+      &lt;/ul&gt;
+      &lt;p&gt;Total: Rp{total.toLocaleString(&quot;id-ID&quot;)}&lt;/p&gt;
+    &lt;/main&gt;
+  );
+}</code></pre>
+<a class="cta" href="/#react-9-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/react/next-js-react-native-typescript">Next.js, React Native &amp; TypeScript</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

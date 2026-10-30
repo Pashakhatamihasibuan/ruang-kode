@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Scope: di mana variabel hidup · Java · Ruang Kode</title>
+<meta name="description" content="Scope adalah wilayah kode tempat sebuah variabel bisa dipakai. Di Java, aturannya sederhana: variabel hanya hidup di dalam pasangan kurung kurawal { }…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/java/scope-di-mana-variabel-hidup">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Scope: di mana variabel hidup · Java · Ruang Kode"><meta property="og:description" content="Scope adalah wilayah kode tempat sebuah variabel bisa dipakai. Di Java, aturannya sederhana: variabel hanya hidup di dalam pasangan kurung kurawal { }…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/java/scope-di-mana-variabel-hidup"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Scope: di mana variabel hidup", "description": "Scope adalah wilayah kode tempat sebuah variabel bisa dipakai. Di Java, aturannya sederhana: variabel hanya hidup di dalam pasangan kurung kurawal { }…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/java/scope-di-mana-variabel-hidup", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Java", "url": "https://ruang-kode-nine.vercel.app/belajar/java"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Java", "item": "https://ruang-kode-nine.vercel.app/belajar/java"}, {"@type": "ListItem", "position": 3, "name": "Scope: di mana variabel hidup", "item": "https://ruang-kode-nine.vercel.app/belajar/java/scope-di-mana-variabel-hidup"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/java">Java</a> / Modul 2</nav>
+<div class="eyebrow">Java · Modul 2 · Konsep &amp; kode</div><h1>Scope: di mana variabel hidup</h1><a class="cta" href="/#java-2-3">Buka versi interaktif</a>
+<p><b>Scope</b> adalah wilayah kode tempat sebuah variabel bisa dipakai. Di Java, aturannya sederhana: variabel hanya hidup di dalam pasangan kurung kurawal <code>{ }</code> tempat ia dideklarasikan, mulai dari baris deklarasinya.</p>
+<p>Variabel yang dibuat di dalam method disebut <b>variabel lokal</b>. Ia lahir saat method dipanggil dan hilang saat method selesai. Variabel di kepala <code>for</code> hanya hidup selama perulangan. Field (variabel milik kelas) hidup selama objeknya ada.</p>
+<p>Kalau kamu memakai variabel di luar scope-nya, compiler menolak dengan pesan <i>cannot find symbol</i>. Ini bukan musuh: scope yang sempit membuat program lebih mudah dibaca karena setiap nama hanya berlaku di area kecil.</p>
+<div class="lbl">JAVA</div><pre><code>public class Scope {
+    static int total = 0;               // field: hidup selama program
+
+    static void tambah(int n) {          // n: parameter, lokal di method
+        int dobel = n * 2;               // lokal
+        total += dobel;
+    }
+
+    public static void main(String[] args) {
+        for (int i = 1; i &lt;= 3; i++) {   // i hanya hidup di dalam for
+            tambah(i);
+        }
+        // System.out.println(i);        // error: cannot find symbol
+        System.out.println(total);
+        {
+            int sementara = 99;          // blok bebas punya scope sendiri
+            System.out.println(sementara);
+        }
+    }
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>12
+99
+</code></pre>
+<h2>Poin penting</h2><ul><li>Scope ditentukan oleh kurung kurawal terdekat.</li><li>Parameter berperilaku seperti variabel lokal yang nilainya diisi pemanggil.</li><li>Dua method boleh punya variabel lokal dengan nama sama karena scope-nya terpisah.</li><li>Deklarasikan variabel sedekat mungkin dengan tempat pemakaiannya.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Variabel &lt;code&gt;i&lt;/code&gt; di &lt;code&gt;for (int i = 0; ...)&lt;/code&gt; bisa dipakai di mana?</summary><p class="ok">Jawaban: Hanya di dalam perulangan</p><p>Variabel kepala for hanya hidup selama perulangan itu.</p></details><details><summary>Pesan compiler kalau variabel dipakai di luar scope?</summary><p class="ok">Jawaban: cannot find symbol</p><p>Compiler tidak menemukan nama itu di scope saat ini.</p></details>
+<a class="cta" href="/#java-2-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/parameter-return">Parameter &amp; return</a></p><p>Berikutnya: <a href="/belajar/java/string">String</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

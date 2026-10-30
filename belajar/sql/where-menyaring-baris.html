@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>WHERE: menyaring baris · SQL · Ruang Kode</title>
+<meta name="description" content="WHERE menyaring baris: hanya baris yang kondisinya bernilai benar yang ikut ke hasil. Bayangkan database memeriksa setiap baris satu per satu, lalu…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/sql/where-menyaring-baris">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="WHERE: menyaring baris · SQL · Ruang Kode"><meta property="og:description" content="WHERE menyaring baris: hanya baris yang kondisinya bernilai benar yang ikut ke hasil. Bayangkan database memeriksa setiap baris satu per satu, lalu…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/sql/where-menyaring-baris"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "WHERE: menyaring baris", "description": "WHERE menyaring baris: hanya baris yang kondisinya bernilai benar yang ikut ke hasil. Bayangkan database memeriksa setiap baris satu per satu, lalu…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/sql/where-menyaring-baris", "learningResourceType": "Praktik SQL", "isPartOf": {"@type": "Course", "name": "SQL", "url": "https://ruang-kode-nine.vercel.app/belajar/sql"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "SQL", "item": "https://ruang-kode-nine.vercel.app/belajar/sql"}, {"@type": "ListItem", "position": 3, "name": "WHERE: menyaring baris", "item": "https://ruang-kode-nine.vercel.app/belajar/sql/where-menyaring-baris"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/sql">SQL</a> / Modul 3</nav>
+<div class="eyebrow">SQL · Modul 3 · Praktik SQL</div><h1>WHERE: menyaring baris</h1><a class="cta" href="/#sql-3-2">Buka versi interaktif</a>
+<p><code>WHERE</code> menyaring baris: hanya baris yang kondisinya bernilai benar yang ikut ke hasil. Bayangkan database memeriksa setiap baris satu per satu, lalu membuang yang tidak memenuhi syarat. Visualisasi di bawah memperlihatkan proses itu.</p>
+<p>Kondisi bisa digabung dengan <code>AND</code> dan <code>OR</code>, dan memakai operator seperti <code>IN</code>, <code>BETWEEN</code>, <code>LIKE</code>, serta <code>IS NULL</code>. Untuk teks, perbandingan biasanya peka huruf besar-kecil di PostgreSQL tetapi tidak di MySQL.</p>
+<p>WHERE hanya bisa memakai nilai dari baris yang sedang diperiksa. Ia tidak bisa memakai hasil COUNT atau SUM, karena pengelompokan belum terjadi pada tahap ini. Untuk itu ada HAVING.</p>
+<div class="lbl">Satu kondisi</div><pre><code>SELECT nama, harga FROM produk WHERE kategori = &#x27;Camilan&#x27;;</code></pre>
+<div class="lbl">Beberapa kondisi</div><pre><code>SELECT nama, stok FROM produk WHERE stok &lt; 50 AND harga &gt; 50000;</code></pre>
+<div class="lbl">IN dan NOT IN</div><pre><code>SELECT nama, kota FROM pelanggan WHERE kota NOT IN (&#x27;Jakarta&#x27;, &#x27;Bandung&#x27;);</code></pre>
+<div class="lbl">Rentang tanggal</div><pre><code>SELECT id, tanggal, status FROM pesanan WHERE tanggal BETWEEN &#x27;2024-10-01&#x27; AND &#x27;2024-10-31&#x27;;</code></pre>
+<h2>Tantangan</h2><ol><li>Tampilkan id dan status pesanan yang statusnya selesai atau dikirim, dan terjadi pada bulan November 2024.</li></ol>
+<h2>Poin penting</h2><ul><li>WHERE memeriksa setiap baris satu per satu.</li><li>Gabungkan kondisi dengan AND/OR dan kurung.</li><li>Rentang tanggal: <code>&gt;= awal AND &lt; awal_bulan_berikutnya</code> aman untuk timestamp.</li><li>Agregat tidak boleh di WHERE.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Baris yang kondisinya NULL di WHERE?</summary><p class="ok">Jawaban: Dibuang</p><p>Hanya kondisi TRUE yang lolos.</p></details><details><summary>Cara menyaring kategori Minuman atau Bumbu yang paling ringkas?</summary><p class="ok">Jawaban: kategori IN (&#x27;Minuman&#x27;,&#x27;Bumbu&#x27;)</p><p>IN memeriksa daftar pilihan.</p></details>
+<a class="cta" href="/#sql-3-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/select-from">SELECT &amp; FROM</a></p><p>Berikutnya: <a href="/belajar/sql/order-by-limit-distinct">ORDER BY, LIMIT &amp; DISTINCT</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

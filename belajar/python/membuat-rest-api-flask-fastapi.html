@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Membuat REST API: Flask &amp; FastAPI · Python · Ruang Kode</title>
+<meta name="description" content="Flask menghubungkan URL ke fungsi dengan decorator @app.route (atau @app.get di versi baru). Fungsi mengembalikan dict, dan Flask mengubahnya menjadi JSON.">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/python/membuat-rest-api-flask-fastapi">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Membuat REST API: Flask &amp; FastAPI · Python · Ruang Kode"><meta property="og:description" content="Flask menghubungkan URL ke fungsi dengan decorator @app.route (atau @app.get di versi baru). Fungsi mengembalikan dict, dan Flask mengubahnya menjadi JSON.">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/python/membuat-rest-api-flask-fastapi"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Membuat REST API: Flask & FastAPI", "description": "Flask menghubungkan URL ke fungsi dengan decorator @app.route (atau @app.get di versi baru). Fungsi mengembalikan dict, dan Flask mengubahnya menjadi JSON.", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/python/membuat-rest-api-flask-fastapi", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Python", "url": "https://ruang-kode-nine.vercel.app/belajar/python"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Python", "item": "https://ruang-kode-nine.vercel.app/belajar/python"}, {"@type": "ListItem", "position": 3, "name": "Membuat REST API: Flask & FastAPI", "item": "https://ruang-kode-nine.vercel.app/belajar/python/membuat-rest-api-flask-fastapi"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/python">Python</a> / Modul 14</nav>
+<div class="eyebrow">Python · Modul 14 · Konsep &amp; kode</div><h1>Membuat REST API: Flask &amp; FastAPI</h1><a class="cta" href="/#python-14-2">Buka versi interaktif</a>
+<p><b>Flask</b> menghubungkan URL ke fungsi dengan decorator <code>@app.route</code> (atau <code>@app.get</code> di versi baru). Fungsi mengembalikan dict, dan Flask mengubahnya menjadi JSON.</p>
+<p><b>FastAPI</b> tampak mirip, tetapi memanfaatkan type hint secara penuh. Parameter <code>id: int</code> di fungsi otomatis divalidasi dari URL. Body request dideklarasikan sebagai model Pydantic. FastAPI juga membuat dokumentasi interaktif di <code>/docs</code> secara otomatis.</p>
+<p>FastAPI mendukung <code>async def</code> sehingga satu server bisa melayani banyak request yang sedang menunggu database atau API lain. Jalankan dengan server ASGI seperti <code>uvicorn</code>.</p>
+<div class="lbl">PYTHON</div><pre><code># ===== Flask =====
+from flask import Flask
+app = Flask(__name__)
+PRODUK = {1: {&quot;nama&quot;: &quot;Kopi Gayo&quot;, &quot;harga&quot;: 85000}}
+
+@app.get(&quot;/produk/&lt;int:pid&gt;&quot;)
+def detail(pid):
+    p = PRODUK.get(pid)
+    return p if p else ({&quot;error&quot;: &quot;tidak ada&quot;}, 404)
+# flask --app app run
+
+# ===== FastAPI =====
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+
+api = FastAPI()
+
+class ProdukBaru(BaseModel):
+    nama: str
+    harga: int
+
+@api.get(&quot;/produk/{pid}&quot;)
+async def ambil(pid: int):
+    if pid not in PRODUK:
+        raise HTTPException(status_code=404, detail=&quot;tidak ada&quot;)
+    return PRODUK[pid]
+
+@api.post(&quot;/produk&quot;, status_code=201)
+async def tambah(p: ProdukBaru):
+    pid = max(PRODUK) + 1
+    PRODUK[pid] = p.model_dump()
+    return {&quot;id&quot;: pid, **PRODUK[pid]}
+# uvicorn app:api --reload   -&gt; dokumentasi di http://127.0.0.1:8000/docs</code></pre>
+<h2>Poin penting</h2><ul><li>Route = pasangan method HTTP + URL → fungsi.</li><li>FastAPI memvalidasi parameter dari type hint.</li><li>Body request = model Pydantic.</li><li>Kode status: 200 OK, 201 Created, 404 Not Found.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Di FastAPI, apa yang terjadi jika &lt;code&gt;/produk/abc&lt;/code&gt; dipanggil padahal &lt;code&gt;pid: int&lt;/code&gt;?</summary><p class="ok">Jawaban: Respons 422 berisi pesan validasi</p><p>Validasi otomatis dari type hint.</p></details><details><summary>Server untuk menjalankan aplikasi FastAPI?</summary><p class="ok">Jawaban: uvicorn</p><p>uvicorn adalah server ASGI.</p></details>
+<a class="cta" href="/#python-14-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/peta-framework-web-python">Peta framework web Python</a></p><p>Berikutnya: <a href="/belajar/python/django-aplikasi-web-lengkap">Django: aplikasi web lengkap</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -24,7 +24,7 @@ Lima jalur karier menyusun jalur di atas dalam urutan yang disarankan: Frontend 
 
 - **Navigasi**: menu Katalog per kategori, pencarian `Ctrl+K` (jalur, modul, pelajaran, istilah), tema terang/gelap/sistem, menu laci di ponsel.
 - **Beranda**: dashboard untuk pengguna yang kembali (lanjutkan belajar, target harian, hari beruntun, XP, soal yang perlu diulang), jalur karier, dan katalog.
-- **Halaman jalur**: tes penempatan, peta modul, ujian modul (lulus nilai 70), proyek akhir, dan sertifikat.
+- **Halaman jalur**: tes penempatan, peta modul, ujian modul (lulus nilai 70), dan proyek akhir.
 - **Jenis pelajaran**:
   - konsep dengan contoh kode yang sudah diuji (Java 21, Python 3.13 + pandas, Node 22 untuk TypeScript), tombol Jalankan, dan latihan "tebak keluaran";
   - contoh Python bisa diedit dan dijalankan di browser dengan Pyodide (butuh internet; di versi Artifact yang membatasi unduhan, kode asli tetap menampilkan keluaran terverifikasi);
@@ -33,22 +33,35 @@ Lima jalur karier menyusun jalur di atas dalam urutan yang disarankan: Frontend 
   - proyek akhir dengan daftar fitur, langkah kerja, berkas awal, dan pratinjau;
   - topik lima langkah dan lab interaktif Java/Python.
 - **45 visual interaktif**, antara lain box model, flexbox, grid, event loop JavaScript, CSR/SSR/SSG, simulator Git, skema bintang, A/B test, MapReduce, Kafka, model Fogg, siklus Hook, token desain, pemeriksa kontras, dan skala tipografi.
-- **Belajar saya**: kalender aktivitas, target harian, nilai ujian, nama untuk sertifikat, cadangan dan pemulihan progres.
+- **Belajar saya**: kalender aktivitas, target harian, nilai ujian, cadangan dan pemulihan progres.
 - **Ulang**: setiap jawaban kuis atau ujian yang salah masuk daftar ulang sampai dijawab benar.
 - **Kuis cerita** dan **glosarium**.
+
+- **Bisa dipasang dan dipakai offline**: setelah dibuka sekali, semua materi tersimpan oleh service worker. Tombol "Pasang aplikasi" ada di halaman Belajar saya.
+- **Cepat dibuka**: halaman awal hanya memuat inti aplikasi (±0,3 MB); isi pelajaran tiap jalur dimuat saat dibuka.
+- **Ramah mesin pencari**: setiap jalur dan pelajaran punya halaman statis di `/belajar/...` dengan meta, data terstruktur, dan `sitemap.xml`.
 
 Progres tersimpan di `localStorage` browser.
 
 ## Struktur kode
 
-`index.html` dihasilkan oleh `python3 build.py` dari folder `src/`:
+Semua berkas hasil dibuat oleh `python3 build.py` (butuh Python 3 dan Node) dari folder `src/`:
+
+- `index.html` dan `c/*.js`: versi web. Inti aplikasi ada di `index.html`; isi pelajaran per jalur, visual, mesin SQL, dan bab Java/Python ada di `c/`.
+- `dist/artifact.html`: versi satu file berisi semuanya, untuk Artifact claude.ai.
+- `sw.js`, `manifest.webmanifest`, `icons/`: aplikasi web yang bisa dipasang.
+- `belajar/`, `sitemap.xml`, `robots.txt`: halaman statis untuk mesin pencari.
+
+Sumber:
 
 - `src/css/base.css`, `lms.css`, `v4.css`: tampilan.
 - `src/js/data.js`: bab, topik, glosarium, kuis cerita.
 - `src/js/track-*.js`: kurikulum per jalur. `track-pda.js`, `track-da.js`, dan `track-de.js` dihasilkan skrip yang menjalankan setiap contoh Python untuk mengisi keluarannya.
+- `src/js/tips.js`: perbandingan kode pemula dan kode rapi yang ditempel ke pelajaran.
 - `src/js/sqlengine.js`, `sqldata.js`, `sqldata-bi.js`: mesin SQL kecil dan database contoh.
 - `src/js/viz.js`, `viz2.js`, `viz3.js`: visualisasi.
 - `src/js/app*.js`: data jalur dan progres, halaman, ruang pelajaran, navigasi dan rute.
+- `tools/build/`: pemecah materi, halaman statis, PWA.
 
 ## Mini project
 

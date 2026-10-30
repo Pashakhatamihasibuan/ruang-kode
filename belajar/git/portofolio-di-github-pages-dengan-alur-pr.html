@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Portofolio di GitHub Pages dengan alur PR · Git &amp; GitHub · Ruang Kode</title>
+<meta name="description" content="Buat repositori portofolio, kerjakan setiap bagian di cabang terpisah, gabungkan lewat pull request yang lulus tes otomatis, lalu terbitkan ke GitHub…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/git/portofolio-di-github-pages-dengan-alur-pr">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Portofolio di GitHub Pages dengan alur PR · Git &amp; GitHub · Ruang Kode"><meta property="og:description" content="Buat repositori portofolio, kerjakan setiap bagian di cabang terpisah, gabungkan lewat pull request yang lulus tes otomatis, lalu terbitkan ke GitHub…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/git/portofolio-di-github-pages-dengan-alur-pr"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Portofolio di GitHub Pages dengan alur PR", "description": "Buat repositori portofolio, kerjakan setiap bagian di cabang terpisah, gabungkan lewat pull request yang lulus tes otomatis, lalu terbitkan ke GitHub…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/git/portofolio-di-github-pages-dengan-alur-pr", "learningResourceType": "Proyek akhir", "isPartOf": {"@type": "Course", "name": "Git & GitHub", "url": "https://ruang-kode-nine.vercel.app/belajar/git"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Git & GitHub", "item": "https://ruang-kode-nine.vercel.app/belajar/git"}, {"@type": "ListItem", "position": 3, "name": "Portofolio di GitHub Pages dengan alur PR", "item": "https://ruang-kode-nine.vercel.app/belajar/git/portofolio-di-github-pages-dengan-alur-pr"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/git">Git &amp; GitHub</a> / Modul 6</nav>
+<div class="eyebrow">Git &amp; GitHub · Modul 6 · Proyek akhir</div><h1>Portofolio di GitHub Pages dengan alur PR</h1><a class="cta" href="/#git-6-1">Buka versi interaktif</a>
+<p>Buat repositori portofolio, kerjakan setiap bagian di cabang terpisah, gabungkan lewat pull request yang lulus tes otomatis, lalu terbitkan ke GitHub Pages.</p>
+<p><b>Teknologi:</b> Git + GitHub</p>
+<h2>Fitur yang dibuat</h2><ul><li>Repositori dengan README lengkap dan lisensi</li><li>.gitignore untuk node_modules, dist, dan .env</li><li>Minimal 3 cabang fitur yang digabung lewat pull request</li><li>Satu konflik merge yang diselesaikan dan dicatat di PR</li><li>Pesan commit mengikuti Conventional Commits</li><li>Branch protection di main: wajib PR dan tes lulus</li><li>Workflow Actions yang memeriksa HTML setiap PR</li><li>Situs terbit di username.github.io</li></ul>
+<h2>Langkah kerja</h2><ol><li>Buat repositori dan commit pertama.</li><li>Push ke GitHub dan aktifkan branch protection.</li><li>Kerjakan bagian "Tentang", "Proyek", "Kontak" di cabang masing-masing.</li><li>Buka PR, minta teman mereview, gabungkan.</li><li>Aktifkan Pages dari main.</li></ol>
+<div class="lbl">.github/workflows/cek.yml</div><pre><code>name: Cek HTML
+on: [pull_request]
+jobs:
+  cek:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npx --yes html-validate &quot;**/*.html&quot;</code></pre>
+<div class="lbl">urutan-perintah.sh</div><pre><code>git init &amp;&amp; git add . &amp;&amp; git commit -m &quot;feat: kerangka portofolio&quot;
+git remote add origin git@github.com:sariw/portofolio.git
+git push -u origin main
+
+git switch -c bagian-proyek
+git commit -am &quot;feat: kartu tiga proyek&quot;
+git push -u origin bagian-proyek
+# buka PR di GitHub, tunggu tes hijau, minta review, merge
+
+git switch main &amp;&amp; git pull
+git branch -d bagian-proyek</code></pre>
+<a class="cta" href="/#git-6-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/git/keamanan-aturan-cabang">Keamanan &amp; aturan cabang</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

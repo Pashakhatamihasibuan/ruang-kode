@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Antrean pesan &amp; komunikasi asinkron · Data Engineer · Ruang Kode</title>
+<meta name="description" content="Komunikasi sinkron: layanan A memanggil B dan menunggu jawaban; jika B lambat, A ikut lambat. Asinkron: A menaruh pesan di antrean dan lanjut bekerja; B…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/de/antrean-pesan-komunikasi-asinkron">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Antrean pesan &amp; komunikasi asinkron · Data Engineer · Ruang Kode"><meta property="og:description" content="Komunikasi sinkron: layanan A memanggil B dan menunggu jawaban; jika B lambat, A ikut lambat. Asinkron: A menaruh pesan di antrean dan lanjut bekerja; B…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/de/antrean-pesan-komunikasi-asinkron"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Antrean pesan & komunikasi asinkron", "description": "Komunikasi sinkron: layanan A memanggil B dan menunggu jawaban; jika B lambat, A ikut lambat. Asinkron: A menaruh pesan di antrean dan lanjut bekerja; B…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/de/antrean-pesan-komunikasi-asinkron", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Engineer", "url": "https://ruang-kode-nine.vercel.app/belajar/de"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Engineer", "item": "https://ruang-kode-nine.vercel.app/belajar/de"}, {"@type": "ListItem", "position": 3, "name": "Antrean pesan & komunikasi asinkron", "item": "https://ruang-kode-nine.vercel.app/belajar/de/antrean-pesan-komunikasi-asinkron"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/de">Data Engineer</a> / Modul 6</nav>
+<div class="eyebrow">Data Engineer · Modul 6 · Konsep &amp; kode</div><h1>Antrean pesan &amp; komunikasi asinkron</h1><a class="cta" href="/#de-6-2">Buka versi interaktif</a>
+<p>Komunikasi <b>sinkron</b>: layanan A memanggil B dan menunggu jawaban; jika B lambat, A ikut lambat. <b>Asinkron</b>: A menaruh pesan di antrean dan lanjut bekerja; B memprosesnya saat siap.</p>
+<p>Antrean pesan (RabbitMQ, AWS SQS) cocok untuk tugas yang harus dikerjakan sekali oleh satu pekerja, misalnya kirim email konfirmasi; pesan dihapus setelah diakui. Pub/sub (AWS SNS) menyiarkan satu pesan ke banyak pelanggan.</p>
+<p>Stream (Kafka, Kinesis) menyimpan urutan peristiwa untuk banyak pembaca dan bisa diputar ulang; cocok untuk analitik dan integrasi data.</p>
+<div class="lbl">CONTOH</div><pre><code>Kasus                                   Pilihan
+Kirim email setelah checkout             antrean (SQS / RabbitMQ)
+Satu peristiwa → gudang, email, poin    pub/sub (SNS) atau topik Kafka
+Riwayat klik untuk analitik &amp; ML        stream (Kafka / Kinesis)
+Panggilan cek saldo sebelum bayar        sinkron (HTTP)</code></pre>
+<h2>Poin penting</h2><ul><li>Sinkron menunggu; asinkron melepas ketergantungan.</li><li>Antrean: sekali proses, dihapus setelah ack.</li><li>Stream: disimpan, banyak pembaca, bisa diputar ulang.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kirim email konfirmasi tanpa membuat checkout lambat?</summary><p class="ok">Jawaban: Antrean pesan asinkron</p><p>Checkout cukup menaruh pesan lalu selesai.</p></details>
+<a class="cta" href="/#de-6-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/de/kafka-topik-partisi-consumer-group">Kafka: topik, partisi &amp; consumer group</a></p><p>Berikutnya: <a href="/belajar/de/apache-spark-pyspark">Apache Spark &amp; PySpark</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

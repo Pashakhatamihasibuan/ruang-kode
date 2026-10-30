@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pustaka keranjang belanja bertipe · TypeScript · Ruang Kode</title>
+<meta name="description" content="Tulis modul keranjang belanja yang aman tipe: produk, item, diskon, dan ringkasan pembayaran. Jalankan dengan Node dan uji dengan Vitest.">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/ts/pustaka-keranjang-belanja-bertipe">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Pustaka keranjang belanja bertipe · TypeScript · Ruang Kode"><meta property="og:description" content="Tulis modul keranjang belanja yang aman tipe: produk, item, diskon, dan ringkasan pembayaran. Jalankan dengan Node dan uji dengan Vitest.">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/ts/pustaka-keranjang-belanja-bertipe"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Pustaka keranjang belanja bertipe", "description": "Tulis modul keranjang belanja yang aman tipe: produk, item, diskon, dan ringkasan pembayaran. Jalankan dengan Node dan uji dengan Vitest.", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/ts/pustaka-keranjang-belanja-bertipe", "learningResourceType": "Proyek akhir", "isPartOf": {"@type": "Course", "name": "TypeScript", "url": "https://ruang-kode-nine.vercel.app/belajar/ts"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "TypeScript", "item": "https://ruang-kode-nine.vercel.app/belajar/ts"}, {"@type": "ListItem", "position": 3, "name": "Pustaka keranjang belanja bertipe", "item": "https://ruang-kode-nine.vercel.app/belajar/ts/pustaka-keranjang-belanja-bertipe"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/ts">TypeScript</a> / Modul 11</nav>
+<div class="eyebrow">TypeScript · Modul 11 · Proyek akhir</div><h1>Pustaka keranjang belanja bertipe</h1><a class="cta" href="/#ts-11-1">Buka versi interaktif</a>
+<p>Tulis modul keranjang belanja yang aman tipe: produk, item, diskon, dan ringkasan pembayaran. Jalankan dengan Node dan uji dengan Vitest.</p>
+<p><b>Teknologi:</b> TypeScript + Node</p>
+<h2>Fitur yang dibuat</h2><ul><li>tsconfig dengan &quot;strict&quot;: true dan tanpa any</li><li>Tipe Produk, Item, dan Diskon berbentuk discriminated union (persen, potongan tetap, gratis ongkir)</li><li>Kelas Keranjang dengan field privat dan method tambah, kurangi, hapus</li><li>Fungsi ringkasan mengembalikan Hasil&lt;T&gt; (ok/error) alih-alih melempar error</li><li>Validasi input dari JSON dengan unknown + type guard (atau Zod)</li><li>Pemeriksaan exhaustiveness dengan never</li><li>Minimal 5 tes Vitest</li></ul>
+<h2>Langkah kerja</h2><ol><li>Definisikan semua tipe dulu.</li><li>Tulis kelas dan fungsi; biarkan kompiler menuntunmu.</li><li>Tambahkan validasi untuk data dari luar.</li><li>Tulis tes dan jalankan npx tsc --noEmit.</li></ol>
+<div class="lbl">keranjang.ts</div><pre><code>type Produk = { id: number; nama: string; harga: number };
+type Diskon = { jenis: &quot;persen&quot;; nilai: number } | { jenis: &quot;potong&quot;; nilai: number } | { jenis: &quot;ongkir&quot; };
+type Hasil&lt;T&gt; = { ok: true; data: T } | { ok: false; error: string };
+
+export class Keranjang {
+  #isi = new Map&lt;number, { produk: Produk; jumlah: number }&gt;();
+  tambah(p: Produk, n = 1): void {
+    const lama = this.#isi.get(p.id);
+    this.#isi.set(p.id, { produk: p, jumlah: (lama?.jumlah ?? 0) + n });
+  }
+  ringkasan(d?: Diskon, ongkir = 15000): Hasil&lt;{ subtotal: number; potongan: number; total: number }&gt; {
+    if (this.#isi.size === 0) return { ok: false, error: &quot;Keranjang kosong&quot; };
+    const subtotal = [...this.#isi.values()].reduce((t, i) =&gt; t + i.produk.harga * i.jumlah, 0);
+    let potongan = 0;
+    if (d) {
+      switch (d.jenis) {
+        case &quot;persen&quot;: potongan = Math.round(subtotal * d.nilai / 100); break;
+        case &quot;potong&quot;: potongan = Math.min(d.nilai, subtotal); break;
+        case &quot;ongkir&quot;: potongan = ongkir; break;
+        default: { const cek: never = d; return cek; }
+      }
+    }
+    return { ok: true, data: { subtotal, potongan, total: subtotal + ongkir - potongan } };
+  }
+}
+
+const k = new Keranjang();
+k.tambah({ id: 1, nama: &quot;Kopi Gayo&quot;, harga: 85000 }, 2);
+console.log(k.ringkasan({ jenis: &quot;persen&quot;, nilai: 10 }));</code></pre>
+<a class="cta" href="/#ts-11-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/ts/decorator-alat-ekosistem">Decorator &amp; alat ekosistem</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Polars, Dask &amp; PySpark · Python Analisis Data · Ruang Kode</title>
+<meta name="description" content="Saat data tidak muat di memori atau pandas terlalu lambat: Polars (DataFrame berbasis Rust, multi-core, lazy), Dask (pandas yang dipecah per bagian), dan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/pda/polars-dask-pyspark">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Polars, Dask &amp; PySpark · Python Analisis Data · Ruang Kode"><meta property="og:description" content="Saat data tidak muat di memori atau pandas terlalu lambat: Polars (DataFrame berbasis Rust, multi-core, lazy), Dask (pandas yang dipecah per bagian), dan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/pda/polars-dask-pyspark"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Polars, Dask & PySpark", "description": "Saat data tidak muat di memori atau pandas terlalu lambat: Polars (DataFrame berbasis Rust, multi-core, lazy), Dask (pandas yang dipecah per bagian), dan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/pda/polars-dask-pyspark", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Python Analisis Data", "url": "https://ruang-kode-nine.vercel.app/belajar/pda"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Python Analisis Data", "item": "https://ruang-kode-nine.vercel.app/belajar/pda"}, {"@type": "ListItem", "position": 3, "name": "Polars, Dask & PySpark", "item": "https://ruang-kode-nine.vercel.app/belajar/pda/polars-dask-pyspark"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/pda">Python Analisis Data</a> / Modul 9</nav>
+<div class="eyebrow">Python Analisis Data · Modul 9 · Konsep &amp; kode</div><h1>Polars, Dask &amp; PySpark</h1><a class="cta" href="/#pda-9-2">Buka versi interaktif</a>
+<p>Saat data tidak muat di memori atau pandas terlalu lambat: <b>Polars</b> (DataFrame berbasis Rust, multi-core, lazy), <b>Dask</b> (pandas yang dipecah per bagian), dan <b>PySpark</b> (klaster banyak mesin).</p>
+<p>Simpan data analitik dalam <b>Parquet</b>: kolom terkompresi, membawa tipe data, dan jauh lebih cepat dibaca daripada CSV.</p>
+<p>Analisis yang dijalankan rutin dijadikan <b>pipeline</b> terjadwal dengan Airflow atau Prefect. Detailnya ada di jalur Data Engineer.</p>
+<div class="lbl">PYTHON</div><pre><code>import polars as pl
+
+hasil = (
+    pl.scan_parquet(&quot;penjualan_2024/*.parquet&quot;)   # lazy, belum dibaca
+      .filter(pl.col(&quot;status&quot;) == &quot;selesai&quot;)
+      .group_by(&quot;kota&quot;)
+      .agg(pl.col(&quot;omzet&quot;).sum().alias(&quot;omzet&quot;))
+      .sort(&quot;omzet&quot;, descending=True)
+      .collect()                                   # baru dieksekusi
+)
+print(hasil.head())</code></pre>
+<h2>Poin penting</h2><ul><li>Polars: cepat, lazy, multi-core.</li><li>Dask/Spark untuk data lebih besar dari memori.</li><li>Parquet > CSV untuk analitik.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Keuntungan scan_parquet + collect di Polars?</summary><p class="ok">Jawaban: Query dioptimalkan sebelum data dibaca</p><p>Mode lazy hanya membaca kolom dan baris yang perlu.</p></details>
+<a class="cta" href="/#pda-9-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pda/sql-dari-python-sqlite3-read-sql">SQL dari Python: sqlite3 &amp; read_sql</a></p><p>Berikutnya: <a href="/belajar/pda/pengantar-scikit-learn">Pengantar scikit-learn</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

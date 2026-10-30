@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Validasi data dengan Pydantic · Python · Ruang Kode</title>
+<meta name="description" content="Anotasi tipe biasa tidak memeriksa data saat program berjalan. Padahal data dari luar (form, API, file JSON) sering berantakan. Pydantic memakai anotasi…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/python/validasi-data-dengan-pydantic">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Validasi data dengan Pydantic · Python · Ruang Kode"><meta property="og:description" content="Anotasi tipe biasa tidak memeriksa data saat program berjalan. Padahal data dari luar (form, API, file JSON) sering berantakan. Pydantic memakai anotasi…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/python/validasi-data-dengan-pydantic"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Validasi data dengan Pydantic", "description": "Anotasi tipe biasa tidak memeriksa data saat program berjalan. Padahal data dari luar (form, API, file JSON) sering berantakan. Pydantic memakai anotasi…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/python/validasi-data-dengan-pydantic", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Python", "url": "https://ruang-kode-nine.vercel.app/belajar/python"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Python", "item": "https://ruang-kode-nine.vercel.app/belajar/python"}, {"@type": "ListItem", "position": 3, "name": "Validasi data dengan Pydantic", "item": "https://ruang-kode-nine.vercel.app/belajar/python/validasi-data-dengan-pydantic"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/python">Python</a> / Modul 11</nav>
+<div class="eyebrow">Python · Modul 11 · Konsep &amp; kode</div><h1>Validasi data dengan Pydantic</h1><a class="cta" href="/#python-11-3">Buka versi interaktif</a>
+<p>Anotasi tipe biasa tidak memeriksa data saat program berjalan. Padahal data dari luar (form, API, file JSON) sering berantakan. <b>Pydantic</b> memakai anotasi tipe untuk <b>memvalidasi dan mengonversi</b> data saat runtime.</p>
+<p>Kamu mendefinisikan model sebagai kelas turunan <code>BaseModel</code>. Saat membuat objek, Pydantic memeriksa setiap field: mengubah <code>"85000"</code> menjadi int jika memungkinkan, dan melempar <code>ValidationError</code> yang jelas jika tidak. Aturan tambahan ditulis dengan <code>Field(gt=0)</code> atau validator.</p>
+<p>Pydantic menjadi fondasi FastAPI: setiap request JSON otomatis divalidasi berdasarkan model, dan dokumentasi API dibuat dari model yang sama.</p>
+<div class="lbl">PYTHON</div><pre><code>from pydantic import BaseModel, Field, ValidationError
+
+class Produk(BaseModel):
+    nama: str = Field(min_length=2)
+    harga: int = Field(gt=0)
+    tag: list[str] = []
+
+p = Produk(nama=&quot;Kopi Gayo&quot;, harga=&quot;85000&quot;)   # string diubah jadi int
+print(p.harga + 1, p.model_dump())
+
+try:
+    Produk(nama=&quot;K&quot;, harga=-5)
+except ValidationError as e:
+    for err in e.errors():
+        print(err[&quot;loc&quot;][0], &quot;-&gt;&quot;, err[&quot;msg&quot;])
+
+# Keluaran:
+# 85001 {&#x27;nama&#x27;: &#x27;Kopi Gayo&#x27;, &#x27;harga&#x27;: 85000, &#x27;tag&#x27;: []}
+# nama -&gt; String should have at least 2 characters
+# harga -&gt; Input should be greater than 0</code></pre>
+<h2>Poin penting</h2><ul><li>Pydantic memvalidasi data saat runtime berdasarkan anotasi.</li><li>Konversi otomatis jika aman ("85000" → 85000).</li><li><code>Field(...)</code> untuk aturan tambahan.</li><li><code>model_dump()</code> mengubah model menjadi dict.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Perbedaan utama Pydantic dengan anotasi biasa?</summary><p class="ok">Jawaban: Pydantic memeriksa data saat program berjalan</p><p>Itu alasan Pydantic populer untuk data dari luar.</p></details><details><summary>Framework web yang dibangun di atas Pydantic?</summary><p class="ok">Jawaban: FastAPI</p><p>FastAPI memakai model Pydantic untuk request dan response.</p></details>
+<a class="cta" href="/#python-11-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/pemeriksa-tipe-mypy-pyright-pyrefly">Pemeriksa tipe: mypy, pyright, pyrefly</a></p><p>Berikutnya: <a href="/belajar/python/formatter-linter-black-ruff-yapf">Formatter &amp; linter: black, ruff, yapf</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

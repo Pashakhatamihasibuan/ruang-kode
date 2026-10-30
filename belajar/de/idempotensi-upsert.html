@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Idempotensi &amp; upsert · Data Engineer · Ruang Kode</title>
+<meta name="description" content="Pipeline pasti pernah gagal di tengah jalan lalu dijalankan ulang. Pipeline idempoten menghasilkan hasil yang sama berapa kali pun dijalankan untuk input…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/de/idempotensi-upsert">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Idempotensi &amp; upsert · Data Engineer · Ruang Kode"><meta property="og:description" content="Pipeline pasti pernah gagal di tengah jalan lalu dijalankan ulang. Pipeline idempoten menghasilkan hasil yang sama berapa kali pun dijalankan untuk input…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/de/idempotensi-upsert"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Idempotensi & upsert", "description": "Pipeline pasti pernah gagal di tengah jalan lalu dijalankan ulang. Pipeline idempoten menghasilkan hasil yang sama berapa kali pun dijalankan untuk input…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/de/idempotensi-upsert", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Engineer", "url": "https://ruang-kode-nine.vercel.app/belajar/de"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Engineer", "item": "https://ruang-kode-nine.vercel.app/belajar/de"}, {"@type": "ListItem", "position": 3, "name": "Idempotensi & upsert", "item": "https://ruang-kode-nine.vercel.app/belajar/de/idempotensi-upsert"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/de">Data Engineer</a> / Modul 5</nav>
+<div class="eyebrow">Data Engineer · Modul 5 · Konsep &amp; kode</div><h1>Idempotensi &amp; upsert</h1><a class="cta" href="/#de-5-2">Buka versi interaktif</a>
+<p>Pipeline pasti pernah gagal di tengah jalan lalu dijalankan ulang. Pipeline <b>idempoten</b> menghasilkan hasil yang sama berapa kali pun dijalankan untuk input yang sama, sehingga tidak ada data ganda.</p>
+<p>Teknik umum: <b>upsert</b> (INSERT ... ON CONFLICT DO UPDATE), menimpa satu partisi tanggal secara utuh (delete + insert dalam transaksi), dan kunci deduplikasi dari sumber.</p>
+<p>Contoh di bawah memuat batch yang sama dua kali. Dengan INSERT biasa baris jadi ganda; dengan upsert hasilnya tetap.</p>
+<div class="lbl">PYTHON</div><pre><code>import sqlite3
+
+batch = [(101, &quot;2024-10-01&quot;, 255000), (102, &quot;2024-10-01&quot;, 250000)]
+
+con = sqlite3.connect(&quot;:memory:&quot;)
+con.execute(&quot;CREATE TABLE naif (id INTEGER, tanggal TEXT, total INTEGER)&quot;)
+con.execute(&quot;CREATE TABLE aman (id INTEGER PRIMARY KEY, tanggal TEXT, total INTEGER)&quot;)
+
+for percobaan in range(2):           # pipeline dijalankan ulang
+    con.executemany(&quot;INSERT INTO naif VALUES (?, ?, ?)&quot;, batch)
+    con.executemany(&quot;&quot;&quot;INSERT INTO aman VALUES (?, ?, ?)
+        ON CONFLICT(id) DO UPDATE SET tanggal = excluded.tanggal, total = excluded.total&quot;&quot;&quot;, batch)
+
+print(&quot;naif:&quot;, con.execute(&quot;SELECT COUNT(*), SUM(total) FROM naif&quot;).fetchone())
+print(&quot;aman:&quot;, con.execute(&quot;SELECT COUNT(*), SUM(total) FROM aman&quot;).fetchone())</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>naif: (4, 1010000)
+aman: (2, 505000)</code></pre>
+<h2>Poin penting</h2><ul><li>Idempoten = aman dijalankan ulang.</li><li>Upsert, timpa partisi, kunci deduplikasi.</li><li>Uji dengan menjalankan pipeline dua kali.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa idempotensi penting?</summary><p class="ok">Jawaban: Pipeline sering dijalankan ulang setelah gagal</p><p>Tanpa itu, data ganda.</p></details>
+<a class="cta" href="/#de-5-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/de/batch-streaming-hybrid">Batch, streaming &amp; hybrid</a></p><p>Berikutnya: <a href="/belajar/de/orkestrasi-dengan-airflow">Orkestrasi dengan Airflow</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

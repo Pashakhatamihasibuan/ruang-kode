@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CTE: WITH · SQL · Ruang Kode</title>
+<meta name="description" content="CTE (Common Table Expression) memberi nama pada sebuah query sementara dengan WITH nama AS (SELECT ...), lalu nama itu bisa dipakai seperti tabel di…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/sql/cte-with">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="CTE: WITH · SQL · Ruang Kode"><meta property="og:description" content="CTE (Common Table Expression) memberi nama pada sebuah query sementara dengan WITH nama AS (SELECT ...), lalu nama itu bisa dipakai seperti tabel di…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/sql/cte-with"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "CTE: WITH", "description": "CTE (Common Table Expression) memberi nama pada sebuah query sementara dengan WITH nama AS (SELECT ...), lalu nama itu bisa dipakai seperti tabel di…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/sql/cte-with", "learningResourceType": "Praktik SQL", "isPartOf": {"@type": "Course", "name": "SQL", "url": "https://ruang-kode-nine.vercel.app/belajar/sql"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "SQL", "item": "https://ruang-kode-nine.vercel.app/belajar/sql"}, {"@type": "ListItem", "position": 3, "name": "CTE: WITH", "item": "https://ruang-kode-nine.vercel.app/belajar/sql/cte-with"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/sql">SQL</a> / Modul 14</nav>
+<div class="eyebrow">SQL · Modul 14 · Praktik SQL</div><h1>CTE: WITH</h1><a class="cta" href="/#sql-14-1">Buka versi interaktif</a>
+<p><b>CTE</b> (Common Table Expression) memberi nama pada sebuah query sementara dengan <code>WITH nama AS (SELECT ...)</code>, lalu nama itu bisa dipakai seperti tabel di query utama. CTE hanya hidup selama satu statement.</p>
+<p>Kegunaan utamanya keterbacaan: query panjang dipecah menjadi langkah-langkah bernama yang dibaca dari atas ke bawah, seperti resep. Satu WITH bisa berisi beberapa CTE yang dipisah koma, dan CTE belakangan boleh memakai CTE sebelumnya.</p>
+<p>Bandingkan dengan subquery bersarang yang harus dibaca dari dalam ke luar. CTE biasanya jauh lebih mudah dipahami, terutama oleh rekan tim.</p>
+<div class="lbl">Satu CTE</div><pre><code>WITH total_per_pesanan AS (
+  SELECT pesanan_id, SUM(jumlah) AS item FROM detail_pesanan GROUP BY pesanan_id
+)
+SELECT * FROM total_per_pesanan WHERE item &gt;= 5 ORDER BY item DESC;</code></pre>
+<div class="lbl">Beberapa CTE berantai</div><pre><code>WITH nilai AS (
+  SELECT s.pelanggan_id, SUM(d.jumlah * pr.harga) AS total
+  FROM pesanan s
+  JOIN detail_pesanan d ON d.pesanan_id = s.id
+  JOIN produk pr ON pr.id = d.produk_id
+  WHERE s.status &lt;&gt; &#x27;batal&#x27;
+  GROUP BY s.pelanggan_id
+), rata AS (
+  SELECT AVG(total) AS r FROM nilai
+)
+SELECT p.nama, n.total
+FROM nilai n JOIN pelanggan p ON p.id = n.pelanggan_id, rata
+WHERE n.total &gt; rata.r
+ORDER BY n.total DESC;</code></pre>
+<h2>Tantangan</h2><ol><li>Dengan CTE bernama stok_kategori yang berisi kategori dan SUM(stok) AS total, tampilkan kategori yang total stoknya di atas 100.</li></ol>
+<h2>Poin penting</h2><ul><li>WITH nama AS (query) SELECT ... FROM nama.</li><li>Beberapa CTE dipisah koma.</li><li>CTE hanya berlaku untuk satu statement.</li><li>Pilih CTE demi keterbacaan.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Berapa lama CTE hidup?</summary><p class="ok">Jawaban: Selama satu statement</p><p>Berbeda dengan view yang tersimpan.</p></details><details><summary>Bolehkah CTE kedua memakai CTE pertama?</summary><p class="ok">Jawaban: Ya</p><p>Itulah keunggulan CTE berantai.</p></details>
+<a class="cta" href="/#sql-14-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/teknik-optimasi-query">Teknik optimasi query</a></p><p>Berikutnya: <a href="/belajar/sql/query-rekursif">Query rekursif</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

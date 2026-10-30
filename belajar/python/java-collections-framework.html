@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Java Collections Framework · Python · Ruang Kode</title>
+<meta name="description" content="Selain List, ada dua koleksi penting. Set adalah himpunan: tidak ada duplikat dan pengecekan contains sangat cepat. Map (Python: dictionary) memasangkan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/python/java-collections-framework">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Java Collections Framework · Python · Ruang Kode"><meta property="og:description" content="Selain List, ada dua koleksi penting. Set adalah himpunan: tidak ada duplikat dan pengecekan contains sangat cepat. Map (Python: dictionary) memasangkan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/python/java-collections-framework"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Java Collections Framework", "description": "Selain List, ada dua koleksi penting. Set adalah himpunan: tidak ada duplikat dan pengecekan contains sangat cepat. Map (Python: dictionary) memasangkan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/python/java-collections-framework", "learningResourceType": "Konsep & lab", "isPartOf": {"@type": "Course", "name": "Python", "url": "https://ruang-kode-nine.vercel.app/belajar/python"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Python", "item": "https://ruang-kode-nine.vercel.app/belajar/python"}, {"@type": "ListItem", "position": 3, "name": "Java Collections Framework", "item": "https://ruang-kode-nine.vercel.app/belajar/python/java-collections-framework"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/python">Python</a> / Modul 4</nav>
+<div class="eyebrow">Python · Modul 4 · Konsep &amp; lab</div><h1>Java Collections Framework</h1><a class="cta" href="/#python-4-9">Buka versi interaktif</a>
+<p>Selain List, ada dua koleksi penting. <b>Set</b> adalah himpunan: tidak ada duplikat dan pengecekan <code>contains</code> sangat cepat. <b>Map</b> (Python: <b>dictionary</b>) memasangkan <b>kunci</b> dengan <b>nilai</b>, misalnya kata dengan jumlah kemunculannya.</p>
+<p>Java menyediakan beberapa implementasi. <code>HashSet</code>/<code>HashMap</code> sangat cepat tapi urutannya acak. <code>TreeSet</code>/<code>TreeMap</code> sedikit lebih lambat tapi selalu terurut. Kamu menulis kode terhadap <b>interface</b> (<code>Set</code>, <code>Map</code>) supaya implementasinya mudah diganti.</p>
+<p>Koleksi-koleksi ini adalah contoh <b>abstract data type</b>: kamu tahu operasinya (tambah, hapus, cari) tanpa perlu tahu cara kerjanya di dalam. Untuk menjelajahi isinya, gunakan for-each atau <b>iterator</b>.</p>
+<div class="lbl">PYTHON</div><pre><code>def main():
+    teks = &quot;satu dua tiga dua satu satu&quot;
+    unik = set()
+    jumlah = {}
+
+    for kata in teks.split():
+        unik.add(kata)
+        jumlah[kata] = jumlah.get(kata, 0) + 1
+
+    print(sorted(unik))
+    print(jumlah)
+
+main()</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>[&#x27;dua&#x27;, &#x27;satu&#x27;, &#x27;tiga&#x27;]
+{&#x27;satu&#x27;: 3, &#x27;dua&#x27;: 2, &#x27;tiga&#x27;: 1}</code></pre>
+<h2>Poin penting</h2><ul><li><code>map.getOrDefault(k, 0)</code> dan <code>d.get(k, 0)</code> menghindari error kunci belum ada.</li><li>Kunci Map unik. <code>put</code> pada kunci yang sama menimpa nilai lama.</li><li>Python <code>dict</code> menyimpan urutan saat data dimasukkan.</li><li>Pilih koleksi dari pertanyaannya: urutan penting? duplikat boleh? butuh pasangan?</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kata "a" dimasukkan dua kali ke Set kosong. Berapa ukurannya?</summary><p class="ok">Jawaban: 1</p><p>Set menolak duplikat secara diam-diam.</p></details><details><summary>Struktur paling cocok untuk menyimpan kata dan jumlah kemunculannya?</summary><p class="ok">Jawaban: Map / dictionary</p><p>Map memasangkan kunci (kata) dengan nilai (jumlah).</p></details>
+<a class="cta" href="/#python-4-9">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/tuple-unpacking">Tuple &amp; unpacking</a></p><p>Berikutnya: <a href="/belajar/python/set-himpunan-tanpa-duplikat">Set: himpunan tanpa duplikat</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

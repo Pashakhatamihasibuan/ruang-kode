@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kafka: topik, partisi &amp; consumer group · Data Engineer · Ruang Kode</title>
+<meta name="description" content="Kafka adalah log peristiwa terdistribusi. Producer menulis peristiwa ke topik; topik dibagi menjadi partisi agar bisa diproses paralel. Urutan hanya…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/de/kafka-topik-partisi-consumer-group">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Kafka: topik, partisi &amp; consumer group · Data Engineer · Ruang Kode"><meta property="og:description" content="Kafka adalah log peristiwa terdistribusi. Producer menulis peristiwa ke topik; topik dibagi menjadi partisi agar bisa diproses paralel. Urutan hanya…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/de/kafka-topik-partisi-consumer-group"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Kafka: topik, partisi & consumer group", "description": "Kafka adalah log peristiwa terdistribusi. Producer menulis peristiwa ke topik; topik dibagi menjadi partisi agar bisa diproses paralel. Urutan hanya…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/de/kafka-topik-partisi-consumer-group", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Engineer", "url": "https://ruang-kode-nine.vercel.app/belajar/de"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Engineer", "item": "https://ruang-kode-nine.vercel.app/belajar/de"}, {"@type": "ListItem", "position": 3, "name": "Kafka: topik, partisi & consumer group", "item": "https://ruang-kode-nine.vercel.app/belajar/de/kafka-topik-partisi-consumer-group"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/de">Data Engineer</a> / Modul 6</nav>
+<div class="eyebrow">Data Engineer · Modul 6 · Konsep &amp; kode</div><h1>Kafka: topik, partisi &amp; consumer group</h1><a class="cta" href="/#de-6-1">Buka versi interaktif</a>
+<p><b>Kafka</b> adalah log peristiwa terdistribusi. Producer menulis peristiwa ke <b>topik</b>; topik dibagi menjadi <b>partisi</b> agar bisa diproses paralel. Urutan hanya dijamin di dalam satu partisi, jadi peristiwa dengan kunci yang sama (misalnya pesanan_id) selalu masuk partisi yang sama.</p>
+<p>Consumer dalam satu <b>consumer group</b> berbagi partisi; setiap partisi dibaca satu consumer dalam grup. Grup lain bisa membaca topik yang sama secara independen. Posisi baca disebut <b>offset</b>.</p>
+<p>Berbeda dengan antrean biasa, pesan Kafka tidak hilang setelah dibaca; tersimpan sesuai masa retensi, sehingga consumer baru bisa membaca ulang dari awal. Coba visualisasi di atas.</p>
+<div class="lbl">PYTHON</div><pre><code>from confluent_kafka import Producer, Consumer
+import json
+
+p = Producer({&quot;bootstrap.servers&quot;: &quot;kafka:9092&quot;})
+p.produce(&quot;pesanan&quot;, key=&quot;10293&quot;, value=json.dumps({&quot;id&quot;: 10293, &quot;status&quot;: &quot;dibayar&quot;}))
+p.flush()
+
+c = Consumer({&quot;bootstrap.servers&quot;: &quot;kafka:9092&quot;, &quot;group.id&quot;: &quot;gudang&quot;,
+              &quot;auto.offset.reset&quot;: &quot;earliest&quot;, &quot;enable.auto.commit&quot;: False})
+c.subscribe([&quot;pesanan&quot;])
+while True:
+    m = c.poll(1.0)
+    if m is None:
+        continue
+    siapkan_pengiriman(json.loads(m.value()))
+    c.commit(m)          # commit setelah berhasil diproses</code></pre>
+<h2>Poin penting</h2><ul><li>Topik → partisi; urutan per partisi.</li><li>Consumer group berbagi partisi; offset = posisi baca.</li><li>Pesan tersimpan sesuai retensi, bisa dibaca ulang.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Agar semua peristiwa satu pesanan diproses berurutan, producer perlu?</summary><p class="ok">Jawaban: Memakai pesanan_id sebagai key</p><p>Key yang sama → partisi yang sama.</p></details>
+<a class="cta" href="/#de-6-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/de/reverse-etl">Reverse ETL</a></p><p>Berikutnya: <a href="/belajar/de/antrean-pesan-komunikasi-asinkron">Antrean pesan &amp; komunikasi asinkron</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

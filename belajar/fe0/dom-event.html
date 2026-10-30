@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DOM &amp; event · Frontend Pemula · Ruang Kode</title>
+<meta name="description" content="DOM (Document Object Model) adalah HTML dalam bentuk objek yang bisa diubah JavaScript. Ambil elemen dengan document.querySelector(&quot;.kelas&quot;), ubah…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/fe0/dom-event">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="DOM &amp; event · Frontend Pemula · Ruang Kode"><meta property="og:description" content="DOM (Document Object Model) adalah HTML dalam bentuk objek yang bisa diubah JavaScript. Ambil elemen dengan document.querySelector(&quot;.kelas&quot;), ubah…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/fe0/dom-event"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "DOM & event", "description": "DOM (Document Object Model) adalah HTML dalam bentuk objek yang bisa diubah JavaScript. Ambil elemen dengan document.querySelector(\".kelas\"), ubah…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/fe0/dom-event", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "Frontend Pemula", "url": "https://ruang-kode-nine.vercel.app/belajar/fe0"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Frontend Pemula", "item": "https://ruang-kode-nine.vercel.app/belajar/fe0"}, {"@type": "ListItem", "position": 3, "name": "DOM & event", "item": "https://ruang-kode-nine.vercel.app/belajar/fe0/dom-event"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/fe0">Frontend Pemula</a> / Modul 4</nav>
+<div class="eyebrow">Frontend Pemula · Modul 4 · Praktik langsung</div><h1>DOM &amp; event</h1><a class="cta" href="/#fe0-4-5">Buka versi interaktif</a>
+<p><b>DOM</b> (Document Object Model) adalah HTML dalam bentuk objek yang bisa diubah JavaScript. Ambil elemen dengan <code>document.querySelector(".kelas")</code>, ubah teksnya dengan <code>textContent</code>, dan ubah gaya dengan <code>classList.add/remove/toggle</code>.</p>
+<p><b>Event</b> adalah kejadian seperti klik, ketikan, atau kirim form. Daftarkan pendengarnya dengan <code>elemen.addEventListener("click", fungsi)</code>. Buat elemen baru dengan <code>document.createElement</code> lalu <code>append</code>.</p>
+<div class="lbl">HTML</div><pre><code>&lt;h3&gt;Daftar belanja&lt;/h3&gt;
+&lt;form id=&quot;f&quot;&gt;&lt;input id=&quot;isi&quot; placeholder=&quot;Contoh: Kopi Gayo&quot; aria-label=&quot;Barang&quot;&gt; &lt;button&gt;Tambah&lt;/button&gt;&lt;/form&gt;
+&lt;ul id=&quot;daftar&quot;&gt;&lt;/ul&gt;
+&lt;p id=&quot;jumlah&quot;&gt;0 barang&lt;/p&gt;</code></pre>
+<div class="lbl">CSS</div><pre><code>li{cursor:pointer}li.selesai{text-decoration:line-through;color:#999}body{font:14px sans-serif}</code></pre>
+<div class="lbl">JAVASCRIPT</div><pre><code>const form = document.querySelector(&quot;#f&quot;);
+const daftar = document.querySelector(&quot;#daftar&quot;);
+
+form.addEventListener(&quot;submit&quot;, e =&gt; {
+  e.preventDefault();                       // jangan muat ulang halaman
+  const isi = document.querySelector(&quot;#isi&quot;);
+  if (!isi.value.trim()) return;
+  const li = document.createElement(&quot;li&quot;);
+  li.textContent = isi.value;
+  li.addEventListener(&quot;click&quot;, () =&gt; li.classList.toggle(&quot;selesai&quot;));
+  daftar.append(li);
+  isi.value = &quot;&quot;;
+  document.querySelector(&quot;#jumlah&quot;).textContent = daftar.children.length + &quot; barang&quot;;
+});</code></pre>
+<h2>Tantangan</h2><ol><li>Tambahkan tiga barang lewat form, lalu klik salah satunya hingga tercoret.</li></ol>
+<h2>Poin penting</h2><ul><li>querySelector mengambil elemen.</li><li>textContent dan classList mengubah isi dan gaya.</li><li>addEventListener mendaftarkan event.</li><li>preventDefault mencegah form memuat ulang halaman.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Cara aman mengisi teks dari input pengguna ke halaman?</summary><p class="ok">Jawaban: textContent</p><p>innerHTML bisa menjalankan HTML/script yang disisipkan.</p></details>
+<a class="cta" href="/#fe0-4-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe0/array-objek">Array &amp; objek</a></p><p>Berikutnya: <a href="/belajar/fe0/mengambil-data-fetch-json-async">Mengambil data: fetch, JSON &amp; async</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

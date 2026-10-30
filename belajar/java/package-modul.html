@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Package &amp; modul · Java · Ruang Kode</title>
+<meta name="description" content="Package mengelompokkan kelas yang berkaitan, seperti folder. Nama package ditulis di baris pertama file, misalnya package com.toko.pesanan;, dan harus…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/java/package-modul">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Package &amp; modul · Java · Ruang Kode"><meta property="og:description" content="Package mengelompokkan kelas yang berkaitan, seperti folder. Nama package ditulis di baris pertama file, misalnya package com.toko.pesanan;, dan harus…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/java/package-modul"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Package & modul", "description": "Package mengelompokkan kelas yang berkaitan, seperti folder. Nama package ditulis di baris pertama file, misalnya package com.toko.pesanan;, dan harus…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/java/package-modul", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Java", "url": "https://ruang-kode-nine.vercel.app/belajar/java"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Java", "item": "https://ruang-kode-nine.vercel.app/belajar/java"}, {"@type": "ListItem", "position": 3, "name": "Package & modul", "item": "https://ruang-kode-nine.vercel.app/belajar/java/package-modul"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/java">Java</a> / Modul 12</nav>
+<div class="eyebrow">Java · Modul 12 · Konsep &amp; kode</div><h1>Package &amp; modul</h1><a class="cta" href="/#java-12-1">Buka versi interaktif</a>
+<p><b>Package</b> mengelompokkan kelas yang berkaitan, seperti folder. Nama package ditulis di baris pertama file, misalnya <code>package com.toko.pesanan;</code>, dan harus cocok dengan struktur folder. Konvensinya memakai nama domain terbalik agar unik di seluruh dunia.</p>
+<p>Untuk memakai kelas dari package lain, tulis <code>import</code>. Kelas di <code>java.lang</code> (String, Math, System) otomatis tersedia tanpa import.</p>
+<p>Sejak Java 9 ada <b>module system</b>. Sebuah modul adalah kumpulan package dengan file <code>module-info.java</code> yang menyatakan modul apa yang dibutuhkan (<code>requires</code>) dan package mana yang boleh dipakai pihak luar (<code>exports</code>). Ini membantu aplikasi besar menjaga batas antarbagian.</p>
+<div class="lbl">JAVA</div><pre><code>// File: src/com/toko/model/Produk.java
+package com.toko.model;
+
+public class Produk {
+    private final String nama;
+    public Produk(String nama) { this.nama = nama; }
+    public String getNama() { return nama; }
+}
+
+// File: src/com/toko/App.java
+package com.toko;
+
+import com.toko.model.Produk;
+import java.util.List;
+
+public class App {
+    public static void main(String[] args) {
+        List&lt;Produk&gt; daftar = List.of(new Produk(&quot;Kopi&quot;));
+        System.out.println(daftar.get(0).getNama());
+    }
+}
+
+// File: src/module-info.java
+module com.toko {
+    requires java.sql;
+    exports com.toko.model;
+}</code></pre>
+<h2>Poin penting</h2><ul><li>Satu file = satu package (baris <code>package</code> paling atas).</li><li>Struktur folder mengikuti nama package.</li><li><code>import</code> hanya mempersingkat nama, tidak menyalin kode.</li><li><code>module-info.java</code>: requires = butuh, exports = dibagikan.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kelas mana yang bisa dipakai tanpa import?</summary><p class="ok">Jawaban: String</p><p>String ada di java.lang yang otomatis diimpor.</p></details><details><summary>Di module-info, kata kunci untuk membagikan package?</summary><p class="ok">Jawaban: exports</p><p>exports membuat package bisa dipakai modul lain.</p></details>
+<a class="cta" href="/#java-12-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/optional-mengganti-null-dengan-aman">Optional: mengganti null dengan aman</a></p><p>Berikutnya: <a href="/belajar/java/pemrosesan-file">Pemrosesan File</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

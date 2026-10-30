@@ -84,7 +84,6 @@ CATS.push('Basis Data');
  ['sql-explain','EXPLAIN','query plan','Perintah untuk melihat rencana eksekusi query: tabel dibaca penuh (SCAN) atau lewat index (SEARCH).','EXPLAIN QUERY PLAN SELECT ...;'],
  ['sql-procedure','Stored procedure','stored procedure','Kumpulan perintah SQL yang disimpan di server database dan dipanggil dengan nama, misalnya CALL proses_gaji().']
 ].forEach(([id,t,en,d,ex])=>{const g={id,t,en,c:'Basis Data',d};if(ex)g.ex=ex;GL.push(g);GLMAP[id]=g});
-let glState={q:'',cat:'Semua',focus:null},pendingFocus=null;
 const GLUSE={};
 for(const n in TOPICS)TOPICS[n].forEach((tp,ti)=>{for(const k in tp.legend){const id=tp.legend[k][0];(GLUSE[id]=GLUSE[id]||[]);if(!GLUSE[id].some(u=>u.n==n&&u.ti===ti))GLUSE[id].push({n:+n,ti,k,t:tp.t})}});
 const topicLesson=(n,ti)=>FLAT.java.find(x=>x.l.k==='topic'&&x.l.ref===n+'.'+ti)||FLAT.python.find(x=>x.l.k==='topic'&&x.l.ref===n+'.'+ti);

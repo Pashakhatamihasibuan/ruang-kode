@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Enkapsulasi: property &amp; dataclass · Python · Ruang Kode</title>
+<meta name="description" content="Python tidak punya private seperti Java. Konvensinya: nama yang diawali satu garis bawah (_saldo) berarti &quot;internal, jangan disentuh dari luar&quot;. Dua…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/python/enkapsulasi-property-dataclass">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Enkapsulasi: property &amp; dataclass · Python · Ruang Kode"><meta property="og:description" content="Python tidak punya private seperti Java. Konvensinya: nama yang diawali satu garis bawah (_saldo) berarti &quot;internal, jangan disentuh dari luar&quot;. Dua…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/python/enkapsulasi-property-dataclass"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Enkapsulasi: property & dataclass", "description": "Python tidak punya private seperti Java. Konvensinya: nama yang diawali satu garis bawah (_saldo) berarti \"internal, jangan disentuh dari luar\". Dua…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/python/enkapsulasi-property-dataclass", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Python", "url": "https://ruang-kode-nine.vercel.app/belajar/python"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Python", "item": "https://ruang-kode-nine.vercel.app/belajar/python"}, {"@type": "ListItem", "position": 3, "name": "Enkapsulasi: property & dataclass", "item": "https://ruang-kode-nine.vercel.app/belajar/python/enkapsulasi-property-dataclass"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/python">Python</a> / Modul 7</nav>
+<div class="eyebrow">Python · Modul 7 · Konsep &amp; kode</div><h1>Enkapsulasi: property &amp; dataclass</h1><a class="cta" href="/#python-7-4">Buka versi interaktif</a>
+<p>Python tidak punya <code>private</code> seperti Java. Konvensinya: nama yang diawali satu garis bawah (<code>_saldo</code>) berarti "internal, jangan disentuh dari luar". Dua garis bawah (<code>__pin</code>) membuat Python mengganti namanya (name mangling) sehingga lebih sulit diakses tanpa sengaja.</p>
+<p><b>@property</b> membuat method bisa diakses seperti atribut, sekaligus memberi tempat untuk validasi. Pengguna kelas menulis <code>akun.saldo</code>, tetapi di balik layar ada logika yang menjaga aturan.</p>
+<p><b>@dataclass</b> menulis otomatis <code>__init__</code>, <code>__repr__</code>, dan <code>__eq__</code> untuk kelas pembawa data. Tambahkan <code>frozen=True</code> agar objeknya tidak bisa diubah, mirip record di Java.</p>
+<div class="lbl">PYTHON</div><pre><code>from dataclasses import dataclass, field
+
+class Rekening:
+    def __init__(self, pemilik):
+        self.pemilik = pemilik
+        self._saldo = 0
+
+    @property
+    def saldo(self):
+        return self._saldo
+
+    @saldo.setter
+    def saldo(self, nilai):
+        if nilai &lt; 0:
+            raise ValueError(&quot;saldo tidak boleh negatif&quot;)
+        self._saldo = nilai
+
+r = Rekening(&quot;Andi&quot;)
+r.saldo = 75_000
+print(r.saldo)
+try:
+    r.saldo = -1
+except ValueError as e:
+    print(e)
+
+@dataclass
+class Produk:
+    nama: str
+    harga: int
+    tag: list = field(default_factory=list)
+
+@dataclass(frozen=True)
+class Titik:
+    x: int
+    y: int
+
+p = Produk(&quot;Kopi Gayo&quot;, 85000)
+print(p)
+print(p == Produk(&quot;Kopi Gayo&quot;, 85000))
+t = Titik(1, 2)
+try:
+    t.x = 5
+except Exception as e:
+    print(type(e).__name__)</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>75000
+saldo tidak boleh negatif
+Produk(nama=&#x27;Kopi Gayo&#x27;, harga=85000, tag=[])
+True
+FrozenInstanceError
+</code></pre>
+<h2>Poin penting</h2><ul><li><code>_nama</code> = konvensi internal.</li><li><code>@property</code> + setter untuk validasi.</li><li><code>@dataclass</code> mengurangi kode boilerplate.</li><li><code>frozen=True</code> membuat objek immutable.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Apa yang dibuat otomatis oleh @dataclass?</summary><p class="ok">Jawaban: __init__, __repr__, __eq__</p><p>Ketiganya dibuat dari anotasi field.</p></details><details><summary>Arti garis bawah di depan nama atribut (&lt;code&gt;_saldo&lt;/code&gt;)?</summary><p class="ok">Jawaban: Konvensi: internal, jangan diakses dari luar</p><p>Python mengandalkan kesepakatan.</p></details>
+<a class="cta" href="/#python-7-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/method-enkapsulasi">Method &amp; enkapsulasi</a></p><p>Berikutnya: <a href="/belajar/python/dunder-method-membuat-objek-terasa-bawaan">Dunder method: membuat objek terasa bawaan</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

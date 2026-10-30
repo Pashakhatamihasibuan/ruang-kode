@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HTTP, HTTPS &amp; cache · Frontend · Ruang Kode</title>
+<meta name="description" content="Setiap permintaan HTTP punya metode (GET untuk membaca, POST untuk mengirim, PUT/PATCH untuk mengubah, DELETE untuk menghapus), header (informasi…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/fe/http-https-cache">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="HTTP, HTTPS &amp; cache · Frontend · Ruang Kode"><meta property="og:description" content="Setiap permintaan HTTP punya metode (GET untuk membaca, POST untuk mengirim, PUT/PATCH untuk mengubah, DELETE untuk menghapus), header (informasi…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/fe/http-https-cache"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "HTTP, HTTPS & cache", "description": "Setiap permintaan HTTP punya metode (GET untuk membaca, POST untuk mengirim, PUT/PATCH untuk mengubah, DELETE untuk menghapus), header (informasi…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/fe/http-https-cache", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Frontend", "url": "https://ruang-kode-nine.vercel.app/belajar/fe"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Frontend", "item": "https://ruang-kode-nine.vercel.app/belajar/fe"}, {"@type": "ListItem", "position": 3, "name": "HTTP, HTTPS & cache", "item": "https://ruang-kode-nine.vercel.app/belajar/fe/http-https-cache"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/fe">Frontend</a> / Modul 1</nav>
+<div class="eyebrow">Frontend · Modul 1 · Konsep &amp; kode</div><h1>HTTP, HTTPS &amp; cache</h1><a class="cta" href="/#fe-1-2">Buka versi interaktif</a>
+<p>Setiap permintaan HTTP punya <b>metode</b> (GET untuk membaca, POST untuk mengirim, PUT/PATCH untuk mengubah, DELETE untuk menghapus), <b>header</b> (informasi tambahan), dan kadang <b>body</b>. Respons membawa kode status: 2xx berhasil, 3xx pengalihan, 4xx kesalahan dari sisi klien, 5xx kesalahan server.</p>
+<p><b>HTTPS</b> mengenkripsi lalu lintas dengan TLS, sehingga kata sandi dan data pembayaran tidak bisa dibaca di jaringan Wi-Fi publik. Browser modern menandai situs non-HTTPS sebagai tidak aman.</p>
+<p>Header <code>Cache-Control</code> memberi tahu browser berapa lama file boleh disimpan. File dengan nama ber-hash (<code>app.3f9a1c.js</code>) aman di-cache setahun karena namanya berubah setiap isinya berubah; dokumen HTML biasanya <code>no-cache</code> agar selalu diperiksa ulang.</p>
+<div class="lbl">CONTOH</div><pre><code>GET /assets/app.3f9a1c.js HTTP/2
+Host: tokonusantara.id
+
+HTTP/2 200
+content-type: text/javascript
+cache-control: public, max-age=31536000, immutable
+
+GET / HTTP/2
+HTTP/2 200
+content-type: text/html
+cache-control: no-cache</code></pre>
+<h2>Poin penting</h2><ul><li>Metode: GET, POST, PUT/PATCH, DELETE.</li><li>Status: 2xx sukses, 3xx pengalihan, 4xx salah klien, 5xx salah server.</li><li>HTTPS = HTTP + enkripsi TLS.</li><li>Aset ber-hash di-cache lama; HTML diperiksa ulang.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kode 401 masuk kelompok?</summary><p class="ok">Jawaban: Kesalahan klien (belum login)</p><p>4xx adalah kesalahan di sisi permintaan.</p></details><details><summary>Kenapa file app.3f9a1c.js boleh di-cache setahun?</summary><p class="ok">Jawaban: Namanya berubah setiap isinya berubah</p><p>Ini disebut cache busting.</p></details>
+<a class="cta" href="/#fe-1-2">Kerjakan latihannya di aplikasi</a><p>Berikutnya: <a href="/belajar/fe/cara-browser-menggambar-halaman">Cara browser menggambar halaman</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

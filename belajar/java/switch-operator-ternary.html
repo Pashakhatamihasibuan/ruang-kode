@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>switch &amp; operator ternary · Java · Ruang Kode</title>
+<meta name="description" content="Ketika sebuah nilai dibandingkan dengan banyak kemungkinan tetap, switch lebih rapi daripada rantai if-else. Sejak Java 14 ada switch expression dengan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/java/switch-operator-ternary">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="switch &amp; operator ternary · Java · Ruang Kode"><meta property="og:description" content="Ketika sebuah nilai dibandingkan dengan banyak kemungkinan tetap, switch lebih rapi daripada rantai if-else. Sejak Java 14 ada switch expression dengan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/java/switch-operator-ternary"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "switch & operator ternary", "description": "Ketika sebuah nilai dibandingkan dengan banyak kemungkinan tetap, switch lebih rapi daripada rantai if-else. Sejak Java 14 ada switch expression dengan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/java/switch-operator-ternary", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Java", "url": "https://ruang-kode-nine.vercel.app/belajar/java"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Java", "item": "https://ruang-kode-nine.vercel.app/belajar/java"}, {"@type": "ListItem", "position": 3, "name": "switch & operator ternary", "item": "https://ruang-kode-nine.vercel.app/belajar/java/switch-operator-ternary"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/java">Java</a> / Modul 3</nav>
+<div class="eyebrow">Java · Modul 3 · Konsep &amp; kode</div><h1>switch &amp; operator ternary</h1><a class="cta" href="/#java-3-3">Buka versi interaktif</a>
+<p>Ketika sebuah nilai dibandingkan dengan banyak kemungkinan tetap, <code>switch</code> lebih rapi daripada rantai <code>if-else</code>. Sejak Java 14 ada <b>switch expression</b> dengan panah <code>-></code>: tidak perlu <code>break</code>, dan hasilnya bisa langsung disimpan ke variabel.</p>
+<p>Switch klasik dengan titik dua masih banyak ditemui di kode lama. Di sana kamu wajib menulis <code>break</code>, kalau tidak eksekusi "jatuh" ke case berikutnya (fall-through).</p>
+<p>Untuk pilihan dua arah yang pendek, ada operator <b>ternary</b>: <code>kondisi ? nilaiJikaBenar : nilaiJikaSalah</code>. Pakai seperlunya, karena ternary bersarang cepat sulit dibaca.</p>
+<div class="lbl">JAVA</div><pre><code>public class Hari {
+    public static void main(String[] args) {
+        int hari = 6;
+        String jenis = switch (hari) {
+            case 1, 2, 3, 4, 5 -&gt; &quot;Hari kerja&quot;;
+            case 6, 7 -&gt; &quot;Akhir pekan&quot;;
+            default -&gt; &quot;Tidak valid&quot;;
+        };
+        System.out.println(jenis);
+
+        String nilai = &quot;B&quot;;
+        switch (nilai) {
+            case &quot;A&quot;:
+                System.out.println(&quot;Istimewa&quot;);
+                break;
+            case &quot;B&quot;:
+                System.out.println(&quot;Baik&quot;);
+                break;
+            default:
+                System.out.println(&quot;Tetap semangat&quot;);
+        }
+
+        int umur = 17;
+        String status = umur &gt;= 17 ? &quot;boleh punya KTP&quot; : &quot;belum&quot;;
+        System.out.println(status);
+    }
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Akhir pekan
+Baik
+boleh punya KTP
+</code></pre>
+<h2>Poin penting</h2><ul><li>Switch expression (<code>-></code>) tidak butuh break dan bisa mengembalikan nilai.</li><li>Switch bisa dipakai untuk int, char, String, dan enum.</li><li>Lupa <code>break</code> di switch klasik menyebabkan fall-through.</li><li>Ternary cocok untuk pilihan dua nilai yang sederhana.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Apa yang terjadi jika &lt;code&gt;break&lt;/code&gt; lupa ditulis di switch klasik?</summary><p class="ok">Jawaban: Eksekusi lanjut ke case berikutnya</p><p>Ini disebut fall-through.</p></details><details><summary>Hasil &lt;code&gt;5 &gt; 3 ? &quot;ya&quot; : &quot;tidak&quot;&lt;/code&gt;?</summary><p class="ok">Jawaban: &quot;ya&quot;</p><p>Kondisinya benar sehingga nilai pertama dipilih.</p></details>
+<a class="cta" href="/#java-3-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/if-else-if-else">if / else if / else</a></p><p>Berikutnya: <a href="/belajar/java/algoritma-kumulatif">Algoritma kumulatif</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

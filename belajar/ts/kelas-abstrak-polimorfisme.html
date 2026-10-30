@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kelas abstrak &amp; polimorfisme · TypeScript · Ruang Kode</title>
+<meta name="description" content="Kelas abstrak tidak bisa dibuat objeknya langsung; ia menjadi kerangka bersama dengan method abstract yang wajib diisi kelas turunan.">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/ts/kelas-abstrak-polimorfisme">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Kelas abstrak &amp; polimorfisme · TypeScript · Ruang Kode"><meta property="og:description" content="Kelas abstrak tidak bisa dibuat objeknya langsung; ia menjadi kerangka bersama dengan method abstract yang wajib diisi kelas turunan.">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/ts/kelas-abstrak-polimorfisme"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Kelas abstrak & polimorfisme", "description": "Kelas abstrak tidak bisa dibuat objeknya langsung; ia menjadi kerangka bersama dengan method abstract yang wajib diisi kelas turunan.", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/ts/kelas-abstrak-polimorfisme", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "TypeScript", "url": "https://ruang-kode-nine.vercel.app/belajar/ts"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "TypeScript", "item": "https://ruang-kode-nine.vercel.app/belajar/ts"}, {"@type": "ListItem", "position": 3, "name": "Kelas abstrak & polimorfisme", "item": "https://ruang-kode-nine.vercel.app/belajar/ts/kelas-abstrak-polimorfisme"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/ts">TypeScript</a> / Modul 6</nav>
+<div class="eyebrow">TypeScript · Modul 6 · Konsep &amp; kode</div><h1>Kelas abstrak &amp; polimorfisme</h1><a class="cta" href="/#ts-6-2">Buka versi interaktif</a>
+<p><b>Kelas abstrak</b> tidak bisa dibuat objeknya langsung; ia menjadi kerangka bersama dengan method <code>abstract</code> yang wajib diisi kelas turunan.</p>
+<p><b>Polimorfisme</b>: kode yang bekerja dengan tipe induk otomatis memanggil versi method milik objek sebenarnya. Kata kunci <code>override</code> menegaskan bahwa method menimpa milik induk; aktifkan opsi <code>noImplicitOverride</code> agar wajib ditulis.</p>
+<div class="lbl">TYPESCRIPT</div><pre><code>abstract class Pengiriman {
+  constructor(protected beratKg: number) {}
+  abstract tarifPerKg(): number;
+  biaya(): number { return Math.max(1, Math.ceil(this.beratKg)) * this.tarifPerKg(); }
+}
+
+class Reguler extends Pengiriman { tarifPerKg() { return 10000; } }
+class Kilat extends Pengiriman {
+  tarifPerKg() { return 18000; }
+  override biaya(): number { return super.biaya() + 5000; }   // tambah biaya asuransi
+}
+
+const kiriman: Pengiriman[] = [new Reguler(1.2), new Kilat(1.2), new Reguler(0.3)];
+kiriman.forEach(k =&gt; console.log(k.constructor.name, k.biaya()));</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Reguler 20000
+Kilat 41000
+Reguler 10000</code></pre>
+<h2>Poin penting</h2><ul><li>abstract class: kerangka, tidak bisa di-new.</li><li>abstract method wajib diimplementasikan.</li><li>override menimpa method induk.</li><li>Polimorfisme lewat tipe induk.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>new Pengiriman(1) menghasilkan?</summary><p class="ok">Jawaban: Error: tidak bisa membuat instance kelas abstrak</p><p>Kelas abstrak hanya untuk diwarisi.</p></details>
+<a class="cta" href="/#ts-6-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/ts/kelas-modifier-akses">Kelas &amp; modifier akses</a></p><p>Berikutnya: <a href="/belajar/ts/fungsi-tipe-generik">Fungsi &amp; tipe generik</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

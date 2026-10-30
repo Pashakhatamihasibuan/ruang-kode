@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Variabel CSS &amp; tema · CSS · Ruang Kode</title>
+<meta name="description" content="Custom property (variabel CSS) ditulis --nama: nilai dan dipakai dengan var(--nama). Berbeda dengan variabel Sass, variabel CSS hidup di browser: bisa…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/css/variabel-css-tema">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Variabel CSS &amp; tema · CSS · Ruang Kode"><meta property="og:description" content="Custom property (variabel CSS) ditulis --nama: nilai dan dipakai dengan var(--nama). Berbeda dengan variabel Sass, variabel CSS hidup di browser: bisa…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/css/variabel-css-tema"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Variabel CSS & tema", "description": "Custom property (variabel CSS) ditulis --nama: nilai dan dipakai dengan var(--nama). Berbeda dengan variabel Sass, variabel CSS hidup di browser: bisa…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/css/variabel-css-tema", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "CSS", "url": "https://ruang-kode-nine.vercel.app/belajar/css"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "CSS", "item": "https://ruang-kode-nine.vercel.app/belajar/css"}, {"@type": "ListItem", "position": 3, "name": "Variabel CSS & tema", "item": "https://ruang-kode-nine.vercel.app/belajar/css/variabel-css-tema"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/css">CSS</a> / Modul 8</nav>
+<div class="eyebrow">CSS · Modul 8 · Praktik langsung</div><h1>Variabel CSS &amp; tema</h1><a class="cta" href="/#css-8-1">Buka versi interaktif</a>
+<p><b>Custom property</b> (variabel CSS) ditulis <code>--nama: nilai</code> dan dipakai dengan <code>var(--nama)</code>. Berbeda dengan variabel Sass, variabel CSS hidup di browser: bisa diubah oleh media query, oleh class, atau oleh JavaScript.</p>
+<p>Ini dasar dari tema terang-gelap dan design token. Tulis semua warna di <code>:root</code>, lalu ganti nilainya untuk tema gelap.</p>
+<div class="lbl">HTML</div><pre><code>&lt;div class=&quot;kartu&quot;&gt;&lt;h3&gt;Mode tema&lt;/h3&gt;&lt;p&gt;Klik tombol untuk ganti tema.&lt;/p&gt;
+&lt;button onclick=&quot;document.documentElement.classList.toggle(&#x27;gelap&#x27;)&quot;&gt;Ganti tema&lt;/button&gt;&lt;/div&gt;</code></pre>
+<div class="lbl">CSS</div><pre><code>:root { --bg: #FAFAF7; --teks: #1C1B19; --aksen: #B4532A; --radius: 12px; }
+:root.gelap { --bg: #181816; --teks: #ECEAE4; --aksen: #E39A73; }
+body { background: var(--bg); color: var(--teks); font-family: sans-serif; transition: background .3s; }
+.kartu { border: 2px solid var(--aksen); border-radius: var(--radius); padding: 12px 16px; }
+button { background: var(--aksen); color: var(--bg); border: 0; padding: 6px 14px; border-radius: 99px; }</code></pre>
+<h2>Tantangan</h2><ol><li>Ganti <code>--radius</code> menjadi <code>0px</code> agar kartu bersudut tajam.</li></ol>
+<h2>Poin penting</h2><ul><li>--nama untuk mendefinisikan, var(--nama) untuk memakai.</li><li>Variabel CSS bisa diubah saat halaman berjalan.</li><li>Dasar tema gelap dan design token.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Cara memakai variabel --aksen?</summary><p class="ok">Jawaban: var(--aksen)</p><p>Fungsi var() membaca custom property.</p></details>
+<a class="cta" href="/#css-8-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/css/transform-transisi-animasi">Transform, transisi &amp; animasi</a></p><p>Berikutnya: <a href="/belajar/css/bem-sass-css-modules-performa">BEM, Sass, CSS Modules &amp; performa</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

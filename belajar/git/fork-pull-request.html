@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fork &amp; pull request · Git &amp; GitHub · Ruang Kode</title>
+<meta name="description" content="Fork adalah salinan repositori orang lain di akunmu sendiri. Dipakai untuk berkontribusi ke proyek open source tempat kamu tidak punya hak tulis.">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/git/fork-pull-request">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Fork &amp; pull request · Git &amp; GitHub · Ruang Kode"><meta property="og:description" content="Fork adalah salinan repositori orang lain di akunmu sendiri. Dipakai untuk berkontribusi ke proyek open source tempat kamu tidak punya hak tulis.">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/git/fork-pull-request"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Fork & pull request", "description": "Fork adalah salinan repositori orang lain di akunmu sendiri. Dipakai untuk berkontribusi ke proyek open source tempat kamu tidak punya hak tulis.", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/git/fork-pull-request", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Git & GitHub", "url": "https://ruang-kode-nine.vercel.app/belajar/git"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Git & GitHub", "item": "https://ruang-kode-nine.vercel.app/belajar/git"}, {"@type": "ListItem", "position": 3, "name": "Fork & pull request", "item": "https://ruang-kode-nine.vercel.app/belajar/git/fork-pull-request"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/git">Git &amp; GitHub</a> / Modul 4</nav>
+<div class="eyebrow">Git &amp; GitHub · Modul 4 · Konsep &amp; kode</div><h1>Fork &amp; pull request</h1><a class="cta" href="/#git-4-2">Buka versi interaktif</a>
+<p><b>Fork</b> adalah salinan repositori orang lain di akunmu sendiri. Dipakai untuk berkontribusi ke proyek open source tempat kamu tidak punya hak tulis.</p>
+<p><b>Pull request</b> (PR) adalah permintaan agar perubahan di cabangmu digabung ke cabang tujuan. Di PR, rekan tim membaca diff, memberi komentar per baris, dan menyetujui. CI otomatis menjalankan tes.</p>
+<p>PR yang mudah direview: kecil (di bawah 400 baris), satu tujuan, judul jelas, deskripsi berisi apa yang berubah, kenapa, dan cara mengujinya, plus tangkapan layar untuk perubahan tampilan.</p>
+<div class="lbl">TERMINAL</div><pre><code># 1. Fork lewat tombol Fork di GitHub, lalu:
+$ git clone git@github.com:sariw/kamus-daerah.git
+$ cd kamus-daerah
+$ git remote add upstream https://github.com/komunitas/kamus-daerah.git
+
+# 2. Kerjakan di cabang sendiri
+$ git switch -c tambah-bahasa-sunda
+$ git commit -am &quot;feat: 120 kosakata bahasa Sunda&quot;
+$ git push -u origin tambah-bahasa-sunda
+
+# 3. Buka Pull Request di GitHub: tambah-bahasa-sunda -&gt; komunitas:main
+
+# 4. Selaraskan dengan proyek asal
+$ git fetch upstream &amp;&amp; git rebase upstream/main</code></pre>
+<h2>Poin penting</h2><ul><li>Fork = salinan di akunmu; upstream = proyek asal.</li><li>PR = minta perubahan digabung, tempat review.</li><li>PR kecil dan berdeskripsi jelas lebih cepat disetujui.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Remote upstream biasanya menunjuk ke?</summary><p class="ok">Jawaban: Repositori asal yang di-fork</p><p>origin = fork milikmu, upstream = proyek asal.</p></details><details><summary>Ciri PR yang baik?</summary><p class="ok">Jawaban: Kecil, satu tujuan, deskripsi jelas</p><p>Reviewer bisa memahami dan menguji dengan cepat.</p></details>
+<a class="cta" href="/#git-4-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/git/remote-push-pull">Remote, push &amp; pull</a></p><p>Berikutnya: <a href="/belajar/git/issue-label-project-board">Issue, label &amp; project board</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>
