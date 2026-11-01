@@ -131,7 +131,7 @@ const normQ=([q,o,a,w])=>({q:esc(q),o:o.map(esc),a,w:esc(w)});
 /* bank soal satu modul, dipakai ujian dan tes penempatan */
 function bankOf(tk,mi){
   return FLAT[tk].filter(x=>x.mi===mi).flatMap(x=>{const y=base(x),l=y.l;
-    if(l.k==='lab')return CH[l.n-1].quiz.map(q=>({...q,x}));
+    if(l.k==='lab')return chFor(l.n,y.t.lang).quiz.map(q=>({...q,x}));
     return (l.q||[]).map(q=>({...normQ(q),x}))});
 }
 function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}

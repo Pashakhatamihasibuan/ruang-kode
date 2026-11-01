@@ -1,4 +1,7 @@
 /* ===================== VISUALISASI ===================== */
+/* Bahasa pelajaran yang sedang dibuka. Di jalur Java, lab hanya menampilkan Java (tanpa kolom Python). */
+let VLANG=null;
+const JO=()=>VLANG==='java';
 const VIZ = {
 compile(el){
   const J=['Halo.java','javac (compiler)','Halo.class (bytecode)','JVM menjalankan','Keluaran'];
@@ -8,9 +11,14 @@ compile(el){
     'Java menyimpan bytecode ke file <code>Halo.class</code>. Python juga membuat bytecode, tapi otomatis dan tersembunyi.',
     'JVM menjalankan bytecode. Interpreter Python mengeksekusi perintah satu per satu.',
     'Teks tampil di layar. Pada Python, error di baris 10 baru ketahuan saat baris 10 dijalankan.'];
-  const frames=notes.map((n,s)=>({s,note:n}));
+  const notesJ=['Semua dimulai dari <b>kode sumber</b>, yaitu teks yang kamu tulis di file <code>Halo.java</code>.',
+    '<code>javac</code> memeriksa seluruh file. Error sintaks ketahuan di sini, sebelum program jalan.',
+    'Hasil kompilasi disimpan sebagai <b>bytecode</b> di file <code>Halo.class</code>.',
+    'JVM (Java Virtual Machine) menjalankan bytecode. Karena itu file .class yang sama bisa jalan di Windows, macOS, dan Linux.',
+    'Teks tampil di layar.'];
+  const frames=(JO()?notesJ:notes).map((n,s)=>({s,note:n}));
   const lane=(name,cls,arr,s)=>`<div class="lane"><span class="lane-name ${cls}">${name}</span>${arr.map((x,i)=>`${i?'<span class="arrow">→</span>':''}<span class="node ${i<=s?'on':''} ${i===s?'cur':''}">${x}</span>`).join('')}</div>`;
-  player(el,frames,(st,f)=>{st.innerHTML=lane('JAVA','j',J,f.s)+lane('PYTHON','p',P,f.s)});
+  player(el,frames,(st,f)=>{st.innerHTML=lane('JAVA','j',J,f.s)+(JO()?'':lane('PYTHON','p',P,f.s))});
 },
 forloop(el){
   el.innerHTML=`<div class="row"><label for="fl-n">Nilai n:</label><select class="inp" id="fl-n">${[2,3,4,5].map(v=>`<option ${v===3?'selected':''}>${v}</option>`).join('')}</select></div><div class="pl"></div>`;
@@ -33,8 +41,8 @@ forloop(el){
       <div><div class="eyebrow" style="color:var(--java)">Java</div><div class="mini">for (<span class="${on('init')}">int i = 1</span>; <span class="${on('check')}">i &lt;= ${n}</span>; <span class="${on('upd')}">i++</span>) {
     <span class="${on('body')}">System.out.println("*".repeat(i));</span>
 }</div></div>
-      <div><div class="eyebrow" style="color:var(--py)">Python</div><div class="mini"><span class="${f.ph!=='body'?'on':''}">for i in range(1, ${n} + 1):</span>
-    <span class="${on('body')}">print("*" * i)</span></div></div>
+      ${JO()?'':`<div><div class="eyebrow" style="color:var(--py)">Python</div><div class="mini"><span class="${f.ph!=='body'?'on':''}">for i in range(1, ${n} + 1):</span>
+    <span class="${on('body')}">print("*" * i)</span></div></div>`}
     </div>
     <div class="row" style="margin-top:12px"><span class="var">i = <b>${f.i}</b></span><span class="var">n = <b>${n}</b></span></div>
     <div class="console" style="margin-top:10px">${esc(f.out)}</div>`;
@@ -91,13 +99,13 @@ ifelse(el){
 boolean(el){
   let p=true,q=false;
   el.innerHTML=`<div class="grid2"><div><div class="row"><button class="toggle" id="bp"></button><button class="toggle" id="bq"></button><span style="color:var(--muted);font-size:.85rem">klik untuk mengubah</span></div>
-  <table class="tt" style="margin-top:10px"><thead><tr><th>Java</th><th>Python</th><th>Hasil</th></tr></thead><tbody id="btb"></tbody></table></div>
+  <table class="tt" style="margin-top:10px"><thead><tr><th>Java</th>${JO()?'':'<th>Python</th>'}<th>Hasil</th></tr></thead><tbody id="btb"></tbody></table></div>
   <div><div class="eyebrow">Loop while: lempar sampai dapat 6</div><div class="mini" style="margin:8px 0">while (dadu != 6) { ... }</div><div class="row"><button class="btn primary" id="roll">Lempar dadu</button><span id="rcount" class="log"></span></div><div class="row" id="dice" style="margin-top:10px"></div></div></div>`;
   const B=v=>`<span class="${v?'val-t':'val-f'}">${v}</span>`;
   const upd=()=>{
     $('#bp',el).innerHTML=`p = ${B(p)}`;$('#bq',el).innerHTML=`q = ${B(q)}`;
     const rows=[['p &amp;&amp; q','p and q',p&&q],['p || q','p or q',p||q],['!p','not p',!p],['!(p &amp;&amp; q)','not (p and q)',!(p&&q)],['!p || !q','not p or not q',!p||!q]];
-    $('#btb',el).innerHTML=rows.map(r=>`<tr><td><code>${r[0]}</code></td><td><code>${r[1]}</code></td><td>${B(r[2])}</td></tr>`).join('');
+    $('#btb',el).innerHTML=rows.map(r=>`<tr><td><code>${r[0]}</code></td>${JO()?'':`<td><code>${r[1]}</code></td>`}<td>${B(r[2])}</td></tr>`).join('');
   };
   $('#bp',el).onclick=()=>{p=!p;upd()};$('#bq',el).onclick=()=>{q=!q;upd()};upd();
   $('#roll',el).onclick=()=>{
@@ -436,7 +444,7 @@ functional(el){
   el.innerHTML=`<div class="row"><label for="fn-f">filter</label><select class="inp" id="fn-f"><option value="semua">semua</option><option value="genap" selected>genap</option><option value="ganjil">ganjil</option><option value="lebih5">&gt; 5</option></select>
   <label for="fn-m">map</label><select class="inp" id="fn-m"><option value="tetap">tetap</option><option value="kali2">× 2</option><option value="kuadrat" selected>kuadrat</option><option value="plus10">+ 10</option></select>
   <label for="fn-r">reduce</label><select class="inp" id="fn-r"><option value="list">(kumpulkan list)</option><option value="jumlah" selected>jumlah</option><option value="maks">maksimum</option><option value="banyak">banyaknya</option></select></div>
-  <div class="pipe" id="fn-p"></div><div class="grid2"><div class="mini" id="fn-j"></div><div class="mini" id="fn-py"></div></div>`;
+  <div class="pipe" id="fn-p"></div><div class="grid2"><div class="mini" id="fn-j"></div>${JO()?'':'<div class="mini" id="fn-py"></div>'}</div>`;
   const upd=()=>{
     const f=FL[$('#fn-f',el).value],m=MP[$('#fn-m',el).value],r=RD[$('#fn-r',el).value];
     const a1=f[0]?D.filter(f[0]):D,a2=a1.map(m[0]),res=r[0]?r[0](a2):null;
@@ -449,7 +457,7 @@ functional(el){
     const expr=m[2]?m[2]:'n',cond=f[2]?` if ${f[2]}`:'';
     const py=r[2]?(r[2]==='len'?`len([n for n in angka${cond}])`:`${r[2]}(${expr} for n in angka${cond})`):`[${expr} for n in angka${cond}]`;
     $('#fn-j',el).innerHTML=`<span class="c">// Java</span>\n`+hl(j,'java');
-    $('#fn-py',el).innerHTML=`<span class="c"># Python</span>\n`+hl(py,'python');
+    if(!JO())$('#fn-py',el).innerHTML=`<span class="c"># Python</span>\n`+hl(py,'python');
   };
   el.querySelectorAll('select').forEach(s=>s.addEventListener('change',upd));upd();
 }

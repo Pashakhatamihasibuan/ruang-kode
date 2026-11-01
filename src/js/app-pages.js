@@ -193,8 +193,8 @@ function wireMine(){
 /* ---------- daftar ulang ---------- */
 /* ringkasan modul: poin penting dari setiap pelajaran yang sudah diselesaikan */
 function pointsOf(x){const y=base(x),l=y.l;
-  if(l.k==='lab')return CH[l.n-1].points||[];
-  if(l.k==='topic'){const [n,i]=l.ref.split('.').map(Number),tp=TOPICS[n][i];return tp.rumus?[`<code>${esc(tp.rumus.f)}</code>`,...tp.rumus.i.map(esc)]:[]}
+  if(l.k==='lab')return chFor(l.n,y.t.lang).points||[];
+  if(l.k==='topic'){const [n,i]=l.ref.split('.').map(Number),tp=y.t.lang==='java'?tpJ(l.ref,TOPICS[n][i]):TOPICS[n][i];return tp.rumus?[`<code>${esc(tp.rumus.f)}</code>`,...tp.rumus.i.map(esc)]:[]}
   return l.pts||[]}
 function renderSummary(t,mi){
   const m=t.mods[mi],F=FLAT[t.k].filter(x=>x.mi===mi),mp=modProg(t.k,mi);

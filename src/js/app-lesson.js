@@ -60,7 +60,7 @@ function wireLesson(x){
     markDone(x);location.hash=next?next.id:t.k};
   const u=$('#undo');if(u)u.onclick=()=>{delete LMS.done[y.id];saveLms();route()};
   linkTerms($('#view .l-body'));
-  if(l.k==='lab')wireLab(l.n);
+  if(l.k==='lab')wireLab(l.n,y.t.lang);
   else if(l.k==='topic')wireTopic1(l.ref,y.t.lang);
   else if(l.k==='c')wireConcept(l,y.t,x);
   else if(l.k==='w')wireWeb(l,x);

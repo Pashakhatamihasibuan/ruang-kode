@@ -139,7 +139,7 @@ true
             sb.append(i).append(i < 5 ? "-" : "");
         }
         System.out.println(sb.toString());
-        System.out.println(String.join(", ", "Java", "Python", "SQL"));
+        System.out.println(String.join(", ", "Java", "Kotlin", "SQL"));
     }
 }`,
    out:`BUDI SANTOSO
@@ -151,7 +151,7 @@ true
 false
 true
 1-2-3-4-5
-Java, Python, SQL
+Java, Kotlin, SQL
 `,
    pts:['String immutable: method string selalu mengembalikan string baru.','Bandingkan isi dengan <code>equals</code> atau <code>equalsIgnoreCase</code>.','<code>substring(a, b)</code> mengambil indeks a sampai sebelum b.','<code>StringBuilder</code> untuk menyusun teks panjang di dalam loop.'],
    q:[['Hasil <code>"kopi".substring(1, 3)</code>?',['"op"','"opi"','"kop"'],0,'Indeks 1 sampai sebelum 3: huruf o dan p.'],

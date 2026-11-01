@@ -1,17 +1,17 @@
 /* ===================== PELAJARAN JAVA & PYTHON (lab & topic) =====================
    Dipindahkan dari app.js lama tanpa perubahan perilaku. */
 function labHTML(n,lang){
-  const c=CH[n-1];
+  const c=chFor(n,lang);
   return `<nav class="toc" aria-label="Di halaman ini">${[['Konsep','#konsep'],['Lab','#lab'],['Program','#prog'],['Istilah','#istilah'],['Kuis','#quiz']].map(([a,b])=>`<button data-to="${b}">${a}</button>`).join('')}</nav>
   <section class="prose" id="konsep">${c.body.map(p=>`<p>${p}</p>`).join('')}</section>
   <ul class="points">${c.points.map(p=>`<li>${p}</li>`).join('')}</ul>
   <section class="viz" id="lab" aria-label="Visualisasi"><div class="viz-head"><span class="eyebrow">Lab interaktif</span><h3>${c.vizT}</h3><p>${c.vizD}</p></div><div id="vizHost" class="vizhost"></div></section>
   <section class="section" id="prog"><h2>Program lengkap</h2>${pane(lang,c[lang],{out:c.out==null?null:typeof c.out==='string'?c.out:c.out[lang]})}</section>
   <div class="tip"><b>Tip mentor.</b> ${c.tip}</div>
-  <section class="section" id="istilah"><h2>Istilah di pelajaran ini</h2><div class="terms">${c.terms.map(id=>`<button class="term-chip" data-term="${id}">${GLMAP[id].t}</button>`).join('')}</div></section>
+  <section class="section" id="istilah"><h2>Istilah di pelajaran ini</h2><div class="terms">${c.terms.map(id=>`<button class="term-chip" data-term="${id}">${glName(GLMAP[id],lang)}</button>`).join('')}</div></section>
   <section class="section" id="quiz"><h2>Kuis cepat</h2>${quizHTML(c.quiz,n)}</section>`;
 }
-function wireLab(n){const c=CH[n-1];VIZ[c.viz]($('#vizHost'));wireQuiz($('#quiz'),c.quiz)}
+function wireLab(n,lang){const c=chFor(n,lang);VLANG=lang;VIZ[c.viz]($('#vizHost'));wireQuiz($('#quiz'),c.quiz)}
 
 /* ---------- jenis topic: lima langkah, satu bahasa ---------- */
 const MK_RE=/«(\w+)\|([^»]*)»/g;
@@ -64,9 +64,9 @@ function drawTrace(stage,f,tp,L){
       return `<div class="mbox ${f.chg.has(k)?'chg':''} ${wide?'wide':''}"><div class="mh"><span class="mn">${esc(k)}</span><span class="mt">${esc(L==='j'?ts[0]:(ts[1]??ts[0]))}</span></div><div class="mv">${rv(v,L)}</div></div>`}).join(''):'<span class="mempty">Belum ada variabel di memori.</span>'}</div></div>
     <div><div class="eyebrow">Keluaran</div><div class="console ${f.fresh?'fresh':''}">${esc(f.out)}</div></div></div></div>`;
 }
-const topicOf=ref=>{const [n,i]=ref.split('.').map(Number);return {n,i,tp:TOPICS[n][i]}};
+const topicOf=(ref,lang)=>{const [n,i]=ref.split('.').map(Number),tp=TOPICS[n][i];return {n,i,tp:lang==='java'?tpJ(ref,tp):tp}};
 function topicHTML1(ref,lang){
-  const {n,i,tp}=topicOf(ref),keys=Object.keys(tp.legend),J=lang==='java',ord=perm(tp.ex.o.length,n*10+i),p=PROJ[ref],R2=RUMUS[ref];
+  const {n,i,tp}=topicOf(ref,lang),keys=Object.keys(tp.legend),J=lang==='java',ord=perm(tp.ex.o.length,n*10+i),p=J?projJ(ref,PROJ[ref]):PROJ[ref],R2=RUMUS[ref];
   const pyCell=s=>s.startsWith('(')?`<span class="c">${esc(s)}</span>`:hl(s,'python');
   const o=p&&(J?p.oj:p.op);
   return `<div class="steps" role="list">${['Kalimat → kode','Anatomi','Eksekusi','Rumus','Mini project'].map((x,k)=>`<button role="listitem" data-ph="${k}"><span>${k+1}</span>${x}</button>`).join('')}</div>
@@ -77,7 +77,7 @@ function topicHTML1(ref,lang){
     <div class="exo">${ord.map(oi=>`<button class="opt code-opt" data-o="${oi}"><pre>${hl(tp.ex.o[oi][J?0:1],lang)}</pre></button>`).join('')}</div><p class="why" hidden></p></div></article>
   <article class="phase" id="anat"><header class="ph-h"><span class="ph-n">2</span><div><h3>Anatomi kode</h3><p>Klik bagian kode yang bernomor, atau klik istilah di daftar, untuk melihat bagian mana yang dimaksud.</p></div></header>
    <div class="pane ${lang}"><div class="pane-h"><span>${J?'JAVA':'PYTHON'}</span></div><pre class="code">${markHL(tp[lang],lang,keys)}</pre></div>
-   <ol class="legend">${keys.map((k,q)=>{const [id,d]=tp.legend[k],g=GLMAP[id];return `<li style="--mc:var(--m${q%6})" data-k="${k}"><button class="lg" data-k="${k}"><span class="badge">${q+1}</span><span><b>${g?g.t:id}</b>${g?` <small>${g.en}</small>`:''}<span class="ld">${esc(d)}</span></span></button><button class="glink" data-term="${id}" title="Buka di glosarium">Glosarium</button></li>`}).join('')}</ol></article>
+   <ol class="legend">${keys.map((k,q)=>{const [id,d]=tp.legend[k],g=GLMAP[id];return `<li style="--mc:var(--m${q%6})" data-k="${k}"><button class="lg" data-k="${k}"><span class="badge">${q+1}</span><span><b>${g?glName(g,lang):id}</b>${g?` <small>${g.en}</small>`:''}<span class="ld">${esc(d)}</span></span></button><button class="glink" data-term="${id}" title="Buka di glosarium">Glosarium</button></li>`}).join('')}</ol></article>
   <article class="phase"><header class="ph-h"><span class="ph-n">3</span><div><h3>Eksekusi baris demi baris</h3><p>Garis kuning adalah baris yang sedang dijalankan. Kotak hijau di memori berarti nilainya baru saja berubah.</p></div></header><div id="trHost" class="trhost"></div></article>
   <article class="phase"><header class="ph-h"><span class="ph-n">4</span><div><h3>Rumus praktis</h3><p>Pola sintaks yang dipakai programmer. Ganti kata seperti <code>type</code>, <code>name</code>, dan <code>value</code> dengan milikmu sendiri.</p></div></header>
    ${pane(lang,R2[J?0:1],{copy:false})}<ul class="rl">${tp.rumus.i.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></article>
@@ -98,7 +98,7 @@ function activateMark(root,k,scroll){
   if(on&&scroll){const m=box.querySelector(`.mk[data-k="${k}"]`)||box.querySelector(`.legend li[data-k="${k}"]`);m.scrollIntoView({block:'center',behavior:'smooth'})}
 }
 function wireTopic1(ref,lang){
-  const {tp}=topicOf(ref),host=$('.l-body'),L=lang==='java'?'j':'p';
+  const {tp}=topicOf(ref,lang),host=$('.l-body'),L=lang==='java'?'j':'p';
   player($('#trHost'),tracerFrames(tp,L),(st,f)=>drawTrace(st,f,tp,L),{speed:1500});
   const ex=$('.ex',host);
   ex.addEventListener('click',e=>{const b=e.target.closest('.opt');if(!b||b.disabled)return;const pick=+b.dataset.o;

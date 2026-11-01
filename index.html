@@ -1659,7 +1659,7 @@ button.gt:focus-visible{outline:2px solid var(--acc,var(--py));outline-offset:2p
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <footer class="sfoot"><div><span>Ruang Kode · dikembangkan oleh <b>Pasha Khatami Hasibuan</b></span><span>Kurikulum mengikuti <a href="https://roadmap.sh" target="_blank" rel="noopener">roadmap.sh</a> · progres tersimpan di browser ini</span></div></footer>
 
-<script>window.RK_CHUNKS={"rt": "c/rt.0b8e477805.js", "book": "c/book.70614f62c1.js", "t:java": "c/t-java.9958c97c9b.js", "t:python": "c/t-python.84f9056a4e.js", "t:sql": "c/t-sql.aa39e8a6f6.js", "t:html": "c/t-html.aec5f27da8.js", "t:css": "c/t-css.b5cb5d84c8.js", "t:fe0": "c/t-fe0.8cb679df69.js", "t:fe": "c/t-fe.1f1fff7fc1.js", "t:react": "c/t-react.5441f6eb3e.js", "t:ts": "c/t-ts.0552833654.js", "t:git": "c/t-git.c4b757e845.js", "t:pda": "c/t-pda.260f5b9d54.js", "t:da": "c/t-da.6353164264.js", "t:bi": "c/t-bi.8805bda050.js", "t:de": "c/t-de.01beaa8dc7.js", "t:ux": "c/t-ux.f487e550c9.js", "t:ds": "c/t-ds.df0b5f3e28.js"};</script>
+<script>window.RK_CHUNKS={"rt": "c/rt.ca529f2a40.js", "book": "c/book.dfeb339c16.js", "t:java": "c/t-java.accf2406c7.js", "t:python": "c/t-python.84f9056a4e.js", "t:sql": "c/t-sql.aa39e8a6f6.js", "t:html": "c/t-html.aec5f27da8.js", "t:css": "c/t-css.b5cb5d84c8.js", "t:fe0": "c/t-fe0.8cb679df69.js", "t:fe": "c/t-fe.1f1fff7fc1.js", "t:react": "c/t-react.5441f6eb3e.js", "t:ts": "c/t-ts.0552833654.js", "t:git": "c/t-git.c4b757e845.js", "t:pda": "c/t-pda.260f5b9d54.js", "t:da": "c/t-da.6353164264.js", "t:bi": "c/t-bi.8805bda050.js", "t:de": "c/t-de.01beaa8dc7.js", "t:ux": "c/t-ux.f487e550c9.js", "t:ds": "c/t-ds.df0b5f3e28.js"};</script>
 <script>
 /* ===================== UTIL ===================== */
 const $ = (s,r=document)=>r.querySelector(s);
@@ -2210,7 +2210,7 @@ const normQ=([q,o,a,w])=>({q:esc(q),o:o.map(esc),a,w:esc(w)});
 /* bank soal satu modul, dipakai ujian dan tes penempatan */
 function bankOf(tk,mi){
   return FLAT[tk].filter(x=>x.mi===mi).flatMap(x=>{const y=base(x),l=y.l;
-    if(l.k==='lab')return CH[l.n-1].quiz.map(q=>({...q,x}));
+    if(l.k==='lab')return chFor(l.n,y.t.lang).quiz.map(q=>({...q,x}));
     return (l.q||[]).map(q=>({...normQ(q),x}))});
 }
 function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
@@ -2410,8 +2410,8 @@ function wireMine(){
 /* ---------- daftar ulang ---------- */
 /* ringkasan modul: poin penting dari setiap pelajaran yang sudah diselesaikan */
 function pointsOf(x){const y=base(x),l=y.l;
-  if(l.k==='lab')return CH[l.n-1].points||[];
-  if(l.k==='topic'){const [n,i]=l.ref.split('.').map(Number),tp=TOPICS[n][i];return tp.rumus?[`<code>${esc(tp.rumus.f)}</code>`,...tp.rumus.i.map(esc)]:[]}
+  if(l.k==='lab')return chFor(l.n,y.t.lang).points||[];
+  if(l.k==='topic'){const [n,i]=l.ref.split('.').map(Number),tp=y.t.lang==='java'?tpJ(l.ref,TOPICS[n][i]):TOPICS[n][i];return tp.rumus?[`<code>${esc(tp.rumus.f)}</code>`,...tp.rumus.i.map(esc)]:[]}
   return l.pts||[]}
 function renderSummary(t,mi){
   const m=t.mods[mi],F=FLAT[t.k].filter(x=>x.mi===mi),mp=modProg(t.k,mi);
@@ -2502,7 +2502,7 @@ function wireLesson(x){
     markDone(x);location.hash=next?next.id:t.k};
   const u=$('#undo');if(u)u.onclick=()=>{delete LMS.done[y.id];saveLms();route()};
   linkTerms($('#view .l-body'));
-  if(l.k==='lab')wireLab(l.n);
+  if(l.k==='lab')wireLab(l.n,y.t.lang);
   else if(l.k==='topic')wireTopic1(l.ref,y.t.lang);
   else if(l.k==='c')wireConcept(l,y.t,x);
   else if(l.k==='w')wireWeb(l,x);
@@ -2969,7 +2969,7 @@ const SETUP=[
        mac:['Unduh dari code.visualstudio.com, buka file zip, lalu seret Visual Studio Code ke folder Applications.'],
        lin:['Unduh paket .deb dari code.visualstudio.com, atau pasang lewat Snap.']},
    cmd:{win:'winget install Microsoft.VisualStudioCode',mac:'brew install --cask visual-studio-code',lin:'sudo snap install code --classic'},
-   check:'code --version',ext:'Ekstensi yang disarankan: Python (Microsoft), Extension Pack for Java (Microsoft), Live Server, ESLint, Prettier.'},
+   check:'code --version',ext:{java:['Extension Pack for Java (Microsoft)'],python:['Python (Microsoft)'],pda:['Python (Microsoft)','Jupyter (Microsoft)'],da:['Python (Microsoft)','Jupyter (Microsoft)'],de:['Python (Microsoft)','Jupyter (Microsoft)'],ts:['ESLint','Prettier'],fe0:['Live Server','Prettier'],html:['Live Server','Prettier'],css:['Live Server','Prettier'],fe:['Live Server','ESLint','Prettier'],react:['ESLint','Prettier'],git:['GitLens']}},
   {id:'python',name:'Python 3',why:'Untuk jalur Python, Python Analisis Data, Data Analyst, dan Data Engineer.',
    tr:['python','pda','da','de'],
    os:{win:['Unduh installer dari python.org (Downloads → Windows).','Saat installer terbuka, centang "Add python.exe to PATH" sebelum menekan Install Now. Langkah ini yang paling sering terlewat.'],
@@ -3045,18 +3045,18 @@ function renderSetup(tk){
   <section class="section"><h2>2. Pasang alat coding</h2><p class="muted">${t?`Yang dibutuhkan jalur ${t.name}: ${items.map(s=>s.name).join(', ')}.`:'Pasang sesuai jalur yang kamu ikuti. Pilih jalur di atas untuk menyaring.'}</p>
    <div class="su-list">${items.map((s,i)=>{const c=pick(s.cmd,SETUP_OS),ck=pick(s.check,SETUP_OS),f=s.first;
      return `<article class="su-card" id="su-${s.id}"><div class="su-h"><span class="su-n">${i+1}</span><div><h3>${s.name}</h3><p class="muted">${s.why}</p>
-       <div class="su-for">${s.tr.map(k=>`<a class="rn ${tcls(TK[k])}" href="#persiapan-${k}">${TK[k].name}</a>`).join('')}</div></div></div>
+       <div class="su-for">${s.tr.filter(k=>!tk||k===tk).map(k=>`<a class="rn ${tcls(TK[k])}" href="#persiapan-${k}">${TK[k].name}</a>`).join('')}</div></div></div>
       <ol class="su-steps">${s.os[SETUP_OS].map(x=>`<li>${x}</li>`).join('')}</ol>
       ${c?`<p class="su-lbl">${s.id==='pandas'?'Perintah':`Atau pasang lewat terminal${SETUP_OS==='mac'?' (butuh Homebrew dari brew.sh)':''}`}:</p>${cmdBox(c)}`:''}
       ${ck?`<p class="su-lbl">Cek berhasil atau belum: tutup lalu buka lagi terminal, kemudian jalankan</p>${cmdBox(ck)}<p class="muted small">Jika muncul nomor versi, berarti sudah terpasang. Jika muncul "not recognized" atau "command not found", ulangi pemasangan atau mulai ulang laptop.</p>`:''}
-      ${s.ext?`<p class="small">${s.ext}</p>`:''}${s.note?`<p class="su-note">💡 ${esc(s.note)}</p>`:''}
+      ${(e=>e.length?`<p class="small">Ekstensi yang disarankan: ${e.join(', ')}.</p>`:'')(s.ext?[...new Set(tk?s.ext[tk]||[]:Object.values(s.ext).flat())]:[])}${s.note?`<p class="su-note">💡 ${esc(s.note)}</p>`:''}
       ${f?`<details class="su-first"><summary>Program pertama dengan ${s.name}</summary><div class="su-fi"><p>Buat folder <code>latihan</code>, buka di VS Code (File → Open Folder), buat file <code>${f.file}</code> berisi:</p>
         ${pane(s.id==='node'?'js':s.id,f.code,{label:f.file})}
         <p>Simpan, buka terminal di VS Code (Ctrl+\`), lalu jalankan:</p>${cmdBox(pick(f.run,SETUP_OS))}<p>Hasilnya:</p><div class="console">${esc(f.out)}</div></div></details>`:''}</article>`}).join('')}</div></section>
   <section class="section"><h2>3. Kalau ada kendala</h2><ul class="points">
    <li><b>Perintah tidak dikenali</b> setelah memasang: tutup semua jendela terminal dan VS Code lalu buka lagi. Di Windows, pastikan pilihan "Add to PATH" dicentang saat memasang.</li>
    <li><b>Laptop sekolah atau kampus</b> tidak mengizinkan memasang aplikasi: minta bantuan admin, atau kerjakan latihan langsung di Ruang Kode yang berjalan di browser.</li>
-   <li><b>Ruang penyimpanan</b>: semua alat di atas butuh sekitar 2 GB. VS Code, Python, dan Node masing-masing kurang dari 500 MB.</li>
+   <li><b>Ruang penyimpanan</b>: siapkan sekitar 2 GB ruang kosong. Setiap alat di atas umumnya butuh kurang dari 500 MB.</li>
    <li><b>Laptop lama</b>: semua alat ini berjalan di laptop dengan RAM 4 GB, meski lebih nyaman dengan 8 GB.</li></ul></section>`;
 }
 function wireSetup(tk){

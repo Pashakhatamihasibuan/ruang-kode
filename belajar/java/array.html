@@ -19,7 +19,7 @@
 <header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
 <main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/java">Java</a> / Modul 4</nav>
 <div class="eyebrow">Java · Modul 4 · Konsep &amp; lab</div><h1>Array</h1><a class="cta" href="/#java-4-1">Buka versi interaktif</a>
-<p><b>Array</b> menyimpan banyak nilai bertipe sama di bawah satu nama. Setiap elemen punya <b>indeks</b> mulai dari 0. Array 5 elemen punya indeks 0 sampai 4. Mengakses indeks 5 menghasilkan <code>ArrayIndexOutOfBoundsException</code>. Python memakai <b>list</b> yang mirip, tapi ukurannya bisa berubah.</p>
+<p><b>Array</b> menyimpan banyak nilai bertipe sama di bawah satu nama. Setiap elemen punya <b>indeks</b> mulai dari 0. Array 5 elemen punya indeks 0 sampai 4. Mengakses indeks 5 menghasilkan <code>ArrayIndexOutOfBoundsException</code>. Ukuran array tetap setelah dibuat.</p>
 <p>Pola paling umum adalah <b>traversal</b>: mengunjungi setiap elemen dengan loop untuk mencari maksimum, menjumlah, atau menghitung. For-each (<code>for (int x : a)</code> / <code>for x in a</code>) cocok bila kamu tidak butuh indeksnya.</p>
 <p>Array dan list adalah objek, jadi variabelnya menyimpan <b>referensi</b> (alamat), bukan isinya. <code>b = a</code> tidak menyalin isi. Keduanya menunjuk array yang sama, sehingga perubahan lewat <code>b</code> juga terlihat di <code>a</code>. Hal yang sama berlaku saat array dikirim sebagai parameter.</p>
 <div class="lbl">JAVA</div><pre><code>import java.util.Arrays;
@@ -47,7 +47,7 @@ public class Larik {
 5
 Maks: 9
 [99, 8, 1, 9, 4]</code></pre>
-<h2>Poin penting</h2><ul><li>Ukuran array Java tetap setelah dibuat: <code>new int[5]</code>.</li><li>Python mengizinkan indeks negatif: <code>a[-1]</code> adalah elemen terakhir.</li><li>Cetak array Java dengan <code>Arrays.toString(a)</code>, bukan <code>println(a)</code>.</li><li>Array 2D: <code>int[][] m = new int[3][4];</code></li></ul>
+<h2>Poin penting</h2><ul><li>Ukuran array Java tetap setelah dibuat: <code>new int[5]</code>.</li><li>Elemen terakhir array adalah <code>a[a.length - 1]</code>. Java tidak mengenal indeks negatif.</li><li>Cetak array Java dengan <code>Arrays.toString(a)</code>, bukan <code>println(a)</code>.</li><li>Array 2D: <code>int[][] m = new int[3][4];</code></li></ul>
 <h2>Cek pemahaman</h2><details><summary>Array Java berisi 5 elemen. Berapa indeks elemen terakhir?</summary><p class="ok">Jawaban: 4</p><p>Indeks mulai dari 0, jadi elemen terakhir ada di panjang - 1.</p></details><details><summary>Setelah <code>b = a; b[0] = 99;</code>, berapa nilai <code>a[0]</code>?</summary><p class="ok">Jawaban: 99</p><p>a dan b adalah dua nama untuk array yang sama.</p></details>
 <a class="cta" href="/#java-4-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/masalah-fencepost">Masalah fencepost</a></p><p>Berikutnya: <a href="/belajar/java/membuat-mengakses-array">Membuat &amp; mengakses array</a></p>
 </main>

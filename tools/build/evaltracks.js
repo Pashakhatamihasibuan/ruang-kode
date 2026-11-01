@@ -5,7 +5,7 @@ const fs=require('fs'),vm=require('vm');
 const files=process.argv.slice(2);
 const src=files.map(f=>fs.readFileSync(f,'utf8')).join('\n;\n');
 const names=[...new Set([...src.matchAll(/^const ([A-Z][A-Z0-9_]*_MODULES)\s*=/gm)].map(m=>m[1]))];
-const ctx=vm.runInNewContext(src+`\n;({CH,TOPICS,M:{${names.join(',')}}})`,{console});
+const ctx=vm.runInNewContext(src+`\n;({CH,TOPICS,chJ,M:{${names.join(',')}}})`,{console});
 const SKEL=['k','t','n','ref','mini','nodes'];
 const out={};
 for(const [name,mods] of Object.entries(ctx.M)){
@@ -21,6 +21,7 @@ for(const [name,mods] of Object.entries(ctx.M)){
 }
 // ringkasan bab dan topik Java/Python untuk halaman statis (SEO)
 const strip=c=>String(c||'').replace(/«\w+\|([^»]*)»/g,'$1');
-const book={CH:ctx.CH.map(c=>({t:c.t,body:c.body,points:c.points,java:strip(c.java),python:strip(c.python),out:c.out,quiz:c.quiz})),
+const pick=c=>({t:c.t,body:c.body,points:c.points,java:strip(c.java),python:strip(c.python),out:c.out,quiz:c.quiz});
+const book={CH:ctx.CH.map(pick),CHJ:ctx.CH.map((c,i)=>pick(ctx.chJ(i+1))),
   TOPICS:Object.fromEntries(Object.entries(ctx.TOPICS).map(([n,a])=>[n,a.map(tp=>({t:tp.t,tr:tp.tr,java:strip(tp.java),python:strip(tp.python)}))]))};
 process.stdout.write(JSON.stringify({tracks:out,book}));

@@ -14,7 +14,7 @@ const SETUP=[
        mac:['Unduh dari code.visualstudio.com, buka file zip, lalu seret Visual Studio Code ke folder Applications.'],
        lin:['Unduh paket .deb dari code.visualstudio.com, atau pasang lewat Snap.']},
    cmd:{win:'winget install Microsoft.VisualStudioCode',mac:'brew install --cask visual-studio-code',lin:'sudo snap install code --classic'},
-   check:'code --version',ext:'Ekstensi yang disarankan: Python (Microsoft), Extension Pack for Java (Microsoft), Live Server, ESLint, Prettier.'},
+   check:'code --version',ext:{java:['Extension Pack for Java (Microsoft)'],python:['Python (Microsoft)'],pda:['Python (Microsoft)','Jupyter (Microsoft)'],da:['Python (Microsoft)','Jupyter (Microsoft)'],de:['Python (Microsoft)','Jupyter (Microsoft)'],ts:['ESLint','Prettier'],fe0:['Live Server','Prettier'],html:['Live Server','Prettier'],css:['Live Server','Prettier'],fe:['Live Server','ESLint','Prettier'],react:['ESLint','Prettier'],git:['GitLens']}},
   {id:'python',name:'Python 3',why:'Untuk jalur Python, Python Analisis Data, Data Analyst, dan Data Engineer.',
    tr:['python','pda','da','de'],
    os:{win:['Unduh installer dari python.org (Downloads → Windows).','Saat installer terbuka, centang "Add python.exe to PATH" sebelum menekan Install Now. Langkah ini yang paling sering terlewat.'],
@@ -90,18 +90,18 @@ function renderSetup(tk){
   <section class="section"><h2>2. Pasang alat coding</h2><p class="muted">${t?`Yang dibutuhkan jalur ${t.name}: ${items.map(s=>s.name).join(', ')}.`:'Pasang sesuai jalur yang kamu ikuti. Pilih jalur di atas untuk menyaring.'}</p>
    <div class="su-list">${items.map((s,i)=>{const c=pick(s.cmd,SETUP_OS),ck=pick(s.check,SETUP_OS),f=s.first;
      return `<article class="su-card" id="su-${s.id}"><div class="su-h"><span class="su-n">${i+1}</span><div><h3>${s.name}</h3><p class="muted">${s.why}</p>
-       <div class="su-for">${s.tr.map(k=>`<a class="rn ${tcls(TK[k])}" href="#persiapan-${k}">${TK[k].name}</a>`).join('')}</div></div></div>
+       <div class="su-for">${s.tr.filter(k=>!tk||k===tk).map(k=>`<a class="rn ${tcls(TK[k])}" href="#persiapan-${k}">${TK[k].name}</a>`).join('')}</div></div></div>
       <ol class="su-steps">${s.os[SETUP_OS].map(x=>`<li>${x}</li>`).join('')}</ol>
       ${c?`<p class="su-lbl">${s.id==='pandas'?'Perintah':`Atau pasang lewat terminal${SETUP_OS==='mac'?' (butuh Homebrew dari brew.sh)':''}`}:</p>${cmdBox(c)}`:''}
       ${ck?`<p class="su-lbl">Cek berhasil atau belum: tutup lalu buka lagi terminal, kemudian jalankan</p>${cmdBox(ck)}<p class="muted small">Jika muncul nomor versi, berarti sudah terpasang. Jika muncul "not recognized" atau "command not found", ulangi pemasangan atau mulai ulang laptop.</p>`:''}
-      ${s.ext?`<p class="small">${s.ext}</p>`:''}${s.note?`<p class="su-note">💡 ${esc(s.note)}</p>`:''}
+      ${(e=>e.length?`<p class="small">Ekstensi yang disarankan: ${e.join(', ')}.</p>`:'')(s.ext?[...new Set(tk?s.ext[tk]||[]:Object.values(s.ext).flat())]:[])}${s.note?`<p class="su-note">💡 ${esc(s.note)}</p>`:''}
       ${f?`<details class="su-first"><summary>Program pertama dengan ${s.name}</summary><div class="su-fi"><p>Buat folder <code>latihan</code>, buka di VS Code (File → Open Folder), buat file <code>${f.file}</code> berisi:</p>
         ${pane(s.id==='node'?'js':s.id,f.code,{label:f.file})}
         <p>Simpan, buka terminal di VS Code (Ctrl+\`), lalu jalankan:</p>${cmdBox(pick(f.run,SETUP_OS))}<p>Hasilnya:</p><div class="console">${esc(f.out)}</div></div></details>`:''}</article>`}).join('')}</div></section>
   <section class="section"><h2>3. Kalau ada kendala</h2><ul class="points">
    <li><b>Perintah tidak dikenali</b> setelah memasang: tutup semua jendela terminal dan VS Code lalu buka lagi. Di Windows, pastikan pilihan "Add to PATH" dicentang saat memasang.</li>
    <li><b>Laptop sekolah atau kampus</b> tidak mengizinkan memasang aplikasi: minta bantuan admin, atau kerjakan latihan langsung di Ruang Kode yang berjalan di browser.</li>
-   <li><b>Ruang penyimpanan</b>: semua alat di atas butuh sekitar 2 GB. VS Code, Python, dan Node masing-masing kurang dari 500 MB.</li>
+   <li><b>Ruang penyimpanan</b>: siapkan sekitar 2 GB ruang kosong. Setiap alat di atas umumnya butuh kurang dari 500 MB.</li>
    <li><b>Laptop lama</b>: semua alat ini berjalan di laptop dengan RAM 4 GB, meski lebih nyaman dengan 8 GB.</li></ul></section>`;
 }
 function wireSetup(tk){

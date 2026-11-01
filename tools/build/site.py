@@ -231,7 +231,7 @@ def lesson_body(t, l, book):
     lang = l.get("lang") or t["lang"]
     k, h = l["k"], []
     if k == "lab":
-        c = book["CH"][l["n"] - 1]
+        c = book["CHJ" if t["k"] == "java" else "CH"][l["n"] - 1]  # jalur Java: tanpa perbandingan Python
         h += [f"<p>{p}</p>" for p in c["body"]]
         lg = "java" if t["k"] == "java" else "python"
         h.append(code(c[lg], lg))
