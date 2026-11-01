@@ -23,6 +23,7 @@ function renderLockedExam(t,mi){const mp=modProg(t.k,mi);
    <p class="lead">Ujian modul terbuka setelah semua pelajaran di modul ini selesai. Saat ini ${mp.d} dari ${mp.n} pelajaran selesai.</p>
    <div class="lock-act"><a class="btn primary" href="#${nextOf(t.k).id}">Lanjutkan belajar ▶</a><a class="btn" href="#${t.k}">Lihat kurikulum</a></div></div>`}
 function renderLesson(x){
+  GL_LANG=x.t.k==='java'||x.t.k==='python'?x.t.k:null;
   const {t,m,mi,li}=x,y=base(x),l=y.l,F=FLAT[t.k],i=F.indexOf(x),prev=F[i-1],next=F[i+1],dn=isDone(x);
   if(!x.src&&l.k==='see')return `<p class="empty">Pelajaran rujukan tidak ditemukan.</p>`;
   let body='';

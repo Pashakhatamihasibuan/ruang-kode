@@ -254,13 +254,23 @@ function linkTerms(root,max=8){
       seen.add(id);n++;const word=t.splitText(at),rest=word.splitText(m[2].length);
       const b=document.createElement('button');b.type='button';b.className='gt';b.dataset.gt=id;b.setAttribute('aria-expanded','false');b.textContent=word.data;word.replaceWith(b);t=rest}}
 }
+/* Di pelajaran Java atau Python, popover istilah hanya menampilkan bahasa jalur itu. */
+let GL_LANG=null;
+function glOne(g,L){
+  if(!L)return {d:g.d,ex:g.ex};
+  const me=L==='java'?'Java':'Python',other=L==='java'?'Python':'Java',oRe=new RegExp('\\b'+other+'\\b');
+  const d=g.d.replace(/Java dan Python|Python dan Java/g,me).split(/(?<=\.)\s+/).filter(x=>!oRe.test(x)).join(' ');
+  const ex=g.ex&&g.ex.split('\n').filter(x=>!new RegExp((L==='java'?'#':'//')+'.*'+other+'\\s*$').test(x)).join('\n');
+  return {d:d||g.d,ex};
+}
 function glPop(b){
   let p=$('#gtPop');const close=()=>{if(p){p.hidden=true;document.querySelectorAll('.gt[aria-expanded="true"]').forEach(x=>x.setAttribute('aria-expanded','false'))}};
   if(!b){close();return}
   if(!p){p=document.createElement('div');p.id='gtPop';p.className='gt-pop';p.setAttribute('role','dialog');p.hidden=true;document.body.appendChild(p)}
   const open=b.getAttribute('aria-expanded')==='true';close();if(open)return;
   const g=GLMAP[b.dataset.gt];if(!g)return;
-  p.innerHTML=`<b>${esc(g.t)}</b>${g.en?`<i>${esc(g.en)}</i>`:''}<p>${esc(g.d)}</p>${g.ex?`<code>${esc(g.ex)}</code>`:''}<a href="#glosarium" data-term="${g.id}">Buka di glosarium →</a>`;
+  const one=glOne(g,GL_LANG),nm=typeof glName==='function'&&GL_LANG?glName(g,GL_LANG):g.t,en=nm!==g.t?'':g.en;
+  p.innerHTML=`<b>${esc(nm)}</b>${en?`<i>${esc(en)}</i>`:''}<p>${esc(one.d)}</p>${one.ex?`<code>${esc(one.ex)}</code>`:''}<a href="#glosarium" data-term="${g.id}">Buka di glosarium →</a>`;
   p.hidden=false;b.setAttribute('aria-expanded','true');
   const r=b.getBoundingClientRect(),w=Math.min(320,innerWidth-24),x=Math.max(12,Math.min(r.left,innerWidth-w-12));
   p.style.width=w+'px';p.style.left=x+scrollX+'px';

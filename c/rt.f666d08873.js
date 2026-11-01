@@ -1,7 +1,7 @@
 /* ===================== VISUALISASI ===================== */
 /* Bahasa pelajaran yang sedang dibuka. Di jalur Java, lab hanya menampilkan Java (tanpa kolom Python). */
 let VLANG=null;
-const JO=()=>VLANG==='java';
+const JO=()=>VLANG==='java',PO=()=>VLANG==='python';
 const VIZ = {
 compile(el){
   const J=['Halo.java','javac (compiler)','Halo.class (bytecode)','JVM menjalankan','Keluaran'];
@@ -16,14 +16,29 @@ compile(el){
     'Hasil kompilasi disimpan sebagai <b>bytecode</b> di file <code>Halo.class</code>.',
     'JVM (Java Virtual Machine) menjalankan bytecode. Karena itu file .class yang sama bisa jalan di Windows, macOS, dan Linux.',
     'Teks tampil di layar.'];
-  const frames=(JO()?notesJ:notes).map((n,s)=>({s,note:n}));
+  const notesP=['Semua dimulai dari <b>kode sumber</b>, yaitu teks yang kamu tulis di file <code>halo.py</code>.',
+    'Perintah <code>python halo.py</code> menyalakan <b>interpreter</b>. Tidak ada langkah kompilasi terpisah yang harus kamu jalankan.',
+    'Interpreter membuat bytecode secara otomatis dan tersembunyi.',
+    'Perintah dijalankan satu per satu dari atas ke bawah. Error di baris 10 baru ketahuan saat baris 10 dijalankan.',
+    'Teks tampil di layar.'];
+  const frames=(JO()?notesJ:PO()?notesP:notes).map((n,s)=>({s,note:n}));
   const lane=(name,cls,arr,s)=>`<div class="lane"><span class="lane-name ${cls}">${name}</span>${arr.map((x,i)=>`${i?'<span class="arrow">→</span>':''}<span class="node ${i<=s?'on':''} ${i===s?'cur':''}">${x}</span>`).join('')}</div>`;
-  player(el,frames,(st,f)=>{st.innerHTML=lane('JAVA','j',J,f.s)+(JO()?'':lane('PYTHON','p',P,f.s))});
+  player(el,frames,(st,f)=>{st.innerHTML=(PO()?'':lane('JAVA','j',J,f.s))+(JO()?'':lane('PYTHON','p',P,f.s))});
 },
 forloop(el){
   el.innerHTML=`<div class="row"><label for="fl-n">Nilai n:</label><select class="inp" id="fl-n">${[2,3,4,5].map(v=>`<option ${v===3?'selected':''}>${v}</option>`).join('')}</select></div><div class="pl"></div>`;
   const build=n=>{
     const fr=[];let out='';
+    if(PO()){
+      fr.push({ph:'init',i:'(belum ada)',out,note:`<b>range(1, ${n} + 1)</b> menyiapkan deret 1 sampai ${n}. Batas akhir ${n+1} tidak ikut.`});
+      for(let i=1;i<=n;i++){
+        fr.push({ph:'check',i,out,note:`<b>Ambil nilai berikutnya</b> dari deret: i = ${i}. Masih ada nilai, jadi masuk ke badan loop.`});
+        out+='*'.repeat(i)+'\n';
+        fr.push({ph:'body',i,out,note:`<b>Badan loop</b> mencetak ${i} bintang.`});
+      }
+      fr.push({ph:'check',i:n,out,end:true,note:`<b>Deret habis.</b> Loop selesai setelah ${n} putaran.`});
+      return fr;
+    }
     fr.push({ph:'init',i:1,out,note:'<b>Inisialisasi</b> <code>int i = 1</code>. Bagian ini hanya dijalankan sekali.'});
     for(let i=1;i<=n;i++){
       fr.push({ph:'check',i,out,note:`<b>Cek kondisi</b> <code>${i} &lt;= ${n}</code> bernilai <span class="val-t">true</span>, jadi masuk ke badan loop.`});
@@ -38,9 +53,9 @@ forloop(el){
     const n=+$('#fl-n',el).value;
     const on=p=>f.ph===p?'on':'';
     st.innerHTML=`<div class="grid2">
-      <div><div class="eyebrow" style="color:var(--java)">Java</div><div class="mini">for (<span class="${on('init')}">int i = 1</span>; <span class="${on('check')}">i &lt;= ${n}</span>; <span class="${on('upd')}">i++</span>) {
+      ${PO()?'':`<div><div class="eyebrow" style="color:var(--java)">Java</div><div class="mini">for (<span class="${on('init')}">int i = 1</span>; <span class="${on('check')}">i &lt;= ${n}</span>; <span class="${on('upd')}">i++</span>) {
     <span class="${on('body')}">System.out.println("*".repeat(i));</span>
-}</div></div>
+}</div></div>`}
       ${JO()?'':`<div><div class="eyebrow" style="color:var(--py)">Python</div><div class="mini"><span class="${f.ph!=='body'?'on':''}">for i in range(1, ${n} + 1):</span>
     <span class="${on('body')}">print("*" * i)</span></div></div>`}
     </div>
@@ -88,8 +103,9 @@ ifelse(el){
     let done=false,res='D',html='';
     conds.forEach(([j,p,g,t],i)=>{
       let cls,r;
-      if(done){cls='skip';r='dilewati'}else if(s>=t){cls='t';r='true';done=true;res=g}else{cls='f';r='false'}
-      html+=`<div class="dec ${cls}"><code>${i?'else if':'if'} (${esc(j)})</code><span style="color:var(--muted)">·</span><code>${i?'elif':'if'} ${esc(p)}:</code><span>→ ${g}</span><span class="res">${r}</span></div>`;
+      if(done){cls='skip';r='dilewati'}else if(s>=t){cls='t';r=PO()?'True':'true';done=true;res=g}else{cls='f';r=PO()?'False':'false'}
+      const cj=`<code>${i?'else if':'if'} (${esc(j)})</code>`,cp=`<code>${i?'elif':'if'} ${esc(p)}:</code>`;
+      html+=`<div class="dec ${cls}">${JO()?cj:PO()?cp:cj+'<span style="color:var(--muted)">·</span>'+cp}<span>→ ${g}</span><span class="res">${r}</span></div>`;
     });
     html+=`<div class="dec ${done?'skip':'t'}"><code>else</code><span>→ D</span><span class="res">${done?'dilewati':'dijalankan'}</span></div>`;
     $('#ie-f',el).innerHTML=html;$('#ie-r',el).textContent=res;
@@ -99,20 +115,20 @@ ifelse(el){
 boolean(el){
   let p=true,q=false;
   el.innerHTML=`<div class="grid2"><div><div class="row"><button class="toggle" id="bp"></button><button class="toggle" id="bq"></button><span style="color:var(--muted);font-size:.85rem">klik untuk mengubah</span></div>
-  <table class="tt" style="margin-top:10px"><thead><tr><th>Java</th>${JO()?'':'<th>Python</th>'}<th>Hasil</th></tr></thead><tbody id="btb"></tbody></table></div>
-  <div><div class="eyebrow">Loop while: lempar sampai dapat 6</div><div class="mini" style="margin:8px 0">while (dadu != 6) { ... }</div><div class="row"><button class="btn primary" id="roll">Lempar dadu</button><span id="rcount" class="log"></span></div><div class="row" id="dice" style="margin-top:10px"></div></div></div>`;
-  const B=v=>`<span class="${v?'val-t':'val-f'}">${v}</span>`;
+  <table class="tt" style="margin-top:10px"><thead><tr>${PO()?'':'<th>Java</th>'}${JO()?'':'<th>Python</th>'}<th>Hasil</th></tr></thead><tbody id="btb"></tbody></table></div>
+  <div><div class="eyebrow">Loop while: lempar sampai dapat 6</div><div class="mini" style="margin:8px 0">${PO()?'while dadu != 6: ...':'while (dadu != 6) { ... }'}</div><div class="row"><button class="btn primary" id="roll">Lempar dadu</button><span id="rcount" class="log"></span></div><div class="row" id="dice" style="margin-top:10px"></div></div></div>`;
+  const B=v=>`<span class="${v?'val-t':'val-f'}">${PO()?(v?'True':'False'):v}</span>`;
   const upd=()=>{
     $('#bp',el).innerHTML=`p = ${B(p)}`;$('#bq',el).innerHTML=`q = ${B(q)}`;
     const rows=[['p &amp;&amp; q','p and q',p&&q],['p || q','p or q',p||q],['!p','not p',!p],['!(p &amp;&amp; q)','not (p and q)',!(p&&q)],['!p || !q','not p or not q',!p||!q]];
-    $('#btb',el).innerHTML=rows.map(r=>`<tr><td><code>${r[0]}</code></td>${JO()?'':`<td><code>${r[1]}</code></td>`}<td>${B(r[2])}</td></tr>`).join('');
+    $('#btb',el).innerHTML=rows.map(r=>`<tr>${PO()?'':`<td><code>${r[0]}</code></td>`}${JO()?'':`<td><code>${r[1]}</code></td>`}<td>${B(r[2])}</td></tr>`).join('');
   };
   $('#bp',el).onclick=()=>{p=!p;upd()};$('#bq',el).onclick=()=>{q=!q;upd()};upd();
   $('#roll',el).onclick=()=>{
     clearTimers();const box=$('#dice',el);box.innerHTML='';let n=0;$('#rcount',el).textContent='';
     const t=setInterval(()=>{
       const d=rnd(1,6);n++;box.insertAdjacentHTML('beforeend',`<span class="die ${d===6?'six':''}">${d}</span>`);
-      if(d===6||n>=40){clearInterval(t);$('#rcount',el).innerHTML=`Kondisi <code>dadu != 6</code> menjadi false setelah <b>${n}</b> lemparan.`}
+      if(d===6||n>=40){clearInterval(t);$('#rcount',el).innerHTML=`Kondisi <code>dadu != 6</code> menjadi ${PO()?'False':'false'} setelah <b>${n}</b> lemparan.`}
     },260);TIMERS.push(t);
   };
 },
@@ -164,8 +180,8 @@ array(el){
 },
 objects(el){
   let objs=[],k=0;
-  el.innerHTML=`<div class="grid2"><div class="blueprint">class Titik<br>  field: x, y<br>  geser(dx, dy)<br>  jarakKeAsal()<br>  toString()</div>
-   <div class="row" style="align-content:flex-start"><button class="btn primary" id="ob-new">new Titik(x, y)</button><button class="btn" id="ob-clr">Hapus semua</button><p class="log" id="ob-log" style="flex-basis:100%">Kelas hanyalah cetak biru. Klik tombol untuk membuat objek.</p></div></div>
+  el.innerHTML=`<div class="grid2"><div class="blueprint">${PO()?'class Titik<br>  atribut: x, y<br>  geser(dx, dy)<br>  jarak_ke_asal()<br>  __str__()':'class Titik<br>  field: x, y<br>  geser(dx, dy)<br>  jarakKeAsal()<br>  toString()'}</div>
+   <div class="row" style="align-content:flex-start"><button class="btn primary" id="ob-new">${PO()?'Titik(x, y)':'new Titik(x, y)'}</button><button class="btn" id="ob-clr">Hapus semua</button><p class="log" id="ob-log" style="flex-basis:100%">Kelas hanyalah cetak biru. Klik tombol untuk membuat objek.</p></div></div>
    <div class="objs" id="ob-list"></div>`;
   const draw=(hi)=>{
     $('#ob-list',el).innerHTML=objs.map((o,i)=>`<div class="obj" ${i===hi?'style="border-color:var(--ok)"':''}><span class="nm">p${o.id} → Titik</span><span>x = <b>${o.x}</b>, y = <b>${o.y}</b></span><span style="color:var(--muted);font-size:.82rem">jarak = ${Math.sqrt(o.x*o.x+o.y*o.y).toFixed(2)}</span><button class="btn" data-i="${i}">p${o.id}.geser(1, 1)</button></div>`).join('');
@@ -173,7 +189,7 @@ objects(el){
   $('#ob-new',el).onclick=()=>{
     if(objs.length>=6){$('#ob-log',el).textContent='Cukup enam objek dulu. Hapus untuk mulai lagi.';return}
     const o={id:++k,x:rnd(0,9),y:rnd(0,9)};objs.push(o);
-    $('#ob-log',el).innerHTML=`Konstruktor berjalan: <code>Titik p${o.id} = new Titik(${o.x}, ${o.y});</code> Objek ini punya field sendiri.`;draw(objs.length-1);
+    $('#ob-log',el).innerHTML=`Konstruktor berjalan: <code>${PO()?`p${o.id} = Titik(${o.x}, ${o.y})`:`Titik p${o.id} = new Titik(${o.x}, ${o.y});`}</code> Objek ini punya ${PO()?'atribut':'field'} sendiri.`;draw(objs.length-1);
   };
   $('#ob-clr',el).onclick=()=>{objs=[];k=0;draw();$('#ob-log',el).textContent='Semua objek dihapus.'};
   $('#ob-list',el).addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const i=+b.dataset.i;objs[i].x++;objs[i].y++;
@@ -182,7 +198,7 @@ objects(el){
 },
 inherit(el){
   const kids={Kucing:'Meong',Anjing:'Guk',Burung:'Cuit'};
-  el.innerHTML=`<div class="tree-cls"><div class="cls abs">«abstrak» Hewan<br><small>kenalkan(), suara()</small></div><div style="color:var(--muted)">▲ extends ▲</div>
+  el.innerHTML=`<div class="tree-cls"><div class="cls abs">«abstrak» Hewan<br><small>kenalkan(), suara()</small></div><div style="color:var(--muted)">${PO()?'▲ mewarisi ▲':'▲ extends ▲'}</div>
   <div class="kids">${Object.keys(kids).map(k=>`<button class="cls" data-k="${k}" aria-pressed="false">${k}</button>`).join('')}</div></div>
   <div id="in-info" class="log">Pilih salah satu kelas anak.</div>
   <div class="row"><button class="btn primary" id="in-run">Jalankan loop polimorfis</button></div><div class="console" id="in-out"></div>`;
@@ -347,7 +363,7 @@ linkedlist(el){
   el.innerHTML=`<div class="row"><label for="ll-v">Nilai</label><input class="inp" type="number" id="ll-v" value="5"><button class="btn" data-o="first">addFirst</button><button class="btn" data-o="last">addLast</button><button class="btn" data-o="rem">removeFirst</button><button class="btn" data-o="reset">Ulang</button></div>
   <div style="overflow-x:auto"><div class="ll" id="ll-c"></div></div><p class="log" id="ll-log">front menunjuk node pertama. Setiap node menunjuk node berikutnya.</p>`;
   const draw=(f=()=>'')=>{
-    $('#ll-c',el).innerHTML=`<span class="ptr front">front →</span>`+L.map((v,i)=>`<div class="lnode ${f(i)}"><span>${v}</span><span>next</span></div><span class="ptr">→</span>`).join('')+`<span class="ptr">null</span>`;
+    $('#ll-c',el).innerHTML=`<span class="ptr front">front →</span>`+L.map((v,i)=>`<div class="lnode ${f(i)}"><span>${v}</span><span>next</span></div><span class="ptr">→</span>`).join('')+`<span class="ptr">${PO()?'None':'null'}</span>`;
   };
   const log=h=>$('#ll-log',el).innerHTML=h;
   el.querySelector('.row').addEventListener('click',e=>{
@@ -444,7 +460,7 @@ functional(el){
   el.innerHTML=`<div class="row"><label for="fn-f">filter</label><select class="inp" id="fn-f"><option value="semua">semua</option><option value="genap" selected>genap</option><option value="ganjil">ganjil</option><option value="lebih5">&gt; 5</option></select>
   <label for="fn-m">map</label><select class="inp" id="fn-m"><option value="tetap">tetap</option><option value="kali2">× 2</option><option value="kuadrat" selected>kuadrat</option><option value="plus10">+ 10</option></select>
   <label for="fn-r">reduce</label><select class="inp" id="fn-r"><option value="list">(kumpulkan list)</option><option value="jumlah" selected>jumlah</option><option value="maks">maksimum</option><option value="banyak">banyaknya</option></select></div>
-  <div class="pipe" id="fn-p"></div><div class="grid2"><div class="mini" id="fn-j"></div>${JO()?'':'<div class="mini" id="fn-py"></div>'}</div>`;
+  <div class="pipe" id="fn-p"></div><div class="grid2">${PO()?'':'<div class="mini" id="fn-j"></div>'}${JO()?'':'<div class="mini" id="fn-py"></div>'}</div>`;
   const upd=()=>{
     const f=FL[$('#fn-f',el).value],m=MP[$('#fn-m',el).value],r=RD[$('#fn-r',el).value];
     const a1=f[0]?D.filter(f[0]):D,a2=a1.map(m[0]),res=r[0]?r[0](a2):null;
@@ -456,7 +472,7 @@ functional(el){
     let j='angka.stream()';if(f[1])j+=`\n    .filter(${f[1]})`;if(m[1])j+=`\n    .map(${m[1]})`;j+=r[1]?`\n    ${r[1]}`:`\n    .collect(Collectors.toList())`;j+=';';
     const expr=m[2]?m[2]:'n',cond=f[2]?` if ${f[2]}`:'';
     const py=r[2]?(r[2]==='len'?`len([n for n in angka${cond}])`:`${r[2]}(${expr} for n in angka${cond})`):`[${expr} for n in angka${cond}]`;
-    $('#fn-j',el).innerHTML=`<span class="c">// Java</span>\n`+hl(j,'java');
+    if(!PO())$('#fn-j',el).innerHTML=`<span class="c">// Java</span>\n`+hl(j,'java');
     if(!JO())$('#fn-py',el).innerHTML=`<span class="c"># Python</span>\n`+hl(py,'python');
   };
   el.querySelectorAll('select').forEach(s=>s.addEventListener('change',upd));upd();

@@ -37,8 +37,8 @@ const LVL4=['Pemula','Menengah','Lanjutan','Profesional'];
 const KIND={lab:'Konsep & lab',topic:'Topik 5 langkah',c:'Konsep & kode',s:'Praktik SQL',w:'Praktik langsung',proj:'Proyek akhir',mini:'Proyek mini'};
 const MIN={lab:15,topic:12,c:8,s:10,w:12,proj:60};
 const lid=(tk,mi,li)=>`${tk}-${mi+1}-${li+1}`;
-function lessonTitle(l){if(l._t)return l._t;if(l.k==='lab')return CH[l.n-1].t;if(l.k==='topic'){const [n,i]=l.ref.split('.').map(Number);return TOPICS[n][i].t}return l.t}
-const FLAT=Object.fromEntries(TRACKS.map(t=>[t.k,t.mods.flatMap((m,mi)=>m.lessons.map((l,li)=>({t,m,mi,l,li,id:lid(t.k,mi,li),title:l.k==='see'?'':lessonTitle(l)})))]));
+function lessonTitle(l,lang){if(l._t)return l._t;if((l.k==='lab'||l.k==='topic')&&typeof lessonTitleIn==='function')return lessonTitleIn(l,lang);if(l.k==='lab')return CH[l.n-1].t;if(l.k==='topic'){const [n,i]=l.ref.split('.').map(Number);return TOPICS[n][i].t}return l.t}
+const FLAT=Object.fromEntries(TRACKS.map(t=>[t.k,t.mods.flatMap((m,mi)=>m.lessons.map((l,li)=>({t,m,mi,l,li,id:lid(t.k,mi,li),title:l.k==='see'?'':lessonTitle(l,t.lang)})))]));
 const BYID=Object.fromEntries(Object.values(FLAT).flat().map(x=>[x.id,x]));
 /* pelajaran "see" meminjam pelajaran jalur lain; progresnya ikut pelajaran asal */
 Object.values(FLAT).flat().filter(x=>x.l.k==='see').forEach(x=>{const i=x.l.ref.indexOf(':'),tk=x.l.ref.slice(0,i),ti=x.l.ref.slice(i+1);

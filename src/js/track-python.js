@@ -219,7 +219,7 @@ True True
   {k:'c',t:'match-case & ekspresi kondisional',nodes:['Conditionals'],
    b:['Python 3.10 memperkenalkan <code>match</code>, mirip switch di bahasa lain tetapi lebih kuat karena bisa mencocokkan <b>pola</b>: nilai tetap, beberapa pilihan dengan <code>|</code>, bentuk tuple atau list, bahkan menangkap bagian data ke variabel.',
       'Kasus <code>case _:</code> adalah penangkap sisa, seperti <code>else</code>. Tambahkan <code>if</code> setelah pola (disebut guard) untuk syarat tambahan.',
-      'Untuk pilihan dua nilai yang singkat, Python punya ekspresi kondisional: <code>a if kondisi else b</code>. Urutannya berbeda dari ternary di Java, jadi baca seperti kalimat: "a jika kondisi, kalau tidak b".'],
+      'Untuk pilihan dua nilai yang singkat, Python punya ekspresi kondisional: <code>a if kondisi else b</code>. Urutannya dibaca seperti kalimat: "a jika kondisi, kalau tidak b".'],
    code:R`def jenis_hari(h):
     match h:
         case "sabtu" | "minggu":
@@ -673,9 +673,9 @@ pyenv local 3.13.0           # pakai versi ini di folder proyek`,
   {k:'topic',ref:'8.0',nodes:['Classes']},
   {k:'topic',ref:'8.1',nodes:['Encapsulation']},
   {k:'c',t:'Enkapsulasi: property & dataclass',nodes:['Encapsulation','Classes'],
-   b:['Python tidak punya <code>private</code> seperti Java. Konvensinya: nama yang diawali satu garis bawah (<code>_saldo</code>) berarti "internal, jangan disentuh dari luar". Dua garis bawah (<code>__pin</code>) membuat Python mengganti namanya (name mangling) sehingga lebih sulit diakses tanpa sengaja.',
+   b:['Python tidak punya kata kunci <code>private</code>. Konvensinya: nama yang diawali satu garis bawah (<code>_saldo</code>) berarti "internal, jangan disentuh dari luar". Dua garis bawah (<code>__pin</code>) membuat Python mengganti namanya (name mangling) sehingga lebih sulit diakses tanpa sengaja.',
       '<b>@property</b> membuat method bisa diakses seperti atribut, sekaligus memberi tempat untuk validasi. Pengguna kelas menulis <code>akun.saldo</code>, tetapi di balik layar ada logika yang menjaga aturan.',
-      '<b>@dataclass</b> menulis otomatis <code>__init__</code>, <code>__repr__</code>, dan <code>__eq__</code> untuk kelas pembawa data. Tambahkan <code>frozen=True</code> agar objeknya tidak bisa diubah, mirip record di Java.'],
+      '<b>@dataclass</b> menulis otomatis <code>__init__</code>, <code>__repr__</code>, dan <code>__eq__</code> untuk kelas pembawa data. Tambahkan <code>frozen=True</code> agar objeknya tidak bisa diubah (immutable).'],
    code:R`from dataclasses import dataclass, field
 
 class Rekening:
@@ -727,7 +727,7 @@ True
 FrozenInstanceError
 `,
    pts:['<code>_nama</code> = konvensi internal.','<code>@property</code> + setter untuk validasi.','<code>@dataclass</code> mengurangi kode boilerplate.','<code>frozen=True</code> membuat objek immutable.'],
-   q:[['Apa yang dibuat otomatis oleh @dataclass?',['__init__, __repr__, __eq__','Database','Getter Java'],0,'Ketiganya dibuat dari anotasi field.'],
+   q:[['Apa yang dibuat otomatis oleh @dataclass?',['__init__, __repr__, __eq__','Database','Koneksi internet'],0,'Ketiganya dibuat dari anotasi field.'],
       ['Arti garis bawah di depan nama atribut (<code>_saldo</code>)?',['Error','Konvensi: internal, jangan diakses dari luar','Atribut statis'],1,'Python mengandalkan kesepakatan.']]},
   {k:'c',t:'Dunder method: membuat objek terasa bawaan',nodes:['Methods and Dunder Methods'],
    b:['<b>Dunder method</b> (double underscore) adalah method khusus dengan nama diapit dua garis bawah, seperti <code>__init__</code>. Python memanggilnya secara otomatis untuk operasi tertentu. Dengan mengisinya, objek buatanmu bisa dipakai seperti tipe bawaan.',
@@ -979,13 +979,13 @@ True
   {k:'lab',n:13,nodes:['Sorting Algorithms']},{k:'topic',ref:'13.0',nodes:['Data Structures and Algorithms']},{k:'topic',ref:'13.1',nodes:['Sorting Algorithms']},{k:'topic',ref:'13.2',nodes:['Data Structures and Algorithms']}
  ]},
 {t:'Struktur data & algoritma',lvl:'Lanjutan',d:'Stack, queue, linked list, pohon biner, hash map, dan heap, dibangun sendiri lalu dipakai dari pustaka.',
- nodes:['Data Structures and Algorithms','Arrays and Linked lists','HashMaps','Heaps, Stacks and Queues','Binary Search Trees'],
+ nodes:['Data Structures and Algorithms','Arrays and Linked lists','Hash Tables','Heaps, Stacks and Queues','Binary Search Trees'],
  lessons:[
   {k:'lab',n:14,nodes:['Heaps, Stacks and Queues']},{k:'topic',ref:'14.0',nodes:['Heaps, Stacks and Queues']},{k:'topic',ref:'14.1',nodes:['Heaps, Stacks and Queues']},
   {k:'lab',n:15,nodes:['Arrays and Linked lists']},{k:'topic',ref:'15.0'},{k:'topic',ref:'15.1'},
   {k:'lab',n:16,nodes:['Arrays and Linked lists']},{k:'topic',ref:'16.0',nodes:['Arrays and Linked lists']},{k:'topic',ref:'16.1',nodes:['Arrays and Linked lists']},
   {k:'lab',n:17,nodes:['Binary Search Trees']},{k:'topic',ref:'17.0',nodes:['Binary Search Trees']},{k:'topic',ref:'17.1',nodes:['Binary Search Trees']},
-  {k:'lab',n:18,nodes:['HashMaps','Heaps, Stacks and Queues']},{k:'topic',ref:'18.0',nodes:['HashMaps']},{k:'topic',ref:'18.1',nodes:['Heaps, Stacks and Queues']},
+  {k:'lab',n:18,nodes:['Hash Tables','Heaps, Stacks and Queues']},{k:'topic',ref:'18.0',nodes:['Hash Tables']},{k:'topic',ref:'18.1',nodes:['Heaps, Stacks and Queues']},
   {k:'c',t:'deque, heapq & bisect: struktur data siap pakai',nodes:['Heaps, Stacks and Queues','Data Structures and Algorithms'],
    b:['Setelah memahami cara kerja struktur data dari nol, saatnya memakai versi siap pakai yang cepat dari pustaka standar. <code>collections.deque</code> adalah antrean dua ujung dengan operasi tambah dan ambil di ujung mana pun dalam waktu O(1). Jangan memakai <code>list.pop(0)</code> untuk antrean karena O(n).',
       '<code>heapq</code> mengubah list biasa menjadi <b>min-heap</b>: elemen terkecil selalu di indeks 0. Cocok untuk priority queue, misalnya memproses pesanan paling mendesak atau mencari k nilai terbesar dengan <code>nlargest</code>.',

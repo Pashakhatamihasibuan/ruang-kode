@@ -16,7 +16,7 @@ const SQL_STORIES=[
 let storyAns=store.get('rk-story2',{}),storyHide=store.get('rk-story-hide',true),storyLv='Semua';
 function storiesOf(tk){
   if(tk==='sql')return SQL_STORIES.map((s,i)=>({key:'s'+i,lvl:s.lvl,s,code:s.sql,lang:'sql',link:{h:'#sql-'+s.m+'-1',t:`Modul ${s.m}: ${SQL_MODULES[s.m-1].t}`}}));
-  return STORIES.map((s,i)=>[s,i]).filter(([s])=>s[tk]).map(([s,i])=>{const x=FLAT[tk].find(y=>y.l.k==='lab'&&y.l.n===s.b);return {key:tk[0]+i,lvl:CH[s.b-1].lvl,s,code:s[tk],lang:tk,link:x?{h:'#'+x.id,t:`${x.title}`}:null}});
+  return STORIES.map((s,i)=>[s,i]).filter(([s])=>s[tk]).map(([s,i])=>{const x=FLAT[tk].find(y=>y.l.k==='lab'&&y.l.n===s.b);return {key:tk[0]+i,lvl:CH[s.b-1].lvl,s:storyFor(s,i,tk),code:s[tk],lang:tk,link:x?{h:'#'+x.id,t:`${x.title}`}:null}});
 }
 function storyCard(it,ix){
   const s=it.s,a=storyAns[it.key],ans=a!=null,ord=perm(s.o.length,ix+3),hid=storyHide&&!ans;

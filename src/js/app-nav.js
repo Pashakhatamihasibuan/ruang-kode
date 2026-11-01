@@ -54,7 +54,7 @@ function setNav(tk,cur){
   document.documentElement.className=tk?'t-'+tk:'';document.documentElement.dataset.track=tk||'';
 }
 function route(){
-  clearTimers();toggleOutline(false);setMega(false);if(!$('#drawer').hidden)setDrawer(false);if(!$('#palette').hidden)closeSearch();
+  GL_LANG=null;clearTimers();toggleOutline(false);setMega(false);if(!$('#drawer').hidden)setDrawer(false);if(!$('#palette').hidden)closeSearch();
   let h=(location.hash||'#beranda').slice(1);
   const v=$('#view'),ol=$('#outline'),shell=$('#shell');
   const old=/^bab-(\d+)$/.exec(h);

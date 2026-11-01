@@ -26,10 +26,10 @@ TRACK_JS = ["track-java.js", "track-python.js", "track-sql.js", "track-sql-extra
             "track-ts.js", "track-git.js", "track-pda.js", "track-da.js", "track-bi.js",
             "track-de.js", "track-ux.js", "track-ds.js", "track-more.js", "tips.js", "bugs.js", "traces.js"]
 RT_JS = ["viz.js", "sqlengine.js", "sqldata.js", "sqldata-bi.js", "viz2.js", "viz3.js"]
-BOOK_JS = ["data.js", "java-only.js", "app-javapy.js", "app-extra.js"]
+BOOK_JS = ["data.js", "lang-only.js", "app-javapy.js", "app-extra.js"]
 CORE_JS = ["gl.js", "app.js", "app-pages.js", "app-lesson.js", "practice.js", "tracer.js", "setup.js", "app-nav.js"]
 # urutan versi satu file (sama dengan urutan sebelum materi dipecah)
-ALL_JS = (["data.js", "java-only.js", "util.js", "gl.js", "viz.js", "sqlengine.js", "sqldata.js", "sqldata-bi.js"] + TRACK_JS
+ALL_JS = (["data.js", "lang-only.js", "util.js", "gl.js", "viz.js", "sqlengine.js", "sqldata.js", "sqldata-bi.js"] + TRACK_JS
           + ["viz2.js", "viz3.js", "app.js", "app-pages.js", "app-lesson.js", "app-javapy.js",
              "app-extra.js", "practice.js", "tracer.js", "setup.js", "app-nav.js"])
 
@@ -117,7 +117,7 @@ def doc(head, body, scripts):
 
 def split_tracks():
     """Kurikulum dijalankan di Node lalu dipecah: kerangka (judul, jenis) dan isi per pelajaran."""
-    files = [str(SRC / "js" / f) for f in ["data.js", "java-only.js"] + TRACK_JS]
+    files = [str(SRC / "js" / f) for f in ["data.js", "lang-only.js"] + TRACK_JS]
     res = subprocess.run(["node", str(ROOT / "tools/build/evaltracks.js"), *files],
                          capture_output=True, text=True, check=True)
     return json.loads(res.stdout)

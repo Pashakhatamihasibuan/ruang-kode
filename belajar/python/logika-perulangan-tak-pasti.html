@@ -20,7 +20,7 @@
 <main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/python">Python</a> / Modul 3</nav>
 <div class="eyebrow">Python · Modul 3 · Konsep &amp; lab</div><h1>Logika &amp; Perulangan Tak Pasti</h1><a class="cta" href="/#python-3-8">Buka versi interaktif</a>
 <p><b>Perulangan tak pasti</b> dipakai ketika jumlah putaran belum diketahui, misalnya "ulangi sampai pengguna mengetik 0". Bentuknya <code>while (kondisi)</code>. Pastikan sesuatu di dalam loop mengubah kondisi, atau loop akan berjalan selamanya.</p>
-<p>Kondisi bisa digabung dengan <b>logika boolean</b>: AND (<code>&amp;&amp;</code> / <code>and</code>), OR (<code>||</code> / <code>or</code>), dan NOT (<code>!</code> / <code>not</code>). Keduanya memakai <b>short-circuit</b>: jika bagian kiri sudah menentukan hasil, bagian kanan tidak dievaluasi.</p>
+<p>Kondisi bisa digabung dengan <b>logika boolean</b>: AND (<code>and</code>), OR (<code>or</code>), dan NOT (<code>not</code>). <code>and</code> dan <code>or</code> memakai <b>short-circuit</b>: jika bagian kiri sudah menentukan hasil, bagian kanan tidak dievaluasi.</p>
 <p>Ada dua pola klasik. <b>Fencepost</b>: untuk mencetak <code>1, 2, 3</code> kamu butuh 3 angka tapi hanya 2 koma, jadi satu bagian ditaruh di luar loop. <b>Sentinel</b>: nilai khusus (misalnya -1) yang menandai akhir masukan. Bilangan acak dibuat dengan <code>Random</code> atau modul <code>random</code>.</p>
 <div class="lbl">PYTHON</div><pre><code>import random
 
@@ -44,8 +44,8 @@ Dapat 6
 Butuh 3 lemparan
 Tunggu reda dulu
 (angka dadu acak, hasilmu bisa berbeda)</code></pre>
-<h2>Poin penting</h2><ul><li><code>while</code> mengecek kondisi sebelum setiap putaran. Bisa saja tidak pernah masuk.</li><li>Java punya <code>do/while</code> yang pasti berjalan minimal sekali.</li><li><code>!(a &amp;&amp; b)</code> sama dengan <code>!a || !b</code> (hukum De Morgan).</li><li><code>nextInt(6) + 1</code> dan <code>randint(1, 6)</code> sama-sama memberi 1 sampai 6.</li></ul>
-<h2>Cek pemahaman</h2><details><summary>Apa hasil <code>true || (10 / 0 &gt; 1)</code> di Java?</summary><p class="ok">Jawaban: true</p><p>Short-circuit: karena kiri sudah true, OR pasti true. Bagian kanan tidak pernah dihitung.</p></details><details><summary>Masalah fencepost muncul ketika...</summary><p class="ok">Jawaban: Ada n bagian tapi hanya n-1 pemisah, jadi satu bagian harus di luar loop</p><p>Seperti pagar: 4 tiang hanya butuh 3 kawat. Cetak satu elemen dulu, lalu loop mencetak "pemisah + elemen".</p></details>
+<h2>Poin penting</h2><ul><li><code>while</code> mengecek kondisi sebelum setiap putaran. Bisa saja tidak pernah masuk.</li><li>Python tidak punya <code>do/while</code>. Polanya: <code>while True:</code> lalu <code>break</code> saat syaratnya terpenuhi.</li><li><code>not (a and b)</code> sama dengan <code>not a or not b</code> (hukum De Morgan).</li><li><code>random.randint(1, 6)</code> memberi angka 1 sampai 6, termasuk 6.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Apa hasil <code>True or (10 / 0 &gt; 1)</code> di Python?</summary><p class="ok">Jawaban: True</p><p>Short-circuit: karena kiri sudah True, or pasti True. Bagian kanan tidak pernah dihitung.</p></details><details><summary>Masalah fencepost muncul ketika...</summary><p class="ok">Jawaban: Ada n bagian tapi hanya n-1 pemisah, jadi satu bagian harus di luar loop</p><p>Seperti pagar: 4 tiang hanya butuh 3 kawat. Cetak satu elemen dulu, lalu loop mencetak "pemisah + elemen".</p></details>
 <a class="cta" href="/#python-3-8">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/loop-bersarang-nested-loop">Loop bersarang (nested loop)</a></p><p>Berikutnya: <a href="/belajar/python/perulangan-while">Perulangan while</a></p>
 </main>
 <footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>

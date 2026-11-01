@@ -63,7 +63,7 @@ Sumber:
 
 - `src/css/base.css`, `lms.css`, `v4.css`: tampilan.
 - `src/js/data.js`: bab, topik, glosarium, kuis cerita.
-- `src/js/java-only.js`: versi Java saja dari bab dan topik bersama, sehingga jalur Java tidak memuat perbandingan dengan Python.
+- `src/js/lang-only.js`: versi satu bahasa dari bab dan topik bersama, sehingga jalur Java tidak memuat Python dan jalur Python tidak memuat Java.
 - `src/js/track-*.js`: kurikulum per jalur. `track-pda.js`, `track-da.js`, dan `track-de.js` dihasilkan skrip yang menjalankan setiap contoh Python untuk mengisi keluarannya.
 - `src/js/track-more.js`: 40 pelajaran tambahan untuk 13 jalur baru, dihasilkan `tools/gen/more.py` (keluaran contoh kode diisi dari hasil eksekusi).
 - `src/js/bugs.js`, `src/js/traces.js`: latihan perbaikan error dan rekaman eksekusi, dihasilkan `tools/gen/bugs.py` dan `tools/gen/traces.py` (pelacak di `tools/gen/trace/`).

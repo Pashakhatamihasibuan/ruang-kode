@@ -231,7 +231,7 @@ def lesson_body(t, l, book):
     lang = l.get("lang") or t["lang"]
     k, h = l["k"], []
     if k == "lab":
-        c = book["CHJ" if t["k"] == "java" else "CH"][l["n"] - 1]  # jalur Java: tanpa perbandingan Python
+        c = book[{"java": "CHJ", "python": "CHP"}.get(t["k"], "CH")][l["n"] - 1]  # versi satu bahasa
         h += [f"<p>{p}</p>" for p in c["body"]]
         lg = "java" if t["k"] == "java" else "python"
         h.append(code(c[lg], lg))
@@ -247,7 +247,7 @@ def lesson_body(t, l, book):
         tp = book["TOPICS"][str(n)][i]
         col = 1 if t["k"] == "java" else 2
         h.append("<h2>Dari kalimat ke kode</h2><table><tr><th>Maksud</th><th>Kode</th></tr>"
-                 + "".join(f"<tr><td>{e(r[0])}</td><td><code>{e(r[col])}</code></td></tr>" for r in tp["tr"]) + "</table>")
+                 + "".join(f"<tr><td>{e(r[0])}</td><td><code>{e(r[col])}</code></td></tr>" for r in (tp["tr"] if col == 1 else tp["trp"])) + "</table>")
         lg = "java" if col == 1 else "python"
         h.append(code(tp[lg], lg))
     elif k == "proj":
