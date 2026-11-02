@@ -22,15 +22,8 @@
 <p>Banyak organisasi memulai dengan spreadsheet. Masalah muncul saat data membesar dan dipakai banyak orang: salinan file berbeda-beda, rumus terhapus, dan tidak ada yang tahu versi mana yang terbaru.</p>
 <p><b>Database</b> menyimpan data terstruktur dalam tabel yang saling berhubungan. <b>Database Management System (DBMS)</b> seperti MySQL, PostgreSQL, atau SQL Server mengatur akses banyak pengguna sekaligus, hak akses, cadangan, dan mencegah data ganda atau tidak konsisten.</p>
 <p>Bahasa untuk bertanya ke database adalah <b>SQL</b>. Manajer tidak harus menulis SQL setiap hari, tetapi memahami dasarnya membantu saat meminta laporan ke tim data. Kamu bisa mencobanya langsung di jalur SQL Ruang Kode.</p>
-<div class="lbl">CONTOH</div><pre><code>Contoh penerapan: data siswa (sekolah)
-
-Spreadsheet                          Database
-- tiap wali kelas punya file sendiri  - satu tabel siswa untuk semua
-- nama &quot;M. Rizky&quot; vs &quot;Muhammad Rizki&quot; - NIS unik, nama ditulis sekali
-- file hilang saat laptop rusak       - dicadangkan otomatis setiap malam
-- semua orang bisa ubah apa saja      - wali kelas hanya ubah kelasnya
-
-Pertanyaan ke database:
+<div class="tw"><table><caption>Data siswa: spreadsheet vs database</caption><thead><tr><th>Spreadsheet</th><th>Database</th></tr></thead><tbody><tr><td>Tiap wali kelas punya file sendiri</td><td>Satu tabel siswa untuk semua</td></tr><tr><td>&quot;M. Rizky&quot; vs &quot;Muhammad Rizki&quot;</td><td>NIS unik, nama ditulis sekali</td></tr><tr><td>File hilang saat laptop rusak</td><td>Dicadangkan otomatis setiap malam</td></tr><tr><td>Semua orang bisa ubah apa saja</td><td>Wali kelas hanya ubah kelasnya</td></tr></tbody></table></div>
+<div class="lbl">CONTOH</div><pre><code>Pertanyaan ke database:
 SELECT kelas, COUNT(*) FROM siswa WHERE status = &#x27;aktif&#x27; GROUP BY kelas;</code></pre>
 <h2>Poin penting</h2><ul><li>Spreadsheet cocok untuk awal, bermasalah saat data besar dan banyak pengguna.</li><li>DBMS mengatur akses bersama, hak akses, konsistensi, dan cadangan.</li><li>SQL adalah bahasa untuk mengambil data dari database.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa NIS dipakai sebagai kunci data siswa, bukan nama?</summary><p class="ok">Jawaban: NIS unik, sedangkan nama bisa sama atau ditulis berbeda</p><p>Kunci harus unik dan tidak berubah.</p></details><details><summary>Fungsi DBMS yang membuat wali kelas hanya bisa mengubah data kelasnya sendiri adalah?</summary><p class="ok">Jawaban: Hak akses</p><p>DBMS mengatur siapa boleh melakukan apa.</p></details>

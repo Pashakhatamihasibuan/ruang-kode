@@ -262,6 +262,9 @@ def lesson_body(t, l, book):
             h.append(code(f[2], f[1], f[0]))
     else:
         h += [f"<p>{p}</p>".replace('href="#', 'href="/#') for p in l.get("b") or []]
+        for x in l.get("tb") or []:
+            h.append('<div class="tw"><table><caption>' + e(x["c"]) + '</caption><thead><tr>' + "".join(f"<th>{e(c)}</th>" for c in x["h"])
+                     + "</tr></thead><tbody>" + "".join("<tr>" + "".join(f"<td>{e(c)}</td>" for c in r) + "</tr>" for r in x["r"]) + "</tbody></table></div>")
         if l.get("code"):
             h.append(code(l["code"], lang))
             if l.get("out") is not None:

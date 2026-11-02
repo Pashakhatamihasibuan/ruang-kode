@@ -22,20 +22,9 @@
 <p>Banyak organisasi tidak mulai dari nol: aplikasinya sudah ada tetapi lambat, membingungkan, tidak aman, atau tidak bisa dipakai di ponsel. Mengganti total itu mahal dan berisiko, jadi pendekatan yang umum adalah <b>audit, prioritaskan, lalu perbaiki bertahap</b>.</p>
 <p><b>(1) Audit kondisi sekarang</b> dengan standar yang jelas: kegunaan (10 heuristik Nielsen, uji pengguna), aksesibilitas (<b>WCAG 2.2 AA</b>: kontras, keyboard, label form, ukuran target), keamanan (OWASP Top 10, hak akses, cadangan data), privasi (UU PDP: persetujuan terpisah, hak hapus data), performa (waktu muat di HP murah), dan tata kelola (siapa pemilik, dokumentasi). <b>(2) Kumpulkan bukti</b> dari analitik, keluhan, dan tiket bantuan. <b>(3) Analisis kesenjangan</b>: kondisi sekarang dibandingkan standar.</p>
 <p><b>(4) Prioritaskan</b> temuan dengan matriks dampak vs usaha (keamanan dan hukum selalu didahulukan). <b>(5) Rancang ulang</b> bagian yang bermasalah bersama UX Designer dan uji prototipenya. <b>(6) Perbaiki bertahap</b> per rilis kecil, tanpa menghentikan layanan. <b>(7) Ukur ulang</b> dengan metrik yang sama seperti saat audit, sehingga perbaikan terbukti, bukan sekadar terasa.</p>
-<div class="lbl">CONTOH</div><pre><code>Alur perbaikan: SIAKAD lama SMA Harapan Bangsa
-
-Audit (temuan)                    Standar        Prioritas  Perbaikan
-Login hanya captcha gambar        WCAG 3.3.8     Tinggi     OTP / passkey
-Password guru disimpan polos      OWASP A02      Kritis     hash + reset massal
-Tombol rapor 16px di ponsel       WCAG 2.5.8     Sedang     target ≥ 44px
-Kontras teks abu 2.8:1            WCAG 1.4.3     Sedang     token warna 4.5:1
-Halaman nilai 9 detik di 3G       performa       Tinggi     paginasi + cache
-Tidak ada cadangan data           BCP 3-2-1      Kritis     backup harian + uji pulih
-
-Ukur ulang setelah 3 rilis: waktu input nilai guru 12 → 5 menit,
-keluhan orang tua turun 60%, skor audit aksesibilitas lolos AA.
-
-Perusahaan : audit aplikasi absensi lama sebelum integrasi ke ERP
+<div class="tw"><table><caption>Audit SIAKAD lama SMA Harapan Bangsa</caption><thead><tr><th>Temuan audit</th><th>Standar</th><th>Prioritas</th><th>Perbaikan</th></tr></thead><tbody><tr><td>Password guru disimpan polos</td><td>OWASP A02</td><td>Kritis</td><td>Hash + reset massal</td></tr><tr><td>Tidak ada cadangan data</td><td>BCP 3-2-1</td><td>Kritis</td><td>Backup harian + uji pulih</td></tr><tr><td>Login hanya captcha gambar</td><td>WCAG 3.3.8</td><td>Tinggi</td><td>OTP / passkey</td></tr><tr><td>Halaman nilai 9 detik di 3G</td><td>Performa</td><td>Tinggi</td><td>Paginasi + cache</td></tr><tr><td>Tombol rapor 16px di ponsel</td><td>WCAG 2.5.8</td><td>Sedang</td><td>Target ≥ 44px</td></tr><tr><td>Kontras teks abu 2.8:1</td><td>WCAG 1.4.3</td><td>Sedang</td><td>Token warna 4.5:1</td></tr></tbody></table></div>
+<div class="tw"><table><caption>Hasil ukur ulang setelah 3 rilis</caption><thead><tr><th>Metrik</th><th>Sebelum</th><th>Sesudah</th></tr></thead><tbody><tr><td>Waktu input nilai guru</td><td>12 menit</td><td>5 menit</td></tr><tr><td>Keluhan orang tua</td><td>100%</td><td>Turun 60%</td></tr><tr><td>Audit aksesibilitas</td><td>Gagal</td><td>Lolos WCAG 2.2 AA</td></tr></tbody></table></div>
+<div class="lbl">CONTOH</div><pre><code>Perusahaan : audit aplikasi absensi lama sebelum integrasi ke ERP
 Startup    : audit onboarding yang membuat 40% pengguna berhenti
 Organisasi : audit formulir donasi yang tidak bisa dipakai pembaca layar</code></pre>
 <h2>Poin penting</h2><ul><li>Audit dengan standar nyata: heuristik, WCAG 2.2, OWASP, UU PDP, performa.</li><li>Prioritaskan: keamanan dan hukum dulu, lalu dampak terbesar per usaha.</li><li>Perbaiki bertahap dan ukur ulang dengan metrik yang sama.</li></ul>

@@ -96,9 +96,12 @@ function wireEditor(box,onRun,onInput){
 
 /* ---------- jenis c: konsep + kode ---------- */
 const PYOK=['python'];
+/* tabel ringkas pelajaran: tb:[{c:judul,h:[kolom],r:[[sel]]}] */
+const tbHTML=l=>l.tb&&l.tb.length?`<section class="section lt-sec"><h2>Tabel ringkas</h2>${l.tb.map(x=>`<div class="lt-wrap" tabindex="0" role="region" aria-label="${esc(x.c)}"><table class="lt"><caption>${esc(x.c)}</caption><thead><tr>${x.h.map(h=>`<th scope="col">${esc(h)}</th>`).join('')}</tr></thead><tbody>${x.r.map(r=>`<tr>${r.map((c,i)=>i===0?`<th scope="row">${esc(c)}</th>`:`<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`).join('')}</section>`:'';
 function conceptHTML(l,t){
   const lang=l.lang||t.lang,live=l.code&&l.out!=null&&l.run!==false,py=live&&lang==='python';
   return `<section class="prose">${l.b.map(p=>`<p>${p}</p>`).join('')}</section>
+  ${tbHTML(l)}
   ${vizHTML(l,'Coba kontrolnya atau tekan Berikutnya, lalu perhatikan apa yang berubah.')}
   ${l.code?`<section class="section" id="prog"><h2>${lang==='text'?'Contoh':'Contoh kode'}</h2>
    ${py?`<div class="pane python"><div class="pane-h"><span>PYTHON · bisa diedit</span><button class="copy" data-copyed>Salin</button></div>${editorHTML('pyEd',l.code,'Editor Python','python')}</div>`:pane(lang,l.code)}
