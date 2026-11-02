@@ -661,3 +661,19 @@ button.gt:focus-visible{outline:2px solid var(--acc,var(--py));outline-offset:2p
 .va-code .va-ln.bad{background:rgba(242,139,123,.16)}
 .va-code .va-ln em{color:#6B7A8F}
 .va-code .va-err{background:rgba(242,139,123,.16);color:#F7A99C}
+/* animasi kode otomatis */
+.ca-btn{margin-left:auto;margin-right:8px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:var(--code-fg);border-radius:6px;padding:4px 10px;font:600 .72rem var(--f-body);cursor:pointer;min-height:28px}
+.ca-btn:hover{background:rgba(255,255,255,.16)}
+.ca-pre{max-height:420px;overflow:auto;scroll-behavior:smooth}
+.ca-ln{display:block;opacity:0;transition:opacity .25s;white-space:pre;padding-left:4px}
+.ca-ln:not(.shown){display:none}
+.ca-ln.shown{opacity:.55}
+.ca-ln.cur{opacity:1;background:rgba(255,255,255,.08);box-shadow:-3px 0 0 var(--acc,var(--c-da))}
+.ca-ln.typing{animation:vaType .6s steps(28,end) both}
+.ca-note{margin:0;padding:10px 12px;background:var(--surface);color:var(--ink);font-size:.88rem;line-height:1.5;border-top:1px solid var(--line)}
+.ca-note code{font-size:.82em}
+.ca-ctl{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 10px;background:var(--surface);border-top:1px solid var(--line)}
+.ca-ctl .btn{padding:5px 12px;font-size:.8rem;min-height:32px}
+.ca-cnt{font:500 .74rem var(--f-mono);color:var(--muted)}
+.ca-ctl [data-c=stop]{margin-left:auto}
+@media (prefers-reduced-motion:reduce){.ca-ln.typing{animation:none}}

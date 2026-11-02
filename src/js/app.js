@@ -99,7 +99,7 @@ const ring=(p,size=56)=>{const r=size/2-4,c=2*Math.PI*r;return `<svg class="ring
 const LANGLBL={java:'JAVA',python:'PYTHON',sql:'SQL',ts:'TYPESCRIPT',js:'JAVASCRIPT',jsx:'JSX',html:'HTML',css:'CSS',bash:'TERMINAL',yaml:'YAML',json:'JSON',text:'CONTOH'};
 function pane(lang,code,o={}){
   const lab=o.label||LANGLBL[lang]||'KODE';
-  return `<div class="pane ${lang==='java'||lang==='python'?lang:'tx'}"><div class="pane-h"><span>${lab}</span>${o.copy!==false?'<button class="copy" data-copy>Salin</button>':''}</div><pre class="code">${hl(code,lang)}</pre>${o.out?`<pre class="out">${esc(o.out)}</pre>`:''}</div>`;
+  return `<div class="pane ${lang==='java'||lang==='python'?lang:'tx'}" data-lang="${lang}"><div class="pane-h"><span>${lab}</span>${o.copy!==false?'<button class="copy" data-copy>Salin</button>':''}</div><pre class="code">${hl(code,lang)}</pre>${o.out?`<pre class="out">${esc(o.out)}</pre>`:''}</div>`;
 }
 function copyText(txt,b,label='Salin'){
   const fail=()=>{b.textContent='Pilih teks lalu Ctrl+C'};

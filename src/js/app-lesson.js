@@ -70,6 +70,7 @@ function wireLesson(x){
   else if(l.k==='w')wireWeb(l,x);
   else if(l.k==='proj')wireProj(l,x);
   else wireSql(l,x);
+  if(typeof caWire==='function')caWire($('#view'));
 }
 /* layar lebar: tombol menyembunyikan/menampilkan menu belajar (diingat); layar sempit: laci */
 const OLWIDE=()=>matchMedia('(min-width:1081px)').matches;

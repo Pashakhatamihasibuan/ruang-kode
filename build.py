@@ -27,10 +27,10 @@ TRACK_JS = ["track-java.js", "track-python.js", "track-sql.js", "track-sql-extra
             "track-de.js", "track-ux.js", "track-ds.js", "track-msi.js", "track-sim.js", "track-more.js", "tips.js", "bugs.js", "traces.js"]
 RT_JS = ["viz.js", "sqlengine.js", "sqldata.js", "sqldata-bi.js", "viz2.js", "viz3.js", "viz-msi.js", "viz-var.js"]
 BOOK_JS = ["data.js", "lang-only.js", "app-javapy.js", "app-extra.js"]
-CORE_JS = ["gl.js", "app.js", "app-pages.js", "app-lesson.js", "practice.js", "tracer.js", "setup.js", "app-nav.js"]
+CORE_JS = ["gl.js", "app.js", "app-pages.js", "app-lesson.js", "codeanim.js", "practice.js", "tracer.js", "setup.js", "app-nav.js"]
 # urutan versi satu file (sama dengan urutan sebelum materi dipecah)
 ALL_JS = (["data.js", "lang-only.js", "util.js", "gl.js", "viz.js", "sqlengine.js", "sqldata.js", "sqldata-bi.js"] + TRACK_JS
-          + ["viz2.js", "viz3.js", "viz-msi.js", "viz-var.js", "app.js", "app-pages.js", "app-lesson.js", "app-javapy.js",
+          + ["viz2.js", "viz3.js", "viz-msi.js", "viz-var.js", "app.js", "app-pages.js", "app-lesson.js", "codeanim.js", "app-javapy.js",
              "app-extra.js", "practice.js", "tracer.js", "setup.js", "app-nav.js"])
 
 DESC = ("Akademi coding, data, dan desain berbahasa Indonesia: 18 jalur termasuk Sistem Informasi Manajemen dan Manajemen Sistem Informasi, "
