@@ -37,6 +37,14 @@ def hitung( harga,diskon = 0 ):
 def hitung(harga, diskon=0):
     total = harga - harga * diskon / 100
     return total</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Jalankan ruff untuk memeriksa dan memperbaiki otomatis, lalu format kode dengan ruff format atau black.</p><details><summary>Petunjuk</summary><p>ruff check --fix, ruff format, black .</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TERMINAL</div><pre><code>pip install ruff black
+ruff check . --fix     # cari dan perbaiki masalah (import tak terpakai, dll.)
+ruff format .          # format gaya kode
+black .                # alternatif formatter</code></pre></details></li><li><p>Atur ruff di pyproject.toml: panjang baris 100, aktifkan aturan pycodestyle (E), pyflakes (F), dan isort (I).</p><details><summary>Petunjuk</summary><p>Bagian [tool.ruff] dan [tool.ruff.lint].</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = [&quot;E&quot;, &quot;F&quot;, &quot;I&quot;]</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>PEP 8 = panduan gaya resmi Python.</li><li>Formatter merapikan, linter mencari masalah.</li><li>ruff sangat cepat dan bisa menggantikan banyak alat.</li><li>Otomatiskan dengan pre-commit dan CI.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Alat yang memformat kode tanpa banyak pilihan konfigurasi?</summary><p class="ok">Jawaban: black</p><p>black sengaja dibuat &quot;opinionated&quot;.</p></details><details><summary>Kode F401 dari ruff berarti?</summary><p class="ok">Jawaban: Import tidak dipakai</p><p>F401: module imported but unused.</p></details>
 <a class="cta" href="/#python-12-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/validasi-data-dengan-pydantic">Validasi data dengan Pydantic</a></p><p>Berikutnya: <a href="/belajar/python/docstring-komentar-sphinx">Docstring, komentar &amp; Sphinx</a></p>

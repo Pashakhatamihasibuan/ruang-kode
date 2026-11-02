@@ -54,6 +54,32 @@ public class Bank {
 true
 Andi: 60000
 </code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat kelas <code>Rekening</code> dengan saldo private. Sediakan setor() yang menolak jumlah negatif dan getter getSaldo().</p><details><summary>Petunjuk</summary><p>Field private hanya bisa diubah lewat method kelas itu sendiri, jadi aturannya terjaga.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>class Rekening {
+    private long saldo;
+
+    public void setor(long jumlah) {
+        if (jumlah &lt;= 0) {
+            System.out.println(&quot;Jumlah tidak valid&quot;);
+            return;
+        }
+        saldo += jumlah;
+    }
+
+    public long getSaldo() { return saldo; }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Rekening r = new Rekening();
+        r.setor(50000);
+        r.setor(-1000);
+        System.out.println(r.getSaldo());
+    }
+}</code></pre></details></li><li><p>Isi tabel: dari mana saja anggota dengan modifier public, protected, tanpa modifier (default), dan private bisa diakses?</p><details><summary>Petunjuk</summary><p>Urutan dari paling terbuka: public, protected, default, private.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>             kelas sama  paket sama  subclass beda paket  di mana saja
+public           ya          ya              ya                ya
+protected        ya          ya              ya                tidak
+(default)        ya          ya              tidak             tidak
+private          ya          tidak           tidak             tidak</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li><code>private</code> &lt; package-private &lt; <code>protected</code> &lt; <code>public</code>.</li><li>Field private + method public = enkapsulasi.</li><li>Satu file boleh punya banyak kelas, tapi hanya satu yang public dan namanya sama dengan file.</li><li>Getter tanpa setter membuat nilai hanya bisa dibaca dari luar.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Siapa yang bisa mengakses field &lt;code&gt;private&lt;/code&gt;?</summary><p class="ok">Jawaban: Hanya kelas pemiliknya</p><p>private paling ketat: hanya kelas itu sendiri.</p></details><details><summary>Kenapa saldo dibuat private?</summary><p class="ok">Jawaban: Supaya aturan perubahan saldo dijaga di satu tempat</p><p>Semua perubahan lewat setor/tarik yang memeriksa aturan.</p></details>
 <a class="cta" href="/#java-5-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/method-enkapsulasi">Method &amp; enkapsulasi</a></p><p>Berikutnya: <a href="/belajar/java/kata-kunci-static-final">Kata kunci static &amp; final</a></p>

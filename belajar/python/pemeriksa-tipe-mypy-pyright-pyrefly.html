@@ -41,6 +41,16 @@ print(h + 1000)                       # h bisa None
 
 # $ pyright toko.py      -&gt; laporan serupa
 # $ pyrefly check toko.py</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Kode ini jalan tanpa error di Python, tapi mypy menolaknya. Apa pesan kesalahannya kira-kira, dan bagaimana memperbaikinya?<br><code>def pajak(harga: int) -&gt; int: return harga * 11 // 100<br>pajak("18000")</code></p><details><summary>Petunjuk</summary><p>Pemeriksa tipe membaca anotasi tanpa menjalankan program.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code># mypy: error: Argument 1 to &quot;pajak&quot; has incompatible type &quot;str&quot;; expected &quot;int&quot;
+def pajak(harga: int) -&gt; int:
+    return harga * 11 // 100
+
+print(pajak(int(&quot;18000&quot;)))</code></pre></details></li><li><p>Pasang dan jalankan mypy dalam mode ketat untuk folder src.</p><details><summary>Petunjuk</summary><p>pip install mypy; mypy --strict src</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TERMINAL</div><pre><code>pip install mypy
+mypy --strict src
+
+# atau pyright
+pip install pyright
+pyright src</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Pemeriksa tipe menemukan bug tanpa menjalankan program.</li><li>mypy = acuan, pyright = cepat dan terintegrasi VS Code, pyrefly = baru dan sangat cepat.</li><li>Tangani None secara eksplisit: <code>if h is not None</code>.</li><li>Jalankan di CI agar kode baru selalu diperiksa.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kapan mypy menemukan kesalahan tipe?</summary><p class="ok">Jawaban: Saat membaca kode, sebelum dijalankan</p><p>Itu arti statis.</p></details><details><summary>Mesin di balik Pylance di VS Code?</summary><p class="ok">Jawaban: pyright</p><p>Pylance dibangun di atas pyright.</p></details>
 <a class="cta" href="/#python-11-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/anotasi-tipe-modul-typing">Anotasi tipe &amp; modul typing</a></p><p>Berikutnya: <a href="/belajar/python/validasi-data-dengan-pydantic">Validasi data dengan Pydantic</a></p>

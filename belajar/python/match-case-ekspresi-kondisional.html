@@ -56,6 +56,21 @@ ambil kunci dan 2 barang lain
 ambil kunci
 remaja
 </code></pre>
+<h2>Soal latihan</h2><ol><li><p>Pakai match-case untuk perintah teks: "tambah X", "hapus X", "daftar", dan lainnya "tidak dikenal".</p><details><summary>Petunjuk</summary><p>Pola list: case ["tambah", barang]:</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>def proses(perintah):
+    match perintah.split():
+        case [&quot;tambah&quot;, barang]:
+            return f&quot;Menambah {barang}&quot;
+        case [&quot;hapus&quot;, barang]:
+            return f&quot;Menghapus {barang}&quot;
+        case [&quot;daftar&quot;]:
+            return &quot;Menampilkan daftar&quot;
+        case _:
+            return &quot;Perintah tidak dikenal&quot;
+
+for p in [&quot;tambah kopi&quot;, &quot;daftar&quot;, &quot;lompat&quot;]:
+    print(proses(p))</code></pre></details></li><li><p>Tulis ekspresi kondisional satu baris: status "dewasa" jika umur &gt;= 17, selain itu "anak".</p><details><summary>Petunjuk</summary><p>nilai_a if kondisi else nilai_b</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>for umur in (12, 17, 30):
+    status = &quot;dewasa&quot; if umur &gt;= 17 else &quot;anak&quot;
+    print(umur, status)</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li><code>case a | b:</code> untuk beberapa pilihan.</li><li><code>case _:</code> menangkap semua sisa.</li><li>Pola bisa menangkap bagian data ke variabel.</li><li>Ekspresi kondisional: <code>x if syarat else y</code>.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Pola untuk &quot;semua kasus lainnya&quot; di match?</summary><p class="ok">Jawaban: case _:</p><p>Garis bawah adalah wildcard.</p></details><details><summary>Hasil &lt;code&gt;&quot;A&quot; if 3 &gt; 5 else &quot;B&quot;&lt;/code&gt;?</summary><p class="ok">Jawaban: &quot;B&quot;</p><p>Kondisinya salah, jadi nilai setelah else dipilih.</p></details>
 <a class="cta" href="/#python-3-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/if-elif-else">if / elif / else</a></p><p>Berikutnya: <a href="/belajar/python/algoritma-kumulatif">Algoritma kumulatif</a></p>

@@ -46,6 +46,16 @@ print(list(itertools.combinations(&quot;ABC&quot;, 2)))</code></pre>
 82.33333333333333 80
 [(&#x27;A&#x27;, &#x27;B&#x27;), (&#x27;A&#x27;, &#x27;C&#x27;), (&#x27;B&#x27;, &#x27;C&#x27;)]
 </code></pre>
+<h2>Soal latihan</h2><ol><li><p>Pakai modul bawaan: hitung akar 144 (math), rata-rata dan median [3, 7, 8, 10] (statistics), dan buat data JSON dari dict.</p><details><summary>Petunjuk</summary><p>math.sqrt, statistics.mean, statistics.median, json.dumps.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import json, math, statistics
+
+print(math.sqrt(144))
+print(statistics.mean([3, 7, 8, 10]))
+print(statistics.median([3, 7, 8, 10]))
+print(json.dumps({&quot;nama&quot;: &quot;Rina&quot;, &quot;nilai&quot;: 92}))</code></pre></details></li><li><p>Hitung tanggal jatuh tempo 30 hari setelah 15 Oktober 2026 dan format menjadi "14-11-2026".</p><details><summary>Petunjuk</summary><p>datetime.date, timedelta, strftime("%d-%m-%Y").</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>from datetime import date, timedelta
+
+tempo = date(2026, 10, 15) + timedelta(days=30)
+print(tempo.strftime(&quot;%d-%m-%Y&quot;))
+print((date(2026, 12, 25) - date(2026, 10, 15)).days)</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Memeriksa &quot;ada yang&quot; dan &quot;semuanya&quot;</summary><p><code>any</code> dan <code>all</code> menggantikan loop dengan variabel penanda. Keduanya berhenti begitu jawabannya sudah pasti.</p><div class="lbl">KODE PEMULA</div><pre><code>stok = [5, 0, 12, 7]
 ada_habis = False
 for s in stok:

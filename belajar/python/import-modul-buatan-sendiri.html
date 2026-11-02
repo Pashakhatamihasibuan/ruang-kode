@@ -45,6 +45,19 @@ print(h.PAJAK)
 # Keluaran:
 # Rp94.350
 # 0.11</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Kamu punya file <code>hitung.py</code> berisi fungsi <code>pajak()</code>. Tulis tiga cara mengimpornya di <code>main.py</code>.</p><details><summary>Petunjuk</summary><p>import modul, from modul import nama, import modul as alias.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>import hitung
+hitung.pajak(100000)
+
+from hitung import pajak
+pajak(100000)
+
+import hitung as h
+h.pajak(100000)</code></pre></details></li><li><p>Apa gunanya <code>if __name__ == "__main__":</code>? Tulis contohnya.</p><details><summary>Petunjuk</summary><p>Kode di dalam blok itu hanya jalan saat file dijalankan langsung, bukan saat diimpor.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>def pajak(harga):
+    return harga * 11 // 100
+
+if __name__ == &quot;__main__&quot;:
+    # hanya jalan saat: python hitung.py
+    print(pajak(100000))</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Satu file = satu modul, satu folder = paket.</li><li><code>import x as y</code> memberi alias.</li><li>Blok <code>if __name__ == "__main__":</code> tidak jalan saat diimpor.</li><li>Python mencari modul di folder kerja, lalu di site-packages.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Nilai &lt;code&gt;__name__&lt;/code&gt; saat file dijalankan langsung?</summary><p class="ok">Jawaban: &quot;__main__&quot;</p><p>Itulah kenapa pola if __name__ == &quot;__main__&quot; bekerja.</p></details><details><summary>Kenapa &lt;code&gt;from x import *&lt;/code&gt; sebaiknya dihindari?</summary><p class="ok">Jawaban: Nama bisa bertabrakan tanpa ketahuan</p><p>Sumber setiap nama jadi tidak jelas.</p></details>
 <a class="cta" href="/#python-6-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/pathlib-modul-glob">pathlib &amp; modul glob</a></p><p>Berikutnya: <a href="/belajar/python/modul-bawaan-yang-sering-dipakai">Modul bawaan yang sering dipakai</a></p>

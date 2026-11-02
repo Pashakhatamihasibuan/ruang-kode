@@ -46,6 +46,22 @@
 0.30000000000000004
 true
 </code></pre>
+<h2>Soal latihan</h2><ol><li><p>Hitung sisi miring segitiga siku-siku dengan sisi 6 dan 8, lalu luas lingkaran berjari-jari 7 dibulatkan 2 desimal.</p><details><summary>Petunjuk</summary><p>Math.hypot atau Math.sqrt, Math.PI, Math.round(x * 100) / 100.0.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>public class Main {
+    public static void main(String[] args) {
+        double miring = Math.sqrt(6 * 6 + 8 * 8);
+        double luas = Math.PI * Math.pow(7, 2);
+        System.out.println(miring);
+        System.out.println(Math.round(luas * 100) / 100.0);
+    }
+}</code></pre></details></li><li><p>Buat angka acak dadu 1 sampai 6 memakai <code>Math.random()</code>, dan tunjukkan beda <code>Math.floor</code>, <code>Math.ceil</code>, <code>Math.round</code> untuk -2.5.</p><details><summary>Petunjuk</summary><p>Math.random() menghasilkan 0.0 sampai kurang dari 1.0.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>public class Main {
+    public static void main(String[] args) {
+        int dadu = (int) (Math.random() * 6) + 1;   // 1..6
+        System.out.println(&quot;Dadu: &quot; + dadu);
+        System.out.println(Math.floor(-2.5));
+        System.out.println(Math.ceil(-2.5));
+        System.out.println(Math.round(-2.5));
+    }
+}</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li><code>Math.pow</code> dan <code>Math.sqrt</code> selalu mengembalikan double.</li><li>Rumus angka acak 1 sampai n: <code>(int)(Math.random() * n) + 1</code>.</li><li>Perhatikan <code>0.1 + 0.2</code>: double menyimpan pecahan secara mendekati.</li><li><code>%</code> (modulus) berguna untuk cek genap/ganjil: <code>x % 2 == 0</code>.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>&lt;code&gt;Math.ceil(4.01)&lt;/code&gt; menghasilkan?</summary><p class="ok">Jawaban: 5.0</p><p>ceil selalu membulatkan ke atas dan mengembalikan double.</p></details><details><summary>Kenapa double kurang cocok untuk menyimpan saldo bank?</summary><p class="ok">Jawaban: Pecahannya tidak selalu tepat</p><p>Pecahan biner membuat 0.1 + 0.2 bukan tepat 0.3. Pakai BigDecimal atau satuan terkecil.</p></details>
 <a class="cta" href="/#java-1-6">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/ekspresi-operator">Ekspresi &amp; operator</a></p><p>Berikutnya: <a href="/belajar/java/membaca-input-pengguna">Membaca input pengguna</a></p>

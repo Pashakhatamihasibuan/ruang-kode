@@ -48,6 +48,25 @@ class ProdukController {
     List&lt;Produk&gt; daftarMinuman() { return service.minuman(); }
 }
 // GET http://localhost:8080/api/produk/minuman -&gt; [{&quot;id&quot;:2,&quot;nama&quot;:&quot;Teh Melati&quot;,...}]</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat REST controller Spring Boot dengan endpoint <code>GET /produk/{id}</code> yang memakai service lewat constructor injection.</p><details><summary>Petunjuk</summary><p>@RestController, @GetMapping, @PathVariable. Constructor injection tidak perlu @Autowired jika hanya satu konstruktor.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping(&quot;/produk&quot;)
+public class ProdukController {
+    private final ProdukService service;
+
+    public ProdukController(ProdukService service) {   // constructor injection
+        this.service = service;
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    public Produk satu(@PathVariable long id) {
+        return service.cari(id);
+    }
+}</code></pre></details></li><li><p>Kenapa constructor injection lebih disarankan daripada field injection (@Autowired di field)?</p><details><summary>Petunjuk</summary><p>Pikirkan tentang final, test, dan dependensi yang wajib.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>1. Field bisa final, jadi objek tidak berubah setelah dibuat.
+2. Mudah dites: cukup new ProdukController(serviceTiruan) tanpa Spring.
+3. Dependensi wajib terlihat jelas di konstruktor.
+4. Terlalu banyak parameter memberi tanda kelas memikul terlalu banyak tugas.</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>DI: terima dependency lewat konstruktor, jangan <code>new</code> sendiri.</li><li>Lapisan umum: Controller → Service → Repository.</li><li>Spring Boot menyiapkan server web (Tomcat) secara otomatis.</li><li>Objek yang dikembalikan controller diubah menjadi JSON.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Manfaat utama dependency injection?</summary><p class="ok">Jawaban: Kelas mudah diuji dan tidak terikat erat</p><p>Dependency bisa diganti, misalnya dengan mock.</p></details><details><summary>Anotasi untuk endpoint HTTP GET?</summary><p class="ok">Jawaban: @GetMapping</p><p>@GetMapping memetakan request GET ke method.</p></details>
 <a class="cta" href="/#java-15-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/orm-hibernate-spring-data-jpa-ebean">ORM: Hibernate, Spring Data JPA, Ebean</a></p><p>Berikutnya: <a href="/belajar/java/framework-web-lain-quarkus-javalin-play">Framework web lain: Quarkus, Javalin, Play</a></p>

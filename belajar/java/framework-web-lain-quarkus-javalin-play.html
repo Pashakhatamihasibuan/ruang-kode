@@ -43,6 +43,18 @@ public class HaloResource {
     @GET
     public String halo() { return &quot;Halo dari Quarkus&quot;; }
 }</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat server Javalin kecil dengan endpoint <code>GET /halo/{nama}</code> yang membalas "Halo, Rina!".</p><details><summary>Petunjuk</summary><p>Javalin.create().get(path, ctx -> ...).start(7070); ctx.pathParam("nama").</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>import io.javalin.Javalin;
+
+public class App {
+    public static void main(String[] args) {
+        Javalin.create()
+            .get(&quot;/halo/{nama}&quot;, ctx -&gt; ctx.result(&quot;Halo, &quot; + ctx.pathParam(&quot;nama&quot;) + &quot;!&quot;))
+            .start(7070);
+    }
+}
+// GET http://localhost:7070/halo/Rina  -&gt;  Halo, Rina!</code></pre></details></li><li><p>Pilih framework yang cocok: (a) API kecil untuk belajar, (b) layanan cloud native yang harus menyala sangat cepat, (c) aplikasi perusahaan besar dengan banyak integrasi.</p><details><summary>Petunjuk</summary><p>Bandingkan ukuran, waktu start, dan ekosistem.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>(a) Javalin: ringan, kode sedikit, mudah dipahami.
+(b) Quarkus: start cepat dan hemat memori, bisa dikompilasi native (GraalVM).
+(c) Spring Boot: ekosistem paling lengkap (security, data, cloud) dan banyak dipakai industri.</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Spring Boot: ekosistem terbesar.</li><li>Quarkus: startup cepat, cocok untuk container.</li><li>Javalin: minimalis, mudah dipelajari.</li><li>Play: reaktif, tanpa state.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Framework yang terkenal dengan startup cepat dan native image?</summary><p class="ok">Jawaban: Quarkus</p><p>Quarkus dioptimalkan untuk cloud dan GraalVM.</p></details><details><summary>Framework paling minimalis di antara pilihan ini?</summary><p class="ok">Jawaban: Javalin</p><p>Javalin sengaja dibuat kecil dan sederhana.</p></details>
 <a class="cta" href="/#java-15-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/spring-boot-dependency-injection">Spring Boot &amp; dependency injection</a></p><p>Berikutnya: <a href="/belajar/java/dokumentasi-dengan-javadoc">Dokumentasi dengan Javadoc</a></p>

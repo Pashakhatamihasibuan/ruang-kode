@@ -49,6 +49,15 @@ module com.toko {
     requires java.sql;
     exports com.toko.model;
 }</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Susun folder untuk kelas <code>id.ruangkode.toko.Produk</code> dan <code>id.ruangkode.App</code>, lalu kompilasi dan jalankan dari terminal.</p><details><summary>Petunjuk</summary><p>Nama package mengikuti folder. Kompilasi ke folder out dengan -d.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TERMINAL</div><pre><code># struktur
+# src/id/ruangkode/App.java          -&gt; package id.ruangkode;
+# src/id/ruangkode/toko/Produk.java   -&gt; package id.ruangkode.toko;
+
+javac -d out src/id/ruangkode/App.java src/id/ruangkode/toko/Produk.java
+java -cp out id.ruangkode.App</code></pre></details></li><li><p>Tulis <code>module-info.java</code> untuk modul <code>id.ruangkode.toko</code> yang memakai java.sql dan hanya membuka paket <code>id.ruangkode.toko.api</code>.</p><details><summary>Petunjuk</summary><p>requires untuk dependensi, exports untuk paket yang boleh dipakai modul lain.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>module id.ruangkode.toko {
+    requires java.sql;
+    exports id.ruangkode.toko.api;
+}</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Satu file = satu package (baris <code>package</code> paling atas).</li><li>Struktur folder mengikuti nama package.</li><li><code>import</code> hanya mempersingkat nama, tidak menyalin kode.</li><li><code>module-info.java</code>: requires = butuh, exports = dibagikan.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kelas mana yang bisa dipakai tanpa import?</summary><p class="ok">Jawaban: String</p><p>String ada di java.lang yang otomatis diimpor.</p></details><details><summary>Di module-info, kata kunci untuk membagikan package?</summary><p class="ok">Jawaban: exports</p><p>exports membuat package bisa dipakai modul lain.</p></details>
 <a class="cta" href="/#java-12-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/optional-mengganti-null-dengan-aman">Optional: mengganti null dengan aman</a></p><p>Berikutnya: <a href="/belajar/java/pemrosesan-file">Pemrosesan File</a></p>

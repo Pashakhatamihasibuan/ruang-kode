@@ -49,6 +49,23 @@ madu  15
 {&#x27;Jakarta&#x27;: [&#x27;Andi&#x27;, &#x27;Dewi&#x27;], &#x27;Bandung&#x27;: [&#x27;Budi&#x27;]}
 [&#x27;Budi&#x27;] [&#x27;Andi&#x27;, &#x27;Citra&#x27;] [&#x27;Andi&#x27;, &#x27;Budi&#x27;, &#x27;Citra&#x27;, &#x27;Dewi&#x27;]
 </code></pre>
+<h2>Soal latihan</h2><ol><li><p>Hitung frekuensi kata dalam kalimat "kopi susu kopi teh kopi susu" dengan <code>dict.get</code>, lalu dengan <code>Counter</code>.</p><details><summary>Petunjuk</summary><p>freq[k] = freq.get(k, 0) + 1; Counter(...).most_common(1).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>from collections import Counter
+
+kata = &quot;kopi susu kopi teh kopi susu&quot;.split()
+freq = {}
+for k in kata:
+    freq[k] = freq.get(k, 0) + 1
+print(freq)
+print(Counter(kata).most_common(1))</code></pre></details></li><li><p>Kelas A diikuti {Rina, Sandi, Tari}, kelas B diikuti {Sandi, Dewi, Tari}. Siapa ikut keduanya, salah satu saja, dan semua peserta?</p><details><summary>Petunjuk</summary><p>Irisan &, selisih simetris ^, gabungan |.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>a = {&quot;Rina&quot;, &quot;Sandi&quot;, &quot;Tari&quot;}
+b = {&quot;Sandi&quot;, &quot;Dewi&quot;, &quot;Tari&quot;}
+print(sorted(a &amp; b))
+print(sorted(a ^ b))
+print(len(a | b))</code></pre></details></li><li><p>Kelompokkan nama berdasarkan huruf awal memakai <code>defaultdict(list)</code>.</p><details><summary>Petunjuk</summary><p>defaultdict otomatis membuat list kosong untuk kunci baru.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>from collections import defaultdict
+
+grup = defaultdict(list)
+for n in [&quot;Rina&quot;, &quot;Sandi&quot;, &quot;Rio&quot;, &quot;Tari&quot;]:
+    grup[n[0]].append(n)
+print(dict(grup))</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Menghitung kemunculan</summary><p><code>collections.Counter</code> menghitung isi list dalam satu baris dan bisa langsung memberi yang paling sering muncul.</p><div class="lbl">KODE PEMULA</div><pre><code>belanja = [&quot;kopi&quot;, &quot;teh&quot;, &quot;kopi&quot;, &quot;gula&quot;, &quot;kopi&quot;, &quot;teh&quot;]
 hitung = {}
 for b in belanja:

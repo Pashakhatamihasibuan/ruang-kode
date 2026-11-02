@@ -58,6 +58,43 @@ Memproses 80000
 Gagal: Saldo kurang Rp50000
 Sisa saldo 30000
 </code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat exception sendiri <code>SaldoKurangException</code> (checked). Method tarik() melemparnya jika saldo tidak cukup; tangkap di main.</p><details><summary>Petunjuk</summary><p>extends Exception (checked) dan wajib dideklarasikan dengan throws.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>class SaldoKurangException extends Exception {
+    SaldoKurangException(String pesan) { super(pesan); }
+}
+
+public class Main {
+    static long saldo = 100_000;
+
+    static void tarik(long n) throws SaldoKurangException {
+        if (n &gt; saldo) throw new SaldoKurangException(&quot;Saldo kurang &quot; + (n - saldo));
+        saldo -= n;
+    }
+
+    public static void main(String[] args) {
+        try {
+            tarik(30_000);
+            tarik(90_000);
+        } catch (SaldoKurangException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            System.out.println(&quot;Saldo &quot; + saldo);
+        }
+    }
+}</code></pre></details></li><li><p>Ubah teks "12a" menjadi angka dengan aman: jika gagal, pakai 0 dan cetak pesan.</p><details><summary>Petunjuk</summary><p>Integer.parseInt melempar NumberFormatException (unchecked).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>public class Main {
+    static int keAngka(String s) {
+        try {
+            return Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            System.out.println(&quot;Bukan angka: &quot; + s);
+            return 0;
+        }
+    }
+
+    public static void main(String[] args) {
+        System.out.println(keAngka(&quot;42&quot;));
+        System.out.println(keAngka(&quot;12a&quot;));
+    }
+}</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Menutup sumber daya otomatis</summary><p>Try-with-resources menutup reader, file, atau koneksi database secara otomatis, juga saat terjadi exception. Tidak perlu blok <code>finally</code> dan tidak ada risiko lupa memanggil <code>close()</code>.</p><div class="lbl">KODE PEMULA</div><pre><code>BufferedReader r = new BufferedReader(new StringReader(&quot;baris pertama&quot;));
 try {
     System.out.println(r.readLine());

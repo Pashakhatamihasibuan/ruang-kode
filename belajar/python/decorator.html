@@ -63,6 +63,39 @@ bayar
 [&#x27;hai Rina&#x27;, &#x27;hai Rina&#x27;, &#x27;hai Rina&#x27;]
 23416728348467685
 </code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat decorator <code>log</code> yang mencetak nama fungsi dan argumennya sebelum fungsi dipanggil.</p><details><summary>Petunjuk</summary><p>def log(f): def bungkus(*args, **kwargs): ...; return bungkus. Pakai functools.wraps.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>from functools import wraps
+
+def log(f):
+    @wraps(f)
+    def bungkus(*args, **kwargs):
+        print(f&quot;memanggil {f.__name__}{args}&quot;)
+        return f(*args, **kwargs)
+    return bungkus
+
+@log
+def tambah(a, b):
+    return a + b
+
+print(tambah(2, 3))
+print(tambah.__name__)</code></pre></details></li><li><p>Buat decorator berparameter <code>ulangi(n)</code> yang menjalankan fungsi n kali.</p><details><summary>Petunjuk</summary><p>Tiga lapis fungsi: ulangi(n) -> decorator(f) -> bungkus(*args).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>def ulangi(n):
+    def decorator(f):
+        def bungkus(*args, **kwargs):
+            for _ in range(n):
+                f(*args, **kwargs)
+        return bungkus
+    return decorator
+
+@ulangi(3)
+def sapa(nama):
+    print(&quot;Halo&quot;, nama)
+
+sapa(&quot;Rina&quot;)</code></pre></details></li><li><p>Pakai <code>@lru_cache</code> agar fibonacci rekursif ke-80 dihitung cepat.</p><details><summary>Petunjuk</summary><p>from functools import lru_cache. Hasil yang sudah dihitung disimpan.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>from functools import lru_cache
+
+@lru_cache(maxsize=None)
+def fib(n):
+    return n if n &lt; 2 else fib(n - 1) + fib(n - 2)
+
+print(fib(80))</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li><code>@d</code> di atas fungsi = <code>f = d(f)</code>.</li><li>Decorator mengembalikan fungsi pembungkus.</li><li><code>functools.wraps</code> menjaga nama fungsi asli.</li><li><code>lru_cache</code> mempercepat fungsi rekursif yang berulang.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>&lt;code&gt;@catat&lt;/code&gt; di atas &lt;code&gt;def f&lt;/code&gt; setara dengan?</summary><p class="ok">Jawaban: f = catat(f)</p><p>Decorator hanyalah gula sintaks.</p></details><details><summary>Decorator bawaan untuk menyimpan hasil pemanggilan fungsi?</summary><p class="ok">Jawaban: @lru_cache</p><p>lru_cache adalah memoization siap pakai.</p></details>
 <a class="cta" href="/#python-8-6">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/filter-map-reduce">filter, map, reduce</a></p><p>Berikutnya: <a href="/belajar/python/regular-expression-modul-re">Regular expression (modul re)</a></p>

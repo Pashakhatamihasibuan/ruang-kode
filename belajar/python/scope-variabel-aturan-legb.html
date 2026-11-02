@@ -62,6 +62,30 @@ rusak()</code></pre>
 3
 UnboundLocalError
 </code></pre>
+<h2>Soal latihan</h2><ol><li><p>Kenapa kode ini error <code>UnboundLocalError</code>? Perbaiki dengan <code>global</code>, lalu dengan cara yang lebih baik.<br><code>hitung = 0<br>def klik():<br>&nbsp;&nbsp;hitung += 1</code></p><details><summary>Petunjuk</summary><p>Mengisi variabel di dalam fungsi membuatnya lokal. Lebih baik kembalikan nilai baru.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>hitung = 0
+
+def klik():
+    global hitung
+    hitung += 1
+
+klik(); klik()
+print(hitung)
+
+# lebih baik: tanpa variabel global
+def klik_murni(n):
+    return n + 1
+
+print(klik_murni(klik_murni(0)))</code></pre></details></li><li><p>Buat fungsi pembuat penghitung (closure) memakai <code>nonlocal</code>.</p><details><summary>Petunjuk</summary><p>Fungsi dalam bisa mengubah variabel fungsi luar jika ditandai nonlocal.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>def buat_penghitung():
+    n = 0
+    def tambah():
+        nonlocal n
+        n += 1
+        return n
+    return tambah
+
+c = buat_penghitung()
+c(); c()
+print(c())</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Urutan pencarian nama: Local → Enclosing → Global → Built-in.</li><li>Assignment di dalam fungsi membuat variabel lokal.</li><li><code>global</code>/<code>nonlocal</code> untuk mengubah variabel di luar.</li><li>Closure: fungsi dalam yang mengingat variabel fungsi luar.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Python mencari nama di mana terlebih dahulu?</summary><p class="ok">Jawaban: Local</p><p>L di LEGB adalah yang pertama.</p></details><details><summary>Kata kunci untuk mengubah variabel fungsi luar dari fungsi dalam?</summary><p class="ok">Jawaban: nonlocal</p><p>nonlocal merujuk scope enclosing.</p></details>
 <a class="cta" href="/#python-2-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/argumen-default-keyword-args-kwargs">Argumen default, keyword, *args, **kwargs</a></p><p>Berikutnya: <a href="/belajar/python/string">String</a></p>

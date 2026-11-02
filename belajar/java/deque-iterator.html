@@ -49,6 +49,35 @@ public class DekIter {
 VIP [Ani, Bayu]
 [80, 90]
 </code></pre>
+<h2>Soal latihan</h2><ol><li><p>Pakai ArrayDeque sebagai stack untuk membalik kata "JAVA", lalu sebagai antrean (queue) untuk melayani pelanggan A, B, C.</p><details><summary>Petunjuk</summary><p>Stack: push/pop. Queue: offer/poll.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>import java.util.ArrayDeque;
+import java.util.Deque;
+
+public class Main {
+    public static void main(String[] args) {
+        Deque&lt;Character&gt; stack = new ArrayDeque&lt;&gt;();
+        for (char c : &quot;JAVA&quot;.toCharArray()) stack.push(c);
+        StringBuilder sb = new StringBuilder();
+        while (!stack.isEmpty()) sb.append(stack.pop());
+        System.out.println(sb);
+
+        Deque&lt;String&gt; antre = new ArrayDeque&lt;&gt;();
+        antre.offer(&quot;A&quot;); antre.offer(&quot;B&quot;); antre.offer(&quot;C&quot;);
+        System.out.println(antre.poll() + &quot; dilayani, sisa &quot; + antre);
+    }
+}</code></pre></details></li><li><p>Hapus semua angka genap dari list sambil melakukan iterasi tanpa ConcurrentModificationException.</p><details><summary>Petunjuk</summary><p>Pakai Iterator dan it.remove(), atau removeIf.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) {
+        List&lt;Integer&gt; a = new ArrayList&lt;&gt;(List.of(1, 2, 3, 4, 5, 6));
+        Iterator&lt;Integer&gt; it = a.iterator();
+        while (it.hasNext()) {
+            if (it.next() % 2 == 0) it.remove();
+        }
+        System.out.println(a);
+    }
+}</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Menghapus isi list sambil melooping</summary><p>Menghapus elemen di dalam for-each membuat iterator bingung dan Java melempar <code>ConcurrentModificationException</code>. <code>removeIf</code> menghapus dengan aman dalam satu baris.</p><div class="lbl">KODE PEMULA</div><pre><code>List&lt;Integer&gt; stok = new ArrayList&lt;&gt;(List.of(5, 0, 12, 0, 7));
 for (Integer s : stok) {
     if (s == 0) stok.remove(s);

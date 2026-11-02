@@ -42,6 +42,25 @@ except ValidationError as e:
 # 85001 {&#x27;nama&#x27;: &#x27;Kopi Gayo&#x27;, &#x27;harga&#x27;: 85000, &#x27;tag&#x27;: []}
 # nama -&gt; String should have at least 2 characters
 # harga -&gt; Input should be greater than 0</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat model Pydantic <code>Pesanan</code> (produk: str, jumlah: int lebih dari 0, email). Apa yang terjadi jika data dari JSON berisi jumlah "3" (string)?</p><details><summary>Petunjuk</summary><p>Field(gt=0). Pydantic mengubah "3" menjadi 3 (mode lax), tapi menolak "tiga".</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>from pydantic import BaseModel, Field, ValidationError
+
+class Pesanan(BaseModel):
+    produk: str
+    jumlah: int = Field(gt=0)
+
+print(Pesanan(produk=&quot;Kopi&quot;, jumlah=&quot;3&quot;))
+try:
+    Pesanan(produk=&quot;Kopi&quot;, jumlah=0)
+except ValidationError as e:
+    print(e.error_count(), &quot;kesalahan&quot;)</code></pre></details></li><li><p>Ubah objek Pydantic menjadi dict dan JSON.</p><details><summary>Petunjuk</summary><p>model_dump() dan model_dump_json() di Pydantic v2.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>from pydantic import BaseModel
+
+class Produk(BaseModel):
+    nama: str
+    harga: int
+
+p = Produk(nama=&quot;Kopi&quot;, harga=18000)
+print(p.model_dump())
+print(p.model_dump_json())</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Pydantic memvalidasi data saat runtime berdasarkan anotasi.</li><li>Konversi otomatis jika aman ("85000" → 85000).</li><li><code>Field(...)</code> untuk aturan tambahan.</li><li><code>model_dump()</code> mengubah model menjadi dict.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Perbedaan utama Pydantic dengan anotasi biasa?</summary><p class="ok">Jawaban: Pydantic memeriksa data saat program berjalan</p><p>Itu alasan Pydantic populer untuk data dari luar.</p></details><details><summary>Framework web yang dibangun di atas Pydantic?</summary><p class="ok">Jawaban: FastAPI</p><p>FastAPI memakai model Pydantic untuk request dan response.</p></details>
 <a class="cta" href="/#python-11-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/pemeriksa-tipe-mypy-pyright-pyrefly">Pemeriksa tipe: mypy, pyright, pyrefly</a></p><p>Berikutnya: <a href="/belajar/python/formatter-linter-black-ruff-yapf">Formatter &amp; linter: black, ruff, yapf</a></p>

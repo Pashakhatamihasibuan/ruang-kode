@@ -57,6 +57,37 @@ public class Generik {
 6.5
 Isi: [a, b]
 </code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat kelas generik <code>Pasangan&lt;A, B&gt;</code> dan method generik <code>terbesar</code> yang menerima list bertipe <code>T extends Comparable&lt;T&gt;</code>.</p><details><summary>Petunjuk</summary><p>Bounded type: &lt;T extends Comparable&lt;T&gt;&gt;. Bandingkan dengan compareTo.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>import java.util.List;
+
+record Pasangan&lt;A, B&gt;(A kiri, B kanan) {}
+
+public class Main {
+    static &lt;T extends Comparable&lt;T&gt;&gt; T terbesar(List&lt;T&gt; data) {
+        T maks = data.get(0);
+        for (T x : data) if (x.compareTo(maks) &gt; 0) maks = x;
+        return maks;
+    }
+
+    public static void main(String[] args) {
+        Pasangan&lt;String, Integer&gt; p = new Pasangan&lt;&gt;(&quot;Kopi&quot;, 18000);
+        System.out.println(p.kiri() + &quot; &quot; + p.kanan());
+        System.out.println(terbesar(List.of(4, 19, 7)));
+        System.out.println(terbesar(List.of(&quot;apel&quot;, &quot;jeruk&quot;, &quot;mangga&quot;)));
+    }
+}</code></pre></details></li><li><p>Tulis method yang menjumlahkan list angka apa pun (Integer, Double) memakai wildcard.</p><details><summary>Petunjuk</summary><p><code>List&lt;? extends Number&gt;</code> lalu panggil doubleValue().</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>import java.util.List;
+
+public class Main {
+    static double jumlah(List&lt;? extends Number&gt; data) {
+        double t = 0;
+        for (Number n : data) t += n.doubleValue();
+        return t;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(jumlah(List.of(1, 2, 3)));
+        System.out.println(jumlah(List.of(1.5, 2.5)));
+    }
+}</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Menghitung kemunculan dengan merge</summary><p>Pola "kalau kunci sudah ada tambah satu, kalau belum isi satu" bisa diganti <code>Map.merge</code>. Diamond <code>&lt;&gt;</code> juga membuat tipe tidak perlu ditulis dua kali.</p><div class="lbl">KODE PEMULA</div><pre><code>String[] belanja = {&quot;kopi&quot;, &quot;teh&quot;, &quot;kopi&quot;, &quot;gula&quot;, &quot;kopi&quot;};
 TreeMap&lt;String, Integer&gt; hitung = new TreeMap&lt;String, Integer&gt;();
 for (String b : belanja) {

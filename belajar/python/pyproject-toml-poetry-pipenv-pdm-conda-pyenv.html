@@ -45,6 +45,21 @@ pipenv install requests      # pipenv
 conda install pandas         # Conda
 pyenv install 3.13.0         # pasang versi Python
 pyenv local 3.13.0           # pakai versi ini di folder proyek</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis <code>pyproject.toml</code> minimal untuk proyek "kasir" versi 0.1.0, Python 3.11 ke atas, dengan dependensi requests.</p><details><summary>Petunjuk</summary><p>Bagian [project] dengan name, version, requires-python, dependencies.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>[project]
+name = &quot;kasir&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [
+    &quot;requests&gt;=2.31&quot;,
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;</code></pre></details></li><li><p>Dengan Poetry: buat proyek baru, tambah pandas, tambah pytest sebagai dependensi pengembangan, lalu jalankan test.</p><details><summary>Petunjuk</summary><p>poetry new, poetry add, poetry add --group dev, poetry run.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TERMINAL</div><pre><code>poetry new kasir
+cd kasir
+poetry add pandas
+poetry add --group dev pytest
+poetry run pytest</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>pyproject.toml = satu file konfigurasi proyek.</li><li>Lock file menjamin versi paket identik.</li><li>Conda untuk data science dengan pustaka non-Python.</li><li>pyenv mengelola versi Python, bukan paket.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Alat untuk berpindah antar versi Python?</summary><p class="ok">Jawaban: pyenv</p><p>pyenv memasang dan memilih versi interpreter.</p></details><details><summary>Fungsi lock file?</summary><p class="ok">Jawaban: Mencatat versi persis semua paket</p><p>Instalasi jadi bisa diulang dengan hasil sama.</p></details>
 <a class="cta" href="/#python-6-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/pip-pypi-virtual-environment">pip, PyPI &amp; virtual environment</a></p><p>Berikutnya: <a href="/belajar/python/kelas-objek">Kelas &amp; Objek</a></p>

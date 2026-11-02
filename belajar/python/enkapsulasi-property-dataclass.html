@@ -72,6 +72,38 @@ Produk(nama=&#x27;Kopi Gayo&#x27;, harga=85000, tag=[])
 True
 FrozenInstanceError
 </code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat kelas <code>Produk</code> dengan property <code>harga</code> yang menolak nilai negatif.</p><details><summary>Petunjuk</summary><p>@property untuk getter, @harga.setter untuk setter. Simpan di _harga.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>class Produk:
+    def __init__(self, nama, harga):
+        self.nama = nama
+        self.harga = harga        # lewat setter
+
+    @property
+    def harga(self):
+        return self._harga
+
+    @harga.setter
+    def harga(self, nilai):
+        if nilai &lt; 0:
+            raise ValueError(&quot;harga tidak boleh negatif&quot;)
+        self._harga = nilai
+
+p = Produk(&quot;Kopi&quot;, 18000)
+try:
+    p.harga = -5
+except ValueError as e:
+    print(e)
+print(p.harga)</code></pre></details></li><li><p>Ubah kelas di atas menjadi <code>@dataclass</code> dengan field stok bawaan 0, lalu cetak objek dan bandingkan dua objek yang sama.</p><details><summary>Petunjuk</summary><p>dataclass otomatis membuat __init__, __repr__, dan __eq__.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>from dataclasses import dataclass
+
+@dataclass
+class Produk:
+    nama: str
+    harga: int
+    stok: int = 0
+
+a = Produk(&quot;Kopi&quot;, 18000)
+b = Produk(&quot;Kopi&quot;, 18000)
+print(a)
+print(a == b)</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Kelas data dengan @dataclass</summary><p><code>@dataclass</code> membuat <code>__init__</code>, <code>__repr__</code>, dan <code>__eq__</code> otomatis dari daftar field.</p><div class="lbl">KODE PEMULA</div><pre><code>class Produk:
     def __init__(self, nama, harga):
         self.nama = nama

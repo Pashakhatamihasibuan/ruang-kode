@@ -60,6 +60,27 @@ def test_total(keranjang):
 # test_toko.py::test_banyak_kasus[100000-0-100000] PASSED   ... (3 kasus)
 # test_toko.py::test_total PASSED
 # ===== 6 passed in 0.02s =====</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis test pytest untuk <code>diskon(harga, persen)</code>: kasus normal, dan persen di atas 100 harus melempar ValueError.</p><details><summary>Petunjuk</summary><p>Fungsi diawali test_, assert biasa, pytest.raises.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import pytest
+
+def diskon(harga, persen):
+    if not 0 &lt;= persen &lt;= 100:
+        raise ValueError(&quot;persen tidak valid&quot;)
+    return harga - harga * persen // 100
+
+def test_diskon_normal():
+    assert diskon(100_000, 10) == 90_000
+
+def test_persen_tidak_valid():
+    with pytest.raises(ValueError):
+        diskon(10_000, 120)</code></pre></details></li><li><p>Ubah beberapa kasus uji menjadi satu test dengan <code>@pytest.mark.parametrize</code>.</p><details><summary>Petunjuk</summary><p>Daftar tuple (masukan, harapan).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import pytest
+
+@pytest.mark.parametrize(&quot;harga, persen, harapan&quot;, [
+    (100_000, 10, 90_000),
+    (50_000, 0, 50_000),
+    (20_000, 100, 0),
+])
+def test_diskon(harga, persen, harapan):
+    assert diskon(harga, persen) == harapan</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>File dan fungsi tes diawali <code>test_</code>.</li><li>Cukup <code>assert</code> biasa.</li><li><code>parametrize</code> untuk banyak data, <code>fixture</code> untuk persiapan bersama.</li><li><code>pytest-cov</code> untuk mengukur cakupan tes.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Cara pytest mengenali fungsi tes?</summary><p class="ok">Jawaban: Nama diawali test_</p><p>Konvensi nama test_.</p></details><details><summary>Fitur untuk menyiapkan data yang dipakai banyak tes?</summary><p class="ok">Jawaban: fixture</p><p>Fixture disuntikkan lewat nama parameter.</p></details>
 <a class="cta" href="/#python-12-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/docstring-komentar-sphinx">Docstring, komentar &amp; Sphinx</a></p><p>Berikutnya: <a href="/belajar/python/unittest-doctest-tox">unittest, doctest &amp; tox</a></p>

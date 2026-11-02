@@ -55,6 +55,31 @@ Selamat pagi, Citra!
 nama=Eko, kota=Medan
 [1] [2]
 </code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat fungsi <code>total(*harga, diskon=0)</code> yang menjumlahkan semua harga lalu mengurangi diskon persen.</p><details><summary>Petunjuk</summary><p>*harga menampung banyak argumen posisi sebagai tuple.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>def total(*harga, diskon=0):
+    jumlah = sum(harga)
+    return jumlah - jumlah * diskon // 100
+
+print(total(10000, 20000))
+print(total(10000, 20000, 30000, diskon=10))</code></pre></details></li><li><p>Kenapa <code>def tambah(x, daftar=[])</code> berbahaya? Tunjukkan bug-nya lalu perbaiki.</p><details><summary>Petunjuk</summary><p>Nilai default dibuat sekali saat fungsi didefinisikan. Pakai None.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>def tambah_salah(x, daftar=[]):
+    daftar.append(x)
+    return daftar
+
+print(tambah_salah(1))
+print(tambah_salah(2))      # list yang sama terpakai lagi
+
+def tambah(x, daftar=None):
+    if daftar is None:
+        daftar = []
+    daftar.append(x)
+    return daftar
+
+print(tambah(1))
+print(tambah(2))</code></pre></details></li><li><p>Buat fungsi <code>profil(nama, **info)</code> yang mencetak nama lalu setiap pasangan kunci dan nilai.</p><details><summary>Petunjuk</summary><p>**info menampung argumen keyword sebagai dict.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>def profil(nama, **info):
+    print(nama)
+    for k, v in info.items():
+        print(f&quot;  {k}: {v}&quot;)
+
+profil(&quot;Rina&quot;, kota=&quot;Medan&quot;, umur=21)</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Jangan pakai list sebagai nilai default</summary><p>Nilai default dibuat sekali saja saat fungsi didefinisikan. List default akhirnya dipakai bersama oleh setiap panggilan, sehingga isi keranjang pembeli sebelumnya ikut terbawa. Pakai <code>None</code> lalu buat list baru di dalam fungsi.</p><div class="lbl">KODE PEMULA</div><pre><code>def tambah(barang, keranjang=[]):
     keranjang.append(barang)
     return keranjang

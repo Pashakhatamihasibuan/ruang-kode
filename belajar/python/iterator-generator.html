@@ -59,6 +59,21 @@ habis
 True True
 333328333350000
 </code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat generator <code>fibonacci()</code> tanpa batas, lalu ambil 10 angka pertama memakai <code>itertools.islice</code>.</p><details><summary>Petunjuk</summary><p>yield mengembalikan nilai satu per satu dan melanjutkan dari tempat terakhir.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>from itertools import islice
+
+def fibonacci():
+    a, b = 0, 1
+    while True:
+        yield a
+        a, b = b, a + b
+
+print(list(islice(fibonacci(), 10)))</code></pre></details></li><li><p>Bandingkan memori list comprehension dan generator expression untuk satu juta angka.</p><details><summary>Petunjuk</summary><p>sys.getsizeof. Generator tidak menyimpan semua nilai.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import sys
+
+daftar = [x for x in range(1_000_000)]
+gen = (x for x in range(1_000_000))
+print(sys.getsizeof(daftar) &gt; 1_000_000)
+print(sys.getsizeof(gen) &lt; 1_000)
+print(sum(gen))</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Menjumlah tanpa membuat list</summary><p>Tanda kurung siku membuat seluruh list di memori dulu. Tanpa kurung siku, generator menghasilkan angka satu per satu, sehingga hemat memori untuk data besar.</p><div class="lbl">KODE PEMULA</div><pre><code>total = sum([x * x for x in range(1_000_000)])
 print(total)</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>total = sum(x * x for x in range(1_000_000))
 print(total)</code></pre><div class="lbl">KELUARAN KEDUANYA</div><pre><code>333332833333500000</code></pre></details>

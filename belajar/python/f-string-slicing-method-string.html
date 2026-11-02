@@ -48,6 +48,17 @@ saya-belajar-python-dan-sql
 5 13
 True True
 </code></pre>
+<h2>Soal latihan</h2><ol><li><p>Cetak struk dengan f-string: nama rata kiri 10 karakter, harga rata kanan 9 karakter dengan pemisah ribuan.</p><details><summary>Petunjuk</summary><p>f"{nama:&lt;10}{harga:>9,}" lalu ganti koma dengan titik.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>belanja = [(&quot;Kopi&quot;, 18000), (&quot;Roti bakar&quot;, 125000)]
+for nama, harga in belanja:
+    print(f&quot;{nama:&lt;10}{harga:&gt;9,}&quot;.replace(&quot;,&quot;, &quot;.&quot;))
+print(f&quot;{&#x27;Total&#x27;:&lt;10}{sum(h for _, h in belanja):&gt;9,}&quot;.replace(&quot;,&quot;, &quot;.&quot;))</code></pre></details></li><li><p>Dari "ruangkode", ambil 4 huruf pertama, 4 huruf terakhir, setiap huruf kedua, dan versi terbaliknya.</p><details><summary>Petunjuk</summary><p>s[:4], s[-4:], s[::2], s[::-1]</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>s = &quot;ruangkode&quot;
+print(s[:4])
+print(s[-4:])
+print(s[::2])
+print(s[::-1])</code></pre></details></li><li><p>Rapikan "  rina SIREGAR  " menjadi "Rina Siregar", hitung huruf a, dan ganti spasi dengan tanda hubung.</p><details><summary>Petunjuk</summary><p>strip, title, count, replace.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>nama = &quot;  rina SIREGAR  &quot;.strip().title()
+print(nama)
+print(nama.lower().count(&quot;a&quot;))
+print(nama.replace(&quot; &quot;, &quot;-&quot;).lower())</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Mencetak nama variabel dan nilainya sekaligus</summary><p>Tanda <code>=</code> di akhir f-string (Python 3.8) mencetak ekspresinya beserta nilainya. Sangat praktis untuk debugging cepat.</p><div class="lbl">KODE PEMULA</div><pre><code>harga = 85000
 jumlah = 3
 print(&quot;harga=&quot; + str(harga) + &quot;, jumlah=&quot; + str(jumlah))</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>harga = 85_000

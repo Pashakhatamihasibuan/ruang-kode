@@ -51,6 +51,33 @@ public class Tabel {
 . . X
 [[0, 1, 0], [0, 0, 1]]
 </code></pre>
+<h2>Soal latihan</h2><ol><li><p>Urutkan <code>{42, 7, 19, 3}</code>, cetak dengan <code>Arrays.toString</code>, lalu cari posisi 19 dengan binarySearch.</p><details><summary>Petunjuk</summary><p>binarySearch hanya benar pada array yang sudah terurut.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>import java.util.Arrays;
+
+public class Main {
+    public static void main(String[] args) {
+        int[] a = {42, 7, 19, 3};
+        Arrays.sort(a);
+        System.out.println(Arrays.toString(a));
+        System.out.println(Arrays.binarySearch(a, 19));
+    }
+}</code></pre></details></li><li><p>Nilai 3 siswa untuk 2 ujian disimpan di array 2D <code>{{80, 90}, {70, 65}, {95, 85}}</code>. Cetak rata-rata tiap siswa.</p><details><summary>Petunjuk</summary><p>Loop luar untuk baris (siswa), loop dalam untuk kolom (ujian).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>public class Main {
+    public static void main(String[] args) {
+        int[][] nilai = {{80, 90}, {70, 65}, {95, 85}};
+        for (int i = 0; i &lt; nilai.length; i++) {
+            int total = 0;
+            for (int n : nilai[i]) total += n;
+            System.out.println(&quot;Siswa &quot; + (i + 1) + &quot;: &quot; + (double) total / nilai[i].length);
+        }
+    }
+}</code></pre></details></li><li><p>Cetak matriks 3x3 berikut dalam bentuk tabel memakai format specifier lebar 4: <code>{{1,2,3},{4,5,6},{7,8,9}}</code>, lalu cetak hasil transposnya.</p><details><summary>Petunjuk</summary><p>printf("%4d", x) membuat setiap angka selebar 4 karakter. Transpos: baris jadi kolom.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>public class Main {
+    public static void main(String[] args) {
+        int[][] m = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+        for (int i = 0; i &lt; 3; i++) {
+            for (int j = 0; j &lt; 3; j++) System.out.printf(&quot;%4d&quot;, m[j][i]);
+            System.out.println();
+        }
+    }
+}</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Mencetak dan mengurutkan array</summary><p>Kelas <code>Arrays</code> sudah punya <code>sort</code> dan <code>toString</code>. Tidak perlu menulis algoritma pengurutan dan loop pencetak sendiri, kecuali sedang belajar algoritmanya.</p><div class="lbl">KODE PEMULA</div><pre><code>int[] nilai = {78, 92, 65};
 for (int i = 0; i &lt; nilai.length; i++)
     for (int j = 0; j &lt; nilai.length - 1 - i; j++)

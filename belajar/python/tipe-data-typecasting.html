@@ -51,6 +51,15 @@ False False False True False
 TypeError: can only concatenate str (not &quot;int&quot;) to str
 255
 </code></pre>
+<h2>Soal latihan</h2><ol><li><p>Input dari pengguna selalu string. Ubah "18000" dan "2" menjadi angka, hitung total, lalu tampilkan tipe tiap nilai.</p><details><summary>Petunjuk</summary><p>int() dan type().</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>harga = &quot;18000&quot;
+jumlah = &quot;2&quot;
+print(harga + jumlah)            # string digabung
+total = int(harga) * int(jumlah)
+print(total, type(total).__name__)
+print(float(&quot;2.5&quot;), bool(&quot;&quot;), bool(&quot;0&quot;))</code></pre></details></li><li><p>Apa hasil <code>int(3.99)</code>, <code>round(2.5)</code>, <code>round(3.5)</code>, dan <code>int("  42 ")</code>?</p><details><summary>Petunjuk</summary><p>int memotong desimal. round memakai pembulatan ke genap terdekat (banker's rounding).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>print(int(3.99))
+print(round(2.5))
+print(round(3.5))
+print(int(&quot;  42 &quot;))</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Angka besar lebih mudah dibaca dengan garis bawah</summary><p>Python (3.6+) mengizinkan garis bawah di antara digit. <code>1_000_000</code> sama persis dengan <code>1000000</code>, tetapi jauh lebih mudah dibaca orang lain.</p><div class="lbl">KODE PEMULA</div><pre><code>harga = 1000000
 ongkir = 25000
 print(harga + ongkir)</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>harga = 1_000_000

@@ -42,6 +42,18 @@ print(re.split(r&quot;\s*[,;]\s*&quot;, &quot;kopi , teh;madu&quot;))</code></pr
 True
 [&#x27;kopi&#x27;, &#x27;teh&#x27;, &#x27;madu&#x27;]
 </code></pre>
+<h2>Soal latihan</h2><ol><li><p>Ambil semua alamat email dari teks: "Hubungi rina@mail.id atau sandi.p@kantor.co.id, bukan @salah".</p><details><summary>Petunjuk</summary><p>re.findall dengan pola [\w.]+@[\w.]+\w</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import re
+
+teks = &quot;Hubungi rina@mail.id atau sandi.p@kantor.co.id, bukan @salah&quot;
+print(re.findall(r&quot;[\w.]+@[\w.]+\w&quot;, teks))</code></pre></details></li><li><p>Validasi nomor HP Indonesia (08 atau +628, lalu 8 sampai 11 digit) dan ubah format "0812-3456-7890" menjadi angka saja.</p><details><summary>Petunjuk</summary><p>re.fullmatch untuk validasi, re.sub(r"\D", "", s) untuk membuang selain angka.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import re
+
+pola = r&quot;(\+62|0)8\d{8,11}&quot;
+for hp in [&quot;081234567890&quot;, &quot;+62812345678&quot;, &quot;0712345&quot;]:
+    print(hp, bool(re.fullmatch(pola, hp)))
+print(re.sub(r&quot;\D&quot;, &quot;&quot;, &quot;0812-3456-7890&quot;))</code></pre></details></li><li><p>Pakai grup bernama untuk mengambil hari, bulan, dan tahun dari "Tanggal: 17/08/2026".</p><details><summary>Petunjuk</summary><p>(?P&lt;nama&gt;...) lalu m.group("nama") atau m.groupdict().</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import re
+
+m = re.search(r&quot;(?P&lt;hari&gt;\d{2})/(?P&lt;bulan&gt;\d{2})/(?P&lt;tahun&gt;\d{4})&quot;, &quot;Tanggal: 17/08/2026&quot;)
+print(m.groupdict())</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Selalu tulis pola sebagai raw string <code>r"..."</code>.</li><li><code>findall</code> untuk semua kecocokan, <code>search</code> untuk yang pertama.</li><li><code>re.sub</code> bisa memakai grup <code>\1</code>, <code>\2</code>.</li><li>Grup bernama membuat hasil mudah dibaca.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Fungsi untuk mengambil semua kecocokan?</summary><p class="ok">Jawaban: re.findall</p><p>findall mengembalikan list semua kecocokan.</p></details><details><summary>Kenapa pola ditulis &lt;code&gt;r&quot;...&quot;&lt;/code&gt;?</summary><p class="ok">Jawaban: Agar backslash tidak perlu digandakan</p><p>Raw string tidak memproses escape.</p></details>
 <a class="cta" href="/#python-8-7">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/decorator">Decorator</a></p><p>Berikutnya: <a href="/belajar/python/rekursi">Rekursi</a></p>

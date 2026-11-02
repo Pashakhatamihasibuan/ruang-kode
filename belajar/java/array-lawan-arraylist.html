@@ -53,6 +53,30 @@ public class Banding {
 10 true
 List.of tidak bisa diubah
 </code></pre>
+<h2>Soal latihan</h2><ol><li><p>Simpan nama tamu di ArrayList, tambahkan "Dewi" di posisi pertama, hapus "Sandi", lalu cetak jumlah dan isinya.</p><details><summary>Petunjuk</summary><p>add(index, nilai), remove(Object), size().</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>import java.util.ArrayList;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) {
+        List&lt;String&gt; tamu = new ArrayList&lt;&gt;(List.of(&quot;Rina&quot;, &quot;Sandi&quot;, &quot;Tari&quot;));
+        tamu.add(0, &quot;Dewi&quot;);
+        tamu.remove(&quot;Sandi&quot;);
+        System.out.println(tamu.size());
+        System.out.println(tamu);
+    }
+}</code></pre></details></li><li><p>Hati-hati dengan <code>remove</code> pada <code>ArrayList&lt;Integer&gt;</code>. Apa beda <code>remove(1)</code> dan <code>remove(Integer.valueOf(1))</code>?</p><details><summary>Petunjuk</summary><p>remove(int) menghapus berdasarkan indeks, remove(Object) berdasarkan nilai.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>import java.util.ArrayList;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) {
+        List&lt;Integer&gt; a = new ArrayList&lt;&gt;(List.of(5, 1, 9));
+        a.remove(1);                     // indeks 1 (nilai 1)
+        System.out.println(a);
+        List&lt;Integer&gt; b = new ArrayList&lt;&gt;(List.of(5, 1, 9));
+        b.remove(Integer.valueOf(9));    // nilai 9
+        System.out.println(b);
+    }
+}</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Daftar tetap cukup dengan List.of</summary><p><code>List.of</code> (Java 9) membuat daftar dalam satu baris. Daftarnya tidak bisa diubah, sehingga aman dibagikan ke bagian program lain. Kalau perlu menambah isi, bungkus dengan <code>new ArrayList&lt;&gt;(List.of(...))</code>.</p><div class="lbl">KODE PEMULA</div><pre><code>ArrayList&lt;String&gt; kota = new ArrayList&lt;String&gt;();
 kota.add(&quot;Medan&quot;);
 kota.add(&quot;Bandung&quot;);

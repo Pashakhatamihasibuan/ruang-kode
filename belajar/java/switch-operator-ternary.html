@@ -53,6 +53,24 @@
 Baik
 boleh punya KTP
 </code></pre>
+<h2>Soal latihan</h2><ol><li><p>Pakai switch expression (Java 14+) untuk mengubah angka hari 1 sampai 7 menjadi "Kerja" atau "Libur" (6 dan 7 libur).</p><details><summary>Petunjuk</summary><p>case 6, 7 -> "Libur"; default -> "Kerja";</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>public class Main {
+    public static void main(String[] args) {
+        for (int hari = 5; hari &lt;= 7; hari++) {
+            String jenis = switch (hari) {
+                case 6, 7 -&gt; &quot;Libur&quot;;
+                default -&gt; &quot;Kerja&quot;;
+            };
+            System.out.println(hari + &quot; &quot; + jenis);
+        }
+    }
+}</code></pre></details></li><li><p>Pakai ternary untuk mencetak "Lulus" jika nilai &gt;= 75 dan "Remedial" jika tidak, untuk nilai 80 dan 60.</p><details><summary>Petunjuk</summary><p>kondisi ? nilaiJikaBenar : nilaiJikaSalah</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>public class Main {
+    public static void main(String[] args) {
+        int[] nilai = {80, 60};
+        for (int n : nilai) {
+            System.out.println(n + &quot; &quot; + (n &gt;= 75 ? &quot;Lulus&quot; : &quot;Remedial&quot;));
+        }
+    }
+}</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>switch dengan panah tidak butuh break</summary><p>Lupa menulis <code>break</code> adalah bug klasik: eksekusi "jatuh" ke case berikutnya. Switch expression dengan <code>-&gt;</code> (Java 14) tidak pernah jatuh, bisa menggabungkan beberapa nilai dengan koma, dan langsung mengembalikan nilai.</p><div class="lbl">KODE PEMULA</div><pre><code>int hari = 6;
 String jenis;
 switch (hari) {

@@ -42,6 +42,21 @@ public static long hargaDiskon(long harga, int persen) {
 // Buat situs dokumentasi:
 // javadoc -d docs src/com/toko/*.java
 // mvn javadoc:javadoc</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis Javadoc lengkap untuk method <code>hitungCicilan(long pokok, double bungaTahunan, int bulan)</code>.</p><details><summary>Petunjuk</summary><p>@param untuk tiap parameter, @return, @throws.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>/**
+ * Menghitung cicilan bulanan dengan bunga flat.
+ *
+ * @param pokok        jumlah pinjaman dalam rupiah, harus lebih dari 0
+ * @param bungaTahunan bunga per tahun dalam persen, misalnya 12.0
+ * @param bulan        lama cicilan dalam bulan
+ * @return besar cicilan per bulan dalam rupiah
+ * @throws IllegalArgumentException jika pokok atau bulan tidak positif
+ */
+public static long hitungCicilan(long pokok, double bungaTahunan, int bulan) {
+    if (pokok &lt;= 0 || bulan &lt;= 0) throw new IllegalArgumentException(&quot;tidak valid&quot;);
+    double bunga = pokok * bungaTahunan / 100 * bulan / 12;
+    return Math.round((pokok + bunga) / bulan);
+}</code></pre></details></li><li><p>Buat dokumentasi HTML dari folder src ke folder docs.</p><details><summary>Petunjuk</summary><p>Perintah javadoc dengan -d untuk folder tujuan.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TERMINAL</div><pre><code>javadoc -d docs -sourcepath src -subpackages id.ruangkode
+# buka docs/index.html di browser</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Javadoc diawali <code>/**</code>, bukan <code>/*</code>.</li><li>Tag: @param, @return, @throws, {@code}.</li><li>Kalimat pertama = ringkasan.</li><li>Tulis kenapa dan bagaimana memakai, bukan menerjemahkan kode.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Komentar Javadoc diawali dengan?</summary><p class="ok">Jawaban: /**</p><p>Dua bintang menandai komentar dokumentasi.</p></details><details><summary>Tag untuk menjelaskan nilai kembali?</summary><p class="ok">Jawaban: @return</p><p>@return mendeskripsikan hasil method.</p></details>
 <a class="cta" href="/#java-15-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/framework-web-lain-quarkus-javalin-play">Framework web lain: Quarkus, Javalin, Play</a></p><p>Berikutnya: <a href="/belajar/java/format-specifier-merapikan-keluaran">Format specifier: merapikan keluaran</a></p>

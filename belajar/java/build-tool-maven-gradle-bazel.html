@@ -50,6 +50,20 @@ dependencies { testImplementation(&quot;org.junit.jupiter:junit-jupiter:5.10.2&q
 # Perintah yang sering dipakai
 mvn package          # compile + test + buat target/kasir-1.0.0.jar
 ./gradlew build      # setara di Gradle</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tambahkan dependensi JUnit Jupiter 5.11.0 untuk test di <code>pom.xml</code>.</p><details><summary>Petunjuk</summary><p>Di dalam &lt;dependencies&gt;, scope test.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>&lt;dependencies&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.junit.jupiter&lt;/groupId&gt;
+    &lt;artifactId&gt;junit-jupiter&lt;/artifactId&gt;
+    &lt;version&gt;5.11.0&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+  &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre></details></li><li><p>Tulis perintah Maven dan Gradle untuk menjalankan test dan membuat file JAR.</p><details><summary>Petunjuk</summary><p>Maven: mvn test, mvn package. Gradle wrapper: ./gradlew test, ./gradlew build.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TERMINAL</div><pre><code># Maven
+mvn test
+mvn package          # hasil di target/*.jar
+
+# Gradle
+./gradlew test
+./gradlew build      # hasil di build/libs/*.jar</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Dependency ditulis dengan koordinat groupId:artifactId:version.</li><li>Library diunduh otomatis dari Maven Central.</li><li>Maven: konvensi kuat, XML. Gradle: skrip ringkas, build inkremental.</li><li>Tahap <code>test</code> berjalan otomatis sebelum <code>package</code>.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>File konfigurasi utama Maven?</summary><p class="ok">Jawaban: pom.xml</p><p>POM = Project Object Model.</p></details><details><summary>Menjalankan &lt;code&gt;mvn package&lt;/code&gt; juga menjalankan?</summary><p class="ok">Jawaban: compile dan test</p><p>Tahap sebelumnya di siklus hidup selalu ikut dijalankan.</p></details>
 <a class="cta" href="/#java-14-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/volatile-java-memory-model">volatile &amp; Java Memory Model</a></p><p>Berikutnya: <a href="/belajar/java/logging-slf4j-logback-log4j2">Logging: SLF4J, Logback, Log4j2</a></p>

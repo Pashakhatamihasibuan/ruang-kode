@@ -51,6 +51,33 @@ true
 BARU(0) DIKIRIM(1) SELESAI(2)
 Diterima
 </code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat enum <code>Ukuran</code> (KECIL, SEDANG, BESAR) yang menyimpan tambahan harga 0, 3000, 6000. Cetak semua beserta harganya.</p><details><summary>Petunjuk</summary><p>Enum boleh punya field dan konstruktor. values() mengembalikan semua konstanta.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>enum Ukuran {
+    KECIL(0), SEDANG(3000), BESAR(6000);
+    final int tambahan;
+    Ukuran(int t) { tambahan = t; }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        for (Ukuran u : Ukuran.values()) {
+            System.out.println(u + &quot; +&quot; + u.tambahan);
+        }
+    }
+}</code></pre></details></li><li><p>Buat record <code>Produk(String nama, int harga)</code> yang menolak harga negatif, lalu cetak objeknya dan bandingkan dua record yang isinya sama.</p><details><summary>Petunjuk</summary><p>Compact constructor: record Produk(...) { Produk { if (...) throw ...; } }. equals record membandingkan isi.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>record Produk(String nama, int harga) {
+    Produk {
+        if (harga &lt; 0) throw new IllegalArgumentException(&quot;harga negatif&quot;);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Produk a = new Produk(&quot;Kopi&quot;, 18000);
+        Produk b = new Produk(&quot;Kopi&quot;, 18000);
+        System.out.println(a);
+        System.out.println(a.equals(b));
+        System.out.println(a.harga());
+    }
+}</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Kelas data cukup ditulis sebagai record</summary><p>Kelas yang hanya membawa data biasanya butuh field, konstruktor, getter, <code>equals</code>, <code>hashCode</code>, dan <code>toString</code>. <code>record</code> (Java 16) membuat semuanya otomatis dan nilainya tidak bisa diubah.</p><div class="lbl">KODE PEMULA</div><pre><code>class Produk {
     private final String nama;
     private final int harga;

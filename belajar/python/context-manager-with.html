@@ -67,6 +67,23 @@ kunci dipasang
 kunci dilepas ZeroDivisionError
 program lanjut
 </code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis dua baris ke file lalu baca kembali memakai <code>with</code>. Kenapa with lebih aman daripada open/close biasa?</p><details><summary>Petunjuk</summary><p>with menutup file otomatis, bahkan jika terjadi exception.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>with open(&quot;catatan.txt&quot;, &quot;w&quot;, encoding=&quot;utf-8&quot;) as f:
+    f.write(&quot;beli kopi\nbayar listrik\n&quot;)
+
+with open(&quot;catatan.txt&quot;, encoding=&quot;utf-8&quot;) as f:
+    for baris in f:
+        print(baris.strip())</code></pre></details></li><li><p>Buat context manager <code>pengukur_waktu</code> dengan <code>@contextmanager</code> yang mencetak "mulai" dan "selesai".</p><details><summary>Petunjuk</summary><p>Kode sebelum yield jalan saat masuk, setelah yield jalan saat keluar. Pakai try/finally.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>from contextlib import contextmanager
+
+@contextmanager
+def pengukur_waktu(nama):
+    print(&quot;mulai&quot;, nama)
+    try:
+        yield
+    finally:
+        print(&quot;selesai&quot;, nama)
+
+with pengukur_waktu(&quot;impor&quot;):
+    print(&quot;bekerja...&quot;)</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Membuka file dengan with</summary><p>Kalau terjadi error sebelum <code>close()</code>, file tetap terbuka. Blok <code>with</code> menutup file otomatis dalam keadaan apa pun.</p><div class="lbl">KODE PEMULA</div><pre><code>f = open(&quot;catatan.txt&quot;, &quot;w&quot;)
 f.write(&quot;belajar Python&quot;)
 f.close()

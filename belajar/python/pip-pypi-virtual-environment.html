@@ -41,6 +41,15 @@ uv add pandas                      # tambah ke pyproject.toml
 uv run main.py
 
 deactivate                         # keluar dari venv</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat virtual environment, aktifkan, pasang requests, lalu simpan daftar paket ke requirements.txt.</p><details><summary>Petunjuk</summary><p>python -m venv .venv; source (Linux/macOS) atau Scripts\activate (Windows).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TERMINAL</div><pre><code>python -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+pip install requests
+pip freeze &gt; requirements.txt
+
+# di komputer lain
+pip install -r requirements.txt</code></pre></details></li><li><p>Kenapa setiap proyek sebaiknya punya virtual environment sendiri?</p><details><summary>Petunjuk</summary><p>Bayangkan proyek A butuh Django 4 dan proyek B butuh Django 5.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Setiap proyek bisa memakai versi paket berbeda tanpa saling bentrok.
+Paket tidak mengotori Python sistem.
+Daftar dependensi bisa dicatat dan dipasang ulang persis di komputer lain.</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Satu proyek = satu virtual environment.</li><li><code>requirements.txt</code> mencatat dependensi.</li><li>Jangan commit folder <code>.venv</code> ke Git.</li><li>uv: alternatif pip yang sangat cepat.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa memakai virtual environment?</summary><p class="ok">Jawaban: Agar paket tiap proyek tidak bentrok</p><p>Setiap proyek punya versi paketnya sendiri.</p></details><details><summary>Perintah memasang semua paket dari requirements.txt?</summary><p class="ok">Jawaban: pip install -r requirements.txt</p><p>-r membaca daftar dari file.</p></details>
 <a class="cta" href="/#python-6-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/modul-bawaan-yang-sering-dipakai">Modul bawaan yang sering dipakai</a></p><p>Berikutnya: <a href="/belajar/python/pyproject-toml-poetry-pipenv-pdm-conda-pyenv">pyproject.toml, Poetry, pipenv, PDM, Conda, pyenv</a></p>

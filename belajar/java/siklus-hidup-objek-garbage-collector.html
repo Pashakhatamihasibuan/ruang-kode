@@ -48,6 +48,23 @@ A
 Dibuat: C
 C
 </code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tandai kapan objek "Kopi" boleh dibersihkan garbage collector:<br><code>Produk p = new Produk("Kopi");<br>Produk q = p;<br>p = null;<br>q = new Produk("Teh");</code></p><details><summary>Petunjuk</summary><p>Objek bisa dibersihkan jika tidak ada lagi variabel yang merujuknya.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Baris 1: objek Kopi dirujuk p.
+Baris 2: Kopi dirujuk p dan q.
+Baris 3: p = null, Kopi masih dirujuk q.
+Baris 4: q menunjuk Teh. Kopi tidak dirujuk siapa pun,
+        sekarang Kopi boleh dibersihkan GC (kapan tepatnya ditentukan JVM).</code></pre></details></li><li><p>Pakai try-with-resources agar sumber daya ditutup otomatis. Buat kelas <code>Koneksi</code> yang implements AutoCloseable dan mencetak "dibuka", "dipakai", "ditutup".</p><details><summary>Petunjuk</summary><p>Jangan mengandalkan finalize() (sudah usang). Pakai AutoCloseable.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>class Koneksi implements AutoCloseable {
+    Koneksi() { System.out.println(&quot;dibuka&quot;); }
+    void pakai() { System.out.println(&quot;dipakai&quot;); }
+    @Override public void close() { System.out.println(&quot;ditutup&quot;); }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        try (Koneksi k = new Koneksi()) {
+            k.pakai();
+        }
+    }
+}</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Variabel menyimpan referensi, objeknya ada di heap.</li><li>Objek tanpa referensi menjadi calon garbage collection.</li><li><code>null</code> berarti referensi tidak menunjuk objek apa pun.</li><li>GC berjalan otomatis; jangan bergantung pada waktunya.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Setelah &lt;code&gt;b = null&lt;/code&gt;, objek B...</summary><p class="ok">Jawaban: Menjadi calon dibersihkan GC</p><p>GC yang menentukan kapan memorinya dibebaskan.</p></details><details><summary>Dua variabel menunjuk objek yang sama, lalu salah satunya diisi null. Objeknya?</summary><p class="ok">Jawaban: Masih hidup</p><p>Masih ada satu referensi yang menjangkaunya.</p></details>
 <a class="cta" href="/#java-5-6">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/kata-kunci-static-final">Kata kunci static &amp; final</a></p><p>Berikutnya: <a href="/belajar/java/pass-by-value-juga-untuk-objek">Pass by value (juga untuk objek)</a></p>

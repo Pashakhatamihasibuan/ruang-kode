@@ -64,6 +64,31 @@ memproses -5
 input salah: jumlah harus positif
 sisa 30000
 </code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat exception <code>StokHabis</code>. Fungsi <code>beli(stok, n)</code> melemparnya jika n melebihi stok. Tunjukkan urutan blok try, except, else, finally.</p><details><summary>Petunjuk</summary><p>else jalan jika tidak ada exception; finally selalu jalan.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>class StokHabis(Exception):
+    pass
+
+def beli(stok, n):
+    if n &gt; stok:
+        raise StokHabis(f&quot;stok hanya {stok}&quot;)
+    return stok - n
+
+for n in (2, 9):
+    try:
+        sisa = beli(5, n)
+    except StokHabis as e:
+        print(&quot;Gagal:&quot;, e)
+    else:
+        print(&quot;Sisa&quot;, sisa)
+    finally:
+        print(&quot;selesai&quot;)</code></pre></details></li><li><p>Minta umur dari daftar input <code>["abc", "-5", "21"]</code>: lewati yang bukan angka (ValueError) atau negatif, cetak yang valid.</p><details><summary>Petunjuk</summary><p>raise ValueError sendiri untuk angka negatif agar ditangani di except yang sama.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>for teks in [&quot;abc&quot;, &quot;-5&quot;, &quot;21&quot;]:
+    try:
+        umur = int(teks)
+        if umur &lt; 0:
+            raise ValueError(&quot;umur negatif&quot;)
+    except ValueError as e:
+        print(&quot;Ditolak:&quot;, teks, &quot;-&quot;, e)
+    else:
+        print(&quot;Umur valid:&quot;, umur)</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Tangkap error yang spesifik</summary><p><code>except:</code> tanpa nama menangkap semua hal, termasuk salah ketik nama variabel dan Ctrl+C, sehingga bug tersembunyi. Sebutkan jenis error yang memang kamu harapkan.</p><div class="lbl">KODE PEMULA</div><pre><code>teks = &quot;12a&quot;
 try:
     jumlah = int(teks)

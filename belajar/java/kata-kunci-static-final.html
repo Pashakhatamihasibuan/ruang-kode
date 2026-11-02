@@ -54,6 +54,30 @@ public class Sekolah {
 false
 003 Tari A.
 </code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat kelas <code>Tiket</code> yang memberi nomor urut otomatis (1, 2, 3, ...) ke setiap objek baru memakai field static.</p><details><summary>Petunjuk</summary><p>static int berikutnya = 1; lalu di konstruktor: nomor = berikutnya++;</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>class Tiket {
+    private static int berikutnya = 1;
+    final int nomor;
+
+    Tiket() { nomor = berikutnya++; }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Tiket a = new Tiket(), b = new Tiket(), c = new Tiket();
+        System.out.println(a.nomor + &quot; &quot; + b.nomor + &quot; &quot; + c.nomor);
+    }
+}</code></pre></details></li><li><p>Apakah isi list yang dideklarasikan <code>final</code> masih bisa diubah? Buktikan.</p><details><summary>Petunjuk</summary><p>final mengunci variabelnya (tidak bisa diisi objek lain), bukan isi objeknya.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>import java.util.ArrayList;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) {
+        final List&lt;String&gt; menu = new ArrayList&lt;&gt;();
+        menu.add(&quot;Kopi&quot;);          // boleh: isi objek berubah
+        menu.add(&quot;Teh&quot;);
+        // menu = new ArrayList&lt;&gt;(); // error: variabel final
+        System.out.println(menu);
+    }
+}</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Akses anggota static lewat nama kelas: <code>Siswa.jumlah</code>.</li><li>Method static tidak bisa langsung memakai field non-static.</li><li>final pada referensi objek: referensinya tetap, tapi isi objeknya masih bisa berubah.</li><li>Konstanta: <code>static final</code> + HURUF_BESAR.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Jika 3 objek Siswa dibuat, berapa salinan field static &lt;code&gt;jumlah&lt;/code&gt;?</summary><p class="ok">Jawaban: 1</p><p>Field static milik kelas, hanya satu salinan.</p></details><details><summary>Kelas final berarti?</summary><p class="ok">Jawaban: Tidak bisa diturunkan</p><p>Kelas final tidak bisa punya subclass.</p></details>
 <a class="cta" href="/#java-5-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/access-specifier-public-private-protected">Access specifier: public, private, protected</a></p><p>Berikutnya: <a href="/belajar/java/siklus-hidup-objek-garbage-collector">Siklus hidup objek &amp; garbage collector</a></p>

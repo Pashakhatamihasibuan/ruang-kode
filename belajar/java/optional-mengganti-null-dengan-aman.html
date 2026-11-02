@@ -46,6 +46,24 @@ Kirim ke Bandung
 false
 Kota belum diisi
 </code></pre>
+<h2>Soal latihan</h2><ol><li><p>Method <code>cariEmail(String nama)</code> mengembalikan Optional. Cetak email Rina dalam huruf besar, dan "tidak ada" untuk Budi.</p><details><summary>Petunjuk</summary><p>Optional.ofNullable(map.get(nama)), lalu map dan orElse.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>import java.util.Map;
+import java.util.Optional;
+
+public class Main {
+    static final Map&lt;String, String&gt; EMAIL = Map.of(&quot;Rina&quot;, &quot;rina@mail.id&quot;);
+
+    static Optional&lt;String&gt; cariEmail(String nama) {
+        return Optional.ofNullable(EMAIL.get(nama));
+    }
+
+    public static void main(String[] args) {
+        System.out.println(cariEmail(&quot;Rina&quot;).map(String::toUpperCase).orElse(&quot;tidak ada&quot;));
+        System.out.println(cariEmail(&quot;Budi&quot;).map(String::toUpperCase).orElse(&quot;tidak ada&quot;));
+    }
+}</code></pre></details></li><li><p>Sebutkan tiga kebiasaan buruk dengan Optional.</p><details><summary>Petunjuk</summary><p>Ingat: Optional untuk nilai kembalian yang mungkin kosong.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>1. Memanggil get() tanpa memeriksa: sama saja dengan risiko null.
+2. Memakai Optional untuk field kelas atau parameter method.
+3. Mengembalikan null dari method yang tipenya Optional.
+Lebih baik: orElse, orElseGet, orElseThrow, map, ifPresent.</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Nilai cadangan untuk null</summary><p><code>Objects.requireNonNullElse</code> (Java 9) mengembalikan nilai cadangan kalau nilainya null. Satu baris, tanpa if-else.</p><div class="lbl">KODE PEMULA</div><pre><code>String nama = null;
 String sapaan;
 if (nama != null) {

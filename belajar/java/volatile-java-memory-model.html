@@ -41,6 +41,24 @@
 <div class="lbl">KELUARAN</div><pre><code>Pekerja berhenti
 Selesai
 </code></pre>
+<h2>Soal latihan</h2><ol><li><p>Thread pekerja berhenti ketika flag <code>jalan</code> menjadi false. Kenapa flag perlu <code>volatile</code>? Tulis kodenya.</p><details><summary>Petunjuk</summary><p>Tanpa volatile, thread lain bisa terus membaca salinan lama dari cache.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>public class Main {
+    static volatile boolean jalan = true;
+
+    public static void main(String[] args) throws InterruptedException {
+        Thread pekerja = new Thread(() -&gt; {
+            long n = 0;
+            while (jalan) n++;
+            System.out.println(&quot;berhenti&quot;);
+        });
+        pekerja.start();
+        Thread.sleep(100);
+        jalan = false;      // langsung terlihat oleh pekerja
+        pekerja.join();
+    }
+}</code></pre></details></li><li><p>Apakah <code>volatile int hitung; hitung++</code> aman dari race condition? Jelaskan.</p><details><summary>Petunjuk</summary><p>volatile menjamin visibilitas, bukan atomisitas.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Tidak aman. hitung++ terdiri dari baca, tambah, tulis.
+volatile hanya menjamin setiap thread melihat nilai terbaru,
+tetapi dua thread tetap bisa membaca nilai yang sama lalu menulis hasil yang sama.
+Pakai AtomicInteger atau synchronized.</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Tanpa sinkronisasi, thread bisa membaca nilai basi dari cache.</li><li><code>volatile</code> = visibilitas terjamin, bukan atomisitas.</li><li>synchronized memberi visibilitas sekaligus eksklusivitas.</li><li>Happens-before adalah inti aturan JMM.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Apakah &lt;code&gt;volatile int x; x++&lt;/code&gt; aman di banyak thread?</summary><p class="ok">Jawaban: Tidak, x++ tetap bukan operasi atomik</p><p>volatile hanya menjamin visibilitas.</p></details><details><summary>Kegunaan tepat volatile?</summary><p class="ok">Jawaban: Flag berhenti yang dibaca thread lain</p><p>Satu thread menulis, thread lain membaca.</p></details>
 <a class="cta" href="/#java-13-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/executorservice-virtual-thread">ExecutorService &amp; virtual thread</a></p><p>Berikutnya: <a href="/belajar/java/build-tool-maven-gradle-bazel">Build tool: Maven, Gradle, Bazel</a></p>

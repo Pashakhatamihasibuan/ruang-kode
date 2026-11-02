@@ -52,6 +52,23 @@ public class Balapan {
 aman   = 200000
 atomik = 200000
 </code></pre>
+<h2>Soal latihan</h2><ol><li><p>Dua thread masing-masing menambah penghitung 10.000 kali. Perbaiki agar hasilnya selalu 20.000.</p><details><summary>Petunjuk</summary><p>count++ bukan operasi atomik. Pakai synchronized atau AtomicInteger, dan join() sebelum mencetak.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>import java.util.concurrent.atomic.AtomicInteger;
+
+public class Main {
+    public static void main(String[] args) throws InterruptedException {
+        AtomicInteger hitung = new AtomicInteger();
+        Runnable kerja = () -&gt; { for (int i = 0; i &lt; 10_000; i++) hitung.incrementAndGet(); };
+        Thread a = new Thread(kerja), b = new Thread(kerja);
+        a.start(); b.start();
+        a.join(); b.join();
+        System.out.println(hitung.get());
+    }
+}</code></pre></details></li><li><p>Jelaskan apa itu race condition dengan contoh dua kasir yang mengurangi stok yang sama.</p><details><summary>Petunjuk</summary><p>Baca, ubah, tulis bisa saling menyela.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Stok = 1.
+Kasir A membaca stok 1, kasir B juga membaca stok 1.
+A menulis stok 0, B juga menulis stok 0.
+Dua barang terjual padahal stok hanya 1.
+Hasil bergantung pada urutan waktu thread: itulah race condition.
+Solusinya: kunci bagian kritis (synchronized/Lock) atau operasi atomik.</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li><code>start()</code> menjalankan thread baru; <code>run()</code> langsung hanya memanggil method biasa.</li><li><code>join()</code> menunggu thread selesai.</li><li>Race condition: hasil bergantung pada urutan thread yang tidak bisa ditebak.</li><li><code>synchronized</code> dan kelas atomik mencegah update yang hilang.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa &lt;code&gt;counter++&lt;/code&gt; tidak aman di banyak thread?</summary><p class="ok">Jawaban: Karena terdiri dari baca, tambah, tulis yang bisa disela</p><p>Thread lain bisa menyela di antara langkah-langkahnya.</p></details><details><summary>Method untuk menunggu thread selesai?</summary><p class="ok">Jawaban: join()</p><p>join memblokir sampai thread itu berakhir.</p></details>
 <a class="cta" href="/#java-13-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/jaringan-kriptografi-dasar">Jaringan &amp; kriptografi dasar</a></p><p>Berikutnya: <a href="/belajar/java/executorservice-virtual-thread">ExecutorService &amp; virtual thread</a></p>

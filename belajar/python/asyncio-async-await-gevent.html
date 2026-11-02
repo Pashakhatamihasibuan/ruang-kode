@@ -50,6 +50,31 @@ selesai cuaca
 [&#x27;cuaca:0.3s&#x27;, &#x27;kurs:0.1s&#x27;, &#x27;berita:0.2s&#x27;]
 total sekitar 0.3 detik
 </code></pre>
+<h2>Soal latihan</h2><ol><li><p>Jalankan tiga tugas async yang masing-masing menunggu 1 detik secara bersamaan memakai <code>asyncio.gather</code>.</p><details><summary>Petunjuk</summary><p>await asyncio.sleep, bukan time.sleep.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import asyncio, time
+
+async def ambil(n):
+    await asyncio.sleep(1)
+    return n * 10
+
+async def main():
+    mulai = time.perf_counter()
+    hasil = await asyncio.gather(ambil(1), ambil(2), ambil(3))
+    print(hasil)
+    print(round(time.perf_counter() - mulai))
+
+asyncio.run(main())</code></pre></details></li><li><p>Batasi tugas async yang terlalu lama dengan <code>asyncio.wait_for</code> (batas 0,5 detik).</p><details><summary>Petunjuk</summary><p>TimeoutError dilempar jika waktu habis.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import asyncio
+
+async def lambat():
+    await asyncio.sleep(2)
+    return &quot;selesai&quot;
+
+async def main():
+    try:
+        print(await asyncio.wait_for(lambat(), timeout=0.5))
+    except TimeoutError:
+        print(&quot;kelamaan, dibatalkan&quot;)
+
+asyncio.run(main())</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li><code>async def</code> membuat coroutine; <code>await</code> menyerahkan giliran.</li><li>Event loop menjalankan tugas bergantian dalam satu thread.</li><li><code>asyncio.gather</code> untuk menjalankan bersamaan.</li><li>Ringkasan: CPU berat → multiprocessing; I/O banyak → asyncio atau thread.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Total waktu tiga tugas 0.3, 0.1, 0.2 detik dengan gather?</summary><p class="ok">Jawaban: Sekitar 0.3 detik</p><p>Semua menunggu bersamaan; total = yang paling lama.</p></details><details><summary>Apa yang terjadi saat coroutine bertemu &lt;code&gt;await asyncio.sleep(1)&lt;/code&gt;?</summary><p class="ok">Jawaban: Event loop menjalankan tugas lain dulu</p><p>Itulah inti asyncio.</p></details>
 <a class="cta" href="/#python-13-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/multiprocessing">Multiprocessing</a></p><p>Berikutnya: <a href="/belajar/python/peta-framework-web-python">Peta framework web Python</a></p>

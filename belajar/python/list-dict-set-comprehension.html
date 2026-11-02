@@ -48,6 +48,12 @@ print([x for baris in matriks for x in baris])</code></pre>
 [&#x27;genap&#x27;, &#x27;ganjil&#x27;, &#x27;genap&#x27;, &#x27;ganjil&#x27;]
 [1, 2, 3, 4, 5, 6]
 </code></pre>
+<h2>Soal latihan</h2><ol><li><p>Dari angka 1 sampai 20, buat list kuadrat bilangan genap, dict angka ke kuadratnya untuk 1 sampai 5, dan set sisa bagi 3.</p><details><summary>Petunjuk</summary><p>[x*x for x in ... if ...], {x: x*x for ...}, {x % 3 for ...}</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>print([x * x for x in range(1, 21) if x % 2 == 0][:5])
+print({x: x * x for x in range(1, 6)})
+print({x % 3 for x in range(1, 21)})</code></pre></details></li><li><p>Ratakan matriks <code>[[1, 2], [3, 4], [5, 6]]</code> menjadi satu list, dan balik dict <code>{"a": 1, "b": 2}</code>.</p><details><summary>Petunjuk</summary><p>Comprehension bersarang: [x for baris in m for x in baris].</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>m = [[1, 2], [3, 4], [5, 6]]
+print([x for baris in m for x in baris])
+d = {&quot;a&quot;: 1, &quot;b&quot;: 2}
+print({v: k for k, v in d.items()})</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Membuat list baru dari list lain</summary><p>Pola "buat list kosong, loop, if, append" bisa ditulis sebagai comprehension. Lebih pendek dan biasanya lebih cepat.</p><div class="lbl">KODE PEMULA</div><pre><code>harga = [12000, 45000, 8000, 30000]
 mahal = []
 for h in harga:
