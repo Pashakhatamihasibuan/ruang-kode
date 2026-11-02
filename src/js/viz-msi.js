@@ -201,3 +201,33 @@ function auditViz(host){
 
 Object.assign(VIZ2,{simmsi:simmsiViz,dik:dikViz,ipo:ipoViz,pyramid:pyramidViz,erp:erpViz,sdlc:sdlcViz,dfd:dfdViz,roi:roiViz,cloud:cloudViz,cia:ciaViz,backup:backupViz,bsc:bscViz,triangle:triangleViz,mcase:caseViz,roles:rolesViz,newapp:newappViz,audit:auditViz});
 Object.assign(VIZ2T,{simmsi:'SIM di dalam MSI',dik:'Dari data menjadi keputusan',ipo:'Input, proses, output, dan komponennya',pyramid:'Piramida tingkat manajemen',erp:'Satu pesanan melewati ERP, CRM, dan SCM',sdlc:'Waterfall lawan Agile',dfd:'Diagram aliran data (DFD)',roi:'Kalkulator biaya-manfaat',cloud:'Siapa mengelola apa di cloud',cia:'Kendali keamanan lawan ancaman',backup:'Uji cadangan 3-2-1',bsc:'Balanced scorecard',triangle:'Segitiga proyek',mcase:'Sebelum dan sesudah sistem',roles:'Peran MSI dan UX Designer',newapp:'Alur membuat aplikasi baru',audit:'Audit dan prioritas perbaikan'});
+
+/* SIM: empat jenis laporan dari data yang sama */
+function reportsViz(host){
+  const D=[['Jakarta','Budi',42,5],['Jakarta','Sari',38,22],['Bandung','Dewi',27,3],['Bandung','Eko',31,18],['Medan','Fitri',19,2],['Medan','Gita',24,15]];
+  const rp=n=>'Rp '+n+' jt';
+  host.innerHTML=`<div class="v3-ctl">${seg('Jenis laporan',[['jad','Terjadwal'],['adh','Sesuai permintaan'],['exc','Pengecualian'],['dd','Drill-down']],'jad')}</div><div class="mv-rep"></div><p class="v3-verdict" aria-live="polite"></p>`;
+  let open='';
+  const draw=v=>{const el=$('.mv-rep',host),vd=$('.v3-verdict',host);let h='';
+    const cab=[...new Set(D.map(r=>r[0]))].map(c=>[c,D.filter(r=>r[0]===c).reduce((a,r)=>a+r[2],0),D.filter(r=>r[0]===c).reduce((a,r)=>a+r[3],0)]);
+    if(v==='jad'){h=`<table class="lt"><caption>Penjualan mingguan per cabang · terbit tiap Senin 07.00</caption><thead><tr><th>Cabang</th><th>Omzet</th><th>Stok tersisa</th></tr></thead><tbody>${cab.map(c=>`<tr><th>${c[0]}</th><td>${rp(c[1])}</td><td>${c[2]} karton</td></tr>`).join('')}</tbody></table>`;vd.innerHTML='<b>Terjadwal</b>: format sama, waktu sama, untuk pemantauan rutin.'}
+    if(v==='adh'){h=`<p class="mv-q">❓ "Kasir mana yang omzetnya di atas Rp 30 jt minggu ini?"</p><table class="lt"><thead><tr><th>Kasir</th><th>Cabang</th><th>Omzet</th></tr></thead><tbody>${D.filter(r=>r[2]>30).map(r=>`<tr><th>${r[1]}</th><td>${r[0]}</td><td>${rp(r[2])}</td></tr>`).join('')}</tbody></table>`;vd.innerHTML='<b>Sesuai permintaan</b>: dibuat saat manajer punya pertanyaan khusus.'}
+    if(v==='exc'){h=`<table class="lt"><caption>Hanya stok di bawah minimum (10 karton)</caption><thead><tr><th>Cabang</th><th>Pos kasir</th><th>Stok</th></tr></thead><tbody>${D.filter(r=>r[3]<10).map(r=>`<tr class="mv-bad"><th>${r[0]}</th><td>${r[1]}</td><td>${r[3]} karton ⚠</td></tr>`).join('')}</tbody></table>`;vd.innerHTML=`<b>Pengecualian</b>: dari ${D.length} baris, hanya ${D.filter(r=>r[3]<10).length} yang butuh tindakan.`}
+    if(v==='dd'){const tot=D.reduce((a,r)=>a+r[2],0);h=`<div class="mv-dd"><button class="mv-ddb" data-c="">Total nasional: ${rp(tot)}</button>${cab.map(c=>`<div><button class="mv-ddb" data-c="${c[0]}" aria-expanded="${open===c[0]}">${open===c[0]?'▾':'▸'} ${c[0]}: ${rp(c[1])}</button>${open===c[0]?`<ul>${D.filter(r=>r[0]===c[0]).map(r=>`<li>${r[1]}: ${rp(r[2])}</li>`).join('')}</ul>`:''}</div>`).join('')}</div>`;vd.innerHTML='<b>Drill-down</b>: klik cabang untuk merinci sampai ke kasir.'}
+    el.innerHTML=h};
+  let cur='jad';segWire(host,'.seg',v=>{cur=v;draw(v)});
+  host.addEventListener('click',e=>{const b=e.target.closest('.mv-ddb');if(b&&b.dataset.c){open=open===b.dataset.c?'':b.dataset.c;draw('dd')}});draw('jad');
+}
+/* SIM: model keberhasilan DeLone & McLean */
+function deloneViz(host){
+  const K=[['sys','Kualitas sistem'],['inf','Kualitas informasi'],['svc','Kualitas layanan']];
+  host.innerHTML=`<div class="v3-ctl">${rng('dlS','Kualitas sistem',1,5,2)}${rng('dlI','Kualitas informasi',1,5,3)}${rng('dlV','Kualitas layanan',1,5,3)}</div><div class="mv-dl"></div><p class="v3-verdict" aria-live="polite"></p>`;
+  const draw=()=>{const a=+$('#dlS',host).value,b=+$('#dlI',host).value,c=+$('#dlV',host).value;['dlS','dlI','dlV'].forEach(id=>$('#'+id+'o',host).textContent=$('#'+id,host).value);
+    const use=Math.min(5,(a*0.45+b*0.35+c*0.2)),sat=Math.min(5,(a*0.3+b*0.4+c*0.3)),net=Math.min(5,(use*0.5+sat*0.5));
+    const bar=(n,v)=>`<div class="mv-dlb"><span>${n}</span><div><i class="${v>=3.5?'ok':v>=2.5?'warn':'bad'}" style="width:${v/5*100}%"></i></div><b>${v.toFixed(1)}</b></div>`;
+    $('.mv-dl',host).innerHTML=`<div class="mv-dlc"><small>Penyebab</small>${bar('Sistem',a)}${bar('Informasi',b)}${bar('Layanan',c)}</div><span class="v3-arr" aria-hidden="true">→</span><div class="mv-dlc"><small>Akibat</small>${bar('Penggunaan',use)}${bar('Kepuasan',sat)}</div><span class="v3-arr" aria-hidden="true">→</span><div class="mv-dlc"><small>Hasil</small>${bar('Manfaat bersih',net)}</div>`;
+    const v=$('.v3-verdict',host),low=K[[a,b,c].indexOf(Math.min(a,b,c))][1];v.innerHTML=net>=3.5?'SIM berhasil: dipakai, disukai, dan memberi manfaat nyata.':`Manfaat belum terasa. Perbaiki dulu dimensi terlemah: <b>${low}</b>. Contoh: SIAKAD yang lambat membuat guru kembali ke spreadsheet.`;v.classList.toggle('ok',net>=3.5)};
+  host.addEventListener('input',draw);draw();
+}
+Object.assign(VIZ2,{reports:reportsViz,delone:deloneViz});
+Object.assign(VIZ2T,{reports:'Empat jenis laporan SIM',delone:'Model keberhasilan DeLone & McLean'});

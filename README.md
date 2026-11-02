@@ -1,6 +1,6 @@
 # Ruang Kode: akademi coding, data & desain
 
-Akademi teknologi visual berbahasa Indonesia dengan 17 jalur belajar, seperti LMS bootcamp. Kurikulum setiap jalur mengikuti [roadmap.sh](https://roadmap.sh).
+Akademi teknologi visual berbahasa Indonesia dengan 18 jalur belajar, seperti LMS bootcamp. Kurikulum setiap jalur mengikuti [roadmap.sh](https://roadmap.sh).
 
 Dikembangkan oleh **Pasha Khatami Hasibuan**.
 

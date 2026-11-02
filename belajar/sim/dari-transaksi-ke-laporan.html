@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dari transaksi ke laporan · Sistem Informasi Manajemen · Ruang Kode</title>
+<meta name="description" content="Setiap laporan SIM berasal dari data transaksi yang dicatat TPS. Alurnya: transaksi dicatat → data disimpan di database → data diringkas (dijumlah,…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/sim/dari-transaksi-ke-laporan">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Dari transaksi ke laporan · Sistem Informasi Manajemen · Ruang Kode"><meta property="og:description" content="Setiap laporan SIM berasal dari data transaksi yang dicatat TPS. Alurnya: transaksi dicatat → data disimpan di database → data diringkas (dijumlah,…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/sim/dari-transaksi-ke-laporan"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Dari transaksi ke laporan", "description": "Setiap laporan SIM berasal dari data transaksi yang dicatat TPS. Alurnya: transaksi dicatat → data disimpan di database → data diringkas (dijumlah,…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/sim/dari-transaksi-ke-laporan", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Sistem Informasi Manajemen", "url": "https://ruang-kode-nine.vercel.app/belajar/sim"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Sistem Informasi Manajemen", "item": "https://ruang-kode-nine.vercel.app/belajar/sim"}, {"@type": "ListItem", "position": 3, "name": "Dari transaksi ke laporan", "item": "https://ruang-kode-nine.vercel.app/belajar/sim/dari-transaksi-ke-laporan"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/sim">Sistem Informasi Manajemen</a> / Modul 4</nav>
+<div class="eyebrow">Sistem Informasi Manajemen · Modul 4 · Konsep &amp; kode</div><h1>Dari transaksi ke laporan</h1><a class="cta" href="/#sim-4-3">Buka versi interaktif</a>
+<p>Setiap laporan SIM berasal dari <b>data transaksi</b> yang dicatat TPS. Alurnya: transaksi dicatat → data disimpan di database → data diringkas (dijumlah, dirata-rata, dikelompokkan) → disajikan sebagai laporan atau dasbor. Kalau pencatatan di awal salah, laporan di akhir pasti salah ("garbage in, garbage out").</p>
+<p>Peringkasan biasanya memakai <b>SQL</b>: <code>GROUP BY</code> untuk mengelompokkan per cabang atau per kelas, <code>SUM</code>/<code>COUNT</code>/<code>AVG</code> untuk menghitung, dan <code>WHERE</code> atau <code>HAVING</code> untuk laporan pengecualian. Kamu bisa mencoba query sungguhan di jalur <a href="/#sql">SQL</a>.</p>
+<p>Untuk data besar atau dari banyak sistem, data dipindahkan dulu ke <b>data warehouse</b> lewat proses ETL agar laporan tidak memperlambat aplikasi kasir atau SIAKAD yang sedang dipakai.</p>
+<div class="tw"><table><caption>Dari transaksi ke laporan</caption><thead><tr><th>Konteks</th><th>Transaksi (TPS)</th><th>Ringkasan</th><th>Laporan SIM</th></tr></thead><tbody><tr><td>Perusahaan</td><td>Baris penjualan kasir</td><td>Jumlah per cabang per minggu</td><td>Penjualan mingguan per cabang</td></tr><tr><td>Startup</td><td>Event pesanan dan pembayaran</td><td>Hitung per kanal promosi</td><td>Biaya per pelanggan per kanal</td></tr><tr><td>Sekolah</td><td>Presensi harian per siswa</td><td>Hitung alpa per siswa</td><td>Daftar siswa alpa &gt; 3 hari</td></tr><tr><td>Organisasi</td><td>Setoran dan angsuran</td><td>Saldo per anggota</td><td>Laporan pinjaman telat</td></tr></tbody></table></div>
+<div class="lbl">CONTOH</div><pre><code>-- Laporan terjadwal: penjualan per cabang minggu ini
+SELECT cabang, SUM(total) AS omzet, COUNT(*) AS transaksi
+FROM penjualan
+WHERE tanggal &gt;= &#x27;2026-10-26&#x27;
+GROUP BY cabang
+ORDER BY omzet DESC;
+
+-- Laporan pengecualian: siswa alpa lebih dari 3 hari bulan ini
+SELECT s.nama, s.kelas, COUNT(*) AS alpa
+FROM presensi p JOIN siswa s ON s.nis = p.nis
+WHERE p.status = &#x27;A&#x27; AND p.tanggal &gt;= &#x27;2026-10-01&#x27;
+GROUP BY s.nis, s.nama, s.kelas
+HAVING COUNT(*) &gt; 3;</code></pre>
+<h2>Poin penting</h2><ul><li>Laporan berasal dari data transaksi: salah catat = salah laporan.</li><li>SQL GROUP BY + SUM/COUNT untuk ringkasan, HAVING untuk pengecualian.</li><li>Data besar dipindah ke warehouse lewat ETL.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Klausa SQL yang cocok untuk laporan pengecualian &quot;alpa lebih dari 3 hari&quot; setelah pengelompokan adalah?</summary><p class="ok">Jawaban: HAVING</p><p>HAVING menyaring hasil setelah GROUP BY.</p></details><details><summary>Apa arti &quot;garbage in, garbage out&quot;?</summary><p class="ok">Jawaban: Data masukan yang salah menghasilkan laporan yang salah</p><p>Kualitas laporan bergantung pada kualitas data transaksi.</p></details>
+<a class="cta" href="/#sim-4-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sim/merancang-laporan-yang-benar-benar-dipakai">Merancang laporan yang benar-benar dipakai</a></p><p>Berikutnya: <a href="/belajar/sim/membangun-sim-sederhana-dengan-spreadsheet">Membangun SIM sederhana dengan spreadsheet</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

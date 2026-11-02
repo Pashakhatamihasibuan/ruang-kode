@@ -147,7 +147,7 @@ def make_icons(out):
     og.paste(tile(220, 0, 48), (90, 205), tile(220, 0, 48))
     d = ImageDraw.Draw(og)
     d.text((360, 230), "Ruang Kode", font=ImageFont.truetype(font_path, 84), fill="white")
-    d.text((364, 340), "coding · data · desain · 17 jalur", font=ImageFont.truetype(font_path, 34), fill=(200, 212, 228))
+    d.text((364, 340), "coding · data · desain · 18 jalur", font=ImageFont.truetype(font_path, 34), fill=(200, 212, 228))
     og.save(out / "og.png", optimize=True)
 
 
@@ -295,11 +295,11 @@ def write_static(root, url, tracks, data):
     org = {"@type": "Organization", "name": "Ruang Kode", "url": url + "/"}
 
     # katalog
-    body = "<h1>Semua materi Ruang Kode</h1><p>17 jalur belajar coding, data, desain, dan sistem informasi berbahasa Indonesia. Setiap pelajaran punya versi interaktif di aplikasi.</p>"
+    body = "<h1>Semua materi Ruang Kode</h1><p>18 jalur belajar coding, data, desain, dan sistem informasi berbahasa Indonesia. Setiap pelajaran punya versi interaktif di aplikasi.</p>"
     for g, gn in GROUPS:
         body += f"<h2>{e(gn)}</h2><ul>" + "".join(
             f'<li><a href="/belajar/{t["k"]}">{e(t["name"])}</a>: {e(t["h"])}</li>' for t in tracks if t["g"] == g) + "</ul>"
-    (out / "index.html").write_text(page(url + "/belajar", "Semua materi · Ruang Kode", "17 jalur belajar coding, data, desain, dan sistem informasi berbahasa Indonesia.",
+    (out / "index.html").write_text(page(url + "/belajar", "Semua materi · Ruang Kode", "18 jalur belajar coding, data, desain, dan sistem informasi berbahasa Indonesia.",
                                          [("Beranda", "/"), ("Materi", None)], body, {"@context": "https://schema.org", "@type": "CollectionPage", "name": "Semua materi", "publisher": org}))
 
     for t in tracks:

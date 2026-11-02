@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bangun SIM mini dengan laporan nyata · Sistem Informasi Manajemen · Ruang Kode</title>
+<meta name="description" content="Pilih satu organisasi di sekitarmu (toko keluarga, startup teman, kelas atau sekolahmu, koperasi, OSIS/BEM, atau komunitas). Bangun SIM mini yang…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/sim/bangun-sim-mini-dengan-laporan-nyata">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Bangun SIM mini dengan laporan nyata · Sistem Informasi Manajemen · Ruang Kode"><meta property="og:description" content="Pilih satu organisasi di sekitarmu (toko keluarga, startup teman, kelas atau sekolahmu, koperasi, OSIS/BEM, atau komunitas). Bangun SIM mini yang…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/sim/bangun-sim-mini-dengan-laporan-nyata"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Bangun SIM mini dengan laporan nyata", "description": "Pilih satu organisasi di sekitarmu (toko keluarga, startup teman, kelas atau sekolahmu, koperasi, OSIS/BEM, atau komunitas). Bangun SIM mini yang…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/sim/bangun-sim-mini-dengan-laporan-nyata", "learningResourceType": "Proyek akhir", "isPartOf": {"@type": "Course", "name": "Sistem Informasi Manajemen", "url": "https://ruang-kode-nine.vercel.app/belajar/sim"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Sistem Informasi Manajemen", "item": "https://ruang-kode-nine.vercel.app/belajar/sim"}, {"@type": "ListItem", "position": 3, "name": "Bangun SIM mini dengan laporan nyata", "item": "https://ruang-kode-nine.vercel.app/belajar/sim/bangun-sim-mini-dengan-laporan-nyata"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/sim">Sistem Informasi Manajemen</a> / Modul 7</nav>
+<div class="eyebrow">Sistem Informasi Manajemen · Modul 7 · Proyek akhir</div><h1>Bangun SIM mini dengan laporan nyata</h1><a class="cta" href="/#sim-7-1">Buka versi interaktif</a>
+<p>Pilih satu organisasi di sekitarmu (toko keluarga, startup teman, kelas atau sekolahmu, koperasi, OSIS/BEM, atau komunitas). Bangun SIM mini yang mencatat satu jenis transaksi dan menghasilkan laporan yang benar-benar dipakai seorang manajer atau pengurus.</p>
+<p><b>Teknologi:</b> Formulir online + spreadsheet atau SQL + dasbor</p>
+<h2>Fitur yang dibuat</h2><ul><li>Satu jenis transaksi dicatat lewat formulir dengan format tetap</li><li>Minimal 30 baris data contoh (boleh fiktif, jangan data pribadi asli)</li><li>Satu laporan terjadwal (mingguan atau bulanan)</li><li>Satu laporan pengecualian dengan tanda yang jelas</li><li>Satu ringkasan yang bisa dirinci (drill-down) ke detail</li><li>Definisi setiap angka dan waktu data tertulis di laporan</li><li>Pembagian hak akses: siapa mengisi, siapa membaca</li><li>Penilaian keberhasilan dengan minimal 3 dimensi DeLone &amp; McLean</li></ul>
+<h2>Langkah kerja</h2><ol><li>Wawancara satu calon pembaca laporan: keputusan apa yang ia ambil?</li><li>Isi lembar rancangan laporan (pembaca, keputusan, frekuensi, indikator).</li><li>Buat formulir input dan isi data contoh.</li><li>Buat lembar olah dengan rumus/pivot atau query SQL.</li><li>Susun laporan terjadwal, pengecualian, dan drill-down.</li><li>Minta pembaca mencoba selama satu minggu, lalu ukur dan perbaiki.</li></ol>
+<div class="lbl">rancangan-laporan.md</div><pre><code>SIM mini : Presensi kelas XI-2 (sekolah)
+Pembaca  : wali kelas dan guru BK
+Keputusan: siswa mana yang perlu dipanggil
+Frekuensi: mingguan, tiap Jumat 14.00
+
+Input    : formulir presensi harian (tanggal, NIS, status H/I/S/A)
+Olah     : COUNTIFS status &quot;A&quot; per NIS per bulan
+Laporan  : 1) rekap kehadiran kelas per minggu (terjadwal)
+           2) siswa alpa &gt; 3 hari bulan ini (pengecualian, merah)
+           3) klik nama siswa → riwayat per tanggal (drill-down)
+
+Definisi : alpa = tidak hadir tanpa surat; data per Jumat 12.00
+Akses    : ketua kelas mengisi, wali kelas &amp; BK membaca
+Ukuran   : laporan terbit tiap Jumat (kualitas informasi),
+           wali kelas membuka tiap minggu (penggunaan),
+           waktu rekap 1 jam → 5 menit (manfaat bersih)</code></pre>
+<a class="cta" href="/#sim-7-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sim/mengukur-keberhasilan-sim">Mengukur keberhasilan SIM</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

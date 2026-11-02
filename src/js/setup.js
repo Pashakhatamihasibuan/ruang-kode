@@ -4,7 +4,7 @@
 const OSES=[['win','Windows'],['mac','macOS'],['lin','Linux (Ubuntu/Debian)']];
 const SETUP=[
   {id:'browser',name:'Browser modern',why:'Untuk membuka Ruang Kode, melihat hasil HTML/CSS, dan memakai DevTools (tekan F12).',
-   tr:['html','css','fe0','fe','react','ux','ds','msi'],
+   tr:['html','css','fe0','fe','react','ux','ds','msi','sim'],
    os:{win:['Pakai Google Chrome, Microsoft Edge, atau Firefox versi terbaru. Edge sudah terpasang di Windows 10/11.'],
        mac:['Pakai Chrome, Edge, Firefox, atau Safari versi terbaru.'],
        lin:['Pakai Chrome atau Firefox versi terbaru. Firefox biasanya sudah terpasang.']}},
@@ -59,7 +59,7 @@ const SETUP=[
    check:'git --version',
    note:'Setelah terpasang, kenalkan dirimu sekali saja: git config --global user.name "Nama Kamu" lalu git config --global user.email "email@kamu.com".'},
   {id:'sqlite',name:'SQLite & DB Browser for SQLite',why:'Database ringan untuk latihan SQL di laptop. DB Browser memberi tampilan tabel dan editor query.',
-   tr:['sql','bi','da','de','msi'],
+   tr:['sql','bi','da','de','msi','sim'],
    os:{win:['Unduh DB Browser for SQLite dari sqlitebrowser.org (versi Standard installer).'],
        mac:['Unduh DB Browser for SQLite dari sqlitebrowser.org, atau pasang lewat Homebrew.'],
        lin:['Pasang dengan perintah di bawah.']},
