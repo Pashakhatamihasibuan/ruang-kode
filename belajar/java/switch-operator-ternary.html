@@ -63,14 +63,17 @@ boleh punya KTP
             System.out.println(hari + &quot; &quot; + jenis);
         }
     }
-}</code></pre></details></li><li><p>Pakai ternary untuk mencetak "Lulus" jika nilai &gt;= 75 dan "Remedial" jika tidak, untuk nilai 80 dan 60.</p><details><summary>Petunjuk</summary><p>kondisi ? nilaiJikaBenar : nilaiJikaSalah</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>public class Main {
+}</code></pre><div class="lbl">KELUARAN</div><pre><code>5 Kerja
+6 Libur
+7 Libur</code></pre></details></li><li><p>Pakai ternary untuk mencetak "Lulus" jika nilai &gt;= 75 dan "Remedial" jika tidak, untuk nilai 80 dan 60.</p><details><summary>Petunjuk</summary><p>kondisi ? nilaiJikaBenar : nilaiJikaSalah</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>public class Main {
     public static void main(String[] args) {
         int[] nilai = {80, 60};
         for (int n : nilai) {
             System.out.println(n + &quot; &quot; + (n &gt;= 75 ? &quot;Lulus&quot; : &quot;Remedial&quot;));
         }
     }
-}</code></pre></details></li></ol>
+}</code></pre><div class="lbl">KELUARAN</div><pre><code>80 Lulus
+60 Remedial</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>switch dengan panah tidak butuh break</summary><p>Lupa menulis <code>break</code> adalah bug klasik: eksekusi "jatuh" ke case berikutnya. Switch expression dengan <code>-&gt;</code> (Java 14) tidak pernah jatuh, bisa menggabungkan beberapa nilai dengan koma, dan langsung mengembalikan nilai.</p><div class="lbl">KODE PEMULA</div><pre><code>int hari = 6;
 String jenis;
 switch (hari) {

@@ -26,6 +26,18 @@
 SELECT nama, harga, ROUND(harga * 1.11) AS harga_pajak FROM produk;
 SELECT * FROM v_harga_pajak WHERE harga_pajak &gt; 50000;</code></pre>
 <div class="lbl">Simulator menolak CREATE PROCEDURE</div><pre><code>CREATE PROCEDURE tambah_stok() BEGIN END;</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis stored procedure PostgreSQL <code>tambah_stok(p_id, p_jumlah)</code> yang menambah stok produk.</p><details><summary>Petunjuk</summary><p>CREATE PROCEDURE ... LANGUAGE plpgsql AS $$ BEGIN ... END $$;</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>CREATE PROCEDURE tambah_stok(p_id INT, p_jumlah INT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  UPDATE produk SET stok = stok + p_jumlah WHERE id = p_id;
+END;
+$$;
+
+CALL tambah_stok(7, 25);</code></pre></details></li><li><p>Kapan logika sebaiknya di stored procedure dan kapan di kode aplikasi?</p><details><summary>Petunjuk</summary><p>Pertimbangkan dekat-data, pengujian, dan portabilitas.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Stored procedure: operasi berat dekat data, aturan yang harus sama untuk
+semua aplikasi, mengurangi bolak-balik jaringan.
+Kode aplikasi: logika bisnis yang sering berubah, mudah dites dan di-versioning,
+tidak terikat satu merek database.</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Procedure dipanggil dengan CALL; function dipakai di SELECT.</li><li>Logika terpusat di database.</li><li>Sulit dites dan tidak portabel antar database.</li><li>Sintaks berbeda tiap database.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Cara memanggil stored procedure di MySQL?</summary><p class="ok">Jawaban: CALL nama()</p><p>CALL menjalankan procedure.</p></details><details><summary>Perbedaan utama function dengan procedure?</summary><p class="ok">Jawaban: Function mengembalikan nilai dan bisa dipakai di SELECT</p><p>Function berperilaku seperti ekspresi.</p></details>
 <a class="cta" href="/#sql-12-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/grant-revoke-sql-injection">GRANT, REVOKE &amp; SQL injection</a></p><p>Berikutnya: <a href="/belajar/sql/teknik-optimasi-query">Teknik optimasi query</a></p>

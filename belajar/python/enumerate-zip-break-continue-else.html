@@ -61,7 +61,9 @@ durian tidak ada
 <h2>Soal latihan</h2><ol><li><p>Cetak daftar juara bernomor mulai 1 memakai enumerate, dan pasangkan nama dengan nilai memakai zip.</p><details><summary>Petunjuk</summary><p>enumerate(daftar, start=1), zip(a, b).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>nama = [&quot;Rina&quot;, &quot;Sandi&quot;, &quot;Tari&quot;]
 nilai = [92, 88, 85]
 for i, (n, v) in enumerate(zip(nama, nilai), start=1):
-    print(f&quot;{i}. {n} {v}&quot;)</code></pre></details></li><li><p>Cari bilangan prima pertama yang lebih besar dari 90 memakai for-else untuk memeriksa pembagi.</p><details><summary>Petunjuk</summary><p>Blok else pada for jalan jika loop selesai tanpa break.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>n = 91
+    print(f&quot;{i}. {n} {v}&quot;)</code></pre><div class="lbl">KELUARAN</div><pre><code>1. Rina 92
+2. Sandi 88
+3. Tari 85</code></pre></details></li><li><p>Cari bilangan prima pertama yang lebih besar dari 90 memakai for-else untuk memeriksa pembagi.</p><details><summary>Petunjuk</summary><p>Blok else pada for jalan jika loop selesai tanpa break.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>n = 91
 while True:
     for d in range(2, int(n ** 0.5) + 1):
         if n % d == 0:
@@ -69,7 +71,7 @@ while True:
     else:
         print(n)
         break
-    n += 1</code></pre></details></li><li><p>Jumlahkan angka 1 sampai 20, lewati kelipatan 3 dengan continue, dan berhenti jika jumlah sudah melewati 100.</p><details><summary>Petunjuk</summary><p>continue melompat ke putaran berikutnya, break keluar dari loop.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>total = 0
+    n += 1</code></pre><div class="lbl">KELUARAN</div><pre><code>97</code></pre></details></li><li><p>Jumlahkan angka 1 sampai 20, lewati kelipatan 3 dengan continue, dan berhenti jika jumlah sudah melewati 100.</p><details><summary>Petunjuk</summary><p>continue melompat ke putaran berikutnya, break keluar dari loop.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>total = 0
 for i in range(1, 21):
     if i % 3 == 0:
         continue
@@ -77,7 +79,8 @@ for i in range(1, 21):
     if total &gt; 100:
         print(&quot;berhenti di&quot;, i)
         break
-print(total)</code></pre></details></li></ol>
+print(total)</code></pre><div class="lbl">KELUARAN</div><pre><code>berhenti di 17
+108</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Nomor urut tanpa range(len())</summary><p><code>enumerate</code> memberi nomor dan isinya sekaligus, dan bisa dimulai dari 1. <code>zip</code> berjalan di beberapa list bersamaan.</p><div class="lbl">KODE PEMULA</div><pre><code>nama = [&quot;Sari&quot;, &quot;Budi&quot;, &quot;Rina&quot;]
 nilai = [90, 78, 85]
 for i in range(len(nama)):

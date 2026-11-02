@@ -39,12 +39,12 @@ ambilPesanan(...args).then((p: Pesanan) =&gt; console.log(a, f, p.total));</code
 <h2>Soal latihan</h2><ol><li><p>Dari union status, buat tipe status yang masih aktif (tanpa "selesai" dan "batal").</p><details><summary>Petunjuk</summary><p>Exclude&lt;Union, Yang dibuang>.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TYPESCRIPT</div><pre><code>type Status = &quot;baru&quot; | &quot;diproses&quot; | &quot;dikirim&quot; | &quot;selesai&quot; | &quot;batal&quot;;
 type Aktif = Exclude&lt;Status, &quot;selesai&quot; | &quot;batal&quot;&gt;;
 const s: Aktif = &quot;dikirim&quot;;
-console.log(s);</code></pre></details></li><li><p>Ambil tipe hasil fungsi tanpa menulisnya ulang.</p><details><summary>Petunjuk</summary><p>ReturnType&lt;typeof fn> dan Awaited untuk Promise.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TYPESCRIPT</div><pre><code>async function ambilPengguna() {
+console.log(s);</code></pre><div class="lbl">KELUARAN</div><pre><code>dikirim</code></pre></details></li><li><p>Ambil tipe hasil fungsi tanpa menulisnya ulang.</p><details><summary>Petunjuk</summary><p>ReturnType&lt;typeof fn> dan Awaited untuk Promise.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TYPESCRIPT</div><pre><code>async function ambilPengguna() {
   return { nama: &quot;Rina&quot;, poin: 120 };
 }
 type Pengguna = Awaited&lt;ReturnType&lt;typeof ambilPengguna&gt;&gt;;
 const u: Pengguna = { nama: &quot;Budi&quot;, poin: 80 };
-console.log(u.poin);</code></pre></details></li></ol>
+console.log(u.poin);</code></pre><div class="lbl">KELUARAN</div><pre><code>80</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Exclude/Extract untuk anggota union.</li><li>NonNullable membuang null/undefined.</li><li>ReturnType, Parameters, InstanceType, Awaited untuk fungsi dan kelas.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Tipe isi dari Promise&lt;string&gt;?</summary><p class="ok">Jawaban: Awaited&lt;Promise&lt;string&gt;&gt; = string</p><p>Awaited membuka Promise.</p></details>
 <a class="cta" href="/#ts-8-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/ts/partial-pick-omit-readonly-record">Partial, Pick, Omit, Readonly &amp; Record</a></p><p>Berikutnya: <a href="/belajar/ts/keyof-mapped-conditional-types">keyof, mapped &amp; conditional types</a></p>

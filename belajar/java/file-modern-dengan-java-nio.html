@@ -65,7 +65,9 @@ public class Main {
         System.out.println(baris.size());
         baris.stream().filter(b -&gt; b.contains(&quot;kopi&quot;)).forEach(System.out::println);
     }
-}</code></pre></details></li><li><p>Hitung jumlah kata dalam file besar tanpa memuat semuanya ke memori.</p><details><summary>Petunjuk</summary><p>Files.lines mengembalikan Stream yang membaca bertahap. Tutup dengan try-with-resources.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>import java.nio.file.Files;
+}</code></pre><div class="lbl">KELUARAN</div><pre><code>3
+beli kopi
+kopi untuk kantor</code></pre></details></li><li><p>Hitung jumlah kata dalam file besar tanpa memuat semuanya ke memori.</p><details><summary>Petunjuk</summary><p>Files.lines mengembalikan Stream yang membaca bertahap. Tutup dengan try-with-resources.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
@@ -77,7 +79,7 @@ public class Main {
             System.out.println(kata);
         }
     }
-}</code></pre></details></li></ol>
+}</code></pre><div class="lbl">KELUARAN</div><pre><code>5</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li><code>Path.of("nama")</code> membuat path.</li><li><code>Files.readAllLines</code> untuk file kecil, <code>Files.lines</code> untuk file besar.</li><li><code>StandardOpenOption.APPEND</code> menambah di akhir file.</li><li>Bungkus stream file dengan try-with-resources.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Cara membaca file sangat besar dengan hemat memori?</summary><p class="ok">Jawaban: Files.lines dalam try-with-resources</p><p>Files.lines membaca bertahap sebagai stream.</p></details><details><summary>Exception yang dilempar operasi file?</summary><p class="ok">Jawaban: IOException</p><p>IOException adalah checked exception.</p></details>
 <a class="cta" href="/#java-12-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/membaca-file-baris-demi-baris">Membaca file baris demi baris</a></p><p>Berikutnya: <a href="/belajar/java/tanggal-waktu-java-time">Tanggal &amp; waktu (java.time)</a></p>

@@ -33,6 +33,19 @@ hasil = (
       .collect()                                   # baru dieksekusi
 )
 print(hasil.head())</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis agregasi omzet per kota memakai Polars dengan lazy API.</p><details><summary>Petunjuk</summary><p>pl.scan_csv(...).group_by(...).agg(...).collect().</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import polars as pl
+
+hasil = (
+    pl.scan_csv(&quot;penjualan.csv&quot;)
+      .filter(pl.col(&quot;omzet&quot;) &gt; 0)
+      .group_by(&quot;kota&quot;)
+      .agg(pl.col(&quot;omzet&quot;).sum().alias(&quot;total&quot;))
+      .sort(&quot;total&quot;, descending=True)
+      .collect()
+)
+print(hasil)</code></pre></details></li><li><p>Pilih alat: (a) CSV 300 MB di laptop, (b) 20 GB file Parquet di satu mesin besar, (c) 5 TB data di klaster.</p><details><summary>Petunjuk</summary><p>pandas untuk kecil, Polars/DuckDB untuk menengah di satu mesin, Spark untuk klaster.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>(a) pandas (atau Polars bila ingin lebih cepat)
+(b) Polars atau DuckDB (lazy, multithread); Dask jika ingin API mirip pandas
+(c) PySpark di klaster (Databricks, EMR, Dataproc)</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Polars: cepat, lazy, multi-core.</li><li>Dask/Spark untuk data lebih besar dari memori.</li><li>Parquet > CSV untuk analitik.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Keuntungan scan_parquet + collect di Polars?</summary><p class="ok">Jawaban: Query dioptimalkan sebelum data dibaca</p><p>Mode lazy hanya membaca kolom dan baris yang perlu.</p></details>
 <a class="cta" href="/#pda-9-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pda/sql-dari-python-sqlite3-read-sql">SQL dari Python: sqlite3 &amp; read_sql</a></p><p>Berikutnya: <a href="/belajar/pda/pengantar-scikit-learn">Pengantar scikit-learn</a></p>

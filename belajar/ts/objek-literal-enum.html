@@ -39,10 +39,10 @@ sicepat 3</code></pre>
 type Pesanan = { id: number; status: Status; catatan?: string };
 const p: Pesanan = { id: 1, status: &quot;dikirim&quot; };
 // p.status = &quot;batal&quot;;  // error
-console.log(p.status);</code></pre></details></li><li><p>Ubah union literal menjadi objek <code>as const</code> agar nilainya bisa dipakai saat runtime.</p><details><summary>Petunjuk</summary><p>Ambil tipe dari objek dengan typeof dan keyof.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TYPESCRIPT</div><pre><code>const STATUS = { BARU: &quot;baru&quot;, DIKIRIM: &quot;dikirim&quot; } as const;
+console.log(p.status);</code></pre><div class="lbl">KELUARAN</div><pre><code>dikirim</code></pre></details></li><li><p>Ubah union literal menjadi objek <code>as const</code> agar nilainya bisa dipakai saat runtime.</p><details><summary>Petunjuk</summary><p>Ambil tipe dari objek dengan typeof dan keyof.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TYPESCRIPT</div><pre><code>const STATUS = { BARU: &quot;baru&quot;, DIKIRIM: &quot;dikirim&quot; } as const;
 type Status = typeof STATUS[keyof typeof STATUS];
 const s: Status = STATUS.DIKIRIM;
-console.log(s, Object.values(STATUS).length);</code></pre></details></li></ol>
+console.log(s, Object.values(STATUS).length);</code></pre><div class="lbl">KELUARAN</div><pre><code>dikirim 2</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Union string sebagai pengganti enum</summary><p><code>enum</code> menghasilkan kode JavaScript tambahan. Union literal seperti <code>"baru" | "dikirim"</code> sama amannya, tanpa kode tambahan, dan nilainya bisa langsung dibandingkan dengan string dari API.</p><div class="lbl">KODE PEMULA</div><pre><code>enum Status { Baru = &quot;baru&quot;, Dikirim = &quot;dikirim&quot;, Selesai = &quot;selesai&quot; }
 function label(s: Status): string {
   return s === Status.Dikirim ? &quot;Dalam perjalanan&quot; : &quot;Lainnya&quot;;

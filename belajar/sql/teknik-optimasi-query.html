@@ -34,6 +34,22 @@ FROM pelanggan p LEFT JOIN pesanan s ON s.pelanggan_id = p.id
 GROUP BY p.id, p.nama
 ORDER BY banyak_pesanan DESC;</code></pre>
 <h2>Tantangan</h2><ol><li>Tulis query efisien yang hanya mengambil kolom nama dan harga dari 3 produk termahal kategori Minuman.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Tulis ulang query ini agar lebih efisien: <code>SELECT * FROM produk WHERE UPPER(kategori) = 'MINUMAN'</code></p><details><summary>Petunjuk</summary><p>Ambil kolom yang perlu saja dan jangan bungkus kolom berindex dengan fungsi.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">SQL</div><pre><code>SELECT nama, harga FROM produk WHERE kategori = &#x27;Minuman&#x27;;</code></pre><div class="lbl">KELUARAN</div><pre><code>nama       | harga
+-----------+-------
+Kopi Gayo  | 85000
+Teh Melati | 25000
+Madu Hutan | 120000</code></pre></details></li><li><p>Ganti subquery IN dengan EXISTS untuk mencari pelanggan yang pernah memesan.</p><details><summary>Petunjuk</summary><p>EXISTS berhenti begitu satu baris ditemukan.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">SQL</div><pre><code>SELECT nama
+FROM pelanggan p
+WHERE EXISTS (SELECT 1 FROM pesanan s WHERE s.pelanggan_id = p.id)
+ORDER BY nama;</code></pre><div class="lbl">KELUARAN</div><pre><code>nama
+-----
+Andi
+Budi
+Citra
+Dewi
+Eko
+Fitri
+Hadi</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Ukur dengan EXPLAIN sebelum mengoptimasi.</li><li>Index kolom WHERE dan JOIN.</li><li>Pilih kolom seperlunya; saring sedini mungkin.</li><li>Jangan bungkus kolom berindeks dengan fungsi.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa &lt;code&gt;WHERE UPPER(kota) = ...&lt;/code&gt; bisa lambat?</summary><p class="ok">Jawaban: Index pada kota tidak bisa dipakai</p><p>Database harus menghitung UPPER untuk setiap baris.</p></details><details><summary>Arti selective projection?</summary><p class="ok">Jawaban: Memilih kolom yang dibutuhkan saja</p><p>Lebih sedikit data dibaca dan dikirim.</p></details>
 <a class="cta" href="/#sql-13-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/stored-procedure-function">Stored procedure &amp; function</a></p><p>Berikutnya: <a href="/belajar/sql/cte-with">CTE: WITH</a></p>

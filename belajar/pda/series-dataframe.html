@@ -50,6 +50,27 @@ min      120000.0
 75%      348750.0
 max      450000.0
 Name: omzet, dtype: float64</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat DataFrame 4 produk (nama, kategori, harga, stok), tambah kolom nilai_stok = harga x stok, lalu tampilkan info bentuk dan tipe kolom.</p><details><summary>Petunjuk</summary><p>pd.DataFrame(dict), df["baru"] = ..., df.shape, df.dtypes.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import pandas as pd
+
+df = pd.DataFrame({
+    &quot;nama&quot;: [&quot;Kopi&quot;, &quot;Teh&quot;, &quot;Roti&quot;, &quot;Susu&quot;],
+    &quot;kategori&quot;: [&quot;Minuman&quot;, &quot;Minuman&quot;, &quot;Makanan&quot;, &quot;Minuman&quot;],
+    &quot;harga&quot;: [18000, 8000, 12000, 15000],
+    &quot;stok&quot;: [20, 50, 15, 30],
+})
+df[&quot;nilai_stok&quot;] = df[&quot;harga&quot;] * df[&quot;stok&quot;]
+print(df)
+print(df.shape)</code></pre><div class="lbl">KELUARAN</div><pre><code>   nama kategori  harga  stok  nilai_stok
+0  Kopi  Minuman  18000    20      360000
+1   Teh  Minuman   8000    50      400000
+2  Roti  Makanan  12000    15      180000
+3  Susu  Minuman  15000    30      450000
+(4, 5)</code></pre></details></li><li><p>Buat Series omzet per hari dengan indeks nama hari, lalu ambil hari dengan omzet tertinggi dan rata-ratanya.</p><details><summary>Petunjuk</summary><p>pd.Series(nilai, index=...), idxmax(), mean().</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import pandas as pd
+
+omzet = pd.Series([1.2, 0.9, 1.5, 2.1, 2.8], index=[&quot;Sen&quot;, &quot;Sel&quot;, &quot;Rab&quot;, &quot;Kam&quot;, &quot;Jum&quot;])
+print(omzet.idxmax(), omzet.max())
+print(round(omzet.mean(), 2))</code></pre><div class="lbl">KELUARAN</div><pre><code>Jum 2.8
+1.7</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Kolom baru tanpa loop baris</summary><p><code>iterrows</code> memproses baris satu per satu dengan Python biasa. Operasi kolom (vektor) dikerjakan pandas sekaligus dan bisa ratusan kali lebih cepat untuk data besar.</p><div class="lbl">KODE PEMULA</div><pre><code>import pandas as pd
 df = pd.DataFrame({&quot;kota&quot;: [&quot;Medan&quot;, &quot;Bandung&quot;, &quot;Medan&quot;, &quot;Ambon&quot;, &quot;Bandung&quot;], &quot;produk&quot;: [&quot;Kopi&quot;, &quot;Teh&quot;, &quot;Teh&quot;, &quot;Kopi&quot;, &quot;Kopi&quot;], &quot;harga&quot;: [85000, 25000, 25000, 85000, 85000], &quot;qty&quot;: [2, 4, 1, 3, 1]})
 

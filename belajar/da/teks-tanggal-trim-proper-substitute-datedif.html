@@ -31,6 +31,9 @@ B2: &quot;Rp 85.000&quot;
 =CONCAT(C2;&quot; - &quot;;A2)  atau  =C2&amp;&quot; - &quot;&amp;A2           → &quot;Andi - Jakarta&quot;
 
 =DATEDIF(&quot;15/01/2023&quot;;&quot;30/10/2026&quot;;&quot;M&quot;)           → 45 bulan</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Sel A2 berisi "  rina   SIREGAR ". Rapikan menjadi "Rina Siregar", lalu ubah "Rp18.000" di B2 menjadi angka.</p><details><summary>Petunjuk</summary><p>PROPER(TRIM(...)); SUBSTITUTE untuk membuang "Rp" dan titik, lalu VALUE.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>=PROPER(TRIM(A2))
+=VALUE(SUBSTITUTE(SUBSTITUTE(B2;&quot;Rp&quot;;&quot;&quot;);&quot;.&quot;;&quot;&quot;))</code></pre></details></li><li><p>Tanggal lahir di A2. Tulis rumus umur dalam tahun pada hari ini dan nama hari lahirnya.</p><details><summary>Petunjuk</summary><p>DATEDIF(awal;akhir;"Y"), TEXT(tanggal;"dddd").</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>=DATEDIF(A2;TODAY();&quot;Y&quot;)
+=TEXT(A2;&quot;dddd&quot;)</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>TRIM + PROPER untuk merapikan nama.</li><li>SUBSTITUTE + VALUE untuk angka berformat teks.</li><li>DATEDIF untuk selisih tanggal.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Mengubah &quot;Rp 25.000&quot; menjadi angka 25000?</summary><p class="ok">Jawaban: VALUE(SUBSTITUTE(SUBSTITUTE(x;&quot;Rp &quot;;&quot;&quot;);&quot;.&quot;;&quot;&quot;))</p><p>Buang simbol dulu, lalu ubah ke angka.</p></details>
 <a class="cta" href="/#da-2-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/da/fungsi-dasar-sum-average-count-if">Fungsi dasar: SUM, AVERAGE, COUNT, IF</a></p><p>Berikutnya: <a href="/belajar/da/lookup-pivot-table">Lookup &amp; pivot table</a></p>

@@ -27,6 +27,12 @@
 <div class="lbl">IN dan NOT IN</div><pre><code>SELECT nama, kota FROM pelanggan WHERE kota NOT IN (&#x27;Jakarta&#x27;, &#x27;Bandung&#x27;);</code></pre>
 <div class="lbl">Rentang tanggal</div><pre><code>SELECT id, tanggal, status FROM pesanan WHERE tanggal BETWEEN &#x27;2024-10-01&#x27; AND &#x27;2024-10-31&#x27;;</code></pre>
 <h2>Tantangan</h2><ol><li>Tampilkan id dan status pesanan yang statusnya selesai atau dikirim, dan terjadi pada bulan November 2024.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Tampilkan pelanggan yang kotanya belum diisi.</p><details><summary>Petunjuk</summary><p>Pakai IS NULL, bukan = NULL.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">SQL</div><pre><code>SELECT id, nama FROM pelanggan WHERE kota IS NULL;</code></pre><div class="lbl">KELUARAN</div><pre><code>id | nama
+---+-----
+7  | Gita</code></pre></details></li><li><p>Tampilkan produk yang stoknya habis atau harganya di atas 100.000.</p><details><summary>Petunjuk</summary><p>Gabungkan kondisi dengan OR.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">SQL</div><pre><code>SELECT nama, harga, stok FROM produk WHERE stok = 0 OR harga &gt; 100000;</code></pre><div class="lbl">KELUARAN</div><pre><code>nama           | harga  | stok
+---------------+--------+-----
+Madu Hutan     | 120000 | 15
+Rendang Kaleng | 75000  | 0</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Rentang dan daftar nilai</summary><p><code>BETWEEN</code> mencakup kedua batas, dan <code>IN</code> menggantikan rangkaian <code>OR</code>. Hasilnya sama, tetapi maksud query langsung terbaca.</p><div class="lbl">KODE PEMULA</div><pre><code>SELECT nama, kategori, harga
 FROM produk
 WHERE harga &gt;= 10000 AND harga &lt;= 30000

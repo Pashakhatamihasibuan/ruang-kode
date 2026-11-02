@@ -27,6 +27,13 @@ Laporan omzet harian            jam             batch (Airflow 02.00)
 Dashboard stok gudang           menit           micro-batch (tiap 5 menit)
 Blokir transaksi mencurigakan   &lt; 1 detik       streaming (Kafka + Flink)
 Notifikasi &quot;kurir sudah dekat&quot;  detik           streaming</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Pilih batch atau streaming: (a) laporan omzet harian, (b) deteksi penipuan kartu, (c) rekap gaji bulanan, (d) stok gudang real time.</p><details><summary>Petunjuk</summary><p>Seberapa cepat hasil dibutuhkan?</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>(a) batch
+(b) streaming
+(c) batch
+(d) streaming (atau micro-batch beberapa detik)</code></pre></details></li><li><p>Apa itu event time dan processing time, dan kenapa penting di streaming?</p><details><summary>Petunjuk</summary><p>Data bisa datang terlambat.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Event time: kapan peristiwa terjadi (transaksi di kasir).
+Processing time: kapan sistem memprosesnya.
+Data dari HP yang offline bisa datang terlambat; agregasi per jam harus
+memakai event time dan watermark agar data terlambat tetap masuk jam yang benar.</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Batch: terjadwal, sederhana, terlambat.</li><li>Streaming: per peristiwa, cepat, rumit.</li><li>Hybrid umum dipakai.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Laporan keuangan bulanan sebaiknya memakai?</summary><p class="ok">Jawaban: Batch</p><p>Latensi jam atau hari dapat diterima.</p></details>
 <a class="cta" href="/#de-5-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/de/format-kolom-partisi-parquet">Format kolom &amp; partisi: Parquet</a></p><p>Berikutnya: <a href="/belajar/de/idempotensi-upsert">Idempotensi &amp; upsert</a></p>

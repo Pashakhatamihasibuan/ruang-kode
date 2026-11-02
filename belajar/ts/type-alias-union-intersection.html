@@ -37,10 +37,10 @@ console.log(tampil(a.id), tampil(b.id), b.dibuat);</code></pre>
 type Produk = { nama: string; harga: number };
 type ProdukDb = Produk &amp; Waktu;
 const p: ProdukDb = { nama: &quot;Kopi&quot;, harga: 18000, dibuat: &quot;2026-01-01&quot;, diubah: &quot;2026-02-01&quot; };
-console.log(Object.keys(p).length);</code></pre></details></li><li><p>Buat fungsi yang menerima id berupa number atau string, lalu selalu mengembalikan string.</p><details><summary>Petunjuk</summary><p>Union number | string, persempit dengan typeof.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TYPESCRIPT</div><pre><code>function keTeks(id: number | string): string {
+console.log(Object.keys(p).length);</code></pre><div class="lbl">KELUARAN</div><pre><code>4</code></pre></details></li><li><p>Buat fungsi yang menerima id berupa number atau string, lalu selalu mengembalikan string.</p><details><summary>Petunjuk</summary><p>Union number | string, persempit dengan typeof.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TYPESCRIPT</div><pre><code>function keTeks(id: number | string): string {
   return typeof id === &quot;number&quot; ? id.toString().padStart(4, &quot;0&quot;) : id.toUpperCase();
 }
-console.log(keTeks(7), keTeks(&quot;ab12&quot;));</code></pre></details></li></ol>
+console.log(keTeks(7), keTeks(&quot;ab12&quot;));</code></pre><div class="lbl">KELUARAN</div><pre><code>0007 AB12</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Optional chaining dan ?? untuk data bersarang</summary><p><code>?.</code> berhenti dengan <code>undefined</code> begitu ada bagian yang kosong, dan <code>??</code> memberi nilai cadangan. Tidak perlu rangkaian <code>&amp;&amp;</code>.</p><div class="lbl">KODE PEMULA</div><pre><code>type Pelanggan = { nama: string; alamat?: { kota?: string } };
 const p: Pelanggan = { nama: &quot;Sari&quot; };
 let kota: string;

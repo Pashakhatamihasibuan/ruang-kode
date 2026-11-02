@@ -58,9 +58,12 @@ Bayar                 66.150</code></pre>
 <h2>Soal latihan</h2><ol><li><p>Tambahkan PPN 11% (dibulatkan) dari harga setelah diskon, lalu tampilkan total akhir.</p><details><summary>Petunjuk</summary><p>import kotlin.math.roundToInt; (setelahDiskon * 11 / 100.0).roundToInt().</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>    val setelahDiskon = total - diskon
     val ppn = (setelahDiskon * 11 / 100.0).roundToInt()
     println(&quot;PPN 11%&quot;.padEnd(18) + rp(ppn).padStart(10))
-    println(&quot;Total akhir&quot;.padEnd(18) + rp(setelahDiskon + ppn).padStart(10))</code></pre></details></li><li><p>Cetak barang diurutkan dari subtotal terbesar.</p><details><summary>Petunjuk</summary><p>sortedByDescending { it.subtotal }.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>    for (b in keranjang.sortedByDescending { it.subtotal }) {
+    println(&quot;Total akhir&quot;.padEnd(18) + rp(setelahDiskon + ppn).padStart(10))</code></pre><div class="lbl">KELUARAN</div><pre><code>PPN 11%                7.277
+Total akhir           73.427</code></pre></details></li><li><p>Cetak barang diurutkan dari subtotal terbesar.</p><details><summary>Petunjuk</summary><p>sortedByDescending { it.subtotal }.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>    for (b in keranjang.sortedByDescending { it.subtotal }) {
         println(&quot;${b.nama}: ${rp(b.subtotal)}&quot;)
-    }</code></pre></details></li><li><p>Ubah diskon menjadi bertingkat dengan when: 15% jika total ≥ 100.000, 10% jika ≥ 50.000, selain itu 0.</p><details><summary>Petunjuk</summary><p>when { total >= 100000 -> ...; total >= 50000 -> ...; else -> 0 }</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>    val diskon = when {
+    }</code></pre><div class="lbl">KELUARAN</div><pre><code>Kopi susu: 36.000
+Roti bakar: 22.500
+Air mineral: 15.000</code></pre></details></li><li><p>Ubah diskon menjadi bertingkat dengan when: 15% jika total ≥ 100.000, 10% jika ≥ 50.000, selain itu 0.</p><details><summary>Petunjuk</summary><p>when { total >= 100000 -> ...; total >= 50000 -> ...; else -> 0 }</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>    val diskon = when {
         total &gt;= 100_000 -&gt; total * 15 / 100
         total &gt;= 50_000 -&gt; total / 10
         else -&gt; 0

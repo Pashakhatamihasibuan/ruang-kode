@@ -45,6 +45,27 @@ Surabaya          2  620000    29.4
 Bandung           2  370000    17.5
 Medan             1  340000    16.1
 Keripik</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Hitung omzet total, rata-rata, dan jumlah transaksi per kota, urut dari omzet terbesar.</p><details><summary>Petunjuk</summary><p>groupby("kota").agg(total=("omzet","sum"), ...).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import pandas as pd
+
+df = pd.DataFrame({
+    &quot;kota&quot;: [&quot;Medan&quot;, &quot;Bandung&quot;, &quot;Medan&quot;, &quot;Jakarta&quot;, &quot;Jakarta&quot;, &quot;Medan&quot;],
+    &quot;omzet&quot;: [36000, 24000, 18000, 90000, 45000, 12000],
+})
+hasil = (df.groupby(&quot;kota&quot;)
+           .agg(total=(&quot;omzet&quot;, &quot;sum&quot;), rata=(&quot;omzet&quot;, &quot;mean&quot;), trx=(&quot;omzet&quot;, &quot;size&quot;))
+           .sort_values(&quot;total&quot;, ascending=False))
+print(hasil)</code></pre><div class="lbl">KELUARAN</div><pre><code>          total     rata  trx
+kota                         
+Jakarta  135000  67500.0    2
+Medan     66000  22000.0    3
+Bandung   24000  24000.0    1</code></pre></details></li><li><p>Tambahkan kolom persentase kontribusi setiap transaksi terhadap total kotanya memakai <code>transform</code>.</p><details><summary>Petunjuk</summary><p>transform("sum") mengembalikan nilai sepanjang baris asli.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import pandas as pd
+
+df = pd.DataFrame({&quot;kota&quot;: [&quot;Medan&quot;, &quot;Medan&quot;, &quot;Bandung&quot;], &quot;omzet&quot;: [30000, 10000, 24000]})
+df[&quot;persen&quot;] = (df[&quot;omzet&quot;] / df.groupby(&quot;kota&quot;)[&quot;omzet&quot;].transform(&quot;sum&quot;) * 100).round(1)
+print(df)</code></pre><div class="lbl">KELUARAN</div><pre><code>      kota  omzet  persen
+0    Medan  30000    75.0
+1    Medan  10000    25.0
+2  Bandung  24000   100.0</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Agregasi bernama dalam satu groupby</summary><p>Daripada melooping setiap kota lalu menyaring, <code>groupby</code> dengan <code>agg</code> bernama menghitung beberapa ringkasan sekaligus dan langsung memberi nama kolomnya.</p><div class="lbl">KODE PEMULA</div><pre><code>import pandas as pd
 df = pd.DataFrame({&quot;kota&quot;: [&quot;Medan&quot;, &quot;Bandung&quot;, &quot;Medan&quot;, &quot;Ambon&quot;, &quot;Bandung&quot;], &quot;produk&quot;: [&quot;Kopi&quot;, &quot;Teh&quot;, &quot;Teh&quot;, &quot;Kopi&quot;, &quot;Kopi&quot;], &quot;harga&quot;: [85000, 25000, 25000, 85000, 85000], &quot;qty&quot;: [2, 4, 1, 3, 1]})
 

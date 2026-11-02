@@ -34,6 +34,18 @@ ANGGOTA 1 ──&lt; PINJAMAN       satu anggota, banyak pinjaman
 PINJAMAN 1 ──&lt; ANGSURAN      satu pinjaman, banyak angsuran
 
 Startup kursus online: PENGGUNA &gt;──&lt; KURSUS lewat tabel PENDAFTARAN</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Rancang entitas dan relasi untuk sistem peminjaman buku perpustakaan.</p><details><summary>Petunjuk</summary><p>Siswa, Buku, Peminjaman; tentukan kardinalitas.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>SISWA (nis PK, nama, kelas)
+BUKU (kode_buku PK, judul, penulis)
+PEMINJAMAN (id PK, nis FK, kode_buku FK, tgl_pinjam, tgl_kembali)
+
+SISWA 1 --- N PEMINJAMAN N --- 1 BUKU
+(relasi banyak-ke-banyak siswa-buku dipecah oleh tabel PEMINJAMAN)</code></pre></details></li><li><p>Tulis CREATE TABLE untuk tabel PEMINJAMAN dengan kunci asing ke SISWA dan BUKU.</p><details><summary>Petunjuk</summary><p>PRIMARY KEY, REFERENCES, NOT NULL.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">SQL</div><pre><code>CREATE TABLE peminjaman (
+  id          INTEGER PRIMARY KEY,
+  nis         TEXT NOT NULL REFERENCES siswa(nis),
+  kode_buku   TEXT NOT NULL REFERENCES buku(kode_buku),
+  tgl_pinjam  DATE NOT NULL,
+  tgl_kembali DATE
+);</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>ERD: entitas, atribut, relasi.</li><li>Primary key unik; foreign key menghubungkan tabel.</li><li>Relasi banyak-ke-banyak memakai tabel penghubung.</li><li>Normalisasi: setiap fakta disimpan di satu tempat.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Satu kelas punya banyak siswa. Relasinya?</summary><p class="ok">Jawaban: Satu-ke-banyak</p><p>Kelas 1 ── banyak Siswa.</p></details><details><summary>Siswa bisa ikut banyak ekskul dan ekskul punya banyak siswa. Cara menyimpannya?</summary><p class="ok">Jawaban: Tabel penghubung (mis. KEANGGOTAAN_EKSKUL)</p><p>Relasi banyak-ke-banyak dipecah menjadi dua relasi satu-ke-banyak.</p></details>
 <a class="cta" href="/#msi-4-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/msi/database-dan-dbms">Database dan DBMS</a></p><p>Berikutnya: <a href="/belajar/msi/data-warehouse-bi-dan-kualitas-data">Data warehouse, BI, dan kualitas data</a></p>

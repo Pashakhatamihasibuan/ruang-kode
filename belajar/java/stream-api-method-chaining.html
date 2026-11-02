@@ -75,7 +75,8 @@ public class Main {
         System.out.println(hasil);
         System.out.println(hasil.stream().mapToInt(Integer::intValue).sum());
     }
-}</code></pre></details></li><li><p>Kelompokkan nama berdasarkan huruf awalnya dan hitung jumlahnya dengan Collectors.groupingBy.</p><details><summary>Petunjuk</summary><p>groupingBy(n -> n.charAt(0), TreeMap::new, Collectors.counting()) agar urut.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>import java.util.List;
+}</code></pre><div class="lbl">KELUARAN</div><pre><code>[10800, 16200, 22500, 36000]
+85500</code></pre></details></li><li><p>Kelompokkan nama berdasarkan huruf awalnya dan hitung jumlahnya dengan Collectors.groupingBy.</p><details><summary>Petunjuk</summary><p>groupingBy(n -> n.charAt(0), TreeMap::new, Collectors.counting()) agar urut.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>import java.util.List;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -86,7 +87,7 @@ public class Main {
             Collectors.groupingBy(n -&gt; n.charAt(0), TreeMap::new, Collectors.counting()));
         System.out.println(hasil);
     }
-}</code></pre></details></li></ol>
+}</code></pre><div class="lbl">KELUARAN</div><pre><code>{R=2, S=2, T=1}</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Menyaring dan menjumlah dengan stream</summary><p>Loop dengan variabel penampung dan if bisa ditulis sebagai rangkaian langkah yang terbaca seperti kalimat: saring, ubah, jumlahkan.</p><div class="lbl">KODE PEMULA</div><pre><code>int[] harga = {12_000, 45_000, 8_000, 30_000};
 int total = 0;
 for (int i = 0; i &lt; harga.length; i++) {

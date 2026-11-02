@@ -27,6 +27,11 @@
   silver/transaksi/dt=2024-10-01/part-0001.parquet  ← tipe benar, duplikat dibuang
   gold/fakta_penjualan/                             ← model bintang, siap BI
   gold/fitur_pelanggan/                             ← fitur untuk model ML</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Apa itu arsitektur medallion (bronze, silver, gold)?</p><details><summary>Petunjuk</summary><p>Lapisan kualitas data di lakehouse.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Bronze: data mentah apa adanya dari sumber.
+Silver: data dibersihkan, disamakan formatnya, digabungkan.
+Gold  : tabel siap pakai untuk dashboard dan model (agregat bisnis).</code></pre></details></li><li><p>Kapan organisasi butuh data mesh?</p><details><summary>Petunjuk</summary><p>Pikirkan ukuran organisasi dan kemacetan tim data pusat.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Saat organisasi besar dengan banyak domain (pemasaran, logistik, keuangan)
+dan tim data pusat menjadi kemacetan. Setiap domain memiliki dan
+menerbitkan &quot;data product&quot; sendiri dengan standar bersama (tata kelola federasi).</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Warehouse terstruktur; lake mentah; lakehouse = keduanya.</li><li>Medallion: bronze → silver → gold.</li><li>Mesh = kepemilikan per domain.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Lapisan medallion yang berisi data siap dashboard?</summary><p class="ok">Jawaban: Gold</p><p>Gold berisi model bisnis.</p></details>
 <a class="cta" href="/#de-4-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/de/slowly-changing-dimension-scd-tipe-2">Slowly changing dimension (SCD tipe 2)</a></p><p>Berikutnya: <a href="/belajar/de/format-kolom-partisi-parquet">Format kolom &amp; partisi: Parquet</a></p>

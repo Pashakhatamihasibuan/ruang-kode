@@ -46,9 +46,9 @@ console.log(harga, baru.length);</code></pre>
 ];
 const habis = produk.filter(p =&gt; p.stok === 0).map(p =&gt; p.nama);
 const nilai = produk.reduce((t, p) =&gt; t + p.harga * p.stok, 0);
-console.log(habis, nilai);</code></pre></details></li><li><p>Urutkan produk dari harga termurah tanpa mengubah array aslinya.</p><details><summary>Petunjuk</summary><p>Salin dulu dengan [...arr] atau pakai toSorted().</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>const harga = [22500, 12000, 18000];
+console.log(habis, nilai);</code></pre><div class="lbl">KELUARAN</div><pre><code>[ &#x27;Teh&#x27; ] 270000</code></pre></details></li><li><p>Urutkan produk dari harga termurah tanpa mengubah array aslinya.</p><details><summary>Petunjuk</summary><p>Salin dulu dengan [...arr] atau pakai toSorted().</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>const harga = [22500, 12000, 18000];
 const urut = [...harga].sort((a, b) =&gt; a - b);
-console.log(urut, harga);</code></pre></details></li></ol>
+console.log(urut, harga);</code></pre><div class="lbl">KELUARAN</div><pre><code>[ 12000, 18000, 22500 ] [ 22500, 12000, 18000 ]</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>map, filter, dan reduce</summary><p>Ketiga method ini mengganti loop dengan variabel penampung. Kodenya terbaca sebagai langkah: saring, ubah, jumlahkan.</p><div class="lbl">KODE PEMULA</div><pre><code>const keranjang = [{ nama: &quot;Kopi&quot;, harga: 85000, qty: 1 }, { nama: &quot;Teh&quot;, harga: 25000, qty: 0 }, { nama: &quot;Gula&quot;, harga: 18000, qty: 2 }];
 let total = 0;
 for (let i = 0; i &lt; keranjang.length; i++) {

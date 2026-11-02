@@ -51,11 +51,15 @@ print(list(itertools.combinations(&quot;ABC&quot;, 2)))</code></pre>
 print(math.sqrt(144))
 print(statistics.mean([3, 7, 8, 10]))
 print(statistics.median([3, 7, 8, 10]))
-print(json.dumps({&quot;nama&quot;: &quot;Rina&quot;, &quot;nilai&quot;: 92}))</code></pre></details></li><li><p>Hitung tanggal jatuh tempo 30 hari setelah 15 Oktober 2026 dan format menjadi "14-11-2026".</p><details><summary>Petunjuk</summary><p>datetime.date, timedelta, strftime("%d-%m-%Y").</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>from datetime import date, timedelta
+print(json.dumps({&quot;nama&quot;: &quot;Rina&quot;, &quot;nilai&quot;: 92}))</code></pre><div class="lbl">KELUARAN</div><pre><code>12.0
+7
+7.5
+{&quot;nama&quot;: &quot;Rina&quot;, &quot;nilai&quot;: 92}</code></pre></details></li><li><p>Hitung tanggal jatuh tempo 30 hari setelah 15 Oktober 2026 dan format menjadi "14-11-2026".</p><details><summary>Petunjuk</summary><p>datetime.date, timedelta, strftime("%d-%m-%Y").</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>from datetime import date, timedelta
 
 tempo = date(2026, 10, 15) + timedelta(days=30)
 print(tempo.strftime(&quot;%d-%m-%Y&quot;))
-print((date(2026, 12, 25) - date(2026, 10, 15)).days)</code></pre></details></li></ol>
+print((date(2026, 12, 25) - date(2026, 10, 15)).days)</code></pre><div class="lbl">KELUARAN</div><pre><code>14-11-2026
+71</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Memeriksa &quot;ada yang&quot; dan &quot;semuanya&quot;</summary><p><code>any</code> dan <code>all</code> menggantikan loop dengan variabel penanda. Keduanya berhenti begitu jawabannya sudah pasti.</p><div class="lbl">KODE PEMULA</div><pre><code>stok = [5, 0, 12, 7]
 ada_habis = False
 for s in stok:

@@ -38,6 +38,18 @@ while True:
         continue
     siapkan_pengiriman(json.loads(m.value()))
     c.commit(m)          # commit setelah berhasil diproses</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis producer Kafka (kafka-python) yang mengirim event pesanan ke topik "pesanan" dengan kunci id pelanggan.</p><details><summary>Petunjuk</summary><p>Kunci yang sama selalu masuk partisi yang sama, sehingga urutannya terjaga.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import json
+from kafka import KafkaProducer
+
+producer = KafkaProducer(
+    bootstrap_servers=&quot;localhost:9092&quot;,
+    key_serializer=str.encode,
+    value_serializer=lambda v: json.dumps(v).encode(),
+)
+producer.send(&quot;pesanan&quot;, key=&quot;pelanggan-17&quot;, value={&quot;id&quot;: 901, &quot;total&quot;: 36000})
+producer.flush()</code></pre></details></li><li><p>Topik punya 6 partisi. Apa yang terjadi jika consumer group berisi 2, 6, dan 8 consumer?</p><details><summary>Petunjuk</summary><p>Satu partisi hanya dibaca satu consumer dalam satu group.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>2 consumer: masing-masing membaca 3 partisi.
+6 consumer: masing-masing 1 partisi (paralel maksimum).
+8 consumer: 6 aktif, 2 menganggur.</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Topik → partisi; urutan per partisi.</li><li>Consumer group berbagi partisi; offset = posisi baca.</li><li>Pesan tersimpan sesuai retensi, bisa dibaca ulang.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Agar semua peristiwa satu pesanan diproses berurutan, producer perlu?</summary><p class="ok">Jawaban: Memakai pesanan_id sebagai key</p><p>Key yang sama → partisi yang sama.</p></details>
 <a class="cta" href="/#de-6-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/de/kontrak-data-validasi-skema">Kontrak data &amp; validasi skema</a></p><p>Berikutnya: <a href="/belajar/de/antrean-pesan-komunikasi-asinkron">Antrean pesan &amp; komunikasi asinkron</a></p>

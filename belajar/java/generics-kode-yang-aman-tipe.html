@@ -74,7 +74,9 @@ public class Main {
         System.out.println(terbesar(List.of(4, 19, 7)));
         System.out.println(terbesar(List.of(&quot;apel&quot;, &quot;jeruk&quot;, &quot;mangga&quot;)));
     }
-}</code></pre></details></li><li><p>Tulis method yang menjumlahkan list angka apa pun (Integer, Double) memakai wildcard.</p><details><summary>Petunjuk</summary><p><code>List&lt;? extends Number&gt;</code> lalu panggil doubleValue().</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>import java.util.List;
+}</code></pre><div class="lbl">KELUARAN</div><pre><code>Kopi 18000
+19
+mangga</code></pre></details></li><li><p>Tulis method yang menjumlahkan list angka apa pun (Integer, Double) memakai wildcard.</p><details><summary>Petunjuk</summary><p><code>List&lt;? extends Number&gt;</code> lalu panggil doubleValue().</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>import java.util.List;
 
 public class Main {
     static double jumlah(List&lt;? extends Number&gt; data) {
@@ -87,7 +89,8 @@ public class Main {
         System.out.println(jumlah(List.of(1, 2, 3)));
         System.out.println(jumlah(List.of(1.5, 2.5)));
     }
-}</code></pre></details></li></ol>
+}</code></pre><div class="lbl">KELUARAN</div><pre><code>6.0
+4.0</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Menghitung kemunculan dengan merge</summary><p>Pola "kalau kunci sudah ada tambah satu, kalau belum isi satu" bisa diganti <code>Map.merge</code>. Diamond <code>&lt;&gt;</code> juga membuat tipe tidak perlu ditulis dua kali.</p><div class="lbl">KODE PEMULA</div><pre><code>String[] belanja = {&quot;kopi&quot;, &quot;teh&quot;, &quot;kopi&quot;, &quot;gula&quot;, &quot;kopi&quot;};
 TreeMap&lt;String, Integer&gt; hitung = new TreeMap&lt;String, Integer&gt;();
 for (String b : belanja) {

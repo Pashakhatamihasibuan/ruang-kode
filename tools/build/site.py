@@ -154,7 +154,7 @@ def make_icons(out):
 # ---------------------------------------------------------------- halaman statis
 CSS = """:root{--bg:#F2F4F8;--surface:#fff;--ink:#152033;--muted:#556175;--line:#D6DDE7;--acc:#255DA2;--code:#101A28;--code-fg:#D9E3EF;--ok:#22744A}
 @media (prefers-color-scheme:dark){:root{--bg:#0C121B;--surface:#131B27;--ink:#E4EAF2;--muted:#98A5B7;--line:#273347;--acc:#79ACEE;--code:#090F17;--ok:#62C98F;color-scheme:dark}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:400 1.02rem/1.65 Inter,"Segoe UI",system-ui,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:400 1.02rem/1.65 Inter,"Segoe UI",system-ui,sans-serif}p,li,summary,td,th,h1,h2,h3{overflow-wrap:anywhere}
 a{color:var(--acc)}header,main,footer{max-width:820px;margin:0 auto;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px))}
 header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:18px;border-bottom:1px solid var(--line)}
 .brand{display:flex;align-items:center;gap:10px;font-weight:600;color:var(--ink);text-decoration:none}.brand i{display:grid;place-items:center;width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#B0441B,#255DA2);color:#fff;font:700 .7rem/1 "JetBrains Mono",monospace;font-style:normal}
@@ -284,7 +284,8 @@ def lesson_body(t, l, book):
         if l.get("so"):
             h.append("<h2>Soal latihan</h2><ol>" + "".join(
                 f"<li><p>{x['q']}</p><details><summary>Petunjuk</summary><p>{x['h']}</p></details>"
-                + (f"<details><summary>Lihat jawaban</summary>{code(x['a'], x.get('lang') or lang)}</details>" if x.get("a") else "") + "</li>"
+                + (f"<details><summary>Lihat jawaban</summary>{code(x['a'], x.get('lang') or lang)}"
+                   + (code(x['out'], "text", "KELUARAN") if x.get("out") is not None else "") + "</details>" if x.get("a") else "") + "</li>"
                 for x in l["so"]) + "</ol>")
         h.append(pros(l, lang))
         if l.get("pts"):

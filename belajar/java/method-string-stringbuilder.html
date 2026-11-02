@@ -71,20 +71,22 @@ Java, Kotlin, SQL
         System.out.println(rapi);
         System.out.println(a);
     }
-}</code></pre></details></li><li><p>Cek apakah "Kasur ini rusak" palindrom (abaikan spasi dan huruf besar).</p><details><summary>Petunjuk</summary><p>Hapus spasi dengan replace, kecilkan huruf, lalu bandingkan dengan new StringBuilder(s).reverse().</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>public class Main {
+}</code></pre><div class="lbl">KELUARAN</div><pre><code>Rina Siregar
+2</code></pre></details></li><li><p>Cek apakah "Kasur ini rusak" palindrom (abaikan spasi dan huruf besar).</p><details><summary>Petunjuk</summary><p>Hapus spasi dengan replace, kecilkan huruf, lalu bandingkan dengan new StringBuilder(s).reverse().</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>public class Main {
     public static void main(String[] args) {
         String s = &quot;Kasur ini rusak&quot;.replace(&quot; &quot;, &quot;&quot;).toLowerCase();
         String balik = new StringBuilder(s).reverse().toString();
         System.out.println(s.equals(balik));
     }
-}</code></pre></details></li><li><p>Kenapa <code>==</code> tidak boleh dipakai untuk membandingkan isi String? Tunjukkan contohnya.</p><details><summary>Petunjuk</summary><p>== membandingkan alamat objek, equals membandingkan isi.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>public class Main {
+}</code></pre><div class="lbl">KELUARAN</div><pre><code>true</code></pre></details></li><li><p>Kenapa <code>==</code> tidak boleh dipakai untuk membandingkan isi String? Tunjukkan contohnya.</p><details><summary>Petunjuk</summary><p>== membandingkan alamat objek, equals membandingkan isi.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>public class Main {
     public static void main(String[] args) {
         String a = &quot;kopi&quot;;
         String b = new String(&quot;kopi&quot;);
         System.out.println(a == b);       // objek berbeda
         System.out.println(a.equals(b));  // isi sama
     }
-}</code></pre></details></li></ol>
+}</code></pre><div class="lbl">KELUARAN</div><pre><code>false
+true</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Menggabungkan isi array dengan pemisah</summary><p>Menyambung string di dalam loop membuat objek baru setiap putaran dan butuh logika tambahan agar koma terakhir tidak ikut. <code>String.join</code> melakukan semuanya dalam satu baris.</p><div class="lbl">KODE PEMULA</div><pre><code>String[] buah = {&quot;apel&quot;, &quot;jeruk&quot;, &quot;mangga&quot;};
 String hasil = &quot;&quot;;
 for (int i = 0; i &lt; buah.length; i++) {

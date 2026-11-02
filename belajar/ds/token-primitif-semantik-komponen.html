@@ -33,6 +33,23 @@
     &quot;primary&quot;: { &quot;bg&quot;: { &quot;$value&quot;: &quot;{color.action.primary}&quot; } }
   }
 }</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis token dalam format DTCG untuk satu warna primitif, satu token semantik yang merujuknya, dan satu token komponen.</p><details><summary>Petunjuk</summary><p>Token semantik merujuk primitif dengan sintaks {nama.token}.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSON</div><pre><code>{
+  &quot;color&quot;: {
+    &quot;blue&quot;: { &quot;600&quot;: { &quot;$type&quot;: &quot;color&quot;, &quot;$value&quot;: &quot;#0B6FA4&quot; } },
+    &quot;action&quot;: { &quot;primary&quot;: { &quot;$type&quot;: &quot;color&quot;, &quot;$value&quot;: &quot;{color.blue.600}&quot; } }
+  },
+  &quot;button&quot;: {
+    &quot;primary&quot;: { &quot;background&quot;: { &quot;$type&quot;: &quot;color&quot;, &quot;$value&quot;: &quot;{color.action.primary}&quot; } }
+  }
+}</code></pre></details></li><li><p>Tulis token yang sama sebagai CSS custom property, lalu pakai di tombol.</p><details><summary>Petunjuk</summary><p>Komponen hanya memakai token semantik/komponen, bukan nilai mentah.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CSS</div><pre><code>:root {
+  --color-blue-600: #0B6FA4;
+  --color-action-primary: var(--color-blue-600);
+  --button-primary-bg: var(--color-action-primary);
+}
+.tombol-utama {
+  background: var(--button-primary-bg);
+  color: #fff;
+}</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Komponen memakai token semantik, bukan kode warna</summary><p>Kode heksa di dalam komponen harus dicari satu per satu saat brand berganti warna. Token semantik menyebut perannya, sehingga perubahan cukup di satu tempat dan mode gelap tinggal mengganti nilai token.</p><div class="lbl">KODE PEMULA</div><pre><code>.tombol-utama { background: #2563EB; color: #FFFFFF; }
 .tombol-utama:hover { background: #1D4ED8; }</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>:root {
   --blue-600: #2563EB;  /* primitif */

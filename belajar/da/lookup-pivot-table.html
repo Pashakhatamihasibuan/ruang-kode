@@ -29,6 +29,12 @@
 PivotTable
  Baris : kota          Kolom : kategori
  Nilai : Sum of omzet  Filter: bulan = Oktober</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Sheet Produk berisi kode di kolom A dan harga di kolom C. Ambil harga untuk kode di B2 memakai XLOOKUP dan VLOOKUP, dengan pesan "Tidak ada" jika tidak ditemukan.</p><details><summary>Petunjuk</summary><p>XLOOKUP(kunci; kolom_cari; kolom_hasil; jika_tidak_ada).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>=XLOOKUP(B2;Produk!A:A;Produk!C:C;&quot;Tidak ada&quot;)
+=IFERROR(VLOOKUP(B2;Produk!A:C;3;FALSE);&quot;Tidak ada&quot;)</code></pre></details></li><li><p>Susun pivot table untuk menjawab "omzet per kota per bulan dan kota mana yang tumbuh tercepat".</p><details><summary>Petunjuk</summary><p>Tentukan baris, kolom, nilai, dan filter.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Baris  : kota
+Kolom  : bulan (kelompokkan tanggal per bulan)
+Nilai  : SUM omzet
+Filter : kategori produk (opsional)
+Lalu tambah kolom hitung % pertumbuhan bulan terakhir vs sebelumnya dan urutkan.</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>XLOOKUP menggantikan VLOOKUP</summary><p>VLOOKUP memakai nomor kolom yang rusak saat ada kolom disisipkan, hanya bisa mencari ke kanan, dan bawaannya mencocokkan perkiraan. XLOOKUP (Excel 365 dan Google Sheets) menunjuk kolom langsung, bisa ke kiri, dan punya nilai cadangan bila tidak ditemukan.</p><div class="lbl">KODE PEMULA</div><pre><code>=VLOOKUP(A2; Produk!A:D; 4; FALSE)</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>=XLOOKUP(A2; Produk!A:A; Produk!D:D; &quot;Tidak ada&quot;)</code></pre></details>
 <h2>Poin penting</h2><ul><li>VLOOKUP dengan FALSE; XLOOKUP lebih fleksibel.</li><li>PivotTable = GROUP BY versi spreadsheet.</li><li>PivotChart sesuai pertanyaan.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa argumen terakhir VLOOKUP sebaiknya FALSE?</summary><p class="ok">Jawaban: Agar pencocokan persis, bukan perkiraan</p><p>TRUE mencari perkiraan dan butuh data terurut.</p></details>

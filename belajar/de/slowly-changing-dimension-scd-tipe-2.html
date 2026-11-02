@@ -41,6 +41,14 @@ print(dim.to_string(index=False))</code></pre>
   1            41 Bandung   2023-01-15     2024-06-01  False
   2            42   Medan   2023-03-02     9999-12-31   True
   3            41 Jakarta   2024-06-01     9999-12-31   True</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Pelanggan Rina pindah dari Medan ke Bandung pada 2026-10-01. Tulis SQL SCD tipe 2: tutup baris lama dan tambah baris baru.</p><details><summary>Petunjuk</summary><p>Kolom berlaku_dari, berlaku_sampai, aktif.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">SQL</div><pre><code>UPDATE dim_pelanggan
+SET berlaku_sampai = DATE &#x27;2026-09-30&#x27;, aktif = FALSE
+WHERE id_pelanggan = 17 AND aktif = TRUE;
+
+INSERT INTO dim_pelanggan (id_pelanggan, nama, kota, berlaku_dari, berlaku_sampai, aktif)
+VALUES (17, &#x27;Rina&#x27;, &#x27;Bandung&#x27;, DATE &#x27;2026-10-01&#x27;, DATE &#x27;9999-12-31&#x27;, TRUE);</code></pre></details></li><li><p>Bedakan SCD tipe 1 dan tipe 2. Kapan memakai masing-masing?</p><details><summary>Petunjuk</summary><p>Timpa atau simpan riwayat.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Tipe 1: nilai lama ditimpa, tanpa riwayat. Cocok untuk koreksi salah ketik.
+Tipe 2: baris baru dengan rentang berlaku, riwayat tersimpan.
+Cocok jika laporan masa lalu harus memakai nilai saat itu (misal kota pelanggan).</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Tipe 1 menimpa; tipe 2 menyimpan riwayat.</li><li>Surrogate key per versi + rentang berlaku.</li><li>Fakta merujuk versi yang berlaku saat transaksi.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Analis ingin omzet per kota sesuai alamat pelanggan SAAT transaksi. Tipe SCD yang diperlukan?</summary><p class="ok">Jawaban: Tipe 2</p><p>Tipe 2 menyimpan riwayat.</p></details>
 <a class="cta" href="/#de-4-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/de/nosql-cap-skala">NoSQL, CAP &amp; skala</a></p><p>Berikutnya: <a href="/belajar/de/warehouse-lake-lakehouse-mesh">Warehouse, lake, lakehouse &amp; mesh</a></p>

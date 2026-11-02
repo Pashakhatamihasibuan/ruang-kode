@@ -58,7 +58,7 @@ print(nilai)</code></pre>
 riwayat = deque(maxlen=3)
 for q in [&quot;kopi&quot;, &quot;teh&quot;, &quot;roti&quot;, &quot;susu&quot;]:
     riwayat.append(q)
-print(list(riwayat))</code></pre></details></li><li><p>Ambil 3 produk termahal dengan <code>heapq.nlargest</code>, dan tentukan nilai huruf dari skor memakai <code>bisect</code>.</p><details><summary>Petunjuk</summary><p>bisect_right(batas, skor) memberi indeks kelompok.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import heapq
+print(list(riwayat))</code></pre><div class="lbl">KELUARAN</div><pre><code>[&#x27;teh&#x27;, &#x27;roti&#x27;, &#x27;susu&#x27;]</code></pre></details></li><li><p>Ambil 3 produk termahal dengan <code>heapq.nlargest</code>, dan tentukan nilai huruf dari skor memakai <code>bisect</code>.</p><details><summary>Petunjuk</summary><p>bisect_right(batas, skor) memberi indeks kelompok.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import heapq
 from bisect import bisect_right
 
 harga = {&quot;kopi&quot;: 18000, &quot;teh&quot;: 8000, &quot;roti&quot;: 12000, &quot;kue&quot;: 25000}
@@ -67,7 +67,10 @@ print(heapq.nlargest(3, harga, key=harga.get))
 batas = [60, 70, 80, 90]
 huruf = &quot;EDCBA&quot;
 for skor in (55, 75, 90):
-    print(skor, huruf[bisect_right(batas, skor)])</code></pre></details></li></ol>
+    print(skor, huruf[bisect_right(batas, skor)])</code></pre><div class="lbl">KELUARAN</div><pre><code>[&#x27;kue&#x27;, &#x27;kopi&#x27;, &#x27;roti&#x27;]
+55 E
+75 C
+90 A</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li><code>deque</code> untuk antrean, bukan <code>list.pop(0)</code>.</li><li><code>deque(maxlen=n)</code> menyimpan n item terakhir.</li><li><code>heapq</code> = min-heap; simpan tuple (prioritas, data).</li><li><code>bisect</code> = binary search pada list urut.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa &lt;code&gt;list.pop(0)&lt;/code&gt; lambat untuk antrean besar?</summary><p class="ok">Jawaban: Semua elemen digeser: O(n)</p><p>deque.popleft() O(1).</p></details><details><summary>&lt;code&gt;heapq.heappop&lt;/code&gt; mengambil elemen?</summary><p class="ok">Jawaban: Terkecil</p><p>heapq adalah min-heap.</p></details>
 <a class="cta" href="/#python-10-16">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/heap-priority-queue">Heap &amp; priority queue</a></p><p>Berikutnya: <a href="/belajar/python/anotasi-tipe-modul-typing">Anotasi tipe &amp; modul typing</a></p>

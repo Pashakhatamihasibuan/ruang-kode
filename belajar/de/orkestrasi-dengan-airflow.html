@@ -44,6 +44,28 @@ def penjualan_harian():
     muat(ekstrak()) &gt;&gt; transformasi()
 
 penjualan_harian()</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis DAG Airflow harian dengan tiga tugas berurutan: ekstrak, transformasi, muat.</p><details><summary>Petunjuk</summary><p>Pakai TaskFlow API (@dag, @task) dan schedule="@daily".</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>from datetime import datetime
+from airflow.decorators import dag, task
+
+@dag(schedule=&quot;@daily&quot;, start_date=datetime(2026, 11, 1), catchup=False, tags=[&quot;penjualan&quot;])
+def penjualan_harian():
+    @task
+    def ekstrak():
+        return [{&quot;kode&quot;: &quot;K1&quot;, &quot;jumlah&quot;: 5}]
+
+    @task
+    def transformasi(baris):
+        return [r | {&quot;omzet&quot;: r[&quot;jumlah&quot;] * 18000} for r in baris]
+
+    @task
+    def muat(baris):
+        print(f&quot;memuat {len(baris)} baris&quot;)
+
+    muat(transformasi(ekstrak()))
+
+penjualan_harian()</code></pre></details></li><li><p>Apa itu backfill dan kenapa tugas Airflow harus idempoten?</p><details><summary>Petunjuk</summary><p>Menjalankan ulang tanggal yang lalu.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Backfill: menjalankan DAG untuk tanggal-tanggal lampau (misal setelah bug diperbaiki).
+Karena satu tanggal bisa dijalankan lebih dari sekali, tugas harus idempoten:
+hasil akhirnya sama walau dijalankan berulang (pakai upsert/overwrite partisi).</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Orkestrator: jadwal, urutan, retry, status.</li><li>DAG Python; tugas idempoten berparameter tanggal.</li><li>Orkestrator mengatur, mesin lain memproses.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Backfill di Airflow berarti?</summary><p class="ok">Jawaban: Menjalankan DAG untuk tanggal-tanggal lampau</p><p>Mudah jika tugas berparameter tanggal dan idempoten.</p></details>
 <a class="cta" href="/#de-5-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/de/idempotensi-upsert">Idempotensi &amp; upsert</a></p><p>Berikutnya: <a href="/belajar/de/reverse-etl">Reverse ETL</a></p>

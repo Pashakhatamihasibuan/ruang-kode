@@ -63,7 +63,9 @@ public class Main {
             System.out.println(u + &quot; +&quot; + u.tambahan);
         }
     }
-}</code></pre></details></li><li><p>Buat record <code>Produk(String nama, int harga)</code> yang menolak harga negatif, lalu cetak objeknya dan bandingkan dua record yang isinya sama.</p><details><summary>Petunjuk</summary><p>Compact constructor: record Produk(...) { Produk { if (...) throw ...; } }. equals record membandingkan isi.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>record Produk(String nama, int harga) {
+}</code></pre><div class="lbl">KELUARAN</div><pre><code>KECIL +0
+SEDANG +3000
+BESAR +6000</code></pre></details></li><li><p>Buat record <code>Produk(String nama, int harga)</code> yang menolak harga negatif, lalu cetak objeknya dan bandingkan dua record yang isinya sama.</p><details><summary>Petunjuk</summary><p>Compact constructor: record Produk(...) { Produk { if (...) throw ...; } }. equals record membandingkan isi.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>record Produk(String nama, int harga) {
     Produk {
         if (harga &lt; 0) throw new IllegalArgumentException(&quot;harga negatif&quot;);
     }
@@ -77,7 +79,9 @@ public class Main {
         System.out.println(a.equals(b));
         System.out.println(a.harga());
     }
-}</code></pre></details></li></ol>
+}</code></pre><div class="lbl">KELUARAN</div><pre><code>Produk[nama=Kopi, harga=18000]
+true
+18000</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Kelas data cukup ditulis sebagai record</summary><p>Kelas yang hanya membawa data biasanya butuh field, konstruktor, getter, <code>equals</code>, <code>hashCode</code>, dan <code>toString</code>. <code>record</code> (Java 16) membuat semuanya otomatis dan nilainya tidak bisa diubah.</p><div class="lbl">KODE PEMULA</div><pre><code>class Produk {
     private final String nama;
     private final int harga;

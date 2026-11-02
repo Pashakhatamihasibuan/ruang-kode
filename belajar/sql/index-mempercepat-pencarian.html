@@ -31,6 +31,14 @@ INSERT INTO produk (nama, kategori, harga) VALUES (&#x27;Kopi Gayo&#x27;, &#x27;
 <div class="lbl">Hapus index</div><pre><code>CREATE INDEX idx_tmp ON pesanan(status);
 DROP INDEX idx_tmp;</code></pre>
 <h2>Tantangan</h2><ol><li>Buat index bernama idx_pesanan_tanggal pada kolom tanggal di tabel pesanan.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Buat index pada kolom kategori di tabel produk, lalu jalankan query yang memanfaatkannya.</p><details><summary>Petunjuk</summary><p>CREATE INDEX nama ON tabel(kolom).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">SQL</div><pre><code>CREATE INDEX idx_produk_kategori ON produk(kategori);
+SELECT nama FROM produk WHERE kategori = &#x27;Camilan&#x27;;</code></pre><div class="lbl">KELUARAN</div><pre><code>nama
+----------------
+Keripik Singkong
+Kacang Mete
+Kerupuk Udang</code></pre></details></li><li><p>Kapan index justru merugikan?</p><details><summary>Petunjuk</summary><p>Index harus ikut diperbarui setiap data berubah.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Pada tabel yang sangat sering di-INSERT/UPDATE, index memperlambat penulisan.
+Index pada kolom dengan sedikit nilai berbeda (misal jenis kelamin) jarang membantu,
+dan setiap index memakan ruang penyimpanan.</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Index = daftar terurut + penunjuk baris.</li><li>SCAN membaca semua; SEARCH memakai index.</li><li>Index mempercepat baca, memperlambat tulis.</li><li>Index kolom yang sering ada di WHERE dan JOIN.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kerugian membuat terlalu banyak index?</summary><p class="ok">Jawaban: INSERT/UPDATE lebih lambat dan butuh ruang</p><p>Setiap index ikut diperbarui saat data berubah.</p></details><details><summary>Perintah untuk melihat rencana eksekusi?</summary><p class="ok">Jawaban: EXPLAIN</p><p>EXPLAIN menunjukkan cara database menjalankan query.</p></details>
 <a class="cta" href="/#sql-10-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/view-query-yang-disimpan">View: query yang disimpan</a></p><p>Berikutnya: <a href="/belajar/sql/begin-commit-rollback-savepoint">BEGIN, COMMIT, ROLLBACK &amp; SAVEPOINT</a></p>

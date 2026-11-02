@@ -38,6 +38,16 @@ CREATE OR REPLACE VIEW v_kota AS SELECT DISTINCT kota FROM pelanggan WHERE kota 
 SELECT * FROM v_kota;
 DROP VIEW v_kota;</code></pre>
 <h2>Tantangan</h2><ol><li>Buat view bernama v_minuman berisi nama dan harga produk berkategori Minuman.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Buat view v_ringkas_kategori berisi kategori, jumlah produk, dan total stok, lalu pakai untuk menampilkan kategori dengan stok di atas 100.</p><details><summary>Petunjuk</summary><p>CREATE VIEW ... AS SELECT ... GROUP BY.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">SQL</div><pre><code>CREATE VIEW v_ringkas_kategori AS
+SELECT kategori, COUNT(*) AS n, SUM(stok) AS total_stok
+FROM produk
+GROUP BY kategori;
+SELECT * FROM v_ringkas_kategori WHERE total_stok &gt; 100;</code></pre><div class="lbl">KELUARAN</div><pre><code>kategori | n | total_stok
+---------+---+-----------
+Minuman  | 3 | 175
+Camilan  | 3 | 385</code></pre></details></li><li><p>Sebutkan tiga manfaat view.</p><details><summary>Petunjuk</summary><p>Penyederhanaan, keamanan, konsistensi.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>1. Menyederhanakan query rumit (JOIN panjang cukup ditulis sekali).
+2. Keamanan: pengguna diberi akses ke view tanpa kolom sensitif.
+3. Konsistensi: definisi metrik yang sama dipakai semua laporan.</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>View = query bernama, dipakai seperti tabel.</li><li>Data tidak disalin; selalu terbaru.</li><li>Untuk menyederhanakan dan membatasi akses.</li><li>DROP VIEW tidak menghapus tabel.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Data di view disimpan di mana?</summary><p class="ok">Jawaban: Tetap di tabel asal; view menjalankan ulang query</p><p>View hanyalah query tersimpan.</p></details><details><summary>Cara mengubah definisi view di PostgreSQL?</summary><p class="ok">Jawaban: CREATE OR REPLACE VIEW</p><p>Definisi diganti dengan query baru.</p></details>
 <a class="cta" href="/#sql-10-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/proyek-mini-merapikan-laporan">Proyek mini: Merapikan laporan</a></p><p>Berikutnya: <a href="/belajar/sql/index-mempercepat-pencarian">Index: mempercepat pencarian</a></p>

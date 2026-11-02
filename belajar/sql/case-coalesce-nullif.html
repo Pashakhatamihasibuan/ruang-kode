@@ -34,6 +34,26 @@ FROM pesanan;</code></pre>
 <div class="lbl">COALESCE</div><pre><code>SELECT nama, COALESCE(kota, &#x27;Belum diisi&#x27;) AS kota FROM pelanggan;</code></pre>
 <div class="lbl">NULLIF mencegah bagi nol</div><pre><code>SELECT nama, stok, harga / NULLIF(stok, 0) AS harga_per_stok FROM produk;</code></pre>
 <h2>Tantangan</h2><ol><li>Tampilkan nama produk dan status stok (alias status_stok): 'habis' jika stok 0, 'menipis' jika stok di bawah 50, selain itu 'aman'.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Kelompokkan karyawan: gaji &gt;= 15 juta "Manajemen", &gt;= 8 juta "Senior", selain itu "Staf". Hitung jumlah tiap kelompok.</p><details><summary>Petunjuk</summary><p>CASE di SELECT, lalu GROUP BY alias.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">SQL</div><pre><code>SELECT CASE WHEN gaji &gt;= 15000000 THEN &#x27;Manajemen&#x27;
+            WHEN gaji &gt;= 8000000 THEN &#x27;Senior&#x27;
+            ELSE &#x27;Staf&#x27; END AS kelompok,
+       COUNT(*) AS n
+FROM karyawan
+GROUP BY kelompok
+ORDER BY n DESC;</code></pre><div class="lbl">KELUARAN</div><pre><code>kelompok  | n
+----------+--
+Manajemen | 3
+Senior    | 3
+Staf      | 2</code></pre></details></li><li><p>Tampilkan nama karyawan dan id atasannya; jika tidak punya atasan tulis 0.</p><details><summary>Petunjuk</summary><p>COALESCE(atasan_id, 0).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">SQL</div><pre><code>SELECT nama, COALESCE(atasan_id, 0) AS atasan FROM karyawan;</code></pre><div class="lbl">KELUARAN</div><pre><code>nama  | atasan
+------+-------
+Sari  | 0
+Tono  | 1
+Umi   | 1
+Vino  | 2
+Wati  | 2
+Yudi  | 3
+Zahra | 3
+Rio   | 3</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Nilai cadangan untuk NULL</summary><p><code>COALESCE</code> mengambil nilai pertama yang tidak NULL. Lebih pendek dari <code>CASE WHEN ... IS NULL</code>.</p><div class="lbl">KODE PEMULA</div><pre><code>SELECT nama,
        CASE WHEN kota IS NULL THEN &#x27;Belum diisi&#x27; ELSE kota END AS kota
 FROM pelanggan

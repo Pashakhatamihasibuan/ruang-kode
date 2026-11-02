@@ -27,6 +27,12 @@ Dashboard CS: nama, HP, alamat lengkap  ID pelanggan + kota
 Semua staf melihat semua wilayah        Row-level security per wilayah
 Salinan produksi di laptop analis       Data dev disamarkan (masking)
 Data disimpan selamanya                 Retensi 24 bulan, lalu dihapus</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Kamu membuat dashboard pelanggan. Data mana yang harus disamarkan atau dibuang menurut prinsip UU PDP?</p><details><summary>Petunjuk</summary><p>Prinsip minimisasi data dan tujuan yang jelas.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Samarkan atau buang: nama lengkap, NIK, nomor HP, email, alamat rinci.
+Cukup tampilkan agregat (per kota, per segmen) atau ID samaran.
+Batasi akses dashboard sesuai peran, dan catat siapa yang membuka data rinci.</code></pre></details></li><li><p>Tulis query yang menyamarkan email menjadi "r***@mail.id" dan hanya menampilkan 4 digit terakhir nomor HP.</p><details><summary>Petunjuk</summary><p>LEFT, SUBSTR/SUBSTRING, POSITION/INSTR, RIGHT.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">SQL</div><pre><code>SELECT
+  LEFT(email, 1) || &#x27;***&#x27; || SUBSTR(email, INSTR(email, &#x27;@&#x27;)) AS email_samaran,
+  &#x27;********&#x27; || RIGHT(no_hp, 4) AS hp_samaran
+FROM pelanggan;</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>UU PDP: seperlunya, bertujuan, persetujuan, laporan kebocoran 3×24 jam.</li><li>Agregat, akses per peran, masking.</li><li>Periksa bias data dan metrik.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Cara membatasi manajer hanya melihat data wilayahnya di Power BI?</summary><p class="ok">Jawaban: Row-level security</p><p>RLS menyaring data per pengguna.</p></details>
 <a class="cta" href="/#bi-8-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/bi/power-bi-tableau-looker">Power BI, Tableau &amp; Looker</a></p><p>Berikutnya: <a href="/belajar/bi/portofolio-wawancara-bi">Portofolio &amp; wawancara BI</a></p>

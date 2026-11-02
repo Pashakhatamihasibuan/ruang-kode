@@ -111,7 +111,7 @@ function updateBadges(){const n=dueN();document.querySelectorAll('.wrongN').forE
 
 /* ---------- komponen kecil ---------- */
 const ring=(p,size=56)=>{const r=size/2-4,c=2*Math.PI*r;return `<svg class="ring" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" aria-hidden="true"><circle cx="${size/2}" cy="${size/2}" r="${r}" class="rb"/><circle cx="${size/2}" cy="${size/2}" r="${r}" class="rf" style="stroke-dasharray:${c};stroke-dashoffset:${c*(1-p)}"/></svg>`};
-const LANGLBL={dart:'DART',kotlin:'KOTLIN',java:'JAVA',python:'PYTHON',sql:'SQL',ts:'TYPESCRIPT',js:'JAVASCRIPT',jsx:'JSX',html:'HTML',css:'CSS',bash:'TERMINAL',yaml:'YAML',json:'JSON',markdown:'MARKDOWN',swift:'SWIFT',xml:'XML',toml:'TOML',text:'CONTOH'};
+const LANGLBL={dart:'DART',kotlin:'KOTLIN',java:'JAVA',python:'PYTHON',sql:'SQL',ts:'TYPESCRIPT',js:'JAVASCRIPT',jsx:'JSX',html:'HTML',css:'CSS',bash:'TERMINAL',yaml:'YAML',json:'JSON',markdown:'MARKDOWN',swift:'SWIFT',xml:'XML',toml:'TOML',excel:'SPREADSHEET',docker:'DOCKERFILE',hcl:'TERRAFORM',text:'CONTOH'};
 function pane(lang,code,o={}){
   const lab=o.label||LANGLBL[lang]||'KODE';
   return `<div class="pane ${lang==='java'||lang==='python'?lang:'tx'}" data-lang="${lang}"><div class="pane-h"><span>${lab}</span>${o.copy!==false?'<button class="copy" data-copy>Salin</button>':''}</div><pre class="code">${hl(code,lang)}</pre>${o.out?`<pre class="out">${esc(o.out)}</pre>`:''}</div>`;

@@ -36,6 +36,17 @@ FROM presensi p JOIN siswa s ON s.nis = p.nis
 WHERE p.status = &#x27;A&#x27; AND p.tanggal &gt;= &#x27;2026-10-01&#x27;
 GROUP BY s.nis, s.nama, s.kelas
 HAVING COUNT(*) &gt; 3;</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Dari tabel transaksi (tanggal, produk, jumlah, harga), buat laporan omzet per produk bulan Oktober 2026, urut dari terbesar.</p><details><summary>Petunjuk</summary><p>SUM(jumlah * harga), WHERE rentang tanggal, GROUP BY, ORDER BY.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">SQL</div><pre><code>SELECT produk,
+       SUM(jumlah) AS terjual,
+       SUM(jumlah * harga) AS omzet
+FROM transaksi
+WHERE tanggal &gt;= &#x27;2026-10-01&#x27; AND tanggal &lt; &#x27;2026-11-01&#x27;
+GROUP BY produk
+ORDER BY omzet DESC;</code></pre></details></li><li><p>Urutkan alur data dari kasir sampai laporan manajemen.</p><details><summary>Petunjuk</summary><p>Input, simpan, olah, sajikan.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>1. Kasir mencatat transaksi (TPS)
+2. Data tersimpan di database
+3. Data dibersihkan dan diringkas (harian/mingguan)
+4. Laporan dan dashboard disajikan ke manajer
+5. Keputusan manajer menjadi umpan balik (harga, stok, jadwal)</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Laporan berasal dari data transaksi: salah catat = salah laporan.</li><li>SQL GROUP BY + SUM/COUNT untuk ringkasan, HAVING untuk pengecualian.</li><li>Data besar dipindah ke warehouse lewat ETL.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Klausa SQL yang cocok untuk laporan pengecualian &quot;alpa lebih dari 3 hari&quot; setelah pengelompokan adalah?</summary><p class="ok">Jawaban: HAVING</p><p>HAVING menyaring hasil setelah GROUP BY.</p></details><details><summary>Apa arti &quot;garbage in, garbage out&quot;?</summary><p class="ok">Jawaban: Data masukan yang salah menghasilkan laporan yang salah</p><p>Kualitas laporan bergantung pada kualitas data transaksi.</p></details>
 <a class="cta" href="/#sim-5-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sim/merancang-laporan-yang-benar-benar-dipakai">Merancang laporan yang benar-benar dipakai</a></p><p>Berikutnya: <a href="/belajar/sim/membangun-sim-sederhana-dengan-spreadsheet">Membangun SIM sederhana dengan spreadsheet</a></p>

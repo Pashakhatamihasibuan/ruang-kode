@@ -27,6 +27,10 @@
 #0F766E / #FFFFFF                   5,5    lulus
 #5EEAD4 / #FFFFFF                   1,6    gagal → pakai untuk dekorasi saja
 #B91C1C / #FEF2F2                   5,9    lulus (pesan error)</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tentukan apakah lolos WCAG AA: (a) teks body abu #767676 di putih (4,54:1), (b) teks body #999999 di putih (2,85:1), (c) ikon tombol 3,2:1 terhadap latar.</p><details><summary>Petunjuk</summary><p>Teks normal minimal 4,5:1; komponen UI dan teks besar minimal 3:1.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>(a) lolos (4,54 &gt;= 4,5)
+(b) tidak lolos untuk teks body
+(c) lolos untuk komponen UI (&gt;= 3:1)</code></pre></details></li><li><p>Kenapa status error tidak boleh hanya ditandai warna merah?</p><details><summary>Petunjuk</summary><p>Sekitar 1 dari 12 laki-laki buta warna.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Pengguna buta warna atau layar di bawah terik matahari mungkin tidak bisa membedakan merah.
+Tambahkan ikon, teks pesan yang jelas, dan garis atau bentuk yang berbeda.</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Error tidak boleh hanya ditandai warna merah</summary><p>Sekitar 1 dari 12 laki-laki mengalami buta warna, dan pembaca layar tidak membaca warna. Pesan error perlu teks yang jelas, terhubung ke field-nya dengan <code>aria-describedby</code>, dan ditandai <code>aria-invalid</code>.</p><div class="lbl">KODE PEMULA</div><pre><code>&lt;input type=&quot;email&quot; style=&quot;border-color: red&quot;&gt;</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>&lt;label for=&quot;email&quot;&gt;Email&lt;/label&gt;
 &lt;input id=&quot;email&quot; type=&quot;email&quot; aria-invalid=&quot;true&quot; aria-describedby=&quot;email-err&quot;&gt;
 &lt;p id=&quot;email-err&quot; class=&quot;error&quot;&gt;⚠ Format email belum benar, contoh: nama@contoh.com&lt;/p&gt;</code></pre></details>

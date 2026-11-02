@@ -44,6 +44,21 @@ body{font:16px/1.5 system-ui,sans-serif;padding:24px}
 @keyframes p{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.putar{animation-duration:3s}}</code></pre>
 <h2>Tantangan</h2><ol><li>Tambahkan aturan .btn:focus-visible dengan outline 3px agar fokus keyboard terlihat.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Tulis CSS tombol dengan state hover, focus-visible, active, dan disabled.</p><details><summary>Petunjuk</summary><p>Fokus harus terlihat jelas untuk pengguna keyboard.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CSS</div><pre><code>.tombol {
+  background: var(--button-primary-bg);
+  color: #fff;
+  border: 0;
+  border-radius: 8px;
+  padding: 10px 16px;
+  min-height: 44px;
+}
+.tombol:hover { filter: brightness(1.08); }
+.tombol:active { transform: translateY(1px); }
+.tombol:focus-visible { outline: 3px solid var(--fokus); outline-offset: 2px; }
+.tombol:disabled { opacity: .5; cursor: not-allowed; }</code></pre></details></li><li><p>Tulis HTML tombol dalam keadaan memuat (loading) yang tetap aksesibel.</p><details><summary>Petunjuk</summary><p>aria-busy, teks yang dibaca pembaca layar, dan tombol dinonaktifkan sementara.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">HTML</div><pre><code>&lt;button class=&quot;tombol&quot; type=&quot;submit&quot; aria-busy=&quot;true&quot; disabled&gt;
+  &lt;span class=&quot;spinner&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;
+  Menyimpan...
+&lt;/button&gt;</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>State: default, hover, focus, active, disabled, loading.</li><li>Varian & ukuran lewat kelas/prop.</li><li>Target sentuh ≥ 44px; fokus selalu terlihat.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa memakai :focus-visible, bukan :focus?</summary><p class="ok">Jawaban: Outline hanya muncul untuk navigasi keyboard, tidak saat diklik mouse</p><p>Pengguna mouse tidak terganggu, pengguna keyboard tetap terbantu.</p></details>
 <a class="cta" href="/#ds-5-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/ds/token-lintas-platform-format-dtcg">Token lintas platform: format DTCG</a></p><p>Berikutnya: <a href="/belajar/ds/anatomi-komponen-form-umpan-balik">Anatomi komponen form &amp; umpan balik</a></p>

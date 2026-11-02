@@ -34,6 +34,16 @@ harian = (trx.filter(F.col(&quot;status&quot;) == &quot;selesai&quot;)
 (harian.write.mode(&quot;overwrite&quot;)
        .partitionBy(&quot;tanggal&quot;)
        .parquet(&quot;s3://toko-lake/gold/omzet_harian/&quot;))       # action</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis kode PySpark yang membaca Parquet penjualan, menghitung omzet per kota, dan menulis hasilnya per tanggal.</p><details><summary>Petunjuk</summary><p>spark.read.parquet, groupBy().agg(F.sum()), write.partitionBy().</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>from pyspark.sql import SparkSession, functions as F
+
+spark = SparkSession.builder.appName(&quot;omzet&quot;).getOrCreate()
+df = spark.read.parquet(&quot;s3://data/penjualan/&quot;)
+hasil = (df.filter(F.col(&quot;omzet&quot;) &gt; 0)
+           .groupBy(&quot;tanggal&quot;, &quot;kota&quot;)
+           .agg(F.sum(&quot;omzet&quot;).alias(&quot;total&quot;)))
+hasil.write.mode(&quot;overwrite&quot;).partitionBy(&quot;tanggal&quot;).parquet(&quot;s3://data/omzet_kota/&quot;)</code></pre></details></li><li><p>Apa beda transformation dan action di Spark, dan apa itu lazy evaluation?</p><details><summary>Petunjuk</summary><p>filter dan groupBy vs count dan write.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Transformation (filter, select, groupBy) hanya membangun rencana kerja.
+Action (count, show, write) memicu eksekusi rencana itu.
+Lazy evaluation membuat Spark bisa mengoptimalkan seluruh rencana sebelum jalan.</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Driver → task → executor.</li><li>Lazy: transformasi menyusun rencana, action mengeksekusi.</li><li>Shuffle paling mahal.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kapan Spark benar-benar mulai membaca data?</summary><p class="ok">Jawaban: Saat action seperti write atau count dipanggil</p><p>Transformasi bersifat lazy.</p></details>
 <a class="cta" href="/#de-7-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/de/antrean-pesan-komunikasi-asinkron">Antrean pesan &amp; komunikasi asinkron</a></p><p>Berikutnya: <a href="/belajar/de/peta-layanan-cloud-untuk-data">Peta layanan cloud untuk data</a></p>

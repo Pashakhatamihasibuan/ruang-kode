@@ -41,6 +41,28 @@ FROM nilai n JOIN pelanggan p ON p.id = n.pelanggan_id, rata
 WHERE n.total &gt; rata.r
 ORDER BY n.total DESC;</code></pre>
 <h2>Tantangan</h2><ol><li>Dengan CTE bernama stok_kategori yang berisi kategori dan SUM(stok) AS total, tampilkan kategori yang total stoknya di atas 100.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Dengan CTE, hitung total belanja per pesanan, lalu tampilkan pesanan yang totalnya di atas rata-rata semua pesanan.</p><details><summary>Petunjuk</summary><p>Dua CTE: total per pesanan, lalu bandingkan dengan AVG.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">SQL</div><pre><code>WITH total AS (
+  SELECT d.pesanan_id, SUM(d.jumlah * pr.harga) AS belanja
+  FROM detail_pesanan d
+  JOIN produk pr ON pr.id = d.produk_id
+  GROUP BY d.pesanan_id
+)
+SELECT pesanan_id, belanja
+FROM total
+WHERE belanja &gt; (SELECT AVG(belanja) FROM total)
+ORDER BY belanja DESC;</code></pre><div class="lbl">KELUARAN</div><pre><code>pesanan_id | belanja
+-----------+--------
+101        | 245000
+108        | 205000
+106        | 200000
+107        | 200000
+104        | 195000
+109        | 180000</code></pre></details></li><li><p>Dengan CTE, hitung jumlah karyawan per divisi lalu tampilkan divisi terbesar saja.</p><details><summary>Petunjuk</summary><p>CTE lalu ORDER BY ... LIMIT 1.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">SQL</div><pre><code>WITH per_divisi AS (
+  SELECT divisi, COUNT(*) AS n FROM karyawan GROUP BY divisi
+)
+SELECT divisi, n FROM per_divisi ORDER BY n DESC LIMIT 1;</code></pre><div class="lbl">KELUARAN</div><pre><code>divisi    | n
+----------+--
+Penjualan | 4</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Beri nama pada subquery dengan WITH</summary><p>Subquery bertingkat dibaca dari dalam ke luar. CTE dibaca dari atas ke bawah seperti langkah-langkah, dan setiap langkah punya nama.</p><div class="lbl">KODE PEMULA</div><pre><code>SELECT p.nama, t.total
 FROM (
   SELECT pelanggan_id, COUNT(*) AS total

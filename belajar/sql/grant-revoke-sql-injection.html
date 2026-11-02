@@ -26,6 +26,12 @@
 REVOKE INSERT ON pesanan FROM kasir;</code></pre>
 <div class="lbl">Inilah yang terjadi saat input disambung mentah-mentah</div><pre><code>-- input pengguna: &#x27; OR &#x27;1&#x27;=&#x27;1
 SELECT * FROM pelanggan WHERE nama = &#x27;&#x27; OR &#x27;1&#x27;=&#x27;1&#x27;;</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis perintah untuk memberi role analis akses baca ke tabel produk dan pesanan, lalu mencabut akses ke pesanan.</p><details><summary>Petunjuk</summary><p>GRANT ... ON ... TO ...; REVOKE ... ON ... FROM ...;</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>GRANT SELECT ON produk TO analis;
+GRANT SELECT ON pesanan TO analis;
+REVOKE SELECT ON pesanan FROM analis;</code></pre></details></li><li><p>Input login berisi <code>' OR '1'='1</code>. Kenapa query yang dirangkai dengan string berbahaya, dan apa solusinya?</p><details><summary>Petunjuk</summary><p>Pakai parameter (prepared statement).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Query menjadi: SELECT * FROM pengguna WHERE nama = &#x27;&#x27; OR &#x27;1&#x27;=&#x27;1&#x27;
+Kondisi selalu benar, sehingga semua baris lolos.
+Solusi: prepared statement / query berparameter, misalnya
+SELECT * FROM pengguna WHERE nama = ? dengan nilai dikirim terpisah.</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Least privilege: beri izin seperlunya.</li><li>GRANT memberi, REVOKE mencabut.</li><li>Jangan pernah menyambung input ke query; pakai parameter.</li><li>Hash password, enkripsi data sensitif, backup rutin.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa input &lt;code&gt;&#x27; OR &#x27;1&#x27;=&#x27;1&lt;/code&gt; berbahaya?</summary><p class="ok">Jawaban: Mengubah logika WHERE menjadi selalu benar</p><p>Penyerang mendapat semua baris.</p></details><details><summary>Pertahanan utama terhadap SQL injection?</summary><p class="ok">Jawaban: Parameterized query</p><p>Data dan perintah dikirim terpisah.</p></details>
 <a class="cta" href="/#sql-12-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/acid-tingkat-isolasi">ACID &amp; tingkat isolasi</a></p><p>Berikutnya: <a href="/belajar/sql/stored-procedure-function">Stored procedure &amp; function</a></p>

@@ -28,6 +28,12 @@ UPDATE rekening SET saldo = saldo - 900000 WHERE id = 1;
 -- perintah kedua melanggar CHECK (saldo &gt;= 0)
 ROLLBACK;
 SELECT * FROM rekening;</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Jelaskan A, C, I, D dengan contoh transfer bank.</p><details><summary>Petunjuk</summary><p>Atomicity, Consistency, Isolation, Durability.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Atomicity  : debit dan kredit terjadi bersama atau tidak sama sekali.
+Consistency: total saldo tetap benar dan aturan (saldo &gt;= 0) dijaga.
+Isolation  : transfer lain yang berjalan bersamaan tidak melihat keadaan setengah jadi.
+Durability : setelah COMMIT, hasil tetap ada walau server mati.</code></pre></details></li><li><p>Pasangkan anomali dengan tingkat isolasi yang mencegahnya: dirty read, non-repeatable read, phantom read.</p><details><summary>Petunjuk</summary><p>READ COMMITTED, REPEATABLE READ, SERIALIZABLE.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Dirty read            : dicegah mulai READ COMMITTED
+Non-repeatable read   : dicegah mulai REPEATABLE READ
+Phantom read          : dicegah SERIALIZABLE</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>ACID: Atomicity, Consistency, Isolation, Durability.</li><li>Empat tingkat isolasi: READ UNCOMMITTED → SERIALIZABLE.</li><li>Anomali: dirty read, non-repeatable read, phantom read.</li><li>Lebih ketat = lebih aman, tetapi lebih banyak saling tunggu.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Huruf ACID yang menjamin data tetap ada setelah COMMIT walau server mati?</summary><p class="ok">Jawaban: Durability</p><p>Durability = tahan lama.</p></details><details><summary>Membaca data transaksi lain yang belum di-commit disebut?</summary><p class="ok">Jawaban: Dirty read</p><p>Hanya terjadi di READ UNCOMMITTED.</p></details>
 <a class="cta" href="/#sql-11-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/begin-commit-rollback-savepoint">BEGIN, COMMIT, ROLLBACK &amp; SAVEPOINT</a></p><p>Berikutnya: <a href="/belajar/sql/grant-revoke-sql-injection">GRANT, REVOKE &amp; SQL injection</a></p>

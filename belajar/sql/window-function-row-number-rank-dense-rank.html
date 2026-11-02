@@ -37,6 +37,29 @@ FROM detail_pesanan;</code></pre>
 )
 SELECT kategori, nama, harga FROM urut WHERE no = 1;</code></pre>
 <h2>Tantangan</h2><ol><li>Tampilkan nama karyawan, divisi, gaji, dan peringkat gaji di divisinya (alias peringkat, pakai DENSE_RANK, gaji tertinggi = 1).</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Tampilkan karyawan dengan gaji tertinggi di setiap divisi memakai ROW_NUMBER.</p><details><summary>Petunjuk</summary><p>PARTITION BY divisi ORDER BY gaji DESC, lalu ambil no = 1.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">SQL</div><pre><code>WITH urut AS (
+  SELECT nama, divisi, gaji,
+         ROW_NUMBER() OVER (PARTITION BY divisi ORDER BY gaji DESC) AS no
+  FROM karyawan
+)
+SELECT divisi, nama, gaji FROM urut WHERE no = 1 ORDER BY divisi;</code></pre><div class="lbl">KELUARAN</div><pre><code>divisi    | nama | gaji
+----------+------+---------
+Gudang    | Tono | 15000000
+Penjualan | Umi  | 16000000
+Pusat     | Sari | 30000000</code></pre></details></li><li><p>Tampilkan gaji semua karyawan beserta RANK dan DENSE_RANK. Kenapa angkanya berbeda setelah ada gaji yang sama?</p><details><summary>Petunjuk</summary><p>Nilai yang sama mendapat peringkat sama; RANK melompati angka berikutnya.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">SQL</div><pre><code>SELECT nama, gaji,
+  RANK() OVER (ORDER BY gaji DESC) AS rnk,
+  DENSE_RANK() OVER (ORDER BY gaji DESC) AS dense
+FROM karyawan
+ORDER BY rnk, nama;</code></pre><div class="lbl">KELUARAN</div><pre><code>nama  | gaji     | rnk | dense
+------+----------+-----+------
+Sari  | 30000000 | 1   | 1
+Umi   | 16000000 | 2   | 2
+Tono  | 15000000 | 3   | 3
+Zahra | 8500000  | 4   | 4
+Rio   | 8000000  | 5   | 5
+Yudi  | 8000000  | 5   | 5
+Wati  | 7500000  | 7   | 6
+Vino  | 7000000  | 8   | 7</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Peringkat tanpa subquery berkorelasi</summary><p>Subquery berkorelasi dijalankan ulang untuk setiap baris. Window function menghitung peringkat semua baris dalam satu kali jalan.</p><div class="lbl">KODE PEMULA</div><pre><code>SELECT nama, harga,
        (SELECT COUNT(*) FROM produk p2 WHERE p2.harga &gt; p1.harga) + 1 AS peringkat
 FROM produk p1

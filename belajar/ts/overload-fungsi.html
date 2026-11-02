@@ -38,7 +38,8 @@ function format(x: number | Date): string {
   return typeof x === &quot;number&quot; ? &quot;Rp&quot; + x.toLocaleString(&quot;id-ID&quot;) : x.toISOString().slice(0, 10);
 }
 console.log(format(18000));
-console.log(format(new Date(&quot;2026-01-15T00:00:00Z&quot;)));</code></pre></details></li><li><p>Kapan union type lebih baik daripada overload?</p><details><summary>Petunjuk</summary><p>Jika tipe kembalian tidak bergantung pada tipe masukan.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Jika semua masukan menghasilkan tipe keluaran yang sama, cukup union:
+console.log(format(new Date(&quot;2026-01-15T00:00:00Z&quot;)));</code></pre><div class="lbl">KELUARAN</div><pre><code>Rp18.000
+2026-01-15</code></pre></details></li><li><p>Kapan union type lebih baik daripada overload?</p><details><summary>Petunjuk</summary><p>Jika tipe kembalian tidak bergantung pada tipe masukan.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Jika semua masukan menghasilkan tipe keluaran yang sama, cukup union:
   function panjang(x: string | unknown[]): number
 Overload hanya perlu jika tipe keluaran berubah sesuai tipe masukan.</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Beberapa tanda tangan, satu implementasi.</li><li>Implementasi tidak terlihat dari luar.</li><li>Utamakan union atau generics jika cukup.</li></ul>

@@ -92,7 +92,8 @@ try:
     p.harga = -5
 except ValueError as e:
     print(e)
-print(p.harga)</code></pre></details></li><li><p>Ubah kelas di atas menjadi <code>@dataclass</code> dengan field stok bawaan 0, lalu cetak objek dan bandingkan dua objek yang sama.</p><details><summary>Petunjuk</summary><p>dataclass otomatis membuat __init__, __repr__, dan __eq__.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>from dataclasses import dataclass
+print(p.harga)</code></pre><div class="lbl">KELUARAN</div><pre><code>harga tidak boleh negatif
+18000</code></pre></details></li><li><p>Ubah kelas di atas menjadi <code>@dataclass</code> dengan field stok bawaan 0, lalu cetak objek dan bandingkan dua objek yang sama.</p><details><summary>Petunjuk</summary><p>dataclass otomatis membuat __init__, __repr__, dan __eq__.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>from dataclasses import dataclass
 
 @dataclass
 class Produk:
@@ -103,7 +104,8 @@ class Produk:
 a = Produk(&quot;Kopi&quot;, 18000)
 b = Produk(&quot;Kopi&quot;, 18000)
 print(a)
-print(a == b)</code></pre></details></li></ol>
+print(a == b)</code></pre><div class="lbl">KELUARAN</div><pre><code>Produk(nama=&#x27;Kopi&#x27;, harga=18000, stok=0)
+True</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Kelas data dengan @dataclass</summary><p><code>@dataclass</code> membuat <code>__init__</code>, <code>__repr__</code>, dan <code>__eq__</code> otomatis dari daftar field.</p><div class="lbl">KODE PEMULA</div><pre><code>class Produk:
     def __init__(self, nama, harga):
         self.nama = nama

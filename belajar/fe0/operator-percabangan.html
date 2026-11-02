@@ -48,9 +48,11 @@ if (skor &gt;= 85) huruf = &quot;A&quot;;
 else if (skor &gt;= 70) huruf = &quot;B&quot;;
 else if (skor &gt;= 55) huruf = &quot;C&quot;;
 else huruf = &quot;D&quot;;
-console.log(`Skor ${skor} = ${huruf}`);</code></pre></details></li><li><p>Apa hasil <code>0 || "bawaan"</code>, <code>0 ?? "bawaan"</code>, dan <code>null ?? "bawaan"</code>?</p><details><summary>Petunjuk</summary><p>|| memakai cadangan untuk semua nilai falsy; ?? hanya untuk null atau undefined.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>console.log(0 || &quot;bawaan&quot;);
+console.log(`Skor ${skor} = ${huruf}`);</code></pre><div class="lbl">KELUARAN</div><pre><code>Skor 78 = B</code></pre></details></li><li><p>Apa hasil <code>0 || "bawaan"</code>, <code>0 ?? "bawaan"</code>, dan <code>null ?? "bawaan"</code>?</p><details><summary>Petunjuk</summary><p>|| memakai cadangan untuk semua nilai falsy; ?? hanya untuk null atau undefined.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>console.log(0 || &quot;bawaan&quot;);
 console.log(0 ?? &quot;bawaan&quot;);
-console.log(null ?? &quot;bawaan&quot;);</code></pre></details></li></ol>
+console.log(null ?? &quot;bawaan&quot;);</code></pre><div class="lbl">KELUARAN</div><pre><code>bawaan
+0
+bawaan</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>|| dan ?? berbeda saat nilainya 0</summary><p><code>||</code> menganggap <code>0</code> dan <code>""</code> sebagai kosong, sehingga stok 0 malah diganti 10. <code>??</code> hanya mengganti <code>null</code> dan <code>undefined</code>. Gunakan juga <code>===</code>, bukan <code>==</code>, agar <code>0 == ""</code> tidak dianggap sama.</p><div class="lbl">KODE PEMULA</div><pre><code>const stok = 0;
 const tampil = stok || 10;
 console.log(tampil);

@@ -25,6 +25,14 @@
 <div class="tw"><table><caption>Data siswa: spreadsheet vs database</caption><thead><tr><th>Spreadsheet</th><th>Database</th></tr></thead><tbody><tr><td>Tiap wali kelas punya file sendiri</td><td>Satu tabel siswa untuk semua</td></tr><tr><td>&quot;M. Rizky&quot; vs &quot;Muhammad Rizki&quot;</td><td>NIS unik, nama ditulis sekali</td></tr><tr><td>File hilang saat laptop rusak</td><td>Dicadangkan otomatis setiap malam</td></tr><tr><td>Semua orang bisa ubah apa saja</td><td>Wali kelas hanya ubah kelasnya</td></tr></tbody></table></div>
 <div class="lbl">CONTOH</div><pre><code>Pertanyaan ke database:
 SELECT kelas, COUNT(*) FROM siswa WHERE status = &#x27;aktif&#x27; GROUP BY kelas;</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Sebutkan empat keuntungan DBMS dibanding menyimpan data di banyak file spreadsheet.</p><details><summary>Petunjuk</summary><p>Redundansi, konsistensi, akses bersama, keamanan.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>1. Mengurangi data ganda (redundansi).
+2. Menjaga konsistensi dengan aturan (constraint).
+3. Banyak pengguna bisa mengakses bersamaan dengan aman.
+4. Hak akses, cadangan, dan pemulihan lebih terkendali.</code></pre></details></li><li><p>Tulis query untuk menampilkan 5 produk dengan stok di bawah 10, urut dari stok terkecil.</p><details><summary>Petunjuk</summary><p>SELECT, WHERE, ORDER BY, LIMIT.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">SQL</div><pre><code>SELECT nama, stok
+FROM produk
+WHERE stok &lt; 10
+ORDER BY stok ASC
+LIMIT 5;</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Spreadsheet cocok untuk awal, bermasalah saat data besar dan banyak pengguna.</li><li>DBMS mengatur akses bersama, hak akses, konsistensi, dan cadangan.</li><li>SQL adalah bahasa untuk mengambil data dari database.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa NIS dipakai sebagai kunci data siswa, bukan nama?</summary><p class="ok">Jawaban: NIS unik, sedangkan nama bisa sama atau ditulis berbeda</p><p>Kunci harus unik dan tidak berubah.</p></details><details><summary>Fungsi DBMS yang membuat wali kelas hanya bisa mengubah data kelasnya sendiri adalah?</summary><p class="ok">Jawaban: Hak akses</p><p>DBMS mengatur siapa boleh melakukan apa.</p></details>
 <a class="cta" href="/#msi-4-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/msi/erp-crm-dan-scm">ERP, CRM, dan SCM</a></p><p>Berikutnya: <a href="/belajar/msi/merancang-tabel-dan-relasi-erd">Merancang tabel dan relasi (ERD)</a></p>

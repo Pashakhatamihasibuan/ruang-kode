@@ -71,10 +71,13 @@ Bayar                 66.150</code></pre>
 <h2>Soal latihan</h2><ol><li><p>Tambahkan PPN 11% (dibulatkan) yang dihitung dari harga setelah diskon, lalu tampilkan total akhir.</p><details><summary>Petunjuk</summary><p>ppn = (setelahDiskon * 11 / 100).round(). round() membulatkan .5 ke atas.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>  final setelahDiskon = total - diskon;
   final ppn = (setelahDiskon * 11 / 100).round();
   print(&#x27;${&#x27;PPN 11%&#x27;.padRight(18)}${rp(ppn).padLeft(10)}&#x27;);
-  print(&#x27;${&#x27;Total akhir&#x27;.padRight(18)}${rp(setelahDiskon + ppn).padLeft(10)}&#x27;);</code></pre></details></li><li><p>Cetak barang diurutkan dari subtotal terbesar.</p><details><summary>Petunjuk</summary><p>Salin list dulu ([...keranjang]) karena list const tidak bisa diurutkan, lalu sort dengan compareTo terbalik.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>  final urut = [...keranjang]..sort((a, b) =&gt; b.subtotal.compareTo(a.subtotal));
+  print(&#x27;${&#x27;Total akhir&#x27;.padRight(18)}${rp(setelahDiskon + ppn).padLeft(10)}&#x27;);</code></pre><div class="lbl">KELUARAN</div><pre><code>PPN 11%                7.277
+Total akhir           73.427</code></pre></details></li><li><p>Cetak barang diurutkan dari subtotal terbesar.</p><details><summary>Petunjuk</summary><p>Salin list dulu ([...keranjang]) karena list const tidak bisa diurutkan, lalu sort dengan compareTo terbalik.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>  final urut = [...keranjang]..sort((a, b) =&gt; b.subtotal.compareTo(a.subtotal));
   for (final it in urut) {
     print(&#x27;${it.nama}: ${rp(it.subtotal)}&#x27;);
-  }</code></pre></details></li><li><p>Ubah diskon menjadi bertingkat: 15% jika total ≥ 100.000, 10% jika ≥ 50.000, selain itu 0. Pakai switch expression.</p><details><summary>Petunjuk</summary><p>switch (total) { >= 100000 => total * 15 ~/ 100, >= 50000 => total ~/ 10, _ => 0 }</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>  final diskon = switch (total) {
+  }</code></pre><div class="lbl">KELUARAN</div><pre><code>Kopi susu: 36.000
+Roti bakar: 22.500
+Air mineral: 15.000</code></pre></details></li><li><p>Ubah diskon menjadi bertingkat: 15% jika total ≥ 100.000, 10% jika ≥ 50.000, selain itu 0. Pakai switch expression.</p><details><summary>Petunjuk</summary><p>switch (total) { >= 100000 => total * 15 ~/ 100, >= 50000 => total ~/ 10, _ => 0 }</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>  final diskon = switch (total) {
     &gt;= 100000 =&gt; total * 15 ~/ 100,
     &gt;= 50000 =&gt; total ~/ 10,
     _ =&gt; 0,

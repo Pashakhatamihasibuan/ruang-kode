@@ -38,6 +38,19 @@ print(sampel)</code></pre>
 rata-rata: 53750.0 median: 45000.0
 p75: 77500.0
 [1 5 4 3 3 6 1 5 2 1]</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Dari nilai ujian <code>[78, 92, 55, 61, 88, 47, 95]</code>, ambil yang lulus (&gt;= 60), hitung rata-rata dan jumlah yang lulus.</p><details><summary>Petunjuk</summary><p>mask = nilai >= 60; nilai[mask].</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import numpy as np
+
+nilai = np.array([78, 92, 55, 61, 88, 47, 95])
+lulus = nilai[nilai &gt;= 60]
+print(lulus)
+print(lulus.mean().round(1), (nilai &gt;= 60).sum())</code></pre><div class="lbl">KELUARAN</div><pre><code>[78 92 61 88 95]
+82.8 5</code></pre></details></li><li><p>Ganti semua nilai di bawah 60 menjadi 60 (remedial) memakai <code>np.where</code>, lalu cetak nilai maksimum, minimum, dan simpangan bakunya.</p><details><summary>Petunjuk</summary><p>np.where(kondisi, jika_benar, jika_salah).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import numpy as np
+
+nilai = np.array([78, 92, 55, 61, 88, 47, 95])
+baru = np.where(nilai &lt; 60, 60, nilai)
+print(baru)
+print(baru.max(), baru.min(), baru.std().round(2))</code></pre><div class="lbl">KELUARAN</div><pre><code>[78 92 60 61 88 60 95]
+95 60 14.65</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>a[kondisi] untuk menyaring.</li><li>Gabungkan kondisi dengan & dan |, pakai kurung.</li><li>default_rng(seed) agar acak bisa diulang.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Cara benar menyaring harga antara 20 ribu dan 60 ribu?</summary><p class="ok">Jawaban: h[(h&gt;=20000) &amp; (h&lt;=60000)]</p><p>and tidak bekerja pada array; pakai &amp; dengan kurung.</p></details>
 <a class="cta" href="/#pda-3-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pda/array-numpy-operasi-vektor">Array NumPy &amp; operasi vektor</a></p><p>Berikutnya: <a href="/belajar/pda/series-dataframe">Series &amp; DataFrame</a></p>

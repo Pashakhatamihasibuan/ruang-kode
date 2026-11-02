@@ -33,6 +33,23 @@ pilih = df[df[&quot;kota&quot;].isin(kota)]
 
 st.metric(&quot;Total omzet&quot;, f&quot;Rp {pilih[&#x27;omzet&#x27;].sum():,.0f}&quot;.replace(&quot;,&quot;, &quot;.&quot;))
 st.plotly_chart(px.line(pilih, x=&quot;tanggal&quot;, y=&quot;omzet&quot;, color=&quot;kota&quot;))</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat grafik garis interaktif Plotly omzet harian per kota dan simpan sebagai HTML.</p><details><summary>Petunjuk</summary><p>px.line(df, x, y, color), fig.write_html.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import pandas as pd
+import plotly.express as px
+
+df = pd.DataFrame({
+    &quot;tanggal&quot;: pd.date_range(&quot;2026-10-01&quot;, periods=3).tolist() * 2,
+    &quot;kota&quot;: [&quot;Medan&quot;] * 3 + [&quot;Bandung&quot;] * 3,
+    &quot;omzet&quot;: [10, 12, 9, 7, 8, 11],
+})
+fig = px.line(df, x=&quot;tanggal&quot;, y=&quot;omzet&quot;, color=&quot;kota&quot;, title=&quot;Omzet harian per kota&quot;)
+fig.write_html(&quot;omzet.html&quot;)</code></pre></details></li><li><p>Tulis aplikasi Streamlit dengan filter kategori dan metrik total omzet.</p><details><summary>Petunjuk</summary><p>st.selectbox, st.metric, st.bar_chart. Jalankan dengan streamlit run app.py.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import pandas as pd
+import streamlit as st
+
+df = pd.read_csv(&quot;penjualan.csv&quot;)
+kategori = st.selectbox(&quot;Kategori&quot;, sorted(df[&quot;kategori&quot;].unique()))
+pilih = df[df[&quot;kategori&quot;] == kategori]
+st.metric(&quot;Total omzet&quot;, f&quot;Rp {pilih[&#x27;omzet&#x27;].sum():,}&quot;.replace(&quot;,&quot;, &quot;.&quot;))
+st.bar_chart(pilih.groupby(&quot;kota&quot;)[&quot;omzet&quot;].sum())</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Plotly untuk grafik interaktif.</li><li>Streamlit: skrip → dashboard web.</li><li>Dashboard organisasi: Power BI, Tableau, Looker.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Alat untuk mengubah skrip Python menjadi dashboard web dengan cepat?</summary><p class="ok">Jawaban: Streamlit</p><p>Streamlit dirancang untuk analis data.</p></details>
 <a class="cta" href="/#pda-8-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pda/memilih-grafik-yang-tepat">Memilih grafik yang tepat</a></p><p>Berikutnya: <a href="/belajar/pda/sql-dari-python-sqlite3-read-sql">SQL dari Python: sqlite3 &amp; read_sql</a></p>

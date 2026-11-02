@@ -40,6 +40,24 @@ print(df[&quot;omzet&quot;].sum())</code></pre>
 1    Medan  1  340000
 2  Bandung  1  250000
 1220000</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat database SQLite di memori, isi tabel penjualan, lalu baca hasil agregasi SQL langsung ke DataFrame.</p><details><summary>Petunjuk</summary><p>sqlite3.connect(":memory:"), df.to_sql, pd.read_sql.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import sqlite3
+import pandas as pd
+
+con = sqlite3.connect(&quot;:memory:&quot;)
+pd.DataFrame({&quot;kota&quot;: [&quot;Medan&quot;, &quot;Bandung&quot;, &quot;Medan&quot;], &quot;omzet&quot;: [36000, 24000, 18000]}).to_sql(&quot;penjualan&quot;, con, index=False)
+sql = &quot;SELECT kota, SUM(omzet) AS total FROM penjualan GROUP BY kota ORDER BY total DESC&quot;
+print(pd.read_sql(sql, con))</code></pre><div class="lbl">KELUARAN</div><pre><code>      kota  total
+0    Medan  54000
+1  Bandung  24000</code></pre></details></li><li><p>Kenapa query dengan input pengguna harus memakai parameter? Tulis versi yang aman.</p><details><summary>Petunjuk</summary><p>Tanda ? atau :nama diisi lewat params, bukan f-string.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import sqlite3
+import pandas as pd
+
+con = sqlite3.connect(&quot;:memory:&quot;)
+con.execute(&quot;CREATE TABLE produk (nama TEXT, harga INT)&quot;)
+con.executemany(&quot;INSERT INTO produk VALUES (?, ?)&quot;, [(&quot;Kopi&quot;, 18000), (&quot;Teh&quot;, 8000)])
+nama_input = &quot;Kopi&#x27; OR &#x27;1&#x27;=&#x27;1&quot;           # input jahat
+print(pd.read_sql(&quot;SELECT * FROM produk WHERE nama = ?&quot;, con, params=[nama_input]))</code></pre><div class="lbl">KELUARAN</div><pre><code>Empty DataFrame
+Columns: [nama, harga]
+Index: []</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>sqlite3 untuk latihan, SQLAlchemy untuk produksi.</li><li>read_sql → DataFrame.</li><li>DuckDB: SQL cepat untuk berkas lokal.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Siapa yang sebaiknya melakukan agregasi jutaan baris?</summary><p class="ok">Jawaban: Database, lewat SQL</p><p>Hanya kirim hasil ringkas ke Python.</p></details>
 <a class="cta" href="/#pda-9-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pda/grafik-interaktif-dashboard">Grafik interaktif &amp; dashboard</a></p><p>Berikutnya: <a href="/belajar/pda/polars-dask-pyspark">Polars, Dask &amp; PySpark</a></p>

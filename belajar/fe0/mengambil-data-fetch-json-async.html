@@ -59,7 +59,8 @@ console.log(&quot;Kode di bawah fetch tetap jalan duluan.&quot;);</code></pre>
 }</code></pre></details></li><li><p>Ubah objek menjadi teks JSON dan kembali lagi.</p><details><summary>Petunjuk</summary><p>JSON.stringify dan JSON.parse.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>const p = { nama: &quot;Kopi&quot;, harga: 18000 };
 const teks = JSON.stringify(p);
 console.log(teks);
-console.log(JSON.parse(teks).harga + 2000);</code></pre></details></li></ol>
+console.log(JSON.parse(teks).harga + 2000);</code></pre><div class="lbl">KELUARAN</div><pre><code>{&quot;nama&quot;:&quot;Kopi&quot;,&quot;harga&quot;:18000}
+20000</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>async/await lebih mudah dibaca dari rantai then</summary><p>Kedua versi melakukan hal yang sama. Dengan <code>async</code>/<code>await</code>, kode asinkron dibaca dari atas ke bawah dan error ditangkap dengan <code>try/catch</code> biasa. Di sini <code>ambil</code> meniru <code>fetch</code> agar bisa dijalankan tanpa internet.</p><div class="lbl">KODE PEMULA</div><pre><code>const ambil = () =&gt; Promise.resolve({ json: () =&gt; Promise.resolve({ nama: &quot;Kopi Gayo&quot; }) });
 ambil()
   .then((res) =&gt; res.json())

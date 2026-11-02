@@ -31,6 +31,21 @@ FROM pesanan GROUP BY bulan ORDER BY bulan;</code></pre>
 <div class="lbl">Dua kolom</div><pre><code>SELECT pelanggan_id, status, COUNT(*) AS n FROM pesanan
 GROUP BY pelanggan_id, status ORDER BY pelanggan_id;</code></pre>
 <h2>Tantangan</h2><ol><li>Tampilkan setiap status pesanan beserta banyaknya pesanan (kolom status dan jumlah).</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Tampilkan jumlah karyawan dan total gaji per divisi, urut dari total gaji terbesar.</p><details><summary>Petunjuk</summary><p>GROUP BY divisi dengan COUNT dan SUM.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">SQL</div><pre><code>SELECT divisi, COUNT(*) AS orang, SUM(gaji) AS total_gaji
+FROM karyawan
+GROUP BY divisi
+ORDER BY total_gaji DESC;</code></pre><div class="lbl">KELUARAN</div><pre><code>divisi    | orang | total_gaji
+----------+-------+-----------
+Penjualan | 4     | 40500000
+Pusat     | 1     | 30000000
+Gudang    | 3     | 29500000</code></pre></details></li><li><p>Tampilkan jumlah pelanggan per kota, termasuk yang kotanya kosong.</p><details><summary>Petunjuk</summary><p>NULL menjadi satu kelompok sendiri.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">SQL</div><pre><code>SELECT kota, COUNT(*) AS n FROM pelanggan GROUP BY kota ORDER BY n DESC, kota;</code></pre><div class="lbl">KELUARAN</div><pre><code>kota       | n
+-----------+--
+Bandung    | 2
+Jakarta    | 2
+NULL       | 1
+Medan      | 1
+Surabaya   | 1
+Yogyakarta | 1</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>GROUP BY = satu baris hasil per kelompok.</li><li>Kolom SELECT: ada di GROUP BY atau di dalam agregat.</li><li>Boleh mengelompokkan dengan ekspresi.</li><li>ORDER BY tetap diperlukan untuk urutan.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>&lt;code&gt;SELECT kategori, nama, COUNT(*) FROM produk GROUP BY kategori&lt;/code&gt; bermasalah karena?</summary><p class="ok">Jawaban: nama tidak di GROUP BY dan tidak diagregasi</p><p>Satu kategori punya banyak nama.</p></details><details><summary>Jumlah baris hasil GROUP BY kategori jika ada 4 kategori?</summary><p class="ok">Jawaban: 4</p><p>Satu baris per kelompok.</p></details>
 <a class="cta" href="/#sql-5-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/fungsi-agregat">Fungsi agregat</a></p><p>Berikutnya: <a href="/belajar/sql/having">HAVING</a></p>

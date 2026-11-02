@@ -32,6 +32,18 @@ X_latih, X_uji, y_latih, y_uji = train_test_split(X, y, test_size=0.2, random_st
 model = LinearRegression().fit(X_latih, y_latih)
 print(&quot;R2 uji:&quot;, round(model.score(X_uji, y_uji), 3))
 print(model.predict([[5, 10]]))</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Latih model regresi linear untuk memprediksi penjualan dari biaya iklan, bagi data latih dan uji, lalu hitung R².</p><details><summary>Petunjuk</summary><p>train_test_split, LinearRegression().fit, model.score.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+import numpy as np
+
+X = np.array([[1], [2], [3], [4], [5], [6], [7], [8]])
+y = np.array([12, 15, 21, 24, 30, 33, 38, 41])
+X_latih, X_uji, y_latih, y_uji = train_test_split(X, y, test_size=0.25, random_state=42)
+model = LinearRegression().fit(X_latih, y_latih)
+print(round(model.score(X_uji, y_uji), 3))
+print(model.predict([[10]]).round(1))</code></pre></details></li><li><p>Kenapa data harus dibagi menjadi data latih dan data uji?</p><details><summary>Petunjuk</summary><p>Model bisa "menghafal" data latih (overfitting).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Model dinilai dengan data yang belum pernah dilihatnya, agar skor mencerminkan
+kinerja pada data baru. Jika dinilai dengan data latih, skornya terlalu optimis
+karena model bisa sekadar menghafal (overfitting).</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>fit → predict → score.</li><li>Pisahkan data latih dan uji.</li><li>SciPy untuk uji statistik.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa model dinilai pada data uji, bukan data latih?</summary><p class="ok">Jawaban: Agar tahu kemampuan pada data baru</p><p>Data latih sudah &quot;dilihat&quot; model.</p></details>
 <a class="cta" href="/#pda-9-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pda/polars-dask-pyspark">Polars, Dask &amp; PySpark</a></p><p>Berikutnya: <a href="/belajar/pda/analisis-penjualan-toko-nusantara">Analisis penjualan Toko Nusantara</a></p>

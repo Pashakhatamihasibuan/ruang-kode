@@ -33,6 +33,19 @@ WHERE NOT EXISTS (SELECT 1 FROM pesanan s WHERE s.pelanggan_id = p.id);</code></
   (SELECT COUNT(*) FROM pesanan s WHERE s.pelanggan_id = p.id) AS banyak_pesanan
 FROM pelanggan p ORDER BY banyak_pesanan DESC;</code></pre>
 <h2>Tantangan</h2><ol><li>Tampilkan nama produk yang pernah dipesan minimal sekali, memakai EXISTS.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Tampilkan produk yang harganya paling mahal di kategorinya masing-masing.</p><details><summary>Petunjuk</summary><p>Correlated subquery: bandingkan dengan MAX(harga) dari kategori yang sama.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">SQL</div><pre><code>SELECT nama, kategori, harga
+FROM produk p
+WHERE harga = (SELECT MAX(harga) FROM produk WHERE kategori = p.kategori)
+ORDER BY kategori;</code></pre><div class="lbl">KELUARAN</div><pre><code>nama           | kategori | harga
+---------------+----------+-------
+Sambal Bawang  | Bumbu    | 30000
+Kacang Mete    | Camilan  | 60000
+Rendang Kaleng | Makanan  | 75000
+Madu Hutan     | Minuman  | 120000</code></pre></details></li><li><p>Tampilkan pelanggan yang belum pernah punya pesanan, memakai NOT EXISTS.</p><details><summary>Petunjuk</summary><p>NOT EXISTS (SELECT 1 FROM pesanan WHERE pelanggan_id = p.id).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">SQL</div><pre><code>SELECT nama
+FROM pelanggan p
+WHERE NOT EXISTS (SELECT 1 FROM pesanan s WHERE s.pelanggan_id = p.id);</code></pre><div class="lbl">KELUARAN</div><pre><code>nama
+----
+Gita</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Cek keberadaan dengan EXISTS</summary><p><code>EXISTS</code> berhenti begitu satu baris cocok ditemukan, sedangkan <code>COUNT(*) &gt; 0</code> menghitung semuanya dulu.</p><div class="lbl">KODE PEMULA</div><pre><code>SELECT nama FROM pelanggan c
 WHERE (SELECT COUNT(*) FROM pesanan o WHERE o.pelanggan_id = c.id) &gt; 0
 ORDER BY nama

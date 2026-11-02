@@ -56,16 +56,19 @@ freq = {}
 for k in kata:
     freq[k] = freq.get(k, 0) + 1
 print(freq)
-print(Counter(kata).most_common(1))</code></pre></details></li><li><p>Kelas A diikuti {Rina, Sandi, Tari}, kelas B diikuti {Sandi, Dewi, Tari}. Siapa ikut keduanya, salah satu saja, dan semua peserta?</p><details><summary>Petunjuk</summary><p>Irisan &, selisih simetris ^, gabungan |.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>a = {&quot;Rina&quot;, &quot;Sandi&quot;, &quot;Tari&quot;}
+print(Counter(kata).most_common(1))</code></pre><div class="lbl">KELUARAN</div><pre><code>{&#x27;kopi&#x27;: 3, &#x27;susu&#x27;: 2, &#x27;teh&#x27;: 1}
+[(&#x27;kopi&#x27;, 3)]</code></pre></details></li><li><p>Kelas A diikuti {Rina, Sandi, Tari}, kelas B diikuti {Sandi, Dewi, Tari}. Siapa ikut keduanya, salah satu saja, dan semua peserta?</p><details><summary>Petunjuk</summary><p>Irisan &, selisih simetris ^, gabungan |.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>a = {&quot;Rina&quot;, &quot;Sandi&quot;, &quot;Tari&quot;}
 b = {&quot;Sandi&quot;, &quot;Dewi&quot;, &quot;Tari&quot;}
 print(sorted(a &amp; b))
 print(sorted(a ^ b))
-print(len(a | b))</code></pre></details></li><li><p>Kelompokkan nama berdasarkan huruf awal memakai <code>defaultdict(list)</code>.</p><details><summary>Petunjuk</summary><p>defaultdict otomatis membuat list kosong untuk kunci baru.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>from collections import defaultdict
+print(len(a | b))</code></pre><div class="lbl">KELUARAN</div><pre><code>[&#x27;Sandi&#x27;, &#x27;Tari&#x27;]
+[&#x27;Dewi&#x27;, &#x27;Rina&#x27;]
+4</code></pre></details></li><li><p>Kelompokkan nama berdasarkan huruf awal memakai <code>defaultdict(list)</code>.</p><details><summary>Petunjuk</summary><p>defaultdict otomatis membuat list kosong untuk kunci baru.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>from collections import defaultdict
 
 grup = defaultdict(list)
 for n in [&quot;Rina&quot;, &quot;Sandi&quot;, &quot;Rio&quot;, &quot;Tari&quot;]:
     grup[n[0]].append(n)
-print(dict(grup))</code></pre></details></li></ol>
+print(dict(grup))</code></pre><div class="lbl">KELUARAN</div><pre><code>{&#x27;R&#x27;: [&#x27;Rina&#x27;, &#x27;Rio&#x27;], &#x27;S&#x27;: [&#x27;Sandi&#x27;], &#x27;T&#x27;: [&#x27;Tari&#x27;]}</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Menghitung kemunculan</summary><p><code>collections.Counter</code> menghitung isi list dalam satu baris dan bisa langsung memberi yang paling sering muncul.</p><div class="lbl">KODE PEMULA</div><pre><code>belanja = [&quot;kopi&quot;, &quot;teh&quot;, &quot;kopi&quot;, &quot;gula&quot;, &quot;kopi&quot;, &quot;teh&quot;]
 hitung = {}
 for b in belanja:

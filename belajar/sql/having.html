@@ -34,6 +34,19 @@ HAVING COUNT(*) &gt;= 2;</code></pre>
 GROUP BY kategori HAVING AVG(harga) &gt; 50000;</code></pre>
 <div class="lbl">Salah: agregat di WHERE</div><pre><code>SELECT kategori FROM produk WHERE COUNT(*) &gt; 1 GROUP BY kategori;</code></pre>
 <h2>Tantangan</h2><ol><li>Tampilkan produk_id dan total jumlah terjual (alias total) untuk produk yang total terjualnya minimal 5, dari tabel detail_pesanan.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Tampilkan divisi yang rata-rata gajinya di atas 10 juta.</p><details><summary>Petunjuk</summary><p>Kondisi pada hasil agregat memakai HAVING.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">SQL</div><pre><code>SELECT divisi, AVG(gaji) AS rata
+FROM karyawan
+GROUP BY divisi
+HAVING AVG(gaji) &gt; 10000000;</code></pre><div class="lbl">KELUARAN</div><pre><code>divisi    | rata
+----------+---------
+Pusat     | 30000000
+Penjualan | 10125000</code></pre></details></li><li><p>Tampilkan pelanggan_id yang punya lebih dari satu pesanan selesai.</p><details><summary>Petunjuk</summary><p>WHERE menyaring baris dulu, HAVING menyaring kelompok.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">SQL</div><pre><code>SELECT pelanggan_id, COUNT(*) AS n
+FROM pesanan
+WHERE status = &#x27;selesai&#x27;
+GROUP BY pelanggan_id
+HAVING COUNT(*) &gt; 1;</code></pre><div class="lbl">KELUARAN</div><pre><code>pelanggan_id | n
+-------------+--
+2            | 2</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Menyaring hasil kelompok dengan HAVING</summary><p>Menyaring hasil <code>GROUP BY</code> tidak perlu subquery. <code>HAVING</code> bekerja setelah pengelompokan, sedangkan <code>WHERE</code> sebelum pengelompokan.</p><div class="lbl">KODE PEMULA</div><pre><code>SELECT * FROM (
   SELECT kategori, COUNT(*) AS jumlah
   FROM produk

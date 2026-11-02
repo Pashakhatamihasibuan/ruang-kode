@@ -31,6 +31,12 @@ SELECT DATE_TRUNC(&#x27;month&#x27;, tanggal) AS bulan, SUM(omzet)
 FROM fakta_penjualan
 WHERE tanggal &gt;= &#x27;2024-01-01&#x27;
 GROUP BY 1;</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Kelompokkan ke OLTP atau OLAP: (a) menyimpan pesanan baru, (b) total omzet per bulan 3 tahun, (c) mengubah alamat pelanggan, (d) dashboard tren kategori.</p><details><summary>Petunjuk</summary><p>Transaksi kecil vs analisis besar.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>(a) OLTP
+(b) OLAP
+(c) OLTP
+(d) OLAP</code></pre></details></li><li><p>Kenapa penyimpanan kolom (Parquet, BigQuery) cepat untuk <code>SELECT SUM(omzet) FROM penjualan</code>?</p><details><summary>Petunjuk</summary><p>Kolom mana saja yang dibaca?</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Hanya kolom omzet yang dibaca dari disk, bukan seluruh baris.
+Nilai dalam satu kolom bertipe sama sehingga mudah dikompresi,
+jadi data yang dibaca jauh lebih kecil.</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>OLTP: transaksi kecil, dinormalisasi.</li><li>OLAP: query besar, didenormalisasi.</li><li>Penyimpanan kolom untuk analitik.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa warehouse memakai penyimpanan kolom?</summary><p class="ok">Jawaban: Query analitik hanya membaca sedikit kolom dari banyak baris</p><p>Kolom yang tidak dipakai tidak dibaca.</p></details>
 <a class="cta" href="/#de-3-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/de/dasar-sistem-terdistribusi">Dasar sistem terdistribusi</a></p><p>Berikutnya: <a href="/belajar/de/nosql-cap-skala">NoSQL, CAP &amp; skala</a></p>

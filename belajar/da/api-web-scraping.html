@@ -36,6 +36,17 @@ html = requests.get(&quot;https://contoh.id/harga-pangan&quot;, timeout=10).text
 soup = BeautifulSoup(html, &quot;html.parser&quot;)
 baris = [[td.get_text(strip=True) for td in tr.select(&quot;td&quot;)] for tr in soup.select(&quot;table tr&quot;)[1:]]
 pangan = pd.DataFrame(baris, columns=[&quot;komoditas&quot;, &quot;harga&quot;, &quot;satuan&quot;])</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Ambil data JSON dari API dengan requests, tangani error HTTP, dan ubah menjadi DataFrame.</p><details><summary>Petunjuk</summary><p>requests.get(url, params, timeout), raise_for_status(), resp.json().</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import pandas as pd
+import requests
+
+resp = requests.get(&quot;https://api.contoh.id/produk&quot;, params={&quot;kategori&quot;: &quot;minuman&quot;}, timeout=10)
+resp.raise_for_status()
+df = pd.DataFrame(resp.json()[&quot;data&quot;])
+print(df.head())</code></pre></details></li><li><p>Sebutkan aturan etis sebelum melakukan web scraping.</p><details><summary>Petunjuk</summary><p>Hormati pemilik situs dan data pribadi.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>1. Utamakan API resmi bila ada.
+2. Baca robots.txt dan ketentuan layanan.
+3. Batasi kecepatan permintaan (jeda, tidak membebani server).
+4. Jangan mengambil data pribadi tanpa dasar hukum (UU PDP).
+5. Cantumkan sumber data.</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>API resmi lebih stabil daripada scraping.</li><li>Hormati robots.txt, rate limit, privasi.</li><li>Simpan mentah dulu.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Saat situs menyediakan API resmi, pilihan yang lebih baik?</summary><p class="ok">Jawaban: Pakai API</p><p>API stabil dan sesuai izin.</p></details>
 <a class="cta" href="/#da-3-8">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/da/python-atau-r">Python atau R?</a></p><p>Berikutnya: <a href="/belajar/da/menstandarkan-data-kotor-dengan-pandas">Menstandarkan data kotor dengan pandas</a></p>

@@ -57,13 +57,17 @@ print(p.name)
 print(p.suffix)
 print(p.stem)
 print(p.parent.as_posix())
-print((p.parent / &quot;ringkas.txt&quot;).as_posix())</code></pre></details></li><li><p>Buat folder <code>data</code> berisi a.csv, b.csv, dan c.txt, lalu daftar semua file .csv yang terurut.</p><details><summary>Petunjuk</summary><p>mkdir(exist_ok=True), touch(), glob("*.csv").</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>from pathlib import Path
+print((p.parent / &quot;ringkas.txt&quot;).as_posix())</code></pre><div class="lbl">KELUARAN</div><pre><code>penjualan.csv
+.csv
+penjualan
+laporan/2026
+laporan/2026/ringkas.txt</code></pre></details></li><li><p>Buat folder <code>data</code> berisi a.csv, b.csv, dan c.txt, lalu daftar semua file .csv yang terurut.</p><details><summary>Petunjuk</summary><p>mkdir(exist_ok=True), touch(), glob("*.csv").</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>from pathlib import Path
 
 d = Path(&quot;data&quot;)
 d.mkdir(exist_ok=True)
 for n in [&quot;a.csv&quot;, &quot;b.csv&quot;, &quot;c.txt&quot;]:
     (d / n).touch()
-print(sorted(f.name for f in d.glob(&quot;*.csv&quot;)))</code></pre></details></li></ol>
+print(sorted(f.name for f in d.glob(&quot;*.csv&quot;)))</code></pre><div class="lbl">KELUARAN</div><pre><code>[&#x27;a.csv&#x27;, &#x27;b.csv&#x27;]</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li><code>Path("a") / "b.txt"</code> menggabung path.</li><li><code>.name</code>, <code>.stem</code>, <code>.suffix</code> untuk bagian nama.</li><li>Pola glob: <code>*</code>, <code>?</code>, <code>**</code>.</li><li><code>rglob</code> mencari di semua subfolder.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Pola glob untuk semua file CSV?</summary><p class="ok">Jawaban: *.csv</p><p>Bintang cocok dengan nama apa pun.</p></details><details><summary>&lt;code&gt;Path(&quot;data/laporan.csv&quot;).suffix&lt;/code&gt;?</summary><p class="ok">Jawaban: &quot;.csv&quot;</p><p>suffix adalah ekstensi termasuk titiknya.</p></details>
 <a class="cta" href="/#python-5-6">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/python/context-manager-with">Context manager: with</a></p><p>Berikutnya: <a href="/belajar/python/import-modul-buatan-sendiri">Import &amp; modul buatan sendiri</a></p>

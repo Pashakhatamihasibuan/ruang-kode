@@ -40,6 +40,25 @@ mean      5.91
 median    6.00
 std       0.45
 Name: gaji_juta, dtype: float64</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Gaji (juta) 7 karyawan: <code>[5, 5.5, 6, 6, 7, 8, 35]</code>. Hitung mean, median, modus, dan simpangan baku. Ukuran mana yang paling mewakili?</p><details><summary>Petunjuk</summary><p>Satu gaji direktur menarik mean ke atas; median lebih tahan outlier.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import pandas as pd
+
+gaji = pd.Series([5, 5.5, 6, 6, 7, 8, 35])
+print(round(gaji.mean(), 2), gaji.median(), gaji.mode()[0], round(gaji.std(), 2))
+print(gaji.describe().round(2))</code></pre><div class="lbl">KELUARAN</div><pre><code>10.36 6.0 6.0 10.91
+count     7.00
+mean     10.36
+std      10.91
+min       5.00
+25%       5.75
+50%       6.00
+75%       7.50
+max      35.00
+dtype: float64</code></pre></details></li><li><p>Bandingkan sebaran dua cabang yang rata-ratanya sama memakai simpangan baku dan koefisien variasi.</p><details><summary>Petunjuk</summary><p>CV = std / mean; makin besar makin tidak stabil.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import pandas as pd
+
+df = pd.DataFrame({&quot;A&quot;: [100, 102, 98, 101, 99], &quot;B&quot;: [60, 140, 80, 120, 100]})
+print(df.mean().tolist())
+print((df.std() / df.mean()).round(3).to_dict())</code></pre><div class="lbl">KELUARAN</div><pre><code>[100.0, 100.0]
+{&#x27;A&#x27;: 0.016, &#x27;B&#x27;: 0.316}</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Mean peka outlier; median tahan outlier.</li><li>Modus untuk kategori.</li><li>Std mengukur sebaran.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Data gaji dengan satu direktur bergaji sangat tinggi, ukuran yang lebih mewakili?</summary><p class="ok">Jawaban: Median</p><p>Median tidak terpengaruh nilai ekstrem.</p></details>
 <a class="cta" href="/#pda-7-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pda/rantai-transformasi-dengan-assign-pipe">Rantai transformasi dengan assign &amp; pipe</a></p><p>Berikutnya: <a href="/belajar/pda/outlier-iqr-z-score">Outlier: IQR &amp; z-score</a></p>

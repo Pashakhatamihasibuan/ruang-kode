@@ -309,7 +309,7 @@ function sqlLessonHTML(l){
     ${editorHTML('tkEd'+i,'','Jawaban tantangan '+(i+1),'sql','Tulis query jawabanmu…')}
     <div class="sl-act"><button class="btn primary" data-tk="${i}">Periksa jawaban</button><button class="btn" data-key="${i}" aria-expanded="false">Lihat kunci jawaban</button></div>
     <div class="tkFb" aria-live="polite"></div><div class="tkKey" hidden>${pane('sql',t.a,{label:'KUNCI JAWABAN'})}</div></section>`).join('')}
-  ${ptsHTML(l)}${qHTML(l)}`;
+  ${soHTML(l,'sql')}${ptsHTML(l)}${qHTML(l)}`;
 }
 function resultHTML(res,ms){
   return res.map(r=>r.kind==='rows'

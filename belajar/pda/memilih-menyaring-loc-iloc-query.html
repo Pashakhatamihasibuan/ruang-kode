@@ -47,6 +47,23 @@ print(penjualan[penjualan[&quot;produk&quot;].isin([&quot;Madu Hutan&quot;, &quo
 2   Jakarta     Keripik      25
 7  Surabaya     Keripik      30
 3</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Dari data produk, pilih minuman dengan harga di bawah 16.000 memakai <code>loc</code> dan <code>query</code>, tampilkan kolom nama dan harga saja.</p><details><summary>Petunjuk</summary><p>df.loc[kondisi, ["kolom"]]; kondisi digabung dengan &amp; dan tanda kurung.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import pandas as pd
+
+df = pd.DataFrame({
+    &quot;nama&quot;: [&quot;Kopi&quot;, &quot;Teh&quot;, &quot;Roti&quot;, &quot;Susu&quot;],
+    &quot;kategori&quot;: [&quot;Minuman&quot;, &quot;Minuman&quot;, &quot;Makanan&quot;, &quot;Minuman&quot;],
+    &quot;harga&quot;: [18000, 8000, 12000, 15000],
+})
+print(df.loc[(df[&quot;kategori&quot;] == &quot;Minuman&quot;) &amp; (df[&quot;harga&quot;] &lt; 16000), [&quot;nama&quot;, &quot;harga&quot;]])
+print(df.query(&quot;kategori == &#x27;Minuman&#x27; and harga &lt; 16000&quot;)[&quot;nama&quot;].tolist())</code></pre><div class="lbl">KELUARAN</div><pre><code>   nama  harga
+1   Teh   8000
+3  Susu  15000
+[&#x27;Teh&#x27;, &#x27;Susu&#x27;]</code></pre></details></li><li><p>Apa beda <code>df.iloc[0:2]</code> dan <code>df.loc[0:2]</code> pada indeks angka 0, 1, 2, 3?</p><details><summary>Petunjuk</summary><p>iloc berbasis posisi (ujung tidak ikut), loc berbasis label (ujung ikut).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import pandas as pd
+
+df = pd.DataFrame({&quot;x&quot;: [10, 20, 30, 40]})
+print(len(df.iloc[0:2]))
+print(len(df.loc[0:2]))</code></pre><div class="lbl">KELUARAN</div><pre><code>2
+3</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Mengubah sebagian baris dengan .loc</summary><p>Pengindeksan berantai <code>df[syarat]["kolom"] = ...</code> mengubah salinan sementara, bukan tabel aslinya, sehingga perubahannya hilang begitu saja. <code>.loc[syarat, "kolom"]</code> mengubah tabel aslinya dalam satu langkah.</p><div class="lbl">KODE PEMULA</div><pre><code>import pandas as pd
 df = pd.DataFrame({&quot;kota&quot;: [&quot;Medan&quot;, &quot;Bandung&quot;, &quot;Medan&quot;, &quot;Ambon&quot;, &quot;Bandung&quot;], &quot;produk&quot;: [&quot;Kopi&quot;, &quot;Teh&quot;, &quot;Teh&quot;, &quot;Kopi&quot;, &quot;Kopi&quot;], &quot;harga&quot;: [85000, 25000, 25000, 85000, 85000], &quot;qty&quot;: [2, 4, 1, 3, 1]})
 

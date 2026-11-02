@@ -55,7 +55,7 @@ Selesai
         jalan = false;      // langsung terlihat oleh pekerja
         pekerja.join();
     }
-}</code></pre></details></li><li><p>Apakah <code>volatile int hitung; hitung++</code> aman dari race condition? Jelaskan.</p><details><summary>Petunjuk</summary><p>volatile menjamin visibilitas, bukan atomisitas.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Tidak aman. hitung++ terdiri dari baca, tambah, tulis.
+}</code></pre><div class="lbl">KELUARAN</div><pre><code>berhenti</code></pre></details></li><li><p>Apakah <code>volatile int hitung; hitung++</code> aman dari race condition? Jelaskan.</p><details><summary>Petunjuk</summary><p>volatile menjamin visibilitas, bukan atomisitas.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Tidak aman. hitung++ terdiri dari baca, tambah, tulis.
 volatile hanya menjamin setiap thread melihat nilai terbaru,
 tetapi dua thread tetap bisa membaca nilai yang sama lalu menulis hasil yang sama.
 Pakai AtomicInteger atau synchronized.</code></pre></details></li></ol>

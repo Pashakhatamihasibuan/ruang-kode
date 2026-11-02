@@ -80,7 +80,8 @@ public class Main {
             System.out.println(&quot;Saldo &quot; + saldo);
         }
     }
-}</code></pre></details></li><li><p>Ubah teks "12a" menjadi angka dengan aman: jika gagal, pakai 0 dan cetak pesan.</p><details><summary>Petunjuk</summary><p>Integer.parseInt melempar NumberFormatException (unchecked).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>public class Main {
+}</code></pre><div class="lbl">KELUARAN</div><pre><code>Saldo kurang 20000
+Saldo 70000</code></pre></details></li><li><p>Ubah teks "12a" menjadi angka dengan aman: jika gagal, pakai 0 dan cetak pesan.</p><details><summary>Petunjuk</summary><p>Integer.parseInt melempar NumberFormatException (unchecked).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>public class Main {
     static int keAngka(String s) {
         try {
             return Integer.parseInt(s);
@@ -94,7 +95,9 @@ public class Main {
         System.out.println(keAngka(&quot;42&quot;));
         System.out.println(keAngka(&quot;12a&quot;));
     }
-}</code></pre></details></li></ol>
+}</code></pre><div class="lbl">KELUARAN</div><pre><code>42
+Bukan angka: 12a
+0</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Menutup sumber daya otomatis</summary><p>Try-with-resources menutup reader, file, atau koneksi database secara otomatis, juga saat terjadi exception. Tidak perlu blok <code>finally</code> dan tidak ada risiko lupa memanggil <code>close()</code>.</p><div class="lbl">KODE PEMULA</div><pre><code>BufferedReader r = new BufferedReader(new StringReader(&quot;baris pertama&quot;));
 try {
     System.out.println(r.readLine());

@@ -27,6 +27,20 @@ Kirim email setelah checkout             antrean (SQS / RabbitMQ)
 Satu peristiwa → gudang, email, poin    pub/sub (SNS) atau topik Kafka
 Riwayat klik untuk analitik &amp; ML        stream (Kafka / Kinesis)
 Panggilan cek saldo sebelum bayar        sinkron (HTTP)</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Simulasikan antrean pesan dengan <code>queue.Queue</code>: produsen memasukkan 3 pesanan, konsumen memprosesnya satu per satu.</p><details><summary>Petunjuk</summary><p>put, get, task_done; produsen dan konsumen tidak perlu menunggu satu sama lain.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import queue
+
+antre = queue.Queue()
+for i in (101, 102, 103):
+    antre.put({&quot;id&quot;: i})
+
+while not antre.empty():
+    pesan = antre.get()
+    print(&quot;proses pesanan&quot;, pesan[&quot;id&quot;])
+    antre.task_done()</code></pre><div class="lbl">KELUARAN</div><pre><code>proses pesanan 101
+proses pesanan 102
+proses pesanan 103</code></pre></details></li><li><p>Apa itu dead letter queue (DLQ)?</p><details><summary>Petunjuk</summary><p>Ke mana pesan yang terus gagal diproses?</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Antrean khusus untuk pesan yang gagal diproses setelah beberapa kali percobaan.
+Pesan dipindahkan ke DLQ agar tidak memblokir antrean utama,
+lalu diperiksa dan diproses ulang secara manual atau otomatis.</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Sinkron menunggu; asinkron melepas ketergantungan.</li><li>Antrean: sekali proses, dihapus setelah ack.</li><li>Stream: disimpan, banyak pembaca, bisa diputar ulang.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kirim email konfirmasi tanpa membuat checkout lambat?</summary><p class="ok">Jawaban: Antrean pesan asinkron</p><p>Checkout cukup menaruh pesan lalu selesai.</p></details>
 <a class="cta" href="/#de-6-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/de/kafka-topik-partisi-consumer-group">Kafka: topik, partisi &amp; consumer group</a></p><p>Berikutnya: <a href="/belajar/de/apache-spark-pyspark">Apache Spark &amp; PySpark</a></p>

@@ -73,7 +73,7 @@ Rp1.250.000</code></pre>
 
 void main() {
   print(&#x27;belajar dart itu seru&#x27;.judul);
-}</code></pre></details></li><li><p>Buat fungsi generik <code>terbesar&lt;T extends Comparable&lt;T&gt;&gt;(List&lt;T&gt; xs)</code> dan uji dengan angka dan teks.</p><details><summary>Petunjuk</summary><p>Bandingkan dengan compareTo; > 0 berarti lebih besar.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>T terbesar&lt;T extends Comparable&lt;T&gt;&gt;(List&lt;T&gt; xs) {
+}</code></pre><div class="lbl">KELUARAN</div><pre><code>Belajar Dart Itu Seru</code></pre></details></li><li><p>Buat fungsi generik <code>terbesar&lt;T extends Comparable&lt;T&gt;&gt;(List&lt;T&gt; xs)</code> dan uji dengan angka dan teks.</p><details><summary>Petunjuk</summary><p>Bandingkan dengan compareTo; > 0 berarti lebih besar.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>T terbesar&lt;T extends Comparable&lt;T&gt;&gt;(List&lt;T&gt; xs) {
   var m = xs.first;
   for (final x in xs) {
     if (x.compareTo(m) &gt; 0) m = x;
@@ -84,7 +84,8 @@ void main() {
 void main() {
   print(terbesar([3, 9, 2]));
   print(terbesar([&#x27;apel&#x27;, &#x27;zaitun&#x27;, &#x27;mangga&#x27;]));
-}</code></pre></details></li><li><p>Buat enum <code>Status</code> dengan field <code>label</code> berbahasa Indonesia, lalu cetak label semua status.</p><details><summary>Petunjuk</summary><p>Enhanced enum: menunggu('Menunggu bayar'), ...; final String label; const Status(this.label);</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>enum Status {
+}</code></pre><div class="lbl">KELUARAN</div><pre><code>9
+zaitun</code></pre></details></li><li><p>Buat enum <code>Status</code> dengan field <code>label</code> berbahasa Indonesia, lalu cetak label semua status.</p><details><summary>Petunjuk</summary><p>Enhanced enum: menunggu('Menunggu bayar'), ...; final String label; const Status(this.label);</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>enum Status {
   menunggu(&#x27;Menunggu bayar&#x27;),
   dikirim(&#x27;Sedang dikirim&#x27;),
   selesai(&#x27;Sudah diterima&#x27;);
@@ -97,7 +98,9 @@ void main() {
   for (final s in Status.values) {
     print(&#x27;${s.index + 1}. ${s.label}&#x27;);
   }
-}</code></pre></details></li></ol>
+}</code></pre><div class="lbl">KELUARAN</div><pre><code>1. Menunggu bayar
+2. Sedang dikirim
+3. Sudah diterima</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Enhanced enum boleh punya field.</li><li>Generics &lt;T> menjaga keamanan tipe.</li><li>Extension menambah method ke tipe yang ada.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Apa arti T pada class Kotak&amp;lt;T&gt;?</summary><p class="ok">Jawaban: Tipe yang ditentukan saat dipakai</p><p>T diganti tipe nyata, misalnya Kotak&amp;lt;int&gt;.</p></details><details><summary>Extension method mengubah class aslinya?</summary><p class="ok">Jawaban: Tidak, hanya menambah method saat dipakai</p><p>Class asli tidak berubah.</p></details>
 <a class="cta" href="/#dart-5-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dart/exception-try-catch-finally-dan-throw">Exception: try, catch, finally, dan throw</a></p><p>Berikutnya: <a href="/belajar/dart/records-dan-pattern-matching-dart-3">Records dan pattern matching (Dart 3)</a></p>

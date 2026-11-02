@@ -80,7 +80,10 @@ for n in (2, 9):
     else:
         print(&quot;Sisa&quot;, sisa)
     finally:
-        print(&quot;selesai&quot;)</code></pre></details></li><li><p>Minta umur dari daftar input <code>["abc", "-5", "21"]</code>: lewati yang bukan angka (ValueError) atau negatif, cetak yang valid.</p><details><summary>Petunjuk</summary><p>raise ValueError sendiri untuk angka negatif agar ditangani di except yang sama.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>for teks in [&quot;abc&quot;, &quot;-5&quot;, &quot;21&quot;]:
+        print(&quot;selesai&quot;)</code></pre><div class="lbl">KELUARAN</div><pre><code>Sisa 3
+selesai
+Gagal: stok hanya 5
+selesai</code></pre></details></li><li><p>Minta umur dari daftar input <code>["abc", "-5", "21"]</code>: lewati yang bukan angka (ValueError) atau negatif, cetak yang valid.</p><details><summary>Petunjuk</summary><p>raise ValueError sendiri untuk angka negatif agar ditangani di except yang sama.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>for teks in [&quot;abc&quot;, &quot;-5&quot;, &quot;21&quot;]:
     try:
         umur = int(teks)
         if umur &lt; 0:
@@ -88,7 +91,9 @@ for n in (2, 9):
     except ValueError as e:
         print(&quot;Ditolak:&quot;, teks, &quot;-&quot;, e)
     else:
-        print(&quot;Umur valid:&quot;, umur)</code></pre></details></li></ol>
+        print(&quot;Umur valid:&quot;, umur)</code></pre><div class="lbl">KELUARAN</div><pre><code>Ditolak: abc - invalid literal for int() with base 10: &#x27;abc&#x27;
+Ditolak: -5 - umur negatif
+Umur valid: 21</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Tangkap error yang spesifik</summary><p><code>except:</code> tanpa nama menangkap semua hal, termasuk salah ketik nama variabel dan Ctrl+C, sehingga bug tersembunyi. Sebutkan jenis error yang memang kamu harapkan.</p><div class="lbl">KODE PEMULA</div><pre><code>teks = &quot;12a&quot;
 try:
     jumlah = int(teks)

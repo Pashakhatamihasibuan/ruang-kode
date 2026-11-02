@@ -33,6 +33,32 @@ FROM (SELECT &#x27;S&#x27; AS ukuran UNION ALL SELECT &#x27;M&#x27; UNION ALL SE
 CROSS JOIN (SELECT &#x27;Merah&#x27; AS warna UNION ALL SELECT &#x27;Hitam&#x27;) w;</code></pre>
 <div class="lbl">Jumlah baris produk kartesius</div><pre><code>SELECT COUNT(*) AS kombinasi FROM pelanggan CROSS JOIN produk;</code></pre>
 <h2>Tantangan</h2><ol><li>Tampilkan nama setiap karyawan dan nama atasannya (kolom karyawan dan atasan) hanya untuk karyawan yang punya atasan.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Tampilkan pasangan karyawan yang satu divisi (tanpa memasangkan dengan diri sendiri dan tanpa pasangan ganda).</p><details><summary>Petunjuk</summary><p>Self join dengan a.id &lt; b.id.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">SQL</div><pre><code>SELECT a.nama AS karyawan1, b.nama AS karyawan2, a.divisi
+FROM karyawan a
+JOIN karyawan b ON a.divisi = b.divisi AND a.id &lt; b.id
+ORDER BY a.divisi, a.nama;</code></pre><div class="lbl">KELUARAN</div><pre><code>karyawan1 | karyawan2 | divisi
+----------+-----------+----------
+Tono      | Vino      | Gudang
+Tono      | Wati      | Gudang
+Vino      | Wati      | Gudang
+Umi       | Yudi      | Penjualan
+Umi       | Zahra     | Penjualan
+Umi       | Rio       | Penjualan
+Yudi      | Zahra     | Penjualan
+Yudi      | Rio       | Penjualan
+Zahra     | Rio       | Penjualan</code></pre></details></li><li><p>Buat semua kombinasi ukuran (S, L) dengan produk Minuman memakai CROSS JOIN.</p><details><summary>Petunjuk</summary><p>Buat tabel ukuran kecil dengan SELECT ... UNION ALL.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">SQL</div><pre><code>WITH ukuran(u) AS (SELECT &#x27;S&#x27; UNION ALL SELECT &#x27;L&#x27;)
+SELECT pr.nama, ukuran.u
+FROM produk pr
+CROSS JOIN ukuran
+WHERE pr.kategori = &#x27;Minuman&#x27;
+ORDER BY pr.nama, ukuran.u;</code></pre><div class="lbl">KELUARAN</div><pre><code>nama       | u
+-----------+--
+Kopi Gayo  | L
+Kopi Gayo  | S
+Madu Hutan | L
+Madu Hutan | S
+Teh Melati | L
+Teh Melati | S</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Self join butuh dua alias.</li><li>Cross join = semua kombinasi (kartesius).</li><li>Jumlah baris cross join = baris kiri × baris kanan.</li><li>Selalu tulis kondisi ON.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Cross join 3 baris dengan 4 baris menghasilkan?</summary><p class="ok">Jawaban: 12 baris</p><p>3 × 4 = 12.</p></details><details><summary>Kenapa self join butuh alias?</summary><p class="ok">Jawaban: Agar dua &quot;salinan&quot; tabel bisa dibedakan</p><p>Satu tabel berperan dua kali.</p></details>
 <a class="cta" href="/#sql-7-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/sql/left-right-full-outer-join">LEFT, RIGHT &amp; FULL OUTER JOIN</a></p><p>Berikutnya: <a href="/belajar/sql/join-banyak-tabel">JOIN banyak tabel</a></p>

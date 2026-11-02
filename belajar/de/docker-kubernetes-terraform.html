@@ -36,6 +36,17 @@ resource &quot;google_storage_bucket&quot; &quot;lake&quot; {
   location = &quot;asia-southeast2&quot;   # Jakarta
   uniform_bucket_level_access = true
 }</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis Dockerfile untuk skrip ETL Python yang memasang dependensi dari requirements.txt.</p><details><summary>Petunjuk</summary><p>Mulai dari image python slim, salin requirements dulu agar cache layer terpakai.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>FROM python:3.12-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY etl.py .
+CMD [&quot;python&quot;, &quot;etl.py&quot;]</code></pre></details></li><li><p>Tulis resource Terraform untuk bucket GCS bernama "toko-data-mentah" di region asia-southeast2.</p><details><summary>Petunjuk</summary><p>resource "google_storage_bucket".</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>resource &quot;google_storage_bucket&quot; &quot;mentah&quot; {
+  name     = &quot;toko-data-mentah&quot;
+  location = &quot;asia-southeast2&quot;
+
+  uniform_bucket_level_access = true
+}</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Docker: lingkungan sama di mana saja.</li><li>Kubernetes: mengatur banyak kontainer.</li><li>IaC + CI/CD: infrastruktur direview dan diuji.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Keuntungan utama Terraform dibanding klik di konsol?</summary><p class="ok">Jawaban: Perubahan infrastruktur bisa direview, diulang, dan dilacak</p><p>Infrastruktur menjadi kode di Git.</p></details>
 <a class="cta" href="/#de-8-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/de/peta-layanan-cloud-untuk-data">Peta layanan cloud untuk data</a></p><p>Berikutnya: <a href="/belajar/de/tes-pipeline-observabilitas-data">Tes pipeline &amp; observabilitas data</a></p>

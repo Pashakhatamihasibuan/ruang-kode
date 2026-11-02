@@ -40,6 +40,24 @@ print(df[&quot;harga&quot;].sum())</code></pre>
 1   Bandung   25000 2024-10-15     10
 2  Surabaya  120000 2024-11-03     11
 230000</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Bersihkan kolom kota <code>[" medan", "MEDAN ", "Bandung"]</code> dan kolom harga <code>["Rp18.000", "Rp 9.500", "12000"]</code> menjadi angka.</p><details><summary>Petunjuk</summary><p>.str.strip().str.title(); .str.replace(r"[^0-9]", "", regex=True) lalu astype(int).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import pandas as pd
+
+df = pd.DataFrame({&quot;kota&quot;: [&quot; medan&quot;, &quot;MEDAN &quot;, &quot;Bandung&quot;], &quot;harga&quot;: [&quot;Rp18.000&quot;, &quot;Rp 9.500&quot;, &quot;12000&quot;]})
+df[&quot;kota&quot;] = df[&quot;kota&quot;].str.strip().str.title()
+df[&quot;harga&quot;] = df[&quot;harga&quot;].str.replace(r&quot;[^0-9]&quot;, &quot;&quot;, regex=True).astype(int)
+print(df)
+print(df[&quot;kota&quot;].nunique())</code></pre><div class="lbl">KELUARAN</div><pre><code>      kota  harga
+0    Medan  18000
+1    Medan   9500
+2  Bandung  12000
+2</code></pre></details></li><li><p>Dari kolom tanggal transaksi, ambil nama hari, bulan, dan selisih hari dari tanggal pertama.</p><details><summary>Petunjuk</summary><p>pd.to_datetime, .dt.day_name(), .dt.month, pengurangan tanggal lalu .dt.days.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import pandas as pd
+
+t = pd.to_datetime(pd.Series([&quot;2026-10-01&quot;, &quot;2026-10-15&quot;, &quot;2026-11-02&quot;]))
+print(t.dt.day_name().tolist())
+print(t.dt.month.tolist())
+print((t - t.min()).dt.days.tolist())</code></pre><div class="lbl">KELUARAN</div><pre><code>[&#x27;Thursday&#x27;, &#x27;Thursday&#x27;, &#x27;Monday&#x27;]
+[10, 10, 11]
+[0, 14, 32]</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Method .str untuk seluruh kolom teks</summary><p>Aksesor <code>.str</code> menjalankan method teks untuk seluruh kolom tanpa <code>apply</code> dan lambda, dan tidak error saat ada nilai kosong.</p><div class="lbl">KODE PEMULA</div><pre><code>import pandas as pd
 nama = pd.Series([&quot;  sari &quot;, &quot;BUDI&quot;, &quot;rina  &quot;])
 rapi = nama.apply(lambda s: s.strip().title())

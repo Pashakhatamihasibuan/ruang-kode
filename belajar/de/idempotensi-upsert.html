@@ -39,6 +39,21 @@ print(&quot;naif:&quot;, con.execute(&quot;SELECT COUNT(*), SUM(total) FROM naif
 print(&quot;aman:&quot;, con.execute(&quot;SELECT COUNT(*), SUM(total) FROM aman&quot;).fetchone())</code></pre>
 <div class="lbl">KELUARAN</div><pre><code>naif: (4, 1010000)
 aman: (2, 505000)</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis upsert PostgreSQL: masukkan stok produk, atau perbarui jika kode produk sudah ada.</p><details><summary>Petunjuk</summary><p>INSERT ... ON CONFLICT (kunci) DO UPDATE SET ... = EXCLUDED....</p></details><details><summary>Lihat jawaban</summary><div class="lbl">SQL</div><pre><code>INSERT INTO stok (kode, jumlah, diperbarui)
+VALUES (&#x27;K1&#x27;, 40, NOW())
+ON CONFLICT (kode)
+DO UPDATE SET jumlah = EXCLUDED.jumlah,
+              diperbarui = EXCLUDED.diperbarui;</code></pre></details></li><li><p>Tunjukkan bahwa memuat data harian dua kali tidak membuat data ganda jika memakai upsert berdasarkan kunci.</p><details><summary>Petunjuk</summary><p>Pakai dict sebagai tabel: kunci yang sama ditimpa, bukan ditambah.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>tabel = {}
+
+def muat(baris):
+    for r in baris:
+        tabel[(r[&quot;tanggal&quot;], r[&quot;kode&quot;])] = r     # upsert berdasarkan kunci
+
+harian = [{&quot;tanggal&quot;: &quot;2026-11-01&quot;, &quot;kode&quot;: &quot;K1&quot;, &quot;jumlah&quot;: 5},
+          {&quot;tanggal&quot;: &quot;2026-11-01&quot;, &quot;kode&quot;: &quot;T1&quot;, &quot;jumlah&quot;: 3}]
+muat(harian)
+muat(harian)          # dijalankan ulang
+print(len(tabel))</code></pre><div class="lbl">KELUARAN</div><pre><code>2</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Upsert agar pipeline aman dijalankan ulang</summary><p>Pipeline yang gagal di tengah sering dijalankan ulang. <code>INSERT</code> biasa menghasilkan baris ganda, sedangkan <code>INSERT ... ON CONFLICT DO UPDATE</code> (PostgreSQL, SQLite) memperbarui baris yang sudah ada, sehingga hasilnya sama berapa kali pun dijalankan.</p><div class="lbl">KODE PEMULA</div><pre><code>import sqlite3
 db = sqlite3.connect(&quot;:memory:&quot;)
 db.execute(&quot;CREATE TABLE stok (sku TEXT, jumlah INT)&quot;)
