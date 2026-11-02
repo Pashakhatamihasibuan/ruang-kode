@@ -1,5 +1,5 @@
 /* ===================== APLIKASI LMS: DATA & KEADAAN =====================
-   16 jalur dalam 5 kategori, mengikuti roadmap.sh. Rute:
+   17 jalur dalam 6 kategori, mengikuti roadmap.sh (MSI memakai kurikulum Ruang Kode). Rute:
    #beranda, #katalog, #saya, #ulang, #kuis[-tk], #glosarium,
    #<tk> (halaman jalur), #<tk>-M-L (pelajaran), #<tk>-tes (tes penempatan),
    #<tk>-ujian-M (ujian modul). */
@@ -8,6 +8,7 @@ const GROUPS=[
   ['web','Web & Frontend','Membangun situs dan aplikasi web yang cepat dan mudah dipakai.'],
   ['data','Data','Mengolah, menganalisis, dan mengalirkan data menjadi keputusan.'],
   ['des','Desain','Merancang pengalaman dan sistem visual yang konsisten.'],
+  ['sis','Sistem Informasi','Mengelola sistem informasi agar organisasi bekerja lebih baik.'],
   ['tool','Alat kerja','Alat yang dipakai setiap tim pengembang.']];
 const TRACKS=[
   {k:'java',g:'prog',name:'Java',lang:'java',mods:JAVA_MODULES,road:'java',mark:'J',h:'Java dari nol sampai siap kerja',d:'Bahasa bertipe statis untuk Android, perbankan, dan backend skala besar. Dari variabel dan OOP sampai konkurensi, JDBC, dan Spring Boot.'},
@@ -25,13 +26,15 @@ const TRACKS=[
   {k:'de',g:'data',name:'Data Engineer',lang:'python',mods:DE_MODULES,road:'data-engineer',mark:'DE',h:'Membangun pipeline data yang andal',d:'Database, pemodelan, ETL/ELT, Airflow, Kafka, Spark, cloud, kualitas data, dan keamanan.'},
   {k:'ux',g:'des',name:'UX Design',lang:'text',mods:UX_MODULES,road:'ux-design',mark:'UX',h:'Merancang perilaku pengguna',d:'Psikologi keputusan, model Fogg dan Hook, strategi perubahan perilaku, riset, prototyping, dan A/B test.'},
   {k:'ds',g:'des',name:'Design System',lang:'css',mods:DS_MODULES,road:'design-system',mark:'DS',h:'Satu sumber kebenaran desain',d:'Bahasa desain, token, komponen dengan semua state, dokumentasi, versi, dan tata kelola.'},
+  {k:'msi',g:'sis',name:'Manajemen Sistem Informasi',lang:'text',mods:MSI_MODULES,road:'',mark:'MSI',h:'Mengelola sistem informasi organisasi',d:'Beda MSI dan SIM, jenis sistem (ERP, CRM, DSS), data, SDLC, keamanan, tata kelola TI, dengan contoh di perusahaan, startup, sekolah, dan organisasi.'},
   {k:'git',g:'tool',name:'Git & GitHub',lang:'bash',mods:GIT_MODULES,road:'git-github-beginner',mark:'git',h:'Version control dan kolaborasi',d:'Commit, branch, merge, remote, pull request, GitHub Pages, Actions, dan keamanan repositori.'}];
 const TK=Object.fromEntries(TRACKS.map(t=>[t.k,t]));
 const PATHS=[
   {k:'fe',t:'Frontend Developer',d:'Membangun antarmuka web yang cepat dan mudah dipakai.',tr:['fe0','html','css','git','ts','react','fe']},
   {k:'da',t:'Data Analyst',d:'Menjawab pertanyaan bisnis dengan data.',tr:['sql','pda','da','bi']},
   {k:'de',t:'Data Engineer',d:'Membangun jalur data dari sumber ke dashboard.',tr:['python','sql','git','pda','de']},
-  {k:'ux',t:'UI/UX Designer',d:'Merancang pengalaman dan sistem desain.',tr:['ux','ds','html','css']},
+  {k:'ux',t:'UI/UX Designer',d:'Merancang pengalaman dan sistem desain.',tr:['ux','ds','html','css','msi']},
+  {k:'msi',t:'Analis Sistem Informasi',d:'Menjembatani kebutuhan bisnis dengan teknologi.',tr:['msi','ux','sql','bi']},
   {k:'be',t:'Backend Java',d:'Membangun layanan dan API yang andal.',tr:['java','sql','git']}];
 const LVL4=['Pemula','Menengah','Lanjutan','Profesional'];
 const KIND={lab:'Konsep & lab',topic:'Topik 5 langkah',c:'Konsep & kode',s:'Praktik SQL',w:'Praktik langsung',proj:'Proyek akhir',mini:'Proyek mini'};

@@ -232,6 +232,26 @@ CATS.push('Web','Data & BI','Desain');
  ['des-kontras','Rasio kontras','contrast ratio','Desain','Perbandingan terang teks dan latarnya. Teks biasa minimal 4.5:1 agar mudah dibaca.'],
 ].forEach(([id,t,en,c,d])=>{const g={id,t,en,c,d};GL.push(g);GLMAP[id]=g});
 
+/* istilah jalur Manajemen Sistem Informasi */
+CATS.push('Sistem Informasi');
+[['si-msi','Manajemen Sistem Informasi','management of information systems','Pengelolaan seluruh sistem informasi organisasi: strategi, anggaran, proyek, keamanan, SDM, dan evaluasi TI.'],
+ ['si-sim','Sistem Informasi Manajemen','management information system (MIS)','Sistem yang mengolah data transaksi menjadi laporan rutin untuk membantu manajer mengambil keputusan.'],
+ ['si-tps','TPS','transaction processing system','Sistem yang mencatat transaksi harian, misalnya kasir, pendaftaran siswa, atau pembayaran iuran.'],
+ ['si-dss','DSS','decision support system','Sistem pendukung keputusan untuk masalah semi-terstruktur, sering dengan simulasi "bagaimana jika".'],
+ ['si-eis','EIS','executive information system','Dasbor ringkas untuk pimpinan puncak yang menampilkan indikator utama dan tren.'],
+ ['si-erp','ERP','enterprise resource planning','Sistem terpadu yang menyatukan keuangan, persediaan, pembelian, penjualan, dan SDM dalam satu basis data.'],
+ ['si-crm','CRM','customer relationship management','Sistem untuk mengelola data dan interaksi pelanggan agar layanan dan penjualan lebih baik.'],
+ ['si-scm','SCM','supply chain management','Sistem untuk mengatur aliran barang dan informasi dari pemasok sampai pelanggan.'],
+ ['si-sdlc','SDLC','system development life cycle','Tahapan membangun sistem: perencanaan, analisis, desain, implementasi, pengujian, dan pemeliharaan.'],
+ ['si-dfd','DFD','data flow diagram','Diagram yang menggambarkan aliran data antara entitas luar, proses, dan penyimpanan data.'],
+ ['si-telos','TELOS','technical, economic, legal, operational, schedule','Lima aspek studi kelayakan: teknis, ekonomi, hukum, operasional, dan jadwal.'],
+ ['si-bcp','BCP','business continuity plan','Rencana agar layanan penting tetap berjalan saat terjadi gangguan, termasuk cadangan data dan pemulihan.'],
+ ['si-cobit','COBIT','Control Objectives for Information and Related Technology','Kerangka tata kelola TI untuk menyelaraskan TI dengan tujuan organisasi dan mengendalikan risikonya.'],
+ ['si-itil','ITIL','IT Infrastructure Library','Kumpulan praktik terbaik untuk mengelola layanan TI, misalnya penanganan insiden dan permintaan.'],
+ ['si-spbe','SPBE','Sistem Pemerintahan Berbasis Elektronik','Kebijakan pemerintah Indonesia untuk menyelenggarakan layanan dan administrasi secara digital dan terpadu.'],
+ ['si-bsc','Balanced scorecard','balanced scorecard','Alat ukur kinerja dari empat sudut: keuangan, pelanggan, proses internal, serta pembelajaran dan pertumbuhan.']
+].forEach(([id,t,en,d])=>{const g={id,t,en,c:'Sistem Informasi',d};GL.push(g);GLMAP[id]=g});
+
 /* ---------- istilah yang bisa disentuh di pelajaran ----------
    Kemunculan pertama setiap istilah di teks pelajaran diberi garis bawah titik-titik;
    disentuh atau diklik akan menampilkan artinya. */

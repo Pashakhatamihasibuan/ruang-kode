@@ -1,7 +1,7 @@
-/* ===== v4: 16 jalur, navigasi katalog, dashboard, ujian, editor web ===== */
-:root{--c-java:#B4532A;--c-python:#2E5E8C;--c-ts:#4338CA;--c-fe0:#15803D;--c-html:#BE3455;--c-css:#7E3AF2;--c-fe:#4D7C0F;--c-react:#0E7FA6;--c-sql:#1F756E;--c-pda:#8E2DA8;--c-da:#B45309;--c-bi:#B0237A;--c-de:#1E40AF;--c-ux:#9F1239;--c-ds:#6B635B;--c-git:#475569}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--c-java:#E39A73;--c-python:#8DB4DD;--c-ts:#A5B4FC;--c-fe0:#6BD69A;--c-html:#F48BA4;--c-css:#C4A5FB;--c-fe:#A8D86A;--c-react:#67D3F5;--c-sql:#6FC7BC;--c-pda:#DDA0EE;--c-da:#F2B35E;--c-bi:#F48CC7;--c-de:#93B4F5;--c-ux:#FB8A9C;--c-ds:#CFC6BC;--c-git:#A7B4C6}}
-:root[data-theme="dark"]{--c-java:#E39A73;--c-python:#8DB4DD;--c-ts:#A5B4FC;--c-fe0:#6BD69A;--c-html:#F48BA4;--c-css:#C4A5FB;--c-fe:#A8D86A;--c-react:#67D3F5;--c-sql:#6FC7BC;--c-pda:#DDA0EE;--c-da:#F2B35E;--c-bi:#F48CC7;--c-de:#93B4F5;--c-ux:#FB8A9C;--c-ds:#CFC6BC;--c-git:#A7B4C6}
+/* ===== v4: 17 jalur, navigasi katalog, dashboard, ujian, editor web ===== */
+:root{--c-java:#B4532A;--c-python:#2E5E8C;--c-ts:#4338CA;--c-fe0:#15803D;--c-html:#BE3455;--c-css:#7E3AF2;--c-fe:#4D7C0F;--c-react:#0E7FA6;--c-sql:#1F756E;--c-pda:#8E2DA8;--c-da:#B45309;--c-bi:#B0237A;--c-de:#1E40AF;--c-ux:#9F1239;--c-ds:#6B635B;--c-git:#475569;--c-msi:#0F766E}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--c-java:#E39A73;--c-python:#8DB4DD;--c-ts:#A5B4FC;--c-fe0:#6BD69A;--c-html:#F48BA4;--c-css:#C4A5FB;--c-fe:#A8D86A;--c-react:#67D3F5;--c-sql:#6FC7BC;--c-pda:#DDA0EE;--c-da:#F2B35E;--c-bi:#F48CC7;--c-de:#93B4F5;--c-ux:#FB8A9C;--c-ds:#CFC6BC;--c-git:#A7B4C6;--c-msi:#5EC9B5}}
+:root[data-theme="dark"]{--c-java:#E39A73;--c-python:#8DB4DD;--c-ts:#A5B4FC;--c-fe0:#6BD69A;--c-html:#F48BA4;--c-css:#C4A5FB;--c-fe:#A8D86A;--c-react:#67D3F5;--c-sql:#6FC7BC;--c-pda:#DDA0EE;--c-da:#F2B35E;--c-bi:#F48CC7;--c-de:#93B4F5;--c-ux:#FB8A9C;--c-ds:#CFC6BC;--c-git:#A7B4C6;--c-msi:#5EC9B5}
 .t-java{--acc:var(--c-java)}
 .t-python{--acc:var(--c-python)}
 .t-ts{--acc:var(--c-ts)}
@@ -18,7 +18,8 @@
 .t-ux{--acc:var(--c-ux)}
 .t-ds{--acc:var(--c-ds)}
 .t-git{--acc:var(--c-git)}
-.t-java,.t-python,.t-ts,.t-fe0,.t-html,.t-css,.t-fe,.t-react,.t-sql,.t-pda,.t-da,.t-bi,.t-de,.t-ux,.t-ds,.t-git{--acc-soft:color-mix(in srgb,var(--acc) 13%,var(--surface))}
+.t-msi{--acc:var(--c-msi)}
+.t-java,.t-python,.t-ts,.t-fe0,.t-html,.t-css,.t-fe,.t-react,.t-sql,.t-pda,.t-da,.t-bi,.t-de,.t-ux,.t-ds,.t-git,.t-msi{--acc-soft:color-mix(in srgb,var(--acc) 13%,var(--surface))}
 .rprog i{background:var(--acc)}
 .badge{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--bad);color:#fff;font:600 .68rem/1 var(--f-mono);margin-left:4px}
 .btn.danger{border-color:var(--bad);color:var(--bad)}
@@ -106,6 +107,11 @@
 .cat-h{font:600 .8rem var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .cat-hd{display:flex;flex-direction:column;gap:2px}.cat-hd h2{font:400 1.8rem var(--f-serif)}
 #view[data-page="home"] .section{gap:18px}
+/* garis pembatas antarbagian beranda */
+#view[data-page="home"]{gap:40px}
+#view[data-page="home"]>*+*{border-top:1px solid var(--line);padding-top:40px}
+#view[data-page="home"] .cat-row+.cat-row{border-top:1px dashed var(--line);padding-top:16px}
+@media (max-width:640px){#view[data-page="home"]{gap:28px}#view[data-page="home"]>*+*{padding-top:28px}}
 .tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
 .tgrid.wide{grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
 .tcard2{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;align-items:start;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);text-decoration:none;transition:border-color .2s,transform .2s var(--ease),box-shadow .2s;position:relative;overflow:hidden}

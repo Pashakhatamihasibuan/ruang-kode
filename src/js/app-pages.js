@@ -57,7 +57,7 @@ function wireHome(){
 let catState={q:'',g:'semua'};
 function renderCatalog(){
   return `<header class="ch-head"><nav class="crumb" aria-label="Lokasi"><a href="#beranda">Beranda</a><span>/</span><span>Katalog</span></nav>
-   <div class="eyebrow">Katalog</div><h1>${TRACKS.length} jalur belajar</h1><p class="lead muted">${nLessons} pelajaran dalam ${GROUPS.length} kategori. Semua jalur mengikuti roadmap.sh dan bisa diikuti bersamaan.</p></header>
+   <div class="eyebrow">Katalog</div><h1>${TRACKS.length} jalur belajar</h1><p class="lead muted">${nLessons} pelajaran dalam ${GROUPS.length} kategori. Jalur mengikuti roadmap.sh dan bisa diikuti bersamaan.</p></header>
    <div class="gl-tools"><input class="gl-search" id="catQ" type="search" placeholder="Saring jalur, misalnya data, react, atau desain" aria-label="Saring jalur" value="${esc(catState.q)}"></div>
    <div class="chips" id="catG">${[['semua','Semua'],...GROUPS.map(g=>[g[0],g[1]])].map(([k,n])=>`<button class="chip" data-g="${k}" aria-pressed="${k===catState.g}">${n}</button>`).join('')}</div>
    <div id="catList"></div>`;
@@ -82,7 +82,7 @@ function renderCourse(t){
   return `<header class="c-hero ${tcls(t)}">
     <nav class="crumb" aria-label="Lokasi"><a href="#beranda">Beranda</a><span>/</span><a href="#katalog">Katalog</a><span>/</span><span>${t.name}</span></nav>
     <div class="c-grid"><div>
-      <div class="eyebrow">${GROUPS.find(g=>g[0]===t.g)[1]} · <a href="https://roadmap.sh/${t.road}" target="_blank" rel="noopener">mengikuti roadmap.sh/${t.road}</a></div>
+      <div class="eyebrow">${GROUPS.find(g=>g[0]===t.g)[1]} · ${t.road?`<a href="https://roadmap.sh/${t.road}" target="_blank" rel="noopener">mengikuti roadmap.sh/${t.road}</a>`:'kurikulum Ruang Kode'}</div>
       <h1>${t.h}</h1><p class="lead">${t.d}</p>
       <ul class="tc-stats"><li><b>${t.mods.length}</b> modul</li><li><b>${p.n}</b> pelajaran</li><li><b>±${hours(t)}</b> jam belajar</li></ul>
     </div>

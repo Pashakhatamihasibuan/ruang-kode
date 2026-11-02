@@ -7,7 +7,7 @@ import unicodedata
 from datetime import date
 from pathlib import Path
 
-GROUPS = [("prog", "Pemrograman"), ("web", "Web & Frontend"), ("data", "Data"), ("des", "Desain"), ("tool", "Alat kerja")]
+GROUPS = [("prog", "Pemrograman"), ("web", "Web & Frontend"), ("data", "Data"), ("des", "Desain"), ("sis", "Sistem Informasi"), ("tool", "Alat kerja")]
 KIND = {"lab": "Konsep & lab", "topic": "Topik 5 langkah", "c": "Konsep & kode", "s": "Praktik SQL",
         "w": "Praktik langsung", "proj": "Proyek akhir"}
 LANG = {"java": "Java", "python": "Python", "sql": "SQL", "ts": "TypeScript", "js": "JavaScript", "jsx": "JSX",
@@ -147,7 +147,7 @@ def make_icons(out):
     og.paste(tile(220, 0, 48), (90, 205), tile(220, 0, 48))
     d = ImageDraw.Draw(og)
     d.text((360, 230), "Ruang Kode", font=ImageFont.truetype(font_path, 84), fill="white")
-    d.text((364, 340), "coding · data · desain · 16 jalur", font=ImageFont.truetype(font_path, 34), fill=(200, 212, 228))
+    d.text((364, 340), "coding · data · desain · 17 jalur", font=ImageFont.truetype(font_path, 34), fill=(200, 212, 228))
     og.save(out / "og.png", optimize=True)
 
 
@@ -261,7 +261,7 @@ def lesson_body(t, l, book):
         for f in l.get("files") or []:
             h.append(code(f[2], f[1], f[0]))
     else:
-        h += [f"<p>{p}</p>" for p in l.get("b") or []]
+        h += [f"<p>{p}</p>".replace('href="#', 'href="/#') for p in l.get("b") or []]
         if l.get("code"):
             h.append(code(l["code"], lang))
             if l.get("out") is not None:
@@ -292,11 +292,11 @@ def write_static(root, url, tracks, data):
     org = {"@type": "Organization", "name": "Ruang Kode", "url": url + "/"}
 
     # katalog
-    body = "<h1>Semua materi Ruang Kode</h1><p>16 jalur belajar coding, data, dan desain berbahasa Indonesia. Setiap pelajaran punya versi interaktif di aplikasi.</p>"
+    body = "<h1>Semua materi Ruang Kode</h1><p>17 jalur belajar coding, data, desain, dan sistem informasi berbahasa Indonesia. Setiap pelajaran punya versi interaktif di aplikasi.</p>"
     for g, gn in GROUPS:
         body += f"<h2>{e(gn)}</h2><ul>" + "".join(
             f'<li><a href="/belajar/{t["k"]}">{e(t["name"])}</a>: {e(t["h"])}</li>' for t in tracks if t["g"] == g) + "</ul>"
-    (out / "index.html").write_text(page(url + "/belajar", "Semua materi · Ruang Kode", "16 jalur belajar coding, data, dan desain berbahasa Indonesia mengikuti roadmap.sh.",
+    (out / "index.html").write_text(page(url + "/belajar", "Semua materi · Ruang Kode", "17 jalur belajar coding, data, desain, dan sistem informasi berbahasa Indonesia.",
                                          [("Beranda", "/"), ("Materi", None)], body, {"@context": "https://schema.org", "@type": "CollectionPage", "name": "Semua materi", "publisher": org}))
 
     for t in tracks:
@@ -304,7 +304,7 @@ def write_static(root, url, tracks, data):
         tdir.mkdir()
         tu = f"{url}/belajar/{t['k']}"
         nl = sum(len(m["lessons"]) for m in t["mods"])
-        body = (f'<div class="eyebrow">Jalur belajar · roadmap.sh/{e(t["road"])}</div><h1>{e(t["name"])}: {e(t["h"])}</h1><p>{e(t["d"])}</p>'
+        body = (f'<div class="eyebrow">Jalur belajar · {("roadmap.sh/" + e(t["road"])) if t["road"] else "kurikulum Ruang Kode"}</div><h1>{e(t["name"])}: {e(t["h"])}</h1><p>{e(t["d"])}</p>'
                 f'<p>{len(t["mods"])} modul · {nl} pelajaran</p><a class="cta" href="/#{t["k"]}">Mulai belajar di aplikasi</a>')
         for mi, m in enumerate(t["mods"]):
             items = []
