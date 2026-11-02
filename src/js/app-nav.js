@@ -74,7 +74,7 @@ function route(){
     v.classList.remove('enter');void v.offsetWidth;v.classList.add('enter');return}
   if(TK[h])page('course',renderCourse(TK[h]),()=>wireCourse(TK[h]),`Jalur ${TK[h].name}`,h);
   else if((m=/^(\w+)-tes$/.exec(h))&&TK[m[1]])page('quiz',renderPlacement(TK[m[1]]),wireExam,`Tes penempatan ${TK[m[1]].name}`,m[1]);
-  else if((m=/^(\w+)-ujian-(\d+)$/.exec(h))&&TK[m[1]]&&TK[m[1]].mods[m[2]-1]&&!modDone(m[1],m[2]-1))page('locked',renderLockedExam(TK[m[1]],m[2]-1),null,'Ujian modul terkunci',m[1]);
+  else if((m=/^(\w+)-ujian-(\d+)$/.exec(h))&&TK[m[1]]&&TK[m[1]].mods[m[2]-1]&&false)page('locked',renderLockedExam(TK[m[1]],m[2]-1),null,'Ujian modul terkunci',m[1]);
   else if((m=/^(\w+)-ujian-(\d+)$/.exec(h))&&TK[m[1]]&&TK[m[1]].mods[m[2]-1])page('quiz',renderExam(TK[m[1]],m[2]-1),wireExam,`Ujian modul ${m[2]} ${TK[m[1]].name}`,m[1]);
   else if((m=/^(\w+)-ringkasan-(\d+)$/.exec(h))&&TK[m[1]]&&TK[m[1]].mods[m[2]-1])page('summary',renderSummary(TK[m[1]],m[2]-1),null,`Ringkasan modul ${m[2]} ${TK[m[1]].name}`,m[1]);
   else if((m=/^(\w+)-sertifikat$/.exec(h))&&TK[m[1]]){location.replace('#'+m[1]);return}

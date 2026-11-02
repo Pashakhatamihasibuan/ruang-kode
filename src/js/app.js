@@ -79,7 +79,8 @@ const isDone=x=>!!LMS.done[base(x).id];
 function prog(tk){const F=FLAT[tk];const d=F.filter(isDone).length;return {d,n:F.length,p:F.length?d/F.length:0}}
 function nextOf(tk){const F=FLAT[tk];return F.find(x=>!isDone(x))||F[0]}
 /* belajar berurutan: pelajaran terbuka jika pelajaran pertama, sudah selesai, atau pelajaran sebelumnya sudah selesai */
-function isOpen(x){const F=FLAT[x.t.k],i=F.indexOf(x);return i<=0||isDone(x)||isDone(F[i-1])}
+/* semua materi terbuka: siswa bebas memilih urutan belajar */
+function isOpen(x){return true}
 const lockOf=x=>{const F=FLAT[x.t.k];return F[F.indexOf(x)-1]};
 function modDone(tk,mi){const p=modProg(tk,mi);return p.d===p.n}
 function resumeOf(tk){const l=BYID[LMS.last[tk]];return l&&!isDone(l)?l:nextOf(tk)}

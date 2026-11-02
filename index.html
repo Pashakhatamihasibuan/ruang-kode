@@ -1748,6 +1748,56 @@ button.gt:focus-visible{outline:2px solid var(--acc,var(--py));outline-offset:2p
 .mv-dlb>div{height:8px;border-radius:4px;background:var(--sunk);overflow:hidden}
 .mv-dlb i{display:block;height:100%;transition:width .3s}.mv-dlb i.ok{background:var(--ok)}.mv-dlb i.warn{background:var(--c-da)}.mv-dlb i.bad{background:var(--bad)}
 .mv-dlb b{font:500 .74rem var(--f-mono);text-align:right}
+/* tombol sembunyikan/tampilkan menu belajar */
+.ol-btn{display:inline-flex;gap:6px;align-items:center}
+@media (min-width:1081px){
+  .shell.has-ol.ol-off{grid-template-columns:minmax(0,1fr)}
+  .shell.ol-off .outline{display:none}
+  .shell.has-ol.ol-off #view{max-width:1040px}
+}
+/* animasi variabel */
+.va-sec{margin-bottom:8px}
+.va{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:14px;align-items:start}
+.va-file{font:600 .7rem var(--f-mono);letter-spacing:.04em;color:var(--muted);padding:6px 10px;border-bottom:1px solid var(--line)}
+.va-code,.va-mem{border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden;min-width:0}
+.va-code pre{margin:0;padding:8px 0;font:13px/1.7 var(--f-mono);overflow-x:auto;background:none}
+.va-ln{display:flex;gap:10px;padding:0 12px;opacity:.45;transition:opacity .25s,background .25s;border-left:3px solid transparent}
+.va-ln em{font-style:normal;color:var(--muted);min-width:1.4em;text-align:right;user-select:none}
+.va-ln code{background:none;padding:0;white-space:pre}
+.va-ln.done{opacity:.85}
+.va-ln.cur{opacity:1;background:var(--acc-soft,var(--sunk));border-left-color:var(--acc,var(--ink))}
+.va-ln.cur code{display:inline-block;overflow:hidden;animation:vaType .7s steps(24,end) both;max-width:100%}
+.va-ln.bad{background:var(--bad-soft);border-left-color:var(--bad)}
+@keyframes vaType{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+.va-err{margin:0 10px 10px;padding:8px 10px;border-radius:8px;background:var(--bad-soft);color:var(--bad);font:12px/1.5 var(--f-mono);animation:rise .3s var(--ease)}
+.va-out{margin:0 10px 10px;padding:8px 10px;border-radius:8px;background:var(--code-bg,#111);color:#E8EDF3;font:12px/1.5 var(--f-mono)}
+.va-out small{display:block;color:#9AA7B8;font-size:.66rem;text-transform:uppercase;letter-spacing:.06em}
+.va-mem{padding-bottom:8px;display:flex;flex-direction:column}
+.va-box{display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-rows:auto auto;column-gap:10px;margin:8px 10px 0;padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;transition:border-color .3s}
+.va-n{font:600 .82rem var(--f-mono);grid-row:1/3;align-self:center;padding:4px 8px;border-radius:6px;background:var(--sunk)}
+.va-v{font:500 .9rem var(--f-mono);overflow-wrap:anywhere}.va-v s{color:var(--muted);font-weight:400}
+.va-t{font-size:.7rem;color:var(--muted)}
+.va-box.new{border-color:var(--acc,var(--ok));animation:vaPop .45s var(--ease)}
+.va-box.chg{border-color:var(--c-da)}.va-box.chg b{animation:vaFlash .8s var(--ease)}
+.va-box.lock{border-style:dashed}
+@keyframes vaPop{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
+@keyframes vaFlash{0%{background:color-mix(in srgb,var(--c-da) 35%,transparent)}100%{background:transparent}}
+.va-pv{margin:10px 10px 0;padding:10px;border-radius:10px;border:1px dashed var(--line);display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.va-pv.dark{background:#121821;border-color:#2a3442}.va-pv.dark small{color:#9AA7B8}
+.va-pv small{font-size:.66rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.va-pv i{display:block;width:48px;height:24px;border-radius:6px}
+.va-pv button{border:0;padding:8px 14px;color:var(--surface);font:600 .84rem var(--f-body);background:var(--ink);border-radius:8px;transition:background .3s}
+.va-pv:not(.dark) button[style]{color:#fff}.va-pv.dark button{color:#06201D}
+.va-pv button.clk{animation:vaClick .4s var(--ease)}
+@keyframes vaClick{50%{transform:scale(.92)}}
+@media (max-width:720px){.va{grid-template-columns:minmax(0,1fr)}.va-code pre{font-size:12px}}
+@media (prefers-reduced-motion:reduce){.va-ln.cur code,.va-box.new,.va-box.chg b,.va-err,.va-pv button.clk{animation:none}}
+.va-code{background:var(--code-bg,#0F1722);border-color:transparent;color:#E4EAF2}
+.va-code .va-file{color:#9AA7B8;border-color:rgba(255,255,255,.08)}
+.va-code .va-ln{opacity:.5}.va-code .va-ln.done{opacity:.9}.va-code .va-ln.cur{opacity:1;background:rgba(255,255,255,.07)}
+.va-code .va-ln.bad{background:rgba(242,139,123,.16)}
+.va-code .va-ln em{color:#6B7A8F}
+.va-code .va-err{background:rgba(242,139,123,.16);color:#F7A99C}
 
 </style>
 </head>
@@ -1784,7 +1834,7 @@ button.gt:focus-visible{outline:2px solid var(--acc,var(--py));outline-offset:2p
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <footer class="sfoot"><div><span>Ruang Kode · dikembangkan oleh <b>Pasha Khatami Hasibuan</b></span><span>Kurikulum mengikuti <a href="https://roadmap.sh" target="_blank" rel="noopener">roadmap.sh</a> · progres tersimpan di browser ini</span></div></footer>
 
-<script>window.RK_CHUNKS={"rt": "c/rt.9116596ac3.js", "book": "c/book.34e885cb84.js", "t:java": "c/t-java.accf2406c7.js", "t:python": "c/t-python.92cb9394aa.js", "t:sql": "c/t-sql.aa39e8a6f6.js", "t:html": "c/t-html.aec5f27da8.js", "t:css": "c/t-css.b5cb5d84c8.js", "t:fe0": "c/t-fe0.8cb679df69.js", "t:fe": "c/t-fe.1f1fff7fc1.js", "t:react": "c/t-react.5441f6eb3e.js", "t:ts": "c/t-ts.0552833654.js", "t:git": "c/t-git.c4b757e845.js", "t:pda": "c/t-pda.260f5b9d54.js", "t:da": "c/t-da.6353164264.js", "t:bi": "c/t-bi.8805bda050.js", "t:de": "c/t-de.01beaa8dc7.js", "t:ux": "c/t-ux.f487e550c9.js", "t:ds": "c/t-ds.df0b5f3e28.js", "t:msi": "c/t-msi.9f42010161.js", "t:sim": "c/t-sim.c33b48fa79.js"};</script>
+<script>window.RK_CHUNKS={"rt": "c/rt.09edd27ba4.js", "book": "c/book.34e885cb84.js", "t:java": "c/t-java.accf2406c7.js", "t:python": "c/t-python.92cb9394aa.js", "t:sql": "c/t-sql.aa39e8a6f6.js", "t:html": "c/t-html.aec5f27da8.js", "t:css": "c/t-css.b5cb5d84c8.js", "t:fe0": "c/t-fe0.8cb679df69.js", "t:fe": "c/t-fe.1f1fff7fc1.js", "t:react": "c/t-react.5441f6eb3e.js", "t:ts": "c/t-ts.0552833654.js", "t:git": "c/t-git.c4b757e845.js", "t:pda": "c/t-pda.260f5b9d54.js", "t:da": "c/t-da.6353164264.js", "t:bi": "c/t-bi.8805bda050.js", "t:de": "c/t-de.01beaa8dc7.js", "t:ux": "c/t-ux.f487e550c9.js", "t:ds": "c/t-ds.df0b5f3e28.js", "t:msi": "c/t-msi.9f42010161.js", "t:sim": "c/t-sim.c33b48fa79.js"};</script>
 <script>
 /* ===================== UTIL ===================== */
 const $ = (s,r=document)=>r.querySelector(s);
@@ -2315,7 +2365,8 @@ const isDone=x=>!!LMS.done[base(x).id];
 function prog(tk){const F=FLAT[tk];const d=F.filter(isDone).length;return {d,n:F.length,p:F.length?d/F.length:0}}
 function nextOf(tk){const F=FLAT[tk];return F.find(x=>!isDone(x))||F[0]}
 /* belajar berurutan: pelajaran terbuka jika pelajaran pertama, sudah selesai, atau pelajaran sebelumnya sudah selesai */
-function isOpen(x){const F=FLAT[x.t.k],i=F.indexOf(x);return i<=0||isDone(x)||isDone(F[i-1])}
+/* semua materi terbuka: siswa bebas memilih urutan belajar */
+function isOpen(x){return true}
 const lockOf=x=>{const F=FLAT[x.t.k];return F[F.indexOf(x)-1]};
 function modDone(tk,mi){const p=modProg(tk,mi);return p.d===p.n}
 function resumeOf(tk){const l=BYID[LMS.last[tk]];return l&&!isDone(l)?l:nextOf(tk)}
@@ -2636,7 +2687,9 @@ function renderLesson(x){
   else if(l.k==='w')body=webHTML(l);
   else if(l.k==='proj')body=projHTML(l,y);
   else body=sqlLessonHTML(l);
-  return `<div class="l-top"><button class="btn ol-btn" id="olBtn" aria-controls="outline" aria-expanded="false">☰ Daftar materi</button>
+  const va=typeof varAnimOf==='function'&&varAnimOf(y.t.k,l);
+  if(va)body=`<section class="viz va-sec" id="varAnim"><div class="viz-head"><span class="eyebrow">Animasi</span><h3>Bagaimana variabel dibuat dan diubah</h3><p>Tekan Berikutnya atau Putar otomatis. Kiri: kode dijalankan baris demi baris. Kanan: isi memori.</p></div><div id="varHost" class="vizhost"></div></section>`+body;
+  return `<div class="l-top"><button class="btn ol-btn" id="olBtn" aria-controls="outline" aria-expanded="false"><span aria-hidden="true">☰</span> <span class="ol-lab">Daftar materi</span></button>
    <nav class="crumb" aria-label="Lokasi"><a href="#beranda">Beranda</a><span>/</span><a href="#${t.k}">${t.name}</a><span>/</span><span>Modul ${mi+1}</span></nav></div>
   <header class="l-head ${tcls(t)}"><div class="eyebrow">Modul ${mi+1}: ${m.t} · Pelajaran ${li+1} dari ${m.lessons.length}</div>
    <h1>${esc(x.title)}</h1>
@@ -2655,7 +2708,7 @@ function renderLesson(x){
 function wireLesson(x){
   const {t}=x,y=base(x),l=y.l,F=FLAT[t.k],next=F[F.indexOf(x)+1];
   LMS.last[t.k]=x.id;LMS.lastAt[t.k]=Date.now();touch();saveLms();
-  $('#olBtn').onclick=()=>toggleOutline();
+  $('#olBtn').onclick=()=>toggleOutline();$('#shell').classList.toggle('ol-off',olOff());syncOlBtn();
   /* pelajaran baru dianggap selesai setelah semua soal Cek pemahaman dijawab */
   $('#doneNext').onclick=()=>{
     const left=isDone(x)?[]:[...document.querySelectorAll('#view .quiz .q')].filter(q=>!q.matches('.is-ok,.is-bad'));
@@ -2664,6 +2717,7 @@ function wireLesson(x){
     markDone(x);location.hash=next?next.id:t.k};
   const u=$('#undo');if(u)u.onclick=()=>{delete LMS.done[y.id];saveLms();route()};
   linkTerms($('#view .l-body'));
+  const vh=document.getElementById('varHost');if(vh)VIZ2.varanim(vh,{va:varAnimOf(y.t.k,l)});
   if(l.k==='lab')wireLab(l.n,y.t.lang);
   else if(l.k==='topic')wireTopic1(l.ref,y.t.lang);
   else if(l.k==='c')wireConcept(l,y.t,x);
@@ -2671,7 +2725,16 @@ function wireLesson(x){
   else if(l.k==='proj')wireProj(l,x);
   else wireSql(l,x);
 }
-function toggleOutline(o){const ol=$('#outline');o=o??!ol.classList.contains('open');ol.classList.toggle('open',o);$('#scrim').classList.toggle('open',o);const b=$('#olBtn');if(b)b.setAttribute('aria-expanded',o)}
+/* layar lebar: tombol menyembunyikan/menampilkan menu belajar (diingat); layar sempit: laci */
+const OLWIDE=()=>matchMedia('(min-width:1081px)').matches;
+function olOff(){try{return localStorage.getItem('rk-ol-off')==='1'}catch(e){return false}}
+function syncOlBtn(){const b=$('#olBtn');if(!b)return;const off=$('#shell').classList.contains('ol-off');
+  if(OLWIDE()){b.setAttribute('aria-expanded',!off);$('.ol-lab',b).textContent=off?'Tampilkan menu':'Sembunyikan menu'}
+  else{b.setAttribute('aria-expanded',$('#outline').classList.contains('open'));$('.ol-lab',b).textContent='Daftar materi'}}
+addEventListener('resize',()=>{if(document.getElementById('olBtn'))syncOlBtn()});
+function toggleOutline(o){const ol=$('#outline');
+  if(o===undefined&&OLWIDE()){const off=!$('#shell').classList.contains('ol-off');$('#shell').classList.toggle('ol-off',off);try{localStorage.setItem('rk-ol-off',off?'1':'0')}catch(e){}syncOlBtn();return}
+  o=o??!ol.classList.contains('open');ol.classList.toggle('open',o);$('#scrim').classList.toggle('open',o);syncOlBtn()}
 const vizHTML=(l,hint)=>l.viz&&VIZ2[l.viz]?`<section class="viz" id="lab"><div class="viz-head"><span class="eyebrow">Visual interaktif</span><h3>${VIZ2T[l.viz]}</h3>${hint?`<p>${hint}</p>`:''}</div><div id="vizHost" class="vizhost"></div></section>`:'';
 /* kode pemula vs kode rapi: tersembunyi sampai dibuka, agar siswa sempat menebak dulu */
 const proHTML=l=>l.pro&&l.pro.length?`<section class="section pro-sec" id="pro"><div class="sec-h row"><h2>Kode pemula vs kode rapi</h2><button class="tlink" data-proall aria-expanded="false">Buka semua</button></div>
@@ -3306,7 +3369,7 @@ function route(){
     v.classList.remove('enter');void v.offsetWidth;v.classList.add('enter');return}
   if(TK[h])page('course',renderCourse(TK[h]),()=>wireCourse(TK[h]),`Jalur ${TK[h].name}`,h);
   else if((m=/^(\w+)-tes$/.exec(h))&&TK[m[1]])page('quiz',renderPlacement(TK[m[1]]),wireExam,`Tes penempatan ${TK[m[1]].name}`,m[1]);
-  else if((m=/^(\w+)-ujian-(\d+)$/.exec(h))&&TK[m[1]]&&TK[m[1]].mods[m[2]-1]&&!modDone(m[1],m[2]-1))page('locked',renderLockedExam(TK[m[1]],m[2]-1),null,'Ujian modul terkunci',m[1]);
+  else if((m=/^(\w+)-ujian-(\d+)$/.exec(h))&&TK[m[1]]&&TK[m[1]].mods[m[2]-1]&&false)page('locked',renderLockedExam(TK[m[1]],m[2]-1),null,'Ujian modul terkunci',m[1]);
   else if((m=/^(\w+)-ujian-(\d+)$/.exec(h))&&TK[m[1]]&&TK[m[1]].mods[m[2]-1])page('quiz',renderExam(TK[m[1]],m[2]-1),wireExam,`Ujian modul ${m[2]} ${TK[m[1]].name}`,m[1]);
   else if((m=/^(\w+)-ringkasan-(\d+)$/.exec(h))&&TK[m[1]]&&TK[m[1]].mods[m[2]-1])page('summary',renderSummary(TK[m[1]],m[2]-1),null,`Ringkasan modul ${m[2]} ${TK[m[1]].name}`,m[1]);
   else if((m=/^(\w+)-sertifikat$/.exec(h))&&TK[m[1]]){location.replace('#'+m[1]);return}

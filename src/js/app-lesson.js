@@ -33,7 +33,9 @@ function renderLesson(x){
   else if(l.k==='w')body=webHTML(l);
   else if(l.k==='proj')body=projHTML(l,y);
   else body=sqlLessonHTML(l);
-  return `<div class="l-top"><button class="btn ol-btn" id="olBtn" aria-controls="outline" aria-expanded="false">☰ Daftar materi</button>
+  const va=typeof varAnimOf==='function'&&varAnimOf(y.t.k,l);
+  if(va)body=`<section class="viz va-sec" id="varAnim"><div class="viz-head"><span class="eyebrow">Animasi</span><h3>Bagaimana variabel dibuat dan diubah</h3><p>Tekan Berikutnya atau Putar otomatis. Kiri: kode dijalankan baris demi baris. Kanan: isi memori.</p></div><div id="varHost" class="vizhost"></div></section>`+body;
+  return `<div class="l-top"><button class="btn ol-btn" id="olBtn" aria-controls="outline" aria-expanded="false"><span aria-hidden="true">☰</span> <span class="ol-lab">Daftar materi</span></button>
    <nav class="crumb" aria-label="Lokasi"><a href="#beranda">Beranda</a><span>/</span><a href="#${t.k}">${t.name}</a><span>/</span><span>Modul ${mi+1}</span></nav></div>
   <header class="l-head ${tcls(t)}"><div class="eyebrow">Modul ${mi+1}: ${m.t} · Pelajaran ${li+1} dari ${m.lessons.length}</div>
    <h1>${esc(x.title)}</h1>
@@ -52,7 +54,7 @@ function renderLesson(x){
 function wireLesson(x){
   const {t}=x,y=base(x),l=y.l,F=FLAT[t.k],next=F[F.indexOf(x)+1];
   LMS.last[t.k]=x.id;LMS.lastAt[t.k]=Date.now();touch();saveLms();
-  $('#olBtn').onclick=()=>toggleOutline();
+  $('#olBtn').onclick=()=>toggleOutline();$('#shell').classList.toggle('ol-off',olOff());syncOlBtn();
   /* pelajaran baru dianggap selesai setelah semua soal Cek pemahaman dijawab */
   $('#doneNext').onclick=()=>{
     const left=isDone(x)?[]:[...document.querySelectorAll('#view .quiz .q')].filter(q=>!q.matches('.is-ok,.is-bad'));
@@ -61,6 +63,7 @@ function wireLesson(x){
     markDone(x);location.hash=next?next.id:t.k};
   const u=$('#undo');if(u)u.onclick=()=>{delete LMS.done[y.id];saveLms();route()};
   linkTerms($('#view .l-body'));
+  const vh=document.getElementById('varHost');if(vh)VIZ2.varanim(vh,{va:varAnimOf(y.t.k,l)});
   if(l.k==='lab')wireLab(l.n,y.t.lang);
   else if(l.k==='topic')wireTopic1(l.ref,y.t.lang);
   else if(l.k==='c')wireConcept(l,y.t,x);
@@ -68,7 +71,16 @@ function wireLesson(x){
   else if(l.k==='proj')wireProj(l,x);
   else wireSql(l,x);
 }
-function toggleOutline(o){const ol=$('#outline');o=o??!ol.classList.contains('open');ol.classList.toggle('open',o);$('#scrim').classList.toggle('open',o);const b=$('#olBtn');if(b)b.setAttribute('aria-expanded',o)}
+/* layar lebar: tombol menyembunyikan/menampilkan menu belajar (diingat); layar sempit: laci */
+const OLWIDE=()=>matchMedia('(min-width:1081px)').matches;
+function olOff(){try{return localStorage.getItem('rk-ol-off')==='1'}catch(e){return false}}
+function syncOlBtn(){const b=$('#olBtn');if(!b)return;const off=$('#shell').classList.contains('ol-off');
+  if(OLWIDE()){b.setAttribute('aria-expanded',!off);$('.ol-lab',b).textContent=off?'Tampilkan menu':'Sembunyikan menu'}
+  else{b.setAttribute('aria-expanded',$('#outline').classList.contains('open'));$('.ol-lab',b).textContent='Daftar materi'}}
+addEventListener('resize',()=>{if(document.getElementById('olBtn'))syncOlBtn()});
+function toggleOutline(o){const ol=$('#outline');
+  if(o===undefined&&OLWIDE()){const off=!$('#shell').classList.contains('ol-off');$('#shell').classList.toggle('ol-off',off);try{localStorage.setItem('rk-ol-off',off?'1':'0')}catch(e){}syncOlBtn();return}
+  o=o??!ol.classList.contains('open');ol.classList.toggle('open',o);$('#scrim').classList.toggle('open',o);syncOlBtn()}
 const vizHTML=(l,hint)=>l.viz&&VIZ2[l.viz]?`<section class="viz" id="lab"><div class="viz-head"><span class="eyebrow">Visual interaktif</span><h3>${VIZ2T[l.viz]}</h3>${hint?`<p>${hint}</p>`:''}</div><div id="vizHost" class="vizhost"></div></section>`:'';
 /* kode pemula vs kode rapi: tersembunyi sampai dibuka, agar siswa sempat menebak dulu */
 const proHTML=l=>l.pro&&l.pro.length?`<section class="section pro-sec" id="pro"><div class="sec-h row"><h2>Kode pemula vs kode rapi</h2><button class="tlink" data-proall aria-expanded="false">Buka semua</button></div>
