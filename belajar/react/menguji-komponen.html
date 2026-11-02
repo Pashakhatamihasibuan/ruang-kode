@@ -32,6 +32,19 @@ test(&quot;tombol + menambah jumlah&quot;, async () =&gt; {
   await userEvent.click(screen.getByRole(&quot;button&quot;, { name: &quot;+&quot; }));
   expect(screen.getByText(/di keranjang: 2/)).toBeInTheDocument();
 });</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis tes Testing Library: klik tombol + dua kali, angka harus menjadi 2.</p><details><summary>Petunjuk</summary><p>render, screen.getByRole, userEvent.click, expect(...).toHaveTextContent.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSX</div><pre><code>import { render, screen } from &quot;@testing-library/react&quot;;
+import userEvent from &quot;@testing-library/user-event&quot;;
+
+test(&quot;menambah angka&quot;, async () =&gt; {
+  render(&lt;Penghitung /&gt;);
+  const plus = screen.getByRole(&quot;button&quot;, { name: &quot;+&quot; });
+  await userEvent.click(plus);
+  await userEvent.click(plus);
+  expect(screen.getByText(&quot;2&quot;)).toBeInTheDocument();
+});</code></pre></details></li><li><p>Uji bahwa pesan "Belum ada tugas" tampil saat daftar kosong.</p><details><summary>Petunjuk</summary><p>render dengan props tugas=[].</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSX</div><pre><code>test(&quot;daftar kosong&quot;, () =&gt; {
+  render(&lt;DaftarTugas tugas={[]} /&gt;);
+  expect(screen.getByText(/belum ada tugas/i)).toBeInTheDocument();
+});</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Uji perilaku yang dilihat pengguna, bukan detail internal.</li><li>Cari elemen lewat role dan teks.</li><li>Playwright/Cypress untuk alur end-to-end.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Cara terbaik mencari tombol di RTL?</summary><p class="ok">Jawaban: getByRole(&quot;button&quot;, { name })</p><p>Role sekaligus menguji aksesibilitas.</p></details>
 <a class="cta" href="/#react-8-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/react/pustaka-komponen-animasi">Pustaka komponen &amp; animasi</a></p><p>Berikutnya: <a href="/belajar/react/next-js-react-native-typescript">Next.js, React Native &amp; TypeScript</a></p>

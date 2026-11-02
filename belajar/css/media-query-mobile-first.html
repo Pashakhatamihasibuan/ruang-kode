@@ -32,6 +32,18 @@
 @media (prefers-color-scheme: dark) {
   .tata &gt; * { background: #1A2330; color: #ECEAE4; }
 }</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis CSS mobile-first: satu kolom di ponsel, dua kolom mulai 768px, tiga kolom mulai 1024px.</p><details><summary>Petunjuk</summary><p>Gaya dasar untuk ponsel, lalu min-width.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CSS</div><pre><code>.daftar { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+@media (min-width: 768px) {
+  .daftar { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1024px) {
+  .daftar { grid-template-columns: repeat(3, 1fr); }
+}</code></pre></details></li><li><p>Matikan animasi untuk pengguna yang memilih mengurangi gerakan, dan sesuaikan warna untuk mode gelap.</p><details><summary>Petunjuk</summary><p>prefers-reduced-motion dan prefers-color-scheme.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CSS</div><pre><code>@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #14161A; --fg: #ECE7DF; }
+}</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Ukuran huruf yang ikut lebar layar dengan clamp()</summary><p><code>clamp(min, ideal, maks)</code> membuat judul membesar mulus mengikuti lebar layar dan tidak pernah lebih kecil atau lebih besar dari batasnya. Tidak perlu tiga media query.</p><div class="lbl">KODE PEMULA</div><pre><code>h1 { font-size: 24px; }
 @media (min-width: 600px) { h1 { font-size: 32px; } }
 @media (min-width: 1000px) { h1 { font-size: 44px; } }</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>h1 { font-size: clamp(1.5rem, 1rem + 2.5vw, 2.75rem); }</code></pre></details>

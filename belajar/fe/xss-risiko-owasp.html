@@ -27,6 +27,13 @@
 <div class="lbl">JAVASCRIPT</div><pre><code>const out = document.getElementById(&quot;out&quot;), k = document.getElementById(&quot;k&quot;);
 document.getElementById(&quot;a&quot;).onclick = () =&gt; { out.innerHTML = k.value; };      // berbahaya
 document.getElementById(&quot;b&quot;).onclick = () =&gt; { out.textContent = k.value; };    // aman</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Perbaiki kode yang rentan XSS: <code>komentar.innerHTML = input.value</code>.</p><details><summary>Petunjuk</summary><p>Pakai textContent untuk teks dari pengguna; jika butuh HTML, bersihkan dengan DOMPurify.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>// aman: diperlakukan sebagai teks, bukan HTML
+komentar.textContent = input.value;
+
+// jika memang butuh HTML terbatas
+// komentar.innerHTML = DOMPurify.sanitize(input.value);</code></pre></details></li><li><p>Sebutkan tiga risiko OWASP Top 10 yang relevan untuk frontend dan cara mencegahnya.</p><details><summary>Petunjuk</summary><p>XSS (injection), autentikasi rusak, komponen rentan.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>1. Injection/XSS          → textContent, sanitasi, CSP
+2. Autentikasi lemah       → cookie HttpOnly + Secure + SameSite, jangan simpan token di localStorage
+3. Komponen rentan         → npm audit, perbarui dependensi, kunci versi</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Kenali OWASP Top 10.</li><li>XSS terjadi saat input pengguna dirender sebagai HTML.</li><li>Pakai textContent; sanitasi bila harus menampilkan HTML.</li><li>React otomatis meng-escape teks di JSX.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Cara aman menampilkan komentar pengguna?</summary><p class="ok">Jawaban: textContent</p><p>Teks tidak diurai sebagai HTML.</p></details>
 <a class="cta" href="/#fe-8-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe/cors-csp">CORS &amp; CSP</a></p><p>Berikutnya: <a href="/belajar/fe/strategi-autentikasi">Strategi autentikasi</a></p>

@@ -35,6 +35,19 @@ $ npx tsc --init
 $ npx tsc            # periksa tipe + hasilkan dist/*.js
 $ npx tsx main.ts    # jalankan langsung
 $ node main.ts       # Node 23+ (Node 22 dengan --experimental-strip-types)</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Pasang TypeScript di proyek, buat tsconfig, kompilasi, dan jalankan hasilnya.</p><details><summary>Petunjuk</summary><p>npm install -D typescript; npx tsc --init; npx tsc.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TERMINAL</div><pre><code>npm install -D typescript
+npx tsc --init
+npx tsc          # menghasilkan file .js
+node dist/index.js
+# atau langsung: npx tsx src/index.ts</code></pre></details></li><li><p>Aktifkan pemeriksaan ketat dan tentukan folder sumber serta keluaran di tsconfig.json.</p><details><summary>Petunjuk</summary><p>strict, rootDir, outDir.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSON</div><pre><code>{
+  &quot;compilerOptions&quot;: {
+    &quot;target&quot;: &quot;ES2022&quot;,
+    &quot;module&quot;: &quot;NodeNext&quot;,
+    &quot;strict&quot;: true,
+    &quot;rootDir&quot;: &quot;src&quot;,
+    &quot;outDir&quot;: &quot;dist&quot;
+  }
+}</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>typescript dipasang sebagai devDependency.</li><li>Selalu nyalakan "strict": true.</li><li>tsc memeriksa dan mengompilasi; tsx/ts-node menjalankan langsung.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Opsi tsconfig yang menyalakan semua pemeriksaan ketat?</summary><p class="ok">Jawaban: &quot;strict&quot;: true</p><p>Sangat disarankan untuk proyek baru.</p></details>
 <a class="cta" href="/#ts-1-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/ts/kenapa-typescript">Kenapa TypeScript?</a></p><p>Berikutnya: <a href="/belajar/ts/primitif-array-tuple">Primitif, array &amp; tuple</a></p>

@@ -46,6 +46,18 @@
         OUTPUT &quot;Uang kurang &quot;, (total - bayar)
     ENDIF
 END</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tambahkan pajak 11% yang dihitung dari total setelah diskon.</p><details><summary>Petunjuk</summary><p>pajak ← bayar * 0.11, lalu bayar ← bayar + pajak.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>bayar ← total - diskon
+pajak ← bayar * 0.11
+bayar ← bayar + pajak
+OUTPUT &quot;Pajak: &quot;, pajak
+OUTPUT &quot;Bayar: &quot;, bayar</code></pre></details></li><li><p>Hitung kembalian. Jika uang pembeli kurang, minta masukan lagi.</p><details><summary>Petunjuk</summary><p>REPEAT INPUT uang UNTIL uang >= bayar, lalu kembali ← uang - bayar.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>REPEAT
+    OUTPUT &quot;Uang pembeli: &quot;
+    INPUT uang
+    IF uang &lt; bayar THEN
+        OUTPUT &quot;Uang kurang &quot;, bayar - uang
+    ENDIF
+UNTIL uang &gt;= bayar
+OUTPUT &quot;Kembalian: &quot;, uang - bayar</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Sentinel (misalnya 0) menandai akhir input.</li><li>Gabungkan loop, akumulator, dan percabangan.</li><li>Uji juga kasus uang kurang.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa loop kasir memakai REPEAT-UNTIL?</summary><p class="ok">Jawaban: Harga harus diminta minimal sekali</p><p>Kita belum tahu jumlah barang, tetapi minimal sekali harus bertanya.</p></details><details><summary>Apa itu nilai sentinel?</summary><p class="ok">Jawaban: Nilai khusus penanda akhir input</p><p>Contoh: harga 0 berarti selesai.</p></details>
 <a class="cta" href="/#pseudo-5-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pseudo/prosedur-dan-fungsi">Prosedur dan fungsi</a></p>

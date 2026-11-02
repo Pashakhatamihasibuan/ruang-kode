@@ -34,6 +34,25 @@ self.addEventListener(&quot;fetch&quot;, e =&gt; {
 
 // main.js
 if (&quot;serviceWorker&quot; in navigator) navigator.serviceWorker.register(&quot;/sw.js&quot;);</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Daftarkan service worker dan simpan file inti ke cache saat instalasi.</p><details><summary>Petunjuk</summary><p>navigator.serviceWorker.register; event install dengan caches.open.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>// main.js
+if (&quot;serviceWorker&quot; in navigator) navigator.serviceWorker.register(&quot;/sw.js&quot;);
+
+// sw.js
+const NAMA = &quot;toko-v1&quot;;
+self.addEventListener(&quot;install&quot;, e =&gt; {
+  e.waitUntil(caches.open(NAMA).then(c =&gt; c.addAll([&quot;/&quot;, &quot;/gaya.css&quot;, &quot;/app.js&quot;])));
+});
+self.addEventListener(&quot;fetch&quot;, e =&gt; {
+  e.respondWith(caches.match(e.request).then(r =&gt; r || fetch(e.request)));
+});</code></pre></details></li><li><p>Tulis manifest agar situs bisa dipasang sebagai aplikasi.</p><details><summary>Petunjuk</summary><p>name, short_name, start_url, display standalone, icons.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSON</div><pre><code>{
+  &quot;name&quot;: &quot;Toko Kopi Nusantara&quot;,
+  &quot;short_name&quot;: &quot;TokoKopi&quot;,
+  &quot;start_url&quot;: &quot;/&quot;,
+  &quot;display&quot;: &quot;standalone&quot;,
+  &quot;background_color&quot;: &quot;#FBF8F3&quot;,
+  &quot;theme_color&quot;: &quot;#B4532A&quot;,
+  &quot;icons&quot;: [{ &quot;src&quot;: &quot;/icon-512.png&quot;, &quot;sizes&quot;: &quot;512x512&quot;, &quot;type&quot;: &quot;image/png&quot; }]
+}</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>PWA: HTTPS + manifest + service worker.</li><li>Service worker mencegat request dan memakai cache.</li><li>Penting untuk pengguna dengan koneksi tidak stabil.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Komponen PWA yang memungkinkan offline?</summary><p class="ok">Jawaban: Service worker</p><p>Ia menyajikan dari cache saat offline.</p></details>
 <a class="cta" href="/#fe-10-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe/web-components-shadow-dom">Web Components &amp; Shadow DOM</a></p><p>Berikutnya: <a href="/belajar/fe/csr-ssr-ssg">CSR, SSR &amp; SSG</a></p>

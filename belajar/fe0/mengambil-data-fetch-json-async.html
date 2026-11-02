@@ -47,6 +47,19 @@ async function muatProduk() {
 document.querySelector(&quot;#muat&quot;).addEventListener(&quot;click&quot;, muatProduk);
 console.log(&quot;Kode di bawah fetch tetap jalan duluan.&quot;);</code></pre>
 <h2>Tantangan</h2><ol><li>Klik tombol "Muat produk" sampai daftar terisi.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Tulis fungsi async yang mengambil data dan menampilkan pesan yang jelas jika status bukan 200-an.</p><details><summary>Petunjuk</summary><p>Periksa res.ok sebelum res.json(); tangkap error dengan try/catch.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>async function ambilProduk() {
+  try {
+    const res = await fetch(&quot;https://api.contoh.id/produk&quot;);
+    if (!res.ok) throw new Error(`Server membalas ${res.status}`);
+    return await res.json();
+  } catch (e) {
+    console.error(&quot;Gagal memuat produk:&quot;, e.message);
+    return [];
+  }
+}</code></pre></details></li><li><p>Ubah objek menjadi teks JSON dan kembali lagi.</p><details><summary>Petunjuk</summary><p>JSON.stringify dan JSON.parse.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>const p = { nama: &quot;Kopi&quot;, harga: 18000 };
+const teks = JSON.stringify(p);
+console.log(teks);
+console.log(JSON.parse(teks).harga + 2000);</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>async/await lebih mudah dibaca dari rantai then</summary><p>Kedua versi melakukan hal yang sama. Dengan <code>async</code>/<code>await</code>, kode asinkron dibaca dari atas ke bawah dan error ditangkap dengan <code>try/catch</code> biasa. Di sini <code>ambil</code> meniru <code>fetch</code> agar bisa dijalankan tanpa internet.</p><div class="lbl">KODE PEMULA</div><pre><code>const ambil = () =&gt; Promise.resolve({ json: () =&gt; Promise.resolve({ nama: &quot;Kopi Gayo&quot; }) });
 ambil()
   .then((res) =&gt; res.json())

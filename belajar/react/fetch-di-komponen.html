@@ -44,6 +44,26 @@ function App() {
     &lt;/div&gt;
   );
 }</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Ambil daftar produk saat komponen tampil, dengan state memuat, error, dan data, serta batalkan saat komponen hilang.</p><details><summary>Petunjuk</summary><p>AbortController di useEffect.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSX</div><pre><code>function Produk() {
+  const [data, setData] = useState([]);
+  const [status, setStatus] = useState(&quot;memuat&quot;);
+  useEffect(() =&gt; {
+    const ac = new AbortController();
+    fetch(&quot;/api/produk&quot;, { signal: ac.signal })
+      .then(r =&gt; { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(d =&gt; { setData(d); setStatus(&quot;ok&quot;); })
+      .catch(e =&gt; { if (e.name !== &quot;AbortError&quot;) setStatus(&quot;gagal&quot;); });
+    return () =&gt; ac.abort();
+  }, []);
+  if (status === &quot;memuat&quot;) return &lt;p&gt;Memuat…&lt;/p&gt;;
+  if (status === &quot;gagal&quot;) return &lt;p&gt;Gagal memuat. Coba lagi.&lt;/p&gt;;
+  return &lt;ul&gt;{data.map(p =&gt; &lt;li key={p.id}&gt;{p.nama}&lt;/li&gt;)}&lt;/ul&gt;;
+}</code></pre></details></li><li><p>Buat pencarian produk yang mengambil data setiap kata kunci berubah (dengan debounce).</p><details><summary>Petunjuk</summary><p>Gabungkan useDebounce dengan useEffect yang bergantung pada kata yang sudah ditunda.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSX</div><pre><code>const [kata, setKata] = useState(&quot;&quot;);
+const k = useDebounce(kata, 300);
+useEffect(() =&gt; {
+  if (!k) return;
+  fetch(`/api/produk?q=${encodeURIComponent(k)}`).then(r =&gt; r.json()).then(setHasil);
+}, [k]);</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Tangani tiga keadaan: loading, error, data.</li><li>Abaikan respons usang dengan flag atau AbortController.</li><li>Axios: alternatif fetch dengan fitur tambahan.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa perlu flag aktif di contoh?</summary><p class="ok">Jawaban: Mencegah respons lama menimpa data baru</p><p>Ini mencegah race condition.</p></details>
 <a class="cta" href="/#react-6-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/react/zustand-jotai-kawan-kawan">Zustand, Jotai &amp; kawan-kawan</a></p><p>Berikutnya: <a href="/belajar/react/tanstack-query-swr-graphql">TanStack Query, SWR &amp; GraphQL</a></p>

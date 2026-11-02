@@ -34,6 +34,16 @@ document.querySelector(&quot;#lihat&quot;).onclick = async () =&gt; {
   const { gambarGrafik } = await import(&quot;./grafik.js&quot;);
   gambarGrafik();
 };</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Pisahkan fungsi format ke file <code>format.js</code> (named export dan default export), lalu impor di <code>main.js</code>.</p><details><summary>Petunjuk</summary><p>export function, export default, import { } from.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>// format.js
+export const rupiah = n =&gt; &quot;Rp&quot; + n.toLocaleString(&quot;id-ID&quot;);
+export default function judul(s) { return s[0].toUpperCase() + s.slice(1); }
+
+// main.js
+import judul, { rupiah } from &quot;./format.js&quot;;
+console.log(judul(&quot;kopi&quot;), rupiah(18000));</code></pre></details></li><li><p>Muat modul grafik hanya saat tombol diklik (dynamic import).</p><details><summary>Petunjuk</summary><p>await import("./grafik.js") di dalam handler.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>tombol.addEventListener(&quot;click&quot;, async () =&gt; {
+  const { gambarGrafik } = await import(&quot;./grafik.js&quot;);
+  gambarGrafik(data);
+});</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>export/import untuk membagi kode.</li><li>Named export banyak, default export satu.</li><li>type="module" di browser.</li><li>import() dinamis untuk memuat saat perlu.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Sintaks memakai named export rupiah?</summary><p class="ok">Jawaban: import { rupiah } from &quot;./format.js&quot;</p><p>Named export memakai kurung kurawal.</p></details>
 <a class="cta" href="/#fe-3-8">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe/event-loop-javascript">Event loop JavaScript</a></p><p>Berikutnya: <a href="/belajar/fe/web-api-storage-observer-lainnya">Web API: storage, observer &amp; lainnya</a></p>

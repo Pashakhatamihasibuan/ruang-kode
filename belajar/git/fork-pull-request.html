@@ -36,6 +36,18 @@ $ git push -u origin tambah-bahasa-sunda
 
 # 4. Selaraskan dengan proyek asal
 $ git fetch upstream &amp;&amp; git rebase upstream/main</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis alur lengkap berkontribusi ke proyek orang lain lewat fork.</p><details><summary>Petunjuk</summary><p>Fork di GitHub, clone fork-mu, tambah upstream, buat cabang, push, buka PR.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TERMINAL</div><pre><code># 1. klik Fork di GitHub
+git clone https://github.com/rina/proyek.git
+cd proyek
+git remote add upstream https://github.com/pemilik/proyek.git
+git switch -c perbaiki-typo
+# ... edit ...
+git commit -am &quot;Perbaiki salah ketik di README&quot;
+git push -u origin perbaiki-typo
+# 2. buka Pull Request dari GitHub</code></pre></details></li><li><p>Sinkronkan fork-mu dengan proyek asli (upstream) yang sudah maju.</p><details><summary>Petunjuk</summary><p>fetch upstream, merge ke main, push ke fork.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TERMINAL</div><pre><code>git switch main
+git fetch upstream
+git merge upstream/main
+git push origin main</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Fork = salinan di akunmu; upstream = proyek asal.</li><li>PR = minta perubahan digabung, tempat review.</li><li>PR kecil dan berdeskripsi jelas lebih cepat disetujui.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Remote upstream biasanya menunjuk ke?</summary><p class="ok">Jawaban: Repositori asal yang di-fork</p><p>origin = fork milikmu, upstream = proyek asal.</p></details><details><summary>Ciri PR yang baik?</summary><p class="ok">Jawaban: Kecil, satu tujuan, deskripsi jelas</p><p>Reviewer bisa memahami dan menguji dengan cepat.</p></details>
 <a class="cta" href="/#git-4-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/git/remote-push-pull">Remote, push &amp; pull</a></p><p>Berikutnya: <a href="/belajar/git/issue-label-project-board">Issue, label &amp; project board</a></p>

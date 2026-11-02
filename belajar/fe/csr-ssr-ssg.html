@@ -22,6 +22,11 @@
 <p><b>CSR</b> (client-side rendering): server mengirim HTML hampir kosong, JavaScript membangun halaman di browser. Interaktif setelah JS dimuat, tapi tampilan pertama lebih lambat dan kurang ramah SEO.</p>
 <p><b>SSR</b> (server-side rendering): HTML dibuat di server untuk setiap permintaan, lalu JavaScript "menghidupkannya" (hydration). <b>SSG</b> (static site generation): HTML dibuat sekali saat build, sangat cepat dan murah.</p>
 <p>Framework meta seperti <b>Next.js</b> (React), <b>Nuxt</b> (Vue), <b>SvelteKit</b>, dan <b>Astro</b> bisa mencampur ketiganya per halaman. Situs dokumentasi atau blog cocok dengan SSG; dashboard pribadi cocok dengan CSR; toko online cocok dengan SSR/SSG campuran.</p>
+<h2>Soal latihan</h2><ol><li><p>Tentukan strategi render untuk: halaman "Tentang kami", halaman produk dengan stok berubah, dan dasbor pribadi pengguna.</p><details><summary>Petunjuk</summary><p>Statis → SSG, berubah dan butuh SEO → SSR/ISR, pribadi → CSR.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Tentang kami        : SSG (dibuat sekali saat build)
+Halaman produk      : SSR atau ISR (SEO + data segar)
+Dasbor pengguna     : CSR (pribadi, tidak perlu diindeks)</code></pre></details></li><li><p>Apa itu hidrasi (hydration)?</p><details><summary>Petunjuk</summary><p>HTML dari server dihidupkan oleh JavaScript di browser.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Server mengirim HTML jadi → pengguna langsung melihat isi.
+Lalu JavaScript dimuat dan &quot;menempelkan&quot; event handler ke HTML itu
+sehingga halaman menjadi interaktif. Proses ini disebut hidrasi.</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>CSR: dirender di browser.</li><li>SSR: dirender di server per permintaan.</li><li>SSG: dirender saat build.</li><li>Framework meta mencampur per halaman.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Blog yang jarang berubah paling cocok dengan?</summary><p class="ok">Jawaban: SSG</p><p>HTML sudah jadi sejak build.</p></details>
 <a class="cta" href="/#fe-11-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe/pwa-service-worker">PWA &amp; service worker</a></p><p>Berikutnya: <a href="/belajar/fe/graphql">GraphQL</a></p>

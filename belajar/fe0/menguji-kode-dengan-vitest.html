@@ -41,6 +41,20 @@ describe(&quot;hargaAkhir&quot;, () =&gt; {
  ✓ harga.test.js (2 tests) 3ms
  Test Files  1 passed (1)
       Tests  2 passed (2) */</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis tes Vitest untuk fungsi <code>diskon(harga, persen)</code>, termasuk kasus persen tidak valid.</p><details><summary>Petunjuk</summary><p>describe, it, expect; toBe dan toThrow.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>import { describe, it, expect } from &quot;vitest&quot;;
+import { diskon } from &quot;./diskon.js&quot;;
+
+describe(&quot;diskon&quot;, () =&gt; {
+  it(&quot;memotong 20%&quot;, () =&gt; {
+    expect(diskon(100000, 20)).toBe(80000);
+  });
+  it(&quot;menolak persen di atas 100&quot;, () =&gt; {
+    expect(() =&gt; diskon(100000, 120)).toThrow();
+  });
+});</code></pre></details></li><li><p>Tulis fungsi <code>diskon</code> yang lolos tes di atas.</p><details><summary>Petunjuk</summary><p>Lempar Error jika persen &lt; 0 atau > 100.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>export function diskon(harga, persen) {
+  if (persen &lt; 0 || persen &gt; 100) throw new Error(&quot;Persen harus 0-100&quot;);
+  return harga * (100 - persen) / 100;
+}</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Tes mencegah bug lama muncul lagi.</li><li>describe, it, expect adalah pola dasar.</li><li>Jalankan tes sebelum push.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Fungsi untuk memeriksa hasil di Vitest?</summary><p class="ok">Jawaban: expect</p><p>expect(x).toBe(y).</p></details>
 <a class="cta" href="/#fe0-7-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe0/tailwind-css">Tailwind CSS</a></p><p>Berikutnya: <a href="/belajar/fe0/menerbitkan-situs">Menerbitkan situs</a></p>

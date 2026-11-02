@@ -42,6 +42,27 @@
         OUTPUT cari, &quot; ada di indeks &quot;, posisi
     ENDIF
 END</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Hitung berapa kali angka 7 muncul di array [7, 3, 7, 1, 7, 9].</p><details><summary>Petunjuk</summary><p>Jangan berhenti saat ketemu; teruskan sampai akhir sambil menghitung.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>DECLARE a : ARRAY[0..5] OF INTEGER
+DECLARE i, jumlah : INTEGER
+a ← [7, 3, 7, 1, 7, 9]
+jumlah ← 0
+FOR i ← 0 TO 5 DO
+    IF a[i] = 7 THEN
+        jumlah ← jumlah + 1
+    ENDIF
+ENDFOR
+OUTPUT &quot;Muncul &quot;, jumlah, &quot; kali&quot;</code></pre></details></li><li><p>Cari posisi nama "Budi" di daftar nama dan berhenti begitu ketemu. Tampilkan -1 jika tidak ada.</p><details><summary>Petunjuk</summary><p>WHILE dengan dua syarat: indeks masih di dalam array AND belum ketemu.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>DECLARE nama : ARRAY[0..3] OF STRING
+DECLARE i, posisi : INTEGER
+nama ← [&quot;Andi&quot;, &quot;Budi&quot;, &quot;Citra&quot;, &quot;Dewi&quot;]
+i ← 0
+posisi ← -1
+WHILE i &lt;= 3 AND posisi = -1 DO
+    IF nama[i] = &quot;Budi&quot; THEN
+        posisi ← i
+    ENDIF
+    i ← i + 1
+ENDWHILE
+OUTPUT posisi</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Linear search memeriksa satu per satu.</li><li>-1 sebagai tanda belum ditemukan.</li><li>Berhenti saat ketemu atau data habis.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Berapa langkah terburuk linear search untuk 100 data?</summary><p class="ok">Jawaban: 100</p><p>Jika data di akhir atau tidak ada, semua diperiksa.</p></details><details><summary>Kenapa memakai -1 sebagai nilai awal posisi?</summary><p class="ok">Jawaban: Karena indeks tidak pernah negatif</p><p>-1 tidak mungkin menjadi indeks yang sah.</p></details>
 <a class="cta" href="/#pseudo-4-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pseudo/array-banyak-nilai-dalam-satu-nama">Array: banyak nilai dalam satu nama</a></p><p>Berikutnya: <a href="/belajar/pseudo/bubble-sort-dalam-pseudocode">Bubble sort dalam pseudocode</a></p>

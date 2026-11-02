@@ -36,6 +36,18 @@
 }
 customElements.define(&quot;kartu-produk&quot;, KartuProduk);</code></pre>
 <h2>Tantangan</h2><ol><li>Tambahkan satu &lt;kartu-produk&gt; lagi untuk "Madu Hutan" seharga 120000.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Buat custom element <code>&lt;sapa-nama nama="Rina"&gt;</code> yang menampilkan "Halo, Rina!".</p><details><summary>Petunjuk</summary><p>class extends HTMLElement, connectedCallback, customElements.define.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>class SapaNama extends HTMLElement {
+  connectedCallback() {
+    const root = this.attachShadow({ mode: &quot;open&quot; });
+    root.innerHTML = `&lt;style&gt;p{color:#B4532A}&lt;/style&gt;&lt;p&gt;Halo, ${this.getAttribute(&quot;nama&quot;)}!&lt;/p&gt;`;
+  }
+}
+customElements.define(&quot;sapa-nama&quot;, SapaNama);</code></pre></details></li><li><p>Buat elemen yang ikut berubah saat atribut <code>nama</code> diganti.</p><details><summary>Petunjuk</summary><p>static observedAttributes dan attributeChangedCallback.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>class SapaNama extends HTMLElement {
+  static observedAttributes = [&quot;nama&quot;];
+  attributeChangedCallback() { this.render(); }
+  connectedCallback() { this.render(); }
+  render() { this.textContent = `Halo, ${this.getAttribute(&quot;nama&quot;)}!`; }
+}</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>customElements.define membuat tag baru (wajib ada tanda hubung).</li><li>Shadow DOM mengisolasi HTML dan CSS.</li><li>Bisa dipakai di framework mana pun.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Syarat nama custom element?</summary><p class="ok">Jawaban: Mengandung tanda hubung</p><p>Contoh: kartu-produk.</p></details>
 <a class="cta" href="/#fe-10-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe/debounce-throttle">Debounce &amp; throttle</a></p><p>Berikutnya: <a href="/belajar/fe/pwa-service-worker">PWA &amp; service worker</a></p>

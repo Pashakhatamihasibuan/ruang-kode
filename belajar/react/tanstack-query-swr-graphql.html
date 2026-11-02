@@ -38,6 +38,21 @@ function DaftarProduk() {
   if (error) return &lt;p&gt;Gagal: {error.message}&lt;/p&gt;;
   return &lt;ul&gt;{data.map(p =&gt; &lt;li key={p.id}&gt;{p.nama}&lt;/li&gt;)}&lt;/ul&gt;;
 }</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Ambil daftar produk dengan TanStack Query.</p><details><summary>Petunjuk</summary><p>useQuery({ queryKey, queryFn }).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSX</div><pre><code>function Produk() {
+  const { data, isPending, error } = useQuery({
+    queryKey: [&quot;produk&quot;],
+    queryFn: () =&gt; fetch(&quot;/api/produk&quot;).then(r =&gt; r.json()),
+  });
+  if (isPending) return &lt;p&gt;Memuat…&lt;/p&gt;;
+  if (error) return &lt;p&gt;Gagal: {error.message}&lt;/p&gt;;
+  return &lt;ul&gt;{data.map(p =&gt; &lt;li key={p.id}&gt;{p.nama}&lt;/li&gt;)}&lt;/ul&gt;;
+}</code></pre></details></li><li><p>Tambahkan produk baru dengan useMutation dan segarkan daftar setelah berhasil.</p><details><summary>Petunjuk</summary><p>onSuccess: queryClient.invalidateQueries({ queryKey: ["produk"] }).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSX</div><pre><code>const qc = useQueryClient();
+const tambah = useMutation({
+  mutationFn: p =&gt; fetch(&quot;/api/produk&quot;, { method: &quot;POST&quot;, body: JSON.stringify(p) }),
+  onSuccess: () =&gt; qc.invalidateQueries({ queryKey: [&quot;produk&quot;] }),
+});
+
+&lt;button onClick={() =&gt; tambah.mutate({ nama: &quot;Teh&quot; })} disabled={tambah.isPending}&gt;Tambah&lt;/button&gt;</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>queryKey menjadi kunci cache.</li><li>invalidateQueries memuat ulang data setelah perubahan.</li><li>Apollo/urql/Relay untuk GraphQL.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Fungsi queryKey?</summary><p class="ok">Jawaban: Kunci cache untuk data itu</p><p>Komponen dengan key sama berbagi data.</p></details>
 <a class="cta" href="/#react-6-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/react/fetch-di-komponen">Fetch di komponen</a></p><p>Berikutnya: <a href="/belajar/react/empat-keadaan-data-memuat-error-kosong-ada">Empat keadaan data: memuat, error, kosong, ada</a></p>

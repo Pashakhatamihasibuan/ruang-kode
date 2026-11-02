@@ -41,6 +41,19 @@
     ENDIF
     OUTPUT &quot;Nilai huruf: &quot;, huruf
 END</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tentukan kategori BMI: &lt; 18.5 kurus, &lt; 25 normal, &lt; 30 gemuk, selain itu obesitas. BMI = berat / (tinggi × tinggi), tinggi dalam meter.</p><details><summary>Petunjuk</summary><p>Hitung BMI dulu dengan Assign, lalu If bersarang dari batas terkecil.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Declare berat, tinggi, bmi : Real
+Input berat
+Input tinggi
+Assign bmi = berat / (tinggi * tinggi)
+If bmi &lt; 18.5 → Output &quot;Kurus&quot;
+Else If bmi &lt; 25 → Output &quot;Normal&quot;
+Else If bmi &lt; 30 → Output &quot;Gemuk&quot;
+Else → Output &quot;Obesitas&quot;</code></pre></details></li><li><p>Tarif listrik: pemakaian ≤ 100 kWh Rp1.000/kWh, di atas itu Rp1.500/kWh untuk kelebihannya. Hitung tagihan.</p><details><summary>Petunjuk</summary><p>Jika lebih dari 100: 100 × 1000 + (kwh − 100) × 1500.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Declare kwh, tagihan : Integer
+Input kwh
+If kwh &lt;= 100
+    True : Assign tagihan = kwh * 1000
+    False: Assign tagihan = 100 * 1000 + (kwh - 100) * 1500
+Output &quot;Tagihan: Rp&quot; &amp; tagihan</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>If bersarang ditaruh di cabang False.</li><li>Cek batas tertinggi lebih dulu.</li><li>Uji setiap jalur.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Nilai 70 mendapat huruf apa di program ini?</summary><p class="ok">Jawaban: B</p><p>70 &gt;= 70 benar.</p></details><details><summary>Berapa simbol If yang dibutuhkan untuk 4 nilai huruf?</summary><p class="ok">Jawaban: 3</p><p>Pilihan terakhir (D) adalah sisa ketika semua kondisi salah.</p></details>
 <a class="cta" href="/#flowg-3-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/flowg/simbol-if-ganjil-atau-genap">Simbol If: ganjil atau genap</a></p><p>Berikutnya: <a href="/belajar/flowg/simbol-for-tabel-perkalian-dan-hitung-mundur">Simbol For: tabel perkalian dan hitung mundur</a></p>

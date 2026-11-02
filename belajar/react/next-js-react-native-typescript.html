@@ -35,6 +35,20 @@ export default async function Halaman({ params }: { params: Promise&lt;{ id: str
     &lt;/main&gt;
   );
 }</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Beri tipe pada props komponen KartuProduk dengan TypeScript.</p><details><summary>Petunjuk</summary><p>type Props = { ... }; diskon opsional dengan ?.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TYPESCRIPT</div><pre><code>type Props = {
+  nama: string;
+  harga: number;
+  diskon?: number;
+};
+
+function KartuProduk({ nama, harga, diskon = 0 }: Props) {
+  return &lt;p&gt;{nama}: {harga * (1 - diskon)}&lt;/p&gt;;
+}</code></pre></details></li><li><p>Tulis halaman Next.js (App Router) yang mengambil produk di server.</p><details><summary>Petunjuk</summary><p>Komponen async di app/produk/page.tsx.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSX</div><pre><code>// app/produk/page.tsx
+export default async function HalamanProduk() {
+  const res = await fetch(&quot;https://api.toko.id/produk&quot;, { next: { revalidate: 60 } });
+  const produk = await res.json();
+  return &lt;ul&gt;{produk.map((p: any) =&gt; &lt;li key={p.id}&gt;{p.nama}&lt;/li&gt;)}&lt;/ul&gt;;
+}</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Next.js: routing folder, SSR, Server Components.</li><li>Astro untuk situs konten.</li><li>React Native untuk aplikasi mobile.</li><li>TypeScript memeriksa props sebelum berjalan.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Keuntungan SSR?</summary><p class="ok">Jawaban: Halaman cepat tampil dan ramah SEO</p><p>HTML sudah jadi saat dikirim.</p></details>
 <a class="cta" href="/#react-8-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/react/menguji-komponen">Menguji komponen</a></p><p>Berikutnya: <a href="/belajar/react/toko-online-mini">Toko online mini</a></p>

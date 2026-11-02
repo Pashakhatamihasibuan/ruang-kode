@@ -37,6 +37,16 @@ export {};
 declare module &quot;kalkulator-ongkir&quot; {
   export function hitung(beratKg: number, kota: string): number;
 }</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis file deklarasi untuk library JavaScript lama <code>hitung-pajak</code> yang mengekspor fungsi pajak(n).</p><details><summary>Petunjuk</summary><p>declare module di file .d.ts.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TYPESCRIPT</div><pre><code>// types/hitung-pajak.d.ts
+declare module &quot;hitung-pajak&quot; {
+  export function pajak(n: number, persen?: number): number;
+}</code></pre></details></li><li><p>Tambahkan properti <code>env</code> bertipe ke <code>import.meta</code> di proyek Vite.</p><details><summary>Petunjuk</summary><p>Augmentasi interface ImportMetaEnv di vite-env.d.ts.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TYPESCRIPT</div><pre><code>// src/vite-env.d.ts
+interface ImportMetaEnv {
+  readonly VITE_API_URL: string;
+}
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Pakai modul ES; namespace sudah jarang.</li><li>import type untuk tipe saja.</li><li>.d.ts dan @types untuk pustaka JavaScript.</li><li>declare global untuk augmentasi.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Paket tipe untuk pustaka lodash biasanya bernama?</summary><p class="ok">Jawaban: @types/lodash</p><p>Proyek DefinitelyTyped.</p></details>
 <a class="cta" href="/#ts-10-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/ts/template-literal-tipe-rekursif">Template literal &amp; tipe rekursif</a></p><p>Berikutnya: <a href="/belajar/ts/decorator-alat-ekosistem">Decorator &amp; alat ekosistem</a></p>

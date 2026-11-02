@@ -35,6 +35,14 @@ dist/
 .DS_Store
 .vscode/
 *.log</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis .gitignore untuk proyek Node.js yang mengabaikan node_modules, file .env, folder dist, dan file log.</p><details><summary>Petunjuk</summary><p>Satu pola per baris; folder diakhiri garis miring.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TERMINAL</div><pre><code>node_modules/
+dist/
+.env
+*.log
+.DS_Store</code></pre></details></li><li><p>File .env sudah terlanjur di-commit. Hentikan pelacakannya tanpa menghapus file di laptopmu.</p><details><summary>Petunjuk</summary><p>git rm --cached, lalu tambahkan ke .gitignore. Ganti juga semua rahasia di dalamnya karena sudah tersimpan di riwayat.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TERMINAL</div><pre><code>echo &quot;.env&quot; &gt;&gt; .gitignore
+git rm --cached .env
+git commit -m &quot;Berhenti melacak .env&quot;
+# penting: ganti password/API key yang ada di .env</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Abaikan dependensi, hasil build, log, dan rahasia.</li><li>Pola: folder/, *.ext, ! untuk pengecualian.</li><li>Berkas yang terlanjur di-commit tetap ada di riwayat.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Berkas .env.example pada contoh di atas?</summary><p class="ok">Jawaban: Tetap dilacak karena pola !</p><p>Berkas contoh tanpa nilai rahasia boleh dibagikan.</p></details><details><summary>Kunci API terlanjur di-commit lalu ditambahkan ke .gitignore. Apa yang harus dilakukan?</summary><p class="ok">Jawaban: Ganti (rotate) kuncinya</p><p>Riwayat lama masih memuat kunci itu.</p></details>
 <a class="cta" href="/#git-2-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/git/riwayat-perbedaan-log-dan-diff">Riwayat &amp; perbedaan: log dan diff</a></p><p>Berikutnya: <a href="/belajar/git/membatalkan-perubahan">Membatalkan perubahan</a></p>

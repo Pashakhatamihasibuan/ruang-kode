@@ -53,6 +53,22 @@ function App() {
     &lt;/div&gt;
   );
 }</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tampilkan modal di luar pohon komponen (langsung di body) dengan portal.</p><details><summary>Petunjuk</summary><p>createPortal(jsx, document.body).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSX</div><pre><code>function Modal({ children, onTutup }) {
+  return createPortal(
+    &lt;div className=&quot;latar&quot; onClick={onTutup}&gt;
+      &lt;div className=&quot;modal&quot; onClick={e =&gt; e.stopPropagation()}&gt;{children}&lt;/div&gt;
+    &lt;/div&gt;,
+    document.body
+  );
+}</code></pre></details></li><li><p>Muat halaman Laporan secara malas dengan lazy dan Suspense.</p><details><summary>Petunjuk</summary><p>const Laporan = lazy(() => import("./Laporan")).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSX</div><pre><code>const Laporan = lazy(() =&gt; import(&quot;./Laporan&quot;));
+
+function App() {
+  return (
+    &lt;Suspense fallback={&lt;p&gt;Memuat laporan…&lt;/p&gt;}&gt;
+      &lt;Laporan /&gt;
+    &lt;/Suspense&gt;
+  );
+}</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Portal merender ke luar pohon DOM induk.</li><li>Error boundary mencegah satu error merusak seluruh aplikasi.</li><li>Suspense menampilkan cadangan saat menunggu.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Tanpa error boundary, error render di satu komponen menyebabkan?</summary><p class="ok">Jawaban: Seluruh pohon React dilepas (layar kosong)</p><p>Karena itu pasang error boundary di titik penting.</p></details>
 <a class="cta" href="/#react-3-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/react/komposisi-render-props-hoc">Komposisi, render props &amp; HOC</a></p><p>Berikutnya: <a href="/belajar/react/memecah-komponen-kapan-bagaimana">Memecah komponen: kapan &amp; bagaimana</a></p>

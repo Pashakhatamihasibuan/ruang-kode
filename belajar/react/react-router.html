@@ -40,6 +40,19 @@ const router = createBrowserRouter([
 ]);
 
 export default function App() { return &lt;RouterProvider router={router} /&gt;; }</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat rute beranda, daftar produk, dan detail produk dengan parameter id.</p><details><summary>Petunjuk</summary><p>createBrowserRouter dengan path "produk/:id"; baca dengan useParams.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSX</div><pre><code>const router = createBrowserRouter([
+  { path: &quot;/&quot;, element: &lt;Beranda /&gt; },
+  { path: &quot;/produk&quot;, element: &lt;DaftarProduk /&gt; },
+  { path: &quot;/produk/:id&quot;, element: &lt;DetailProduk /&gt; },
+]);
+
+function DetailProduk() {
+  const { id } = useParams();
+  return &lt;h1&gt;Produk #{id}&lt;/h1&gt;;
+}</code></pre></details></li><li><p>Arahkan pengguna ke halaman keranjang setelah tombol Beli diklik.</p><details><summary>Petunjuk</summary><p>useNavigate.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSX</div><pre><code>function TombolBeli() {
+  const navigate = useNavigate();
+  return &lt;button onClick={() =&gt; navigate(&quot;/keranjang&quot;)}&gt;Beli&lt;/button&gt;;
+}</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Router memetakan URL ke komponen.</li><li>Link mencegah muat ulang halaman.</li><li>useParams membaca bagian dinamis URL.</li><li>Rute * untuk halaman 404.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa pakai Link, bukan a?</summary><p class="ok">Jawaban: Agar pindah halaman tanpa memuat ulang</p><p>Link ditangani router di sisi klien.</p></details>
 <a class="cta" href="/#react-5-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/react/react-hook-form-zod">React Hook Form &amp; Zod</a></p><p>Berikutnya: <a href="/belajar/react/zustand-jotai-kawan-kawan">Zustand, Jotai &amp; kawan-kawan</a></p>

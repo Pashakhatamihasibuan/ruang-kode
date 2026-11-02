@@ -49,6 +49,20 @@ function App() {
   );
 }</code></pre>
 <h2>Tantangan</h2><ol><li>Centang "Hanya yang tersedia" sehingga produk habis tidak tampil.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Tampilkan daftar tugas dengan key yang benar, dan pesan "Belum ada tugas" jika kosong.</p><details><summary>Petunjuk</summary><p>map dengan key={t.id}; percabangan dengan ternary.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSX</div><pre><code>function DaftarTugas({ tugas }) {
+  if (tugas.length === 0) return &lt;p&gt;Belum ada tugas.&lt;/p&gt;;
+  return (
+    &lt;ul&gt;
+      {tugas.map(t =&gt; (
+        &lt;li key={t.id}&gt;{t.selesai ? &quot;✅&quot; : &quot;⬜&quot;} {t.judul}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+}</code></pre></details></li><li><p>Kenapa memakai index sebagai key bisa menimbulkan bug?</p><details><summary>Petunjuk</summary><p>Saat item disisipkan atau dihapus, index berubah sehingga React salah mencocokkan state item.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSX</div><pre><code>// buruk: state input di tiap baris bisa tertukar saat daftar diurutkan/dihapus
+{items.map((it, i) =&gt; &lt;Baris key={i} item={it} /&gt;)}
+
+// baik: id yang stabil
+{items.map(it =&gt; &lt;Baris key={it.id} item={it} /&gt;)}</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Gunakan id sebagai key, bukan index</summary><p>Kalau daftar diurutkan ulang atau ada yang dihapus, key berbasis index membuat React memasangkan state ke baris yang salah, misalnya isi input pindah ke produk lain. Pakai id yang unik dan stabil.</p><div class="lbl">KODE PEMULA</div><pre><code>{produk.map((p, i) =&gt; (
   &lt;li key={i}&gt;{p.nama}&lt;/li&gt;
 ))}</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>{produk.map((p) =&gt; (

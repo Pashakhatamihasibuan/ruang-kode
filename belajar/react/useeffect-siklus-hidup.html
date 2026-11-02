@@ -41,6 +41,17 @@ function App() {
     &lt;/div&gt;
   );
 }</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Ubah judul tab browser sesuai jumlah isi keranjang.</p><details><summary>Petunjuk</summary><p>useEffect dengan dependensi [jumlah].</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSX</div><pre><code>useEffect(() =&gt; {
+  document.title = jumlah &gt; 0 ? `(${jumlah}) Toko Kopi` : &quot;Toko Kopi&quot;;
+}, [jumlah]);</code></pre></details></li><li><p>Pasang event listener ukuran jendela dan lepaskan saat komponen hilang.</p><details><summary>Petunjuk</summary><p>Kembalikan fungsi pembersih dari useEffect.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSX</div><pre><code>function LebarLayar() {
+  const [w, setW] = useState(window.innerWidth);
+  useEffect(() =&gt; {
+    const f = () =&gt; setW(window.innerWidth);
+    window.addEventListener(&quot;resize&quot;, f);
+    return () =&gt; window.removeEventListener(&quot;resize&quot;, f);
+  }, []);
+  return &lt;p&gt;Lebar: {w}px&lt;/p&gt;;
+}</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Nilai turunan tidak perlu state dan effect</summary><p>Total yang bisa dihitung dari state lain cukup dihitung saat render. Menyimpannya di state lalu menyinkronkan dengan <code>useEffect</code> menambah satu render ekstra dan rawan tidak sinkron.</p><div class="lbl">KODE PEMULA</div><pre><code>const [keranjang, setKeranjang] = useState([]);
 const [total, setTotal] = useState(0);
 useEffect(() =&gt; {

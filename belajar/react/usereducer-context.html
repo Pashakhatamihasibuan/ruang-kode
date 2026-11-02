@@ -52,6 +52,31 @@ function App() {
   );
 }</code></pre>
 <h2>Tantangan</h2><ol><li>Klik tombol beli sampai keranjang berisi 4 barang.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Tulis reducer keranjang dengan aksi tambah, hapus, dan kosongkan.</p><details><summary>Petunjuk</summary><p>switch (action.type) yang selalu mengembalikan state baru.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSX</div><pre><code>function keranjangReducer(state, action) {
+  switch (action.type) {
+    case &quot;tambah&quot;: return [...state, action.produk];
+    case &quot;hapus&quot;: return state.filter(p =&gt; p.id !== action.id);
+    case &quot;kosongkan&quot;: return [];
+    default: return state;
+  }
+}
+const [isi, dispatch] = useReducer(keranjangReducer, []);
+dispatch({ type: &quot;tambah&quot;, produk: { id: 1, nama: &quot;Kopi&quot; } });</code></pre></details></li><li><p>Bagikan tema terang/gelap ke seluruh aplikasi dengan Context.</p><details><summary>Petunjuk</summary><p>createContext, Provider di akar, useContext di komponen.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSX</div><pre><code>const TemaContext = createContext(&quot;terang&quot;);
+
+function App() {
+  const [tema, setTema] = useState(&quot;terang&quot;);
+  return (
+    &lt;TemaContext.Provider value={tema}&gt;
+      &lt;button onClick={() =&gt; setTema(t =&gt; t === &quot;terang&quot; ? &quot;gelap&quot; : &quot;terang&quot;)}&gt;Ganti tema&lt;/button&gt;
+      &lt;Halaman /&gt;
+    &lt;/TemaContext.Provider&gt;
+  );
+}
+
+function Halaman() {
+  const tema = useContext(TemaContext);
+  return &lt;main className={tema}&gt;Tema: {tema}&lt;/main&gt;;
+}</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>useReducer: logika perubahan state di satu fungsi.</li><li>Context menghindari prop drilling.</li><li>Provider menyediakan, useContext membaca.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Masalah yang diselesaikan Context?</summary><p class="ok">Jawaban: Meneruskan props lewat banyak lapisan</p><p>Itu disebut prop drilling.</p></details>
 <a class="cta" href="/#react-2-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/react/useref-usememo-usecallback">useRef, useMemo &amp; useCallback</a></p><p>Berikutnya: <a href="/belajar/react/custom-hook">Custom hook</a></p>

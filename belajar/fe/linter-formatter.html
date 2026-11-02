@@ -32,6 +32,16 @@
 // src/App.jsx
 //   12:9  warning  &#x27;total&#x27; is assigned a value but never used   no-unused-vars
 //   20:6  warning  React Hook useEffect has a missing dependency: &#x27;id&#x27;   react-hooks/exhaustive-deps</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Pasang ESLint dan Prettier, lalu jalankan keduanya pada seluruh proyek.</p><details><summary>Petunjuk</summary><p>npm init @eslint/config; prettier --write.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TERMINAL</div><pre><code>npm init @eslint/config@latest
+npm install -D prettier
+npx eslint .
+npx prettier --write .</code></pre></details></li><li><p>Tambahkan pemeriksaan otomatis sebelum commit dengan husky dan lint-staged.</p><details><summary>Petunjuk</summary><p>Hanya file yang di-stage yang diperiksa.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSON</div><pre><code>// package.json
+{
+  &quot;lint-staged&quot;: {
+    &quot;*.{js,ts,jsx,tsx}&quot;: [&quot;eslint --fix&quot;, &quot;prettier --write&quot;]
+  }
+}
+// lalu: npx husky init  →  isi .husky/pre-commit: npx lint-staged</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Formatter: gaya seragam otomatis.</li><li>Linter: deteksi pola rawan bug.</li><li>Biome menggabungkan keduanya.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Alat yang mendeteksi variabel tidak terpakai?</summary><p class="ok">Jawaban: Linter (ESLint)</p><p>Linter menganalisis makna kode.</p></details>
 <a class="cta" href="/#fe-5-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe/bundler-vite">Bundler &amp; Vite</a></p><p>Berikutnya: <a href="/belajar/fe/memilih-framework">Memilih framework</a></p>

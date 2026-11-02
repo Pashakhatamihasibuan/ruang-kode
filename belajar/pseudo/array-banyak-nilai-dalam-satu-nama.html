@@ -42,6 +42,28 @@
     OUTPUT &quot;Tertinggi: &quot;, maks
     OUTPUT &quot;Rata-rata: &quot;, rata
 END</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Array suhu berisi 7 nilai seminggu: 31, 29, 33, 30, 28, 32, 34. Hitung rata-rata dan suhu terendah.</p><details><summary>Petunjuk</summary><p>Satu FOR cukup: jumlahkan sambil membandingkan dengan min ← suhu[0].</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>DECLARE suhu : ARRAY[0..6] OF INTEGER
+DECLARE i, total, minim : INTEGER
+suhu ← [31, 29, 33, 30, 28, 32, 34]
+total ← 0
+minim ← suhu[0]
+FOR i ← 0 TO 6 DO
+    total ← total + suhu[i]
+    IF suhu[i] &lt; minim THEN
+        minim ← suhu[i]
+    ENDIF
+ENDFOR
+OUTPUT &quot;Rata-rata: &quot;, total / 7
+OUTPUT &quot;Terendah: &quot;, minim</code></pre></details></li><li><p>Balik urutan isi array [1, 2, 3, 4, 5] menjadi [5, 4, 3, 2, 1] tanpa array baru.</p><details><summary>Petunjuk</summary><p>Tukar a[i] dengan a[n-1-i] untuk i dari 0 sampai n DIV 2 - 1.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>DECLARE a : ARRAY[0..4] OF INTEGER
+DECLARE i, t, n : INTEGER
+a ← [1, 2, 3, 4, 5]
+n ← 5
+FOR i ← 0 TO n DIV 2 - 1 DO
+    t ← a[i]
+    a[i] ← a[n - 1 - i]
+    a[n - 1 - i] ← t
+ENDFOR
+OUTPUT a</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Indeks array dimulai dari 0.</li><li>Proses array dengan FOR 0 sampai n - 1.</li><li>Nilai maksimum dimulai dari isi pertama, bukan 0.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Array berisi 5 nilai. Indeks terakhirnya?</summary><p class="ok">Jawaban: 4</p><p>Indeks 0 sampai 4.</p></details><details><summary>Kenapa maks ← nilai[0], bukan maks ← 0?</summary><p class="ok">Jawaban: Agar benar walau semua nilai negatif</p><p>Jika semua negatif, 0 akan keliru dianggap maksimum.</p></details>
 <a class="cta" href="/#pseudo-4-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pseudo/loop-bersarang">Loop bersarang</a></p><p>Berikutnya: <a href="/belajar/pseudo/linear-search-mencari-satu-per-satu">Linear search: mencari satu per satu</a></p>

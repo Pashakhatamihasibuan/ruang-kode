@@ -42,6 +42,17 @@ export function KonfirmasiHapus({ onHapus }) {
     &lt;/Dialog.Root&gt;
   );
 }</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Animasikan kartu yang muncul dan hilang dari daftar dengan Motion (Framer Motion).</p><details><summary>Petunjuk</summary><p>motion.div dengan initial, animate, exit, dibungkus AnimatePresence.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSX</div><pre><code>import { motion, AnimatePresence } from &quot;motion/react&quot;;
+
+&lt;AnimatePresence&gt;
+  {daftar.map(p =&gt; (
+    &lt;motion.div key={p.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}&gt;
+      {p.nama}
+    &lt;/motion.div&gt;
+  ))}
+&lt;/AnimatePresence&gt;</code></pre></details></li><li><p>Kapan memakai pustaka komponen (MUI, shadcn/ui, Chakra) dan kapan membuat sendiri?</p><details><summary>Petunjuk</summary><p>Pertimbangkan waktu, aksesibilitas, dan kebutuhan desain khas.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Pakai pustaka: dasbor internal, butuh cepat, komponen rumit (tanggal, tabel, dialog) yang aksesibel.
+Buat sendiri : identitas visual sangat khas, komponen sederhana, ukuran bundel harus kecil.
+shadcn/ui di tengah-tengah: kode komponen disalin ke proyekmu dan bebas diubah.</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Pustaka bergaya (MUI, Chakra) vs headless (Radix, React Aria).</li><li>Headless: perilaku dan aksesibilitas, tanpa gaya.</li><li>Framer Motion untuk animasi deklaratif.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Keunggulan pustaka headless?</summary><p class="ok">Jawaban: Aksesibilitas siap, tampilan bebas</p><p>Kamu yang menentukan gayanya.</p></details>
 <a class="cta" href="/#react-7-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/react/menata-komponen">Menata komponen</a></p><p>Berikutnya: <a href="/belajar/react/menguji-komponen">Menguji komponen</a></p>

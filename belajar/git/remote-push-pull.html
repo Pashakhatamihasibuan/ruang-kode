@@ -35,6 +35,11 @@ Fast-forward
  README.md | 12 ++++++++++++
 
 $ git clone https://github.com/sariw/toko-nusantara.git</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Hubungkan repositori lokal ke GitHub dan push cabang main untuk pertama kali.</p><details><summary>Petunjuk</summary><p>git remote add origin, lalu git push -u.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TERMINAL</div><pre><code>git remote add origin https://github.com/rina/portofolio.git
+git branch -M main
+git push -u origin main</code></pre></details></li><li><p>Push ditolak dengan pesan "Updates were rejected because the remote contains work that you do not have". Apa yang harus dilakukan?</p><details><summary>Petunjuk</summary><p>Ambil dulu perubahan dari remote dengan pull, selesaikan konflik jika ada, lalu push lagi.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TERMINAL</div><pre><code>git pull --rebase origin main
+# selesaikan konflik jika ada
+git push</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Push paksa yang tidak menimpa kerja teman</summary><p><code>--force</code> menimpa remote tanpa melihat, sehingga commit teman yang baru di-push bisa hilang. <code>--force-with-lease</code> menolak push kalau remote sudah berubah sejak terakhir kamu ambil.</p><div class="lbl">KODE PEMULA</div><pre><code>git push --force</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>git push --force-with-lease</code></pre></details>
 <h2>Poin penting</h2><ul><li>origin = nama remote default.</li><li>push mengirim, fetch mengunduh, pull = fetch + merge.</li><li>clone untuk salinan baru.</li><li>Pakai SSH key atau token.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Apa beda git fetch dan git pull?</summary><p class="ok">Jawaban: fetch hanya mengunduh, pull mengunduh lalu menggabung</p><p>fetch aman karena tidak mengubah cabangmu.</p></details><details><summary>Flag -u pada git push -u origin main untuk?</summary><p class="ok">Jawaban: Mengatur cabang upstream agar push/pull berikutnya cukup tanpa argumen</p><p>Setelah itu cukup git push.</p></details>

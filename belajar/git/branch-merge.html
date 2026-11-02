@@ -35,6 +35,14 @@ Fast-forward
 
 $ git branch -d fitur-keranjang
 Deleted branch fitur-keranjang (was c4e8b21).</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat cabang fitur-kontak, pindah ke sana, commit perubahan, lalu gabungkan ke main.</p><details><summary>Petunjuk</summary><p>git switch -c, commit, kembali ke main, git merge.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TERMINAL</div><pre><code>git switch -c fitur-kontak
+# ... edit kontak.html ...
+git add kontak.html
+git commit -m &quot;Tambah halaman kontak&quot;
+git switch main
+git merge fitur-kontak
+git branch -d fitur-kontak</code></pre></details></li><li><p>Tampilkan semua cabang lokal dan remote, serta cabang mana yang sudah digabung ke main.</p><details><summary>Petunjuk</summary><p>git branch -a dan git branch --merged.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TERMINAL</div><pre><code>git branch -a
+git branch --merged main</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Branch = penunjuk ke commit, murah dibuat.</li><li>git switch -c untuk cabang baru.</li><li>Fast-forward: cukup geser penunjuk; selain itu merge commit.</li><li>Hapus cabang setelah digabung.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kapan merge menjadi fast-forward?</summary><p class="ok">Jawaban: Saat main tidak punya commit baru sejak cabang dibuat</p><p>Git cukup menggeser penunjuk main ke depan.</p></details><details><summary>Perintah membuat sekaligus pindah ke cabang baru?</summary><p class="ok">Jawaban: git switch -c nama</p><p>Versi lama: git checkout -b nama.</p></details>
 <a class="cta" href="/#git-3-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/git/tag-rilis-dengan-semantic-versioning">Tag &amp; rilis dengan semantic versioning</a></p><p>Berikutnya: <a href="/belajar/git/menyelesaikan-konflik-merge">Menyelesaikan konflik merge</a></p>

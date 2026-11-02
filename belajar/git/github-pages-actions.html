@@ -38,6 +38,21 @@ jobs:
           node-version: 22
       - run: npm ci
       - run: npm test</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis workflow GitHub Actions yang menjalankan npm test setiap ada push dan pull request.</p><details><summary>Petunjuk</summary><p>File di .github/workflows/test.yml; on: [push, pull_request].</p></details><details><summary>Lihat jawaban</summary><div class="lbl">YAML</div><pre><code>name: Tes
+on: [push, pull_request]
+jobs:
+  tes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm test</code></pre></details></li><li><p>Sebutkan langkah mengaktifkan GitHub Pages untuk repositori portofolio statis.</p><details><summary>Petunjuk</summary><p>Settings → Pages → pilih branch main dan folder root.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TERMINAL</div><pre><code># di GitHub: Settings → Pages
+# Source: Deploy from a branch
+# Branch: main, folder: / (root) → Save
+# situs tayang di https://&lt;username&gt;.github.io/portofolio/</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Pages: hosting situs statis gratis.</li><li>Actions: otomatisasi berbasis peristiwa (CI/CD).</li><li>Workflow YAML di .github/workflows/.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kapan workflow di atas berjalan?</summary><p class="ok">Jawaban: Setiap PR dan setiap push ke main</p><p>Lihat bagian on:.</p></details>
 <a class="cta" href="/#git-5-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/git/readme-markdown">README &amp; Markdown</a></p><p>Berikutnya: <a href="/belajar/git/keamanan-aturan-cabang">Keamanan &amp; aturan cabang</a></p>

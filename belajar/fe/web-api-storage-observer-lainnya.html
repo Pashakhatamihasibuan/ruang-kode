@@ -39,6 +39,20 @@ const io = new IntersectionObserver(es =&gt; es.forEach(en =&gt; {
 }), { root: document.getElementById(&quot;area&quot;) });
 io.observe(document.getElementById(&quot;target&quot;));</code></pre>
 <h2>Tantangan</h2><ol><li>Gulir kotak di pratinjau sampai teks "Saya muncul saat terlihat" tampak.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Simpan daftar favorit di localStorage dan baca kembali dengan aman.</p><details><summary>Petunjuk</summary><p>Simpan sebagai JSON; bungkus try/catch karena storage bisa diblokir.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>function simpanFavorit(arr) {
+  try { localStorage.setItem(&quot;favorit&quot;, JSON.stringify(arr)); } catch {}
+}
+function bacaFavorit() {
+  try { return JSON.parse(localStorage.getItem(&quot;favorit&quot;)) ?? []; } catch { return []; }
+}</code></pre></details></li><li><p>Muat gambar hanya saat mendekati layar memakai IntersectionObserver.</p><details><summary>Petunjuk</summary><p>Simpan alamat asli di data-src, ganti src saat isIntersecting.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>const io = new IntersectionObserver(entries =&gt; {
+  for (const e of entries) {
+    if (e.isIntersecting) {
+      e.target.src = e.target.dataset.src;
+      io.unobserve(e.target);
+    }
+  }
+}, { rootMargin: &quot;200px&quot; });
+document.querySelectorAll(&quot;img[data-src]&quot;).forEach(img =&gt; io.observe(img));</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Salin objek bersarang dengan structuredClone</summary><p>Spread hanya menyalin lapisan teratas, sehingga objek di dalamnya masih dipakai bersama. <code>structuredClone</code> (bawaan browser dan Node 17+) menyalin seluruh isi, termasuk tanggal dan Map.</p><div class="lbl">KODE PEMULA</div><pre><code>const asli = { nama: &quot;Sari&quot;, alamat: { kota: &quot;Medan&quot; } };
 const salinan = { ...asli };
 salinan.alamat.kota = &quot;Bandung&quot;;

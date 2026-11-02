@@ -41,6 +41,26 @@ form.addEventListener(&quot;submit&quot;, e =&gt; {
   document.querySelector(&quot;#jumlah&quot;).textContent = daftar.children.length + &quot; barang&quot;;
 });</code></pre>
 <h2>Tantangan</h2><ol><li>Tambahkan tiga barang lewat form, lalu klik salah satunya hingga tercoret.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Buat penghitung karakter untuk textarea (maksimal 140) yang berubah merah saat lewat batas.</p><details><summary>Petunjuk</summary><p>Event input, baca value.length, ubah textContent dan class.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">HTML</div><pre><code>&lt;textarea id=&quot;pesan&quot; maxlength=&quot;200&quot;&gt;&lt;/textarea&gt;
+&lt;p id=&quot;sisa&quot;&gt;140&lt;/p&gt;
+&lt;script&gt;
+  const t = document.getElementById(&quot;pesan&quot;);
+  const s = document.getElementById(&quot;sisa&quot;);
+  t.addEventListener(&quot;input&quot;, () =&gt; {
+    const sisa = 140 - t.value.length;
+    s.textContent = sisa;
+    s.style.color = sisa &lt; 0 ? &quot;crimson&quot; : &quot;&quot;;
+  });
+&lt;/script&gt;</code></pre></details></li><li><p>Pasang satu event listener di daftar <code>ul</code> untuk menangani klik pada semua tombol hapus (event delegation).</p><details><summary>Petunjuk</summary><p>Periksa e.target.closest(".hapus").</p></details><details><summary>Lihat jawaban</summary><div class="lbl">HTML</div><pre><code>&lt;ul id=&quot;daftar&quot;&gt;
+  &lt;li&gt;Kopi &lt;button class=&quot;hapus&quot;&gt;Hapus&lt;/button&gt;&lt;/li&gt;
+  &lt;li&gt;Teh &lt;button class=&quot;hapus&quot;&gt;Hapus&lt;/button&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;script&gt;
+  document.getElementById(&quot;daftar&quot;).addEventListener(&quot;click&quot;, e =&gt; {
+    const b = e.target.closest(&quot;.hapus&quot;);
+    if (b) b.closest(&quot;li&quot;).remove();
+  });
+&lt;/script&gt;</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>querySelector mengambil elemen.</li><li>textContent dan classList mengubah isi dan gaya.</li><li>addEventListener mendaftarkan event.</li><li>preventDefault mencegah form memuat ulang halaman.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Cara aman mengisi teks dari input pengguna ke halaman?</summary><p class="ok">Jawaban: textContent</p><p>innerHTML bisa menjalankan HTML/script yang disisipkan.</p></details>
 <a class="cta" href="/#fe0-4-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe0/array-objek">Array &amp; objek</a></p><p>Berikutnya: <a href="/belajar/fe0/mengambil-data-fetch-json-async">Mengambil data: fetch, JSON &amp; async</a></p>

@@ -39,6 +39,22 @@ function App() {
   return &lt;Penghitung /&gt;;
 }</code></pre>
 <h2>Tantangan</h2><ol><li>Klik tombol + sampai jumlahnya 3.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Buat penghitung dengan tombol tambah dan kurang yang tidak bisa di bawah 0.</p><details><summary>Petunjuk</summary><p>Pakai pembaruan fungsional setN(n => ...).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSX</div><pre><code>function Penghitung() {
+  const [n, setN] = useState(0);
+  return (
+    &lt;div&gt;
+      &lt;button onClick={() =&gt; setN(n =&gt; Math.max(0, n - 1))} disabled={n === 0}&gt;−&lt;/button&gt;
+      &lt;span&gt; {n} &lt;/span&gt;
+      &lt;button onClick={() =&gt; setN(n =&gt; n + 1)}&gt;+&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre></details></li><li><p>Tambahkan barang ke array state keranjang tanpa mengubah array lama.</p><details><summary>Petunjuk</summary><p>Buat array baru dengan spread: [...lama, baru].</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSX</div><pre><code>const [keranjang, setKeranjang] = useState([]);
+function tambah(produk) {
+  setKeranjang(k =&gt; [...k, produk]);
+}
+function hapus(id) {
+  setKeranjang(k =&gt; k.filter(p =&gt; p.id !== id));
+}</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Perbarui state dari nilai sebelumnya</summary><p><code>jumlah</code> di dalam satu render adalah nilai tetap. Memanggil <code>setJumlah(jumlah + 1)</code> dua kali tetap menghasilkan +1. Fungsi pembaru <code>j =&gt; j + 1</code> selalu menerima nilai terbaru, sehingga hasilnya +2.</p><div class="lbl">KODE PEMULA</div><pre><code>function Keranjang() {
   const [jumlah, setJumlah] = useState(0);
   function tambahDua() {

@@ -35,6 +35,21 @@
         OUTPUT tahun, &quot; bukan tahun kabisat&quot;
     ENDIF
 END</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tentukan tahun kabisat: habis dibagi 4 dan tidak habis dibagi 100, atau habis dibagi 400.</p><details><summary>Petunjuk</summary><p>(t MOD 4 = 0 AND t MOD 100 &lt;> 0) OR t MOD 400 = 0.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>DECLARE t : INTEGER
+INPUT t
+IF (t MOD 4 = 0 AND t MOD 100 &lt;&gt; 0) OR t MOD 400 = 0 THEN
+    OUTPUT t, &quot; kabisat&quot;
+ELSE
+    OUTPUT t, &quot; bukan kabisat&quot;
+ENDIF</code></pre></details></li><li><p>Mahasiswa boleh ikut ujian jika kehadiran ≥ 75% dan tidak punya tunggakan. Tulis kondisinya.</p><details><summary>Petunjuk</summary><p>Gabungkan dengan AND dan NOT.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>DECLARE hadir : INTEGER
+DECLARE tunggakan : BOOLEAN
+INPUT hadir
+INPUT tunggakan
+IF hadir &gt;= 75 AND NOT tunggakan THEN
+    OUTPUT &quot;Boleh ikut ujian&quot;
+ELSE
+    OUTPUT &quot;Tidak boleh ikut ujian&quot;
+ENDIF</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>and: semua benar. or: salah satu benar. not: kebalikan.</li><li>Pakai kurung saat mencampur and dan or.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Apakah 1900 tahun kabisat?</summary><p class="ok">Jawaban: Tidak</p><p>Habis dibagi 100 tetapi tidak habis dibagi 400.</p></details><details><summary>&quot;Diskon jika member ATAU belanja &gt; 200 ribu&quot;. Bukan member, belanja 250 ribu. Dapat diskon?</summary><p class="ok">Jawaban: Ya</p><p>or cukup satu bagian benar.</p></details>
 <a class="cta" href="/#pseudo-2-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pseudo/percabangan-bertingkat">Percabangan bertingkat</a></p><p>Berikutnya: <a href="/belajar/pseudo/for-jumlah-putaran-sudah-diketahui">FOR: jumlah putaran sudah diketahui</a></p>

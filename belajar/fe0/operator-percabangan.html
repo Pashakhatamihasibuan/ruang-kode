@@ -42,6 +42,15 @@ console.log(&quot;0&quot; == 0, &quot;0&quot; === 0);
 const kupon = null;
 console.log(kupon ?? &quot;tanpa kupon&quot;);</code></pre>
 <h2>Tantangan</h2><ol><li>Ubah total menjadi 80000 dan pastikan konsol mencetak "Ongkir: 5000".</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Tentukan nilai huruf dari skor 78 dengan if/else if.</p><details><summary>Petunjuk</summary><p>Periksa dari batas tertinggi.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>const skor = 78;
+let huruf;
+if (skor &gt;= 85) huruf = &quot;A&quot;;
+else if (skor &gt;= 70) huruf = &quot;B&quot;;
+else if (skor &gt;= 55) huruf = &quot;C&quot;;
+else huruf = &quot;D&quot;;
+console.log(`Skor ${skor} = ${huruf}`);</code></pre></details></li><li><p>Apa hasil <code>0 || "bawaan"</code>, <code>0 ?? "bawaan"</code>, dan <code>null ?? "bawaan"</code>?</p><details><summary>Petunjuk</summary><p>|| memakai cadangan untuk semua nilai falsy; ?? hanya untuk null atau undefined.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>console.log(0 || &quot;bawaan&quot;);
+console.log(0 ?? &quot;bawaan&quot;);
+console.log(null ?? &quot;bawaan&quot;);</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>|| dan ?? berbeda saat nilainya 0</summary><p><code>||</code> menganggap <code>0</code> dan <code>""</code> sebagai kosong, sehingga stok 0 malah diganti 10. <code>??</code> hanya mengganti <code>null</code> dan <code>undefined</code>. Gunakan juga <code>===</code>, bukan <code>==</code>, agar <code>0 == ""</code> tidak dianggap sama.</p><div class="lbl">KODE PEMULA</div><pre><code>const stok = 0;
 const tampil = stok || 10;
 console.log(tampil);

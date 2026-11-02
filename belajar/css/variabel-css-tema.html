@@ -29,6 +29,19 @@ body { background: var(--bg); color: var(--teks); font-family: sans-serif; trans
 .kartu { border: 2px solid var(--aksen); border-radius: var(--radius); padding: 12px 16px; }
 button { background: var(--aksen); color: var(--bg); border: 0; padding: 6px 14px; border-radius: 99px; }</code></pre>
 <h2>Tantangan</h2><ol><li>Ganti <code>--radius</code> menjadi <code>0px</code> agar kartu bersudut tajam.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Definisikan warna merek dan jarak sebagai variabel, lalu buat tema gelap dengan atribut data-theme.</p><details><summary>Petunjuk</summary><p>Variabel di :root, ditimpa di [data-theme="dark"].</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CSS</div><pre><code>:root {
+  --bg: #FBF8F3;
+  --fg: #1A1A1A;
+  --merek: #B4532A;
+  --jarak: 1rem;
+}
+[data-theme=&quot;dark&quot;] {
+  --bg: #14161A;
+  --fg: #ECE7DF;
+  --merek: #E39A73;
+}
+body { background: var(--bg); color: var(--fg); }
+.btn { background: var(--merek); padding: var(--jarak); }</code></pre></details></li><li><p>Beri nilai cadangan jika variabel belum didefinisikan.</p><details><summary>Petunjuk</summary><p>var(--nama, cadangan).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CSS</div><pre><code>.kartu { border-radius: var(--radius, 12px); }</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Warna disimpan di satu tempat</summary><p>Kode warna yang diulang di banyak tempat sulit diganti dan mudah berbeda sedikit. Custom property menyimpannya sekali, dan tema gelap cukup mengganti nilainya.</p><div class="lbl">KODE PEMULA</div><pre><code>.tombol { background: #255DA2; }
 .tautan { color: #255DA2; }
 .badge  { border-color: #255da2; }</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>:root { --warna-utama: #255DA2; }

@@ -44,6 +44,19 @@ export function FormDaftar() {
     &lt;/form&gt;
   );
 }</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat skema Zod untuk form daftar: nama minimal 3 huruf, email valid, umur 17–60.</p><details><summary>Petunjuk</summary><p>z.object dengan z.string().min, .email(), z.coerce.number().</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSX</div><pre><code>const skema = z.object({
+  nama: z.string().min(3, &quot;Nama minimal 3 huruf&quot;),
+  email: z.string().email(&quot;Email belum benar&quot;),
+  umur: z.coerce.number().min(17).max(60),
+});</code></pre></details></li><li><p>Hubungkan skema itu ke React Hook Form dan tampilkan pesan error-nya.</p><details><summary>Petunjuk</summary><p>useForm({ resolver: zodResolver(skema) }); register; formState.errors.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSX</div><pre><code>const { register, handleSubmit, formState: { errors } } = useForm({ resolver: zodResolver(skema) });
+
+&lt;form onSubmit={handleSubmit(data =&gt; kirim(data))}&gt;
+  &lt;input {...register(&quot;nama&quot;)} /&gt;
+  {errors.nama &amp;&amp; &lt;p&gt;{errors.nama.message}&lt;/p&gt;}
+  &lt;input {...register(&quot;email&quot;)} /&gt;
+  {errors.email &amp;&amp; &lt;p&gt;{errors.email.message}&lt;/p&gt;}
+  &lt;button&gt;Daftar&lt;/button&gt;
+&lt;/form&gt;</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>React Hook Form: register, handleSubmit, errors.</li><li>Zod: satu skema untuk validasi dan tipe.</li><li>z.infer menghasilkan tipe TypeScript dari skema.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Keuntungan Zod?</summary><p class="ok">Jawaban: Satu skema untuk validasi dan tipe</p><p>Skema dipakai ulang di banyak tempat.</p></details>
 <a class="cta" href="/#react-4-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/react/input-terkendali">Input terkendali</a></p><p>Berikutnya: <a href="/belajar/react/react-router">React Router</a></p>

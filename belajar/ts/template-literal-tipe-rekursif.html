@@ -34,6 +34,14 @@ function hitung(k: Kategori): number {
 const h: Handler = &quot;onKlik&quot;;
 console.log(h, hitung(pohon));</code></pre>
 <div class="lbl">KELUARAN</div><pre><code>onKlik 4</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat tipe nama event seperti "klik:tombol" dan "klik:link" dengan template literal type.</p><details><summary>Petunjuk</summary><p>`${Aksi}:${Target}`.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TYPESCRIPT</div><pre><code>type Aksi = &quot;klik&quot; | &quot;hover&quot;;
+type Target = &quot;tombol&quot; | &quot;link&quot;;
+type NamaEvent = `${Aksi}:${Target}`;
+const e: NamaEvent = &quot;hover:link&quot;;
+console.log(e);</code></pre></details></li><li><p>Buat tipe rekursif untuk menu bertingkat.</p><details><summary>Petunjuk</summary><p>Tipe yang merujuk dirinya sendiri di properti anak.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TYPESCRIPT</div><pre><code>type Menu = { label: string; anak?: Menu[] };
+const menu: Menu = { label: &quot;Kursus&quot;, anak: [{ label: &quot;Web&quot;, anak: [{ label: &quot;React&quot; }] }] };
+const hitung = (m: Menu): number =&gt; 1 + (m.anak ?? []).reduce((t, a) =&gt; t + hitung(a), 0);
+console.log(hitung(menu));</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Template literal type menyusun string tipe.</li><li>Capitalize, Uppercase, Lowercase adalah helper bawaan.</li><li>Tipe rekursif untuk pohon dan JSON.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Hasil `get${Capitalize&lt;&quot;nama&quot;&gt;}`?</summary><p class="ok">Jawaban: &quot;getNama&quot;</p><p>Capitalize membuat huruf pertama kapital.</p></details>
 <a class="cta" href="/#ts-9-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/ts/keyof-mapped-conditional-types">keyof, mapped &amp; conditional types</a></p><p>Berikutnya: <a href="/belajar/ts/modul-deklarasi-augmentasi">Modul, deklarasi &amp; augmentasi</a></p>

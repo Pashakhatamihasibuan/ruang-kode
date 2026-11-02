@@ -42,6 +42,22 @@
     ENDWHILE
     OUTPUT &quot;Ditebak dalam &quot;, kali, &quot; kali&quot;
 END</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Hitung berapa kali sebuah angka bisa dibagi 2 sampai menjadi 1 (contoh 64 → 6 kali).</p><details><summary>Petunjuk</summary><p>While n > 1: n = Int(n / 2), lalu hitung bertambah 1. Int() membuang bagian pecahan.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Declare n, hitung : Integer
+Input n
+Assign hitung = 0
+While n &gt; 1
+    Assign n = Int(n / 2)
+    Assign hitung = hitung + 1
+Output hitung &amp; &quot; kali&quot;</code></pre></details></li><li><p>Batasi tebak angka menjadi paling banyak 5 kesempatan.</p><details><summary>Petunjuk</summary><p>Tambahkan syarat kesempatan &lt; 5 pada kondisi While dengan and.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Declare rahasia, tebakan, kesempatan : Integer
+Assign rahasia = Random(10) + 1
+Assign tebakan = 0
+Assign kesempatan = 0
+While tebakan != rahasia and kesempatan &lt; 5
+    Input tebakan
+    Assign kesempatan = kesempatan + 1
+If tebakan == rahasia
+    True : Output &quot;Benar!&quot;
+    False: Output &quot;Kesempatan habis. Jawabannya &quot; &amp; rahasia</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>While cek di awal; bisa 0 kali.</li><li>Variabel di kondisi harus punya nilai sebelum loop.</li><li>Badan loop harus bisa membuat kondisi salah.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa tebakan diisi 0 sebelum While?</summary><p class="ok">Jawaban: Agar kondisi bisa dicek pada putaran pertama</p><p>Variabel tanpa nilai tidak bisa dibandingkan.</p></details><details><summary>Rahasia 42, tebakan pertama 42. Berapa kali badan loop jalan?</summary><p class="ok">Jawaban: 1</p><p>Kondisi awal 0 &lt;&gt; 42 benar, jadi masuk sekali, lalu tebakan benar.</p></details>
 <a class="cta" href="/#flowg-4-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/flowg/deret-fibonacci-dan-faktorial">Deret Fibonacci dan faktorial</a></p><p>Berikutnya: <a href="/belajar/flowg/simbol-do-menu-yang-berulang">Simbol Do: menu yang berulang</a></p>

@@ -26,6 +26,12 @@
 setTimeout(() =&gt; console.log(&quot;4. setTimeout (macrotask)&quot;), 0);
 Promise.resolve().then(() =&gt; console.log(&quot;3. promise (microtask)&quot;));
 console.log(&quot;2. selesai kode sinkron&quot;);</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tebak urutan keluaran kode berikut, lalu jelaskan.</p><details><summary>Petunjuk</summary><p>Kode sinkron dulu, lalu microtask (Promise), lalu macrotask (setTimeout).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>console.log(&quot;A&quot;);
+setTimeout(() =&gt; console.log(&quot;B&quot;), 0);
+Promise.resolve().then(() =&gt; console.log(&quot;C&quot;));
+console.log(&quot;D&quot;);</code></pre></details></li><li><p>Jalankan tiga tugas async secara paralel dan tunggu semuanya selesai.</p><details><summary>Petunjuk</summary><p>Promise.all.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>const tunda = (ms, v) =&gt; new Promise(r =&gt; setTimeout(() =&gt; r(v), ms));
+const hasil = await Promise.all([tunda(300, &quot;stok&quot;), tunda(100, &quot;harga&quot;), tunda(200, &quot;ulasan&quot;)]);
+console.log(hasil);</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Jalankan permintaan bersamaan dengan Promise.all</summary><p>Tiga <code>await</code> berturut-turut menunggu satu per satu. Kalau permintaannya tidak saling bergantung, <code>Promise.all</code> menjalankannya bersamaan, sehingga waktu tunggunya hanya selama permintaan terlama.</p><div class="lbl">KODE PEMULA</div><pre><code>const tunda = (ms, v) =&gt; new Promise((r) =&gt; setTimeout(() =&gt; r(v), ms));
 (async () =&gt; {
   const mulai = Date.now();

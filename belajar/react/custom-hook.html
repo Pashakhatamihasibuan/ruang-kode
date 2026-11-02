@@ -40,6 +40,22 @@ function App() {
     &lt;/div&gt;
   );
 }</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat custom hook <code>useLocalStorage(kunci, awal)</code> yang bekerja seperti useState tetapi tersimpan.</p><details><summary>Petunjuk</summary><p>Baca nilai awal dari localStorage, tulis setiap nilai berubah di useEffect.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSX</div><pre><code>function useLocalStorage(kunci, awal) {
+  const [nilai, setNilai] = useState(() =&gt; {
+    try { return JSON.parse(localStorage.getItem(kunci)) ?? awal; } catch { return awal; }
+  });
+  useEffect(() =&gt; {
+    try { localStorage.setItem(kunci, JSON.stringify(nilai)); } catch {}
+  }, [kunci, nilai]);
+  return [nilai, setNilai];
+}</code></pre></details></li><li><p>Buat hook <code>useDebounce(nilai, ms)</code> untuk menunda pencarian sampai pengguna berhenti mengetik.</p><details><summary>Petunjuk</summary><p>setTimeout di useEffect, bersihkan setiap nilai berubah.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSX</div><pre><code>function useDebounce(nilai, ms = 300) {
+  const [tunda, setTunda] = useState(nilai);
+  useEffect(() =&gt; {
+    const t = setTimeout(() =&gt; setTunda(nilai), ms);
+    return () =&gt; clearTimeout(t);
+  }, [nilai, ms]);
+  return tunda;
+}</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Custom hook = fungsi berawalan use yang memanggil hook.</li><li>Berbagi logika, bukan berbagi state.</li><li>Contoh umum: useFetch, useLocalStorage, useDebounce.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Syarat nama custom hook?</summary><p class="ok">Jawaban: Diawali use</p><p>Agar aturan hooks bisa diperiksa linter.</p></details>
 <a class="cta" href="/#react-2-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/react/usereducer-context">useReducer &amp; Context</a></p><p>Berikutnya: <a href="/belajar/react/usetransition-usedeferredvalue-tetap-responsif">useTransition &amp; useDeferredValue: tetap responsif</a></p>

@@ -34,6 +34,15 @@ export function Tombol({ utama, children }) {
 export function TombolTw({ children }) {
   return &lt;button className=&quot;px-4 py-2 rounded-full bg-stone-900 text-white hover:opacity-90&quot;&gt;{children}&lt;/button&gt;;
 }</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Beri gaya kartu dengan CSS Modules sehingga nama class tidak bentrok.</p><details><summary>Petunjuk</summary><p>File Kartu.module.css, impor sebagai objek styles.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSX</div><pre><code>// Kartu.module.css
+// .kartu { padding: 1rem; border-radius: 12px; }
+// .judul { font-weight: 700; }
+
+import styles from &quot;./Kartu.module.css&quot;;
+function Kartu({ judul }) {
+  return &lt;div className={styles.kartu}&gt;&lt;h3 className={styles.judul}&gt;{judul}&lt;/h3&gt;&lt;/div&gt;;
+}</code></pre></details></li><li><p>Gabungkan class Tailwind secara kondisional (aktif/tidak) dengan rapi.</p><details><summary>Petunjuk</summary><p>Library clsx, atau template string.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSX</div><pre><code>import clsx from &quot;clsx&quot;;
+&lt;button className={clsx(&quot;px-4 py-2 rounded-lg&quot;, aktif ? &quot;bg-sky-600 text-white&quot; : &quot;bg-slate-100 text-slate-700&quot;)}&gt;Tab&lt;/button&gt;</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>CSS Modules: class unik per komponen.</li><li>Tailwind: utility class di JSX.</li><li>Konsisten satu pendekatan per proyek.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Masalah yang diselesaikan CSS Modules?</summary><p class="ok">Jawaban: Nama class bentrok antar-komponen</p><p>Nama class dibuat unik otomatis.</p></details>
 <a class="cta" href="/#react-7-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/react/empat-keadaan-data-memuat-error-kosong-ada">Empat keadaan data: memuat, error, kosong, ada</a></p><p>Berikutnya: <a href="/belajar/react/pustaka-komponen-animasi">Pustaka komponen &amp; animasi</a></p>

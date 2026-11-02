@@ -30,6 +30,23 @@
 .galeri div { background: #E9EFF5; border-radius: 10px; padding: 18px 10px; text-align: center; }
 .galeri .besar { grid-column: span 2; background: #F6ECE5; }</code></pre>
 <h2>Tantangan</h2><ol><li>Buat kotak "Kopi Gayo" juga membentang 2 baris.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Buat galeri yang kolomnya otomatis menyesuaikan lebar layar, setiap kolom minimal 180px.</p><details><summary>Petunjuk</summary><p>repeat(auto-fill, minmax(180px, 1fr)).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CSS</div><pre><code>.galeri {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}</code></pre></details></li><li><p>Buat tata letak halaman dengan grid-template-areas: header, sidebar + konten, footer.</p><details><summary>Petunjuk</summary><p>Beri setiap elemen grid-area, lalu gambar petanya.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CSS</div><pre><code>.halaman {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  grid-template-areas:
+    &quot;kepala kepala&quot;
+    &quot;samping isi&quot;
+    &quot;kaki kaki&quot;;
+  gap: 1rem;
+}
+header { grid-area: kepala; }
+aside  { grid-area: samping; }
+main   { grid-area: isi; }
+footer { grid-area: kaki; }</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Menengahkan isi dalam dua baris</summary><p>Trik lama memakai <code>position</code> dan <code>transform</code>. Grid dengan <code>place-items: center</code> menengahkan isi secara horizontal dan vertikal.</p><div class="lbl">KODE PEMULA</div><pre><code>.wadah { position: relative; height: 300px; }
 .isi {
   position: absolute;

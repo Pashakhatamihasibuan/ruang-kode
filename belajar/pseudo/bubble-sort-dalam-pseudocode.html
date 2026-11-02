@@ -38,6 +38,19 @@
     ENDFOR
     OUTPUT &quot;Terurut: &quot;, a
 END</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Ubah bubble sort agar mengurutkan dari terbesar ke terkecil.</p><details><summary>Petunjuk</summary><p>Cukup balik tanda perbandingan: tukar jika a[j] &lt; a[j + 1].</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>FOR i ← 0 TO n - 2 DO
+    FOR j ← 0 TO n - 2 - i DO
+        IF a[j] &lt; a[j + 1] THEN
+            t ← a[j]
+            a[j] ← a[j + 1]
+            a[j + 1] ← t
+        ENDIF
+    ENDFOR
+ENDFOR</code></pre></details></li><li><p>Tuliskan isi array [5, 1, 4, 2] setelah putaran luar pertama bubble sort menaik.</p><details><summary>Petunjuk</summary><p>Bandingkan pasangan bersebelahan dari kiri: (5,1) tukar, (5,4) tukar, (5,2) tukar.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Awal      : [5, 1, 4, 2]
+j = 0     : [1, 5, 4, 2]
+j = 1     : [1, 4, 5, 2]
+j = 2     : [1, 4, 2, 5]
+Setelah putaran 1, angka terbesar (5) sudah di ujung.</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Bandingkan dan tukar pasangan bersebelahan.</li><li>Menukar butuh variabel bantu.</li><li>Batas loop dalam mengecil setiap putaran.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa menukar nilai butuh variabel t?</summary><p class="ok">Jawaban: Agar nilai lama tidak hilang tertimpa</p><p>Seperti menukar isi dua gelas.</p></details><details><summary>Setelah putaran pertama, apa yang pasti?</summary><p class="ok">Jawaban: Nilai terbesar di ujung kanan</p><p>Nilai terbesar terbawa ke kanan.</p></details>
 <a class="cta" href="/#pseudo-4-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pseudo/linear-search-mencari-satu-per-satu">Linear search: mencari satu per satu</a></p><p>Berikutnya: <a href="/belajar/pseudo/menerjemahkan-pseudocode-ke-bahasa-pemrograman">Menerjemahkan pseudocode ke bahasa pemrograman</a></p>

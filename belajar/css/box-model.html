@@ -28,6 +28,13 @@
 .a { box-sizing: content-box; }
 .b { box-sizing: border-box; }</code></pre>
 <h2>Tantangan</h2><ol><li>Ubah kotak <code>.a</code> agar lebar totalnya juga tepat 200px.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Kotak lebar 300px, padding 20px, border 5px. Berapa lebar totalnya dengan box-sizing bawaan, dan bagaimana agar tetap 300px?</p><details><summary>Petunjuk</summary><p>content-box: 300 + 2×20 + 2×5. Pakai border-box.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CSS</div><pre><code>/* content-box: 300 + 40 + 10 = 350px */
+*, *::before, *::after { box-sizing: border-box; }
+.kotak { width: 300px; padding: 20px; border: 5px solid; } /* total 300px */</code></pre></details></li><li><p>Taruh kartu lebar maksimal 600px di tengah halaman dengan jarak atas-bawah 2rem.</p><details><summary>Petunjuk</summary><p>margin-inline: auto dan max-width.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CSS</div><pre><code>.kartu {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+}</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>box-sizing: border-box untuk semua elemen</summary><p>Secara bawaan, padding dan border ditambahkan di luar <code>width</code>, sehingga kotak 300px dengan padding 20px menjadi 342px. Dengan <code>border-box</code>, lebar yang ditulis adalah lebar akhirnya.</p><div class="lbl">KODE PEMULA</div><pre><code>.kartu {
   width: 258px; /* 300 - 2x20 padding - 2x1 border, dihitung manual */
   padding: 20px;

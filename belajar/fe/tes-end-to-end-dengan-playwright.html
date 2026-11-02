@@ -31,6 +31,19 @@ test(&quot;pembeli bisa menambah produk ke keranjang&quot;, async ({ page }) =&g
 });
 // $ npx playwright test
 //   ✓ pembeli bisa menambah produk ke keranjang (1.2s)</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis tes Playwright: buka halaman login, isi email dan sandi, klik Masuk, pastikan teks "Halo, Rina" tampil.</p><details><summary>Petunjuk</summary><p>page.getByLabel, getByRole, expect(...).toBeVisible().</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>import { test, expect } from &quot;@playwright/test&quot;;
+
+test(&quot;login berhasil&quot;, async ({ page }) =&gt; {
+  await page.goto(&quot;/login&quot;);
+  await page.getByLabel(&quot;Email&quot;).fill(&quot;rina@mail.com&quot;);
+  await page.getByLabel(&quot;Kata sandi&quot;).fill(&quot;rahasia123&quot;);
+  await page.getByRole(&quot;button&quot;, { name: &quot;Masuk&quot; }).click();
+  await expect(page.getByText(&quot;Halo, Rina&quot;)).toBeVisible();
+});</code></pre></details></li><li><p>Uji tampilan halaman di ukuran ponsel.</p><details><summary>Petunjuk</summary><p>test.use({ viewport }) atau proyek perangkat di konfigurasi.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>test.use({ viewport: { width: 375, height: 812 } });
+test(&quot;menu hamburger tampil di ponsel&quot;, async ({ page }) =&gt; {
+  await page.goto(&quot;/&quot;);
+  await expect(page.getByRole(&quot;button&quot;, { name: &quot;Buka menu&quot; })).toBeVisible();
+});</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Piramida tes: banyak unit, sedikit E2E.</li><li>Playwright: lintas browser, auto-wait.</li><li>Tulis E2E untuk alur paling penting.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Tes paling lambat tapi paling mirip pengguna asli?</summary><p class="ok">Jawaban: End-to-end</p><p>E2E menjalankan aplikasi utuh di browser.</p></details>
 <a class="cta" href="/#fe-7-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe/memilih-framework">Memilih framework</a></p><p>Berikutnya: <a href="/belajar/fe/cors-csp">CORS &amp; CSP</a></p>

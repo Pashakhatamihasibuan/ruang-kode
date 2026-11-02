@@ -32,6 +32,16 @@
 - run: npm run deploy
   env:
     API_KEY: ${{ secrets.API_KEY }}</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Kamu tidak sengaja push API key ke GitHub. Apa langkah yang benar?</p><details><summary>Petunjuk</summary><p>Hapus dari kode saja tidak cukup karena masih ada di riwayat. Cabut kuncinya dulu.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TERMINAL</div><pre><code># 1. Cabut (revoke) API key di dasbor penyedia, buat kunci baru
+# 2. Pindahkan kunci ke .env dan masukkan .env ke .gitignore
+git rm --cached .env
+git commit -m &quot;Pindahkan rahasia ke .env&quot;
+# 3. Simpan kunci untuk CI di Settings → Secrets and variables → Actions
+# 4. Aktifkan Secret scanning dan Push protection</code></pre></details></li><li><p>Atur agar cabang main tidak bisa di-push langsung dan setiap PR butuh 1 persetujuan serta tes yang lulus.</p><details><summary>Petunjuk</summary><p>Settings → Branches (atau Rules → Rulesets).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TERMINAL</div><pre><code># Settings → Rules → Rulesets → New branch ruleset
+# Target: main
+# Centang: Restrict deletions, Block force pushes
+# Require a pull request before merging (1 approval)
+# Require status checks to pass: &quot;Tes&quot;</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Lindungi main: PR, review, tes wajib.</li><li>Rahasia di Secrets, bukan di kode.</li><li>Dependabot menjaga dependensi tetap aman.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Di mana menyimpan kunci API untuk GitHub Actions?</summary><p class="ok">Jawaban: Repository Secrets</p><p>Secrets terenkripsi dan disamarkan di log.</p></details>
 <a class="cta" href="/#git-5-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/git/github-pages-actions">GitHub Pages &amp; Actions</a></p><p>Berikutnya: <a href="/belajar/git/git-bisect-mencari-commit-penyebab-bug">git bisect: mencari commit penyebab bug</a></p>

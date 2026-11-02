@@ -30,6 +30,8 @@ $ git reset --soft HEAD~1          # batalkan commit terakhir (lokal)
 $ git revert a71be04
 [main 9d0e3f7] Revert &quot;style: warna tombol beli&quot;
  1 file changed, 1 insertion(+), 1 deletion(-)</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Kamu mengubah index.html tapi ingin kembali ke versi commit terakhir.</p><details><summary>Petunjuk</summary><p>git restore nama_file (perubahan yang belum di-commit akan hilang).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TERMINAL</div><pre><code>git restore index.html</code></pre></details></li><li><p>Commit terakhir sudah di-push dan ternyata salah. Batalkan dengan aman tanpa menulis ulang riwayat.</p><details><summary>Petunjuk</summary><p>git revert membuat commit baru yang membalik perubahan.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TERMINAL</div><pre><code>git revert HEAD
+git push</code></pre></details></li><li><p>Kamu tidak sengaja git add file besar video.mp4. Keluarkan dari staging.</p><details><summary>Petunjuk</summary><p>git restore --staged.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TERMINAL</div><pre><code>git restore --staged video.mp4</code></pre></details></li></ol>
 <h2>Kode pemula vs kode rapi</h2><details><summary>Membatalkan commit yang sudah di-push</summary><p><code>reset --hard</code> menghapus commit dari riwayat dan membuat repositori teman tidak sinkron. Untuk commit yang sudah dibagikan, <code>revert</code> membuat commit baru yang membalikkan perubahan tanpa mengubah riwayat.</p><div class="lbl">KODE PEMULA</div><pre><code>git reset --hard HEAD~1
 git push --force</code></pre><div class="lbl">KODE RAPI (BEST PRACTICE)</div><pre><code>git revert HEAD
 git push</code></pre></details>

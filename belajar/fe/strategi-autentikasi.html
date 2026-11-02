@@ -31,6 +31,11 @@ Cookie: sid=8f2c1e...
 # Alternatif token untuk API:
 GET /api/pesanan
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Bandingkan menyimpan token di localStorage dan di cookie HttpOnly.</p><details><summary>Petunjuk</summary><p>localStorage bisa dibaca skrip (rentan XSS); cookie HttpOnly tidak bisa dibaca JS tapi perlu perlindungan CSRF.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>localStorage     : mudah, tapi bisa dicuri jika ada XSS
+Cookie HttpOnly  : tidak terbaca JavaScript, dikirim otomatis
+                   → tambahkan Secure, SameSite=Lax/Strict, dan token CSRF bila perlu</code></pre></details></li><li><p>Tulis fetch yang mengirim cookie sesi ke API di domain lain.</p><details><summary>Petunjuk</summary><p>credentials: "include", dan server harus mengizinkan credentials.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>const res = await fetch(&quot;https://api.toko.id/profil&quot;, {
+  credentials: &quot;include&quot;,
+});</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Cookie HttpOnly + Secure + SameSite untuk sesi web.</li><li>JWT untuk API/mobile; hati-hati tempat penyimpanannya.</li><li>OAuth/OIDC untuk login pihak ketiga.</li><li>Passkey: tanpa kata sandi.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Flag cookie yang mencegah JavaScript membacanya?</summary><p class="ok">Jawaban: HttpOnly</p><p>Melindungi sesi dari XSS.</p></details>
 <a class="cta" href="/#fe-8-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe/xss-risiko-owasp">XSS &amp; risiko OWASP</a></p><p>Berikutnya: <a href="/belajar/fe/core-web-vitals-lighthouse">Core Web Vitals &amp; Lighthouse</a></p>

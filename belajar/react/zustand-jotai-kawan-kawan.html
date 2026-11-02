@@ -34,6 +34,19 @@ function Ikon() {
   const jumlah = useKeranjang(s =&gt; s.isi.length);   // hanya render ulang jika jumlah berubah
   return &lt;span&gt;🛒 {jumlah}&lt;/span&gt;;
 }</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat store Zustand untuk keranjang dengan aksi tambah dan total jumlah.</p><details><summary>Petunjuk</summary><p>create((set) => ({ ... })).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSX</div><pre><code>const useKeranjang = create(set =&gt; ({
+  isi: [],
+  tambah: p =&gt; set(s =&gt; ({ isi: [...s.isi, p] })),
+  kosongkan: () =&gt; set({ isi: [] }),
+}));
+
+function Lencana() {
+  const n = useKeranjang(s =&gt; s.isi.length);
+  return &lt;span&gt;{n}&lt;/span&gt;;
+}</code></pre></details></li><li><p>Kapan cukup memakai useState/Context, dan kapan butuh library state global?</p><details><summary>Petunjuk</summary><p>Lihat seberapa banyak komponen yang berbagi dan seberapa sering berubah.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSX</div><pre><code>// cukup useState: state milik satu komponen (form, toggle)
+// cukup Context  : jarang berubah, dipakai banyak komponen (tema, bahasa, pengguna)
+// pakai Zustand/Jotai: sering berubah dan dibaca banyak komponen (keranjang, editor)
+// pakai TanStack Query: data dari server (cache, refetch)</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Context untuk data yang jarang berubah.</li><li>Zustand: store sederhana tanpa provider.</li><li>Pilih selector agar render ulang seminimal mungkin.</li><li>Data server ditangani pustaka data fetching.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Data produk dari API sebaiknya dikelola dengan?</summary><p class="ok">Jawaban: TanStack Query / SWR</p><p>Pustaka data fetching menangani cache dan muat ulang.</p></details>
 <a class="cta" href="/#react-5-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/react/react-router">React Router</a></p><p>Berikutnya: <a href="/belajar/react/fetch-di-komponen">Fetch di komponen</a></p>

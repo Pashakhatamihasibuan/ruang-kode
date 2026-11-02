@@ -44,6 +44,27 @@ function App() {
   );
 }</code></pre>
 <h2>Tantangan</h2><ol><li>Tambahkan kartu "Madu Hutan" seharga 120000 dengan prop promo.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Ubah KartuProduk agar menerima props nama, harga, dan diskon opsional (bawaan 0).</p><details><summary>Petunjuk</summary><p>Destrukturisasi props dengan nilai bawaan.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSX</div><pre><code>function KartuProduk({ nama, harga, diskon = 0 }) {
+  const akhir = harga * (1 - diskon);
+  return (
+    &lt;div className=&quot;kartu&quot;&gt;
+      &lt;h3&gt;{nama}&lt;/h3&gt;
+      {diskon &gt; 0 &amp;&amp; &lt;s&gt;Rp{harga.toLocaleString(&quot;id-ID&quot;)}&lt;/s&gt;}
+      &lt;p&gt;Rp{akhir.toLocaleString(&quot;id-ID&quot;)}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+&lt;KartuProduk nama=&quot;Kopi Gayo&quot; harga={85000} diskon={0.2} /&gt;</code></pre></details></li><li><p>Buat komponen <code>Panel</code> yang membungkus isi apa pun dengan judul.</p><details><summary>Petunjuk</summary><p>Pakai props.children.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JSX</div><pre><code>function Panel({ judul, children }) {
+  return (
+    &lt;section className=&quot;panel&quot;&gt;
+      &lt;h2&gt;{judul}&lt;/h2&gt;
+      {children}
+    &lt;/section&gt;
+  );
+}
+
+&lt;Panel judul=&quot;Keranjang&quot;&gt;&lt;p&gt;2 barang&lt;/p&gt;&lt;/Panel&gt;</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Props dikirim dari induk ke anak.</li><li>Props hanya-baca.</li><li>Angka dan ekspresi ditulis di { }, teks boleh pakai tanda kutip.</li><li>children untuk membungkus isi.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Bolehkah anak mengubah props?</summary><p class="ok">Jawaban: Tidak, props hanya-baca</p><p>Data mengalir satu arah dari atas ke bawah.</p></details>
 <a class="cta" href="/#react-1-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/react/komponen-jsx">Komponen &amp; JSX</a></p><p>Berikutnya: <a href="/belajar/react/state-dengan-usestate">State dengan useState</a></p>

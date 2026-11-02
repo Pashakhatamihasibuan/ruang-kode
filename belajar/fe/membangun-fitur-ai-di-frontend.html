@@ -33,6 +33,17 @@ async function tanya(pertanyaan, tulis) {
   }
 }
 // Server (/api/tanya) yang memegang kunci API dan meneruskan stream dari penyedia model.</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tampilkan jawaban AI yang dikirim bertahap (streaming) dari endpoint <code>/api/chat</code>.</p><details><summary>Petunjuk</summary><p>Baca res.body dengan getReader() dan TextDecoder.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>const res = await fetch(&quot;/api/chat&quot;, { method: &quot;POST&quot;, body: JSON.stringify({ pesan }) });
+const reader = res.body.getReader();
+const dec = new TextDecoder();
+while (true) {
+  const { done, value } = await reader.read();
+  if (done) break;
+  keluaran.textContent += dec.decode(value, { stream: true });
+}</code></pre></details></li><li><p>Kenapa API key model AI tidak boleh ditaruh di kode frontend?</p><details><summary>Petunjuk</summary><p>Semua kode frontend bisa dibaca siapa pun.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Kode frontend dikirim ke browser, jadi API key bisa dilihat di DevTools
+dan dipakai orang lain atas tagihanmu.
+Solusi: panggil model dari server (backend/serverless) yang menyimpan key,
+lalu frontend hanya memanggil endpoint servermu.</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Kunci API selalu di server.</li><li>Streaming membuat jawaban terasa cepat.</li><li>Tampilkan status, tangani error, dan beri tahu bahwa jawaban bisa keliru.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Di mana kunci API model AI disimpan?</summary><p class="ok">Jawaban: Di server/fungsi serverless</p><p>Kode frontend bisa dibaca siapa pun.</p></details>
 <a class="cta" href="/#fe-12-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe/llm-asisten-coding">LLM &amp; asisten coding</a></p><p>Berikutnya: <a href="/belajar/fe/dashboard-cuaca-kualitas-udara">Dashboard cuaca &amp; kualitas udara</a></p>

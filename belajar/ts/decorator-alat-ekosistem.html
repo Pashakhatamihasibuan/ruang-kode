@@ -36,6 +36,19 @@ class Kasir {
 console.log(&quot;kembalian&quot;, new Kasir().bayar(85000, 100000));</code></pre>
 <div class="lbl">KELUARAN</div><pre><code>panggil bayar(85000, 100000)
 kembalian 15000</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis decorator method sederhana yang mencatat setiap pemanggilan (decorator standar TS 5).</p><details><summary>Petunjuk</summary><p>Fungsi (target, context) yang mengembalikan fungsi pengganti.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TYPESCRIPT</div><pre><code>function catat(fn: any, ctx: ClassMethodDecoratorContext) {
+  return function (this: any, ...args: any[]) {
+    console.log(`panggil ${String(ctx.name)}(${args.join(&quot;, &quot;)})`);
+    return fn.apply(this, args);
+  };
+}
+class Kasir {
+  @catat
+  bayar(n: number) { return n; }
+}
+new Kasir().bayar(18000);</code></pre></details></li><li><p>Sebutkan perintah untuk memeriksa tipe tanpa menghasilkan file, dan menjalankan file TS langsung.</p><details><summary>Petunjuk</summary><p>tsc --noEmit dan tsx.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TERMINAL</div><pre><code>npx tsc --noEmit        # hanya memeriksa tipe (cocok di CI)
+npx tsx src/index.ts    # jalankan TS langsung
+npx vitest              # tes, mendukung TS tanpa konfigurasi</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Decorator membungkus kelas/method.</li><li>typescript-eslint, Prettier, tsx, tsup, Zod.</li><li>Zod memvalidasi saat berjalan dan menghasilkan tipe.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Decorator ditulis dengan simbol?</summary><p class="ok">Jawaban: @</p><p>Contoh: @catat.</p></details>
 <a class="cta" href="/#ts-10-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/ts/modul-deklarasi-augmentasi">Modul, deklarasi &amp; augmentasi</a></p><p>Berikutnya: <a href="/belajar/ts/pustaka-keranjang-belanja-bertipe">Pustaka keranjang belanja bertipe</a></p>

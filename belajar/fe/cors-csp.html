@@ -28,6 +28,10 @@ Origin: https://tokonusantara.id
 # Server mengizinkan:
 Access-Control-Allow-Origin: https://tokonusantara.id
 Content-Security-Policy: default-src &#x27;self&#x27;; script-src &#x27;self&#x27;; img-src &#x27;self&#x27; https://cdn.tokonusantara.id</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Frontend di https://toko.id memanggil API di https://api.toko.id dan diblokir CORS. Header apa yang harus dikirim server API?</p><details><summary>Petunjuk</summary><p>Access-Control-Allow-Origin berisi asal frontend, plus header lain jika memakai cookie.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Access-Control-Allow-Origin: https://toko.id
+Access-Control-Allow-Methods: GET, POST, PATCH, DELETE
+Access-Control-Allow-Headers: Content-Type, Authorization
+Access-Control-Allow-Credentials: true   # jika memakai cookie</code></pre></details></li><li><p>Tulis Content-Security-Policy yang hanya mengizinkan skrip dari domain sendiri dan cdn.jsdelivr.net, dan gambar dari mana saja lewat HTTPS.</p><details><summary>Petunjuk</summary><p>default-src, script-src, img-src.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Content-Security-Policy: default-src &#x27;self&#x27;; script-src &#x27;self&#x27; https://cdn.jsdelivr.net; img-src &#x27;self&#x27; https: data:; object-src &#x27;none&#x27;; base-uri &#x27;self&#x27;</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Same-origin policy membatasi baca lintas domain.</li><li>CORS diatur di server lewat header.</li><li>CSP membatasi sumber script dan konten.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Error CORS diperbaiki di mana?</summary><p class="ok">Jawaban: Server API (header CORS)</p><p>Server yang menentukan origin mana yang boleh.</p></details>
 <a class="cta" href="/#fe-8-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe/tes-end-to-end-dengan-playwright">Tes end-to-end dengan Playwright</a></p><p>Berikutnya: <a href="/belajar/fe/xss-risiko-owasp">XSS &amp; risiko OWASP</a></p>

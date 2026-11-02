@@ -33,6 +33,18 @@ query {
 # respons server: bentuknya sama dengan query
 { &quot;data&quot;: { &quot;produk&quot;: { &quot;nama&quot;: &quot;Kopi Gayo&quot;, &quot;harga&quot;: 85000,
   &quot;ulasan&quot;: [ { &quot;bintang&quot;: 5, &quot;komentar&quot;: &quot;Wangi!&quot; }, { &quot;bintang&quot;: 4, &quot;komentar&quot;: &quot;Mantap&quot; } ] } } }</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis query GraphQL yang mengambil nama dan harga 5 produk termurah beserta nama kategorinya.</p><details><summary>Petunjuk</summary><p>Minta hanya field yang dibutuhkan; argumen di dalam kurung.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>query ProdukMurah {
+  produk(urut: HARGA_NAIK, batas: 5) {
+    nama
+    harga
+    kategori { nama }
+  }
+}</code></pre></details></li><li><p>Tulis mutation untuk menambah produk ke keranjang dan mengembalikan jumlah isi keranjang.</p><details><summary>Petunjuk</summary><p>mutation dengan variabel $id dan $qty.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>mutation Tambah($id: ID!, $qty: Int!) {
+  tambahKeKeranjang(produkId: $id, qty: $qty) {
+    jumlahItem
+    total
+  }
+}</code></pre></details></li></ol>
 <h2>Poin penting</h2><ul><li>Satu endpoint, klien menentukan bentuk data.</li><li>Tidak ada over-fetching.</li><li>Apollo/Relay mengelola cache.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Keunggulan utama GraphQL?</summary><p class="ok">Jawaban: Klien meminta tepat kolom yang dibutuhkan</p><p>Bentuk respons mengikuti query.</p></details>
 <a class="cta" href="/#fe-11-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe/csr-ssr-ssg">CSR, SSR &amp; SSG</a></p><p>Berikutnya: <a href="/belajar/fe/llm-asisten-coding">LLM &amp; asisten coding</a></p>
