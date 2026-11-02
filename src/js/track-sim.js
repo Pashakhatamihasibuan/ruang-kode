@@ -23,6 +23,15 @@ const SIM_MODULES=[
   {k:'see',ref:'msi:Komponen sistem informasi'},
   {k:'see',ref:'msi:SIM dan tingkat manajemen'}
  ]},
+{t:'Berpikir sistem dan problem solving',lvl:'Pemula',d:'Melihat SIM secara utuh dari banyak sudut pandang, mencari akar masalah, dan memperhitungkan efek samping.',
+ nodes:['Systems Thinking','Stakeholder Perspectives','Problem Solving','Causal Loops','Holistic Case'],
+ lessons:[
+  {k:'see',ref:'msi:Berpikir sistem: melihat gambaran utuh'},
+  {k:'see',ref:'msi:Melihat dari banyak sudut pandang'},
+  {k:'see',ref:'msi:Problem solving terstruktur'},
+  {k:'see',ref:'msi:Sebab-akibat, umpan balik, dan efek samping'},
+  {k:'see',ref:'msi:Studi kasus: berpikir utuh dari masalah sampai solusi'}
+ ]},
 {t:'Jenis sistem di sekitar SIM',lvl:'Pemula',d:'TPS sebagai sumber data, SIM per fungsi, dan sistem terpadu ERP, CRM, SCM.',
  nodes:['TPS MIS DSS EIS','Functional IS','ERP CRM SCM'],
  lessons:[

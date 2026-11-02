@@ -2781,6 +2781,49 @@ function deloneViz(host){
 Object.assign(VIZ2,{reports:reportsViz,delone:deloneViz});
 Object.assign(VIZ2T,{reports:'Empat jenis laporan SIM',delone:'Model keberhasilan DeLone & McLean'});
 
+/* ===== berpikir sistem dan problem solving ===== */
+function icebergViz(host){
+  const D={perusahaan:['Pesanan salah kirim minggu ini','Naik setiap akhir bulan','Stok di Excel tiap gudang, tidak sinkron','"Yang penting barang keluar dulu"'],
+    startup:['Banyak pengguna berhenti','Selalu di langkah verifikasi','Verifikasi 6 langkah, server lambat','"Fitur baru lebih penting dari kemudahan"'],
+    sekolah:['Rapor terlambat','Setiap akhir semester','Nilai dikirim via file berbeda, diketik ulang','"Sistem itu urusan operator"'],
+    organisasi:['Laporan RAT terlambat','Setiap tahun','Catatan di buku, bendahara sendirian','"Pengurus lama pasti ingat"']};
+  const L=[['Kejadian','apa yang terlihat','Reaksi: memadamkan api'],['Pola','apa yang berulang','Antisipasi'],['Struktur','apa yang menyebabkan','Rancang ulang proses & sistem'],['Pola pikir','keyakinan di baliknya','Ubah cara pandang']];
+  orgWrap(host,(v,el)=>{const fr=L.map((l,i)=>({i,note:`<b>${l[0]}</b> (${l[1]}): <i>${esc(D[v][i])}</i>. Tindakan di lapisan ini: ${l[2]}.${i===3?' Semakin dalam lapisannya, semakin besar dan tahan lama dampak solusinya.':''}`}));
+    player(el,fr,(st,f)=>{st.innerHTML=`<svg class="mv-ice" viewBox="0 0 340 250" role="img" aria-label="Model gunung es"><rect x="0" y="62" width="340" height="188" class="sea"/><line x1="0" y1="62" x2="340" y2="62" class="wl"/><text x="6" y="76" class="s" text-anchor="start">permukaan air</text>
+      ${L.map((l,k)=>{const y=[14,70,128,186][k],h=[48,54,54,58][k],w=[90,170,240,300][k];return `<g class="${k<=f.i?'on':''} ${k===f.i?'cur':''}"><path d="M${170-w/2+ (k?0:20)},${y+h} L${170-w/2+(k?0:30)},${y} L${170+w/2-(k?0:30)},${y} L${170+w/2-(k?0:20)},${y+h} Z"/><text x="170" y="${y+22}">${l[0]}</text><text x="170" y="${y+38}" class="s">${k<=f.i?esc(D[v][k].length>34?D[v][k].slice(0,33)+'…':D[v][k]):'?'}</text></g>`}).join('')}</svg>`},{speed:2200})},'sekolah');
+}
+function lensViz(host){
+  const P=[['Guru','Pengguna','Harus < 1 menit per kelas'],['Orang tua','Pengguna','Kabar saat anak tidak hadir'],['Kepala sekolah','Manajemen','Alpa tanpa keterangan turun'],['Tata usaha','Proses','Rekap bulanan tidak perlu lagi'],['Guru BK','Data','Lihat siswa berisiko saja'],['Tim TI','Teknologi','Ringan di Android murah'],['Bendahara','Keuangan','Rp 3 jt/th, hemat 40 jam/bln'],['Siswa tanpa HP','Hukum & etika','Tetap tercatat, data dilindungi']];
+  host.innerHTML=`<p class="small muted">Masalah: <b>membuat aplikasi presensi sekolah</b>. Klik setiap pemangku kepentingan untuk menyalakan lensanya.</p><div class="mv-lens"><div class="mv-lc">Aplikasi presensi<small>0 / ${P.length} lensa</small></div>${P.map((p,i)=>`<button class="mv-lp" data-i="${i}" style="--a:${i/P.length}" aria-pressed="false"><b>${p[0]}</b><small>${p[1]}</small></button>`).join('')}</div><ul class="mv-lfind"></ul><p class="v3-verdict" aria-live="polite"></p>`;
+  const on=new Set();const draw=()=>{host.querySelectorAll('.mv-lp').forEach(b=>b.setAttribute('aria-pressed',on.has(+b.dataset.i)));$('.mv-lc small',host).textContent=`${on.size} / ${P.length} lensa`;
+    $('.mv-lfind',host).innerHTML=[...on].map(i=>`<li><b>${P[i][0]}</b> · ${P[i][1]}: ${P[i][2]}</li>`).join('');
+    const v=$('.v3-verdict',host);v.innerHTML=on.size===P.length?'Gambaran utuh: keputusan sekarang bisa dijelaskan dari semua sudut pandang.':on.size?`Masih ${P.length-on.size} sudut pandang yang belum dilihat. Solusi dari sebagian lensa berisiko gagal di lensa lain.`:'Belum ada sudut pandang. Mulai dari siapa saja.';v.classList.toggle('ok',on.size===P.length)};
+  host.addEventListener('click',e=>{const b=e.target.closest('.mv-lp');if(b){const i=+b.dataset.i;on.has(i)?on.delete(i):on.add(i);draw()}});draw();
+}
+function whysViz(host){
+  const W=[['Pesanan salah kirim','gejala'],['Kotak tertukar saat diambil kurir',''],['Label ditulis tangan dan mirip',''],['Admin menyalin pesanan dari chat',''],['Tidak ada formulir pesanan terstruktur',''],['Proses tidak pernah ditinjau saat bisnis tumbuh','akar']];
+  const F=[['Orang','Guru belum terlatih input online'],['Proses','Nilai lewat 3 tahap kirim file'],['Data','Format nilai beda tiap guru'],['Teknologi','Server lambat di jam sibuk'],['Kebijakan','Batas input tidak jelas'],['Lingkungan','Sinyal lemah di ruang guru']];
+  host.innerHTML=`<div class="v3-ctl">${seg('Alat',[['why','5 Why'],['fish','Tulang ikan']],'why')}</div><div class="mv-body"></div>`;const body=$('.mv-body',host);
+  const run=v=>{if(v==='why'){player(body,W.map((w,i)=>({i,note:i===0?'Mulai dari <b>gejala</b> yang terlihat. Tanyakan: <b>mengapa?</b>':i===W.length-1?'<b>Akar masalah</b> ditemukan: sesuatu yang bisa diperbaiki. Solusi: formulir pesanan + label cetak otomatis, bukan sekadar menegur kurir.':`Mengapa? → ${esc(w[0])}.`})),(st,f)=>{st.innerHTML=`<ol class="mv-why">${W.slice(0,f.i+1).map((w,k)=>`<li class="${w[1]} ${k===f.i?'cur':''}">${k?'<span class="q">Mengapa?</span>':''}<b>${esc(w[0])}</b>${w[1]?`<small>${w[1]}</small>`:''}</li>`).join('')}</ol>`},{speed:1600})}
+    else{player(body,F.map((x,i)=>({i,note:`Kategori <b>${x[0]}</b>: ${x[1]}.${i===F.length-1?' Semua tulang terisi: penyebab ternyata ada di banyak kategori, bukan hanya teknologi.':''}`})),(st,f)=>{st.innerHTML=`<svg class="mv-fish" viewBox="0 0 360 200" role="img" aria-label="Diagram tulang ikan rapor terlambat"><line x1="20" y1="100" x2="290" y2="100" class="sp"/><polygon points="290,82 340,100 290,118" class="hd"/><text x="315" y="96" class="hdt">Rapor</text><text x="315" y="108" class="hdt">telat</text>
+      ${F.map((x,k)=>{const top=k%2===0,col=Math.floor(k/2),xx=70+col*85,y2=top?28:172;return `<g class="${k<=f.i?'on':''} ${k===f.i?'cur':''}"><line x1="${xx}" y1="${y2}" x2="${xx+30}" y2="100"/><text x="${xx}" y="${top?20:190}" class="cat">${x[0]}</text>${k<=f.i?`<text x="${xx+18}" y="${top?62:142}" class="c">${esc(x[1].length>22?x[1].slice(0,21)+'…':x[1])}</text>`:''}</g>`}).join('')}</svg>`},{speed:1500})}};
+  segWire(host,'.seg',run);run('why');
+}
+function loopViz(host){
+  const N=[['Data lengkap',170,30],['Laporan berguna',272,110],['Guru rajin input',170,190],['Aplikasi cepat',68,110]];
+  host.innerHTML=`<div class="v3-ctl">${seg('Arah',[['up','Lingkaran baik'],['down','Lingkaran buruk']],'up')}</div><div class="mv-body"></div>`;const body=$('.mv-body',host);
+  const run=v=>{const good=v==='up',lab=good?['Data lengkap ↑','Laporan berguna ↑','Guru rajin input ↑','Aplikasi cepat ↑']:['Data bolong ↓','Laporan tak dipercaya ↓','Guru pakai kertas ↓','Aplikasi lambat ↓'];
+    const fr=[];for(let lap=1;lap<=2;lap++)[3,0,1,2].forEach((k,j)=>fr.push({k,lap,note:`${lap===2&&j===0?'Putaran kedua, efeknya makin besar. ':''}<b>${lab[k]}</b>${j<3?' menyebabkan langkah berikutnya.':' kembali memengaruhi awal lingkaran.'}${lap===2&&j===3?(good?' <b>Titik ungkit</b>: buat aplikasinya cepat dan satu laporan yang benar-benar membantu guru.':' Untuk memutusnya, perbaiki titik paling awal: kecepatan aplikasi.'):''}`}));
+    player(body,fr,(st,f)=>{st.innerHTML=`<svg class="mv-loop ${good?'g':'b'}" viewBox="0 0 340 220" role="img" aria-label="Lingkaran sebab-akibat"><circle cx="170" cy="110" r="72" class="ring"/><text x="170" y="106" class="mid">${good?'R+':'R−'}</text><text x="170" y="122" class="ms">putaran ${f.lap}</text>${N.map((n,k)=>`<g class="${k===f.k?'cur':''}"><rect x="${n[1]-60}" y="${n[2]-16}" width="120" height="32" rx="10"/><text x="${n[1]}" y="${n[2]+4}">${lab[k]}</text></g>`).join('')}</svg>`},{speed:1400})};
+  segWire(host,'.seg',run);run('up');
+}
+function holisticViz(host){
+  const S=[['Keluhan','"Kami butuh aplikasi baru"'],['Definisi','60% anggota ragu saldo; RAT 6 jam'],['Gunung es','Struktur: buku tunggal, satu bendahara'],['Lensa','Lansia tanpa HP pintar; dinas butuh laporan baku'],['5 Why','Akar: tidak ada transparansi rutin'],['Alternatif','Aplikasi lengkap · Spreadsheet + slip cetak · Papan pengumuman'],['Keputusan','Spreadsheet + slip cetak (dampak tinggi, biaya rendah)'],['Efek samping','Slip berisi data pribadi → amplop tertutup'],['Ukur ulang','Survei kepercayaan + durasi RAT berikutnya']];
+  player(host,S.map((s,i)=>({i,note:`<b>${s[0]}</b>: ${s[1]}.${i===0?' Pemikir sepotong-sepotong langsung membeli aplikasi. Pemikir sistem bertanya dulu.':''}${i===S.length-1?' Solusinya ternyata gabungan proses dan teknologi sederhana.':''}`})),(st,f)=>{st.innerHTML=`<ol class="mv-steps mv-hol">${S.map((s,k)=>`<li class="${k===f.i?'on':''} ${k<f.i?'done':''}"><b>${s[0]}</b><small>${k<=f.i?esc(s[1]):'…'}</small></li>`).join('')}</ol>`},{speed:1800});
+}
+Object.assign(VIZ2,{iceberg:icebergViz,lens:lensViz,whys:whysViz,loop:loopViz,holistic:holisticViz});
+Object.assign(VIZ2T,{iceberg:'Model gunung es',lens:'Lensa pemangku kepentingan',whys:'5 Why dan diagram tulang ikan',loop:'Lingkaran sebab-akibat',holistic:'Berpikir utuh, langkah demi langkah'});
+
 /* ===================== ANIMASI: MEMBUAT VARIABEL =====================
    Animasi langkah demi langkah tentang cara variabel dibuat, diisi, diubah, dan dipakai.
    Satu skenario per bahasa (Java, Python, JavaScript, TypeScript, CSS, React). Kiri: kode
