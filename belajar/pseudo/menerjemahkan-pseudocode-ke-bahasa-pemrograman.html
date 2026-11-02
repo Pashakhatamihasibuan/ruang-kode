@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Menerjemahkan pseudocode ke bahasa pemrograman · Pseudocode · Ruang Kode</title>
+<meta name="description" content="Setelah logikanya benar di pseudocode, menulis kode tinggal menerjemahkan baris demi baris. Struktur IF, WHILE, FOR tidak berubah; yang berubah hanya…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/pseudo/menerjemahkan-pseudocode-ke-bahasa-pemrograman">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Menerjemahkan pseudocode ke bahasa pemrograman · Pseudocode · Ruang Kode"><meta property="og:description" content="Setelah logikanya benar di pseudocode, menulis kode tinggal menerjemahkan baris demi baris. Struktur IF, WHILE, FOR tidak berubah; yang berubah hanya…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/pseudo/menerjemahkan-pseudocode-ke-bahasa-pemrograman"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Menerjemahkan pseudocode ke bahasa pemrograman", "description": "Setelah logikanya benar di pseudocode, menulis kode tinggal menerjemahkan baris demi baris. Struktur IF, WHILE, FOR tidak berubah; yang berubah hanya…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/pseudo/menerjemahkan-pseudocode-ke-bahasa-pemrograman", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Pseudocode", "url": "https://ruang-kode-nine.vercel.app/belajar/pseudo"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Pseudocode", "item": "https://ruang-kode-nine.vercel.app/belajar/pseudo"}, {"@type": "ListItem", "position": 3, "name": "Menerjemahkan pseudocode ke bahasa pemrograman", "item": "https://ruang-kode-nine.vercel.app/belajar/pseudo/menerjemahkan-pseudocode-ke-bahasa-pemrograman"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/pseudo">Pseudocode</a> / Modul 5</nav>
+<div class="eyebrow">Pseudocode · Modul 5 · Konsep &amp; kode</div><h1>Menerjemahkan pseudocode ke bahasa pemrograman</h1><a class="cta" href="/#pseudo-5-1">Buka versi interaktif</a>
+<p>Setelah logikanya benar di pseudocode, menulis kode tinggal menerjemahkan baris demi baris. Struktur IF, WHILE, FOR tidak berubah; yang berubah hanya cara penulisannya. Inilah alasan pseudocode diajarkan sebelum bahasa pemrograman.</p>
+<p>Perhatikan tiga jebakan saat menerjemahkan. Pertama, <code>=</code> pembanding di pseudocode menjadi <code>==</code> di Python, Java, dan JavaScript. Kedua, <code>FOR i ← 1 TO n</code> menjadi <code>range(1, n + 1)</code> di Python, karena batas akhir range tidak ikut. Ketiga, pembagian bulat: <code>//</code> di Python, <code>/</code> antar-int di Java, dan <code>Math.floor(a / b)</code> di JavaScript.</p>
+<p>Kode Python di bawah adalah terjemahan langsung program "jumlah 1 sampai n" dari modul perulangan. Ubah nilai <code>n</code>, lalu jalankan.</p>
+<div class="tw"><table><caption>Kamus terjemahan</caption><thead><tr><th>Pseudocode</th><th>Python</th><th>Java</th><th>JavaScript</th></tr></thead><tbody><tr><td>DECLARE x : INTEGER</td><td>x = 0</td><td>int x;</td><td>let x;</td></tr><tr><td>INPUT x</td><td>x = int(input())</td><td>x = sc.nextInt();</td><td>x = Number(prompt())</td></tr><tr><td>OUTPUT x</td><td>print(x)</td><td>System.out.println(x);</td><td>console.log(x)</td></tr><tr><td>x ← x + 1</td><td>x += 1</td><td>x++;</td><td>x++</td></tr><tr><td>IF a = b THEN</td><td>if a == b:</td><td>if (a == b) {</td><td>if (a === b) {</td></tr><tr><td>a &lt;&gt; b</td><td>a != b</td><td>a != b</td><td>a !== b</td></tr><tr><td>a mod b</td><td>a % b</td><td>a % b</td><td>a % b</td></tr><tr><td>WHILE c DO</td><td>while c:</td><td>while (c) {</td><td>while (c) {</td></tr><tr><td>FOR i ← 1 TO n</td><td>for i in range(1, n + 1):</td><td>for (int i = 1; i &lt;= n; i++)</td><td>for (let i = 1; i &lt;= n; i++)</td></tr><tr><td>REPEAT ... UNTIL c</td><td>while True: ... if c: break</td><td>do { ... } while (!c);</td><td>do { ... } while (!c);</td></tr><tr><td>a and b, not a</td><td>a and b, not a</td><td>a &amp;&amp; b, !a</td><td>a &amp;&amp; b, !a</td></tr></tbody></table></div>
+<div class="lbl">PYTHON</div><pre><code># Terjemahan pseudocode: Jumlah1SampaiN
+n = 5
+total = 0
+for i in range(1, n + 1):   # FOR i &lt;- 1 TO n
+    total = total + i
+print(f&quot;Jumlah 1 sampai {n} = {total}&quot;)</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Jumlah 1 sampai 5 = 15</code></pre>
+<h2>Poin penting</h2><ul><li>Struktur logika tetap, hanya penulisannya berubah.</li><li>= pembanding menjadi ==.</li><li>range(1, n + 1) untuk FOR 1 TO n di Python.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>FOR i ← 1 TO 10 di Python ditulis?</summary><p class="ok">Jawaban: range(1, 11)</p><p>Batas akhir range tidak ikut.</p></details><details><summary>IF x = 5 THEN di Java ditulis?</summary><p class="ok">Jawaban: if (x == 5)</p><p>= di Java adalah pengisian nilai.</p></details>
+<a class="cta" href="/#pseudo-5-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pseudo/bubble-sort-dalam-pseudocode">Bubble sort dalam pseudocode</a></p><p>Berikutnya: <a href="/belajar/pseudo/prosedur-dan-fungsi">Prosedur dan fungsi</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

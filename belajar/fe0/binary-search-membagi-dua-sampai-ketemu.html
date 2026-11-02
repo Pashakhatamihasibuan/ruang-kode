@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Binary search: membagi dua sampai ketemu · Frontend Pemula · Ruang Kode</title>
+<meta name="description" content="Mencari harga di daftar 1.000 barang satu per satu (linear search) bisa butuh 1.000 langkah. Jika daftarnya sudah terurut, kita bisa jauh lebih cepat:…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/fe0/binary-search-membagi-dua-sampai-ketemu">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Binary search: membagi dua sampai ketemu · Frontend Pemula · Ruang Kode"><meta property="og:description" content="Mencari harga di daftar 1.000 barang satu per satu (linear search) bisa butuh 1.000 langkah. Jika daftarnya sudah terurut, kita bisa jauh lebih cepat:…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/fe0/binary-search-membagi-dua-sampai-ketemu"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Binary search: membagi dua sampai ketemu", "description": "Mencari harga di daftar 1.000 barang satu per satu (linear search) bisa butuh 1.000 langkah. Jika daftarnya sudah terurut, kita bisa jauh lebih cepat:…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/fe0/binary-search-membagi-dua-sampai-ketemu", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Frontend Pemula", "url": "https://ruang-kode-nine.vercel.app/belajar/fe0"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Frontend Pemula", "item": "https://ruang-kode-nine.vercel.app/belajar/fe0"}, {"@type": "ListItem", "position": 3, "name": "Binary search: membagi dua sampai ketemu", "item": "https://ruang-kode-nine.vercel.app/belajar/fe0/binary-search-membagi-dua-sampai-ketemu"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/fe0">Frontend Pemula</a> / Modul 9</nav>
+<div class="eyebrow">Frontend Pemula · Modul 9 · Konsep &amp; kode</div><h1>Binary search: membagi dua sampai ketemu</h1><a class="cta" href="/#fe0-9-7">Buka versi interaktif</a>
+<p>Mencari harga di daftar 1.000 barang satu per satu (linear search) bisa butuh 1.000 langkah. Jika daftarnya <b>sudah terurut</b>, kita bisa jauh lebih cepat: lihat bagian tengah, lalu buang separuh daftar yang pasti tidak berisi jawabannya.</p>
+<p>Simpan dua batas, <code>kiri</code> dan <code>kanan</code>. Selama <code>kiri &lt;= kanan</code>, hitung <code>tengah</code>. Jika nilai tengah terlalu kecil, geser kiri ke tengah + 1. Jika terlalu besar, geser kanan ke tengah - 1. Banyak langkahnya tidak diketahui sebelumnya, jadi loopnya <b>while</b>.</p>
+<p>Setiap langkah membuang separuh data, jadi 1.000 data cukup dicari dalam paling banyak 10 langkah, dan 1 juta data dalam 20 langkah. Inilah alasan database dan kamus memakai data terurut.</p>
+<p>Visual di bawah mencari harga di 7 data. Coba input 5000, 35000, atau 9000 (tidak ada di daftar) dan perhatikan bagaimana kiri dan kanan bergerak.</p>
+<div class="tw"><table><caption>Linear search vs binary search</caption><thead><tr><th>Aspek</th><th>Linear search</th><th>Binary search</th></tr></thead><tbody><tr><td>Syarat data</td><td>Bebas</td><td>Harus terurut</td></tr><tr><td>Langkah terburuk (1.000 data)</td><td>1.000</td><td>10</td></tr><tr><td>Jenis loop</td><td>for (setiap data)</td><td>while (sampai ketemu atau habis)</td></tr><tr><td>Kapan dipakai</td><td>Data sedikit atau tidak terurut</td><td>Data besar dan terurut</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>const harga = [5000, 8000, 12000, 15000, 20000, 27000, 35000];
+const cari = 20000;
+let kiri = 0, kanan = harga.length - 1, langkah = 0, posisi = -1;
+// WHILE: berhenti saat ketemu atau ruang pencarian habis
+while (kiri &lt;= kanan) {
+  langkah++;
+  const tengah = Math.floor((kiri + kanan) / 2);
+  console.log(`Langkah ${langkah}: cek indeks ${tengah} (${harga[tengah]})`);
+  if (harga[tengah] === cari) { posisi = tengah; break; }
+  else if (harga[tengah] &lt; cari) kiri = tengah + 1;
+  else kanan = tengah - 1;
+}
+console.log(`Ketemu di indeks ${posisi} setelah ${langkah} langkah`);</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Langkah 1: cek indeks 3 (15000)
+Langkah 2: cek indeks 5 (27000)
+Langkah 3: cek indeks 4 (20000)
+Ketemu di indeks 4 setelah 3 langkah</code></pre>
+<div class="lbl">PSEUDOCODE</div><pre><code>START
+    DECLARE harga : ARRAY[7] OF INTEGER
+    harga ← [5000, 8000, 12000, 15000, 20000, 27000, 35000]
+    DECLARE cari, kiri, kanan, tengah, posisi : INTEGER
+    INPUT cari
+    kiri ← 0
+    kanan ← 6
+    posisi ← -1
+    WHILE kiri &lt;= kanan and posisi = -1 DO
+        tengah ← Int((kiri + kanan) / 2)
+        IF harga[tengah] = cari THEN
+            posisi ← tengah
+        ELSE
+            IF harga[tengah] &lt; cari THEN
+                kiri ← tengah + 1
+            ELSE
+                kanan ← tengah - 1
+            ENDIF
+        ENDIF
+    ENDWHILE
+    OUTPUT &quot;Posisi: &quot;, posisi
+END</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Komputer menebak angka rahasia 73 di antara 1 sampai 100 dengan cara binary search. Tampilkan setiap tebakan.</p><details><summary>Petunjuk</summary><p>Sama seperti mencari di array terurut, hanya saja "array"-nya adalah rentang angka 1 sampai 100.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>const rahasia = 73;
+let bawah = 1, atas = 100;
+while (true) {
+  const tebak = Math.floor((bawah + atas) / 2);
+  console.log(&quot;Tebak&quot;, tebak);
+  if (tebak === rahasia) break;
+  if (tebak &lt; rahasia) bawah = tebak + 1;
+  else atas = tebak - 1;
+}</code></pre></details></li><li><p>Berapa langkah paling banyak yang dibutuhkan binary search untuk 1.000 data? Hitung dengan membagi dua terus sampai habis.</p><details><summary>Petunjuk</summary><p>Selama masih ada data (n > 0), bagi dua dan tambah 1 langkah. Ini while karena jumlah langkah adalah hal yang dicari.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>let n = 1000, langkah = 0;
+while (n &gt; 0) {
+  n = Math.floor(n / 2);
+  langkah++;
+}
+console.log(&quot;Maksimal&quot;, langkah, &quot;langkah&quot;);</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Binary search hanya untuk data terurut.</li><li>Setiap langkah membuang separuh ruang pencarian.</li><li>Berhenti saat ketemu atau kiri > kanan.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Apa syarat utama binary search?</summary><p class="ok">Jawaban: Data sudah terurut</p><p>Tanpa urutan, kita tidak tahu separuh mana yang harus dibuang.</p></details><details><summary>Jika harga[tengah] lebih kecil dari yang dicari, apa yang dilakukan?</summary><p class="ok">Jawaban: kiri = tengah + 1</p><p>Jawabannya pasti di sebelah kanan tengah.</p></details><details><summary>Kira-kira berapa langkah maksimum untuk 1 juta data terurut?</summary><p class="ok">Jawaban: 20</p><p>2 pangkat 20 ≈ 1 juta.</p></details>
+<a class="cta" href="/#fe0-9-7">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe0/faktorial-jumlah-digit-dan-palindrom">Faktorial, jumlah digit, dan palindrom</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

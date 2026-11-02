@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Faktorial, jumlah digit, dan palindrom · Java · Ruang Kode</title>
+<meta name="description" content="Tiga soal ini melatih kapan memakai for dan kapan while. Faktorial 5! = 1 × 2 × 3 × 4 × 5: banyak perkaliannya pasti, jadi for.">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/java/faktorial-jumlah-digit-dan-palindrom">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Faktorial, jumlah digit, dan palindrom · Java · Ruang Kode"><meta property="og:description" content="Tiga soal ini melatih kapan memakai for dan kapan while. Faktorial 5! = 1 × 2 × 3 × 4 × 5: banyak perkaliannya pasti, jadi for.">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/java/faktorial-jumlah-digit-dan-palindrom"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Faktorial, jumlah digit, dan palindrom", "description": "Tiga soal ini melatih kapan memakai for dan kapan while. Faktorial 5! = 1 × 2 × 3 × 4 × 5: banyak perkaliannya pasti, jadi for.", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/java/faktorial-jumlah-digit-dan-palindrom", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Java", "url": "https://ruang-kode-nine.vercel.app/belajar/java"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Java", "item": "https://ruang-kode-nine.vercel.app/belajar/java"}, {"@type": "ListItem", "position": 3, "name": "Faktorial, jumlah digit, dan palindrom", "item": "https://ruang-kode-nine.vercel.app/belajar/java/faktorial-jumlah-digit-dan-palindrom"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/java">Java</a> / Modul 16</nav>
+<div class="eyebrow">Java · Modul 16 · Konsep &amp; kode</div><h1>Faktorial, jumlah digit, dan palindrom</h1><a class="cta" href="/#java-16-6">Buka versi interaktif</a>
+<p>Tiga soal ini melatih kapan memakai for dan kapan while. <b>Faktorial</b> 5! = 1 × 2 × 3 × 4 × 5: banyak perkaliannya pasti, jadi <b>for</b>.</p>
+<p><b>Jumlah digit</b> 90417 = 9 + 0 + 4 + 1 + 7 = 21. Kita tidak tahu angkanya punya berapa digit, jadi pakai <b>while</b>: ambil digit terakhir dengan <code>% 10</code>, lalu buang dengan pembagian bulat <code>/ 10</code> (int di Java otomatis membulatkan ke bawah). Berhenti saat angkanya habis (0).</p>
+<p><b>Palindrom</b> adalah kata yang sama jika dibaca dari depan dan belakang, seperti "katak". Pakai <b>dua penunjuk</b>: satu dari kiri, satu dari kanan, bergerak ke tengah selama <code>kiri &lt; kanan</code>. Begitu ada huruf yang berbeda, langsung break.</p>
+<p>Visual di bawah menjalankan jumlah digit. Coba ganti inputnya dengan angka lain dan hitung dulu di kepala sebelum menekan Berikutnya.</p>
+<div class="tw"><table><caption>Jejak jumlah digit 90417</caption><thead><tr><th>Putaran</th><th>angka % 10</th><th>jumlah</th><th>angka setelah dibagi 10</th></tr></thead><tbody><tr><td>1</td><td>7</td><td>7</td><td>9041</td></tr><tr><td>2</td><td>1</td><td>8</td><td>904</td></tr><tr><td>3</td><td>4</td><td>12</td><td>90</td></tr><tr><td>4</td><td>0</td><td>12</td><td>9</td></tr><tr><td>5</td><td>9</td><td>21</td><td>0</td></tr></tbody></table></div>
+<div class="lbl">JAVA</div><pre><code>public class Main {
+    public static void main(String[] args) {
+        // Faktorial: FOR, jumlah perkalian = n
+        int n = 5;
+        long faktorial = 1;
+        for (int i = 2; i &lt;= n; i++) {
+            faktorial *= i;
+        }
+        System.out.println(n + &quot;! = &quot; + faktorial);
+
+        // Jumlah digit: WHILE, banyak digit belum diketahui
+        int angka = 90417, sisa = angka, jumlah = 0;
+        while (sisa &gt; 0) {
+            jumlah += sisa % 10;   // ambil digit terakhir
+            sisa /= 10;            // buang digit terakhir
+        }
+        System.out.println(&quot;Jumlah digit &quot; + angka + &quot; = &quot; + jumlah);
+
+        // Palindrom: WHILE dua penunjuk bergerak ke tengah
+        String kata = &quot;katak&quot;;
+        int kiri = 0, kanan = kata.length() - 1;
+        boolean palindrom = true;
+        while (kiri &lt; kanan) {
+            if (kata.charAt(kiri) != kata.charAt(kanan)) {
+                palindrom = false;
+                break;
+            }
+            kiri++;
+            kanan--;
+        }
+        System.out.println(kata + &quot; palindrom? &quot; + palindrom);
+    }
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>5! = 120
+Jumlah digit 90417 = 21
+katak palindrom? true</code></pre>
+<div class="lbl">PSEUDOCODE</div><pre><code>START
+    DECLARE angka, jumlah : INTEGER
+    INPUT angka
+    jumlah ← 0
+    WHILE angka &gt; 0 DO
+        jumlah ← jumlah + angka mod 10
+        angka ← Int(angka / 10)
+    ENDWHILE
+    OUTPUT &quot;Jumlah digit: &quot;, jumlah
+END</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Balik angka 12345 menjadi 54321 tanpa mengubahnya menjadi teks.</p><details><summary>Petunjuk</summary><p>Ambil digit terakhir dengan % 10, tempel ke hasil dengan hasil * 10 + digit, buang digit terakhir dengan pembagian bulat. Ulangi selama angka > 0.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>public class Main {
+    public static void main(String[] args) {
+        int angka = 12345, balik = 0;
+        while (angka &gt; 0) {
+            balik = balik * 10 + angka % 10;
+            angka /= 10;
+        }
+        System.out.println(&quot;Dibalik: &quot; + balik);
+    }
+}</code></pre></details></li><li><p>Hitung 2 pangkat 10 dengan loop, tanpa operator pangkat.</p><details><summary>Petunjuk</summary><p>Perkalian diulang tepat 10 kali, jadi for.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>public class Main {
+    public static void main(String[] args) {
+        int hasil = 1;
+        for (int i = 0; i &lt; 10; i++) {
+            hasil *= 2;
+        }
+        System.out.println(&quot;2^10 = &quot; + hasil);
+    }
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>% 10 mengambil digit terakhir, bagi 10 (bulat) membuangnya.</li><li>Banyak digit tidak diketahui → while.</li><li>Dua penunjuk bergerak ke tengah untuk memeriksa palindrom.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Berapa hasil 4827 % 10?</summary><p class="ok">Jawaban: 7</p><p>Sisa bagi 10 adalah digit terakhir.</p></details><details><summary>Loop paling cocok untuk menghitung 10! (faktorial 10)?</summary><p class="ok">Jawaban: for</p><p>Banyak perkaliannya pasti.</p></details><details><summary>Pada pemeriksaan palindrom &quot;level&quot;, berapa kali perbandingan huruf terjadi?</summary><p class="ok">Jawaban: 2</p><p>Pasangan (l, l) dan (e, e); huruf tengah v tidak perlu dibandingkan.</p></details>
+<a class="cta" href="/#java-16-6">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/fizzbuzz-dan-bilangan-prima-break-dan-loop-bersarang">FizzBuzz dan bilangan prima: break dan loop bersarang</a></p><p>Berikutnya: <a href="/belajar/java/binary-search-membagi-dua-sampai-ketemu">Binary search: membagi dua sampai ketemu</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

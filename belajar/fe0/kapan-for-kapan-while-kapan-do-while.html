@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kapan for, kapan while, kapan do-while · Frontend Pemula · Ruang Kode</title>
+<meta name="description" content="Semua loop bisa saling menggantikan, tetapi programmer yang baik memilih loop yang paling jujur menggambarkan niatnya. Pertanyaan kuncinya satu: apakah…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/fe0/kapan-for-kapan-while-kapan-do-while">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Kapan for, kapan while, kapan do-while · Frontend Pemula · Ruang Kode"><meta property="og:description" content="Semua loop bisa saling menggantikan, tetapi programmer yang baik memilih loop yang paling jujur menggambarkan niatnya. Pertanyaan kuncinya satu: apakah…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/fe0/kapan-for-kapan-while-kapan-do-while"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Kapan for, kapan while, kapan do-while", "description": "Semua loop bisa saling menggantikan, tetapi programmer yang baik memilih loop yang paling jujur menggambarkan niatnya. Pertanyaan kuncinya satu: apakah…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/fe0/kapan-for-kapan-while-kapan-do-while", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Frontend Pemula", "url": "https://ruang-kode-nine.vercel.app/belajar/fe0"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Frontend Pemula", "item": "https://ruang-kode-nine.vercel.app/belajar/fe0"}, {"@type": "ListItem", "position": 3, "name": "Kapan for, kapan while, kapan do-while", "item": "https://ruang-kode-nine.vercel.app/belajar/fe0/kapan-for-kapan-while-kapan-do-while"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/fe0">Frontend Pemula</a> / Modul 9</nav>
+<div class="eyebrow">Frontend Pemula · Modul 9 · Konsep &amp; kode</div><h1>Kapan for, kapan while, kapan do-while</h1><a class="cta" href="/#fe0-9-2">Buka versi interaktif</a>
+<p>Semua loop bisa saling menggantikan, tetapi programmer yang baik memilih loop yang <b>paling jujur menggambarkan niatnya</b>. Pertanyaan kuncinya satu: <b>apakah jumlah putarannya sudah diketahui sebelum loop dimulai?</b></p>
+<p>Jika jumlahnya pasti (5 hari, 10 suku, setiap kursi 1 sampai 40), pakai <b>for</b> seperti <code>for (let i = 0; i &lt; n; i++)</code>. Jika yang diketahui hanya <b>kondisi berhentinya</b> (sampai saldo cukup, sampai data habis, sampai tidak ada pertukaran lagi), pakai <b>while</b>. Jika badan loop harus jalan <b>minimal sekali</b> sebelum dicek (menampilkan menu, meminta PIN), pakai <b>do-while</b>: <code>do { ... } while (kondisi);</code>.</p>
+<p>Untuk membaca setiap isi koleksi tanpa butuh nomor indeks, pakai <b>for-each</b>: <code>for (const k of daftar)</code>. Lebih ringkas dan tidak mungkin salah indeks (error klasik "off by one").</p>
+<p>Pada contoh kode di bawah, keempat jenis loop dipakai sesuai kasusnya masing-masing. Tebak keluarannya dulu, lalu coba latihan memilih loop di visual interaktif.</p>
+<div class="tw"><table><caption>Memilih jenis loop</caption><thead><tr><th>Jenis loop</th><th>Pakai saat</th><th>Contoh kasus</th><th>Bentuk di JavaScript</th></tr></thead><tbody><tr><td>for</td><td>Jumlah putaran sudah diketahui</td><td>Cetak nomor 1 sampai 40, n suku Fibonacci</td><td>for (let i = 0; i &lt; n; i++)</td></tr><tr><td>while</td><td>Hanya kondisi berhenti yang diketahui</td><td>Menabung sampai target, membaca data sampai habis</td><td>while (kondisi)</td></tr><tr><td>do-while</td><td>Badan loop wajib jalan minimal sekali</td><td>Menu kasir, meminta PIN</td><td>do { ... } while (kondisi);</td></tr><tr><td>for-each</td><td>Membaca setiap isi koleksi</td><td>Menjumlahkan harga di keranjang</td><td>for (const k of daftar)</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>// FOR: jumlah pengulangan sudah diketahui (5 hari)
+let total = 0;
+for (let hari = 1; hari &lt;= 5; hari++) {
+  total += 10000;
+}
+console.log(&quot;Tabungan 5 hari:&quot;, total);
+
+// WHILE: berhenti saat kondisi tercapai, jumlah putaran belum diketahui
+let saldo = 0, minggu = 0;
+while (saldo &lt; 75000) {
+  saldo += 20000;
+  minggu++;
+}
+console.log(`Target tercapai di minggu ke-${minggu}`);
+
+// DO-WHILE: badan loop dijalankan minimal sekali
+const pilihanUser = [2, 1, 0];
+let i = 0, pilihan;
+do {
+  pilihan = pilihanUser[i++];
+  console.log(&quot;Menu dipilih:&quot;, pilihan);
+} while (pilihan !== 0);
+
+// FOR...OF: membaca setiap isi array
+for (const k of [&quot;Medan&quot;, &quot;Bandung&quot;, &quot;Makassar&quot;]) {
+  console.log(&quot;Kirim ke&quot;, k);
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Tabungan 5 hari: 50000
+Target tercapai di minggu ke-4
+Menu dipilih: 2
+Menu dipilih: 1
+Menu dipilih: 0
+Kirim ke Medan
+Kirim ke Bandung
+Kirim ke Makassar</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Hitung mundur peluncuran roket: tampilkan 5, 4, 3, 2, 1 lalu "Meluncur!". Loop apa yang paling cocok?</p><details><summary>Petunjuk</summary><p>Awal dan akhir hitungan sudah pasti (5 sampai 1), jadi pakai for yang nilainya berkurang.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>for (let detik = 5; detik &gt;= 1; detik--) {
+  console.log(detik);
+}
+console.log(&quot;Meluncur!&quot;);</code></pre></details></li><li><p>Galon diisi 3 liter setiap menit, mulai dari kosong. Berapa menit sampai isinya minimal 19 liter? Tampilkan menit dan isinya.</p><details><summary>Petunjuk</summary><p>Jumlah menit belum diketahui, yang diketahui hanya kondisi berhenti (isi ≥ 19). Itu tanda while.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>let isi = 0, menit = 0;
+while (isi &lt; 19) {
+  isi += 3;
+  menit++;
+}
+console.log(`${menit} menit, isi ${isi} liter`);</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Jumlah putaran diketahui → for.</li><li>Hanya kondisi berhenti yang diketahui → while.</li><li>Harus jalan minimal sekali → do-while.</li><li>Hanya membaca isi koleksi → for-each.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Program meminta pengguna mengetik kata sandi sampai benar. Loop paling cocok?</summary><p class="ok">Jawaban: do-while (atau while True + break)</p><p>Pertanyaan harus muncul minimal sekali, dan jumlah percobaannya tidak diketahui.</p></details><details><summary>Menghitung rata-rata 30 nilai siswa di sebuah array. Loop paling cocok?</summary><p class="ok">Jawaban: for atau for-each</p><p>Jumlah datanya pasti, cukup membaca setiap isi.</p></details><details><summary>Mengapa while lebih cocok untuk &quot;menabung sampai Rp1 juta&quot;?</summary><p class="ok">Jawaban: Karena jumlah minggunya belum diketahui, yang diketahui hanya kondisi berhenti</p><p>Pilihan loop menggambarkan apa yang kita ketahui sebelum mulai.</p></details>
+<a class="cta" href="/#fe0-9-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe0/format-specifier-merapikan-keluaran">Format specifier: merapikan keluaran</a></p><p>Berikutnya: <a href="/belajar/fe0/bilangan-fibonacci-for-dan-while">Bilangan Fibonacci: for dan while</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

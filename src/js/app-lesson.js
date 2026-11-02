@@ -121,8 +121,10 @@ function conceptHTML(l,t){
    ${l.out!=null?(l.run===false?`<div><div class="eyebrow">Contoh keluaran</div><div class="console">${esc(l.out)}</div></div>`
      :`<details class="guess" id="guess"><summary>🤔 Tebak keluarannya dulu sebelum menjalankan</summary><textarea class="bk" id="gIn" placeholder="Tulis keluaran yang kamu perkirakan, satu baris per baris"></textarea><div class="sl-act"><button class="btn" id="gChk">Periksa tebakan</button></div><div id="gFb" aria-live="polite"></div></details>
       <div class="runbox"><button class="btn primary" id="runBtn">▶ Jalankan</button>${trBtn(l)}${py?'<button class="btn" id="pyReset">Kembalikan kode</button>':''}<span class="rb-hint">${py?'Ubah kodenya lalu jalankan. Kode asli menampilkan keluaran yang sudah diuji; kode yang diubah dijalankan dengan Python di browser (Pyodide).':`Keluaran kode ini sudah diuji dengan ${({java:'Java 21',ts:'Node 22 (TypeScript)',js:'Node 22',sql:'mesin SQL Ruang Kode',bash:'Bash'})[lang]||'Python 3.13'}.`}</span></div><div class="console run" id="runOut" hidden></div>${tracerHTML(l,lang)}`):''}</section>`:''}
-  ${practiceHTML(l,lang)}${ptsHTML(l)}${qHTML(l)}`;
+  ${soHTML(l,lang)}${practiceHTML(l,lang)}${ptsHTML(l)}${qHTML(l)}`;
 }
+/* soal latihan: so:[{q,h,a,out}] — jawaban tersembunyi sampai dibuka */
+const soHTML=(l,lang)=>l.so&&l.so.length?`<section class="section so-sec" id="soal"><h2>Soal latihan</h2><p class="muted">Kerjakan dulu di editor atau kertasmu sendiri. Buka petunjuk jika buntu, dan buka jawaban hanya untuk mencocokkan.</p><ol class="so-list">${l.so.map(s=>`<li><p class="so-q">${s.q}</p><details class="so-d"><summary>Petunjuk</summary><p>${s.h}</p></details>${s.a?`<details class="so-d"><summary>Lihat jawaban</summary>${pane(s.lang||lang,s.a)}${s.out!=null?`<div class="eyebrow">Keluaran</div><div class="console">${esc(s.out)}</div>`:''}</details>`:''}</li>`).join('')}</ol></section>`:'';
 let PY=null,PYFAIL=false;
 function loadPy(){
   if(PY)return PY;

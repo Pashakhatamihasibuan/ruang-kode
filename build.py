@@ -24,16 +24,16 @@ CSS = ["base.css", "lms.css", "v4.css"]
 TRACK_JS = ["track-java.js", "track-python.js", "track-sql.js", "track-sql-extra.js",
             "track-html.js", "track-css.js", "track-fe0.js", "track-fe.js", "track-react.js",
             "track-ts.js", "track-git.js", "track-pda.js", "track-da.js", "track-bi.js",
-            "track-de.js", "track-ux.js", "track-ds.js", "track-msi.js", "track-sim.js", "track-more.js", "tips.js", "bugs.js", "traces.js"]
-RT_JS = ["viz.js", "sqlengine.js", "sqldata.js", "sqldata-bi.js", "viz2.js", "viz3.js", "viz-msi.js", "viz-var.js"]
+            "track-de.js", "track-ux.js", "track-ds.js", "track-msi.js", "track-sim.js", "track-logika.js", "track-more.js", "track-algo.js", "tips.js", "bugs.js", "traces.js"]
+RT_JS = ["viz.js", "sqlengine.js", "sqldata.js", "sqldata-bi.js", "viz2.js", "viz3.js", "viz-msi.js", "viz-var.js", "viz-fc.js"]
 BOOK_JS = ["data.js", "lang-only.js", "app-javapy.js", "app-extra.js"]
 CORE_JS = ["gl.js", "app.js", "app-pages.js", "app-lesson.js", "codeanim.js", "practice.js", "tracer.js", "setup.js", "app-nav.js"]
 # urutan versi satu file (sama dengan urutan sebelum materi dipecah)
 ALL_JS = (["data.js", "lang-only.js", "util.js", "gl.js", "viz.js", "sqlengine.js", "sqldata.js", "sqldata-bi.js"] + TRACK_JS
-          + ["viz2.js", "viz3.js", "viz-msi.js", "viz-var.js", "app.js", "app-pages.js", "app-lesson.js", "codeanim.js", "app-javapy.js",
+          + ["viz2.js", "viz3.js", "viz-msi.js", "viz-var.js", "viz-fc.js", "app.js", "app-pages.js", "app-lesson.js", "codeanim.js", "app-javapy.js",
              "app-extra.js", "practice.js", "tracer.js", "setup.js", "app-nav.js"])
 
-DESC = ("Akademi coding, data, dan desain berbahasa Indonesia: 18 jalur termasuk Sistem Informasi Manajemen dan Manajemen Sistem Informasi, "
+DESC = ("Akademi coding, data, dan desain berbahasa Indonesia: 20 jalur termasuk Pseudocode, Flowgorithm, Sistem Informasi Manajemen, dan Manajemen Sistem Informasi, "
         "visual interaktif, editor langsung jalan, konsol SQL, ujian, dan proyek. "
         "Dikembangkan oleh Pasha Khatami Hasibuan.")
 FONTS = """<link rel="preconnect" href="https://fonts.googleapis.com">

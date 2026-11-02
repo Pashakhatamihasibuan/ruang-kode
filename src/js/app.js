@@ -1,9 +1,10 @@
 /* ===================== APLIKASI LMS: DATA & KEADAAN =====================
-   18 jalur dalam 6 kategori, mengikuti roadmap.sh (SIM dan MSI memakai kurikulum Ruang Kode). Rute:
+   20 jalur dalam 7 kategori, mengikuti roadmap.sh (SIM dan MSI memakai kurikulum Ruang Kode). Rute:
    #beranda, #katalog, #saya, #ulang, #kuis[-tk], #glosarium,
    #<tk> (halaman jalur), #<tk>-M-L (pelajaran), #<tk>-tes (tes penempatan),
    #<tk>-ujian-M (ujian modul). */
 const GROUPS=[
+  ['logika','Logika & Algoritma','Mulai dari sini: melatih cara berpikir sebelum menulis kode.'],
   ['prog','Pemrograman','Bahasa untuk membangun aplikasi, backend, dan otomasi.'],
   ['web','Web & Frontend','Membangun situs dan aplikasi web yang cepat dan mudah dipakai.'],
   ['data','Data','Mengolah, menganalisis, dan mengalirkan data menjadi keputusan.'],
@@ -11,6 +12,8 @@ const GROUPS=[
   ['sis','Sistem Informasi','Mengelola sistem informasi agar organisasi bekerja lebih baik.'],
   ['tool','Alat kerja','Alat yang dipakai setiap tim pengembang.']];
 const TRACKS=[
+  {k:'pseudo',g:'logika',name:'Pseudocode',lang:'text',mods:PSEUDO_MODULES,road:'',mark:'PS',h:'Menulis algoritma sebelum menulis kode',d:'Algoritma, aturan menulis pseudocode, percabangan, perulangan, array, searching, sorting, dan menerjemahkannya ke Python, Java, dan JavaScript.'},
+  {k:'flowg',g:'logika',name:'Flowgorithm',lang:'text',mods:FLOWG_MODULES,road:'',mark:'FG',h:'Flowchart yang bisa dijalankan',d:'Simbol flowchart, memakai aplikasi Flowgorithm, input-proses-output, If, For, While, Do, array, fungsi, dan proyek kasir.'},
   {k:'java',g:'prog',name:'Java',lang:'java',mods:JAVA_MODULES,road:'java',mark:'J',h:'Java dari nol sampai siap kerja',d:'Bahasa bertipe statis untuk Android, perbankan, dan backend skala besar. Dari variabel dan OOP sampai konkurensi, JDBC, dan Spring Boot.'},
   {k:'python',g:'prog',name:'Python',lang:'python',mods:PY_MODULES,road:'python',mark:'Py',h:'Python yang rapi dan idiomatik',d:'Bahasa ringkas untuk otomasi, data, AI, dan web. Dari sintaks dasar sampai type hints, testing, asyncio, dan framework web.'},
   {k:'ts',g:'prog',name:'TypeScript',lang:'ts',mods:TS_MODULES,road:'typescript',mark:'TS',h:'JavaScript yang lebih aman dengan tipe',d:'Tipe dasar, interface, generics, narrowing, utility types, sampai konfigurasi proyek nyata.'},
@@ -31,6 +34,7 @@ const TRACKS=[
   {k:'git',g:'tool',name:'Git & GitHub',lang:'bash',mods:GIT_MODULES,road:'git-github-beginner',mark:'git',h:'Version control dan kolaborasi',d:'Commit, branch, merge, remote, pull request, GitHub Pages, Actions, dan keamanan repositori.'}];
 const TK=Object.fromEntries(TRACKS.map(t=>[t.k,t]));
 const PATHS=[
+  {k:'pseudo',t:'Dasar Logika Pemrograman',d:'Melatih cara berpikir algoritma sebelum masuk ke bahasa pemrograman.',tr:['pseudo','flowg','python','java']},
   {k:'fe',t:'Frontend Developer',d:'Membangun antarmuka web yang cepat dan mudah dipakai.',tr:['fe0','html','css','git','ts','react','fe']},
   {k:'da',t:'Data Analyst',d:'Menjawab pertanyaan bisnis dengan data.',tr:['sql','pda','da','bi']},
   {k:'de',t:'Data Engineer',d:'Membangun jalur data dari sumber ke dashboard.',tr:['python','sql','git','pda','de']},

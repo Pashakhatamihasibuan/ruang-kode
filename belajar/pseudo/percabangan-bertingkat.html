@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Percabangan bertingkat · Pseudocode · Ruang Kode</title>
+<meta name="description" content="Jika pilihannya lebih dari dua, misalnya nilai huruf A, B, C, D, kita menaruh IF di dalam ELSE. Ini disebut percabangan bertingkat (nested IF). Kondisi…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/pseudo/percabangan-bertingkat">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Percabangan bertingkat · Pseudocode · Ruang Kode"><meta property="og:description" content="Jika pilihannya lebih dari dua, misalnya nilai huruf A, B, C, D, kita menaruh IF di dalam ELSE. Ini disebut percabangan bertingkat (nested IF). Kondisi…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/pseudo/percabangan-bertingkat"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Percabangan bertingkat", "description": "Jika pilihannya lebih dari dua, misalnya nilai huruf A, B, C, D, kita menaruh IF di dalam ELSE. Ini disebut percabangan bertingkat (nested IF). Kondisi…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/pseudo/percabangan-bertingkat", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Pseudocode", "url": "https://ruang-kode-nine.vercel.app/belajar/pseudo"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Pseudocode", "item": "https://ruang-kode-nine.vercel.app/belajar/pseudo"}, {"@type": "ListItem", "position": 3, "name": "Percabangan bertingkat", "item": "https://ruang-kode-nine.vercel.app/belajar/pseudo/percabangan-bertingkat"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/pseudo">Pseudocode</a> / Modul 2</nav>
+<div class="eyebrow">Pseudocode · Modul 2 · Konsep &amp; kode</div><h1>Percabangan bertingkat</h1><a class="cta" href="/#pseudo-2-2">Buka versi interaktif</a>
+<p>Jika pilihannya lebih dari dua, misalnya nilai huruf A, B, C, D, kita menaruh IF di dalam ELSE. Ini disebut <b>percabangan bertingkat</b> (nested IF). Kondisi dicek dari atas ke bawah, dan begitu satu kondisi benar, sisanya tidak dicek lagi.</p>
+<p>Urutan kondisi sangat penting. Jika kita mengecek <code>nilai &gt;= 55</code> lebih dulu, nilai 90 akan mendapat C, karena 90 juga ≥ 55. Aturannya: <b>mulai dari kondisi paling ketat</b> (nilai tertinggi) ke yang paling longgar.</p>
+<p>Banyak bahasa punya <code>CASE</code> atau <code>switch</code> untuk memilih berdasarkan satu nilai tepat, misalnya kode menu 1, 2, 3. Untuk rentang nilai seperti 70 sampai 84, IF bertingkat lebih cocok.</p>
+<p>Uji visual dengan 85, 84, 70, 55, dan 40. Kelima angka itu mencakup setiap jalur dan setiap batas.</p>
+<div class="tw"><table><caption>Kasus uji nilai huruf</caption><thead><tr><th>Input</th><th>Jalur yang dilewati</th><th>Hasil</th></tr></thead><tbody><tr><td>85</td><td>nilai &gt;= 85 benar</td><td>A</td></tr><tr><td>84</td><td>&gt;= 85 salah, &gt;= 70 benar</td><td>B</td></tr><tr><td>55</td><td>&gt;= 85, &gt;= 70 salah, &gt;= 55 benar</td><td>C</td></tr><tr><td>40</td><td>semua salah</td><td>D</td></tr></tbody></table></div>
+<div class="lbl">PSEUDOCODE</div><pre><code>START
+    DECLARE nilai : INTEGER
+    DECLARE huruf : STRING
+    INPUT nilai
+    IF nilai &gt;= 85 THEN
+        huruf ← &quot;A&quot;
+    ELSE
+        IF nilai &gt;= 70 THEN
+            huruf ← &quot;B&quot;
+        ELSE
+            IF nilai &gt;= 55 THEN
+                huruf ← &quot;C&quot;
+            ELSE
+                huruf ← &quot;D&quot;
+            ENDIF
+        ENDIF
+    ENDIF
+    OUTPUT &quot;Nilai huruf: &quot;, huruf
+END</code></pre>
+<h2>Poin penting</h2><ul><li>IF bertingkat untuk lebih dari dua pilihan.</li><li>Cek kondisi paling ketat lebih dulu.</li><li>Uji setiap jalur dan setiap batas.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Jika urutan cek dibalik (&gt;= 55 dulu), nilai 90 mendapat?</summary><p class="ok">Jawaban: C</p><p>90 &gt;= 55 sudah benar, jadi berhenti di C.</p></details><details><summary>Berapa kasus uji minimal untuk menguji 4 jalur nilai huruf?</summary><p class="ok">Jawaban: 4</p><p>Setiap jalur butuh minimal satu kasus.</p></details>
+<a class="cta" href="/#pseudo-2-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pseudo/if-dan-else">IF dan ELSE</a></p><p>Berikutnya: <a href="/belajar/pseudo/operator-logika-and-or-not">Operator logika: and, or, not</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

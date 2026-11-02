@@ -279,11 +279,48 @@ def lesson_body(t, l, book):
         tasks = l.get("tasks") or ([l["task"]] if l.get("task") else [])
         if tasks:
             h.append("<h2>Tantangan</h2><ol>" + "".join(f"<li>{x.get('q', '')}</li>" for x in tasks if isinstance(x, dict)) + "</ol>")
+        if l.get("fc"):
+            h.append(code(fc_pseudo(l["fc"]), "text", "PSEUDOCODE"))
+        if l.get("so"):
+            h.append("<h2>Soal latihan</h2><ol>" + "".join(
+                f"<li><p>{x['q']}</p><details><summary>Petunjuk</summary><p>{x['h']}</p></details>"
+                + (f"<details><summary>Lihat jawaban</summary>{code(x['a'], lang)}</details>" if x.get("a") else "") + "</li>"
+                for x in l["so"]) + "</ol>")
         h.append(pros(l, lang))
         if l.get("pts"):
             h.append("<h2>Poin penting</h2><ul>" + "".join(f"<li>{p}</li>" for p in l["pts"]) + "</ul>")
         h.append(quiz(l.get("q")))
     return "\n".join(x for x in h if x)
+
+
+def fc_pseudo(fc):
+    """Versi teks pseudocode dari program fc (sama dengan fcPseudo di viz-fc.js)."""
+    L = ["START"]
+    def ex(x):
+        return re.sub(r'"[^"]*"|\s&\s', lambda m: m.group(0) if m.group(0).startswith('"') else ", ", x)
+    def walk(lst, d):
+        pad = "    " * d
+        for n in lst:
+            t = n["t"]
+            if t == "dec":
+                L.append(f"{pad}DECLARE {n['v']} : " + (f"ARRAY[{n['arr']}] OF " if n.get("arr") else "") + n["ty"].upper())
+            elif t == "in": L.append(f"{pad}INPUT {n['v']}")
+            elif t == "asg": L.append(f"{pad}{n['v']} ← {n['e']}")
+            elif t == "out": L.append(f"{pad}OUTPUT {ex(n['e'])}")
+            elif t == "if":
+                L.append(f"{pad}IF {n['c']} THEN"); walk(n["y"], d + 1)
+                if n["n"]: L.append(f"{pad}ELSE"); walk(n["n"], d + 1)
+                L.append(f"{pad}ENDIF")
+            elif t == "while":
+                L.append(f"{pad}WHILE {n['c']} DO"); walk(n["b"], d + 1); L.append(f"{pad}ENDWHILE")
+            elif t == "for":
+                st = f" STEP {n['s']}" if n.get("s") and n["s"] != "1" else ""
+                L.append(f"{pad}FOR {n['v']} ← {n['a']} TO {n['z']}{st} DO"); walk(n["b"], d + 1); L.append(f"{pad}ENDFOR")
+            elif t == "do":
+                L.append(f"{pad}REPEAT"); walk(n["b"], d + 1); L.append(f"{pad}UNTIL {n.get('u') or 'NOT (' + n['c'] + ')'}")
+    walk(fc["p"], 1)
+    L.append("END")
+    return "\n".join(L)
 
 
 def write_static(root, url, tracks, data):

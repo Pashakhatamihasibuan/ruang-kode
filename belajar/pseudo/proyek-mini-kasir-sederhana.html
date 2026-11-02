@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Proyek mini: kasir sederhana · Pseudocode · Ruang Kode</title>
+<meta name="description" content="Saatnya menggabungkan semuanya. Kasir menerima harga dan jumlah barang berulang kali sampai kasir mengetik harga 0 (REPEAT-UNTIL), menjumlahkan total…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/pseudo/proyek-mini-kasir-sederhana">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Proyek mini: kasir sederhana · Pseudocode · Ruang Kode"><meta property="og:description" content="Saatnya menggabungkan semuanya. Kasir menerima harga dan jumlah barang berulang kali sampai kasir mengetik harga 0 (REPEAT-UNTIL), menjumlahkan total…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/pseudo/proyek-mini-kasir-sederhana"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Proyek mini: kasir sederhana", "description": "Saatnya menggabungkan semuanya. Kasir menerima harga dan jumlah barang berulang kali sampai kasir mengetik harga 0 (REPEAT-UNTIL), menjumlahkan total…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/pseudo/proyek-mini-kasir-sederhana", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Pseudocode", "url": "https://ruang-kode-nine.vercel.app/belajar/pseudo"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Pseudocode", "item": "https://ruang-kode-nine.vercel.app/belajar/pseudo"}, {"@type": "ListItem", "position": 3, "name": "Proyek mini: kasir sederhana", "item": "https://ruang-kode-nine.vercel.app/belajar/pseudo/proyek-mini-kasir-sederhana"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/pseudo">Pseudocode</a> / Modul 5</nav>
+<div class="eyebrow">Pseudocode · Modul 5 · Konsep &amp; kode</div><h1>Proyek mini: kasir sederhana</h1><a class="cta" href="/#pseudo-5-3">Buka versi interaktif</a>
+<p>Saatnya menggabungkan semuanya. Kasir menerima harga dan jumlah barang berulang kali sampai kasir mengetik harga 0 (<b>REPEAT-UNTIL</b>), menjumlahkan total (<b>akumulator</b>), memberi diskon 10% jika total di atas 100 ribu (<b>IF</b>), lalu menghitung kembalian (<b>IF-ELSE</b>).</p>
+<p>Nilai 0 sebagai tanda selesai disebut <b>sentinel</b>. Teknik ini umum saat jumlah data tidak diketahui sebelumnya.</p>
+<p>Jalankan visual dengan input bawaan: 2 kopi seharga 25.000, 3 roti seharga 18.000, selesai, lalu bayar 150.000. Kemudian ubah inputnya agar total di bawah 100 ribu, atau uang bayarnya kurang.</p>
+<p><b>Tantangan</b>: tulis ulang algoritma ini di bahasa yang sedang kamu pelajari, lalu tambahkan pajak 11% setelah diskon.</p>
+<div class="lbl">PSEUDOCODE</div><pre><code>START
+    DECLARE harga, jumlah, total, bayar, kembali : INTEGER
+    total ← 0
+    REPEAT
+        INPUT harga
+        IF harga &gt; 0 THEN
+            INPUT jumlah
+            total ← total + harga * jumlah
+        ENDIF
+    UNTIL harga = 0
+    IF total &gt; 100000 THEN
+        total ← total - Int(total * 10 / 100)
+        OUTPUT &quot;Diskon 10% diberikan&quot;
+    ENDIF
+    OUTPUT &quot;Total: &quot;, total
+    INPUT bayar
+    IF bayar &gt;= total THEN
+        kembali ← bayar - total
+        OUTPUT &quot;Kembalian: &quot;, kembali
+    ELSE
+        OUTPUT &quot;Uang kurang &quot;, (total - bayar)
+    ENDIF
+END</code></pre>
+<h2>Poin penting</h2><ul><li>Sentinel (misalnya 0) menandai akhir input.</li><li>Gabungkan loop, akumulator, dan percabangan.</li><li>Uji juga kasus uang kurang.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa loop kasir memakai REPEAT-UNTIL?</summary><p class="ok">Jawaban: Harga harus diminta minimal sekali</p><p>Kita belum tahu jumlah barang, tetapi minimal sekali harus bertanya.</p></details><details><summary>Apa itu nilai sentinel?</summary><p class="ok">Jawaban: Nilai khusus penanda akhir input</p><p>Contoh: harga 0 berarti selesai.</p></details>
+<a class="cta" href="/#pseudo-5-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pseudo/prosedur-dan-fungsi">Prosedur dan fungsi</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

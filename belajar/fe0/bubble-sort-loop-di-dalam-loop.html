@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bubble sort: loop di dalam loop · Frontend Pemula · Ruang Kode</title>
+<meta name="description" content="Bubble sort mengurutkan data dengan cara paling sederhana: bandingkan dua angka yang bersebelahan, tukar jika urutannya salah, lalu geser ke pasangan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/fe0/bubble-sort-loop-di-dalam-loop">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Bubble sort: loop di dalam loop · Frontend Pemula · Ruang Kode"><meta property="og:description" content="Bubble sort mengurutkan data dengan cara paling sederhana: bandingkan dua angka yang bersebelahan, tukar jika urutannya salah, lalu geser ke pasangan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/fe0/bubble-sort-loop-di-dalam-loop"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Bubble sort: loop di dalam loop", "description": "Bubble sort mengurutkan data dengan cara paling sederhana: bandingkan dua angka yang bersebelahan, tukar jika urutannya salah, lalu geser ke pasangan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/fe0/bubble-sort-loop-di-dalam-loop", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Frontend Pemula", "url": "https://ruang-kode-nine.vercel.app/belajar/fe0"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Frontend Pemula", "item": "https://ruang-kode-nine.vercel.app/belajar/fe0"}, {"@type": "ListItem", "position": 3, "name": "Bubble sort: loop di dalam loop", "item": "https://ruang-kode-nine.vercel.app/belajar/fe0/bubble-sort-loop-di-dalam-loop"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/fe0">Frontend Pemula</a> / Modul 9</nav>
+<div class="eyebrow">Frontend Pemula · Modul 9 · Konsep &amp; kode</div><h1>Bubble sort: loop di dalam loop</h1><a class="cta" href="/#fe0-9-4">Buka versi interaktif</a>
+<p>Bubble sort mengurutkan data dengan cara paling sederhana: bandingkan dua angka yang <b>bersebelahan</b>, tukar jika urutannya salah, lalu geser ke pasangan berikutnya. Setelah satu putaran, angka terbesar pasti sudah "menggelembung" ke ujung kanan.</p>
+<p>Algoritma ini memakai dua loop. <b>Loop dalam (for)</b> berjalan dari kiri ke kanan, jumlah pasangannya jelas. <b>Loop luar (while)</b> mengulang putaran selama masih ada pertukaran. Variabel penanda <code>adaTukar</code> membuat program berhenti lebih awal jika data sudah terurut.</p>
+<p>Setiap putaran, satu angka terbesar sudah di tempatnya, jadi loop dalam cukup sampai <code>n - putaran</code>. Detail kecil ini menghemat perbandingan yang tidak perlu.</p>
+<p>Bubble sort lambat untuk data besar (sekitar n² perbandingan), jadi di dunia kerja kita memakai fungsi sort bawaan bahasa. Tetapi bubble sort adalah latihan terbaik untuk memahami loop bersarang, indeks, dan menukar nilai.</p>
+<div class="tw"><table><caption>Isi array setiap putaran</caption><thead><tr><th>Putaran</th><th>Isi array</th><th>Yang sudah di tempat</th></tr></thead><tbody><tr><td>Awal</td><td>64 25 12 22 11</td><td>-</td></tr><tr><td>1</td><td>25 12 22 11 64</td><td>64</td></tr><tr><td>2</td><td>12 22 11 25 64</td><td>25, 64</td></tr><tr><td>3</td><td>12 11 22 25 64</td><td>22, 25, 64</td></tr><tr><td>4</td><td>11 12 22 25 64</td><td>semua</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>const nilai = [64, 25, 12, 22, 11];
+const n = nilai.length;
+let adaTukar = true;
+let putaran = 0;
+// WHILE luar: berhenti jika satu putaran tidak ada pertukaran
+while (adaTukar) {
+  adaTukar = false;
+  putaran++;
+  // FOR dalam: bandingkan pasangan bersebelahan
+  for (let j = 0; j &lt; n - putaran; j++) {
+    if (nilai[j] &gt; nilai[j + 1]) {
+      [nilai[j], nilai[j + 1]] = [nilai[j + 1], nilai[j]];
+      adaTukar = true;
+    }
+  }
+  console.log(`Putaran ${putaran}: [${nilai.join(&quot;, &quot;)}]`);
+}
+console.log(`Terurut: [${nilai.join(&quot;, &quot;)}]`);</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Putaran 1: [25, 12, 22, 11, 64]
+Putaran 2: [12, 22, 11, 25, 64]
+Putaran 3: [12, 11, 22, 25, 64]
+Putaran 4: [11, 12, 22, 25, 64]
+Putaran 5: [11, 12, 22, 25, 64]
+Terurut: [11, 12, 22, 25, 64]</code></pre>
+<div class="lbl">PSEUDOCODE</div><pre><code>START
+    DECLARE a : ARRAY[4] OF INTEGER
+    a ← [25, 12, 22, 11]
+    DECLARE j, t, putaran : INTEGER
+    DECLARE adaTukar : BOOLEAN
+    adaTukar ← true
+    putaran ← 0
+    WHILE adaTukar DO
+        adaTukar ← false
+        putaran ← putaran + 1
+        FOR j ← 0 TO 3 - putaran DO
+            IF a[j] &gt; a[j + 1] THEN
+                t ← a[j]
+                a[j] ← a[j + 1]
+                a[j + 1] ← t
+                adaTukar ← true
+            ENDIF
+        ENDFOR
+    ENDWHILE
+    OUTPUT &quot;Terurut: &quot;, a
+END</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Urutkan nama ["Rina", "Agus", "Dewi", "Budi"] sesuai abjad dengan bubble sort.</p><details><summary>Petunjuk</summary><p>Logikanya sama, hanya cara membandingkan teks yang berbeda: Python memakai >, JavaScript/TypeScript memakai localeCompare, Java memakai compareTo.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>const nama = [&quot;Rina&quot;, &quot;Agus&quot;, &quot;Dewi&quot;, &quot;Budi&quot;];
+let adaTukar = true;
+while (adaTukar) {
+  adaTukar = false;
+  for (let j = 0; j &lt; nama.length - 1; j++) {
+    if (nama[j].localeCompare(nama[j + 1]) &gt; 0) {
+      [nama[j], nama[j + 1]] = [nama[j + 1], nama[j]];
+      adaTukar = true;
+    }
+  }
+}
+console.log(nama.join(&quot;, &quot;));</code></pre></details></li><li><p>Ubah bubble sort agar mengurutkan dari besar ke kecil, lalu hitung berapa kali terjadi pertukaran untuk [3, 1, 4, 1, 5].</p><details><summary>Petunjuk</summary><p>Cukup balik tanda perbandingan menjadi <, dan tambah penghitung setiap kali menukar.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>const data = [3, 1, 4, 1, 5];
+let tukar = 0;
+for (let i = 0; i &lt; data.length - 1; i++) {
+  for (let j = 0; j &lt; data.length - 1 - i; j++) {
+    if (data[j] &lt; data[j + 1]) {
+      [data[j], data[j + 1]] = [data[j + 1], data[j]];
+      tukar++;
+    }
+  }
+}
+console.log(`[${data.join(&quot;, &quot;)}] pertukaran: ${tukar}`);</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Bandingkan pasangan bersebelahan, tukar jika salah urutan.</li><li>Loop dalam for (jumlah pasangan jelas), loop luar while (sampai tidak ada pertukaran).</li><li>Penanda pertukaran membuat sort berhenti lebih awal.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Setelah putaran pertama bubble sort (urut naik), di mana angka terbesar?</summary><p class="ok">Jawaban: Di ujung kanan</p><p>Angka terbesar selalu terbawa sampai ujung kanan pada putaran pertama.</p></details><details><summary>Untuk apa variabel penanda pertukaran?</summary><p class="ok">Jawaban: Menghentikan loop luar jika satu putaran tidak ada pertukaran</p><p>Jika tidak ada pertukaran, data sudah terurut.</p></details><details><summary>Kenapa loop dalam cukup sampai n - putaran?</summary><p class="ok">Jawaban: Karena angka di ujung kanan sudah pasti di tempatnya</p><p>Bagian kanan yang sudah terurut tidak perlu dibandingkan lagi.</p></details>
+<a class="cta" href="/#fe0-9-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/fe0/bilangan-fibonacci-for-dan-while">Bilangan Fibonacci: for dan while</a></p><p>Berikutnya: <a href="/belajar/fe0/fizzbuzz-dan-bilangan-prima-break-dan-loop-bersarang">FizzBuzz dan bilangan prima: break dan loop bersarang</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

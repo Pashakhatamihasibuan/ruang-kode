@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Format specifier: merapikan keluaran · Java · Ruang Kode</title>
+<meta name="description" content="Format specifier adalah kode kecil yang mengatur bagaimana sebuah nilai ditampilkan: berapa angka di belakang koma, selebar apa kolomnya, rata kiri atau…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/java/format-specifier-merapikan-keluaran">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Format specifier: merapikan keluaran · Java · Ruang Kode"><meta property="og:description" content="Format specifier adalah kode kecil yang mengatur bagaimana sebuah nilai ditampilkan: berapa angka di belakang koma, selebar apa kolomnya, rata kiri atau…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/java/format-specifier-merapikan-keluaran"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Format specifier: merapikan keluaran", "description": "Format specifier adalah kode kecil yang mengatur bagaimana sebuah nilai ditampilkan: berapa angka di belakang koma, selebar apa kolomnya, rata kiri atau…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/java/format-specifier-merapikan-keluaran", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Java", "url": "https://ruang-kode-nine.vercel.app/belajar/java"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Java", "item": "https://ruang-kode-nine.vercel.app/belajar/java"}, {"@type": "ListItem", "position": 3, "name": "Format specifier: merapikan keluaran", "item": "https://ruang-kode-nine.vercel.app/belajar/java/format-specifier-merapikan-keluaran"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/java">Java</a> / Modul 16</nav>
+<div class="eyebrow">Java · Modul 16 · Konsep &amp; kode</div><h1>Format specifier: merapikan keluaran</h1><a class="cta" href="/#java-16-1">Buka versi interaktif</a>
+<p><b>Format specifier</b> adalah kode kecil yang mengatur <b>bagaimana sebuah nilai ditampilkan</b>: berapa angka di belakang koma, selebar apa kolomnya, rata kiri atau kanan, diberi nol di depan, atau diberi pemisah ribuan. Nilainya tidak berubah, hanya tampilannya. Hampir semua program nyata membutuhkannya: struk belanja, laporan nilai, nomor invoice, dan log server.</p>
+<p>Polanya mirip di semua bahasa: <b>[perataan][lebar][.presisi][tipe]</b>. Contoh <code>%-10s</code> berarti teks rata kiri selebar 10, <code>%8.2f</code> berarti desimal 2 angka dalam kolom selebar 8, dan <code>%05d</code> berarti bilangan bulat selebar 5 yang diisi nol di depan.</p>
+<p>Di Java, pakai <code>System.out.printf(...)</code> untuk langsung mencetak, atau <code>String.format(...)</code> untuk menghasilkan teks (misalnya kode invoice). <code>%n</code> adalah baris baru yang benar di semua sistem operasi, dan <code>%%</code> mencetak tanda persen. Jumlah dan tipe argumen harus cocok: <code>%d</code> dengan nilai double akan error <code>IllegalFormatConversionException</code> saat program berjalan.</p>
+<p>Pemisah ribuan <code>%,d</code> mengikuti <b>lokal</b> komputer. Untuk format Indonesia (titik sebagai pemisah ribuan) tulis <code>String.format(Locale.forLanguageTag("id-ID"), "%,d", 7500000)</code>, yang menghasilkan 7.500.000.</p>
+<p>Contoh terakhir di kode adalah <b>struk belanja</b>: format di dalam loop membuat setiap baris punya lebar kolom yang sama, sehingga angka tersusun rapi ke kanan. Ini pola yang akan sering kamu pakai di soal-soal berikutnya.</p>
+<div class="tw"><table><caption>Format specifier di berbagai bahasa</caption><thead><tr><th>Tujuan</th><th>Java / C (printf)</th><th>Python (f-string)</th><th>JavaScript / TypeScript</th></tr></thead><tbody><tr><td>Teks</td><td>%s</td><td>{x}</td><td>${x}</td></tr><tr><td>Bilangan bulat</td><td>%d</td><td>{x:d}</td><td>${x}</td></tr><tr><td>Desimal 2 angka</td><td>%.2f</td><td>{x:.2f}</td><td>x.toFixed(2)</td></tr><tr><td>Lebar 8, rata kanan</td><td>%8s</td><td>{x:&gt;8}</td><td>String(x).padStart(8)</td></tr><tr><td>Lebar 8, rata kiri</td><td>%-8s</td><td>{x:&lt;8}</td><td>String(x).padEnd(8)</td></tr><tr><td>Isi nol di depan</td><td>%05d</td><td>{x:05d}</td><td>String(x).padStart(5, &quot;0&quot;)</td></tr><tr><td>Pemisah ribuan</td><td>%,d</td><td>{x:,}</td><td>x.toLocaleString(&quot;id-ID&quot;)</td></tr><tr><td>Persen</td><td>%.0f%%</td><td>{x:.0%}</td><td>(x * 100).toFixed(0) + &quot;%&quot;</td></tr><tr><td>Heksadesimal</td><td>%x</td><td>{x:x}</td><td>x.toString(16)</td></tr><tr><td>Notasi ilmiah</td><td>%.3e</td><td>{x:.3e}</td><td>x.toExponential(3)</td></tr><tr><td>Baris baru</td><td>%n atau \n</td><td>\n</td><td>\n</td></tr></tbody></table></div>
+<div class="tw"><table><caption>Yang paling sering dipakai di industri</caption><thead><tr><th>Kebutuhan</th><th>Pilihan umum</th><th>Alasan</th></tr></thead><tbody><tr><td>Menyusun teks di kode baru</td><td>f-string (Python), template literal (JS/TS), String.format atau formatted() (Java)</td><td>Paling mudah dibaca dan dirawat</td></tr><tr><td>Angka dan uang ke pengguna</td><td>Format berbasis lokal: Intl.NumberFormat, Locale id-ID, Babel</td><td>Titik, koma, dan simbol Rp mengikuti aturan negara</td></tr><tr><td>Laporan dan struk berkolom</td><td>Lebar + perataan: %-12s, %10.2f, padEnd/padStart</td><td>Kolom tetap lurus berapa pun panjang datanya</td></tr><tr><td>Kode dokumen dan antrean</td><td>Isi nol: %04d, {n:04d}</td><td>INV-0007 lebih mudah diurutkan dan dicari</td></tr><tr><td>Logging</td><td>Placeholder %s atau {}: logger.info(&quot;user %s&quot;, id)</td><td>Teks hanya disusun jika log benar-benar dicetak</td></tr><tr><td>Tanggal</td><td>ISO 8601 (2026-11-02) atau pola yyyy-MM-dd</td><td>Standar internasional dan mudah diurutkan</td></tr></tbody></table></div>
+<div class="lbl">JAVA</div><pre><code>public class Main {
+    public static void main(String[] args) {
+        String nama = &quot;Rina&quot;;
+        int umur = 20;
+        double ipk = 3.4567;
+        // %s teks, %d bilangan bulat, %.2f desimal 2 angka, %n baris baru
+        System.out.printf(&quot;Nama: %s, umur %d, IPK %.2f%n&quot;, nama, umur, ipk);
+
+        // lebar kolom: angka positif = rata kanan, tanda minus = rata kiri
+        System.out.printf(&quot;[%8s] [%-8s] [%5d] [%05d]%n&quot;, nama, nama, umur, umur);
+
+        // pemisah ribuan, persen, basis lain, notasi ilmiah, boolean, karakter
+        System.out.printf(&quot;Gaji %,d | diskon 15%% | hex %x | oktal %o%n&quot;, 7500000, 255, 8);
+        System.out.printf(&quot;%.3e | %b | %c%n&quot;, 123456.789, umur &gt; 17, &#x27;A&#x27;);
+
+        // String.format menghasilkan teks, tidak langsung mencetak
+        String kode = String.format(&quot;INV-%04d&quot;, 7);
+        System.out.println(kode);
+
+        // struk belanja: format di dalam loop membuat kolom rapi
+        String[] barang = {&quot;Kopi susu&quot;, &quot;Roti bakar&quot;, &quot;Air mineral&quot;};
+        int[] harga = {18000, 22500, 5000};
+        int total = 0;
+        System.out.printf(&quot;%-12s %10s%n&quot;, &quot;Barang&quot;, &quot;Harga&quot;);
+        for (int i = 0; i &lt; barang.length; i++) {
+            System.out.printf(&quot;%-12s %,10d%n&quot;, barang[i], harga[i]);
+            total += harga[i];
+        }
+        System.out.printf(&quot;%-12s %,10d%n&quot;, &quot;TOTAL&quot;, total);
+    }
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Nama: Rina, umur 20, IPK 3.46
+[    Rina] [Rina    ] [   20] [00020]
+Gaji 7,500,000 | diskon 15% | hex ff | oktal 10
+1.235e+05 | true | A
+INV-0007
+Barang            Harga
+Kopi susu        18,000
+Roti bakar       22,500
+Air mineral       5,000
+TOTAL            45,500</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tampilkan daftar 3 mahasiswa dengan kolom rapi: nomor (lebar 3, rata kanan), nama (lebar 10, rata kiri), dan IPK (2 angka desimal). Data: Ani 3.5, Budi 3.257, Citra 3.9.</p><details><summary>Petunjuk</summary><p>Gabungkan lebar dan perataan dengan presisi. Untuk IPK: lebar 5 dan 2 desimal, misalnya %5.2f atau {ipk:5.2f}.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>public class Main {
+    public static void main(String[] args) {
+        String[] nama = {&quot;Ani&quot;, &quot;Budi&quot;, &quot;Citra&quot;};
+        double[] ipk = {3.5, 3.257, 3.9};
+        for (int i = 0; i &lt; nama.length; i++) {
+            System.out.printf(&quot;%3d %-10s %5.2f%n&quot;, i + 1, nama[i], ipk[i]);
+        }
+    }
+}</code></pre></details></li><li><p>Buat nomor antrean 5 pelanggan dengan format A-001 sampai A-005.</p><details><summary>Petunjuk</summary><p>Isi angka dengan nol di depan sampai 3 digit: %03d di Java, {n:03d} di Python, padStart(3, "0") di JavaScript/TypeScript.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVA</div><pre><code>public class Main {
+    public static void main(String[] args) {
+        for (int n = 1; n &lt;= 5; n++) {
+            System.out.println(String.format(&quot;A-%03d&quot;, n));
+        }
+    }
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Pola umum: [perataan][lebar][.presisi][tipe].</li><li>Lebar + perataan membuat kolom laporan lurus.</li><li>Untuk angka ke pengguna, pakai format lokal (id-ID).</li><li>Kode baru: f-string, template literal, atau String.format.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Apa arti format %-10s?</summary><p class="ok">Jawaban: Teks rata kiri selebar 10</p><p>Tanda minus berarti rata kiri, angka 10 adalah lebar kolom minimum.</p></details><details><summary>Format apa yang menampilkan 7 sebagai 007?</summary><p class="ok">Jawaban: %03d atau {x:03d}</p><p>Angka 0 di depan lebar berarti isi nol. Tanpa 0, sisa tempat diisi spasi.</p></details><details><summary>3.14159 diformat dengan dua angka desimal hasilnya?</summary><p class="ok">Jawaban: 3.14</p><p>Dibulatkan ke 2 angka di belakang koma: 3.14159 → 3.14.</p></details><details><summary>Untuk menampilkan harga ke pengguna Indonesia, cara yang dianjurkan adalah?</summary><p class="ok">Jawaban: Memakai format berbasis lokal id-ID</p><p>Format lokal menangani pemisah ribuan, desimal, dan simbol mata uang dengan benar.</p></details>
+<a class="cta" href="/#java-16-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/java/dokumentasi-dengan-javadoc">Dokumentasi dengan Javadoc</a></p><p>Berikutnya: <a href="/belajar/java/kapan-for-kapan-while-kapan-do-while">Kapan for, kapan while, kapan do-while</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

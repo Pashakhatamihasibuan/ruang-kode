@@ -130,11 +130,11 @@ function gitsimViz(host){
   const msgs=['tambah produk','gaya tombol','perbaiki harga','tambah keranjang','README','validasi form'];
   host.innerHTML=`<div class="v3-act-row"><button class="btn primary" data-g="commit">git commit</button><button class="btn" data-g="branch">git switch -c fitur</button><button class="btn" data-g="main">git switch main</button><button class="btn" data-g="merge">git merge fitur</button><button class="btn" data-g="push">git push</button><button class="btn" data-g="reset">Ulang</button></div><div class="v3-git"></div><pre class="console v3-term" aria-live="polite"></pre>`;
   let term='$ git log --oneline\na1 halaman awal';
-  const draw=()=>{const lanes={main:0,fitur:1},W=Math.max(320,C.length*64+40);
-    const pos=Object.fromEntries(C.map((c,i)=>[c.id,{x:30+i*64,y:34+lanes[c.b]*56}]));
+  const draw=()=>{const lanes={main:0,fitur:1},W=Math.max(320,C.length*64+60);
+    const pos=Object.fromEntries(C.map((c,i)=>[c.id,{x:44+i*64,y:34+lanes[c.b]*56}]));
     const edges=C.flatMap(c=>c.p.map(p=>`<path d="M${pos[p].x},${pos[p].y} C${pos[p].x+32},${pos[p].y} ${pos[c.id].x-32},${pos[c.id].y} ${pos[c.id].x},${pos[c.id].y}" class="ge"/>`)).join('');
     const nodes=C.map(c=>`<g class="gn ${c.p.length>1?'mg':''} b-${c.b}"><circle cx="${pos[c.id].x}" cy="${pos[c.id].y}" r="11"/><text x="${pos[c.id].x}" y="${pos[c.id].y+28}">${c.id}</text></g>`).join('');
-    const tags=Object.entries(br).map(([b,id],k)=>`<g class="gt b-${b}"><rect x="${pos[id].x-30}" y="${pos[id].y-36-(Object.values(br).filter(v=>v===id).indexOf(id)>-1&&b==='fitur'&&br.main===id?16:0)}" width="60" height="16" rx="8"/><text x="${pos[id].x}" y="${pos[id].y-24-(b==='fitur'&&br.main===id?16:0)}">${b}${b===head?' ◀ HEAD':''}</text></g>`).join('');
+    const tags=Object.entries(br).map(([b,id],k)=>`<g class="gt b-${b}"><rect x="${pos[id].x-(b===head?40:30)}" y="${pos[id].y-36-(Object.values(br).filter(v=>v===id).indexOf(id)>-1&&b==='fitur'&&br.main===id?16:0)}" width="${b===head?80:60}" height="16" rx="8"/><text x="${pos[id].x}" y="${pos[id].y-24-(b==='fitur'&&br.main===id?16:0)}">${b}${b===head?' ◀ HEAD':''}</text></g>`).join('');
     const rem=remote?`<g class="gt rm"><rect x="${pos[remote].x-34}" y="${pos[remote].y+36}" width="68" height="16" rx="8"/><text x="${pos[remote].x}" y="${pos[remote].y+48}">origin/main</text></g>`:'';
     $('.v3-git',host).innerHTML=`<svg viewBox="0 0 ${W} 150" width="${W}" height="150" role="img" aria-label="Grafik commit">${edges}${nodes}${tags}${rem}</svg>`;$('.v3-term',host).textContent=term};
   host.addEventListener('click',e=>{const b=e.target.closest('[data-g]');if(!b)return;const g=b.dataset.g;
@@ -165,11 +165,11 @@ function chartpickViz(host){
   const Q=[['bar','Membandingkan kategori','Omzet per kota: batang mudah dibandingkan panjangnya.'],['line','Tren waktu','Omzet harian: garis menunjukkan naik turun berurutan.'],['hist','Distribusi','Jumlah barang per transaksi: histogram memperlihatkan bentuk sebaran.'],['scatter','Hubungan dua angka','Biaya iklan lawan pengunjung: tiap titik satu hari.'],['stack','Komposisi','Omzet per kota dipecah per kategori.']];
   host.innerHTML=seg('Pertanyaan',Q.map(q=>[q[0],q[1]]),'bar')+'<svg class="v3-chart" viewBox="0 0 360 180" role="img"></svg><p class="note"></p>';
   const V=[78,62,45,30,18],L=['Jkt','Sby','Bdg','Mdn','Yog'];
-  const SV={bar:()=>V.map((v,i)=>`<rect x="20" y="${12+i*32}" width="${v*4}" height="22" rx="3" class="c1"/><text x="${28+v*4}" y="${28+i*32}" class="lb">${L[i]} ${v}</text>`).join(''),
+  const SV={bar:()=>V.map((v,i)=>`<rect x="20" y="${12+i*32}" width="${v*3.6}" height="22" rx="3" class="c1"/><text x="${28+v*3.6}" y="${28+i*32}" class="lb">${L[i]} ${v}</text>`).join(''),
     line:()=>{const p=[30,34,31,40,46,43,52,58,55,63,70,68].map((v,i)=>`${20+i*30},${170-v*2}`);return `<polyline points="${p.join(' ')}" class="ln"/>${p.map(x=>`<circle cx="${x.split(',')[0]}" cy="${x.split(',')[1]}" r="3" class="c1"/>`).join('')}`},
     hist:()=>[3,9,16,22,18,11,6,2].map((v,i)=>`<rect x="${20+i*41}" y="${170-v*7}" width="39" height="${v*7}" class="c1"/>`).join(''),
     scatter:()=>[[1,120],[2,190],[3,260],[4,300],[5,390],[6,450],[2.5,210],[4.5,350],[3.5,280],[5.5,410]].map(([a,b])=>`<circle cx="${20+a*52}" cy="${175-b*0.33}" r="5" class="c1"/>`).join(''),
-    stack:()=>V.map((v,i)=>[v*.5,v*.3,v*.2].map((w,k,a)=>`<rect x="${20+a.slice(0,k).reduce((s,x)=>s+x,0)*4}" y="${12+i*32}" width="${w*4}" height="22" class="c${k+1}"/>`).join('')+`<text x="${28+v*4}" y="${28+i*32}" class="lb">${L[i]}</text>`).join('')};
+    stack:()=>V.map((v,i)=>[v*.5,v*.3,v*.2].map((w,k,a)=>`<rect x="${20+a.slice(0,k).reduce((s,x)=>s+x,0)*3.6}" y="${12+i*32}" width="${w*3.6}" height="22" class="c${k+1}"/>`).join('')+`<text x="${28+v*3.6}" y="${28+i*32}" class="lb">${L[i]}</text>`).join('')};
   const draw=k=>{$('.v3-chart',host).innerHTML=SV[k]();$('.note',host).innerHTML=Q.find(q=>q[0]===k)[2]};segWire(host,'.seg',draw);draw('bar');
 }
 function sheetViz(host){

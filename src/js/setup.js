@@ -4,7 +4,7 @@
 const OSES=[['win','Windows'],['mac','macOS'],['lin','Linux (Ubuntu/Debian)']];
 const SETUP=[
   {id:'browser',name:'Browser modern',why:'Untuk membuka Ruang Kode, melihat hasil HTML/CSS, dan memakai DevTools (tekan F12).',
-   tr:['html','css','fe0','fe','react','ux','ds','msi','sim'],
+   tr:['html','css','fe0','fe','react','ux','ds','msi','sim','pseudo','flowg'],
    os:{win:['Pakai Google Chrome, Microsoft Edge, atau Firefox versi terbaru. Edge sudah terpasang di Windows 10/11.'],
        mac:['Pakai Chrome, Edge, Firefox, atau Safari versi terbaru.'],
        lin:['Pakai Chrome atau Firefox versi terbaru. Firefox biasanya sudah terpasang.']}},
@@ -65,6 +65,11 @@ const SETUP=[
        lin:['Pasang dengan perintah di bawah.']},
    cmd:{win:'winget install DBBrowserForSQLite.DBBrowserForSQLite',mac:'brew install --cask db-browser-for-sqlite',lin:'sudo apt install sqlitebrowser sqlite3'},
    note:'Buat database baru (New Database), buka tab Execute SQL, lalu salin query dari pelajaran. Konsol SQL di Ruang Kode tetap bisa dipakai tanpa memasang apa pun.'},
+  {id:'flowgorithm',name:'Flowgorithm',why:'Aplikasi gratis untuk membuat flowchart yang bisa dijalankan dan diterjemahkan ke kode.',
+   tr:['flowg','pseudo'],
+   os:{win:['Unduh installer dari flowgorithm.org (menu Download), lalu jalankan dan ikuti langkahnya.','Buka Flowgorithm, pilih File → New, lalu tekan Run untuk mencoba program kosong.'],
+       mac:['Flowgorithm dibuat untuk Windows. Sebagian pengguna menjalankannya lewat Wine atau mesin virtual Windows.','Jika belum bisa memasangnya, berlatih dulu dengan simulator flowchart di setiap pelajaran Ruang Kode.'],
+       lin:['Flowgorithm dibuat untuk Windows. Sebagian pengguna menjalankannya lewat Wine.','Jika belum bisa memasangnya, berlatih dulu dengan simulator flowchart di setiap pelajaran Ruang Kode.']}},
   {id:'figma',name:'Figma',why:'Alat desain antarmuka untuk jalur UX Design dan Design System. Paket gratisnya cukup untuk belajar.',
    tr:['ux','ds'],
    os:{win:['Buka figma.com di browser dan daftar akun gratis. Aplikasi desktop opsional.'],mac:['Buka figma.com di browser dan daftar akun gratis. Aplikasi desktop opsional.'],lin:['Buka figma.com di browser dan daftar akun gratis.']}}];

@@ -2401,11 +2401,11 @@ function gitsimViz(host){
   const msgs=['tambah produk','gaya tombol','perbaiki harga','tambah keranjang','README','validasi form'];
   host.innerHTML=`<div class="v3-act-row"><button class="btn primary" data-g="commit">git commit</button><button class="btn" data-g="branch">git switch -c fitur</button><button class="btn" data-g="main">git switch main</button><button class="btn" data-g="merge">git merge fitur</button><button class="btn" data-g="push">git push</button><button class="btn" data-g="reset">Ulang</button></div><div class="v3-git"></div><pre class="console v3-term" aria-live="polite"></pre>`;
   let term='$ git log --oneline\na1 halaman awal';
-  const draw=()=>{const lanes={main:0,fitur:1},W=Math.max(320,C.length*64+40);
-    const pos=Object.fromEntries(C.map((c,i)=>[c.id,{x:30+i*64,y:34+lanes[c.b]*56}]));
+  const draw=()=>{const lanes={main:0,fitur:1},W=Math.max(320,C.length*64+60);
+    const pos=Object.fromEntries(C.map((c,i)=>[c.id,{x:44+i*64,y:34+lanes[c.b]*56}]));
     const edges=C.flatMap(c=>c.p.map(p=>`<path d="M${pos[p].x},${pos[p].y} C${pos[p].x+32},${pos[p].y} ${pos[c.id].x-32},${pos[c.id].y} ${pos[c.id].x},${pos[c.id].y}" class="ge"/>`)).join('');
     const nodes=C.map(c=>`<g class="gn ${c.p.length>1?'mg':''} b-${c.b}"><circle cx="${pos[c.id].x}" cy="${pos[c.id].y}" r="11"/><text x="${pos[c.id].x}" y="${pos[c.id].y+28}">${c.id}</text></g>`).join('');
-    const tags=Object.entries(br).map(([b,id],k)=>`<g class="gt b-${b}"><rect x="${pos[id].x-30}" y="${pos[id].y-36-(Object.values(br).filter(v=>v===id).indexOf(id)>-1&&b==='fitur'&&br.main===id?16:0)}" width="60" height="16" rx="8"/><text x="${pos[id].x}" y="${pos[id].y-24-(b==='fitur'&&br.main===id?16:0)}">${b}${b===head?' ◀ HEAD':''}</text></g>`).join('');
+    const tags=Object.entries(br).map(([b,id],k)=>`<g class="gt b-${b}"><rect x="${pos[id].x-(b===head?40:30)}" y="${pos[id].y-36-(Object.values(br).filter(v=>v===id).indexOf(id)>-1&&b==='fitur'&&br.main===id?16:0)}" width="${b===head?80:60}" height="16" rx="8"/><text x="${pos[id].x}" y="${pos[id].y-24-(b==='fitur'&&br.main===id?16:0)}">${b}${b===head?' ◀ HEAD':''}</text></g>`).join('');
     const rem=remote?`<g class="gt rm"><rect x="${pos[remote].x-34}" y="${pos[remote].y+36}" width="68" height="16" rx="8"/><text x="${pos[remote].x}" y="${pos[remote].y+48}">origin/main</text></g>`:'';
     $('.v3-git',host).innerHTML=`<svg viewBox="0 0 ${W} 150" width="${W}" height="150" role="img" aria-label="Grafik commit">${edges}${nodes}${tags}${rem}</svg>`;$('.v3-term',host).textContent=term};
   host.addEventListener('click',e=>{const b=e.target.closest('[data-g]');if(!b)return;const g=b.dataset.g;
@@ -2436,11 +2436,11 @@ function chartpickViz(host){
   const Q=[['bar','Membandingkan kategori','Omzet per kota: batang mudah dibandingkan panjangnya.'],['line','Tren waktu','Omzet harian: garis menunjukkan naik turun berurutan.'],['hist','Distribusi','Jumlah barang per transaksi: histogram memperlihatkan bentuk sebaran.'],['scatter','Hubungan dua angka','Biaya iklan lawan pengunjung: tiap titik satu hari.'],['stack','Komposisi','Omzet per kota dipecah per kategori.']];
   host.innerHTML=seg('Pertanyaan',Q.map(q=>[q[0],q[1]]),'bar')+'<svg class="v3-chart" viewBox="0 0 360 180" role="img"></svg><p class="note"></p>';
   const V=[78,62,45,30,18],L=['Jkt','Sby','Bdg','Mdn','Yog'];
-  const SV={bar:()=>V.map((v,i)=>`<rect x="20" y="${12+i*32}" width="${v*4}" height="22" rx="3" class="c1"/><text x="${28+v*4}" y="${28+i*32}" class="lb">${L[i]} ${v}</text>`).join(''),
+  const SV={bar:()=>V.map((v,i)=>`<rect x="20" y="${12+i*32}" width="${v*3.6}" height="22" rx="3" class="c1"/><text x="${28+v*3.6}" y="${28+i*32}" class="lb">${L[i]} ${v}</text>`).join(''),
     line:()=>{const p=[30,34,31,40,46,43,52,58,55,63,70,68].map((v,i)=>`${20+i*30},${170-v*2}`);return `<polyline points="${p.join(' ')}" class="ln"/>${p.map(x=>`<circle cx="${x.split(',')[0]}" cy="${x.split(',')[1]}" r="3" class="c1"/>`).join('')}`},
     hist:()=>[3,9,16,22,18,11,6,2].map((v,i)=>`<rect x="${20+i*41}" y="${170-v*7}" width="39" height="${v*7}" class="c1"/>`).join(''),
     scatter:()=>[[1,120],[2,190],[3,260],[4,300],[5,390],[6,450],[2.5,210],[4.5,350],[3.5,280],[5.5,410]].map(([a,b])=>`<circle cx="${20+a*52}" cy="${175-b*0.33}" r="5" class="c1"/>`).join(''),
-    stack:()=>V.map((v,i)=>[v*.5,v*.3,v*.2].map((w,k,a)=>`<rect x="${20+a.slice(0,k).reduce((s,x)=>s+x,0)*4}" y="${12+i*32}" width="${w*4}" height="22" class="c${k+1}"/>`).join('')+`<text x="${28+v*4}" y="${28+i*32}" class="lb">${L[i]}</text>`).join('')};
+    stack:()=>V.map((v,i)=>[v*.5,v*.3,v*.2].map((w,k,a)=>`<rect x="${20+a.slice(0,k).reduce((s,x)=>s+x,0)*3.6}" y="${12+i*32}" width="${w*3.6}" height="22" class="c${k+1}"/>`).join('')+`<text x="${28+v*3.6}" y="${28+i*32}" class="lb">${L[i]}</text>`).join('')};
   const draw=k=>{$('.v3-chart',host).innerHTML=SV[k]();$('.note',host).innerHTML=Q.find(q=>q[0]===k)[2]};segWire(host,'.seg',draw);draw('bar');
 }
 function sheetViz(host){
@@ -2547,6 +2547,8 @@ Object.assign(VIZ2T,{http:'Perjalanan sebuah permintaan web',specificity:'Kalkul
   gitsim:'Simulator Git',stats:'Mean lawan median',chartpick:'Memilih grafik',sheet:'Lembar kerja & rumus',mapreduce:'MapReduce langkah demi langkah',starschema:'Skema bintang',abtest:'Kalkulator A/B test',etl:'Data mengalir lewat ETL',batchstream:'Batch lawan streaming',kafka:'Kafka: partisi & consumer',
   fogg:'Model perilaku Fogg',hook:'Siklus Hook',tokens:'Token tiga lapis',contrast:'Pemeriksa kontras',typescale:'Skala tipografi'});
 
+/* teks SVG panjang dibungkus menjadi beberapa baris, tidak dipotong */
+function svgWrap(t,max,x,y,lh,cls){const L=[];let c='';String(t).split(' ').forEach(w=>{if(c&&(c+' '+w).length>max){L.push(c);c=w}else c=c?c+' '+w:w});if(c)L.push(c);return `<text x="${x}" y="${y}" class="${cls}">${L.map((l,i)=>`<tspan x="${x}" dy="${i?lh:0}">${esc(l)}</tspan>`).join('')}</text>`}
 /* ===================== VISUAL JALUR MANAJEMEN SISTEM INFORMASI =====================
    Visual dan animasi untuk pelajaran MSI. Memakai pola umum dari viz3.js (player,
    stageViz, seqViz, seg) dan didaftarkan ke VIZ2 sehingga dipakai lewat field viz. */
@@ -2789,8 +2791,8 @@ function icebergViz(host){
     organisasi:['Laporan RAT terlambat','Setiap tahun','Catatan di buku, bendahara sendirian','"Pengurus lama pasti ingat"']};
   const L=[['Kejadian','apa yang terlihat','Reaksi: memadamkan api'],['Pola','apa yang berulang','Antisipasi'],['Struktur','apa yang menyebabkan','Rancang ulang proses & sistem'],['Pola pikir','keyakinan di baliknya','Ubah cara pandang']];
   orgWrap(host,(v,el)=>{const fr=L.map((l,i)=>({i,note:`<b>${l[0]}</b> (${l[1]}): <i>${esc(D[v][i])}</i>. Tindakan di lapisan ini: ${l[2]}.${i===3?' Semakin dalam lapisannya, semakin besar dan tahan lama dampak solusinya.':''}`}));
-    player(el,fr,(st,f)=>{st.innerHTML=`<svg class="mv-ice" viewBox="0 0 340 250" role="img" aria-label="Model gunung es"><rect x="0" y="62" width="340" height="188" class="sea"/><line x1="0" y1="62" x2="340" y2="62" class="wl"/><text x="6" y="76" class="s" text-anchor="start">permukaan air</text>
-      ${L.map((l,k)=>{const y=[14,70,128,186][k],h=[48,54,54,58][k],w=[90,170,240,300][k];return `<g class="${k<=f.i?'on':''} ${k===f.i?'cur':''}"><path d="M${170-w/2+ (k?0:20)},${y+h} L${170-w/2+(k?0:30)},${y} L${170+w/2-(k?0:30)},${y} L${170+w/2-(k?0:20)},${y+h} Z"/><text x="170" y="${y+22}">${l[0]}</text><text x="170" y="${y+38}" class="s">${k<=f.i?esc(D[v][k].length>34?D[v][k].slice(0,33)+'…':D[v][k]):'?'}</text></g>`}).join('')}</svg>`},{speed:2200})},'sekolah');
+    player(el,fr,(st,f)=>{st.innerHTML=`<svg class="mv-ice" viewBox="0 0 340 250" role="img" aria-label="Model gunung es"><rect x="0" y="62" width="340" height="188" class="sea"/><line x1="0" y1="62" x2="340" y2="62" class="wl"/><text x="6" y="76" class="s" style="text-anchor:start">permukaan air</text>
+      ${L.map((l,k)=>{const y=[14,70,128,186][k],h=[48,54,54,58][k],w=[90,170,240,300][k];return `<g class="${k<=f.i?'on':''} ${k===f.i?'cur':''}"><path d="M${170-w/2+ (k?0:20)},${y+h} L${170-w/2+(k?0:30)},${y} L${170+w/2-(k?0:30)},${y} L${170+w/2-(k?0:20)},${y+h} Z"/><text x="170" y="${y+22}">${l[0]}</text>${k<=f.i?svgWrap(D[v][k],34,170,y+(D[v][k].length>34?35:38),11,'s'):`<text x="170" y="${y+38}" class="s">?</text>`}</g>`}).join('')}</svg>`},{speed:2200})},'sekolah');
 }
 function lensViz(host){
   const P=[['Guru','Pengguna','Harus < 1 menit per kelas'],['Orang tua','Pengguna','Kabar saat anak tidak hadir'],['Kepala sekolah','Manajemen','Alpa tanpa keterangan turun'],['Tata usaha','Proses','Rekap bulanan tidak perlu lagi'],['Guru BK','Data','Lihat siswa berisiko saja'],['Tim TI','Teknologi','Ringan di Android murah'],['Bendahara','Keuangan','Rp 3 jt/th, hemat 40 jam/bln'],['Siswa tanpa HP','Hukum & etika','Tetap tercatat, data dilindungi']];
@@ -2805,8 +2807,8 @@ function whysViz(host){
   const F=[['Orang','Guru belum terlatih input online'],['Proses','Nilai lewat 3 tahap kirim file'],['Data','Format nilai beda tiap guru'],['Teknologi','Server lambat di jam sibuk'],['Kebijakan','Batas input tidak jelas'],['Lingkungan','Sinyal lemah di ruang guru']];
   host.innerHTML=`<div class="v3-ctl">${seg('Alat',[['why','5 Why'],['fish','Tulang ikan']],'why')}</div><div class="mv-body"></div>`;const body=$('.mv-body',host);
   const run=v=>{if(v==='why'){player(body,W.map((w,i)=>({i,note:i===0?'Mulai dari <b>gejala</b> yang terlihat. Tanyakan: <b>mengapa?</b>':i===W.length-1?'<b>Akar masalah</b> ditemukan: sesuatu yang bisa diperbaiki. Solusi: formulir pesanan + label cetak otomatis, bukan sekadar menegur kurir.':`Mengapa? → ${esc(w[0])}.`})),(st,f)=>{st.innerHTML=`<ol class="mv-why">${W.slice(0,f.i+1).map((w,k)=>`<li class="${w[1]} ${k===f.i?'cur':''}">${k?'<span class="q">Mengapa?</span>':''}<b>${esc(w[0])}</b>${w[1]?`<small>${w[1]}</small>`:''}</li>`).join('')}</ol>`},{speed:1600})}
-    else{player(body,F.map((x,i)=>({i,note:`Kategori <b>${x[0]}</b>: ${x[1]}.${i===F.length-1?' Semua tulang terisi: penyebab ternyata ada di banyak kategori, bukan hanya teknologi.':''}`})),(st,f)=>{st.innerHTML=`<svg class="mv-fish" viewBox="0 0 360 200" role="img" aria-label="Diagram tulang ikan rapor terlambat"><line x1="20" y1="100" x2="290" y2="100" class="sp"/><polygon points="290,82 340,100 290,118" class="hd"/><text x="315" y="96" class="hdt">Rapor</text><text x="315" y="108" class="hdt">telat</text>
-      ${F.map((x,k)=>{const top=k%2===0,col=Math.floor(k/2),xx=70+col*85,y2=top?28:172;return `<g class="${k<=f.i?'on':''} ${k===f.i?'cur':''}"><line x1="${xx}" y1="${y2}" x2="${xx+30}" y2="100"/><text x="${xx}" y="${top?20:190}" class="cat">${x[0]}</text>${k<=f.i?`<text x="${xx+18}" y="${top?62:142}" class="c">${esc(x[1].length>22?x[1].slice(0,21)+'…':x[1])}</text>`:''}</g>`}).join('')}</svg>`},{speed:1500})}};
+    else{player(body,F.map((x,i)=>({i,note:`Kategori <b>${x[0]}</b>: ${x[1]}.${i===F.length-1?' Semua tulang terisi: penyebab ternyata ada di banyak kategori, bukan hanya teknologi.':''}`})),(st,f)=>{st.innerHTML=`<svg class="mv-fish" viewBox="0 0 430 200" role="img" aria-label="Diagram tulang ikan rapor terlambat"><line x1="20" y1="100" x2="340" y2="100" class="sp"/><polygon points="340,80 404,80 424,100 404,120 340,120" class="hd"/><text x="378" y="97" class="hdt">Rapor</text><text x="378" y="110" class="hdt">telat</text>
+      ${F.map((x,k)=>{const top=k%2===0,col=Math.floor(k/2),xx=40+col*110,y2=top?28:172;return `<g class="${k<=f.i?'on':''} ${k===f.i?'cur':''}"><line x1="${xx}" y1="${y2}" x2="${xx+30}" y2="100"/><text x="${xx}" y="${top?20:190}" class="cat">${x[0]}</text>${k<=f.i?svgWrap(x[1],16,xx+(top?20:22),top?52:132,11,'c'):''}</g>`}).join('')}</svg>`},{speed:1500})}};
   segWire(host,'.seg',run);run('why');
 }
 function loopViz(host){
@@ -2902,3 +2904,179 @@ function varAnimOf(tk,l){
   if(tk==='react'&&l.t==='State dengan useState')return 'react';
   return null;
 }
+
+/* ===================== SIMULATOR FLOWCHART & PSEUDOCODE =====================
+   Satu program (lesson.fc) digambar sebagai flowchart bergaya Flowgorithm,
+   ditulis ulang sebagai pseudocode, lalu dijalankan langkah demi langkah.
+   fc = {name, in:[input...], p:[node...]}
+   node: {t:'dec',v,ty,arr} {t:'in',v} {t:'asg',v,e} {t:'out',e}
+         {t:'if',c,y:[],n:[]} {t:'while',c,b:[]} {t:'for',v,a,z,s,b:[]} {t:'do',c,u,b:[]}
+   Ekspresi memakai sintaks Flowgorithm: = (sama dengan), <>, mod, and, or, not, & (gabung teks). */
+const FCF={Int:Math.trunc,Sqrt:Math.sqrt,Abs:Math.abs,Len:s=>String(s).length,ToString:String,ToInteger:x=>parseInt(x,10),Char:(s,i)=>String(s)[i],FCS:v=>fcOut(v)};
+const fcJs=e=>String(e).replace(/"[^"]*"|\b(mod|and|or|not)\b|<>|!=|==|<=|>=|=|&|\^/g,m=>m[0]==='"'?m:({mod:'%',and:'&&',or:'||',not:'!','<>':'!=','!=':'!=','==':'==','<=':'<=','>=':'>=','=':'==','&':'+','^':'**'})[m]);
+/* & (gabung teks) dipecah di tingkat teratas agar angka dan array diformat rapi */
+function fcCat(e){const p=[];let d=0,q=false,b=0;e=String(e);for(let i=0;i<e.length;i++){const c=e[i];if(c==='"')q=!q;else if(!q){if(c==='('||c==='[')d++;else if(c===')'||c===']')d--;else if(c==='&'&&!d){p.push(e.slice(b,i));b=i+1}}}p.push(e.slice(b));return p}
+const fcEv=(S,e)=>{const p=fcCat(e),js=p.length>1?p.map(x=>'FCS('+fcJs(x)+')').join('+'):fcJs(e);return Function('S','F','with(F)with(S){return ('+js+')}')(S,FCF)};
+const fcSet=(S,lhs,v)=>Function('S','F','v','with(F)with(S){'+lhs+'=v}')(S,FCF,v);
+const fcFmt=v=>v===undefined?'—':Array.isArray(v)?'['+v.map(fcFmt).join(', ')+']':typeof v==='string'?'"'+v+'"':typeof v==='number'&&!Number.isInteger(v)?String(Math.round(v*1000)/1000):String(v);
+const fcOut=v=>Array.isArray(v)?'['+v.map(fcOut).join(', ')+']':typeof v==='number'&&!Number.isInteger(v)?String(Math.round(v*1000)/1000):String(v);
+function fcIds(list,c){list.forEach(n=>{n.id='n'+(c.k++);['y','n','b'].forEach(k=>Array.isArray(n[k])&&fcIds(n[k],c))})}
+const fcLabel=n=>({dec:()=>`${n.ty} ${n.v}${n.arr?'['+n.arr+']':''}`,in:()=>`Input ${n.v}`,asg:()=>`${n.v} = ${n.e}`,out:()=>`Output ${n.e}`,
+  if:()=>n.c,while:()=>n.c,do:()=>n.c,for:()=>`${n.v} = ${n.a} to ${n.z}${n.s&&n.s!=='1'?' step '+n.s:''}`})[n.t]();
+
+/* ---------- pseudocode ---------- */
+function fcPseudo(fc){
+  const L=[],at={};const em=(d,s,id)=>{if(id)at[id]=L.length;L.push({d,s,id})};
+  const ex=e=>String(e).replace(/"[^"]*"|\s&\s/g,m=>m[0]==='"'?m:', ');
+  em(0,'START','s');
+  const walk=(list,d)=>list.forEach(n=>{
+    if(n.t==='dec')em(d,`DECLARE ${n.v} : ${n.arr?`ARRAY[${n.arr}] OF `:''}${n.ty.toUpperCase()}`,n.id);
+    else if(n.t==='in')em(d,`INPUT ${n.v}`,n.id);
+    else if(n.t==='asg')em(d,`${n.v} ← ${n.e}`,n.id);
+    else if(n.t==='out')em(d,`OUTPUT ${ex(n.e)}`,n.id);
+    else if(n.t==='if'){em(d,`IF ${n.c} THEN`,n.id);walk(n.y,d+1);if(n.n.length){em(d,'ELSE');walk(n.n,d+1)}em(d,'ENDIF')}
+    else if(n.t==='while'){em(d,`WHILE ${n.c} DO`,n.id);walk(n.b,d+1);em(d,'ENDWHILE')}
+    else if(n.t==='for'){em(d,`FOR ${n.v} ← ${n.a} TO ${n.z}${n.s&&n.s!=='1'?' STEP '+n.s:''} DO`,n.id);walk(n.b,d+1);em(d,'ENDFOR')}
+    else if(n.t==='do'){em(d,'REPEAT');walk(n.b,d+1);em(d,`UNTIL ${n.u||'NOT ('+n.c+')'}`,n.id)}
+  });
+  walk(fc.p,1);em(0,'END','e');
+  return {L,at};
+}
+
+/* ---------- menjalankan program ---------- */
+function fcRun(fc,inputs){
+  const S={},T={},out=[],inp=[...inputs],F=[];let g=0;
+  const snap=(id,note)=>F.push({id,note,vars:Object.keys(T).map(k=>[k,T[k],fcFmt(S[k])]),out:out.slice()});
+  const base=v=>T[String(v).split('[')[0].trim()]||'';
+  const coerce=(ty,v)=>/^Integer/.test(ty)&&typeof v==='number'?Math.trunc(v):v;
+  const run=list=>{for(const n of list){if(++g>1500)throw new Error('Program berputar terlalu lama (lebih dari 1500 langkah). Periksa kondisi berhentinya.');step(n)}};
+  const step=n=>{
+    if(n.t==='dec'){n.v.split(',').map(s=>s.trim()).forEach(v=>{T[v]=n.ty+(n.arr?'[]':'');S[v]=n.arr?Array(fcEv(S,n.arr)).fill(undefined):undefined});snap(n.id,`Menyiapkan variabel <b>${esc(n.v)}</b> bertipe ${n.ty}${n.arr?' (array)':''}. Isinya belum ada.`)}
+    else if(n.t==='in'){const raw=inp.length?inp.shift():'0',ty=base(n.v);let v=raw;if(/^Integer/.test(ty))v=parseInt(raw,10)||0;else if(/^Real/.test(ty))v=parseFloat(raw)||0;else if(/^Boolean/.test(ty))v=/^(true|benar|1)$/i.test(raw);
+      fcSet(S,n.v,v);snap(n.id,`Pengguna mengetik <b>${esc(raw)}</b>, disimpan ke <b>${esc(n.v)}</b>.`)}
+    else if(n.t==='asg'){const v=coerce(base(n.v),fcEv(S,n.e));fcSet(S,n.v,v);snap(n.id,`Hitung <code>${esc(n.e)}</code> = <b>${esc(fcFmt(v))}</b>, simpan ke <b>${esc(n.v)}</b>.`)}
+    else if(n.t==='out'){const v=fcOut(fcEv(S,n.e));out.push(v);snap(n.id,`Tampilkan ke layar: <b>${esc(v)}</b>`)}
+    else if(n.t==='if'){const c=!!fcEv(S,n.c);snap(n.id,`Periksa <code>${esc(n.c)}</code> → <b>${c?'benar':'salah'}</b>, jalur ${c?'Benar (kanan)':'Salah (kiri)'} dipilih.`);run(c?n.y:n.n)}
+    else if(n.t==='while'){for(;;){const c=!!fcEv(S,n.c);snap(n.id,`Periksa <code>${esc(n.c)}</code> → <b>${c?'benar':'salah'}</b>. ${c?'Masuk ke badan loop.':'Loop selesai, lanjut ke bawah.'}`);if(!c)break;run(n.b)}}
+    else if(n.t==='for'){const st=n.s?fcEv(S,n.s):1;fcSet(S,n.v,fcEv(S,n.a));for(;;){const z=fcEv(S,n.z),c=st>0?S[n.v]<=z:S[n.v]>=z;
+      snap(n.id,`${esc(n.v)} = ${esc(fcFmt(S[n.v]))}. ${c?`Masih ${st>0?'≤':'≥'} ${esc(fcFmt(z))}, jalankan badan loop.`:`Sudah melewati ${esc(fcFmt(z))}, loop selesai.`}`);if(!c)break;run(n.b);S[n.v]+=st}}
+    else if(n.t==='do'){for(;;){run(n.b);const c=!!fcEv(S,n.c);snap(n.id,`Badan loop sudah jalan, baru periksa <code>${esc(n.c)}</code> → <b>${c?'benar':'salah'}</b>. ${c?'Ulangi.':'Selesai.'}`);if(!c)break}}
+  };
+  snap('s','Program dimulai.');
+  try{run(fc.p);snap('e','Program selesai.')}catch(e){F.push({id:'e',note:`<span class="err">${esc(e.message)}</span>`,vars:F[F.length-1].vars,out:out.slice(),err:1})}
+  return F;
+}
+
+/* ---------- tata letak flowchart ---------- */
+const FC_CW=7.2,FC_H=36,FC_G=26;
+function fcLay(list){
+  const it=list.map(fcNode);let l=0,r=0,h=0;it.forEach((x,k)=>{l=Math.max(l,x.l);r=Math.max(r,x.r);h+=x.h+(k?FC_G:0)});
+  return {l,r,h,draw(cx,y,o){let yy=y;it.forEach((x,k)=>{if(k){o.push(`<path class="fc-ln" d="M${cx} ${yy} V${yy+FC_G-2}" marker-end="url(#fcA)"/>`);yy+=FC_G}x.draw(cx,yy,o);yy+=x.h})}};
+}
+function fcShape(kind,id,cx,y,w,h,txt){
+  const x=cx-w/2;let s;
+  if(kind==='pill')s=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${h/2}"/>`;
+  else if(kind==='para')s=`<polygon points="${x+10},${y} ${x+w},${y} ${x+w-10},${y+h} ${x},${y+h}"/>`;
+  else if(kind==='dia')s=`<polygon points="${cx},${y} ${x+w},${y+h/2} ${cx},${y+h} ${x},${y+h/2}"/>`;
+  else if(kind==='hex')s=`<polygon points="${x+12},${y} ${x+w-12},${y} ${x+w},${y+h/2} ${x+w-12},${y+h} ${x+12},${y+h} ${x},${y+h/2}"/>`;
+  else if(kind==='dec')s=`<rect x="${x}" y="${y}" width="${w}" height="${h}"/><path class="fc-in" d="M${x+6} ${y} V${y+h} M${x} ${y+6} H${x+w}"/>`;
+  else s=`<rect x="${x}" y="${y}" width="${w}" height="${h}"/>`;
+  return `<g class="fc-s fc-${kind}" data-id="${id}">${s}<text x="${cx+(kind==='dec'?3:0)}" y="${y+h/2+4}">${esc(txt)}</text></g>`;
+}
+function fcNode(n){
+  const txt=n.t==='s'?'Mulai':n.t==='e'?'Selesai':fcLabel(n),tw=txt.length*FC_CW;
+  if(['s','e','dec','in','out','asg'].includes(n.t)){
+    const kind={s:'pill',e:'pill',dec:'dec',in:'para',out:'para',asg:'rect'}[n.t],w=Math.max(n.t==='s'||n.t==='e'?90:96,tw+(kind==='para'?40:28));
+    return {l:w/2,r:w/2,h:FC_H,draw:(cx,y,o)=>o.push(fcShape(kind,n.id,cx,y,w,FC_H,txt))};
+  }
+  const dw=Math.max(112,tw*1.3+44),dh=n.t==='for'?FC_H+4:50,kind=n.t==='for'?'hex':'dia',dwf=n.t==='for'?Math.max(110,tw+40):dw;
+  if(n.t==='if'){
+    const Y=fcLay(n.y),N=fcLay(n.n),oR=Math.max(dwf/2+16,Y.l+16),oL=Math.max(dwf/2+16,N.r+16);
+    const l=Math.max(dwf/2,oL+N.l),r=Math.max(dwf/2,oR+Y.r),bh=Math.max(Y.h,N.h),h=dh+14+bh+(bh?18:4)+4;
+    return {l,r,h,draw(cx,y,o){
+      const my=y+dh/2,yb=y+dh+14,ym=yb+bh+(bh?18:4),xr=cx+oR,xl=cx-oL;
+      o.push(fcShape(kind,n.id,cx,y,dwf,dh,txt));
+      [[Y,xr,cx+dwf/2,'Benar','start'],[N,xl,cx-dwf/2,'Salah','end']].forEach(([B,xx,cor,lab,an])=>{
+        o.push(`<text class="fc-lb" x="${cor+(an==='start'?6:-6)}" y="${my-6}" text-anchor="${an}">${lab}</text>`);
+        if(B.h){o.push(`<path class="fc-ln" d="M${cor} ${my} H${xx} V${yb-2}" marker-end="url(#fcA)"/>`);B.draw(xx,yb,o);o.push(`<path class="fc-ln" d="M${xx} ${yb+B.h} V${ym} H${cx}"/>`)}
+        else o.push(`<path class="fc-ln" d="M${cor} ${my} H${xx} V${ym} H${cx}"/>`)});
+      o.push(`<circle class="fc-dot" cx="${cx}" cy="${ym}" r="4"/>`)}};
+  }
+  const B=fcLay(n.b),l=Math.max(dwf/2,B.l)+22,r=Math.max(dwf/2,B.r)+22;
+  if(n.t==='do'){
+    const h=20+B.h+(B.h?20:0)+dh+16;
+    return {l,r,h,draw(cx,y,o){
+      const yb=y+20,yd=yb+B.h+(B.h?20:0),xl=cx-l+4;
+      o.push(`<circle class="fc-dot" cx="${cx}" cy="${y+6}" r="4"/>`);
+      if(B.h){o.push(`<path class="fc-ln" d="M${cx} ${y+10} V${yb-2}" marker-end="url(#fcA)"/>`);B.draw(cx,yb,o);o.push(`<path class="fc-ln" d="M${cx} ${yb+B.h} V${yd-2}" marker-end="url(#fcA)"/>`)}
+      o.push(fcShape(kind,n.id,cx,yd,dwf,dh,txt));
+      o.push(`<path class="fc-ln" d="M${cx-dwf/2} ${yd+dh/2} H${xl} V${y+6} H${cx-6}" marker-end="url(#fcA)"/><text class="fc-lb" x="${cx-dwf/2-6}" y="${yd+dh/2-6}" text-anchor="end">Benar</text>`);
+      o.push(`<path class="fc-ln" d="M${cx} ${yd+dh} V${yd+dh+16}"/><text class="fc-lb" x="${cx+6}" y="${yd+dh+13}">Salah</text>`)}};
+  }
+  const h=dh+20+B.h+(B.h?14:0)+20;
+  return {l,r,h,draw(cx,y,o){
+    const my=y+dh/2,yb=y+dh+20,y1=yb+B.h+(B.h?14:0),xl=cx-l+4,xr=cx+r-4,ye=y1+18;
+    o.push(fcShape(kind,n.id,cx,y,dwf,dh,txt));
+    if(B.h){o.push(`<path class="fc-ln" d="M${cx} ${y+dh} V${yb-2}" marker-end="url(#fcA)"/>`);B.draw(cx,yb,o);o.push(`<path class="fc-ln" d="M${cx} ${yb+B.h} V${y1}"/>`)}
+    else o.push(`<path class="fc-ln" d="M${cx} ${y+dh} V${y1}"/>`);
+    o.push(`<path class="fc-ln" d="M${cx} ${y1} H${xl} V${my} H${cx-dwf/2-2}" marker-end="url(#fcA)"/>`);
+    o.push(`<path class="fc-ln" d="M${cx+dwf/2} ${my} H${xr} V${ye} H${cx}"/>`);
+    const lt=n.t==='for'?['Ulangi','Selesai']:['Benar','Salah'];
+    o.push(`<text class="fc-lb" x="${cx+6}" y="${y+dh+14}">${lt[0]}</text><text class="fc-lb" x="${cx+dwf/2+6}" y="${my-6}">${lt[1]}</text>`)}};
+}
+function fcSVG(fc){
+  const all=fcLay([{t:'s',id:'s'},...fc.p,{t:'e',id:'e'}]),P=14,W=Math.ceil(all.l+all.r+P*2),H=Math.ceil(all.h+P*2),o=[];
+  all.draw(P+all.l,P,o);
+  return `<svg class="fc-svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Flowchart program ${esc(fc.name||'')}"><defs><marker id="fcA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="fc-ah"/></marker></defs>${o.join('')}</svg>`;
+}
+
+function fcViz(host,{lesson}){
+  const fc=lesson.fc;if(!fc)return;
+  const c={k:1};fcIds(fc.p,c);
+  const ps=fcPseudo(fc),hasIn=fc.in&&fc.in.length;
+  host.innerHTML=`${hasIn?`<div class="fc-inp"><label for="fcIn">Input untuk program (pisahkan dengan koma)</label><div class="fc-inr"><input class="inp" id="fcIn" value="${esc(fc.in.join(', '))}" autocomplete="off"><button class="btn" id="fcGo">Jalankan dengan input ini</button></div></div>`:''}
+  <div class="fc-grid"><div class="fc-cw"><div class="fc-tools"><span class="fc-hint">Geser untuk melihat seluruh flowchart.</span><button class="tlink" data-fit aria-pressed="false">Muat ke lebar layar</button></div><div class="fc-chart" tabindex="0" role="region" aria-label="Flowchart, bisa digeser">${fcSVG(fc)}</div></div>
+  <div class="fc-side"><div class="fc-box"><div class="eyebrow">Pseudocode</div><ol class="fc-ps">${ps.L.map((x,i)=>`<li data-i="${i}"><span style="padding-left:${x.d*1.4}em">${esc(x.s)}</span></li>`).join('')}</ol></div>
+  <div class="fc-box"><div class="eyebrow">Variabel</div><div class="fc-vars"></div></div>
+  <div class="fc-box"><div class="eyebrow">Layar keluaran</div><pre class="fc-con"></pre></div></div></div><div class="fc-play"></div>`;
+  const chart=$('.fc-chart',host),lines=[...host.querySelectorAll('.fc-ps li')],vars=$('.fc-vars',host),con=$('.fc-con',host);
+  let prev=null;
+  const fit=$('[data-fit]',host),tools=$('.fc-tools',host),svg=$('.fc-svg',host);
+  const chk=()=>{const over=svg.getBoundingClientRect().width>chart.clientWidth+2||chart.classList.contains('fit');tools.hidden=!over};
+  fit.onclick=()=>{const on=chart.classList.toggle('fit');fit.setAttribute('aria-pressed',on);fit.textContent=on?'Ukuran asli':'Muat ke lebar layar'};
+  requestAnimationFrame(chk);if(window.ResizeObserver)new ResizeObserver(chk).observe(chart);
+  const draw=(st,f)=>{
+    host.querySelectorAll('.fc-s.on').forEach(g=>g.classList.remove('on'));
+    const g=host.querySelector(`.fc-s[data-id="${f.id}"]`);if(g){g.classList.add('on');
+      const r=g.getBoundingClientRect(),cr=chart.getBoundingClientRect();if(r.top<cr.top||r.bottom>cr.bottom||r.left<cr.left||r.right>cr.right)chart.scrollTo({top:chart.scrollTop+r.top-cr.top-cr.height/2+r.height/2,left:chart.scrollLeft+r.left-cr.left-cr.width/2+r.width/2,behavior:RM()?'auto':'smooth'})}
+    lines.forEach(li=>li.classList.toggle('on',ps.at[f.id]===+li.dataset.i));
+    const pv=prev&&prev.vars?Object.fromEntries(prev.vars.map(v=>[v[0],v[2]])):{};
+    vars.innerHTML=f.vars.length?`<table class="fc-vt"><thead><tr><th scope="col">Nama</th><th scope="col">Tipe</th><th scope="col">Nilai</th></tr></thead><tbody>${f.vars.map(v=>`<tr class="${pv[v[0]]!==undefined&&pv[v[0]]!==v[2]?'chg':''}"><th scope="row">${esc(v[0])}</th><td>${esc(v[1])}</td><td>${esc(v[2])}</td></tr>`).join('')}</tbody></table>`:'<p class="muted">Belum ada variabel.</p>';
+    con.textContent=f.out.length?f.out.join('\n'):' ';con.classList.toggle('empty',!f.out.length);
+    st.innerHTML='';prev=f;
+  };
+  const frames=inp=>{prev=null;return fcRun(fc,inp)};
+  const pl=player($('.fc-play',host),frames(fc.in||[]),draw,{speed:900});
+  const go=$('#fcGo',host);if(go){const ip=$('#fcIn',host);go.onclick=()=>pl.set(frames(ip.value.split(',').map(s=>s.trim()).filter(s=>s!=='')));ip.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();go.click()}}}
+}
+
+/* ---------- memilih jenis loop ---------- */
+function loopPickViz(host){
+  const Q=[['Mencetak nomor kursi 1 sampai 40','for','Jumlah putaran sudah pasti: 40.'],
+    ['Meminta PIN sampai benar','do','Pertanyaan harus muncul minimal sekali, lalu diulang selama PIN salah.'],
+    ['Menabung sampai saldo mencapai Rp1.000.000','while','Kita tidak tahu berapa minggu; yang diketahui hanya kondisi berhentinya.'],
+    ['Menjumlahkan semua harga di keranjang','each','Kita hanya perlu membaca setiap isi koleksi, tidak butuh nomor indeksnya.'],
+    ['Menukar dua angka bersebelahan selama masih ada yang tertukar (bubble sort)','while','Berhenti saat satu putaran tidak ada pertukaran, jadi jumlah putaran tidak pasti.'],
+    ['Menampilkan menu kasir sampai pengguna memilih Keluar','do','Menu tampil dulu, baru dicek pilihannya.'],
+    ['Mencetak tabel perkalian 1 sampai 10','for','Batas awal dan akhir jelas: for bersarang 10 × 10.'],
+    ['Membaca baris file sampai habis','while','Jumlah baris tidak diketahui sebelumnya; berhenti saat tidak ada baris lagi.']];
+  const N={for:'for',while:'while',do:'do-while',each:'for-each'};let i=0,sc=0;
+  const show=()=>{const q=Q[i];host.innerHTML=`<div class="lp"><p class="lp-c">Kasus ${i+1} dari ${Q.length}</p><p class="lp-q">${esc(q[0])}</p><div class="lp-o" role="group" aria-label="Pilih jenis loop">${Object.keys(N).map(k=>`<button class="btn" data-k="${k}">${N[k]}</button>`).join('')}</div><div class="lp-fb" aria-live="polite"></div></div>`;
+    host.querySelector('.lp-o').onclick=e=>{const b=e.target.closest('button');if(!b)return;const ok=b.dataset.k===q[1];if(ok)sc++;
+      host.querySelectorAll('.lp-o button').forEach(x=>{x.disabled=true;if(x.dataset.k===q[1])x.classList.add('ok');else if(x===b)x.classList.add('bad')});
+      $('.lp-fb',host).innerHTML=`<div class="tk-fb ${ok?'ok':'bad'}"><b>${ok?'✓ Tepat.':'Kurang tepat.'}</b> Pilihan terbaik: <b>${N[q[1]]}</b>. ${esc(q[2])}</div><div class="sl-act"><button class="btn primary" id="lpN">${i<Q.length-1?'Kasus berikutnya':'Lihat skor'}</button></div>`;
+      $('#lpN',host).onclick=()=>{i++;if(i<Q.length)show();else{host.innerHTML=`<div class="lp"><p class="lp-q">Skor: ${sc} dari ${Q.length}</p><p class="muted">${sc>=7?'Bagus! Kamu sudah bisa memilih loop sesuai kebutuhan.':'Baca lagi tabel ringkas di atas, lalu coba sekali lagi.'}</p><button class="btn" id="lpR">Ulangi</button></div>`;$('#lpR',host).onclick=()=>{i=0;sc=0;show()}}}}};
+  show();
+}
+Object.assign(VIZ2,{fc:fcViz,looppick:loopPickViz});
+Object.assign(VIZ2T,{fc:'Simulator flowchart dan pseudocode',looppick:'Pilih loop yang tepat'});
