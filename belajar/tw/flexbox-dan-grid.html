@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Flexbox dan Grid · Tailwind CSS · Ruang Kode</title>
+<meta name="description" content="flex menjadikan elemen wadah flexbox. Atur arah dengan flex-row/flex-col, perataan dengan justify-between, justify-center, items-center, dan jarak…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/tw/flexbox-dan-grid">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Flexbox dan Grid · Tailwind CSS · Ruang Kode"><meta property="og:description" content="flex menjadikan elemen wadah flexbox. Atur arah dengan flex-row/flex-col, perataan dengan justify-between, justify-center, items-center, dan jarak…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/tw/flexbox-dan-grid"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Flexbox dan Grid", "description": "flex menjadikan elemen wadah flexbox. Atur arah dengan flex-row/flex-col, perataan dengan justify-between, justify-center, items-center, dan jarak…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/tw/flexbox-dan-grid", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "Tailwind CSS", "url": "https://ruang-kode-nine.vercel.app/belajar/tw"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Tailwind CSS", "item": "https://ruang-kode-nine.vercel.app/belajar/tw"}, {"@type": "ListItem", "position": 3, "name": "Flexbox dan Grid", "item": "https://ruang-kode-nine.vercel.app/belajar/tw/flexbox-dan-grid"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/tw">Tailwind CSS</a> / Modul 2</nav>
+<div class="eyebrow">Tailwind CSS · Modul 2 · Praktik langsung</div><h1>Flexbox dan Grid</h1><a class="cta" href="/#tw-2-1">Buka versi interaktif</a>
+<p><code>flex</code> menjadikan elemen wadah flexbox. Atur arah dengan <code>flex-row</code>/<code>flex-col</code>, perataan dengan <code>justify-between</code>, <code>justify-center</code>, <code>items-center</code>, dan jarak antaranak dengan <code>gap-4</code>.</p>
+<p><code>grid</code> plus <code>grid-cols-3</code> membuat tiga kolom sama lebar. <code>col-span-2</code> membuat satu anak memakan dua kolom.</p>
+<p>Pola umum navbar: <code>flex items-center justify-between</code>. Pola galeri kartu: <code>grid grid-cols-2 gap-4</code>.</p>
+<div class="lbl">HTML</div><pre><code>&lt;nav class=&quot;flex items-center justify-between p-4 bg-slate-800 text-white&quot;&gt;
+  &lt;b&gt;Ruang&lt;/b&gt;
+  &lt;div class=&quot;flex gap-4 text-sm&quot;&gt;&lt;a&gt;Beranda&lt;/a&gt;&lt;a&gt;Kursus&lt;/a&gt;&lt;a&gt;Masuk&lt;/a&gt;&lt;/div&gt;
+&lt;/nav&gt;
+&lt;section id=&quot;galeri&quot; class=&quot;grid grid-cols-2 gap-4 p-4&quot;&gt;
+  &lt;div class=&quot;p-4 bg-sky-100 rounded&quot;&gt;Dart&lt;/div&gt;
+  &lt;div class=&quot;p-4 bg-sky-100 rounded&quot;&gt;Kotlin&lt;/div&gt;
+  &lt;div class=&quot;p-4 bg-sky-100 rounded&quot;&gt;Flutter&lt;/div&gt;
+  &lt;div class=&quot;p-4 bg-sky-100 rounded&quot;&gt;Compose&lt;/div&gt;
+&lt;/section&gt;</code></pre>
+<h2>Tantangan</h2><ol><li>Ubah galeri menjadi tiga kolom dengan <code>grid-cols-3</code>.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Buat footer tiga kolom yang ditumpuk di ponsel dan berjajar mulai md, dengan jarak 6.</p><details><summary>Petunjuk</summary><p>flex flex-col md:flex-row gap-6, atau grid grid-cols-1 md:grid-cols-3.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">HTML</div><pre><code>&lt;footer class=&quot;grid grid-cols-1 md:grid-cols-3 gap-6 p-6 bg-slate-900 text-slate-300&quot;&gt;
+  &lt;div&gt;&lt;b class=&quot;text-white&quot;&gt;RuangKode&lt;/b&gt;&lt;p class=&quot;text-sm&quot;&gt;Belajar coding berbahasa Indonesia.&lt;/p&gt;&lt;/div&gt;
+  &lt;div&gt;&lt;b class=&quot;text-white&quot;&gt;Jalur&lt;/b&gt;&lt;p class=&quot;text-sm&quot;&gt;Dart, Kotlin, Tailwind&lt;/p&gt;&lt;/div&gt;
+  &lt;div&gt;&lt;b class=&quot;text-white&quot;&gt;Kontak&lt;/b&gt;&lt;p class=&quot;text-sm&quot;&gt;halo@ruangkode.id&lt;/p&gt;&lt;/div&gt;
+&lt;/footer&gt;</code></pre></details></li><li><p>Buat tata letak dasbor: sidebar selebar 1 kolom dan konten 3 kolom dalam grid 4 kolom.</p><details><summary>Petunjuk</summary><p>grid grid-cols-4, lalu col-span-3 pada konten.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">HTML</div><pre><code>&lt;div class=&quot;grid grid-cols-4 gap-4 p-4 min-h-[200px]&quot;&gt;
+  &lt;aside class=&quot;col-span-1 bg-slate-100 rounded p-3&quot;&gt;Menu&lt;/aside&gt;
+  &lt;main class=&quot;col-span-3 bg-white border rounded p-3&quot;&gt;Konten&lt;/main&gt;
+&lt;/div&gt;</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>flex + justify-* + items-* + gap-*.</li><li>grid + grid-cols-N + col-span-N.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kelas mana yang menaruh anak flex di tengah secara vertikal?</summary><p class="ok">Jawaban: items-center</p><p>items-* mengatur sumbu silang (vertikal pada flex-row).</p></details><details><summary>Kelas untuk jarak antaranak flex atau grid?</summary><p class="ok">Jawaban: gap-4</p><p>gap bekerja di flex dan grid.</p></details>
+<a class="cta" href="/#tw-2-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/tw/tipografi">Tipografi</a></p><p>Berikutnya: <a href="/belajar/tw/desain-responsif">Desain responsif</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

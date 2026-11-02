@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Latihan algoritma: Fibonacci, bubble sort, prima · Kotlin · Ruang Kode</title>
+<meta name="description" content="Latihan loop yang sama dengan bahasa lain, ditulis gaya Kotlin. Fibonacci memakai repeat(n) atau for karena jumlah suku diketahui. Menukar dua nilai bisa…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/kotlin/latihan-algoritma-fibonacci-bubble-sort-prima">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Latihan algoritma: Fibonacci, bubble sort, prima · Kotlin · Ruang Kode"><meta property="og:description" content="Latihan loop yang sama dengan bahasa lain, ditulis gaya Kotlin. Fibonacci memakai repeat(n) atau for karena jumlah suku diketahui. Menukar dua nilai bisa…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/kotlin/latihan-algoritma-fibonacci-bubble-sort-prima"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Latihan algoritma: Fibonacci, bubble sort, prima", "description": "Latihan loop yang sama dengan bahasa lain, ditulis gaya Kotlin. Fibonacci memakai repeat(n) atau for karena jumlah suku diketahui. Menukar dua nilai bisa…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/kotlin/latihan-algoritma-fibonacci-bubble-sort-prima", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Kotlin", "url": "https://ruang-kode-nine.vercel.app/belajar/kotlin"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Kotlin", "item": "https://ruang-kode-nine.vercel.app/belajar/kotlin"}, {"@type": "ListItem", "position": 3, "name": "Latihan algoritma: Fibonacci, bubble sort, prima", "item": "https://ruang-kode-nine.vercel.app/belajar/kotlin/latihan-algoritma-fibonacci-bubble-sort-prima"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/kotlin">Kotlin</a> / Modul 2</nav>
+<div class="eyebrow">Kotlin · Modul 2 · Konsep &amp; kode</div><h1>Latihan algoritma: Fibonacci, bubble sort, prima</h1><a class="cta" href="/#kotlin-2-2">Buka versi interaktif</a>
+<p>Latihan loop yang sama dengan bahasa lain, ditulis gaya Kotlin. <b>Fibonacci</b> memakai <code>repeat(n)</code> atau for karena jumlah suku diketahui. Menukar dua nilai bisa memakai <code>a = b.also { b = a + b }</code>, tetapi variabel bantu lebih mudah dibaca pemula.</p>
+<p><b>Bubble sort</b>: while luar dengan penanda pertukaran, for dalam membandingkan pasangan. <b>Prima</b>: fungsi <code>isPrima</code> dengan loop dan return lebih awal, lalu <code>(2..30).filter(::isPrima)</code>, gaya fungsional khas Kotlin.</p>
+<p>Di aplikasi nyata, pakai <code>sorted()</code> atau <code>sortedBy { }</code> bawaan.</p>
+<div class="lbl">KODE</div><pre><code>fun isPrima(x: Int): Boolean {
+    if (x &lt; 2) return false
+    var d = 2
+    while (d * d &lt;= x) {
+        if (x % d == 0) return false
+        d++
+    }
+    return true
+}
+
+fun main() {
+    var a = 0
+    var b = 1
+    val deret = mutableListOf&lt;Int&gt;()
+    repeat(10) {
+        deret.add(a)
+        val c = a + b
+        a = b
+        b = c
+    }
+    println(&quot;Fibonacci: ${deret.joinToString(&quot; &quot;)}&quot;)
+
+    val data = mutableListOf(64, 25, 12, 22, 11)
+    var adaTukar = true
+    while (adaTukar) {
+        adaTukar = false
+        for (j in 0 until data.size - 1) {
+            if (data[j] &gt; data[j + 1]) {
+                val t = data[j]
+                data[j] = data[j + 1]
+                data[j + 1] = t
+                adaTukar = true
+            }
+        }
+    }
+    println(&quot;Terurut: $data&quot;)
+    println(&quot;Prima: ${(2..30).filter(::isPrima).joinToString(&quot; &quot;)}&quot;)
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Fibonacci: 0 1 1 2 3 5 8 13 21 34
+Terurut: [11, 12, 22, 25, 64]
+Prima: 2 3 5 7 11 13 17 19 23 29</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Hitung berapa minggu menabung Rp30.000 per minggu sampai saldo minimal Rp200.000.</p><details><summary>Petunjuk</summary><p>Jumlah minggu belum diketahui, jadi while (saldo &lt; 200000).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>fun main() {
+    var saldo = 0
+    var minggu = 0
+    while (saldo &lt; 200_000) {
+        saldo += 30_000
+        minggu++
+    }
+    println(&quot;Minggu ke-$minggu, saldo $saldo&quot;)
+}</code></pre></details></li><li><p>Tampilkan tabel perkalian 1 sampai 4 berbentuk kotak dengan lebar kolom 4.</p><details><summary>Petunjuk</summary><p>for bersarang dengan range 1..4, dan "%4d".format(...) untuk lebar kolom.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>fun main() {
+    for (i in 1..4) {
+        val baris = (1..4).joinToString(&quot;&quot;) { j -&gt; &quot;%4d&quot;.format(i * j) }
+        println(baris)
+    }
+}</code></pre></details></li><li><p>Hitung faktorial 20. Kenapa harus memakai Long?</p><details><summary>Petunjuk</summary><p>20! melebihi batas Int (sekitar 2,1 miliar). Mulai dari 1L.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>fun main() {
+    var hasil = 1L
+    for (i in 1..20) hasil *= i
+    println(&quot;20! = $hasil&quot;)
+}</code></pre></details></li><li><p>Cari FPB 48 dan 36 dengan fungsi rekursif <code>tailrec</code>.</p><details><summary>Petunjuk</summary><p>fpb(a, b) = jika b == 0 maka a, selain itu fpb(b, a % b).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>tailrec fun fpb(a: Int, b: Int): Int = if (b == 0) a else fpb(b, a % b)
+
+fun main() {
+    println(&quot;FPB: ${fpb(48, 36)}&quot;)
+}</code></pre></details></li><li><p>Periksa apakah "kasur rusak" palindrom (abaikan spasi).</p><details><summary>Petunjuk</summary><p>Hapus spasi dengan replace, lalu bandingkan dengan reversed().</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>fun main() {
+    val s = &quot;kasur rusak&quot;.replace(&quot; &quot;, &quot;&quot;)
+    println(if (s == s.reversed()) &quot;Palindrom&quot; else &quot;Bukan palindrom&quot;)
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>repeat(n) untuk jumlah putaran pasti.</li><li>while untuk kondisi berhenti.</li><li>filter(::isPrima) gaya fungsional.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Apa arti 200_000 di Kotlin?</summary><p class="ok">Jawaban: Angka 200000 dengan pemisah agar mudah dibaca</p><p>Garis bawah boleh dipakai sebagai pemisah digit.</p></details>
+<a class="cta" href="/#kotlin-2-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/kotlin/if-dan-when-sebagai-ekspresi-range-dan-loop">if dan when sebagai ekspresi, range dan loop</a></p><p>Berikutnya: <a href="/belajar/kotlin/fungsi-lambda-dan-koleksi">Fungsi, lambda, dan koleksi</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

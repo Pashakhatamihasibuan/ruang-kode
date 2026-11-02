@@ -284,7 +284,7 @@ def lesson_body(t, l, book):
         if l.get("so"):
             h.append("<h2>Soal latihan</h2><ol>" + "".join(
                 f"<li><p>{x['q']}</p><details><summary>Petunjuk</summary><p>{x['h']}</p></details>"
-                + (f"<details><summary>Lihat jawaban</summary>{code(x['a'], lang)}</details>" if x.get("a") else "") + "</li>"
+                + (f"<details><summary>Lihat jawaban</summary>{code(x['a'], x.get('lang') or lang)}</details>" if x.get("a") else "") + "</li>"
                 for x in l["so"]) + "</ol>")
         h.append(pros(l, lang))
         if l.get("pts"):

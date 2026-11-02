@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tema Material 3 dan mode gelap · Flutter · Ruang Kode</title>
+<meta name="description" content="Atur warna dan huruf seluruh aplikasi di satu tempat lewat ThemeData. Material 3 cukup diberi satu warna benih: ColorScheme.fromSeed(seedColor: ...)…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/flutter/tema-material-3-dan-mode-gelap">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Tema Material 3 dan mode gelap · Flutter · Ruang Kode"><meta property="og:description" content="Atur warna dan huruf seluruh aplikasi di satu tempat lewat ThemeData. Material 3 cukup diberi satu warna benih: ColorScheme.fromSeed(seedColor: ...)…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/flutter/tema-material-3-dan-mode-gelap"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Tema Material 3 dan mode gelap", "description": "Atur warna dan huruf seluruh aplikasi di satu tempat lewat ThemeData. Material 3 cukup diberi satu warna benih: ColorScheme.fromSeed(seedColor: ...)…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter/tema-material-3-dan-mode-gelap", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Flutter", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Flutter", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, {"@type": "ListItem", "position": 3, "name": "Tema Material 3 dan mode gelap", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter/tema-material-3-dan-mode-gelap"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/flutter">Flutter</a> / Modul 5</nav>
+<div class="eyebrow">Flutter · Modul 5 · Konsep &amp; kode</div><h1>Tema Material 3 dan mode gelap</h1><a class="cta" href="/#flutter-5-1">Buka versi interaktif</a>
+<p>Atur warna dan huruf seluruh aplikasi di satu tempat lewat <code>ThemeData</code>. Material 3 cukup diberi satu warna benih: <code>ColorScheme.fromSeed(seedColor: ...)</code> membuat seluruh palet (primary, secondary, surface, error) yang serasi dan kontrasnya terjaga.</p>
+<p>Isi <code>theme</code> untuk mode terang dan <code>darkTheme</code> untuk mode gelap, lalu <code>themeMode: ThemeMode.system</code> agar mengikuti pengaturan ponsel. Di widget, ambil warna dari tema dengan <code>Theme.of(context).colorScheme.primary</code>, jangan menulis warna langsung.</p>
+<p>Font kustom bisa dipasang lewat aset atau package <b>google_fonts</b>: <code>textTheme: GoogleFonts.poppinsTextTheme()</code>.</p>
+<div class="lbl">KODE</div><pre><code>class AplikasiKopi extends StatelessWidget {
+  const AplikasiKopi({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    const benih = Color(0xFF8B4A2B);
+    return MaterialApp(
+      themeMode: ThemeMode.system,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: benih),
+        useMaterial3: true,
+      ),
+      darkTheme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: benih,
+          brightness: Brightness.dark,
+        ),
+        useMaterial3: true,
+      ),
+      home: const Beranda(),
+    );
+  }
+}
+
+class Beranda extends StatelessWidget {
+  const Beranda({super.key});
+  @override
+  Widget build(BuildContext context) {
+    final warna = Theme.of(context).colorScheme;
+    final teks = Theme.of(context).textTheme;
+    return Scaffold(
+      body: Center(
+        child: Text(&#x27;Kopi Senja&#x27;,
+            style: teks.headlineMedium?.copyWith(color: warna.primary)),
+      ),
+    );
+  }
+}</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Ubah gaya semua FilledButton di aplikasi menjadi bersudut 12 dan tinggi 48 lewat tema.</p><details><summary>Petunjuk</summary><p>ThemeData(filledButtonTheme: FilledButtonThemeData(style: FilledButton.styleFrom(...))).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>theme: ThemeData(
+  colorScheme: ColorScheme.fromSeed(seedColor: benih),
+  filledButtonTheme: FilledButtonThemeData(
+    style: FilledButton.styleFrom(
+      minimumSize: const Size.fromHeight(48),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    ),
+  ),
+)</code></pre></details></li><li><p>Tambahkan sakelar (Switch) di halaman pengaturan untuk mengganti mode gelap secara manual.</p><details><summary>Petunjuk</summary><p>Simpan ThemeMode di state management, lalu MaterialApp membaca nilainya.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>SwitchListTile(
+  title: const Text(&#x27;Mode gelap&#x27;),
+  value: context.watch&lt;Pengaturan&gt;().gelap,
+  onChanged: (v) =&gt; context.read&lt;Pengaturan&gt;().setGelap(v),
+)
+
+// MaterialApp
+themeMode: context.watch&lt;Pengaturan&gt;().gelap ? ThemeMode.dark : ThemeMode.light,</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>ColorScheme.fromSeed membuat palet lengkap.</li><li>theme + darkTheme + themeMode.</li><li>Ambil warna dari Theme.of(context).</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa warna sebaiknya diambil dari Theme.of(context)?</summary><p class="ok">Jawaban: Agar otomatis menyesuaikan mode gelap dan tema</p><p>Satu sumber warna untuk seluruh aplikasi.</p></details>
+<a class="cta" href="/#flutter-5-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/flutter/pengujian-dan-rilis-aplikasi">Pengujian dan rilis aplikasi</a></p><p>Berikutnya: <a href="/belajar/flutter/animasi-implisit-dan-hero">Animasi implisit dan Hero</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

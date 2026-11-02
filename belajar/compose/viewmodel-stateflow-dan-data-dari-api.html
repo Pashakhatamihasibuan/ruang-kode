@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ViewModel, StateFlow, dan data dari API · Jetpack Compose · Ruang Kode</title>
+<meta name="description" content="Arsitektur yang direkomendasikan Google: UI (composable) → ViewModel (state layar dan logika) → Repository (sumber data: API dan database). ViewModel…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/compose/viewmodel-stateflow-dan-data-dari-api">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="ViewModel, StateFlow, dan data dari API · Jetpack Compose · Ruang Kode"><meta property="og:description" content="Arsitektur yang direkomendasikan Google: UI (composable) → ViewModel (state layar dan logika) → Repository (sumber data: API dan database). ViewModel…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/compose/viewmodel-stateflow-dan-data-dari-api"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "ViewModel, StateFlow, dan data dari API", "description": "Arsitektur yang direkomendasikan Google: UI (composable) → ViewModel (state layar dan logika) → Repository (sumber data: API dan database). ViewModel…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/compose/viewmodel-stateflow-dan-data-dari-api", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Jetpack Compose", "url": "https://ruang-kode-nine.vercel.app/belajar/compose"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Jetpack Compose", "item": "https://ruang-kode-nine.vercel.app/belajar/compose"}, {"@type": "ListItem", "position": 3, "name": "ViewModel, StateFlow, dan data dari API", "item": "https://ruang-kode-nine.vercel.app/belajar/compose/viewmodel-stateflow-dan-data-dari-api"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/compose">Jetpack Compose</a> / Modul 3</nav>
+<div class="eyebrow">Jetpack Compose · Modul 3 · Konsep &amp; kode</div><h1>ViewModel, StateFlow, dan data dari API</h1><a class="cta" href="/#compose-3-2">Buka versi interaktif</a>
+<p>Arsitektur yang direkomendasikan Google: <b>UI</b> (composable) → <b>ViewModel</b> (state layar dan logika) → <b>Repository</b> (sumber data: API dan database). ViewModel bertahan saat layar diputar dan menjalankan coroutine di <code>viewModelScope</code>.</p>
+<p>ViewModel menyimpan state di <code>MutableStateFlow</code> dan membukanya sebagai <code>StateFlow</code> hanya-baca. Composable membacanya dengan <code>collectAsStateWithLifecycle()</code>. Gabungkan dengan sealed interface <code>UiState</code> agar layar memuat, gagal, dan berhasil tertangani.</p>
+<p>Data API diambil dengan <b>Retrofit</b> (antarmuka dengan anotasi <code>@GET</code>) atau <b>Ktor</b>, disimpan di <b>Room</b> agar bisa dibuka tanpa internet, dan semua bagian dirangkai dengan <b>Hilt</b> (dependency injection).</p>
+<div class="tw"><table><caption>Lapisan aplikasi Android modern</caption><thead><tr><th>Lapisan</th><th>Isi</th><th>Library</th></tr></thead><tbody><tr><td>UI</td><td>Composable, membaca state</td><td>Jetpack Compose, Material 3</td></tr><tr><td>ViewModel</td><td>State layar dan aksi</td><td>lifecycle-viewmodel, StateFlow</td></tr><tr><td>Repository</td><td>Satu pintu ke data</td><td>Kotlin coroutines</td></tr><tr><td>Data</td><td>API dan database</td><td>Retrofit/Ktor, Room</td></tr><tr><td>Perangkai</td><td>Membuat dan menyuntik objek</td><td>Hilt, Koin</td></tr></tbody></table></div>
+<div class="lbl">KODE</div><pre><code>sealed interface CuacaState {
+    data object Memuat : CuacaState
+    data class Ok(val kota: List&lt;String&gt;) : CuacaState
+    data class Gagal(val pesan: String) : CuacaState
+}
+
+interface CuacaApi {
+    @GET(&quot;cuaca&quot;)
+    suspend fun daftar(): List&lt;String&gt;
+}
+
+@HiltViewModel
+class CuacaViewModel @Inject constructor(private val api: CuacaApi) : ViewModel() {
+    private val _state = MutableStateFlow&lt;CuacaState&gt;(CuacaState.Memuat)
+    val state: StateFlow&lt;CuacaState&gt; = _state.asStateFlow()
+
+    init { muat() }
+
+    fun muat() = viewModelScope.launch {
+        _state.value = CuacaState.Memuat
+        _state.value = try {
+            CuacaState.Ok(api.daftar())
+        } catch (e: Exception) {
+            CuacaState.Gagal(e.message ?: &quot;Terjadi kesalahan&quot;)
+        }
+    }
+}
+
+@Composable
+fun CuacaScreen(vm: CuacaViewModel = hiltViewModel()) {
+    when (val s = vm.state.collectAsStateWithLifecycle().value) {
+        CuacaState.Memuat -&gt; CircularProgressIndicator()
+        is CuacaState.Gagal -&gt; Button(onClick = { vm.muat() }) { Text(&quot;Coba lagi: ${s.pesan}&quot;) }
+        is CuacaState.Ok -&gt; LazyColumn { items(s.kota) { Text(it) } }
+    }
+}</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat <code>sealed interface UiState</code> (Memuat, Sukses, Gagal) dan tampilkan dengan when di Composable.</p><details><summary>Petunjuk</summary><p>ViewModel memegang MutableStateFlow&lt;UiState>; Composable memakai collectAsStateWithLifecycle.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>sealed interface UiState {
+    data object Memuat : UiState
+    data class Sukses(val data: List&lt;Produk&gt;) : UiState
+    data class Gagal(val pesan: String) : UiState
+}
+
+@Composable
+fun LayarProduk(vm: ProdukViewModel = viewModel()) {
+    when (val s = vm.state.collectAsStateWithLifecycle().value) {
+        UiState.Memuat -&gt; CircularProgressIndicator()
+        is UiState.Sukses -&gt; DaftarProduk(s.data)
+        is UiState.Gagal -&gt; TeksError(s.pesan, onCobaLagi = vm::muat)
+    }
+}</code></pre></details></li><li><p>Tulis fungsi <code>muat()</code> di ViewModel yang menangani error jaringan.</p><details><summary>Petunjuk</summary><p>viewModelScope.launch, try/catch, lalu ubah _state.value.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>fun muat() {
+    _state.value = UiState.Memuat
+    viewModelScope.launch {
+        _state.value = try {
+            UiState.Sukses(repo.semua())
+        } catch (e: IOException) {
+            UiState.Gagal(&quot;Tidak ada koneksi. Periksa internet lalu coba lagi.&quot;)
+        }
+    }
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>UI → ViewModel → Repository.</li><li>StateFlow + collectAsStateWithLifecycle.</li><li>Retrofit/Ktor, Room, Hilt.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa state disimpan di ViewModel, bukan di composable?</summary><p class="ok">Jawaban: Bertahan saat rotasi dan memisahkan logika dari UI</p><p>ViewModel hidup lebih lama dari composable.</p></details>
+<a class="cta" href="/#compose-3-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/compose/material-3-scaffold-dan-navigasi">Material 3, Scaffold, dan navigasi</a></p><p>Berikutnya: <a href="/belajar/compose/tema-material-3-dan-mode-gelap">Tema Material 3 dan mode gelap</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

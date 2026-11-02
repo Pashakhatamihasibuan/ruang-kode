@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Exception, require, dan Result · Kotlin · Ruang Kode</title>
+<meta name="description" content="Kotlin menangkap error dengan try / catch / finally. Bedanya dengan Java: try adalah ekspresi, jadi bisa mengembalikan nilai: val n = try { s.toInt() }…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/kotlin/exception-require-dan-result">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Exception, require, dan Result · Kotlin · Ruang Kode"><meta property="og:description" content="Kotlin menangkap error dengan try / catch / finally. Bedanya dengan Java: try adalah ekspresi, jadi bisa mengembalikan nilai: val n = try { s.toInt() }…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/kotlin/exception-require-dan-result"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Exception, require, dan Result", "description": "Kotlin menangkap error dengan try / catch / finally. Bedanya dengan Java: try adalah ekspresi, jadi bisa mengembalikan nilai: val n = try { s.toInt() }…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/kotlin/exception-require-dan-result", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Kotlin", "url": "https://ruang-kode-nine.vercel.app/belajar/kotlin"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Kotlin", "item": "https://ruang-kode-nine.vercel.app/belajar/kotlin"}, {"@type": "ListItem", "position": 3, "name": "Exception, require, dan Result", "item": "https://ruang-kode-nine.vercel.app/belajar/kotlin/exception-require-dan-result"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/kotlin">Kotlin</a> / Modul 4</nav>
+<div class="eyebrow">Kotlin · Modul 4 · Konsep &amp; kode</div><h1>Exception, require, dan Result</h1><a class="cta" href="/#kotlin-4-1">Buka versi interaktif</a>
+<p>Kotlin menangkap error dengan <code>try</code> / <code>catch</code> / <code>finally</code>. Bedanya dengan Java: <code>try</code> adalah ekspresi, jadi bisa mengembalikan nilai: <code>val n = try { s.toInt() } catch (e: NumberFormatException) { 0 }</code>.</p>
+<p>Untuk memeriksa syarat, pakai <code>require(kondisi) { "pesan" }</code> (argumen salah, melempar IllegalArgumentException) dan <code>check(...)</code> (keadaan objek salah). Buat exception sendiri dengan mewarisi <code>Exception</code>.</p>
+<p><code>runCatching { ... }</code> membungkus hasil dalam <b>Result</b>: berhasil atau gagal, tanpa try/catch. Ambil nilainya dengan <code>getOrDefault</code>, <code>getOrNull</code>, atau <code>fold</code>. Untuk input teks, <code>toIntOrNull()</code> paling sederhana.</p>
+<div class="lbl">KODE</div><pre><code>class SaldoKurang(val kurang: Int) : Exception(&quot;Saldo kurang Rp$kurang&quot;)
+
+fun tarik(saldo: Int, jumlah: Int): Int {
+    require(jumlah &gt; 0) { &quot;Jumlah harus positif&quot; }
+    if (jumlah &gt; saldo) throw SaldoKurang(jumlah - saldo)
+    return saldo - jumlah
+}
+
+fun main() {
+    try {
+        println(&quot;12a&quot;.toInt())
+    } catch (e: NumberFormatException) {
+        println(&quot;Format salah, masukkan angka saja&quot;)
+    } finally {
+        println(&quot;Selesai memeriksa input&quot;)
+    }
+
+    try {
+        tarik(50000, 80000)
+    } catch (e: SaldoKurang) {
+        println(e.message)
+    }
+
+    val angka = &quot;99x&quot;.toIntOrNull() ?: 0
+    println(&quot;toIntOrNull: $angka&quot;)
+
+    val gagal = runCatching { tarik(50000, -1) }
+    println(gagal.exceptionOrNull()?.message)
+    val sisa = runCatching { tarik(50000, 20000) }.getOrDefault(0)
+    println(&quot;Sisa: $sisa&quot;)
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Format salah, masukkan angka saja
+Selesai memeriksa input
+Saldo kurang Rp30000
+toIntOrNull: 0
+Jumlah harus positif
+Sisa: 30000</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat fungsi <code>bagi(a, b)</code> yang melempar IllegalArgumentException("Pembagi nol") jika b = 0, lalu tangkap di main.</p><details><summary>Petunjuk</summary><p>require(b != 0) { "Pembagi nol" } sudah melempar IllegalArgumentException.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>fun bagi(a: Int, b: Int): Double {
+    require(b != 0) { &quot;Pembagi nol&quot; }
+    return a.toDouble() / b
+}
+
+fun main() {
+    println(bagi(10, 4))
+    try {
+        println(bagi(5, 0))
+    } catch (e: IllegalArgumentException) {
+        println(&quot;Gagal: ${e.message}&quot;)
+    }
+}</code></pre></details></li><li><p>Validasi input umur <code>["20", "abc", "-5", "17"]</code> dengan when: valid, bukan angka, atau tidak boleh negatif.</p><details><summary>Petunjuk</summary><p>val n = s.toIntOrNull(); when { n == null -> ...; n &lt; 0 -> ...; else -> ... }</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>fun main() {
+    for (s in listOf(&quot;20&quot;, &quot;abc&quot;, &quot;-5&quot;, &quot;17&quot;)) {
+        val n = s.toIntOrNull()
+        val hasil = when {
+            n == null -&gt; &quot;bukan angka&quot;
+            n &lt; 0 -&gt; &quot;tidak boleh negatif&quot;
+            else -&gt; &quot;valid&quot;
+        }
+        println(&quot;$s: $hasil&quot;)
+    }
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>try adalah ekspresi.</li><li>require/check untuk syarat.</li><li>runCatching menghasilkan Result.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Exception yang dilempar require(false)?</summary><p class="ok">Jawaban: IllegalArgumentException</p><p>check yang melempar IllegalStateException.</p></details><details><summary>Hasil runCatching { error(&quot;x&quot;) }.getOrDefault(5)?</summary><p class="ok">Jawaban: 5</p><p>Gagal, jadi nilai bawaan yang dipakai.</p></details>
+<a class="cta" href="/#kotlin-4-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/kotlin/build-tool-dan-library-kotlin-populer">Build tool dan library Kotlin populer</a></p><p>Berikutnya: <a href="/belajar/kotlin/generics-enum-class-dan-object">Generics, enum class, dan object</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

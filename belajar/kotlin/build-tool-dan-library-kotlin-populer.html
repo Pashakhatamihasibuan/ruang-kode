@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Build tool dan library Kotlin populer · Kotlin · Ruang Kode</title>
+<meta name="description" content="Proyek Kotlin dan Android memakai Gradle dengan file build.gradle.kts (Kotlin DSL). Dependensi ditambahkan di blok dependencies, dan versinya biasanya…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/kotlin/build-tool-dan-library-kotlin-populer">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Build tool dan library Kotlin populer · Kotlin · Ruang Kode"><meta property="og:description" content="Proyek Kotlin dan Android memakai Gradle dengan file build.gradle.kts (Kotlin DSL). Dependensi ditambahkan di blok dependencies, dan versinya biasanya…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/kotlin/build-tool-dan-library-kotlin-populer"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Build tool dan library Kotlin populer", "description": "Proyek Kotlin dan Android memakai Gradle dengan file build.gradle.kts (Kotlin DSL). Dependensi ditambahkan di blok dependencies, dan versinya biasanya…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/kotlin/build-tool-dan-library-kotlin-populer", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Kotlin", "url": "https://ruang-kode-nine.vercel.app/belajar/kotlin"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Kotlin", "item": "https://ruang-kode-nine.vercel.app/belajar/kotlin"}, {"@type": "ListItem", "position": 3, "name": "Build tool dan library Kotlin populer", "item": "https://ruang-kode-nine.vercel.app/belajar/kotlin/build-tool-dan-library-kotlin-populer"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/kotlin">Kotlin</a> / Modul 3</nav>
+<div class="eyebrow">Kotlin · Modul 3 · Konsep &amp; kode</div><h1>Build tool dan library Kotlin populer</h1><a class="cta" href="/#kotlin-3-4">Buka versi interaktif</a>
+<p>Proyek Kotlin dan Android memakai <b>Gradle</b> dengan file <code>build.gradle.kts</code> (Kotlin DSL). Dependensi ditambahkan di blok <code>dependencies</code>, dan versinya biasanya dikelola terpusat di <b>version catalog</b> <code>gradle/libs.versions.toml</code>.</p>
+<p>Library yang sering dipakai: <b>Ktor</b> dan <b>Retrofit</b> (HTTP), <b>kotlinx.serialization</b> (JSON), <b>Room</b> (database SQLite Android), <b>Hilt</b> atau <b>Koin</b> (dependency injection), <b>Coil</b> (memuat gambar), dan <b>JUnit</b> + <b>MockK</b> (pengujian).</p>
+<div class="tw"><table><caption>Library Kotlin yang sering dipakai</caption><thead><tr><th>Kebutuhan</th><th>Library</th></tr></thead><tbody><tr><td>HTTP / API</td><td>Retrofit + OkHttp (Android), Ktor Client (juga KMP)</td></tr><tr><td>JSON</td><td>kotlinx.serialization, Moshi</td></tr><tr><td>Database lokal</td><td>Room, SQLDelight</td></tr><tr><td>Dependency injection</td><td>Hilt, Koin</td></tr><tr><td>Gambar</td><td>Coil</td></tr><tr><td>Asinkron</td><td>kotlinx.coroutines, Flow</td></tr><tr><td>Tes</td><td>JUnit, MockK, Turbine (Flow)</td></tr></tbody></table></div>
+<div class="lbl">KODE</div><pre><code>plugins {
+    kotlin(&quot;jvm&quot;) version &quot;2.1.0&quot;
+    kotlin(&quot;plugin.serialization&quot;) version &quot;2.1.0&quot;
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation(&quot;org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0&quot;)
+    implementation(&quot;org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3&quot;)
+    testImplementation(kotlin(&quot;test&quot;))
+}</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis blok <code>dependencies</code> Gradle Kotlin DSL untuk coroutines, kotlinx.serialization, dan JUnit 5.</p><details><summary>Petunjuk</summary><p>implementation untuk kode utama, testImplementation untuk tes.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>plugins {
+    kotlin(&quot;jvm&quot;) version &quot;2.0.21&quot;
+    kotlin(&quot;plugin.serialization&quot;) version &quot;2.0.21&quot;
+}
+
+dependencies {
+    implementation(&quot;org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0&quot;)
+    implementation(&quot;org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3&quot;)
+    testImplementation(kotlin(&quot;test&quot;))
+}
+
+tasks.test { useJUnitPlatform() }</code></pre></details></li><li><p>Tulis perintah Gradle untuk menjalankan tes dan membangun aplikasi Android versi rilis.</p><details><summary>Petunjuk</summary><p>Pakai wrapper ./gradlew.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TERMINAL</div><pre><code>./gradlew test
+./gradlew assembleRelease
+./gradlew bundleRelease   # App Bundle untuk Google Play</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Gradle Kotlin DSL: build.gradle.kts.</li><li>Version catalog libs.versions.toml.</li><li>Retrofit/Ktor, Room, Hilt/Koin, Coil.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>File konfigurasi build Gradle berbahasa Kotlin?</summary><p class="ok">Jawaban: build.gradle.kts</p><p>.kts = Kotlin script.</p></details>
+<a class="cta" href="/#kotlin-3-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/kotlin/coroutines-kode-asinkron-yang-mudah-dibaca">Coroutines: kode asinkron yang mudah dibaca</a></p><p>Berikutnya: <a href="/belajar/kotlin/exception-require-dan-result">Exception, require, dan Result</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

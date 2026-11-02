@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Side effect: LaunchedEffect dan rememberCoroutineScope · Jetpack Compose · Ruang Kode</title>
+<meta name="description" content="Fungsi Composable bisa dipanggil berkali-kali (recomposition), jadi kode yang punya efek di luar UI, seperti memanggil API atau menampilkan Snackbar,…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/compose/side-effect-launchedeffect-dan-remembercoroutinescope">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Side effect: LaunchedEffect dan rememberCoroutineScope · Jetpack Compose · Ruang Kode"><meta property="og:description" content="Fungsi Composable bisa dipanggil berkali-kali (recomposition), jadi kode yang punya efek di luar UI, seperti memanggil API atau menampilkan Snackbar,…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/compose/side-effect-launchedeffect-dan-remembercoroutinescope"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Side effect: LaunchedEffect dan rememberCoroutineScope", "description": "Fungsi Composable bisa dipanggil berkali-kali (recomposition), jadi kode yang punya efek di luar UI, seperti memanggil API atau menampilkan Snackbar,…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/compose/side-effect-launchedeffect-dan-remembercoroutinescope", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Jetpack Compose", "url": "https://ruang-kode-nine.vercel.app/belajar/compose"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Jetpack Compose", "item": "https://ruang-kode-nine.vercel.app/belajar/compose"}, {"@type": "ListItem", "position": 3, "name": "Side effect: LaunchedEffect dan rememberCoroutineScope", "item": "https://ruang-kode-nine.vercel.app/belajar/compose/side-effect-launchedeffect-dan-remembercoroutinescope"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/compose">Jetpack Compose</a> / Modul 4</nav>
+<div class="eyebrow">Jetpack Compose · Modul 4 · Konsep &amp; kode</div><h1>Side effect: LaunchedEffect dan rememberCoroutineScope</h1><a class="cta" href="/#compose-4-3">Buka versi interaktif</a>
+<p>Fungsi Composable bisa dipanggil berkali-kali (recomposition), jadi kode yang punya efek di luar UI, seperti memanggil API atau menampilkan Snackbar, tidak boleh ditulis langsung di dalamnya. Compose menyediakan <b>effect handler</b>.</p>
+<p><code>LaunchedEffect(kunci) { ... }</code> menjalankan coroutine saat Composable tampil, dan mengulanginya hanya jika kunci berubah. <code>rememberCoroutineScope()</code> dipakai untuk menjalankan coroutine dari event, misalnya klik tombol. <code>DisposableEffect</code> untuk mendaftar dan melepas listener.</p>
+<p><code>derivedStateOf</code> menghitung nilai turunan dari state lain dan hanya memicu pembaruan saat hasilnya berubah, misalnya tombol "kembali ke atas" yang muncul setelah daftar digulir.</p>
+<div class="lbl">KODE</div><pre><code>@Composable
+fun LayarDetail(id: Int, vm: DetailViewModel = viewModel()) {
+    // dijalankan sekali per id
+    LaunchedEffect(id) { vm.muat(id) }
+
+    val daftar = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+    val tampilkanAtas by remember {
+        derivedStateOf { daftar.firstVisibleItemIndex &gt; 3 }
+    }
+
+    Box {
+        LazyColumn(state = daftar) { /* ... */ }
+        if (tampilkanAtas) {
+            SmallFloatingActionButton(
+                onClick = { scope.launch { daftar.animateScrollToItem(0) } },
+                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
+            ) { Icon(Icons.Default.KeyboardArrowUp, contentDescription = &quot;Ke atas&quot;) }
+        }
+    }
+}</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tampilkan Snackbar setiap kali ViewModel mengirim pesan error baru.</p><details><summary>Petunjuk</summary><p>LaunchedEffect(pesan) { if (pesan != null) snackbar.showSnackbar(pesan) }.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>val pesan = vm.pesanError.collectAsStateWithLifecycle().value
+LaunchedEffect(pesan) {
+    if (pesan != null) {
+        snackbar.showSnackbar(pesan)
+        vm.pesanSudahTampil()
+    }
+}</code></pre></details></li><li><p>Buat hitung mundur 10 detik yang dimulai saat layar tampil.</p><details><summary>Petunjuk</summary><p>LaunchedEffect(Unit) dengan loop dan delay(1000).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>var sisa by remember { mutableIntStateOf(10) }
+LaunchedEffect(Unit) {
+    while (sisa &gt; 0) {
+        delay(1000)
+        sisa--
+    }
+}
+Text(if (sisa &gt; 0) &quot;Kirim ulang OTP dalam $sisa detik&quot; else &quot;Kirim ulang OTP&quot;)</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Jangan memanggil API langsung di badan Composable.</li><li>LaunchedEffect(kunci) untuk efek saat tampil.</li><li>rememberCoroutineScope untuk efek dari event.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kapan LaunchedEffect(id) dijalankan ulang?</summary><p class="ok">Jawaban: Saat nilai id berubah</p><p>Kunci menentukan kapan efek diulang.</p></details>
+<a class="cta" href="/#compose-4-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/compose/animasi-di-compose">Animasi di Compose</a></p><p>Berikutnya: <a href="/belajar/compose/room-database-lokal">Room: database lokal</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

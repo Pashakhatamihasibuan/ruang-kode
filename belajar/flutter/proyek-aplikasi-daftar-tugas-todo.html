@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Proyek: aplikasi daftar tugas (Todo) · Flutter · Ruang Kode</title>
+<meta name="description" content="Proyek akhir ini menggabungkan modul-modul sebelumnya: model data, state management Riverpod, penyimpanan lokal dengan shared_preferences, form input,…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/flutter/proyek-aplikasi-daftar-tugas-todo">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Proyek: aplikasi daftar tugas (Todo) · Flutter · Ruang Kode"><meta property="og:description" content="Proyek akhir ini menggabungkan modul-modul sebelumnya: model data, state management Riverpod, penyimpanan lokal dengan shared_preferences, form input,…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/flutter/proyek-aplikasi-daftar-tugas-todo"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Proyek: aplikasi daftar tugas (Todo)", "description": "Proyek akhir ini menggabungkan modul-modul sebelumnya: model data, state management Riverpod, penyimpanan lokal dengan shared_preferences, form input,…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter/proyek-aplikasi-daftar-tugas-todo", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Flutter", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Flutter", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, {"@type": "ListItem", "position": 3, "name": "Proyek: aplikasi daftar tugas (Todo)", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter/proyek-aplikasi-daftar-tugas-todo"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/flutter">Flutter</a> / Modul 7</nav>
+<div class="eyebrow">Flutter · Modul 7 · Konsep &amp; kode</div><h1>Proyek: aplikasi daftar tugas (Todo)</h1><a class="cta" href="/#flutter-7-2">Buka versi interaktif</a>
+<p>Proyek akhir ini menggabungkan modul-modul sebelumnya: model data, state management Riverpod, penyimpanan lokal dengan shared_preferences, form input, ListView, dan tema Material 3.</p>
+<p>Fitur: menambah tugas, mencentang selesai, menghapus dengan geser (Dismissible), filter (semua, aktif, selesai), dan data tetap tersimpan setelah aplikasi ditutup.</p>
+<p>Salin kode ke proyek baru, pasang <code>flutter_riverpod</code> dan <code>shared_preferences</code>, lalu kerjakan tantangan pengembangannya.</p>
+<div class="lbl">KODE</div><pre><code>class Tugas {
+  final String id, judul;
+  final bool selesai;
+  const Tugas(this.id, this.judul, {this.selesai = false});
+  Tugas toggle() =&gt; Tugas(id, judul, selesai: !selesai);
+  Map&lt;String, Object&gt; toJson() =&gt; {&#x27;id&#x27;: id, &#x27;judul&#x27;: judul, &#x27;selesai&#x27;: selesai};
+  factory Tugas.fromJson(Map&lt;String, dynamic&gt; j) =&gt;
+      Tugas(j[&#x27;id&#x27;] as String, j[&#x27;judul&#x27;] as String, selesai: j[&#x27;selesai&#x27;] as bool);
+}
+
+class DaftarTugas extends Notifier&lt;List&lt;Tugas&gt;&gt; {
+  @override
+  List&lt;Tugas&gt; build() {
+    _muat();
+    return [];
+  }
+
+  Future&lt;void&gt; _muat() async {
+    final p = await SharedPreferences.getInstance();
+    final s = p.getString(&#x27;tugas&#x27;);
+    if (s != null) {
+      state = [for (final j in jsonDecode(s) as List) Tugas.fromJson(j as Map&lt;String, dynamic&gt;)];
+    }
+  }
+
+  Future&lt;void&gt; _simpan() async {
+    final p = await SharedPreferences.getInstance();
+    await p.setString(&#x27;tugas&#x27;, jsonEncode([for (final t in state) t.toJson()]));
+  }
+
+  void tambah(String judul) {
+    state = [...state, Tugas(DateTime.now().microsecondsSinceEpoch.toString(), judul)];
+    _simpan();
+  }
+
+  void toggle(String id) {
+    state = [for (final t in state) t.id == id ? t.toggle() : t];
+    _simpan();
+  }
+
+  void hapus(String id) {
+    state = state.where((t) =&gt; t.id != id).toList();
+    _simpan();
+  }
+}
+
+final tugasProvider = NotifierProvider&lt;DaftarTugas, List&lt;Tugas&gt;&gt;(DaftarTugas.new);
+
+class HalamanTugas extends ConsumerWidget {
+  const HalamanTugas({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final daftar = ref.watch(tugasProvider);
+    final aksi = ref.read(tugasProvider.notifier);
+    final c = TextEditingController();
+    return Scaffold(
+      appBar: AppBar(title: Text(&#x27;Tugas (${daftar.where((t) =&gt; !t.selesai).length} aktif)&#x27;)),
+      body: Column(children: [
+        Padding(
+          padding: const EdgeInsets.all(12),
+          child: TextField(
+            controller: c,
+            decoration: const InputDecoration(hintText: &#x27;Tambah tugas lalu tekan Enter&#x27;),
+            onSubmitted: (v) {
+              if (v.trim().isNotEmpty) aksi.tambah(v.trim());
+              c.clear();
+            },
+          ),
+        ),
+        Expanded(
+          child: daftar.isEmpty
+              ? const Center(child: Text(&#x27;Belum ada tugas. Tulis satu di atas.&#x27;))
+              : ListView(children: [
+                  for (final t in daftar)
+                    Dismissible(
+                      key: ValueKey(t.id),
+                      onDismissed: (_) =&gt; aksi.hapus(t.id),
+                      background: Container(color: Colors.red),
+                      child: CheckboxListTile(
+                        value: t.selesai,
+                        onChanged: (_) =&gt; aksi.toggle(t.id),
+                        title: Text(t.judul,
+                            style: TextStyle(
+                                decoration: t.selesai ? TextDecoration.lineThrough : null)),
+                      ),
+                    ),
+                ]),
+        ),
+      ]),
+    );
+  }
+}</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tambahkan filter Semua / Aktif / Selesai dengan SegmentedButton.</p><details><summary>Petunjuk</summary><p>Simpan filter di StateProvider atau Notifier kecil, lalu saring daftar sebelum ditampilkan.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>enum Filter { semua, aktif, selesai }
+final filterProvider = StateProvider((_) =&gt; Filter.semua);
+
+// di build
+final f = ref.watch(filterProvider);
+final tampil = switch (f) {
+  Filter.semua =&gt; daftar,
+  Filter.aktif =&gt; daftar.where((t) =&gt; !t.selesai).toList(),
+  Filter.selesai =&gt; daftar.where((t) =&gt; t.selesai).toList(),
+};
+
+SegmentedButton&lt;Filter&gt;(
+  segments: const [
+    ButtonSegment(value: Filter.semua, label: Text(&#x27;Semua&#x27;)),
+    ButtonSegment(value: Filter.aktif, label: Text(&#x27;Aktif&#x27;)),
+    ButtonSegment(value: Filter.selesai, label: Text(&#x27;Selesai&#x27;)),
+  ],
+  selected: {f},
+  onSelectionChanged: (s) =&gt; ref.read(filterProvider.notifier).state = s.first,
+)</code></pre></details></li><li><p>Tampilkan SnackBar "Tugas dihapus" dengan tombol Urungkan setelah tugas digeser.</p><details><summary>Petunjuk</summary><p>Simpan tugas yang dihapus, lalu tambahkan kembali saat tombol Urungkan ditekan.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>onDismissed: (_) {
+  final terhapus = t;
+  aksi.hapus(t.id);
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    content: const Text(&#x27;Tugas dihapus&#x27;),
+    action: SnackBarAction(
+      label: &#x27;Urungkan&#x27;,
+      onPressed: () =&gt; aksi.pulihkan(terhapus),
+    ),
+  ));
+},
+
+// di DaftarTugas
+void pulihkan(Tugas t) {
+  state = [...state, t];
+  _simpan();
+}</code></pre></details></li><li><p>Tulis widget test: mengetik "Belajar Dart" lalu Enter harus menampilkan tugas itu di daftar.</p><details><summary>Petunjuk</summary><p>tester.enterText, tester.testTextInput.receiveAction(TextInputAction.done), lalu pump.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>testWidgets(&#x27;menambah tugas&#x27;, (tester) async {
+  SharedPreferences.setMockInitialValues({});
+  await tester.pumpWidget(const ProviderScope(
+      child: MaterialApp(home: HalamanTugas())));
+
+  await tester.enterText(find.byType(TextField), &#x27;Belajar Dart&#x27;);
+  await tester.testTextInput.receiveAction(TextInputAction.done);
+  await tester.pump();
+
+  expect(find.text(&#x27;Belajar Dart&#x27;), findsOneWidget);
+});</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Notifier menyimpan daftar dan logika.</li><li>shared_preferences + jsonEncode untuk menyimpan.</li><li>Dismissible untuk hapus dengan geser.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa state diganti dengan list baru ([...state, x]) dan bukan state.add(x)?</summary><p class="ok">Jawaban: Riverpod mendeteksi perubahan dari objek baru</p><p>Mengubah isi list lama tidak memicu pembaruan tampilan.</p></details>
+<a class="cta" href="/#flutter-7-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/flutter/arsitektur-berlapis-dan-dependency-injection">Arsitektur berlapis dan dependency injection</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

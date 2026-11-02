@@ -10,10 +10,14 @@ function clearTimers(){TIMERS.forEach(t=>{clearInterval(t);clearTimeout(t)});TIM
 const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
 
 const KW = {
+  dart:new Set('void var final const late class extends implements with mixin abstract return if else for while do break continue import export part new this super null true false try catch finally throw rethrow switch case default async await yield required static enum typedef get set is as in on assert dynamic int double num bool String List Map Set Future Stream override'.split(' ')),
+  kotlin:new Set('fun val var class object interface data sealed enum open abstract override private public internal protected companion return if else when for while do break continue import package this super null true false try catch finally throw is as in by suspend lateinit const typealias init constructor out vararg inline'.split(' ')),
   java:new Set('public private protected static void class int double boolean char long float byte short new return if else for while do break continue import extends implements interface abstract final this super null true false try catch finally throw throws switch case default var package'.split(' ')),
   python:new Set('def class return if elif else for while in not and or import from as None True False try except finally raise with lambda pass break continue is yield global nonlocal del'.split(' '))
 };
 const BUILT = {
+  dart:new Set('print Widget BuildContext MaterialApp Scaffold Text Column Row Container setState StatelessWidget StatefulWidget State'.split(' ')),
+  kotlin:new Set('println listOf mutableListOf mapOf setOf Int Long Double Boolean String List Map Unit Any Modifier Text Column Row Button remember mutableStateOf'.split(' ')),
   java:new Set('System Math String Scanner Random Arrays ArrayList List Map Set HashMap TreeMap HashSet TreeSet Integer Double Stack Queue LinkedList PriorityQueue Collectors File Exception FileNotFoundException IndexOutOfBoundsException Iterator'.split(' ')),
   python:new Set('print len range input int float str list dict set sorted sum max min open self math random deque heapq reduce filter map abs ABC abstractmethod'.split(' '))
 };
@@ -78,8 +82,8 @@ function hl(code,lang){
   if(lang==='css'||lang==='scss')return hlCss(code);
   if(lang==='bash'||lang==='shell')return hlBash(code);
   if(lang==='text'||!KW[lang])return esc(code);
-  const re = lang==='java'
-    ? /(\/\/[^\n]*)|("(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)')|(\b\d+(?:\.\d+)?\b)|([A-Za-z_]\w*)|([\s\S])/g
+  const re = lang==='java'||lang==='dart'||lang==='kotlin'
+    ? /(\/\/[^\n]*)|("(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*')|(\b\d+(?:\.\d+)?\b)|([A-Za-z_]\w*)|([\s\S])/g
     : /(#[^\n]*)|([fF]?"(?:[^"\\\n]|\\.)*"|[fF]?'(?:[^'\\\n]|\\.)*')|(\b\d+(?:\.\d+)?\b)|([A-Za-z_]\w*)|([\s\S])/g;
   let out='',m;
   while((m=re.exec(code))){

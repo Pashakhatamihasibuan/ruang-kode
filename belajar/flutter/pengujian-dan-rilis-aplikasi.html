@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pengujian dan rilis aplikasi · Flutter · Ruang Kode</title>
+<meta name="description" content="Flutter punya tiga jenis tes: unit test (fungsi dan class), widget test (satu widget dirender di memori, lalu ditekan dan diperiksa), dan integration…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/flutter/pengujian-dan-rilis-aplikasi">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Pengujian dan rilis aplikasi · Flutter · Ruang Kode"><meta property="og:description" content="Flutter punya tiga jenis tes: unit test (fungsi dan class), widget test (satu widget dirender di memori, lalu ditekan dan diperiksa), dan integration…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/flutter/pengujian-dan-rilis-aplikasi"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Pengujian dan rilis aplikasi", "description": "Flutter punya tiga jenis tes: unit test (fungsi dan class), widget test (satu widget dirender di memori, lalu ditekan dan diperiksa), dan integration…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter/pengujian-dan-rilis-aplikasi", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Flutter", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Flutter", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, {"@type": "ListItem", "position": 3, "name": "Pengujian dan rilis aplikasi", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter/pengujian-dan-rilis-aplikasi"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/flutter">Flutter</a> / Modul 4</nav>
+<div class="eyebrow">Flutter · Modul 4 · Konsep &amp; kode</div><h1>Pengujian dan rilis aplikasi</h1><a class="cta" href="/#flutter-4-3">Buka versi interaktif</a>
+<p>Flutter punya tiga jenis tes: <b>unit test</b> (fungsi dan class), <b>widget test</b> (satu widget dirender di memori, lalu ditekan dan diperiksa), dan <b>integration test</b> (aplikasi utuh di emulator/perangkat). Jalankan dengan <code>flutter test</code>.</p>
+<p>Sebelum rilis: ganti ikon dan nama aplikasi, atur <code>version</code> di pubspec.yaml, buat <b>keystore</b> untuk menandatangani aplikasi Android, lalu <code>flutter build appbundle</code> untuk Google Play. Untuk iOS, <code>flutter build ipa</code> di Mac dan unggah lewat Xcode atau Transporter.</p>
+<p>Periksa performa dengan <b>Flutter DevTools</b>: widget yang dibangun ulang terlalu sering, gambar terlalu besar, dan frame yang lambat.</p>
+<div class="lbl">KODE</div><pre><code>void main() {
+  testWidgets(&#x27;tombol tambah menaikkan angka&#x27;, (tester) async {
+    await tester.pumpWidget(const MaterialApp(home: Scaffold(body: Penghitung())));
+
+    expect(find.text(&#x27;0&#x27;), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pump();
+    expect(find.text(&#x27;1&#x27;), findsOneWidget);
+  });
+}</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis unit test untuk fungsi <code>hitungTotal(harga, jumlah)</code>.</p><details><summary>Petunjuk</summary><p>test('deskripsi', () { expect(hasil, nilaiYangDiharapkan); });</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>import &#x27;package:test/test.dart&#x27;;
+
+int hitungTotal(int harga, int jumlah) =&gt; harga * jumlah;
+
+void main() {
+  test(&#x27;total = harga x jumlah&#x27;, () {
+    expect(hitungTotal(18000, 2), 36000);
+  });
+  test(&#x27;jumlah nol menghasilkan nol&#x27;, () {
+    expect(hitungTotal(18000, 0), 0);
+  });
+}</code></pre></details></li><li><p>Tulis perintah untuk membangun App Bundle rilis dengan nomor versi 1.2.0 build 5.</p><details><summary>Petunjuk</summary><p>flutter build appbundle --build-name ... --build-number ...</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TERMINAL</div><pre><code>flutter build appbundle --release --build-name=1.2.0 --build-number=5</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Unit, widget, dan integration test.</li><li>appbundle untuk Google Play, ipa untuk App Store.</li><li>DevTools untuk performa.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Setelah tester.tap, kenapa perlu tester.pump()?</summary><p class="ok">Jawaban: Untuk menggambar ulang frame setelah state berubah</p><p>pump memproses perubahan dan membangun ulang widget.</p></details><details><summary>Format yang diunggah ke Google Play?</summary><p class="ok">Jawaban: .aab (App Bundle)</p><p>Google Play mewajibkan App Bundle.</p></details>
+<a class="cta" href="/#flutter-4-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/flutter/penyimpanan-lokal-dan-firebase">Penyimpanan lokal dan Firebase</a></p><p>Berikutnya: <a href="/belajar/flutter/tema-material-3-dan-mode-gelap">Tema Material 3 dan mode gelap</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -2,7 +2,7 @@
    Setiap blok kode di pelajaran mendapat tombol "▶ Animasikan". Kode lalu dijalankan
    baris demi baris: baris "diketik", disorot, dan diberi penjelasan singkat yang dibuat
    dari pola umum tiap bahasa. Keluaran (bila ada) muncul di langkah terakhir. */
-const CA_LBL={java:'java',python:'python',sql:'sql',js:'js',jsx:'js',ts:'js',tsx:'js',html:'html',css:'css',bash:'bash',yaml:'yaml',json:'json',text:'text'};
+const CA_LBL={dart:'dart',kotlin:'kotlin',java:'java',python:'python',sql:'sql',js:'js',jsx:'js',ts:'js',tsx:'js',html:'html',css:'css',bash:'bash',yaml:'yaml',json:'json',text:'text'};
 function caWhat(line,lang){
   const s=line.trim(),L=CA_LBL[lang]||lang;let m;
   if(!s)return '';
@@ -34,6 +34,15 @@ function caWhat(line,lang){
   if(L==='text')return '';
   /* bahasa pemrograman umum: Java, Python, JS/TS */
   const R=[
+   [/^(suspend )?((private|internal|override|public|protected|open|inline) )*fun\s+(<[^>]+>\s*)?([\w.]+)\s*\((.*?)\)?/,m=>`Mendefinisikan fungsi <code>${m[5]}</code>${m[6]?` dengan parameter <code>${esc(m[6])}</code>`:''}${m[1]?' yang bisa ditangguhkan (suspend, untuk coroutine)':''}.`],
+   [/^@Composable/,()=>'<b>@Composable</b>: fungsi di bawahnya menggambar bagian UI di Jetpack Compose.'],
+   [/^(private |internal )?(data |sealed |abstract |open |enum )+class\s+(\w+)/,m=>`Mendefinisikan ${m[2].trim()} class <code>${m[3]}</code>.`],
+   [/^(private |internal )?(val|var)\s+(\w+)\s*(:\s*([^=]+?))?\s*(=|by)\s*(.+)$/,m=>`Membuat ${m[2]==='val'?'nilai tetap (val)':'variabel (var)'} <code>${m[3]}</code>${m[5]?` bertipe <code>${esc(m[5].trim())}</code>`:''}${m[6]==='by'?' yang didelegasikan (by)':''}.`],
+   [/^(late )?(final|const)\s+(\w+(<.+>)?\??\s+)?(\w+)\s*=\s*(.+?);?$/,m=>`Membuat nilai ${m[2]==='const'?'konstan saat kompilasi (const)':'yang tidak bisa diisi ulang (final)'} <code>${m[5]}</code>.`],
+   [/^(bool|num|dynamic|Widget)\s+(\w+)\s*=\s*(.+?);$/,m=>`Membuat variabel <code>${m[2]}</code> bertipe <code>${m[1]}</code>.`],
+   [/^(Widget|void|Future<.+>|Stream<.+>)\s+(\w+)\s*\((.*)\)\s*(async\s*)?(\{|=>)/,m=>`Mendefinisikan fungsi <code>${m[2]}</code>${m[1]==='Widget'?' yang mengembalikan widget (tampilan)':''}${m[4]?' secara asinkron':''}.`],
+   [/^setState\s*\(/,()=>'<b>setState</b>: mengubah state lalu meminta Flutter menggambar ulang widget.'],
+   [/^println\s*\((.*)\)/,m=>`Menampilkan ke konsol: <code>${esc((m[1]||'').slice(0,50))}</code>.`],
    [/^(public |private |protected )?(static )?(final )?class\s+(\w+)/,m=>`Mendefinisikan class <code>${m[4]}</code>, cetak biru untuk objek.`],
    [/^(export )?(default )?interface\s+(\w+)/,m=>`Interface <code>${m[3]}</code>: kontrak bentuk data.`],
    [/^(export )?type\s+(\w+)\s*=/,m=>`Type alias <code>${m[2]}</code>: nama untuk sebuah tipe.`],

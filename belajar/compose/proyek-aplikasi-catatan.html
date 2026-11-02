@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Proyek: aplikasi catatan · Jetpack Compose · Ruang Kode</title>
+<meta name="description" content="Proyek akhir menggabungkan modul sebelumnya: Room menyimpan catatan, repository membungkus DAO, ViewModel mengubah Flow menjadi StateFlow, dan layar…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/compose/proyek-aplikasi-catatan">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Proyek: aplikasi catatan · Jetpack Compose · Ruang Kode"><meta property="og:description" content="Proyek akhir menggabungkan modul sebelumnya: Room menyimpan catatan, repository membungkus DAO, ViewModel mengubah Flow menjadi StateFlow, dan layar…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/compose/proyek-aplikasi-catatan"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Proyek: aplikasi catatan", "description": "Proyek akhir menggabungkan modul sebelumnya: Room menyimpan catatan, repository membungkus DAO, ViewModel mengubah Flow menjadi StateFlow, dan layar…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/compose/proyek-aplikasi-catatan", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Jetpack Compose", "url": "https://ruang-kode-nine.vercel.app/belajar/compose"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Jetpack Compose", "item": "https://ruang-kode-nine.vercel.app/belajar/compose"}, {"@type": "ListItem", "position": 3, "name": "Proyek: aplikasi catatan", "item": "https://ruang-kode-nine.vercel.app/belajar/compose/proyek-aplikasi-catatan"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/compose">Jetpack Compose</a> / Modul 6</nav>
+<div class="eyebrow">Jetpack Compose · Modul 6 · Konsep &amp; kode</div><h1>Proyek: aplikasi catatan</h1><a class="cta" href="/#compose-6-1">Buka versi interaktif</a>
+<p>Proyek akhir menggabungkan modul sebelumnya: Room menyimpan catatan, repository membungkus DAO, ViewModel mengubah Flow menjadi StateFlow, dan layar Compose menampilkan daftar dengan pencarian serta tombol tambah.</p>
+<p>Pencarian memakai <code>flatMapLatest</code>: setiap kata kunci berubah, query lama dibatalkan dan diganti query baru. <code>debounce(300)</code> menunggu pengguna berhenti mengetik agar database tidak ditanya terlalu sering.</p>
+<p>Kerjakan tantangan di bawah untuk melengkapinya menjadi aplikasi yang siap dipakai.</p>
+<div class="lbl">KODE</div><pre><code>class CatatanViewModel(private val dao: CatatanDao) : ViewModel() {
+    val kata = MutableStateFlow(&quot;&quot;)
+
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+    val daftar: StateFlow&lt;List&lt;Catatan&gt;&gt; = kata
+        .debounce(300)
+        .flatMapLatest { k -&gt; if (k.isBlank()) dao.semua() else dao.cari(k) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    fun tambah(judul: String, isi: String) = viewModelScope.launch {
+        dao.tambah(Catatan(judul = judul, isi = isi))
+    }
+
+    fun hapus(c: Catatan) = viewModelScope.launch { dao.hapus(c) }
+}
+
+@Composable
+fun LayarCatatan(vm: CatatanViewModel, onTambah: () -&gt; Unit) {
+    val daftar by vm.daftar.collectAsStateWithLifecycle()
+    val kata by vm.kata.collectAsStateWithLifecycle()
+    Scaffold(
+        topBar = { TopAppBar(title = { Text(&quot;Catatan (${daftar.size})&quot;) }) },
+        floatingActionButton = {
+            FloatingActionButton(onClick = onTambah) { Icon(Icons.Default.Add, &quot;Tambah catatan&quot;) }
+        },
+    ) { pad -&gt;
+        Column(Modifier.padding(pad).padding(horizontal = 16.dp)) {
+            OutlinedTextField(
+                value = kata,
+                onValueChange = { vm.kata.value = it },
+                label = { Text(&quot;Cari judul&quot;) },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+            )
+            if (daftar.isEmpty()) {
+                Text(&quot;Belum ada catatan. Tekan + untuk menulis.&quot;, Modifier.padding(top = 24.dp))
+            }
+            LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), contentPadding = PaddingValues(vertical = 12.dp)) {
+                items(daftar, key = { it.id }) { c -&gt;
+                    ElevatedCard(Modifier.fillMaxWidth()) {
+                        Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Column(Modifier.weight(1f)) {
+                                Text(c.judul, style = MaterialTheme.typography.titleMedium)
+                                Text(c.isi, maxLines = 2, style = MaterialTheme.typography.bodyMedium)
+                            }
+                            IconButton(onClick = { vm.hapus(c) }) { Icon(Icons.Default.Delete, &quot;Hapus ${c.judul}&quot;) }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat layar tambah catatan dengan dua field dan tombol Simpan yang nonaktif jika judul kosong, lalu kembali ke daftar.</p><details><summary>Petunjuk</summary><p>rememberSaveable untuk field; enabled = judul.isNotBlank(); panggil vm.tambah lalu onSelesai().</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>@Composable
+fun LayarTambah(vm: CatatanViewModel, onSelesai: () -&gt; Unit) {
+    var judul by rememberSaveable { mutableStateOf(&quot;&quot;) }
+    var isi by rememberSaveable { mutableStateOf(&quot;&quot;) }
+    Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        OutlinedTextField(judul, { judul = it }, label = { Text(&quot;Judul&quot;) }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(isi, { isi = it }, label = { Text(&quot;Isi&quot;) }, minLines = 5, modifier = Modifier.fillMaxWidth())
+        Button(
+            onClick = { vm.tambah(judul.trim(), isi.trim()); onSelesai() },
+            enabled = judul.isNotBlank(),
+            modifier = Modifier.fillMaxWidth(),
+        ) { Text(&quot;Simpan&quot;) }
+    }
+}</code></pre></details></li><li><p>Hubungkan kedua layar dengan Navigation Compose.</p><details><summary>Petunjuk</summary><p>NavHost dengan rute "daftar" dan "tambah".</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>NavHost(nav, startDestination = &quot;daftar&quot;) {
+    composable(&quot;daftar&quot;) { LayarCatatan(vm, onTambah = { nav.navigate(&quot;tambah&quot;) }) }
+    composable(&quot;tambah&quot;) { LayarTambah(vm, onSelesai = { nav.popBackStack() }) }
+}</code></pre></details></li><li><p>Tambahkan konfirmasi sebelum menghapus memakai AlertDialog.</p><details><summary>Petunjuk</summary><p>Simpan catatan yang akan dihapus di state; tampilkan dialog jika tidak null.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>var akanDihapus by remember { mutableStateOf&lt;Catatan?&gt;(null) }
+akanDihapus?.let { c -&gt;
+    AlertDialog(
+        onDismissRequest = { akanDihapus = null },
+        title = { Text(&quot;Hapus catatan?&quot;) },
+        text = { Text(&quot;\&quot;${c.judul}\&quot; akan dihapus permanen.&quot;) },
+        confirmButton = { TextButton(onClick = { vm.hapus(c); akanDihapus = null }) { Text(&quot;Hapus&quot;) } },
+        dismissButton = { TextButton(onClick = { akanDihapus = null }) { Text(&quot;Batal&quot;) } },
+    )
+}
+// IconButton hapus: onClick = { akanDihapus = c }</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Room + Flow + StateFlow + Compose.</li><li>debounce + flatMapLatest untuk pencarian.</li><li>Konfirmasi aksi yang tidak bisa dibatalkan.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Fungsi debounce(300) pada pencarian?</summary><p class="ok">Jawaban: Menunggu 300 ms setelah ketikan terakhir sebelum mencari</p><p>Mengurangi query yang tidak perlu.</p></details>
+<a class="cta" href="/#compose-6-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/compose/pengujian-ui-compose">Pengujian UI Compose</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

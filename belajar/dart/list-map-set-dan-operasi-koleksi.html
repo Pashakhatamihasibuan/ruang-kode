@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>List, Map, Set dan operasi koleksi · Dart · Ruang Kode</title>
+<meta name="description" content="List menyimpan data berurutan ([1, 2, 3]), Map menyimpan pasangan kunci-nilai ({&#x27;kopi&#x27;: 18000}), dan Set menyimpan data unik ({&#x27;a&#x27;, &#x27;b&#x27;}).">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dart/list-map-set-dan-operasi-koleksi">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="List, Map, Set dan operasi koleksi · Dart · Ruang Kode"><meta property="og:description" content="List menyimpan data berurutan ([1, 2, 3]), Map menyimpan pasangan kunci-nilai ({&#x27;kopi&#x27;: 18000}), dan Set menyimpan data unik ({&#x27;a&#x27;, &#x27;b&#x27;}).">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dart/list-map-set-dan-operasi-koleksi"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "List, Map, Set dan operasi koleksi", "description": "List menyimpan data berurutan ([1, 2, 3]), Map menyimpan pasangan kunci-nilai ({'kopi': 18000}), dan Set menyimpan data unik ({'a', 'b'}).", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dart/list-map-set-dan-operasi-koleksi", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Dart", "url": "https://ruang-kode-nine.vercel.app/belajar/dart"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Dart", "item": "https://ruang-kode-nine.vercel.app/belajar/dart"}, {"@type": "ListItem", "position": 3, "name": "List, Map, Set dan operasi koleksi", "item": "https://ruang-kode-nine.vercel.app/belajar/dart/list-map-set-dan-operasi-koleksi"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dart">Dart</a> / Modul 3</nav>
+<div class="eyebrow">Dart · Modul 3 · Konsep &amp; kode</div><h1>List, Map, Set dan operasi koleksi</h1><a class="cta" href="/#dart-3-1">Buka versi interaktif</a>
+<p><b>List</b> menyimpan data berurutan (<code>[1, 2, 3]</code>), <b>Map</b> menyimpan pasangan kunci-nilai (<code>{'kopi': 18000}</code>), dan <b>Set</b> menyimpan data unik (<code>{'a', 'b'}</code>).</p>
+<p>Daripada menulis loop manual, Dart punya method yang deklaratif: <code>where</code> (filter), <code>map</code> (ubah setiap isi), <code>fold</code> (jumlahkan), <code>any</code>/<code>every</code>, dan <code>sort</code>. Hasil <code>map</code> dan <code>where</code> adalah <code>Iterable</code>, jadi tambahkan <code>.toList()</code> jika butuh List.</p>
+<p>Dart juga punya <b>collection if</b> dan <b>collection for</b> di dalam literal list. Fitur ini sangat sering dipakai di Flutter untuk menyusun daftar widget: <code>[if (login) Text('Profil'), for (final m in menu) Text(m)]</code>.</p>
+<div class="lbl">KODE</div><pre><code>void main() {
+  final harga = [18000, 22500, 5000, 30000];
+  final mahal = harga.where((h) =&gt; h &gt; 20000).toList();
+  final diskon = harga.map((h) =&gt; h * 0.9).toList();
+  final total = harga.fold(0, (sum, h) =&gt; sum + h);
+  print(&#x27;Mahal: $mahal&#x27;);
+  print(&#x27;Diskon: $diskon&#x27;);
+  print(&#x27;Total: $total&#x27;);
+
+  final stok = {&#x27;kopi&#x27;: 12, &#x27;teh&#x27;: 0};
+  stok[&#x27;roti&#x27;] = 5;
+  print(&#x27;Habis: ${stok.entries.where((e) =&gt; e.value == 0).map((e) =&gt; e.key).toList()}&#x27;);
+
+  final login = true;
+  final menu = [&#x27;Beranda&#x27;, if (login) &#x27;Profil&#x27;, for (final x in [&#x27;A&#x27;, &#x27;B&#x27;]) &#x27;Kategori $x&#x27;];
+  print(menu);
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Mahal: [22500, 30000]
+Diskon: [16200.0, 20250.0, 4500.0, 27000.0]
+Total: 75500
+Habis: [teh]
+[Beranda, Profil, Kategori A, Kategori B]</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Dari nilai <code>[70, 85, 90, 60, 95]</code>, hitung rata-rata, nilai tertinggi, dan jumlah yang lulus (≥ 75).</p><details><summary>Petunjuk</summary><p>fold untuk jumlah, reduce untuk maksimum, where(...).length untuk yang lulus.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>void main() {
+  final nilai = [70, 85, 90, 60, 95];
+  final rata = nilai.fold(0, (a, b) =&gt; a + b) / nilai.length;
+  final maks = nilai.reduce((a, b) =&gt; a &gt; b ? a : b);
+  final lulus = nilai.where((n) =&gt; n &gt;= 75).length;
+  print(&#x27;Rata-rata: $rata&#x27;);
+  print(&#x27;Tertinggi: $maks&#x27;);
+  print(&#x27;Lulus: $lulus&#x27;);
+}</code></pre></details></li><li><p>Hitung frekuensi setiap huruf di kata <code>'banana'</code> memakai Map.</p><details><summary>Petunjuk</summary><p>f[c] = (f[c] ?? 0) + 1 untuk setiap huruf.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>void main() {
+  final f = &lt;String, int&gt;{};
+  for (final c in &#x27;banana&#x27;.split(&#x27;&#x27;)) {
+    f[c] = (f[c] ?? 0) + 1;
+  }
+  print(f);
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>where = filter, map = ubah, fold = gabungkan.</li><li>Tambahkan toList() jika butuh List.</li><li>collection if/for dipakai untuk daftar widget.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Method untuk mengambil isi yang memenuhi syarat?</summary><p class="ok">Jawaban: where</p><p>where menyaring.</p></details><details><summary>Hasil [1, if (false) 2, 3]?</summary><p class="ok">Jawaban: [1, 3]</p><p>collection if melewati isi jika kondisinya salah.</p></details>
+<a class="cta" href="/#dart-3-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dart/fungsi-parameter-bernama-dan-arrow-function">Fungsi, parameter bernama, dan arrow function</a></p><p>Berikutnya: <a href="/belajar/dart/class-constructor-dan-getter">Class, constructor, dan getter</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

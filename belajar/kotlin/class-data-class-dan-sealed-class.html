@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Class, data class, dan sealed class · Kotlin · Ruang Kode</title>
+<meta name="description" content="Class Kotlin ringkas: constructor utama ditulis di judul, class Akun(val pemilik: String, var saldo: Int). Class bersifat final secara bawaan; tambahkan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/kotlin/class-data-class-dan-sealed-class">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Class, data class, dan sealed class · Kotlin · Ruang Kode"><meta property="og:description" content="Class Kotlin ringkas: constructor utama ditulis di judul, class Akun(val pemilik: String, var saldo: Int). Class bersifat final secara bawaan; tambahkan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/kotlin/class-data-class-dan-sealed-class"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Class, data class, dan sealed class", "description": "Class Kotlin ringkas: constructor utama ditulis di judul, class Akun(val pemilik: String, var saldo: Int). Class bersifat final secara bawaan; tambahkan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/kotlin/class-data-class-dan-sealed-class", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Kotlin", "url": "https://ruang-kode-nine.vercel.app/belajar/kotlin"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Kotlin", "item": "https://ruang-kode-nine.vercel.app/belajar/kotlin"}, {"@type": "ListItem", "position": 3, "name": "Class, data class, dan sealed class", "item": "https://ruang-kode-nine.vercel.app/belajar/kotlin/class-data-class-dan-sealed-class"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/kotlin">Kotlin</a> / Modul 3</nav>
+<div class="eyebrow">Kotlin · Modul 3 · Konsep &amp; kode</div><h1>Class, data class, dan sealed class</h1><a class="cta" href="/#kotlin-3-1">Buka versi interaktif</a>
+<p>Class Kotlin ringkas: constructor utama ditulis di judul, <code>class Akun(val pemilik: String, var saldo: Int)</code>. Class bersifat <b>final</b> secara bawaan; tambahkan <code>open</code> agar bisa diwarisi.</p>
+<p><b>data class</b> otomatis membuat <code>toString</code>, <code>equals</code>, <code>hashCode</code>, dan <code>copy</code>. Ini cocok untuk model data dari API. <code>copy(saldo = 0)</code> membuat salinan dengan satu nilai diubah, gaya yang dianjurkan untuk state di Compose.</p>
+<p><b>sealed class/interface</b> membatasi turunan. Dengan <code>when</code>, kompiler memastikan semua kasus ditangani: pola standar untuk status layar <code>Loading</code>, <code>Success</code>, <code>Error</code>.</p>
+<div class="lbl">KODE</div><pre><code>data class Pengguna(val nama: String, val kota: String)
+
+sealed interface UiState {
+    data object Loading : UiState
+    data class Success(val data: List&lt;Pengguna&gt;) : UiState
+    data class Error(val pesan: String) : UiState
+}
+
+fun tampilkan(state: UiState) = when (state) {
+    UiState.Loading -&gt; &quot;Memuat...&quot;
+    is UiState.Success -&gt; &quot;Ada ${state.data.size} pengguna&quot;
+    is UiState.Error -&gt; &quot;Gagal: ${state.pesan}&quot;
+}
+
+fun main() {
+    val rina = Pengguna(&quot;Rina&quot;, &quot;Medan&quot;)
+    val pindah = rina.copy(kota = &quot;Bandung&quot;)
+    println(rina)
+    println(pindah)
+    println(rina == Pengguna(&quot;Rina&quot;, &quot;Medan&quot;))
+    println(tampilkan(UiState.Loading))
+    println(tampilkan(UiState.Success(listOf(rina, pindah))))
+    println(tampilkan(UiState.Error(&quot;tidak ada internet&quot;)))
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Pengguna(nama=Rina, kota=Medan)
+Pengguna(nama=Rina, kota=Bandung)
+true
+Memuat...
+Ada 2 pengguna
+Gagal: tidak ada internet</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat data class <code>Produk(nama, harga)</code>, salin dengan harga baru memakai <code>copy</code>, dan bandingkan dua objek berisi sama.</p><details><summary>Petunjuk</summary><p>data class otomatis membuat toString, equals, dan copy.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>data class Produk(val nama: String, val harga: Int)
+
+fun main() {
+    val p = Produk(&quot;Kopi&quot;, 18000)
+    val p2 = p.copy(harga = 20000)
+    println(p)
+    println(p2)
+    println(p == Produk(&quot;Kopi&quot;, 18000))
+}</code></pre></details></li><li><p>Buat <code>sealed interface Hasil</code> dengan Sukses(data) dan Gagal(pesan), lalu tampilkan dengan when.</p><details><summary>Petunjuk</summary><p>when pada sealed type tidak butuh else.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>sealed interface Hasil
+data class Sukses(val data: List&lt;String&gt;) : Hasil
+data class Gagal(val pesan: String) : Hasil
+
+fun tampil(h: Hasil) = when (h) {
+    is Sukses -&gt; &quot;${h.data.size} produk&quot;
+    is Gagal -&gt; &quot;Error: ${h.pesan}&quot;
+}
+
+fun main() {
+    println(tampil(Sukses(listOf(&quot;Kopi&quot;, &quot;Teh&quot;))))
+    println(tampil(Gagal(&quot;offline&quot;)))
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>data class: toString, equals, copy otomatis.</li><li>Class final secara bawaan; open untuk diwarisi.</li><li>sealed + when untuk status layar.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa when pada sealed class tidak butuh else?</summary><p class="ok">Jawaban: Kompiler tahu semua turunannya</p><p>Daftar turunan sealed sudah pasti.</p></details><details><summary>Fungsi yang dibuat otomatis oleh data class?</summary><p class="ok">Jawaban: toString, equals, hashCode, copy</p><p>Itu alasan data class cocok untuk model.</p></details>
+<a class="cta" href="/#kotlin-3-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/kotlin/fungsi-lambda-dan-koleksi">Fungsi, lambda, dan koleksi</a></p><p>Berikutnya: <a href="/belajar/kotlin/extension-function-dan-scope-function">Extension function dan scope function</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

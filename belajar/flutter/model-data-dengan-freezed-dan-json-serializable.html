@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Model data dengan freezed dan json_serializable · Flutter · Ruang Kode</title>
+<meta name="description" content="Menulis fromJson, toJson, ==, hashCode, dan copyWith untuk setiap model sangat melelahkan dan rawan salah. freezed membuatnya otomatis dari deklarasi…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/flutter/model-data-dengan-freezed-dan-json-serializable">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Model data dengan freezed dan json_serializable · Flutter · Ruang Kode"><meta property="og:description" content="Menulis fromJson, toJson, ==, hashCode, dan copyWith untuk setiap model sangat melelahkan dan rawan salah. freezed membuatnya otomatis dari deklarasi…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/flutter/model-data-dengan-freezed-dan-json-serializable"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Model data dengan freezed dan json_serializable", "description": "Menulis fromJson, toJson, ==, hashCode, dan copyWith untuk setiap model sangat melelahkan dan rawan salah. freezed membuatnya otomatis dari deklarasi…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter/model-data-dengan-freezed-dan-json-serializable", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Flutter", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Flutter", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, {"@type": "ListItem", "position": 3, "name": "Model data dengan freezed dan json_serializable", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter/model-data-dengan-freezed-dan-json-serializable"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/flutter">Flutter</a> / Modul 6</nav>
+<div class="eyebrow">Flutter · Modul 6 · Konsep &amp; kode</div><h1>Model data dengan freezed dan json_serializable</h1><a class="cta" href="/#flutter-6-2">Buka versi interaktif</a>
+<p>Menulis <code>fromJson</code>, <code>toJson</code>, <code>==</code>, <code>hashCode</code>, dan <code>copyWith</code> untuk setiap model sangat melelahkan dan rawan salah. <b>freezed</b> membuatnya otomatis dari deklarasi singkat.</p>
+<p>Tulis class dengan anotasi <code>@freezed</code>, sertakan baris <code>part</code>, lalu jalankan <code>dart run build_runner build -d</code> (atau <code>watch</code> agar terus diperbarui). File <code>.freezed.dart</code> dan <code>.g.dart</code> akan dibuat di sebelahnya.</p>
+<p>Hasilnya objek <b>immutable</b>: untuk mengubah satu field, pakai <code>produk.copyWith(stok: 5)</code>, yang membuat objek baru. Pola ini cocok dengan Riverpod dan BLoC yang membandingkan state lama dan baru.</p>
+<div class="lbl">KODE</div><pre><code>import &#x27;package:freezed_annotation/freezed_annotation.dart&#x27;;
+
+part &#x27;produk.freezed.dart&#x27;;
+part &#x27;produk.g.dart&#x27;;
+
+@freezed
+class Produk with _$Produk {
+  const factory Produk({
+    required int id,
+    required String nama,
+    required int harga,
+    @Default(0) int stok,
+    @JsonKey(name: &#x27;gambar_url&#x27;) String? gambar,
+  }) = _Produk;
+
+  factory Produk.fromJson(Map&lt;String, dynamic&gt; json) =&gt; _$ProdukFromJson(json);
+}
+
+// pemakaian
+final p = Produk.fromJson({&#x27;id&#x27;: 1, &#x27;nama&#x27;: &#x27;Kopi Gayo&#x27;, &#x27;harga&#x27;: 85000});
+final p2 = p.copyWith(stok: 10);
+print(p == p2);       // false, stok berbeda
+print(p2.toJson());</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat model <code>Pengguna</code> dengan freezed: id, nama, email, dan <code>bool aktif</code> bawaan true.</p><details><summary>Petunjuk</summary><p>@Default(true) bool aktif.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>@freezed
+class Pengguna with _$Pengguna {
+  const factory Pengguna({
+    required String id,
+    required String nama,
+    required String email,
+    @Default(true) bool aktif,
+  }) = _Pengguna;
+
+  factory Pengguna.fromJson(Map&lt;String, dynamic&gt; json) =&gt; _$PenggunaFromJson(json);
+}</code></pre></details></li><li><p>Buat sealed union freezed untuk status layar: memuat, sukses(List&lt;Produk&gt;), gagal(String pesan), lalu tampilkan dengan switch.</p><details><summary>Petunjuk</summary><p>Beberapa factory constructor di satu class freezed menjadi union.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>@freezed
+sealed class StatusProduk with _$StatusProduk {
+  const factory StatusProduk.memuat() = Memuat;
+  const factory StatusProduk.sukses(List&lt;Produk&gt; data) = Sukses;
+  const factory StatusProduk.gagal(String pesan) = Gagal;
+}
+
+Widget tampil(StatusProduk s) =&gt; switch (s) {
+      Memuat() =&gt; const CircularProgressIndicator(),
+      Sukses(:final data) =&gt; Text(&#x27;${data.length} produk&#x27;),
+      Gagal(:final pesan) =&gt; Text(pesan),
+    };</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>freezed: fromJson, toJson, ==, copyWith otomatis.</li><li>build_runner build/watch membuat file .freezed.dart dan .g.dart.</li><li>copyWith untuk mengubah objek immutable.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Perintah untuk membuat ulang kode freezed?</summary><p class="ok">Jawaban: dart run build_runner build -d</p><p>-d menghapus file lama yang bentrok.</p></details>
+<a class="cta" href="/#flutter-6-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/flutter/peta-library-yang-sering-dipakai">Peta library yang sering dipakai</a></p><p>Berikutnya: <a href="/belajar/flutter/database-lokal-sqflite-drift-hive-dan-isar">Database lokal: sqflite, drift, Hive, dan Isar</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ListView, gambar, dan aset · Flutter · Ruang Kode</title>
+<meta name="description" content="ListView.builder membuat daftar panjang secara efisien: hanya item yang terlihat yang dibuat. Pakai ini untuk daftar produk, chat, atau riwayat…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/flutter/listview-gambar-dan-aset">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="ListView, gambar, dan aset · Flutter · Ruang Kode"><meta property="og:description" content="ListView.builder membuat daftar panjang secara efisien: hanya item yang terlihat yang dibuat. Pakai ini untuk daftar produk, chat, atau riwayat…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/flutter/listview-gambar-dan-aset"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "ListView, gambar, dan aset", "description": "ListView.builder membuat daftar panjang secara efisien: hanya item yang terlihat yang dibuat. Pakai ini untuk daftar produk, chat, atau riwayat…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter/listview-gambar-dan-aset", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Flutter", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Flutter", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, {"@type": "ListItem", "position": 3, "name": "ListView, gambar, dan aset", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter/listview-gambar-dan-aset"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/flutter">Flutter</a> / Modul 2</nav>
+<div class="eyebrow">Flutter · Modul 2 · Konsep &amp; kode</div><h1>ListView, gambar, dan aset</h1><a class="cta" href="/#flutter-2-2">Buka versi interaktif</a>
+<p><code>ListView.builder</code> membuat daftar panjang secara efisien: hanya item yang terlihat yang dibuat. Pakai ini untuk daftar produk, chat, atau riwayat transaksi, bukan Column di dalam SingleChildScrollView.</p>
+<p>Gambar dari internet: <code>Image.network(url)</code>, atau package <b>cached_network_image</b> agar gambar disimpan dan tidak diunduh ulang. Gambar lokal disimpan di folder <code>assets/</code>, didaftarkan di pubspec.yaml, lalu dipanggil dengan <code>Image.asset('assets/logo.png')</code>.</p>
+<p>Untuk grid seperti katalog toko, pakai <code>GridView.builder</code> dengan <code>SliverGridDelegateWithMaxCrossAxisExtent</code>, sehingga jumlah kolom menyesuaikan lebar layar.</p>
+<div class="lbl">KODE</div><pre><code>class DaftarProduk extends StatelessWidget {
+  const DaftarProduk({super.key, required this.produk});
+  final List&lt;Map&lt;String, Object&gt;&gt; produk;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: produk.length,
+      itemBuilder: (context, i) {
+        final p = produk[i];
+        return ListTile(
+          leading: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.network(p[&#x27;foto&#x27;] as String, width: 56, fit: BoxFit.cover),
+          ),
+          title: Text(p[&#x27;nama&#x27;] as String),
+          subtitle: Text(&#x27;Rp${p[&#x27;harga&#x27;]}&#x27;),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: () {},
+        );
+      },
+    );
+  }
+}</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Ubah daftar produk menjadi grid yang kolomnya menyesuaikan lebar layar (maksimal 200 px per kartu).</p><details><summary>Petunjuk</summary><p>GridView.builder dengan SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 200).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>GridView.builder(
+  padding: const EdgeInsets.all(12),
+  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+    maxCrossAxisExtent: 200,
+    mainAxisSpacing: 12,
+    crossAxisSpacing: 12,
+    childAspectRatio: 3 / 4,
+  ),
+  itemCount: produk.length,
+  itemBuilder: (context, i) =&gt; Card(
+    child: Column(
+      children: [
+        Expanded(child: Image.network(produk[i][&#x27;gambar&#x27;] as String, fit: BoxFit.cover)),
+        Padding(
+          padding: const EdgeInsets.all(8),
+          child: Text(produk[i][&#x27;nama&#x27;] as String),
+        ),
+      ],
+    ),
+  ),
+)</code></pre></details></li><li><p>Tambahkan garis pemisah antaritem dan fitur tarik-untuk-muat-ulang pada ListView.</p><details><summary>Petunjuk</summary><p>ListView.separated + RefreshIndicator(onRefresh: ...).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>RefreshIndicator(
+  onRefresh: muatUlang, // Future&lt;void&gt; Function()
+  child: ListView.separated(
+    itemCount: produk.length,
+    separatorBuilder: (_, __) =&gt; const Divider(height: 1),
+    itemBuilder: (context, i) =&gt; ListTile(title: Text(produk[i][&#x27;nama&#x27;] as String)),
+  ),
+)</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>ListView.builder untuk daftar panjang.</li><li>cached_network_image untuk gambar dari internet.</li><li>Aset lokal didaftarkan di pubspec.yaml.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa ListView.builder lebih hemat untuk 1.000 item?</summary><p class="ok">Jawaban: Hanya membuat item yang terlihat</p><p>Item dibuat saat akan tampil.</p></details><details><summary>Package untuk menyimpan cache gambar dari internet?</summary><p class="ok">Jawaban: cached_network_image</p><p>Gambar tidak diunduh ulang setiap tampil.</p></details>
+<a class="cta" href="/#flutter-2-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/flutter/row-column-container-dan-expanded">Row, Column, Container, dan Expanded</a></p><p>Berikutnya: <a href="/belajar/flutter/form-dan-validasi-input">Form dan validasi input</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

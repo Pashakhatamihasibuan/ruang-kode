@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Latihan algoritma: Fibonacci, bubble sort, prima · Dart · Ruang Kode</title>
+<meta name="description" content="Tiga latihan klasik untuk menguji pemahaman loop. Fibonacci memakai for karena jumlah suku diketahui, dan dua variabel yang terus digeser. Dart bisa…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dart/latihan-algoritma-fibonacci-bubble-sort-prima">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Latihan algoritma: Fibonacci, bubble sort, prima · Dart · Ruang Kode"><meta property="og:description" content="Tiga latihan klasik untuk menguji pemahaman loop. Fibonacci memakai for karena jumlah suku diketahui, dan dua variabel yang terus digeser. Dart bisa…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dart/latihan-algoritma-fibonacci-bubble-sort-prima"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Latihan algoritma: Fibonacci, bubble sort, prima", "description": "Tiga latihan klasik untuk menguji pemahaman loop. Fibonacci memakai for karena jumlah suku diketahui, dan dua variabel yang terus digeser. Dart bisa…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dart/latihan-algoritma-fibonacci-bubble-sort-prima", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Dart", "url": "https://ruang-kode-nine.vercel.app/belajar/dart"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Dart", "item": "https://ruang-kode-nine.vercel.app/belajar/dart"}, {"@type": "ListItem", "position": 3, "name": "Latihan algoritma: Fibonacci, bubble sort, prima", "item": "https://ruang-kode-nine.vercel.app/belajar/dart/latihan-algoritma-fibonacci-bubble-sort-prima"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dart">Dart</a> / Modul 2</nav>
+<div class="eyebrow">Dart · Modul 2 · Konsep &amp; kode</div><h1>Latihan algoritma: Fibonacci, bubble sort, prima</h1><a class="cta" href="/#dart-2-2">Buka versi interaktif</a>
+<p>Tiga latihan klasik untuk menguji pemahaman loop. <b>Fibonacci</b> memakai for karena jumlah suku diketahui, dan dua variabel yang terus digeser. Dart bisa menukar dengan variabel bantu atau dengan <b>record</b> Dart 3: <code>(a, b) = (b, a + b);</code>.</p>
+<p><b>Bubble sort</b> memakai while di luar (berhenti saat tidak ada pertukaran) dan for di dalam (membandingkan pasangan bersebelahan). <b>Bilangan prima</b> memakai for bersarang dengan <code>break</code> begitu pembagi ditemukan.</p>
+<p>Setelah memahami cara kerjanya, di aplikasi nyata kamu cukup memakai <code>list.sort()</code> bawaan Dart, yang jauh lebih cepat.</p>
+<div class="lbl">KODE</div><pre><code>void main() {
+  // Fibonacci: for, jumlah suku diketahui
+  var a = 0, b = 1;
+  final deret = &lt;int&gt;[];
+  for (var i = 0; i &lt; 10; i++) {
+    deret.add(a);
+    (a, b) = (b, a + b);
+  }
+  print(&#x27;Fibonacci: ${deret.join(&#x27; &#x27;)}&#x27;);
+
+  // Bubble sort: while luar, for dalam
+  final data = [64, 25, 12, 22, 11];
+  var adaTukar = true;
+  while (adaTukar) {
+    adaTukar = false;
+    for (var j = 0; j &lt; data.length - 1; j++) {
+      if (data[j] &gt; data[j + 1]) {
+        final t = data[j];
+        data[j] = data[j + 1];
+        data[j + 1] = t;
+        adaTukar = true;
+      }
+    }
+  }
+  print(&#x27;Terurut: $data&#x27;);
+
+  // Prima: for bersarang + break
+  final prima = &lt;int&gt;[];
+  for (var x = 2; x &lt;= 30; x++) {
+    var isPrima = true;
+    for (var d = 2; d * d &lt;= x; d++) {
+      if (x % d == 0) {
+        isPrima = false;
+        break;
+      }
+    }
+    if (isPrima) prima.add(x);
+  }
+  print(&#x27;Prima: ${prima.join(&#x27; &#x27;)}&#x27;);
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Fibonacci: 0 1 1 2 3 5 8 13 21 34
+Terurut: [11, 12, 22, 25, 64]
+Prima: 2 3 5 7 11 13 17 19 23 29</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Cari suku Fibonacci pertama yang lebih dari 1000 dan urutannya.</p><details><summary>Petunjuk</summary><p>Jumlah suku belum diketahui, jadi pakai while (a &lt;= 1000).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>void main() {
+  var a = 0, b = 1, ke = 1;
+  while (a &lt;= 1000) {
+    (a, b) = (b, a + b);
+    ke++;
+  }
+  print(&#x27;Suku ke-$ke: $a&#x27;);
+}</code></pre></details></li><li><p>Balik angka 12345 menjadi 54321 tanpa mengubahnya ke String.</p><details><summary>Petunjuk</summary><p>Ambil digit terakhir dengan % 10, buang dengan ~/ 10, ulangi selama angka > 0.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>void main() {
+  var angka = 12345, balik = 0;
+  while (angka &gt; 0) {
+    balik = balik * 10 + angka % 10;
+    angka ~/= 10;
+  }
+  print(&#x27;Dibalik: $balik&#x27;);
+}</code></pre></details></li><li><p>Hitung faktorial 10 dengan for.</p><details><summary>Petunjuk</summary><p>Mulai dari hasil = 1, kalikan dengan i dari 1 sampai 10.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>void main() {
+  var hasil = 1;
+  for (var i = 1; i &lt;= 10; i++) {
+    hasil *= i;
+  }
+  print(&#x27;10! = $hasil&#x27;);
+}</code></pre></details></li><li><p>Cari FPB 48 dan 36 dengan algoritma Euclid.</p><details><summary>Petunjuk</summary><p>Selama b != 0: (a, b) = (b, a % b). Jawabannya a.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>void main() {
+  var a = 48, b = 36;
+  while (b != 0) {
+    (a, b) = (b, a % b);
+  }
+  print(&#x27;FPB: $a&#x27;);
+}</code></pre></details></li><li><p>Cari angka terbesar di <code>[12, 45, 7, 89, 23]</code> tanpa method bawaan.</p><details><summary>Petunjuk</summary><p>Anggap elemen pertama terbesar, lalu bandingkan satu per satu.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>void main() {
+  final data = [12, 45, 7, 89, 23];
+  var maks = data[0];
+  for (final x in data) {
+    if (x &gt; maks) maks = x;
+  }
+  print(&#x27;Terbesar: $maks&#x27;);
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Fibonacci: for + dua variabel digeser.</li><li>Bubble sort: while luar, for dalam.</li><li>Prima: for bersarang + break.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa loop luar bubble sort memakai while?</summary><p class="ok">Jawaban: Jumlah putaran tidak diketahui; berhenti saat tidak ada pertukaran</p><p>Kondisi berhentinya yang diketahui.</p></details>
+<a class="cta" href="/#dart-2-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dart/percabangan-dan-perulangan">Percabangan dan perulangan</a></p><p>Berikutnya: <a href="/belajar/dart/fungsi-parameter-bernama-dan-arrow-function">Fungsi, parameter bernama, dan arrow function</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

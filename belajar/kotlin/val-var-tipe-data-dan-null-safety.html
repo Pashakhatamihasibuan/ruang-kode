@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>val, var, tipe data, dan null safety · Kotlin · Ruang Kode</title>
+<meta name="description" content="val untuk nilai yang tidak bisa diisi ulang (mirip final), var untuk variabel yang bisa berubah. Gunakan val sebagai pilihan utama. Tipe ditebak…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/kotlin/val-var-tipe-data-dan-null-safety">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="val, var, tipe data, dan null safety · Kotlin · Ruang Kode"><meta property="og:description" content="val untuk nilai yang tidak bisa diisi ulang (mirip final), var untuk variabel yang bisa berubah. Gunakan val sebagai pilihan utama. Tipe ditebak…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/kotlin/val-var-tipe-data-dan-null-safety"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "val, var, tipe data, dan null safety", "description": "val untuk nilai yang tidak bisa diisi ulang (mirip final), var untuk variabel yang bisa berubah. Gunakan val sebagai pilihan utama. Tipe ditebak…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/kotlin/val-var-tipe-data-dan-null-safety", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Kotlin", "url": "https://ruang-kode-nine.vercel.app/belajar/kotlin"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Kotlin", "item": "https://ruang-kode-nine.vercel.app/belajar/kotlin"}, {"@type": "ListItem", "position": 3, "name": "val, var, tipe data, dan null safety", "item": "https://ruang-kode-nine.vercel.app/belajar/kotlin/val-var-tipe-data-dan-null-safety"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/kotlin">Kotlin</a> / Modul 1</nav>
+<div class="eyebrow">Kotlin · Modul 1 · Konsep &amp; kode</div><h1>val, var, tipe data, dan null safety</h1><a class="cta" href="/#kotlin-1-2">Buka versi interaktif</a>
+<p><code>val</code> untuk nilai yang <b>tidak bisa diisi ulang</b> (mirip final), <code>var</code> untuk variabel yang bisa berubah. Gunakan <code>val</code> sebagai pilihan utama. Tipe ditebak otomatis, atau ditulis setelah titik dua: <code>val umur: Int = 20</code>.</p>
+<p>Tipe dasar: <code>Int</code>, <code>Long</code>, <code>Double</code>, <code>Boolean</code>, <code>Char</code>, <code>String</code>. Semua adalah objek, jadi bisa memanggil method seperti <code>20.toString()</code>.</p>
+<p><b>Null safety</b>: tipe biasa tidak boleh null. Tambahkan <code>?</code> agar boleh: <code>var alamat: String? = null</code>. Pakai <code>?.</code> (panggil jika tidak null), <code>?:</code> (<b>operator Elvis</b>, nilai cadangan), dan hindari <code>!!</code> yang melempar error jika ternyata null.</p>
+<div class="tw"><table><caption>Operator null safety</caption><thead><tr><th>Operator</th><th>Arti</th><th>Contoh</th></tr></thead><tbody><tr><td>T?</td><td>Tipe boleh null</td><td>String?</td></tr><tr><td>?.</td><td>Panggil jika tidak null</td><td>alamat?.length</td></tr><tr><td>?:</td><td>Elvis: nilai cadangan</td><td>alamat ?: &quot;-&quot;</td></tr><tr><td>!!</td><td>Paksa, error jika null</td><td>alamat!!.length</td></tr><tr><td>let</td><td>Jalankan blok jika tidak null</td><td>alamat?.let { println(it) }</td></tr></tbody></table></div>
+<div class="lbl">KODE</div><pre><code>fun main() {
+    val nama = &quot;Rina&quot;          // String, tidak bisa diisi ulang
+    var umur: Int = 20
+    umur += 1
+    val ipk = 3.75             // Double
+    var alamat: String? = null // boleh null
+
+    println(&quot;$nama, $umur tahun, IPK $ipk&quot;)
+    println(&quot;Alamat: ${alamat ?: &quot;belum diisi&quot;}&quot;)
+    println(&quot;Panjang alamat: ${alamat?.length}&quot;)
+    alamat = &quot;Medan&quot;
+    println(&quot;Panjang alamat: ${alamat?.length}&quot;)
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Rina, 21 tahun, IPK 3.75
+Alamat: belum diisi
+Panjang alamat: null
+Panjang alamat: 5</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Hitung luas lingkaran berjari-jari 7 memakai <code>Math.PI</code>, bulatkan ke 2 desimal tanpa format string.</p><details><summary>Petunjuk</summary><p>kotlin.math.round(x * 100) / 100.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>import kotlin.math.round
+
+fun main() {
+    val r = 7
+    val luas = Math.PI * r * r
+    println(&quot;Luas: ${round(luas * 100) / 100}&quot;)
+}</code></pre></details></li><li><p>Variabel <code>val nama: String? = null</code>. Tampilkan panjang nama atau 0 jika null, dalam satu ekspresi.</p><details><summary>Petunjuk</summary><p>Gabungkan ?. dan elvis ?:.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>fun main() {
+    var nama: String? = null
+    println(&quot;Panjang: ${nama?.length ?: 0}&quot;)
+    nama = &quot;Budi&quot;
+    println(&quot;Panjang: ${nama?.length ?: 0}&quot;)
+}</code></pre></details></li><li><p>Ubah teks "42" dan "4x2" menjadi Int dengan aman; jika gagal pakai -1.</p><details><summary>Petunjuk</summary><p>toIntOrNull() mengembalikan null jika bukan angka.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>fun main() {
+    for (s in listOf(&quot;42&quot;, &quot;4x2&quot;)) {
+        println(&quot;$s -&gt; ${s.toIntOrNull() ?: -1}&quot;)
+    }
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>val utama, var hanya jika perlu berubah.</li><li>Tipe dengan ? boleh null.</li><li>?: memberi nilai cadangan; hindari !!.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Hasil println(x ?: 0) jika x null?</summary><p class="ok">Jawaban: 0</p><p>Elvis memberi nilai cadangan.</p></details><details><summary>val total = 5, lalu total = 6. Apa yang terjadi?</summary><p class="ok">Jawaban: Error kompilasi</p><p>val tidak bisa diisi ulang.</p></details>
+<a class="cta" href="/#kotlin-1-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/kotlin/program-kotlin-pertama">Program Kotlin pertama</a></p><p>Berikutnya: <a href="/belajar/kotlin/string-template-dan-format-keluaran">String template dan format keluaran</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

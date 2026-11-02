@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>State management dengan Provider · Flutter · Ruang Kode</title>
+<meta name="description" content="Jika data keranjang dibutuhkan di layar produk, keranjang, dan checkout, mengoper data lewat constructor menjadi rumit. State management menyimpan data…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/flutter/state-management-dengan-provider">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="State management dengan Provider · Flutter · Ruang Kode"><meta property="og:description" content="Jika data keranjang dibutuhkan di layar produk, keranjang, dan checkout, mengoper data lewat constructor menjadi rumit. State management menyimpan data…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/flutter/state-management-dengan-provider"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "State management dengan Provider", "description": "Jika data keranjang dibutuhkan di layar produk, keranjang, dan checkout, mengoper data lewat constructor menjadi rumit. State management menyimpan data…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter/state-management-dengan-provider", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Flutter", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Flutter", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, {"@type": "ListItem", "position": 3, "name": "State management dengan Provider", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter/state-management-dengan-provider"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/flutter">Flutter</a> / Modul 3</nav>
+<div class="eyebrow">Flutter · Modul 3 · Konsep &amp; kode</div><h1>State management dengan Provider</h1><a class="cta" href="/#flutter-3-2">Buka versi interaktif</a>
+<p>Jika data keranjang dibutuhkan di layar produk, keranjang, dan checkout, mengoper data lewat constructor menjadi rumit. <b>State management</b> menyimpan data di satu tempat yang bisa dibaca widget mana pun.</p>
+<p><b>Provider</b> adalah pilihan paling sederhana. Data disimpan di class turunan <code>ChangeNotifier</code>; setelah data berubah, panggil <code>notifyListeners()</code>. Widget membaca dengan <code>context.watch&lt;T&gt;()</code> (ikut diperbarui) atau <code>context.read&lt;T&gt;()</code> (sekali baca, misalnya di onPressed).</p>
+<p>Tabel di bawah membandingkan pilihan populer. Untuk pemula dan aplikasi kecil-menengah, Provider atau Riverpod sudah cukup.</p>
+<div class="tw"><table><caption>Pilihan state management</caption><thead><tr><th>Library</th><th>Cara kerja</th><th>Cocok untuk</th></tr></thead><tbody><tr><td>setState</td><td>State lokal di satu widget</td><td>Tombol, form kecil</td></tr><tr><td>provider</td><td>ChangeNotifier + watch/read</td><td>Pemula, aplikasi kecil-menengah</td></tr><tr><td>flutter_riverpod</td><td>Provider tanpa BuildContext, aman saat kompilasi</td><td>Aplikasi menengah-besar</td></tr><tr><td>flutter_bloc</td><td>Event masuk, state keluar (Cubit lebih ringkas)</td><td>Tim besar, alur bisnis kompleks</td></tr><tr><td>GetX</td><td>Serba ada (state, rute, DI)</td><td>Prototipe cepat; kurang dianjurkan untuk tim besar</td></tr></tbody></table></div>
+<div class="lbl">KODE</div><pre><code>class Keranjang extends ChangeNotifier {
+  final List&lt;String&gt; _isi = [];
+  List&lt;String&gt; get isi =&gt; List.unmodifiable(_isi);
+  int get jumlah =&gt; _isi.length;
+
+  void tambah(String produk) {
+    _isi.add(produk);
+    notifyListeners();
+  }
+}
+
+void main() {
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) =&gt; Keranjang(),
+      child: const MaterialApp(home: TokoPage()),
+    ),
+  );
+}
+
+class TokoPage extends StatelessWidget {
+  const TokoPage({super.key});
+  @override
+  Widget build(BuildContext context) {
+    final jumlah = context.watch&lt;Keranjang&gt;().jumlah;
+    return Scaffold(
+      appBar: AppBar(title: Text(&#x27;Keranjang ($jumlah)&#x27;)),
+      body: Center(
+        child: FilledButton(
+          onPressed: () =&gt; context.read&lt;Keranjang&gt;().tambah(&#x27;Kopi Gayo&#x27;),
+          child: const Text(&#x27;Tambah kopi&#x27;),
+        ),
+      ),
+    );
+  }
+}</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tambahkan method <code>hapus(produk)</code> dan getter <code>total</code> pada Keranjang yang menyimpan harga.</p><details><summary>Petunjuk</summary><p>Simpan Map&lt;String, int> nama → harga. Panggil notifyListeners() setelah mengubah data.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>class Keranjang extends ChangeNotifier {
+  final Map&lt;String, int&gt; _isi = {};
+  Map&lt;String, int&gt; get isi =&gt; Map.unmodifiable(_isi);
+  int get total =&gt; _isi.values.fold(0, (a, b) =&gt; a + b);
+
+  void tambah(String nama, int harga) {
+    _isi[nama] = harga;
+    notifyListeners();
+  }
+
+  void hapus(String nama) {
+    _isi.remove(nama);
+    notifyListeners();
+  }
+}</code></pre></details></li><li><p>Tampilkan badge jumlah isi keranjang di ikon AppBar yang otomatis diperbarui.</p><details><summary>Petunjuk</summary><p>Badge(label: Text(...)) + context.watch&lt;Keranjang>().</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>IconButton(
+  onPressed: () =&gt; context.push(&#x27;/keranjang&#x27;),
+  icon: Badge(
+    isLabelVisible: context.watch&lt;Keranjang&gt;().isi.isNotEmpty,
+    label: Text(&#x27;${context.watch&lt;Keranjang&gt;().isi.length}&#x27;),
+    child: const Icon(Icons.shopping_cart),
+  ),
+)</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>ChangeNotifier + notifyListeners.</li><li>watch untuk tampilan, read untuk aksi.</li><li>Pilih library sesuai ukuran aplikasi dan tim.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Di dalam onPressed, sebaiknya memakai?</summary><p class="ok">Jawaban: context.read</p><p>read tidak mendaftarkan widget untuk dibangun ulang.</p></details>
+<a class="cta" href="/#flutter-3-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/flutter/navigasi-dengan-go-router">Navigasi dengan go_router</a></p><p>Berikutnya: <a href="/belajar/flutter/riverpod-dan-bloc-cubit">Riverpod dan BLoC/Cubit</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

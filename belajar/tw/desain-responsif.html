@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Desain responsif · Tailwind CSS · Ruang Kode</title>
+<meta name="description" content="Tailwind mobile-first: kelas tanpa awalan berlaku di semua ukuran, kelas berawalan berlaku mulai lebar tertentu ke atas.">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/tw/desain-responsif">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Desain responsif · Tailwind CSS · Ruang Kode"><meta property="og:description" content="Tailwind mobile-first: kelas tanpa awalan berlaku di semua ukuran, kelas berawalan berlaku mulai lebar tertentu ke atas.">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/tw/desain-responsif"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Desain responsif", "description": "Tailwind mobile-first: kelas tanpa awalan berlaku di semua ukuran, kelas berawalan berlaku mulai lebar tertentu ke atas.", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/tw/desain-responsif", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "Tailwind CSS", "url": "https://ruang-kode-nine.vercel.app/belajar/tw"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Tailwind CSS", "item": "https://ruang-kode-nine.vercel.app/belajar/tw"}, {"@type": "ListItem", "position": 3, "name": "Desain responsif", "item": "https://ruang-kode-nine.vercel.app/belajar/tw/desain-responsif"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/tw">Tailwind CSS</a> / Modul 2</nav>
+<div class="eyebrow">Tailwind CSS · Modul 2 · Praktik langsung</div><h1>Desain responsif</h1><a class="cta" href="/#tw-2-2">Buka versi interaktif</a>
+<p>Tailwind <b>mobile-first</b>: kelas tanpa awalan berlaku di semua ukuran, kelas berawalan berlaku mulai lebar tertentu ke atas.</p>
+<p>Titik henti bawaan: <code>sm</code> 640px, <code>md</code> 768px, <code>lg</code> 1024px, <code>xl</code> 1280px, <code>2xl</code> 1536px.</p>
+<p>Contoh: <code>grid-cols-1 md:grid-cols-3</code> berarti satu kolom di ponsel dan tiga kolom mulai 768px. <code>hidden md:block</code> menyembunyikan elemen di layar kecil.</p>
+<p>Ubah lebar jendela pratinjau (atau buka di ponsel) untuk melihat perbedaannya.</p>
+<div class="lbl">HTML</div><pre><code>&lt;div id=&quot;kartu&quot; class=&quot;grid grid-cols-1 gap-3 p-4&quot;&gt;
+  &lt;div class=&quot;p-4 bg-emerald-100 rounded&quot;&gt;Satu&lt;/div&gt;
+  &lt;div class=&quot;p-4 bg-emerald-100 rounded&quot;&gt;Dua&lt;/div&gt;
+  &lt;div class=&quot;p-4 bg-emerald-100 rounded&quot;&gt;Tiga&lt;/div&gt;
+&lt;/div&gt;
+&lt;p class=&quot;px-4 text-sm text-slate-500&quot;&gt;&lt;span class=&quot;sm:hidden&quot;&gt;Layar kecil&lt;/span&gt;&lt;span class=&quot;hidden sm:inline&quot;&gt;Layar sm ke atas&lt;/span&gt;&lt;/p&gt;</code></pre>
+<h2>Tantangan</h2><ol><li>Buat kartu tampil tiga kolom mulai layar <code>md</code>: tambahkan <code>md:grid-cols-3</code>.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Buat judul yang berukuran <code>text-2xl</code> di ponsel, <code>text-4xl</code> mulai md, dan <code>text-6xl</code> mulai lg.</p><details><summary>Petunjuk</summary><p>Tumpuk kelas dengan awalan berbeda.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">HTML</div><pre><code>&lt;h1 class=&quot;text-2xl md:text-4xl lg:text-6xl font-extrabold&quot;&gt;Belajar Flutter&lt;/h1&gt;</code></pre></details></li><li><p>Tampilkan menu navigasi hanya mulai md, dan tombol hamburger hanya di ponsel.</p><details><summary>Petunjuk</summary><p>hidden md:flex untuk menu; md:hidden untuk tombol.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">HTML</div><pre><code>&lt;nav class=&quot;flex items-center justify-between p-4&quot;&gt;
+  &lt;b&gt;RuangKode&lt;/b&gt;
+  &lt;div class=&quot;hidden md:flex gap-4&quot;&gt;&lt;a&gt;Beranda&lt;/a&gt;&lt;a&gt;Kursus&lt;/a&gt;&lt;/div&gt;
+  &lt;button class=&quot;md:hidden&quot; aria-label=&quot;Buka menu&quot;&gt;☰&lt;/button&gt;
+&lt;/nav&gt;</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Mobile-first: kelas polos untuk ponsel, awalan untuk layar lebih besar.</li><li>sm 640, md 768, lg 1024, xl 1280, 2xl 1536.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kelas md:text-lg berlaku kapan?</summary><p class="ok">Jawaban: Mulai lebar 768px ke atas</p><p>Awalan berarti &quot;mulai dari ukuran ini ke atas&quot;.</p></details>
+<a class="cta" href="/#tw-2-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/tw/flexbox-dan-grid">Flexbox dan Grid</a></p><p>Berikutnya: <a href="/belajar/tw/hover-focus-dan-mode-gelap">Hover, focus, dan mode gelap</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

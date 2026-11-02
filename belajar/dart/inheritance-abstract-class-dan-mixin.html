@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inheritance, abstract class, dan mixin · Dart · Ruang Kode</title>
+<meta name="description" content="extends mewarisi class lain. abstract class tidak bisa dibuat objeknya langsung dan berisi method yang wajib diisi turunan. Pola ini persis seperti…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dart/inheritance-abstract-class-dan-mixin">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Inheritance, abstract class, dan mixin · Dart · Ruang Kode"><meta property="og:description" content="extends mewarisi class lain. abstract class tidak bisa dibuat objeknya langsung dan berisi method yang wajib diisi turunan. Pola ini persis seperti…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dart/inheritance-abstract-class-dan-mixin"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Inheritance, abstract class, dan mixin", "description": "extends mewarisi class lain. abstract class tidak bisa dibuat objeknya langsung dan berisi method yang wajib diisi turunan. Pola ini persis seperti…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dart/inheritance-abstract-class-dan-mixin", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Dart", "url": "https://ruang-kode-nine.vercel.app/belajar/dart"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Dart", "item": "https://ruang-kode-nine.vercel.app/belajar/dart"}, {"@type": "ListItem", "position": 3, "name": "Inheritance, abstract class, dan mixin", "item": "https://ruang-kode-nine.vercel.app/belajar/dart/inheritance-abstract-class-dan-mixin"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dart">Dart</a> / Modul 3</nav>
+<div class="eyebrow">Dart · Modul 3 · Konsep &amp; kode</div><h1>Inheritance, abstract class, dan mixin</h1><a class="cta" href="/#dart-3-3">Buka versi interaktif</a>
+<p><code>extends</code> mewarisi class lain. <code>abstract class</code> tidak bisa dibuat objeknya langsung dan berisi method yang wajib diisi turunan. Pola ini persis seperti <code>StatelessWidget</code> di Flutter: kamu mewarisi lalu mengisi method <code>build</code>.</p>
+<p><b>Mixin</b> (<code>with</code>) menambahkan kemampuan ke class tanpa pewarisan, misalnya kemampuan <code>Logger</code> atau <code>Diskonable</code>. Satu class bisa memakai beberapa mixin sekaligus.</p>
+<p>Dart 3 menambahkan <code>sealed class</code>: daftar turunan sudah pasti, sehingga <code>switch</code> bisa memeriksa bahwa semua kasus sudah ditangani. Cocok untuk status layar: Memuat, Sukses, Gagal.</p>
+<div class="lbl">KODE</div><pre><code>abstract class Pembayaran {
+  final int jumlah;
+  Pembayaran(this.jumlah);
+  String proses();
+}
+
+mixin Pencatat {
+  void catat(String pesan) =&gt; print(&#x27;[LOG] $pesan&#x27;);
+}
+
+class Qris extends Pembayaran with Pencatat {
+  Qris(super.jumlah);
+  @override
+  String proses() {
+    catat(&#x27;QRIS dipindai&#x27;);
+    return &#x27;Bayar $jumlah lewat QRIS&#x27;;
+  }
+}
+
+class Transfer extends Pembayaran {
+  final String bank;
+  Transfer(super.jumlah, this.bank);
+  @override
+  String proses() =&gt; &#x27;Transfer $jumlah ke $bank&#x27;;
+}
+
+void main() {
+  final daftar = &lt;Pembayaran&gt;[Qris(50000), Transfer(120000, &#x27;BSI&#x27;)];
+  for (final p in daftar) {
+    print(p.proses());
+  }
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>[LOG] QRIS dipindai
+Bayar 50000 lewat QRIS
+Transfer 120000 ke BSI</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat <code>abstract class Bentuk</code> dengan method <code>luas()</code>, lalu turunan Lingkaran(r) dan Persegi(s). Cetak luas keduanya dengan 2 desimal.</p><details><summary>Petunjuk</summary><p>Lingkaran: 3.14159 × r × r. Override di setiap turunan.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>abstract class Bentuk {
+  double luas();
+}
+
+class Lingkaran extends Bentuk {
+  final double r;
+  Lingkaran(this.r);
+  @override
+  double luas() =&gt; 3.14159 * r * r;
+}
+
+class Persegi extends Bentuk {
+  final double s;
+  Persegi(this.s);
+  @override
+  double luas() =&gt; s * s;
+}
+
+void main() {
+  final daftar = &lt;Bentuk&gt;[Lingkaran(2), Persegi(3)];
+  for (final b in daftar) {
+    print(&#x27;${b.runtimeType}: ${b.luas().toStringAsFixed(2)}&#x27;);
+  }
+}</code></pre></details></li><li><p>Buat mixin <code>Logger</code> dengan method <code>log(pesan)</code>, lalu pakai di class <code>Pesanan</code>.</p><details><summary>Petunjuk</summary><p>mixin Logger { ... } lalu class Pesanan with Logger.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>mixin Logger {
+  void log(String m) =&gt; print(&#x27;[LOG] $m&#x27;);
+}
+
+class Pesanan with Logger {
+  void bayar() {
+    log(&#x27;Pesanan dibayar&#x27;);
+  }
+}
+
+void main() {
+  Pesanan().bayar();
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>extends mewarisi; abstract mewajibkan method diisi.</li><li>with menambahkan mixin.</li><li>sealed class untuk status yang pasti.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kata kunci untuk memakai mixin?</summary><p class="ok">Jawaban: with</p><p>class A extends B with C.</p></details><details><summary>Bisakah objek dibuat langsung dari abstract class?</summary><p class="ok">Jawaban: Tidak bisa</p><p>Abstract class harus diturunkan dulu.</p></details>
+<a class="cta" href="/#dart-3-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dart/class-constructor-dan-getter">Class, constructor, dan getter</a></p><p>Berikutnya: <a href="/belajar/dart/future-async-dan-await">Future, async, dan await</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -7,6 +7,7 @@ const GROUPS=[
   ['logika','Logika & Algoritma','Mulai dari sini: melatih cara berpikir sebelum menulis kode.'],
   ['prog','Pemrograman','Bahasa untuk membangun aplikasi, backend, dan otomasi.'],
   ['web','Web & Frontend','Membangun situs dan aplikasi web yang cepat dan mudah dipakai.'],
+  ['mob','Mobile & Multiplatform','Aplikasi Android dan iOS dengan Flutter, Jetpack Compose, dan Kotlin Multiplatform.'],
   ['data','Data','Mengolah, menganalisis, dan mengalirkan data menjadi keputusan.'],
   ['des','Desain','Merancang pengalaman dan sistem visual yang konsisten.'],
   ['sis','Sistem Informasi','Mengelola sistem informasi agar organisasi bekerja lebih baik.'],
@@ -17,11 +18,18 @@ const TRACKS=[
   {k:'java',g:'prog',name:'Java',lang:'java',mods:JAVA_MODULES,road:'java',mark:'J',h:'Java dari nol sampai siap kerja',d:'Bahasa bertipe statis untuk Android, perbankan, dan backend skala besar. Dari variabel dan OOP sampai konkurensi, JDBC, dan Spring Boot.'},
   {k:'python',g:'prog',name:'Python',lang:'python',mods:PY_MODULES,road:'python',mark:'Py',h:'Python yang rapi dan idiomatik',d:'Bahasa ringkas untuk otomasi, data, AI, dan web. Dari sintaks dasar sampai type hints, testing, asyncio, dan framework web.'},
   {k:'ts',g:'prog',name:'TypeScript',lang:'ts',mods:TS_MODULES,road:'typescript',mark:'TS',h:'JavaScript yang lebih aman dengan tipe',d:'Tipe dasar, interface, generics, narrowing, utility types, sampai konfigurasi proyek nyata.'},
+  {k:'dart',g:'prog',name:'Dart',lang:'dart',mods:DART_MODULES,road:'',mark:'Dt',h:'Bahasa di balik Flutter',d:'Variabel, null safety, format keluaran, algoritma, fungsi, koleksi, OOP, async, Stream, exception, generics, records, pattern matching, dan proyek kasir.'},
+  {k:'kotlin',g:'prog',name:'Kotlin',lang:'kotlin',mods:KOTLIN_MODULES,road:'',mark:'Kt',h:'Bahasa resmi Android',d:'val dan var, null safety, format keluaran, when, algoritma, lambda, koleksi, data dan sealed class, coroutines, Flow, Result, generics, dan proyek kasir.'},
   {k:'fe0',g:'web',name:'Frontend Pemula',lang:'js',mods:FE0_MODULES,road:'frontend-beginner',mark:'FE',h:'Langkah pertama menjadi frontend developer',d:'HTML, CSS, JavaScript, Git, npm, Tailwind, React dasar, pengujian, dan menerbitkan situs pertamamu.'},
   {k:'html',g:'web',name:'HTML',lang:'html',mods:HTML_MODULES,road:'html',mark:'&lt;/&gt;',h:'Struktur halaman web yang benar',d:'Elemen, teks, link, media, tabel, form, HTML semantik, aksesibilitas, dan SEO dasar.'},
   {k:'css',g:'web',name:'CSS',lang:'css',mods:CSS_MODULES,road:'css',mark:'{}',h:'Tampilan rapi di semua layar',d:'Selector, box model, flexbox, grid, responsif, variabel, animasi, dan arsitektur CSS.'},
+  {k:'tw',g:'web',name:'Tailwind CSS',lang:'html',mods:TW_MODULES,road:'',mark:'tw',h:'Styling cepat dengan kelas utilitas',d:'Utility-first, jarak, warna, tipografi, flex, grid, responsif, hover dan dark mode, form, @apply, tema, animasi, dan Tailwind v4, dengan pratinjau langsung.'},
+  {k:'bs',g:'web',name:'Bootstrap 5',lang:'html',mods:BS_MODULES,road:'',mark:'B5',h:'Komponen siap pakai dan grid responsif',d:'Grid 12 kolom, utilitas, tombol, kartu, navbar, form dan validasi, modal, dropdown, tab, offcanvas, toast, tabel, dan kustomisasi Sass, dengan pratinjau langsung.'},
   {k:'fe',g:'web',name:'Frontend',lang:'js',mods:FE_MODULES,road:'frontend',mark:'FD',h:'Frontend developer profesional',d:'Internet, JavaScript lanjutan, build tools, testing, keamanan, performa, PWA, SSR, sampai AI di frontend.'},
   {k:'react',g:'web',name:'React',lang:'jsx',mods:REACT_MODULES,road:'react',mark:'⚛',h:'Antarmuka modern dengan React',d:'Komponen, props, state, hooks, form, routing, data dari server, styling, dan pengujian.'},
+  {k:'flutter',g:'mob',name:'Flutter',lang:'dart',mods:FLUTTER_MODULES,road:'flutter',mark:'Fl',h:'Satu kode untuk Android, iOS, web, dan desktop',d:'Widget, tata letak, form, go_router, Provider, Riverpod, BLoC, http dan dio, penyimpanan, Firebase, tema, animasi, library populer, arsitektur, pengujian, dan rilis.'},
+  {k:'compose',g:'mob',name:'Jetpack Compose',lang:'kotlin',mods:COMPOSE_MODULES,road:'android',mark:'JC',h:'UI Android modern dengan Kotlin',d:'Composable, Modifier, state, LazyColumn, Material 3, navigasi, ViewModel, StateFlow, animasi, side effect, Room, DataStore, library populer, dan pengujian.'},
+  {k:'kmp',g:'mob',name:'Kotlin Multiplatform',lang:'kotlin',mods:KMP_MODULES,road:'',mark:'KMP',h:'Berbagi kode Kotlin ke Android dan iOS',d:'expect/actual, Ktor, kotlinx.serialization, Compose Multiplatform, Koin, SQLDelight, Swift interop, dan proyek aplikasi kurs.'},
   {k:'sql',g:'data',name:'SQL',lang:'sql',mods:SQL_MODULES,road:'sql',mark:'SQL',h:'SQL untuk aplikasi dan analisis data',d:'Jalankan query sungguhan di konsol bawaan, dari SELECT pertama sampai JOIN, transaksi, index, dan window function.'},
   {k:'pda',g:'data',name:'Python Analisis Data',lang:'python',mods:PDA_MODULES,road:'python-data-analysis',mark:'pd',h:'Analisis data dengan NumPy dan pandas',d:'Membaca, membersihkan, mengolah, dan memvisualisasikan data, lalu statistik dan data skala besar.'},
   {k:'da',g:'data',name:'Data Analyst',lang:'python',mods:DA_MODULES,road:'data-analyst',mark:'DA',h:'Menjadi data analyst',d:'Spreadsheet, SQL, Python, statistik, visualisasi, big data, dan dasar machine learning.'},
@@ -40,7 +48,10 @@ const PATHS=[
   {k:'de',t:'Data Engineer',d:'Membangun jalur data dari sumber ke dashboard.',tr:['python','sql','git','pda','de']},
   {k:'ux',t:'UI/UX Designer',d:'Merancang pengalaman dan sistem desain.',tr:['ux','ds','html','css','msi']},
   {k:'msi',t:'Analis Sistem Informasi',d:'Menjembatani kebutuhan bisnis dengan teknologi.',tr:['sim','msi','ux','sql','bi']},
-  {k:'be',t:'Backend Java',d:'Membangun layanan dan API yang andal.',tr:['java','sql','git']}];
+  {k:'be',t:'Backend Java',d:'Membangun layanan dan API yang andal.',tr:['java','sql','git']},
+  {k:'flutterdev',t:'Mobile Developer (Flutter)',d:'Membangun aplikasi Android dan iOS dari satu kode.',tr:['pseudo','dart','flutter','git']},
+  {k:'android',t:'Android Developer',d:'Membangun aplikasi Android native lalu berbagi kode ke iOS.',tr:['kotlin','compose','kmp','git']},
+  {k:'webui',t:'Web UI dengan Framework CSS',d:'Membangun tampilan web cepat dengan Tailwind dan Bootstrap.',tr:['html','css','tw','bs','git']}];
 const LVL4=['Pemula','Menengah','Lanjutan','Profesional'];
 const KIND={lab:'Konsep & lab',topic:'Topik 5 langkah',c:'Konsep & kode',s:'Praktik SQL',w:'Praktik langsung',proj:'Proyek akhir',mini:'Proyek mini'};
 const MIN={lab:15,topic:12,c:8,s:10,w:12,proj:60};
@@ -100,7 +111,7 @@ function updateBadges(){const n=dueN();document.querySelectorAll('.wrongN').forE
 
 /* ---------- komponen kecil ---------- */
 const ring=(p,size=56)=>{const r=size/2-4,c=2*Math.PI*r;return `<svg class="ring" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" aria-hidden="true"><circle cx="${size/2}" cy="${size/2}" r="${r}" class="rb"/><circle cx="${size/2}" cy="${size/2}" r="${r}" class="rf" style="stroke-dasharray:${c};stroke-dashoffset:${c*(1-p)}"/></svg>`};
-const LANGLBL={java:'JAVA',python:'PYTHON',sql:'SQL',ts:'TYPESCRIPT',js:'JAVASCRIPT',jsx:'JSX',html:'HTML',css:'CSS',bash:'TERMINAL',yaml:'YAML',json:'JSON',text:'CONTOH'};
+const LANGLBL={dart:'DART',kotlin:'KOTLIN',java:'JAVA',python:'PYTHON',sql:'SQL',ts:'TYPESCRIPT',js:'JAVASCRIPT',jsx:'JSX',html:'HTML',css:'CSS',bash:'TERMINAL',yaml:'YAML',json:'JSON',text:'CONTOH'};
 function pane(lang,code,o={}){
   const lab=o.label||LANGLBL[lang]||'KODE';
   return `<div class="pane ${lang==='java'||lang==='python'?lang:'tx'}" data-lang="${lang}"><div class="pane-h"><span>${lab}</span>${o.copy!==false?'<button class="copy" data-copy>Salin</button>':''}</div><pre class="code">${hl(code,lang)}</pre>${o.out?`<pre class="out">${esc(o.out)}</pre>`:''}</div>`;

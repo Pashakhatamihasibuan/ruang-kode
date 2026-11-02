@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Exception: try, catch, finally, dan throw · Dart · Ruang Kode</title>
+<meta name="description" content="Program yang baik tidak tertutup saat input salah. Kode yang berisiko dibungkus try. Error ditangkap dengan on TipeError catch (e) untuk jenis tertentu,…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dart/exception-try-catch-finally-dan-throw">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Exception: try, catch, finally, dan throw · Dart · Ruang Kode"><meta property="og:description" content="Program yang baik tidak tertutup saat input salah. Kode yang berisiko dibungkus try. Error ditangkap dengan on TipeError catch (e) untuk jenis tertentu,…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dart/exception-try-catch-finally-dan-throw"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Exception: try, catch, finally, dan throw", "description": "Program yang baik tidak tertutup saat input salah. Kode yang berisiko dibungkus try. Error ditangkap dengan on TipeError catch (e) untuk jenis tertentu,…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dart/exception-try-catch-finally-dan-throw", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Dart", "url": "https://ruang-kode-nine.vercel.app/belajar/dart"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Dart", "item": "https://ruang-kode-nine.vercel.app/belajar/dart"}, {"@type": "ListItem", "position": 3, "name": "Exception: try, catch, finally, dan throw", "item": "https://ruang-kode-nine.vercel.app/belajar/dart/exception-try-catch-finally-dan-throw"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dart">Dart</a> / Modul 5</nav>
+<div class="eyebrow">Dart · Modul 5 · Konsep &amp; kode</div><h1>Exception: try, catch, finally, dan throw</h1><a class="cta" href="/#dart-5-1">Buka versi interaktif</a>
+<p>Program yang baik tidak tertutup saat input salah. Kode yang berisiko dibungkus <code>try</code>. Error ditangkap dengan <code>on TipeError catch (e)</code> untuk jenis tertentu, atau <code>catch (e)</code> untuk semua. Blok <code>finally</code> selalu dijalankan, berhasil atau gagal.</p>
+<p>Kamu bisa melempar error sendiri dengan <code>throw</code>. Untuk aturan bisnis, buat class exception sendiri yang <code>implements Exception</code>, misalnya <code>SaldoKurang</code>. Pesan error jadi jelas dan bisa ditangkap secara khusus.</p>
+<p>Untuk input angka dari pengguna, <code>int.tryParse(s)</code> lebih aman daripada <code>int.parse(s)</code>: hasilnya <code>null</code> jika teks bukan angka, sehingga tidak perlu try/catch.</p>
+<div class="tw"><table><caption>Pola menangani error</caption><thead><tr><th>Tulisan</th><th>Arti</th></tr></thead><tbody><tr><td>try { } catch (e) { }</td><td>Tangkap semua error</td></tr><tr><td>on FormatException catch (e)</td><td>Tangkap jenis tertentu saja</td></tr><tr><td>finally { }</td><td>Selalu dijalankan</td></tr><tr><td>throw X()</td><td>Lempar error</td></tr><tr><td>rethrow</td><td>Lempar ulang error yang sedang ditangkap</td></tr><tr><td>int.tryParse(s)</td><td>null jika bukan angka, tanpa error</td></tr></tbody></table></div>
+<div class="lbl">KODE</div><pre><code>class SaldoKurang implements Exception {
+  final int kurang;
+  SaldoKurang(this.kurang);
+  @override
+  String toString() =&gt; &#x27;Saldo kurang Rp$kurang&#x27;;
+}
+
+void tarik(int saldo, int jumlah) {
+  if (jumlah &gt; saldo) throw SaldoKurang(jumlah - saldo);
+  print(&#x27;Tarik $jumlah berhasil&#x27;);
+}
+
+void main() {
+  try {
+    final n = int.parse(&#x27;12a&#x27;);
+    print(n);
+  } on FormatException {
+    print(&#x27;Format salah, masukkan angka saja&#x27;);
+  } finally {
+    print(&#x27;Selesai memeriksa input&#x27;);
+  }
+
+  try {
+    tarik(50000, 80000);
+  } on SaldoKurang catch (e) {
+    print(e);
+  }
+
+  final angka = int.tryParse(&#x27;99x&#x27;) ?? 0;
+  print(&#x27;tryParse: $angka&#x27;);
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Format salah, masukkan angka saja
+Selesai memeriksa input
+Saldo kurang Rp30000
+tryParse: 0</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat fungsi <code>bagi(a, b)</code> yang melempar <code>Exception('Pembagi nol')</code> jika b = 0. Tangkap errornya di main.</p><details><summary>Petunjuk</summary><p>if (b == 0) throw Exception(...); lalu try/catch di pemanggil.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>double bagi(int a, int b) {
+  if (b == 0) throw Exception(&#x27;Pembagi nol&#x27;);
+  return a / b;
+}
+
+void main() {
+  print(bagi(10, 4));
+  try {
+    print(bagi(5, 0));
+  } catch (e) {
+    print(&#x27;Gagal: $e&#x27;);
+  }
+}</code></pre></details></li><li><p>Validasi daftar input umur <code>['20', 'abc', '-5', '17']</code>: cetak 'valid', 'bukan angka', atau 'tidak boleh negatif'.</p><details><summary>Petunjuk</summary><p>int.tryParse lalu periksa null dan &lt; 0.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>void main() {
+  for (final s in [&#x27;20&#x27;, &#x27;abc&#x27;, &#x27;-5&#x27;, &#x27;17&#x27;]) {
+    final n = int.tryParse(s);
+    if (n == null) {
+      print(&#x27;$s: bukan angka&#x27;);
+    } else if (n &lt; 0) {
+      print(&#x27;$s: tidak boleh negatif&#x27;);
+    } else {
+      print(&#x27;$s: valid&#x27;);
+    }
+  }
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>try/on/catch/finally.</li><li>Exception sendiri dengan implements Exception.</li><li>tryParse untuk input pengguna.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Blok yang selalu dijalankan, ada error atau tidak?</summary><p class="ok">Jawaban: finally</p><p>finally cocok untuk menutup koneksi atau mematikan loading.</p></details><details><summary>Hasil int.tryParse(&#x27;abc&#x27;)?</summary><p class="ok">Jawaban: null</p><p>tryParse mengembalikan null jika gagal.</p></details>
+<a class="cta" href="/#dart-5-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dart/package-dari-pub-dev-dan-struktur-proyek">Package dari pub.dev dan struktur proyek</a></p><p>Berikutnya: <a href="/belajar/dart/enum-generics-dan-extension-method">Enum, generics, dan extension method</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

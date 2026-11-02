@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Percabangan dan perulangan · Dart · Ruang Kode</title>
+<meta name="description" content="Percabangan memakai if, else if, else. Dart 3 punya switch expression yang ringkas: final huruf = switch (nilai ~/ 10) { 10 || 9 =&gt; &#x27;A&#x27;, 8 =&gt; &#x27;B&#x27;, _ =&gt;…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dart/percabangan-dan-perulangan">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Percabangan dan perulangan · Dart · Ruang Kode"><meta property="og:description" content="Percabangan memakai if, else if, else. Dart 3 punya switch expression yang ringkas: final huruf = switch (nilai ~/ 10) { 10 || 9 =&gt; &#x27;A&#x27;, 8 =&gt; &#x27;B&#x27;, _ =&gt;…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dart/percabangan-dan-perulangan"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Percabangan dan perulangan", "description": "Percabangan memakai if, else if, else. Dart 3 punya switch expression yang ringkas: final huruf = switch (nilai ~/ 10) { 10 || 9 => 'A', 8 => 'B', _ =>…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dart/percabangan-dan-perulangan", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Dart", "url": "https://ruang-kode-nine.vercel.app/belajar/dart"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Dart", "item": "https://ruang-kode-nine.vercel.app/belajar/dart"}, {"@type": "ListItem", "position": 3, "name": "Percabangan dan perulangan", "item": "https://ruang-kode-nine.vercel.app/belajar/dart/percabangan-dan-perulangan"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dart">Dart</a> / Modul 2</nav>
+<div class="eyebrow">Dart · Modul 2 · Konsep &amp; kode</div><h1>Percabangan dan perulangan</h1><a class="cta" href="/#dart-2-1">Buka versi interaktif</a>
+<p>Percabangan memakai <code>if</code>, <code>else if</code>, <code>else</code>. Dart 3 punya <b>switch expression</b> yang ringkas: <code>final huruf = switch (nilai ~/ 10) { 10 || 9 => 'A', 8 => 'B', _ => 'C' };</code>. Operator <code>~/</code> adalah pembagian bulat.</p>
+<p>Perulangan: <code>for</code> klasik saat jumlah putaran diketahui, <code>for-in</code> untuk membaca isi koleksi, <code>while</code> saat hanya kondisi berhenti yang diketahui, dan <code>do-while</code> saat badan loop harus jalan minimal sekali. <code>break</code> keluar dari loop, <code>continue</code> lompat ke putaran berikutnya.</p>
+<p>Aturan memilih loop sama di semua bahasa: lihat apa yang sudah kamu ketahui sebelum loop dimulai.</p>
+<div class="lbl">KODE</div><pre><code>void main() {
+  final nilai = 87;
+  final huruf = switch (nilai ~/ 10) {
+    10 || 9 =&gt; &#x27;A&#x27;,
+    8 =&gt; &#x27;B&#x27;,
+    7 =&gt; &#x27;C&#x27;,
+    _ =&gt; &#x27;D&#x27;,
+  };
+  print(&#x27;Nilai $nilai = $huruf&#x27;);
+
+  for (var i = 1; i &lt;= 3; i++) {
+    print(&#x27;Putaran $i&#x27;);
+  }
+  for (final kota in [&#x27;Medan&#x27;, &#x27;Padang&#x27;]) {
+    print(&#x27;Kirim ke $kota&#x27;);
+  }
+  var saldo = 0, minggu = 0;
+  while (saldo &lt; 50000) {
+    saldo += 20000;
+    minggu++;
+  }
+  print(&#x27;Target di minggu ke-$minggu&#x27;);
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Nilai 87 = B
+Putaran 1
+Putaran 2
+Putaran 3
+Kirim ke Medan
+Kirim ke Padang
+Target di minggu ke-3</code></pre>
+<h2>Soal latihan</h2><ol><li><p>FizzBuzz 1 sampai 15: cetak Fizz untuk kelipatan 3, Buzz untuk kelipatan 5, FizzBuzz untuk keduanya.</p><details><summary>Petunjuk</summary><p>Periksa kelipatan 15 lebih dulu.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>void main() {
+  for (var i = 1; i &lt;= 15; i++) {
+    if (i % 15 == 0) {
+      print(&#x27;FizzBuzz&#x27;);
+    } else if (i % 3 == 0) {
+      print(&#x27;Fizz&#x27;);
+    } else if (i % 5 == 0) {
+      print(&#x27;Buzz&#x27;);
+    } else {
+      print(i);
+    }
+  }
+}</code></pre></details></li><li><p>Jumlahkan bilangan genap dari 1 sampai 100 memakai <code>continue</code> untuk melewati bilangan ganjil.</p><details><summary>Petunjuk</summary><p>Jika i % 2 != 0, continue.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>void main() {
+  var total = 0;
+  for (var i = 1; i &lt;= 100; i++) {
+    if (i % 2 != 0) continue;
+    total += i;
+  }
+  print(&#x27;Jumlah genap: $total&#x27;);
+}</code></pre></details></li><li><p>Cetak segitiga bintang 4 baris (baris ke-i berisi i bintang).</p><details><summary>Petunjuk</summary><p>Operator * pada String mengulang teks: '*' * i.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>void main() {
+  for (var i = 1; i &lt;= 4; i++) {
+    print(&#x27;*&#x27; * i);
+  }
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>switch expression Dart 3 mengembalikan nilai.</li><li>~/ adalah pembagian bulat.</li><li>for, for-in, while, do-while dipilih sesuai yang diketahui.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Hasil 17 ~/ 5?</summary><p class="ok">Jawaban: 3</p><p>~/ membuang sisa.</p></details><details><summary>Loop untuk membaca setiap isi list tanpa indeks?</summary><p class="ok">Jawaban: for-in</p><p>for (final x in daftar).</p></details>
+<a class="cta" href="/#dart-2-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dart/string-interpolasi-dan-format-keluaran">String, interpolasi, dan format keluaran</a></p><p>Berikutnya: <a href="/belajar/dart/latihan-algoritma-fibonacci-bubble-sort-prima">Latihan algoritma: Fibonacci, bubble sort, prima</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

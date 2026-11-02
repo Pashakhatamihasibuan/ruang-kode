@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>String, interpolasi, dan format keluaran · Dart · Ruang Kode</title>
+<meta name="description" content="Dart menyisipkan nilai ke string dengan interpolasi: &#x27;$nama&#x27; untuk variabel dan &#x27;${a + b}&#x27; untuk ekspresi. Ini cara utama menyusun teks di Dart; tidak…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dart/string-interpolasi-dan-format-keluaran">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="String, interpolasi, dan format keluaran · Dart · Ruang Kode"><meta property="og:description" content="Dart menyisipkan nilai ke string dengan interpolasi: &#x27;$nama&#x27; untuk variabel dan &#x27;${a + b}&#x27; untuk ekspresi. Ini cara utama menyusun teks di Dart; tidak…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dart/string-interpolasi-dan-format-keluaran"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "String, interpolasi, dan format keluaran", "description": "Dart menyisipkan nilai ke string dengan interpolasi: '$nama' untuk variabel dan '${a + b}' untuk ekspresi. Ini cara utama menyusun teks di Dart; tidak…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dart/string-interpolasi-dan-format-keluaran", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Dart", "url": "https://ruang-kode-nine.vercel.app/belajar/dart"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Dart", "item": "https://ruang-kode-nine.vercel.app/belajar/dart"}, {"@type": "ListItem", "position": 3, "name": "String, interpolasi, dan format keluaran", "item": "https://ruang-kode-nine.vercel.app/belajar/dart/string-interpolasi-dan-format-keluaran"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dart">Dart</a> / Modul 1</nav>
+<div class="eyebrow">Dart · Modul 1 · Konsep &amp; kode</div><h1>String, interpolasi, dan format keluaran</h1><a class="cta" href="/#dart-1-3">Buka versi interaktif</a>
+<p>Dart menyisipkan nilai ke string dengan <b>interpolasi</b>: <code>'$nama'</code> untuk variabel dan <code>'${a + b}'</code> untuk ekspresi. Ini cara utama menyusun teks di Dart; tidak ada <code>printf</code>.</p>
+<p>Untuk merapikan angka: <code>toStringAsFixed(2)</code> membulatkan ke 2 desimal, <code>padLeft(5)</code> dan <code>padRight(10)</code> mengatur lebar kolom, <code>padLeft(3, '0')</code> mengisi nol di depan, dan <code>toRadixString(16)</code> mengubah ke heksadesimal.</p>
+<p>Untuk angka dan uang yang tampil ke pengguna, industri memakai package <b>intl</b>: <code>NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0)</code> menghasilkan Rp7.500.000, dan <code>DateFormat('d MMMM y', 'id_ID')</code> untuk tanggal. Package ini perlu ditambahkan dengan <code>dart pub add intl</code>.</p>
+<div class="tw"><table><caption>Format di Dart</caption><thead><tr><th>Tujuan</th><th>Dart</th><th>Padanan printf</th></tr></thead><tbody><tr><td>Sisipkan nilai</td><td>&#x27;$x&#x27; atau &#x27;${x + 1}&#x27;</td><td>%s / %d</td></tr><tr><td>2 desimal</td><td>x.toStringAsFixed(2)</td><td>%.2f</td></tr><tr><td>Rata kanan lebar 8</td><td>s.padLeft(8)</td><td>%8s</td></tr><tr><td>Rata kiri lebar 8</td><td>s.padRight(8)</td><td>%-8s</td></tr><tr><td>Isi nol</td><td>n.toString().padLeft(4, &#x27;0&#x27;)</td><td>%04d</td></tr><tr><td>Ribuan dan Rupiah</td><td>NumberFormat.currency(locale: &#x27;id_ID&#x27;, symbol: &#x27;Rp&#x27;)</td><td>%,d</td></tr></tbody></table></div>
+<div class="lbl">KODE</div><pre><code>void main() {
+  const nama = &#x27;Rina&#x27;;
+  const ipk = 3.4567;
+  print(&#x27;Nama: $nama, IPK ${ipk.toStringAsFixed(2)}&#x27;);
+
+  // lebar kolom dan isi nol
+  print(&#x27;[${nama.padLeft(8)}] [${nama.padRight(8)}]&#x27;);
+  print(&#x27;INV-${7.toString().padLeft(4, &#x27;0&#x27;)}&#x27;);
+  print(&#x27;hex ${255.toRadixString(16)}, biner ${5.toRadixString(2)}&#x27;);
+
+  // struk berkolom
+  final barang = {&#x27;Kopi susu&#x27;: 18000, &#x27;Roti bakar&#x27;: 22500};
+  barang.forEach((nama, harga) {
+    print(&#x27;${nama.padRight(12)}${harga.toString().padLeft(8)}&#x27;);
+  });
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Nama: Rina, IPK 3.46
+[    Rina] [Rina    ]
+INV-0007
+hex ff, biner 101
+Kopi susu      18000
+Roti bakar     22500</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat tabel nilai rata kiri-kanan untuk Andi 85.5, Budi 90, Citra 78.4. Nama lebar 10, nilai lebar 6 dengan 1 desimal.</p><details><summary>Petunjuk</summary><p>nama.padRight(10) dan nilai.toStringAsFixed(1).padLeft(6).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>void main() {
+  final nilai = {&#x27;Andi&#x27;: 85.5, &#x27;Budi&#x27;: 90.0, &#x27;Citra&#x27;: 78.4};
+  print(&#x27;${&#x27;Nama&#x27;.padRight(10)}${&#x27;Nilai&#x27;.padLeft(6)}&#x27;);
+  nilai.forEach((n, v) {
+    print(&#x27;${n.padRight(10)}${v.toStringAsFixed(1).padLeft(6)}&#x27;);
+  });
+}</code></pre></details></li><li><p>Ubah daftar nomor <code>[7, 42, 315]</code> menjadi kode faktur INV-0007, INV-0042, INV-0315.</p><details><summary>Petunjuk</summary><p>toString().padLeft(4, '0').</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>void main() {
+  for (final n in [7, 42, 315]) {
+    print(&#x27;INV-${n.toString().padLeft(4, &#x27;0&#x27;)}&#x27;);
+  }
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Interpolasi $x dan ${ekspresi}.</li><li>toStringAsFixed, padLeft, padRight untuk format.</li><li>Package intl untuk uang dan tanggal lokal.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Cara menampilkan 3.14159 menjadi 3.14?</summary><p class="ok">Jawaban: x.toStringAsFixed(2)</p><p>toStringAsFixed mengembalikan String dengan n desimal.</p></details><details><summary>Hasil &#x27;${2 + 3}&#x27;?</summary><p class="ok">Jawaban: 5</p><p>${} menghitung ekspresi lalu menyisipkan hasilnya.</p></details>
+<a class="cta" href="/#dart-1-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dart/variabel-tipe-data-dan-null-safety">Variabel, tipe data, dan null safety</a></p><p>Berikutnya: <a href="/belajar/dart/percabangan-dan-perulangan">Percabangan dan perulangan</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

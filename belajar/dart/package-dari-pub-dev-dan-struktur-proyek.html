@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Package dari pub.dev dan struktur proyek · Dart · Ruang Kode</title>
+<meta name="description" content="Ekosistem Dart dan Flutter ada di pub.dev. Package ditambahkan dengan dart pub add nama (atau flutter pub add nama), yang otomatis menuliskannya di…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dart/package-dari-pub-dev-dan-struktur-proyek">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Package dari pub.dev dan struktur proyek · Dart · Ruang Kode"><meta property="og:description" content="Ekosistem Dart dan Flutter ada di pub.dev. Package ditambahkan dengan dart pub add nama (atau flutter pub add nama), yang otomatis menuliskannya di…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dart/package-dari-pub-dev-dan-struktur-proyek"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Package dari pub.dev dan struktur proyek", "description": "Ekosistem Dart dan Flutter ada di pub.dev. Package ditambahkan dengan dart pub add nama (atau flutter pub add nama), yang otomatis menuliskannya di…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dart/package-dari-pub-dev-dan-struktur-proyek", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Dart", "url": "https://ruang-kode-nine.vercel.app/belajar/dart"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Dart", "item": "https://ruang-kode-nine.vercel.app/belajar/dart"}, {"@type": "ListItem", "position": 3, "name": "Package dari pub.dev dan struktur proyek", "item": "https://ruang-kode-nine.vercel.app/belajar/dart/package-dari-pub-dev-dan-struktur-proyek"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dart">Dart</a> / Modul 4</nav>
+<div class="eyebrow">Dart · Modul 4 · Konsep &amp; kode</div><h1>Package dari pub.dev dan struktur proyek</h1><a class="cta" href="/#dart-4-3">Buka versi interaktif</a>
+<p>Ekosistem Dart dan Flutter ada di <b>pub.dev</b>. Package ditambahkan dengan <code>dart pub add nama</code> (atau <code>flutter pub add nama</code>), yang otomatis menuliskannya di <code>pubspec.yaml</code>.</p>
+<p>Saat memilih package, lihat skor <b>Likes</b>, <b>Pub Points</b>, tanda <b>Flutter Favorite</b>, penerbit terverifikasi, dan tanggal rilis terakhir. Package yang lama tidak diperbarui berisiko tidak cocok dengan versi Flutter terbaru.</p>
+<p>Perintah penting: <code>dart pub get</code> (unduh dependensi), <code>dart format .</code> (merapikan kode), <code>dart analyze</code> (mencari masalah), dan <code>dart test</code> (menjalankan tes).</p>
+<div class="tw"><table><caption>Package Dart/Flutter yang sering dipakai</caption><thead><tr><th>Package</th><th>Fungsi</th></tr></thead><tbody><tr><td>http / dio</td><td>Mengambil data dari API</td></tr><tr><td>intl</td><td>Format angka, uang, dan tanggal lokal</td></tr><tr><td>provider / riverpod / flutter_bloc</td><td>State management</td></tr><tr><td>go_router</td><td>Navigasi berbasis alamat</td></tr><tr><td>shared_preferences</td><td>Menyimpan pengaturan kecil</td></tr><tr><td>sqflite / drift / hive</td><td>Database lokal</td></tr><tr><td>json_serializable / freezed</td><td>Membuat kode model dan JSON otomatis</td></tr><tr><td>firebase_core, firebase_auth, cloud_firestore</td><td>Login dan database cloud</td></tr></tbody></table></div>
+<div class="lbl">YAML</div><pre><code>name: toko_kopi
+description: Aplikasi toko kopi
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  http: ^1.2.0
+  intl: ^0.19.0
+
+dev_dependencies:
+  test: ^1.25.0
+  lints: ^4.0.0</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis perintah terminal untuk menambahkan package <b>http</b> dan <b>intl</b>, serta <b>lints</b> sebagai dev dependency.</p><details><summary>Petunjuk</summary><p>dart pub add, dengan --dev untuk dev dependency.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TERMINAL</div><pre><code>dart pub add http intl
+dart pub add --dev lints</code></pre></details></li><li><p>Pakai package intl untuk menampilkan 7500000 sebagai Rupiah.</p><details><summary>Petunjuk</summary><p>NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">YAML</div><pre><code>import &#x27;package:intl/intl.dart&#x27;;
+
+void main() {
+  final rp = NumberFormat.currency(locale: &#x27;id_ID&#x27;, symbol: &#x27;Rp&#x27;, decimalDigits: 0);
+  print(rp.format(7500000));
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Tambah package dengan pub add.</li><li>Periksa Likes, Pub Points, dan tanggal rilis.</li><li>format, analyze, test sebelum commit.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>File yang mencatat dependensi proyek Dart?</summary><p class="ok">Jawaban: pubspec.yaml</p><p>pubspec.yaml.</p></details>
+<a class="cta" href="/#dart-4-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dart/stream-data-yang-datang-terus-menerus">Stream: data yang datang terus-menerus</a></p><p>Berikutnya: <a href="/belajar/dart/exception-try-catch-finally-dan-throw">Exception: try, catch, finally, dan throw</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

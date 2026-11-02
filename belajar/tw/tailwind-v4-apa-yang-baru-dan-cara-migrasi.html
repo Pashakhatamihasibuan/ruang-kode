@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tailwind v4: apa yang baru dan cara migrasi · Tailwind CSS · Ruang Kode</title>
+<meta name="description" content="Tailwind v4 (rilis 2025) ditulis ulang agar jauh lebih cepat. Perubahan terbesar: konfigurasi pindah dari tailwind.config.js ke CSS. Kamu cukup menulis…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/tw/tailwind-v4-apa-yang-baru-dan-cara-migrasi">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Tailwind v4: apa yang baru dan cara migrasi · Tailwind CSS · Ruang Kode"><meta property="og:description" content="Tailwind v4 (rilis 2025) ditulis ulang agar jauh lebih cepat. Perubahan terbesar: konfigurasi pindah dari tailwind.config.js ke CSS. Kamu cukup menulis…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/tw/tailwind-v4-apa-yang-baru-dan-cara-migrasi"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Tailwind v4: apa yang baru dan cara migrasi", "description": "Tailwind v4 (rilis 2025) ditulis ulang agar jauh lebih cepat. Perubahan terbesar: konfigurasi pindah dari tailwind.config.js ke CSS. Kamu cukup menulis…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/tw/tailwind-v4-apa-yang-baru-dan-cara-migrasi", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Tailwind CSS", "url": "https://ruang-kode-nine.vercel.app/belajar/tw"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Tailwind CSS", "item": "https://ruang-kode-nine.vercel.app/belajar/tw"}, {"@type": "ListItem", "position": 3, "name": "Tailwind v4: apa yang baru dan cara migrasi", "item": "https://ruang-kode-nine.vercel.app/belajar/tw/tailwind-v4-apa-yang-baru-dan-cara-migrasi"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/tw">Tailwind CSS</a> / Modul 4</nav>
+<div class="eyebrow">Tailwind CSS · Modul 4 · Konsep &amp; kode</div><h1>Tailwind v4: apa yang baru dan cara migrasi</h1><a class="cta" href="/#tw-4-4">Buka versi interaktif</a>
+<p>Tailwind v4 (rilis 2025) ditulis ulang agar jauh lebih cepat. Perubahan terbesar: konfigurasi pindah dari <code>tailwind.config.js</code> ke CSS. Kamu cukup menulis <code>@import "tailwindcss";</code> dan mengatur tema dengan <code>@theme</code>.</p>
+<p>Deteksi file otomatis (tidak perlu lagi mengisi <code>content</code>), warna bawaan memakai ruang warna OKLCH yang lebih cerah, dan fitur CSS modern seperti container query (<code>@container</code> dan <code>@md:</code>) sudah bawaan.</p>
+<p>Beberapa nama kelas berubah, misalnya <code>shadow-sm</code> menjadi <code>shadow-xs</code> dan <code>rounded</code> sekarang setara <code>rounded-sm</code> lama. Jalankan <code>npx @tailwindcss/upgrade</code> untuk memigrasi proyek v3 secara otomatis, lalu periksa hasilnya.</p>
+<div class="tw"><table><caption>Tailwind v3 dibanding v4</caption><thead><tr><th>Hal</th><th>v3</th><th>v4</th></tr></thead><tbody><tr><td>Konfigurasi</td><td>tailwind.config.js</td><td>@theme di CSS</td></tr><tr><td>Memuat</td><td>@tailwind base/components/utilities</td><td>@import &quot;tailwindcss&quot;</td></tr><tr><td>Daftar file</td><td>content: [...] wajib</td><td>Otomatis</td></tr><tr><td>Plugin Vite</td><td>postcss + autoprefixer</td><td>@tailwindcss/vite</td></tr><tr><td>Kelas khusus</td><td>@layer components</td><td>@utility</td></tr><tr><td>Container query</td><td>Plugin terpisah</td><td>Bawaan (@container, @md:)</td></tr></tbody></table></div>
+<div class="lbl">CSS</div><pre><code>/* v3: tailwind.config.js */
+/* module.exports = {
+     content: [&quot;./src/**/*.{html,js}&quot;],
+     theme: { extend: { colors: { merek: &quot;#B4532A&quot; } } }
+   } */
+
+/* v4: semuanya di CSS */
+@import &quot;tailwindcss&quot;;
+
+@theme {
+  --color-merek: #B4532A;
+  --font-judul: &quot;Fraunces&quot;, serif;
+  --breakpoint-3xl: 1920px;
+}
+
+/* kelas buatan sendiri */
+@utility tengah {
+  display: grid;
+  place-items: center;
+}</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tambahkan titik henti khusus <code>3xl</code> = 1920px dan warna <code>aksen</code> di Tailwind v4.</p><details><summary>Petunjuk</summary><p>Variabel --breakpoint-* dan --color-* di dalam @theme.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CSS</div><pre><code>@import &quot;tailwindcss&quot;;
+
+@theme {
+  --breakpoint-3xl: 1920px;
+  --color-aksen: #0F5F8A;
+}</code></pre></details></li><li><p>Buat kartu yang berubah menjadi dua kolom saat wadahnya (bukan layar) selebar md, memakai container query v4.</p><details><summary>Petunjuk</summary><p>Induk diberi kelas @container, anak memakai @md:grid-cols-2.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">HTML</div><pre><code>&lt;div class=&quot;@container&quot;&gt;
+  &lt;div class=&quot;grid grid-cols-1 @md:grid-cols-2 gap-4&quot;&gt;
+    &lt;img src=&quot;kopi.jpg&quot; alt=&quot;Kopi Gayo&quot; class=&quot;rounded-lg&quot;&gt;
+    &lt;p&gt;Kopi Gayo dari dataran tinggi Aceh.&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>v4: @import "tailwindcss" dan @theme.</li><li>Deteksi file otomatis, container query bawaan.</li><li>npx @tailwindcss/upgrade untuk migrasi.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Di v4, warna merek didaftarkan di mana?</summary><p class="ok">Jawaban: Blok @theme di CSS</p><p>Konfigurasi berbasis CSS.</p></details>
+<a class="cta" href="/#tw-4-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/tw/menu-ponsel-dengan-sedikit-javascript">Menu ponsel dengan sedikit JavaScript</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Row, Column, Container, dan Expanded · Flutter · Ruang Kode</title>
+<meta name="description" content="Column menyusun widget dari atas ke bawah, Row dari kiri ke kanan. Atur posisinya dengan mainAxisAlignment (searah susunan) dan crossAxisAlignment (tegak…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/flutter/row-column-container-dan-expanded">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Row, Column, Container, dan Expanded · Flutter · Ruang Kode"><meta property="og:description" content="Column menyusun widget dari atas ke bawah, Row dari kiri ke kanan. Atur posisinya dengan mainAxisAlignment (searah susunan) dan crossAxisAlignment (tegak…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/flutter/row-column-container-dan-expanded"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Row, Column, Container, dan Expanded", "description": "Column menyusun widget dari atas ke bawah, Row dari kiri ke kanan. Atur posisinya dengan mainAxisAlignment (searah susunan) dan crossAxisAlignment (tegak…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter/row-column-container-dan-expanded", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Flutter", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Flutter", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, {"@type": "ListItem", "position": 3, "name": "Row, Column, Container, dan Expanded", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter/row-column-container-dan-expanded"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/flutter">Flutter</a> / Modul 2</nav>
+<div class="eyebrow">Flutter · Modul 2 · Konsep &amp; kode</div><h1>Row, Column, Container, dan Expanded</h1><a class="cta" href="/#flutter-2-1">Buka versi interaktif</a>
+<p><code>Column</code> menyusun widget dari atas ke bawah, <code>Row</code> dari kiri ke kanan. Atur posisinya dengan <code>mainAxisAlignment</code> (searah susunan) dan <code>crossAxisAlignment</code> (tegak lurus).</p>
+<p><code>Padding</code> memberi jarak dalam, <code>SizedBox</code> memberi jarak antarwidget atau ukuran tetap, dan <code>Container</code> menggabungkan ukuran, warna, sudut membulat, dan bayangan lewat <code>BoxDecoration</code>.</p>
+<p><code>Expanded</code> membuat anak Row/Column mengisi sisa ruang. Error paling terkenal di Flutter, garis kuning-hitam "<b>RenderFlex overflowed</b>", muncul saat isi Row lebih lebar dari layar. Solusinya: bungkus teks panjang dengan Expanded, atau pakai <code>Wrap</code> agar isinya turun ke baris berikut.</p>
+<div class="tw"><table><caption>Widget tata letak</caption><thead><tr><th>Widget</th><th>Fungsi</th></tr></thead><tbody><tr><td>Column / Row</td><td>Susun vertikal / horizontal</td></tr><tr><td>Stack</td><td>Tumpuk widget (misalnya label di atas gambar)</td></tr><tr><td>Expanded / Flexible</td><td>Isi sisa ruang</td></tr><tr><td>Wrap</td><td>Turun ke baris berikut jika tidak muat</td></tr><tr><td>Padding / SizedBox</td><td>Jarak</td></tr><tr><td>Container</td><td>Ukuran, warna, dekorasi</td></tr><tr><td>SafeArea</td><td>Hindari poni dan bilah sistem HP</td></tr></tbody></table></div>
+<div class="lbl">KODE</div><pre><code>Widget kartuProduk() {
+  return Container(
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(16),
+      boxShadow: const [BoxShadow(blurRadius: 8, color: Colors.black12)],
+    ),
+    child: Row(
+      children: [
+        const CircleAvatar(radius: 24, child: Icon(Icons.coffee)),
+        const SizedBox(width: 12),
+        const Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(&#x27;Kopi Gayo Arabika&#x27;, style: TextStyle(fontWeight: FontWeight.bold)),
+              Text(&#x27;Rp85.000 · 250 gram&#x27;),
+            ],
+          ),
+        ),
+        FilledButton(onPressed: () {}, child: const Text(&#x27;Beli&#x27;)),
+      ],
+    ),
+  );
+}</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat baris berisi ikon, nama produk panjang, dan harga, tanpa overflow di layar sempit.</p><details><summary>Petunjuk</summary><p>Bungkus Text nama dengan Expanded dan beri overflow: TextOverflow.ellipsis atau biarkan turun baris.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>Row(
+  children: [
+    const Icon(Icons.coffee),
+    const SizedBox(width: 12),
+    const Expanded(
+      child: Text(&#x27;Kopi Arabika Gayo Wine Process 250 gram&#x27;,
+          maxLines: 2),
+    ),
+    const SizedBox(width: 12),
+    Text(&#x27;Rp85.000&#x27;, style: Theme.of(context).textTheme.titleMedium),
+  ],
+)</code></pre></details></li><li><p>Buat label "Diskon 20%" yang menempel di pojok kiri atas sebuah gambar.</p><details><summary>Petunjuk</summary><p>Stack + Positioned(top: 8, left: 8).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>Stack(
+  children: [
+    ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: Image.asset(&#x27;assets/images/kopi.jpg&#x27;),
+    ),
+    Positioned(
+      top: 8,
+      left: 8,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: Colors.red,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: const Text(&#x27;Diskon 20%&#x27;, style: TextStyle(color: Colors.white)),
+      ),
+    ),
+  ],
+)</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Column vertikal, Row horizontal.</li><li>Expanded mengisi sisa ruang dan mencegah overflow.</li><li>SafeArea menghindari poni layar.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Garis kuning-hitam &quot;RenderFlex overflowed&quot; berarti?</summary><p class="ok">Jawaban: Isi melebihi ruang yang tersedia</p><p>Bungkus dengan Expanded atau pakai Wrap.</p></details><details><summary>Widget untuk menumpuk label di atas gambar?</summary><p class="ok">Jawaban: Stack</p><p>Stack + Positioned.</p></details>
+<a class="cta" href="/#flutter-2-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/flutter/statelesswidget-dan-statefulwidget">StatelessWidget dan StatefulWidget</a></p><p>Berikutnya: <a href="/belajar/flutter/listview-gambar-dan-aset">ListView, gambar, dan aset</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

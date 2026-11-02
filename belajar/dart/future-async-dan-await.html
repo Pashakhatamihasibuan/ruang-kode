@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Future, async, dan await · Dart · Ruang Kode</title>
+<meta name="description" content="Mengambil data dari internet butuh waktu. Agar aplikasi tidak macet, Dart memakai Future: janji bahwa nilai akan tersedia nanti. Fungsi yang…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dart/future-async-dan-await">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Future, async, dan await · Dart · Ruang Kode"><meta property="og:description" content="Mengambil data dari internet butuh waktu. Agar aplikasi tidak macet, Dart memakai Future: janji bahwa nilai akan tersedia nanti. Fungsi yang…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dart/future-async-dan-await"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Future, async, dan await", "description": "Mengambil data dari internet butuh waktu. Agar aplikasi tidak macet, Dart memakai Future: janji bahwa nilai akan tersedia nanti. Fungsi yang…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dart/future-async-dan-await", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Dart", "url": "https://ruang-kode-nine.vercel.app/belajar/dart"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Dart", "item": "https://ruang-kode-nine.vercel.app/belajar/dart"}, {"@type": "ListItem", "position": 3, "name": "Future, async, dan await", "item": "https://ruang-kode-nine.vercel.app/belajar/dart/future-async-dan-await"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dart">Dart</a> / Modul 4</nav>
+<div class="eyebrow">Dart · Modul 4 · Konsep &amp; kode</div><h1>Future, async, dan await</h1><a class="cta" href="/#dart-4-1">Buka versi interaktif</a>
+<p>Mengambil data dari internet butuh waktu. Agar aplikasi tidak macet, Dart memakai <b>Future</b>: janji bahwa nilai akan tersedia nanti. Fungsi yang mengembalikan Future ditandai <code>async</code>, dan di dalamnya kita <b>menunggu</b> hasil dengan <code>await</code>.</p>
+<p>Selama menunggu, aplikasi tetap bisa merespons sentuhan. Di Flutter, Future biasanya ditampilkan dengan widget <code>FutureBuilder</code> atau dikelola oleh state management.</p>
+<p>Error pada kode asinkron ditangkap dengan <code>try</code> / <code>catch</code> seperti biasa, dan <code>finally</code> untuk langkah yang selalu dijalankan (misalnya mematikan indikator loading).</p>
+<div class="lbl">KODE</div><pre><code>Future&lt;String&gt; ambilNama(int id) async {
+  await Future.delayed(const Duration(milliseconds: 500));
+  if (id &lt;= 0) throw ArgumentError(&#x27;id tidak valid&#x27;);
+  return &#x27;Pengguna #$id&#x27;;
+}
+
+Future&lt;void&gt; main() async {
+  print(&#x27;Memuat...&#x27;);
+  final nama = await ambilNama(7);
+  print(nama);
+  try {
+    await ambilNama(0);
+  } catch (e) {
+    print(&#x27;Gagal: $e&#x27;);
+  } finally {
+    print(&#x27;Selesai memuat&#x27;);
+  }
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Memuat...
+Pengguna #7
+Gagal: Invalid argument(s): id tidak valid
+Selesai memuat</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Simulasikan mengunduh tiga file secara berurutan (masing-masing 300 ms), lalu cetak "Semua selesai".</p><details><summary>Petunjuk</summary><p>Pakai for dan await Future.delayed di dalam main yang async.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>Future&lt;void&gt; unduh(String f) async {
+  await Future.delayed(const Duration(milliseconds: 300));
+  print(&#x27;$f selesai&#x27;);
+}
+
+Future&lt;void&gt; main() async {
+  for (final f in [&#x27;a.pdf&#x27;, &#x27;b.pdf&#x27;, &#x27;c.pdf&#x27;]) {
+    await unduh(f);
+  }
+  print(&#x27;Semua selesai&#x27;);
+}</code></pre></details></li><li><p>Jalankan dua permintaan sekaligus dengan <code>Future.wait</code>, dan tangkap error dari fungsi yang melempar <code>Exception('Server sibuk')</code>.</p><details><summary>Petunjuk</summary><p>Future.wait menunggu semua; error ditangkap try/catch.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>Future&lt;int&gt; stok() async =&gt; 12;
+Future&lt;int&gt; harga() async =&gt; throw Exception(&#x27;Server sibuk&#x27;);
+
+Future&lt;void&gt; main() async {
+  final hasil = await Future.wait([stok(), stok()]);
+  print(&#x27;Stok: $hasil&#x27;);
+  try {
+    await harga();
+  } catch (e) {
+    print(&#x27;Gagal: $e&#x27;);
+  }
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Future = nilai yang datang nanti.</li><li>async menandai fungsi, await menunggu hasil.</li><li>try/catch/finally juga untuk kode async.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Apa yang terjadi jika await dipakai di fungsi tanpa async?</summary><p class="ok">Jawaban: Error kompilasi</p><p>await hanya boleh di fungsi async.</p></details><details><summary>Future.wait([a, b]) mengembalikan?</summary><p class="ok">Jawaban: List berisi hasil a dan b</p><p>Menunggu semua lalu mengembalikan list hasilnya.</p></details>
+<a class="cta" href="/#dart-4-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dart/inheritance-abstract-class-dan-mixin">Inheritance, abstract class, dan mixin</a></p><p>Berikutnya: <a href="/belajar/dart/stream-data-yang-datang-terus-menerus">Stream: data yang datang terus-menerus</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

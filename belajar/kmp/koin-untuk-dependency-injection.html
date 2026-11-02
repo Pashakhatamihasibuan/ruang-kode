@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Koin untuk dependency injection · Kotlin Multiplatform · Ruang Kode</title>
+<meta name="description" content="Koin adalah library dependency injection yang ringan dan berjalan di semua target KMP. Kamu mendeklarasikan module berisi cara membuat setiap objek, lalu…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/kmp/koin-untuk-dependency-injection">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Koin untuk dependency injection · Kotlin Multiplatform · Ruang Kode"><meta property="og:description" content="Koin adalah library dependency injection yang ringan dan berjalan di semua target KMP. Kamu mendeklarasikan module berisi cara membuat setiap objek, lalu…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/kmp/koin-untuk-dependency-injection"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Koin untuk dependency injection", "description": "Koin adalah library dependency injection yang ringan dan berjalan di semua target KMP. Kamu mendeklarasikan module berisi cara membuat setiap objek, lalu…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/kmp/koin-untuk-dependency-injection", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Kotlin Multiplatform", "url": "https://ruang-kode-nine.vercel.app/belajar/kmp"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Kotlin Multiplatform", "item": "https://ruang-kode-nine.vercel.app/belajar/kmp"}, {"@type": "ListItem", "position": 3, "name": "Koin untuk dependency injection", "item": "https://ruang-kode-nine.vercel.app/belajar/kmp/koin-untuk-dependency-injection"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/kmp">Kotlin Multiplatform</a> / Modul 3</nav>
+<div class="eyebrow">Kotlin Multiplatform · Modul 3 · Konsep &amp; kode</div><h1>Koin untuk dependency injection</h1><a class="cta" href="/#kmp-3-2">Buka versi interaktif</a>
+<p><b>Koin</b> adalah library dependency injection yang ringan dan berjalan di semua target KMP. Kamu mendeklarasikan <b>module</b> berisi cara membuat setiap objek, lalu Koin yang merangkai dan memberikannya.</p>
+<p><code>single { }</code> membuat satu objek untuk seluruh aplikasi (misalnya HttpClient), <code>factory { }</code> membuat objek baru setiap diminta, dan <code>viewModel { }</code> untuk ViewModel. <code>get()</code> mengambil dependensi yang sudah didaftarkan.</p>
+<p>Di Compose Multiplatform, ambil objek dengan <code>koinViewModel()</code> atau <code>koinInject()</code>. Mulai Koin sekali saat aplikasi dibuka dengan <code>startKoin { modules(...) }</code> atau <code>KoinApplication</code>.</p>
+<div class="lbl">KODE</div><pre><code>val modulData = module {
+    single {
+        HttpClient {
+            install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
+        }
+    }
+    single { KursApi(get()) }
+    single { KursRepository(get()) }
+}
+
+val modulUi = module {
+    viewModel { KursViewModel(get()) }
+}
+
+@Composable
+fun App() {
+    KoinApplication(application = { modules(modulData, modulUi) }) {
+        MaterialTheme {
+            val vm = koinViewModel&lt;KursViewModel&gt;()
+            LayarKurs(vm)
+        }
+    }
+}</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Daftarkan <code>FormatRupiah</code> sebagai factory dan <code>Database</code> sebagai single di module baru.</p><details><summary>Petunjuk</summary><p>factory { FormatRupiah() } dan single { buatDatabase() }.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>val modulUtil = module {
+    factory { FormatRupiah() }
+    single { buatDatabase(get()) }
+}</code></pre></details></li><li><p>Buat module khusus platform: Android memberi Context ke driver database, iOS tidak.</p><details><summary>Petunjuk</summary><p>expect val modulPlatform: Module, lalu actual di androidMain dan iosMain.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>// commonMain
+expect val modulPlatform: Module
+
+// androidMain
+actual val modulPlatform = module {
+    single&lt;SqlDriver&gt; { AndroidSqliteDriver(AppDb.Schema, androidContext(), &quot;app.db&quot;) }
+}
+
+// iosMain
+actual val modulPlatform = module {
+    single&lt;SqlDriver&gt; { NativeSqliteDriver(AppDb.Schema, &quot;app.db&quot;) }
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>module { single, factory, viewModel }.</li><li>get() mengambil dependensi.</li><li>koinViewModel() di Compose.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Beda single dan factory di Koin?</summary><p class="ok">Jawaban: single satu objek bersama, factory objek baru setiap diminta</p><p>HttpClient biasanya single.</p></details>
+<a class="cta" href="/#kmp-3-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/kmp/menyiapkan-proyek-dengan-kmp-wizard">Menyiapkan proyek dengan KMP wizard</a></p><p>Berikutnya: <a href="/belajar/kmp/database-bersama-sqldelight-dan-room-kmp">Database bersama: SQLDelight dan Room KMP</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

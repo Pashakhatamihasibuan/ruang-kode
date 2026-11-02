@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mengambil data API dengan http dan dio · Flutter · Ruang Kode</title>
+<meta name="description" content="Package http cukup untuk permintaan sederhana: await http.get(Uri.parse(url)), lalu periksa statusCode dan ubah body JSON dengan jsonDecode. dio…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/flutter/mengambil-data-api-dengan-http-dan-dio">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Mengambil data API dengan http dan dio · Flutter · Ruang Kode"><meta property="og:description" content="Package http cukup untuk permintaan sederhana: await http.get(Uri.parse(url)), lalu periksa statusCode dan ubah body JSON dengan jsonDecode. dio…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/flutter/mengambil-data-api-dengan-http-dan-dio"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Mengambil data API dengan http dan dio", "description": "Package http cukup untuk permintaan sederhana: await http.get(Uri.parse(url)), lalu periksa statusCode dan ubah body JSON dengan jsonDecode. dio…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter/mengambil-data-api-dengan-http-dan-dio", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Flutter", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Flutter", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, {"@type": "ListItem", "position": 3, "name": "Mengambil data API dengan http dan dio", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter/mengambil-data-api-dengan-http-dan-dio"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/flutter">Flutter</a> / Modul 4</nav>
+<div class="eyebrow">Flutter · Modul 4 · Konsep &amp; kode</div><h1>Mengambil data API dengan http dan dio</h1><a class="cta" href="/#flutter-4-1">Buka versi interaktif</a>
+<p>Package <b>http</b> cukup untuk permintaan sederhana: <code>await http.get(Uri.parse(url))</code>, lalu periksa <code>statusCode</code> dan ubah body JSON dengan <code>jsonDecode</code>. <b>dio</b> menambahkan fitur yang dibutuhkan aplikasi besar: interceptor (misalnya menyisipkan token login), timeout, dan unggah file.</p>
+<p>Ubah JSON menjadi objek model dengan <code>fromJson</code>. Untuk banyak model, package <b>json_serializable</b> atau <b>freezed</b> membuat kode itu otomatis lewat <code>dart run build_runner build</code>.</p>
+<p>Tampilkan tiga keadaan layar: <b>memuat</b> (indikator), <b>gagal</b> (pesan + tombol coba lagi), dan <b>berhasil</b>. <code>FutureBuilder</code> menangani ketiganya lewat <code>snapshot</code>.</p>
+<div class="lbl">KODE</div><pre><code>class Kota {
+  final String nama;
+  final int suhu;
+  Kota({required this.nama, required this.suhu});
+  factory Kota.fromJson(Map&lt;String, dynamic&gt; j) =&gt;
+      Kota(nama: j[&#x27;nama&#x27;] as String, suhu: j[&#x27;suhu&#x27;] as int);
+}
+
+Future&lt;List&lt;Kota&gt;&gt; ambilCuaca() async {
+  final res = await http.get(Uri.parse(&#x27;https://api.contoh.id/cuaca&#x27;));
+  if (res.statusCode != 200) {
+    throw Exception(&#x27;Server menjawab ${res.statusCode}&#x27;);
+  }
+  final data = jsonDecode(res.body) as List;
+  return data.map((e) =&gt; Kota.fromJson(e as Map&lt;String, dynamic&gt;)).toList();
+}
+
+// di build():
+// FutureBuilder&lt;List&lt;Kota&gt;&gt;(
+//   future: _cuaca,  // simpan Future di initState, jangan dibuat di build
+//   builder: (context, snap) {
+//     if (snap.connectionState == ConnectionState.waiting) return const CircularProgressIndicator();
+//     if (snap.hasError) return Text(&#x27;Gagal memuat: ${snap.error}&#x27;);
+//     return ListView(children: [for (final k in snap.data!) Text(&#x27;${k.nama}: ${k.suhu}°C&#x27;)]);
+//   },
+// )</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Kirim data pesanan baru dengan <code>http.post</code> dalam format JSON.</p><details><summary>Petunjuk</summary><p>Set header 'Content-Type': 'application/json' dan body: jsonEncode(map). Status 201 berarti dibuat.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>Future&lt;void&gt; kirimPesanan(String produk, int qty) async {
+  final res = await http.post(
+    Uri.parse(&#x27;https://api.contoh.id/pesanan&#x27;),
+    headers: {&#x27;Content-Type&#x27;: &#x27;application/json&#x27;},
+    body: jsonEncode({&#x27;produk&#x27;: produk, &#x27;qty&#x27;: qty}),
+  );
+  if (res.statusCode != 201) {
+    throw Exception(&#x27;Gagal mengirim (${res.statusCode})&#x27;);
+  }
+}</code></pre></details></li><li><p>Buat instance dio dengan baseUrl, batas waktu 10 detik, dan interceptor yang menambahkan token ke setiap permintaan.</p><details><summary>Petunjuk</summary><p>Dio(BaseOptions(...)) lalu dio.interceptors.add(InterceptorsWrapper(onRequest: ...)).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>final dio = Dio(BaseOptions(
+  baseUrl: &#x27;https://api.contoh.id&#x27;,
+  connectTimeout: const Duration(seconds: 10),
+  receiveTimeout: const Duration(seconds: 10),
+));
+
+void pasangToken(String token) {
+  dio.interceptors.add(InterceptorsWrapper(
+    onRequest: (options, handler) {
+      options.headers[&#x27;Authorization&#x27;] = &#x27;Bearer $token&#x27;;
+      handler.next(options);
+    },
+  ));
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Periksa statusCode sebelum memakai data.</li><li>fromJson atau json_serializable untuk model.</li><li>Tampilkan keadaan memuat, gagal, berhasil.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa Future untuk FutureBuilder sebaiknya disimpan di initState?</summary><p class="ok">Jawaban: Agar tidak memanggil API ulang setiap build</p><p>build bisa dipanggil berkali-kali.</p></details><details><summary>Status HTTP 404 berarti?</summary><p class="ok">Jawaban: Data tidak ditemukan</p><p>2xx berhasil, 4xx kesalahan klien, 5xx kesalahan server.</p></details>
+<a class="cta" href="/#flutter-4-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/flutter/riverpod-dan-bloc-cubit">Riverpod dan BLoC/Cubit</a></p><p>Berikutnya: <a href="/belajar/flutter/penyimpanan-lokal-dan-firebase">Penyimpanan lokal dan Firebase</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

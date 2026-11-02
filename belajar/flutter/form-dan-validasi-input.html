@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Form dan validasi input · Flutter · Ruang Kode</title>
+<meta name="description" content="TextFormField di dalam Form bisa divalidasi bersama. Setiap field punya validator yang mengembalikan pesan error, atau null jika valid.…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/flutter/form-dan-validasi-input">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Form dan validasi input · Flutter · Ruang Kode"><meta property="og:description" content="TextFormField di dalam Form bisa divalidasi bersama. Setiap field punya validator yang mengembalikan pesan error, atau null jika valid.…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/flutter/form-dan-validasi-input"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Form dan validasi input", "description": "TextFormField di dalam Form bisa divalidasi bersama. Setiap field punya validator yang mengembalikan pesan error, atau null jika valid.…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter/form-dan-validasi-input", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Flutter", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Flutter", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, {"@type": "ListItem", "position": 3, "name": "Form dan validasi input", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter/form-dan-validasi-input"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/flutter">Flutter</a> / Modul 2</nav>
+<div class="eyebrow">Flutter · Modul 2 · Konsep &amp; kode</div><h1>Form dan validasi input</h1><a class="cta" href="/#flutter-2-3">Buka versi interaktif</a>
+<p><code>TextFormField</code> di dalam <code>Form</code> bisa divalidasi bersama. Setiap field punya <code>validator</code> yang mengembalikan pesan error, atau <code>null</code> jika valid. <code>GlobalKey&lt;FormState&gt;</code> dipakai untuk memanggil <code>validate()</code> saat tombol ditekan.</p>
+<p>Pakai <code>keyboardType</code> yang tepat (angka, email, telepon) dan <code>TextEditingController</code> untuk membaca isi field. Jangan lupa memanggil <code>dispose()</code> pada controller di <code>State.dispose</code> agar memori tidak bocor.</p>
+<p>Pesan error sebaiknya menjelaskan cara memperbaiki: "Nomor HP minimal 10 digit", bukan sekadar "Input salah".</p>
+<div class="lbl">KODE</div><pre><code>class FormDaftar extends StatefulWidget {
+  const FormDaftar({super.key});
+  @override
+  State&lt;FormDaftar&gt; createState() =&gt; _FormDaftarState();
+}
+
+class _FormDaftarState extends State&lt;FormDaftar&gt; {
+  final _form = GlobalKey&lt;FormState&gt;();
+  final _hp = TextEditingController();
+
+  @override
+  void dispose() {
+    _hp.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _form,
+      child: Column(children: [
+        TextFormField(
+          controller: _hp,
+          keyboardType: TextInputType.phone,
+          decoration: const InputDecoration(labelText: &#x27;Nomor HP&#x27;),
+          validator: (v) =&gt; (v == null || v.length &lt; 10)
+              ? &#x27;Nomor HP minimal 10 digit&#x27;
+              : null,
+        ),
+        const SizedBox(height: 12),
+        FilledButton(
+          onPressed: () {
+            if (_form.currentState!.validate()) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(&#x27;Terdaftar: ${_hp.text}&#x27;)),
+              );
+            }
+          },
+          child: const Text(&#x27;Daftar&#x27;),
+        ),
+      ]),
+    );
+  }
+}</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tambahkan field email dengan validasi: tidak boleh kosong dan harus mengandung "@".</p><details><summary>Petunjuk</summary><p>validator: (v) { if (v == null || v.isEmpty) return ...; if (!v.contains('@')) return ...; return null; }</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>TextFormField(
+  decoration: const InputDecoration(labelText: &#x27;Email&#x27;),
+  keyboardType: TextInputType.emailAddress,
+  validator: (v) {
+    if (v == null || v.trim().isEmpty) return &#x27;Email wajib diisi&#x27;;
+    if (!v.contains(&#x27;@&#x27;)) return &#x27;Format email belum benar, contoh: nama@mail.com&#x27;;
+    return null;
+  },
+)</code></pre></details></li><li><p>Tambahkan field kata sandi yang bisa ditampilkan atau disembunyikan dengan ikon mata.</p><details><summary>Petunjuk</summary><p>obscureText dari bool di State, suffixIcon berisi IconButton yang memanggil setState.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>TextFormField(
+  obscureText: sembunyi,
+  decoration: InputDecoration(
+    labelText: &#x27;Kata sandi&#x27;,
+    suffixIcon: IconButton(
+      icon: Icon(sembunyi ? Icons.visibility : Icons.visibility_off),
+      onPressed: () =&gt; setState(() =&gt; sembunyi = !sembunyi),
+    ),
+  ),
+  validator: (v) =&gt; (v ?? &#x27;&#x27;).length &lt; 8 ? &#x27;Minimal 8 karakter&#x27; : null,
+)</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>validator mengembalikan pesan error atau null.</li><li>GlobalKey&lt;FormState> untuk validate().</li><li>dispose controller agar tidak bocor memori.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>validator mengembalikan null berarti?</summary><p class="ok">Jawaban: Input valid</p><p>null = tidak ada error.</p></details><details><summary>Kenapa controller harus di-dispose?</summary><p class="ok">Jawaban: Agar memori tidak bocor</p><p>Controller menyimpan listener yang harus dilepas.</p></details>
+<a class="cta" href="/#flutter-2-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/flutter/listview-gambar-dan-aset">ListView, gambar, dan aset</a></p><p>Berikutnya: <a href="/belajar/flutter/navigasi-dengan-go-router">Navigasi dengan go_router</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

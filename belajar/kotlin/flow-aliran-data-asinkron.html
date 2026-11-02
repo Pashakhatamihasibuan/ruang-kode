@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Flow: aliran data asinkron · Kotlin · Ruang Kode</title>
+<meta name="description" content="Flow adalah versi coroutine dari Stream: memancarkan banyak nilai seiring waktu. Buat dengan builder flow { emit(x) } atau asFlow(), lalu baca dengan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/kotlin/flow-aliran-data-asinkron">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Flow: aliran data asinkron · Kotlin · Ruang Kode"><meta property="og:description" content="Flow adalah versi coroutine dari Stream: memancarkan banyak nilai seiring waktu. Buat dengan builder flow { emit(x) } atau asFlow(), lalu baca dengan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/kotlin/flow-aliran-data-asinkron"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Flow: aliran data asinkron", "description": "Flow adalah versi coroutine dari Stream: memancarkan banyak nilai seiring waktu. Buat dengan builder flow { emit(x) } atau asFlow(), lalu baca dengan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/kotlin/flow-aliran-data-asinkron", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Kotlin", "url": "https://ruang-kode-nine.vercel.app/belajar/kotlin"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Kotlin", "item": "https://ruang-kode-nine.vercel.app/belajar/kotlin"}, {"@type": "ListItem", "position": 3, "name": "Flow: aliran data asinkron", "item": "https://ruang-kode-nine.vercel.app/belajar/kotlin/flow-aliran-data-asinkron"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/kotlin">Kotlin</a> / Modul 4</nav>
+<div class="eyebrow">Kotlin · Modul 4 · Konsep &amp; kode</div><h1>Flow: aliran data asinkron</h1><a class="cta" href="/#kotlin-4-3">Buka versi interaktif</a>
+<p><b>Flow</b> adalah versi coroutine dari Stream: memancarkan banyak nilai seiring waktu. Buat dengan builder <code>flow { emit(x) }</code> atau <code>asFlow()</code>, lalu baca dengan <code>collect</code>.</p>
+<p>Flow bisa diolah seperti koleksi: <code>map</code>, <code>filter</code>, <code>take</code>, <code>debounce</code> (menunggu pengguna berhenti mengetik), dan <code>combine</code> (menggabungkan dua sumber).</p>
+<p><b>StateFlow</b> menyimpan satu nilai terkini dan memberi tahu pengamatnya setiap kali berubah. Di Android, ViewModel memakai <code>MutableStateFlow</code> untuk state layar, dan Compose membacanya dengan <code>collectAsStateWithLifecycle()</code>.</p>
+<div class="lbl">KODE</div><pre><code>import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+
+fun hitungMundur(dari: Int): Flow&lt;Int&gt; = flow {
+    for (i in dari downTo 1) {
+        delay(300)
+        emit(i)
+    }
+}
+
+fun main() = runBlocking {
+    hitungMundur(3).collect { println(&quot;Sisa $it&quot;) }
+    println(&quot;Waktu habis!&quot;)
+
+    val hasil = (1..6).asFlow()
+        .filter { it % 2 == 0 }
+        .map { it * it }
+        .toList()
+    println(&quot;Kuadrat genap: $hasil&quot;)
+
+    val suhu = MutableStateFlow(28)
+    println(&quot;Suhu awal: ${suhu.value}&quot;)
+    suhu.value = 31
+    println(&quot;Suhu kini: ${suhu.value}&quot;)
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Sisa 3
+Sisa 2
+Sisa 1
+Waktu habis!
+Kuadrat genap: [4, 16, 36]
+Suhu awal: 28
+Suhu kini: 31</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat Flow nama hari kerja, lalu ambil tiga yang pertama.</p><details><summary>Petunjuk</summary><p>flowOf(...) lalu take(3).toList().</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.runBlocking
+
+fun main() = runBlocking {
+    val hari = flowOf(&quot;Senin&quot;, &quot;Selasa&quot;, &quot;Rabu&quot;, &quot;Kamis&quot;, &quot;Jumat&quot;)
+    println(hari.take(3).toList())
+}</code></pre></details></li><li><p>Jumlahkan angka 1 sampai 5 dari sebuah Flow memakai <code>reduce</code>.</p><details><summary>Petunjuk</summary><p>(1..5).asFlow().reduce { a, b -> a + b }.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.runBlocking
+
+fun main() = runBlocking {
+    println((1..5).asFlow().reduce { a, b -&gt; a + b })
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>flow { emit() } dan collect.</li><li>Operator: map, filter, take, debounce, combine.</li><li>StateFlow menyimpan nilai terkini untuk UI.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kapan kode di dalam flow { } mulai berjalan?</summary><p class="ok">Jawaban: Saat collect dipanggil</p><p>Flow bersifat dingin (cold).</p></details>
+<a class="cta" href="/#kotlin-4-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/kotlin/generics-enum-class-dan-object">Generics, enum class, dan object</a></p><p>Berikutnya: <a href="/belajar/kotlin/proyek-struk-kasir">Proyek: struk kasir</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Variabel, tipe data, dan null safety · Dart · Ruang Kode</title>
+<meta name="description" content="Dart bertipe statis, tetapi bisa menebak tipe sendiri. var nama = &#x27;Rina&#x27;; otomatis bertipe String. Tipe dasarnya: int, double, num (int atau double),…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dart/variabel-tipe-data-dan-null-safety">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Variabel, tipe data, dan null safety · Dart · Ruang Kode"><meta property="og:description" content="Dart bertipe statis, tetapi bisa menebak tipe sendiri. var nama = &#x27;Rina&#x27;; otomatis bertipe String. Tipe dasarnya: int, double, num (int atau double),…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dart/variabel-tipe-data-dan-null-safety"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Variabel, tipe data, dan null safety", "description": "Dart bertipe statis, tetapi bisa menebak tipe sendiri. var nama = 'Rina'; otomatis bertipe String. Tipe dasarnya: int, double, num (int atau double),…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dart/variabel-tipe-data-dan-null-safety", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Dart", "url": "https://ruang-kode-nine.vercel.app/belajar/dart"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Dart", "item": "https://ruang-kode-nine.vercel.app/belajar/dart"}, {"@type": "ListItem", "position": 3, "name": "Variabel, tipe data, dan null safety", "item": "https://ruang-kode-nine.vercel.app/belajar/dart/variabel-tipe-data-dan-null-safety"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dart">Dart</a> / Modul 1</nav>
+<div class="eyebrow">Dart · Modul 1 · Konsep &amp; kode</div><h1>Variabel, tipe data, dan null safety</h1><a class="cta" href="/#dart-1-2">Buka versi interaktif</a>
+<p>Dart bertipe statis, tetapi bisa menebak tipe sendiri. <code>var nama = 'Rina';</code> otomatis bertipe <code>String</code>. Tipe dasarnya: <code>int</code>, <code>double</code>, <code>num</code> (int atau double), <code>String</code>, <code>bool</code>, <code>List</code>, <code>Map</code>, dan <code>Set</code>.</p>
+<p><code>final</code> berarti nilainya hanya bisa diisi sekali (ditentukan saat program berjalan). <code>const</code> berarti nilainya sudah pasti saat kompilasi. Di Flutter, <code>const</code> membuat widget tidak perlu dibuat ulang, sehingga aplikasi lebih hemat.</p>
+<p><b>Null safety</b>: variabel biasa <b>tidak boleh</b> berisi <code>null</code>. Jika memang boleh kosong, tambahkan tanda tanya: <code>String? alamat;</code>. Operator <code>??</code> memberi nilai cadangan, <code>?.</code> memanggil hanya jika tidak null, dan <code>!</code> memaksa (berbahaya jika ternyata null). Fitur ini mencegah error "null" yang paling sering membuat aplikasi tertutup sendiri.</p>
+<div class="tw"><table><caption>Kata kunci variabel</caption><thead><tr><th>Kata kunci</th><th>Bisa diubah?</th><th>Kapan dipakai</th></tr></thead><tbody><tr><td>var</td><td>Ya</td><td>Tipe ditebak dari nilai awal</td></tr><tr><td>final</td><td>Tidak, diisi sekali saat berjalan</td><td>Nilai dari input atau API</td></tr><tr><td>const</td><td>Tidak, pasti saat kompilasi</td><td>Angka tetap, widget statis</td></tr><tr><td>late</td><td>Diisi belakangan</td><td>Variabel yang pasti diisi sebelum dipakai</td></tr></tbody></table></div>
+<div class="tw"><table><caption>Operator null safety</caption><thead><tr><th>Operator</th><th>Arti</th><th>Contoh</th></tr></thead><tbody><tr><td>T?</td><td>Tipe boleh null</td><td>String? alamat</td></tr><tr><td>??</td><td>Nilai cadangan jika null</td><td>alamat ?? &#x27;-&#x27;</td></tr><tr><td>?.</td><td>Panggil jika tidak null</td><td>alamat?.length</td></tr><tr><td>!</td><td>Paksa: yakin tidak null</td><td>alamat!.length</td></tr></tbody></table></div>
+<div class="lbl">KODE</div><pre><code>void main() {
+  var nama = &#x27;Rina&#x27;;        // String
+  int umur = 20;
+  double ipk = 3.75;
+  final kampus = &#x27;UNIMED&#x27;;   // diisi sekali
+  const pajak = 0.11;        // pasti saat kompilasi
+
+  String? alamat;            // boleh null
+  print(&#x27;$nama, $umur tahun, IPK $ipk&#x27;);
+  print(&#x27;Kampus: $kampus, pajak $pajak&#x27;);
+  print(&#x27;Alamat: ${alamat ?? &#x27;belum diisi&#x27;}&#x27;);
+  print(&#x27;Panjang alamat: ${alamat?.length}&#x27;);
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Rina, 20 tahun, IPK 3.75
+Kampus: UNIMED, pajak 0.11
+Alamat: belum diisi
+Panjang alamat: null</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Hitung luas lingkaran berjari-jari 7 dengan <code>const pi = 3.141592653589793</code>, tampilkan 2 desimal.</p><details><summary>Petunjuk</summary><p>Luas = pi × r × r, lalu toStringAsFixed(2).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>void main() {
+  const pi = 3.141592653589793;
+  final r = 7;
+  final luas = pi * r * r;
+  print(&#x27;Luas: ${luas.toStringAsFixed(2)}&#x27;);
+}</code></pre></details></li><li><p>Variabel <code>String? nama</code> belum diisi. Tampilkan panjang nama, atau 0 jika null, tanpa memakai if.</p><details><summary>Petunjuk</summary><p>Gabungkan ?. dan ??.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>void main() {
+  String? nama;
+  print(&#x27;Panjang: ${nama?.length ?? 0}&#x27;);
+  nama = &#x27;Budi&#x27;;
+  print(&#x27;Panjang: ${nama?.length ?? 0}&#x27;);
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>var menebak tipe; final diisi sekali; const pasti saat kompilasi.</li><li>Tanpa ?, variabel tidak boleh null.</li><li>?? memberi nilai cadangan.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Deklarasi variabel yang boleh berisi null?</summary><p class="ok">Jawaban: String? nama;</p><p>Tanda ? menandai tipe nullable.</p></details><details><summary>Hasil print(x ?? 5) jika x bernilai null?</summary><p class="ok">Jawaban: 5</p><p>?? memberi nilai cadangan.</p></details><details><summary>Kenapa widget Flutter sering diberi const?</summary><p class="ok">Jawaban: Agar tidak dibuat ulang saat build</p><p>Objek const dibuat sekali dan dipakai ulang.</p></details>
+<a class="cta" href="/#dart-1-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dart/program-dart-pertama">Program Dart pertama</a></p><p>Berikutnya: <a href="/belajar/dart/string-interpolasi-dan-format-keluaran">String, interpolasi, dan format keluaran</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

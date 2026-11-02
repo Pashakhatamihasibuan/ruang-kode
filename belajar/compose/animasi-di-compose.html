@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Animasi di Compose · Jetpack Compose · Ruang Kode</title>
+<meta name="description" content="animate*AsState menganimasikan satu nilai saat targetnya berubah: animateDpAsState, animateColorAsState, animateFloatAsState. Cukup ganti nilai biasa…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/compose/animasi-di-compose">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Animasi di Compose · Jetpack Compose · Ruang Kode"><meta property="og:description" content="animate*AsState menganimasikan satu nilai saat targetnya berubah: animateDpAsState, animateColorAsState, animateFloatAsState. Cukup ganti nilai biasa…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/compose/animasi-di-compose"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Animasi di Compose", "description": "animate*AsState menganimasikan satu nilai saat targetnya berubah: animateDpAsState, animateColorAsState, animateFloatAsState. Cukup ganti nilai biasa…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/compose/animasi-di-compose", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Jetpack Compose", "url": "https://ruang-kode-nine.vercel.app/belajar/compose"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Jetpack Compose", "item": "https://ruang-kode-nine.vercel.app/belajar/compose"}, {"@type": "ListItem", "position": 3, "name": "Animasi di Compose", "item": "https://ruang-kode-nine.vercel.app/belajar/compose/animasi-di-compose"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/compose">Jetpack Compose</a> / Modul 4</nav>
+<div class="eyebrow">Jetpack Compose · Modul 4 · Konsep &amp; kode</div><h1>Animasi di Compose</h1><a class="cta" href="/#compose-4-2">Buka versi interaktif</a>
+<p><code>animate*AsState</code> menganimasikan satu nilai saat targetnya berubah: <code>animateDpAsState</code>, <code>animateColorAsState</code>, <code>animateFloatAsState</code>. Cukup ganti nilai biasa dengan versi animasinya.</p>
+<p><code>AnimatedVisibility</code> memunculkan dan menyembunyikan konten dengan efek, <code>AnimatedContent</code> berganti konten (misalnya angka), dan <code>Modifier.animateContentSize()</code> menghaluskan perubahan ukuran.</p>
+<p>Untuk animasi berulang pakai <code>rememberInfiniteTransition</code>. Animasi dari desainer bisa diputar dengan library <b>Lottie Compose</b>.</p>
+<div class="lbl">KODE</div><pre><code>@Composable
+fun KartuLipat(judul: String, isi: String) {
+    var buka by remember { mutableStateOf(false) }
+    val putar by animateFloatAsState(if (buka) 180f else 0f, label = &quot;putar&quot;)
+    val warna by animateColorAsState(
+        if (buka) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant,
+        label = &quot;warna&quot;,
+    )
+    Card(
+        onClick = { buka = !buka },
+        colors = CardDefaults.cardColors(containerColor = warna),
+        modifier = Modifier.fillMaxWidth().animateContentSize(),
+    ) {
+        Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+            Text(judul, Modifier.weight(1f), style = MaterialTheme.typography.titleMedium)
+            Icon(Icons.Default.KeyboardArrowDown, null, Modifier.rotate(putar))
+        }
+        AnimatedVisibility(buka) {
+            Text(isi, Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp))
+        }
+    }
+}</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat angka keranjang yang bergeser ke atas saat bertambah memakai AnimatedContent.</p><details><summary>Petunjuk</summary><p>AnimatedContent(targetState = jumlah, transitionSpec = { slideInVertically { it } togetherWith slideOutVertically { -it } }).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>AnimatedContent(
+    targetState = jumlah,
+    transitionSpec = { slideInVertically { it } togetherWith slideOutVertically { -it } },
+    label = &quot;jumlah&quot;,
+) { n -&gt;
+    Text(&quot;$n&quot;, style = MaterialTheme.typography.headlineMedium)
+}</code></pre></details></li><li><p>Buat titik "sedang memuat" yang berdenyut terus.</p><details><summary>Petunjuk</summary><p>rememberInfiniteTransition().animateFloat(0.3f, 1f, infiniteRepeatable(tween(600), RepeatMode.Reverse)).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>val t = rememberInfiniteTransition(label = &quot;denyut&quot;)
+val alfa by t.animateFloat(
+    initialValue = 0.3f,
+    targetValue = 1f,
+    animationSpec = infiniteRepeatable(tween(600), RepeatMode.Reverse),
+    label = &quot;alfa&quot;,
+)
+Box(Modifier.size(16.dp).alpha(alfa).background(MaterialTheme.colorScheme.primary, CircleShape))</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>animate*AsState untuk satu nilai.</li><li>AnimatedVisibility, AnimatedContent, animateContentSize.</li><li>rememberInfiniteTransition untuk animasi berulang.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Cara termudah menghaluskan perubahan tinggi Card?</summary><p class="ok">Jawaban: Modifier.animateContentSize()</p><p>Ukuran baru dianimasikan otomatis.</p></details>
+<a class="cta" href="/#compose-4-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/compose/tema-material-3-dan-mode-gelap">Tema Material 3 dan mode gelap</a></p><p>Berikutnya: <a href="/belajar/compose/side-effect-launchedeffect-dan-remembercoroutinescope">Side effect: LaunchedEffect dan rememberCoroutineScope</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Menu ponsel dengan sedikit JavaScript · Tailwind CSS · Ruang Kode</title>
+<meta name="description" content="Tailwind hanya mengurus tampilan. Untuk interaksi seperti membuka menu, cukup JavaScript kecil yang menambah atau membuang kelas:…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/tw/menu-ponsel-dengan-sedikit-javascript">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Menu ponsel dengan sedikit JavaScript · Tailwind CSS · Ruang Kode"><meta property="og:description" content="Tailwind hanya mengurus tampilan. Untuk interaksi seperti membuka menu, cukup JavaScript kecil yang menambah atau membuang kelas:…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/tw/menu-ponsel-dengan-sedikit-javascript"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Menu ponsel dengan sedikit JavaScript", "description": "Tailwind hanya mengurus tampilan. Untuk interaksi seperti membuka menu, cukup JavaScript kecil yang menambah atau membuang kelas:…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/tw/menu-ponsel-dengan-sedikit-javascript", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "Tailwind CSS", "url": "https://ruang-kode-nine.vercel.app/belajar/tw"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Tailwind CSS", "item": "https://ruang-kode-nine.vercel.app/belajar/tw"}, {"@type": "ListItem", "position": 3, "name": "Menu ponsel dengan sedikit JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/tw/menu-ponsel-dengan-sedikit-javascript"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/tw">Tailwind CSS</a> / Modul 4</nav>
+<div class="eyebrow">Tailwind CSS · Modul 4 · Praktik langsung</div><h1>Menu ponsel dengan sedikit JavaScript</h1><a class="cta" href="/#tw-4-3">Buka versi interaktif</a>
+<p>Tailwind hanya mengurus tampilan. Untuk interaksi seperti membuka menu, cukup JavaScript kecil yang menambah atau membuang kelas: <code>menu.classList.toggle('hidden')</code>.</p>
+<p>Jangan lupa aksesibilitas: perbarui <code>aria-expanded</code> pada tombol agar pembaca layar tahu menu sedang terbuka atau tertutup.</p>
+<p>Di proyek React atau Vue, kelas ditentukan dari state, misalnya <code>className={buka ? 'block' : 'hidden'}</code>.</p>
+<div class="lbl">HTML</div><pre><code>&lt;nav class=&quot;bg-slate-900 text-white&quot;&gt;
+  &lt;div class=&quot;flex items-center justify-between p-4&quot;&gt;
+    &lt;b&gt;RuangKode&lt;/b&gt;
+    &lt;button id=&quot;tombol&quot; class=&quot;px-3 py-1 border border-white/40 rounded&quot; aria-expanded=&quot;false&quot; aria-controls=&quot;menu&quot;&gt;Menu&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div id=&quot;menu&quot; class=&quot;hidden flex-col gap-2 px-4 pb-4&quot;&gt;
+    &lt;a class=&quot;block&quot;&gt;Beranda&lt;/a&gt;&lt;a class=&quot;block&quot;&gt;Kursus&lt;/a&gt;&lt;a class=&quot;block&quot;&gt;Masuk&lt;/a&gt;
+  &lt;/div&gt;
+&lt;/nav&gt;</code></pre>
+<div class="lbl">JAVASCRIPT</div><pre><code>const tombol = document.getElementById(&#x27;tombol&#x27;);
+const menu = document.getElementById(&#x27;menu&#x27;);
+tombol.addEventListener(&#x27;click&#x27;, () =&gt; {
+  // tulis kodemu di sini: tampilkan/sembunyikan menu
+});</code></pre>
+<h2>Tantangan</h2><ol><li>Lengkapi JavaScript: saat tombol diklik, toggle kelas <code>hidden</code> pada menu dan perbarui <code>aria-expanded</code>. Klik tombolnya sekali lalu tekan Periksa.</li></ol>
+<h2>Poin penting</h2><ul><li>Tailwind untuk gaya, JS kecil untuk interaksi.</li><li>classList.toggle('hidden').</li><li>Perbarui aria-expanded.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>classList.toggle(&#x27;hidden&#x27;) mengembalikan true jika?</summary><p class="ok">Jawaban: Kelas baru saja ditambahkan</p><p>true = kelas sekarang ada.</p></details>
+<a class="cta" href="/#tw-4-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/tw/transform-transisi-dan-animasi">Transform, transisi, dan animasi</a></p><p>Berikutnya: <a href="/belajar/tw/tailwind-v4-apa-yang-baru-dan-cara-migrasi">Tailwind v4: apa yang baru dan cara migrasi</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Apa itu Flutter · Flutter · Ruang Kode</title>
+<meta name="description" content="Flutter adalah framework UI dari Google untuk membuat aplikasi Android, iOS, web, Windows, macOS, dan Linux dari satu kode Dart. Flutter menggambar…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/flutter/apa-itu-flutter">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Apa itu Flutter · Flutter · Ruang Kode"><meta property="og:description" content="Flutter adalah framework UI dari Google untuk membuat aplikasi Android, iOS, web, Windows, macOS, dan Linux dari satu kode Dart. Flutter menggambar…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/flutter/apa-itu-flutter"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Apa itu Flutter", "description": "Flutter adalah framework UI dari Google untuk membuat aplikasi Android, iOS, web, Windows, macOS, dan Linux dari satu kode Dart. Flutter menggambar…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter/apa-itu-flutter", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Flutter", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Flutter", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, {"@type": "ListItem", "position": 3, "name": "Apa itu Flutter", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter/apa-itu-flutter"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/flutter">Flutter</a> / Modul 1</nav>
+<div class="eyebrow">Flutter · Modul 1 · Konsep &amp; kode</div><h1>Apa itu Flutter</h1><a class="cta" href="/#flutter-1-1">Buka versi interaktif</a>
+<p><b>Flutter</b> adalah framework UI dari Google untuk membuat aplikasi <b>Android, iOS, web, Windows, macOS, dan Linux dari satu kode Dart</b>. Flutter menggambar sendiri setiap piksel lewat mesin grafisnya (Impeller), sehingga tampilan sama persis di semua platform.</p>
+<p>Semua yang tampil di Flutter adalah <b>widget</b>: teks, tombol, jarak, bahkan tata letak. Widget disusun bertingkat seperti pohon. Kamu tidak mengubah tampilan secara langsung; kamu mengubah <b>data (state)</b>, lalu Flutter menggambar ulang widget yang terdampak.</p>
+<p>Fitur yang disukai developer: <b>hot reload</b> (perubahan kode tampil dalam hitungan detik tanpa kehilangan state), komponen Material 3 dan Cupertino siap pakai, dan ekosistem package yang besar di pub.dev. Aplikasi seperti Google Pay, BMW, dan banyak startup Indonesia memakai Flutter.</p>
+<div class="tw"><table><caption>Flutter dibanding pilihan lain</caption><thead><tr><th>Aspek</th><th>Flutter</th><th>Native (Kotlin/Swift)</th><th>React Native</th></tr></thead><tbody><tr><td>Bahasa</td><td>Dart</td><td>Kotlin dan Swift</td><td>JavaScript/TypeScript</td></tr><tr><td>Satu kode untuk</td><td>Mobile, web, desktop</td><td>Satu platform</td><td>Mobile (web terbatas)</td></tr><tr><td>Cara menggambar UI</td><td>Mesin grafis sendiri</td><td>Komponen native</td><td>Komponen native</td></tr><tr><td>Cocok untuk</td><td>Startup, MVP, aplikasi lintas platform</td><td>Fitur yang sangat spesifik platform</td><td>Tim yang sudah kuat di React</td></tr></tbody></table></div>
+<div class="lbl">KODE</div><pre><code>import &#x27;package:flutter/material.dart&#x27;;
+
+void main() {
+  runApp(const AplikasiSaya());
+}
+
+class AplikasiSaya extends StatelessWidget {
+  const AplikasiSaya({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      home: Scaffold(
+        body: Center(child: Text(&#x27;Halo, Flutter!&#x27;)),
+      ),
+    );
+  }
+}</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Ubah aplikasi contoh agar judul AppBar berbunyi "Toko Kopi" dan isi layar menampilkan teks "Selamat datang" di tengah.</p><details><summary>Petunjuk</summary><p>Scaffold(appBar: AppBar(title: ...), body: Center(child: Text(...))).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>class AplikasiSaya extends StatelessWidget {
+  const AplikasiSaya({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: const Text(&#x27;Toko Kopi&#x27;)),
+        body: const Center(child: Text(&#x27;Selamat datang&#x27;)),
+      ),
+    );
+  }
+}</code></pre></details></li><li><p>Matikan pita "DEBUG" di pojok kanan atas dan beri aplikasi warna tema hijau.</p><details><summary>Petunjuk</summary><p>MaterialApp punya debugShowCheckedModeBanner dan theme: ThemeData(colorSchemeSeed: ...).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>MaterialApp(
+  debugShowCheckedModeBanner: false,
+  theme: ThemeData(colorSchemeSeed: Colors.green, useMaterial3: true),
+  home: const Beranda(),
+)</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Satu kode Dart untuk banyak platform.</li><li>Semua tampilan adalah widget.</li><li>Ubah state, Flutter menggambar ulang.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Fungsi yang menjalankan aplikasi Flutter?</summary><p class="ok">Jawaban: runApp()</p><p>runApp menerima widget akar.</p></details><details><summary>Fitur yang menampilkan perubahan kode tanpa memulai ulang aplikasi?</summary><p class="ok">Jawaban: Hot reload</p><p>Hot reload mempercepat pengembangan.</p></details>
+<a class="cta" href="/#flutter-1-1">Kerjakan latihannya di aplikasi</a><p>Berikutnya: <a href="/belajar/flutter/memasang-flutter-dan-membuat-proyek">Memasang Flutter dan membuat proyek</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ktor dan kotlinx.serialization di kode bersama · Kotlin Multiplatform · Ruang Kode</title>
+<meta name="description" content="Library di commonMain harus mendukung multiplatform. Yang paling umum: Ktor Client (HTTP), kotlinx.serialization (JSON), kotlinx.coroutines,…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/kmp/ktor-dan-kotlinx-serialization-di-kode-bersama">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Ktor dan kotlinx.serialization di kode bersama · Kotlin Multiplatform · Ruang Kode"><meta property="og:description" content="Library di commonMain harus mendukung multiplatform. Yang paling umum: Ktor Client (HTTP), kotlinx.serialization (JSON), kotlinx.coroutines,…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/kmp/ktor-dan-kotlinx-serialization-di-kode-bersama"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Ktor dan kotlinx.serialization di kode bersama", "description": "Library di commonMain harus mendukung multiplatform. Yang paling umum: Ktor Client (HTTP), kotlinx.serialization (JSON), kotlinx.coroutines,…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/kmp/ktor-dan-kotlinx-serialization-di-kode-bersama", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Kotlin Multiplatform", "url": "https://ruang-kode-nine.vercel.app/belajar/kmp"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Kotlin Multiplatform", "item": "https://ruang-kode-nine.vercel.app/belajar/kmp"}, {"@type": "ListItem", "position": 3, "name": "Ktor dan kotlinx.serialization di kode bersama", "item": "https://ruang-kode-nine.vercel.app/belajar/kmp/ktor-dan-kotlinx-serialization-di-kode-bersama"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/kmp">Kotlin Multiplatform</a> / Modul 2</nav>
+<div class="eyebrow">Kotlin Multiplatform · Modul 2 · Konsep &amp; kode</div><h1>Ktor dan kotlinx.serialization di kode bersama</h1><a class="cta" href="/#kmp-2-1">Buka versi interaktif</a>
+<p>Library di commonMain harus mendukung multiplatform. Yang paling umum: <b>Ktor Client</b> (HTTP), <b>kotlinx.serialization</b> (JSON), <b>kotlinx.coroutines</b>, <b>kotlinx-datetime</b> (tanggal), <b>SQLDelight</b> atau <b>Room</b> versi KMP (database), dan <b>Koin</b> (dependency injection).</p>
+<p>Ktor memakai <b>engine</b> berbeda di setiap platform (OkHttp di Android, Darwin di iOS), tetapi kode pemanggilnya sama. Model data ditandai <code>@Serializable</code> agar JSON otomatis diubah menjadi objek.</p>
+<p>Satu repository yang ditulis sekali di commonMain dipakai oleh layar Android maupun iOS.</p>
+<div class="lbl">KODE</div><pre><code>@Serializable
+data class Produk(val id: Int, val nama: String, val harga: Int)
+
+class ProdukRepository(private val client: HttpClient) {
+    suspend fun semua(): List&lt;Produk&gt; =
+        client.get(&quot;https://api.contoh.id/produk&quot;).body()
+}
+
+fun buatClient() = HttpClient {
+    install(ContentNegotiation) {
+        json(Json { ignoreUnknownKeys = true })
+    }
+}
+
+// build.gradle.kts (shared)
+// commonMain.dependencies {
+//     implementation(libs.ktor.client.core)
+//     implementation(libs.ktor.client.content.negotiation)
+//     implementation(libs.ktor.serialization.kotlinx.json)
+// }
+// androidMain.dependencies { implementation(libs.ktor.client.okhttp) }
+// iosMain.dependencies { implementation(libs.ktor.client.darwin) }</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tambahkan fungsi POST yang mengirim pesanan baru berformat JSON dengan Ktor.</p><details><summary>Petunjuk</summary><p>client.post(url) { contentType(ContentType.Application.Json); setBody(objek) }.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>@Serializable
+data class PesananBaru(val produkId: Int, val qty: Int)
+
+suspend fun kirim(client: HttpClient, p: PesananBaru): Boolean {
+    val res = client.post(&quot;https://api.contoh.id/pesanan&quot;) {
+        contentType(ContentType.Application.Json)
+        setBody(p)
+    }
+    return res.status == HttpStatusCode.Created
+}</code></pre></details></li><li><p>Pasang plugin Logging dan batas waktu 10 detik pada HttpClient.</p><details><summary>Petunjuk</summary><p>install(Logging) dan install(HttpTimeout) { requestTimeoutMillis = 10_000 }.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>val client = HttpClient {
+    install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
+    install(Logging) { level = LogLevel.INFO }
+    install(HttpTimeout) { requestTimeoutMillis = 10_000 }
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Pakai library yang mendukung multiplatform.</li><li>Ktor: engine per platform, kode sama.</li><li>@Serializable untuk JSON.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Engine Ktor untuk iOS?</summary><p class="ok">Jawaban: Darwin</p><p>Darwin memakai NSURLSession.</p></details><details><summary>Engine Ktor untuk iOS?</summary><p class="ok">Jawaban: Darwin</p><p>ktor-client-darwin memakai NSURLSession.</p></details>
+<a class="cta" href="/#kmp-2-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/kmp/struktur-proyek-dan-expect-actual">Struktur proyek dan expect/actual</a></p><p>Berikutnya: <a href="/belajar/kmp/compose-multiplatform-satu-tampilan-untuk-semua">Compose Multiplatform: satu tampilan untuk semua</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

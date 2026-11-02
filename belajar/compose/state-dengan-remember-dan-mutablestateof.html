@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>State dengan remember dan mutableStateOf · Jetpack Compose · Ruang Kode</title>
+<meta name="description" content="Data yang berubah disimpan di mutableStateOf. Agar nilainya tidak hilang setiap recomposition, bungkus dengan remember: var jumlah by remember {…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/compose/state-dengan-remember-dan-mutablestateof">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="State dengan remember dan mutableStateOf · Jetpack Compose · Ruang Kode"><meta property="og:description" content="Data yang berubah disimpan di mutableStateOf. Agar nilainya tidak hilang setiap recomposition, bungkus dengan remember: var jumlah by remember {…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/compose/state-dengan-remember-dan-mutablestateof"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "State dengan remember dan mutableStateOf", "description": "Data yang berubah disimpan di mutableStateOf. Agar nilainya tidak hilang setiap recomposition, bungkus dengan remember: var jumlah by remember {…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/compose/state-dengan-remember-dan-mutablestateof", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Jetpack Compose", "url": "https://ruang-kode-nine.vercel.app/belajar/compose"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Jetpack Compose", "item": "https://ruang-kode-nine.vercel.app/belajar/compose"}, {"@type": "ListItem", "position": 3, "name": "State dengan remember dan mutableStateOf", "item": "https://ruang-kode-nine.vercel.app/belajar/compose/state-dengan-remember-dan-mutablestateof"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/compose">Jetpack Compose</a> / Modul 2</nav>
+<div class="eyebrow">Jetpack Compose · Modul 2 · Konsep &amp; kode</div><h1>State dengan remember dan mutableStateOf</h1><a class="cta" href="/#compose-2-1">Buka versi interaktif</a>
+<p>Data yang berubah disimpan di <code>mutableStateOf</code>. Agar nilainya tidak hilang setiap recomposition, bungkus dengan <code>remember</code>: <code>var jumlah by remember { mutableStateOf(0) }</code>. Pakai <code>rememberSaveable</code> agar nilai bertahan saat layar diputar.</p>
+<p><b>State hoisting</b>: pindahkan state ke composable induk, dan kirim ke anak sebagai parameter <code>nilai</code> + <code>onUbah</code>. Anak menjadi <b>stateless</b>, mudah dipakai ulang dan diuji. Pola ini sama dengan "lifting state up" di React.</p>
+<p>Jangan menyimpan state penting di composable untuk data yang dipakai banyak layar; simpan di <b>ViewModel</b> (modul berikutnya).</p>
+<div class="lbl">KODE</div><pre><code>@Composable
+fun Penghitung(jumlah: Int, onUbah: (Int) -&gt; Unit) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        IconButton(onClick = { onUbah(jumlah - 1) }, enabled = jumlah &gt; 0) {
+            Icon(Icons.Default.Remove, contentDescription = &quot;Kurangi&quot;)
+        }
+        Text(&quot;$jumlah&quot;, style = MaterialTheme.typography.titleLarge)
+        IconButton(onClick = { onUbah(jumlah + 1) }) {
+            Icon(Icons.Default.Add, contentDescription = &quot;Tambah&quot;)
+        }
+    }
+}
+
+@Composable
+fun HalamanKeranjang() {
+    var jumlah by rememberSaveable { mutableStateOf(1) }  // state di induk
+    Column {
+        Penghitung(jumlah = jumlah, onUbah = { jumlah = it })
+        Text(&quot;Total: Rp${jumlah * 18000}&quot;)
+    }
+}</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tambahkan tombol Kurangi yang nonaktif saat angka 0.</p><details><summary>Petunjuk</summary><p>Button(enabled = jumlah > 0, onClick = { jumlah-- }).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>@Composable
+fun Penghitung() {
+    var jumlah by remember { mutableIntStateOf(0) }
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        OutlinedButton(onClick = { jumlah-- }, enabled = jumlah &gt; 0) { Text(&quot;Kurangi&quot;) }
+        Text(&quot;$jumlah&quot;, style = MaterialTheme.typography.headlineMedium, modifier = Modifier.padding(horizontal = 16.dp))
+        Button(onClick = { jumlah++ }) { Text(&quot;Tambah&quot;) }
+    }
+}</code></pre></details></li><li><p>Buat angka tidak kembali ke 0 saat layar diputar.</p><details><summary>Petunjuk</summary><p>Ganti remember dengan rememberSaveable.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>var jumlah by rememberSaveable { mutableIntStateOf(0) }</code></pre></details></li><li><p>Terapkan state hoisting: pisahkan <code>Penghitung(jumlah, onTambah)</code> yang stateless dari pemilik state.</p><details><summary>Petunjuk</summary><p>Composable stateless menerima nilai dan lambda; induknya yang menyimpan state.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>@Composable
+fun Penghitung(jumlah: Int, onTambah: () -&gt; Unit) {
+    Button(onClick = onTambah) { Text(&quot;Jumlah: $jumlah&quot;) }
+}
+
+@Composable
+fun Layar() {
+    var jumlah by rememberSaveable { mutableIntStateOf(0) }
+    Penghitung(jumlah = jumlah, onTambah = { jumlah++ })
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>remember + mutableStateOf menyimpan state.</li><li>rememberSaveable bertahan saat rotasi.</li><li>Hoisting: anak stateless (nilai + onUbah).</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Tanpa remember, apa yang terjadi pada mutableStateOf?</summary><p class="ok">Jawaban: Nilainya dibuat ulang setiap recomposition</p><p>remember menyimpan nilai antarrecomposition.</p></details><details><summary>Kenapa memakai rememberSaveable?</summary><p class="ok">Jawaban: State bertahan saat layar diputar</p><p>Nilai disimpan di Bundle saat activity dibuat ulang.</p></details>
+<a class="cta" href="/#compose-2-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/compose/column-row-box-dan-modifier">Column, Row, Box, dan Modifier</a></p><p>Berikutnya: <a href="/belajar/compose/lazycolumn-dan-textfield">LazyColumn dan TextField</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

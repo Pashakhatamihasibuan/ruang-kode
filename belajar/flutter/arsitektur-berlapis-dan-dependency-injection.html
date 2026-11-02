@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Arsitektur berlapis dan dependency injection · Flutter · Ruang Kode</title>
+<meta name="description" content="Saat aplikasi membesar, pisahkan kode menjadi lapisan. Pola yang direkomendasikan tim Flutter: UI layer (widget + ViewModel/Notifier), data layer…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/flutter/arsitektur-berlapis-dan-dependency-injection">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Arsitektur berlapis dan dependency injection · Flutter · Ruang Kode"><meta property="og:description" content="Saat aplikasi membesar, pisahkan kode menjadi lapisan. Pola yang direkomendasikan tim Flutter: UI layer (widget + ViewModel/Notifier), data layer…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/flutter/arsitektur-berlapis-dan-dependency-injection"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Arsitektur berlapis dan dependency injection", "description": "Saat aplikasi membesar, pisahkan kode menjadi lapisan. Pola yang direkomendasikan tim Flutter: UI layer (widget + ViewModel/Notifier), data layer…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter/arsitektur-berlapis-dan-dependency-injection", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Flutter", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Flutter", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, {"@type": "ListItem", "position": 3, "name": "Arsitektur berlapis dan dependency injection", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter/arsitektur-berlapis-dan-dependency-injection"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/flutter">Flutter</a> / Modul 7</nav>
+<div class="eyebrow">Flutter · Modul 7 · Konsep &amp; kode</div><h1>Arsitektur berlapis dan dependency injection</h1><a class="cta" href="/#flutter-7-1">Buka versi interaktif</a>
+<p>Saat aplikasi membesar, pisahkan kode menjadi lapisan. Pola yang direkomendasikan tim Flutter: <b>UI layer</b> (widget + ViewModel/Notifier), <b>data layer</b> (repository + service/API), dan opsional <b>domain layer</b> (use case untuk logika bisnis yang rumit).</p>
+<p>Widget tidak memanggil API langsung. Widget memanggil ViewModel, ViewModel memanggil <b>repository</b>, dan repository memutuskan mengambil dari API atau dari cache lokal. Hasilnya, setiap bagian bisa diuji dan diganti sendiri-sendiri.</p>
+<p><b>Dependency injection</b> memberi objek yang dibutuhkan sebuah class dari luar, bukan membuatnya di dalam. Riverpod sudah melakukannya lewat provider. Alternatif populer: <b>get_it</b> (service locator) dan <b>injectable</b>.</p>
+<div class="lbl">KODE</div><pre><code>lib/
+├── main.dart
+├── data/
+│   ├── services/produk_api.dart        // panggil HTTP
+│   ├── local/produk_cache.dart         // database lokal
+│   └── repositories/produk_repository.dart
+├── domain/
+│   └── models/produk.dart              // freezed
+└── ui/
+    ├── produk/
+    │   ├── produk_page.dart            // widget
+    │   └── produk_viewmodel.dart       // Notifier
+    └── core/widgets/                    // tombol, kartu bersama
+
+// repository memilih sumber data
+class ProdukRepository {
+  ProdukRepository(this._api, this._cache);
+  final ProdukApi _api;
+  final ProdukCache _cache;
+
+  Future&lt;List&lt;Produk&gt;&gt; semua() async {
+    try {
+      final data = await _api.ambil();
+      await _cache.simpan(data);
+      return data;
+    } catch (_) {
+      return _cache.baca(); // offline: pakai data terakhir
+    }
+  }
+}
+
+// Riverpod sebagai dependency injection
+final produkRepoProvider = Provider(
+  (ref) =&gt; ProdukRepository(ProdukApi(ref.watch(dioProvider)), ProdukCache()),
+);</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Daftarkan ProdukRepository dengan get_it sebagai singleton, lalu ambil di ViewModel.</p><details><summary>Petunjuk</summary><p>GetIt.I.registerLazySingleton&lt;T>(() => ...) lalu GetIt.I&lt;T>().</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>final sl = GetIt.instance;
+
+void siapkan() {
+  sl.registerLazySingleton(() =&gt; Dio());
+  sl.registerLazySingleton(() =&gt; ProdukApi(sl()));
+  sl.registerLazySingleton(() =&gt; ProdukCache());
+  sl.registerLazySingleton(() =&gt; ProdukRepository(sl(), sl()));
+}
+
+class ProdukViewModel extends ChangeNotifier {
+  final _repo = sl&lt;ProdukRepository&gt;();
+  List&lt;Produk&gt; data = [];
+  Future&lt;void&gt; muat() async {
+    data = await _repo.semua();
+    notifyListeners();
+  }
+}</code></pre></details></li><li><p>Tulis unit test untuk ProdukRepository yang memastikan data cache dipakai saat API gagal, memakai mocktail.</p><details><summary>Petunjuk</summary><p>when(() => api.ambil()).thenThrow(...); when(() => cache.baca()).thenAnswer(...).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>class MockApi extends Mock implements ProdukApi {}
+class MockCache extends Mock implements ProdukCache {}
+
+void main() {
+  test(&#x27;pakai cache saat API gagal&#x27;, () async {
+    final api = MockApi(), cache = MockCache();
+    final simpanan = [const Produk(id: 1, nama: &#x27;Kopi&#x27;, harga: 18000)];
+    when(() =&gt; api.ambil()).thenThrow(Exception(&#x27;offline&#x27;));
+    when(() =&gt; cache.baca()).thenAnswer((_) async =&gt; simpanan);
+
+    final hasil = await ProdukRepository(api, cache).semua();
+    expect(hasil, simpanan);
+  });
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>UI → ViewModel → Repository → Service.</li><li>Repository menyembunyikan asal data.</li><li>Dependency injection: Riverpod, get_it.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Siapa yang memutuskan data diambil dari API atau cache?</summary><p class="ok">Jawaban: Repository</p><p>Repository adalah satu-satunya pintu ke data.</p></details>
+<a class="cta" href="/#flutter-7-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/flutter/fitur-perangkat-kamera-izin-lokasi-dan-tautan">Fitur perangkat: kamera, izin, lokasi, dan tautan</a></p><p>Berikutnya: <a href="/belajar/flutter/proyek-aplikasi-daftar-tugas-todo">Proyek: aplikasi daftar tugas (Todo)</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

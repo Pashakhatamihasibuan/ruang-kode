@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Animasi implisit dan Hero · Flutter · Ruang Kode</title>
+<meta name="description" content="Animasi implisit paling mudah: ganti widget biasa dengan versi Animated..., lalu ubah nilainya lewat setState. Flutter menganimasikan perubahan itu…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/flutter/animasi-implisit-dan-hero">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Animasi implisit dan Hero · Flutter · Ruang Kode"><meta property="og:description" content="Animasi implisit paling mudah: ganti widget biasa dengan versi Animated..., lalu ubah nilainya lewat setState. Flutter menganimasikan perubahan itu…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/flutter/animasi-implisit-dan-hero"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Animasi implisit dan Hero", "description": "Animasi implisit paling mudah: ganti widget biasa dengan versi Animated..., lalu ubah nilainya lewat setState. Flutter menganimasikan perubahan itu…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter/animasi-implisit-dan-hero", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Flutter", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Flutter", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, {"@type": "ListItem", "position": 3, "name": "Animasi implisit dan Hero", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter/animasi-implisit-dan-hero"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/flutter">Flutter</a> / Modul 5</nav>
+<div class="eyebrow">Flutter · Modul 5 · Konsep &amp; kode</div><h1>Animasi implisit dan Hero</h1><a class="cta" href="/#flutter-5-2">Buka versi interaktif</a>
+<p><b>Animasi implisit</b> paling mudah: ganti widget biasa dengan versi <code>Animated...</code>, lalu ubah nilainya lewat setState. Flutter menganimasikan perubahan itu sendiri. Contoh: <code>AnimatedContainer</code>, <code>AnimatedOpacity</code>, <code>AnimatedSwitcher</code>, <code>AnimatedAlign</code>.</p>
+<p><b>Hero</b> menerbangkan widget (biasanya gambar) dari satu layar ke layar berikutnya. Beri <code>tag</code> yang sama di kedua layar.</p>
+<p>Untuk animasi yang dikendalikan penuh (berulang, berurutan) pakai <code>AnimationController</code>. Untuk animasi dari desainer, package <b>lottie</b> memutar file JSON dari After Effects, dan <b>rive</b> untuk animasi interaktif. Selalu hormati pengaturan "kurangi animasi" (<code>MediaQuery.of(context).disableAnimations</code>).</p>
+<div class="lbl">KODE</div><pre><code>class KartuPilih extends StatefulWidget {
+  const KartuPilih({super.key});
+  @override
+  State&lt;KartuPilih&gt; createState() =&gt; _KartuPilihState();
+}
+
+class _KartuPilihState extends State&lt;KartuPilih&gt; {
+  bool dipilih = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () =&gt; setState(() =&gt; dipilih = !dipilih),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeOut,
+        width: dipilih ? 220 : 160,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: dipilih ? Colors.brown : Colors.brown.shade100,
+          borderRadius: BorderRadius.circular(dipilih ? 24 : 8),
+        ),
+        child: Text(dipilih ? &#x27;Dipilih&#x27; : &#x27;Ketuk saya&#x27;,
+            style: TextStyle(color: dipilih ? Colors.white : Colors.black)),
+      ),
+    );
+  }
+}
+
+// Hero: tag sama di daftar dan di halaman detail
+Hero(tag: &#x27;produk-12&#x27;, child: Image.network(url))</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Pakai AnimatedSwitcher agar angka penghitung berganti dengan efek memudar.</p><details><summary>Petunjuk</summary><p>Bungkus Text dengan AnimatedSwitcher dan beri key: ValueKey(jumlah) agar Flutter tahu widgetnya berganti.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>AnimatedSwitcher(
+  duration: const Duration(milliseconds: 300),
+  child: Text(
+    &#x27;$jumlah&#x27;,
+    key: ValueKey(jumlah),
+    style: const TextStyle(fontSize: 40),
+  ),
+)</code></pre></details></li><li><p>Buat ikon yang berputar terus-menerus dengan AnimationController.</p><details><summary>Petunjuk</summary><p>Pakai SingleTickerProviderStateMixin, controller..repeat(), lalu RotationTransition.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>class Muter extends StatefulWidget {
+  const Muter({super.key});
+  @override
+  State&lt;Muter&gt; createState() =&gt; _MuterState();
+}
+
+class _MuterState extends State&lt;Muter&gt; with SingleTickerProviderStateMixin {
+  late final c = AnimationController(vsync: this, duration: const Duration(seconds: 2))..repeat();
+
+  @override
+  void dispose() {
+    c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) =&gt;
+      RotationTransition(turns: c, child: const Icon(Icons.sync, size: 48));
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Animated... untuk animasi implisit.</li><li>Hero dengan tag sama di dua layar.</li><li>AnimationController untuk kendali penuh; lottie/rive dari desainer.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa AnimatedSwitcher butuh key yang berbeda?</summary><p class="ok">Jawaban: Agar Flutter tahu widget anaknya berganti</p><p>Tanpa key berbeda, dianggap widget yang sama.</p></details>
+<a class="cta" href="/#flutter-5-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/flutter/tema-material-3-dan-mode-gelap">Tema Material 3 dan mode gelap</a></p><p>Berikutnya: <a href="/belajar/flutter/layout-responsif-layoutbuilder-dan-mediaquery">Layout responsif: LayoutBuilder dan MediaQuery</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

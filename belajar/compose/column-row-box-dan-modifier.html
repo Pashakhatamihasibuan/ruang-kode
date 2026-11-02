@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Column, Row, Box, dan Modifier · Jetpack Compose · Ruang Kode</title>
+<meta name="description" content="Column menyusun vertikal, Row horizontal, dan Box menumpuk. Jarak antaranak diatur dengan Arrangement.spacedBy(8.dp), perataan dengan Alignment.">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/compose/column-row-box-dan-modifier">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Column, Row, Box, dan Modifier · Jetpack Compose · Ruang Kode"><meta property="og:description" content="Column menyusun vertikal, Row horizontal, dan Box menumpuk. Jarak antaranak diatur dengan Arrangement.spacedBy(8.dp), perataan dengan Alignment.">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/compose/column-row-box-dan-modifier"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Column, Row, Box, dan Modifier", "description": "Column menyusun vertikal, Row horizontal, dan Box menumpuk. Jarak antaranak diatur dengan Arrangement.spacedBy(8.dp), perataan dengan Alignment.", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/compose/column-row-box-dan-modifier", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Jetpack Compose", "url": "https://ruang-kode-nine.vercel.app/belajar/compose"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Jetpack Compose", "item": "https://ruang-kode-nine.vercel.app/belajar/compose"}, {"@type": "ListItem", "position": 3, "name": "Column, Row, Box, dan Modifier", "item": "https://ruang-kode-nine.vercel.app/belajar/compose/column-row-box-dan-modifier"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/compose">Jetpack Compose</a> / Modul 1</nav>
+<div class="eyebrow">Jetpack Compose · Modul 1 · Konsep &amp; kode</div><h1>Column, Row, Box, dan Modifier</h1><a class="cta" href="/#compose-1-2">Buka versi interaktif</a>
+<p><code>Column</code> menyusun vertikal, <code>Row</code> horizontal, dan <code>Box</code> menumpuk. Jarak antaranak diatur dengan <code>Arrangement.spacedBy(8.dp)</code>, perataan dengan <code>Alignment</code>.</p>
+<p><b>Modifier</b> mengatur ukuran, jarak, latar, sudut, klik, dan lainnya, dirangkai dengan titik. <b>Urutan modifier penting</b>: <code>padding</code> sebelum <code>background</code> memberi jarak di luar warna, sedangkan setelahnya memberi jarak di dalam warna.</p>
+<p>Satuan ukuran memakai <code>dp</code> (density-independent pixel) untuk jarak dan ukuran, serta <code>sp</code> untuk teks agar mengikuti pengaturan ukuran huruf pengguna.</p>
+<div class="lbl">KODE</div><pre><code>@Composable
+fun KartuProduk(nama: String, harga: String, onBeli: () -&gt; Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(16.dp))
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Icon(Icons.Default.ShoppingCart, contentDescription = null)
+        Column(modifier = Modifier.weight(1f)) {
+            Text(nama, style = MaterialTheme.typography.titleMedium)
+            Text(harga, style = MaterialTheme.typography.bodyMedium)
+        }
+        Button(onClick = onBeli) { Text(&quot;Beli&quot;) }
+    }
+}</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat baris ikon, nama produk panjang, dan harga yang tidak terpotong di layar sempit.</p><details><summary>Petunjuk</summary><p>Beri teks nama Modifier.weight(1f) agar mengisi sisa ruang.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>Row(
+    modifier = Modifier.fillMaxWidth().padding(12.dp),
+    verticalAlignment = Alignment.CenterVertically,
+) {
+    Icon(Icons.Default.ShoppingCart, contentDescription = null)
+    Spacer(Modifier.width(12.dp))
+    Text(&quot;Kopi Arabika Gayo Wine Process 250 gram&quot;, modifier = Modifier.weight(1f))
+    Spacer(Modifier.width(12.dp))
+    Text(&quot;Rp85.000&quot;, style = MaterialTheme.typography.titleMedium)
+}</code></pre></details></li><li><p>Taruh label "Diskon 20%" di pojok kiri atas sebuah gambar.</p><details><summary>Petunjuk</summary><p>Box + Modifier.align(Alignment.TopStart) pada label.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>Box {
+    Image(painterResource(R.drawable.kopi), contentDescription = &quot;Kopi Gayo&quot;)
+    Text(
+        &quot;Diskon 20%&quot;,
+        color = Color.White,
+        modifier = Modifier
+            .align(Alignment.TopStart)
+            .padding(8.dp)
+            .background(Color.Red, RoundedCornerShape(8.dp))
+            .padding(horizontal = 8.dp, vertical = 4.dp),
+    )
+}</code></pre></details></li><li><p>Jelaskan dengan kode kenapa urutan Modifier penting: padding lalu background berbeda dengan background lalu padding.</p><details><summary>Petunjuk</summary><p>Modifier diterapkan dari kiri ke kanan, dari luar ke dalam.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>// warna hanya di bagian dalam, ada jarak transparan di luar
+Modifier.padding(16.dp).background(Color.Yellow)
+
+// warna memenuhi termasuk area padding
+Modifier.background(Color.Yellow).padding(16.dp)</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Column, Row, Box untuk tata letak.</li><li>Urutan Modifier memengaruhi hasil.</li><li>dp untuk ukuran, sp untuk teks.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Modifier.weight(1f) di dalam Row berarti?</summary><p class="ok">Jawaban: Mengisi sisa ruang</p><p>Mirip Expanded di Flutter.</p></details><details><summary>Modifier untuk membuat anak Row mengisi sisa ruang?</summary><p class="ok">Jawaban: weight(1f)</p><p>weight membagi sisa ruang di Row/Column.</p></details>
+<a class="cta" href="/#compose-1-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/compose/ui-deklaratif-dengan-compose">UI deklaratif dengan Compose</a></p><p>Berikutnya: <a href="/belajar/compose/state-dengan-remember-dan-mutablestateof">State dengan remember dan mutableStateOf</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Enum, generics, dan extension method · Dart · Ruang Kode</title>
+<meta name="description" content="Enum mendaftar pilihan yang pasti, misalnya status pesanan. Dart mendukung enhanced enum: enum boleh punya field dan constructor, seperti ukuran gelas…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dart/enum-generics-dan-extension-method">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Enum, generics, dan extension method · Dart · Ruang Kode"><meta property="og:description" content="Enum mendaftar pilihan yang pasti, misalnya status pesanan. Dart mendukung enhanced enum: enum boleh punya field dan constructor, seperti ukuran gelas…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dart/enum-generics-dan-extension-method"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Enum, generics, dan extension method", "description": "Enum mendaftar pilihan yang pasti, misalnya status pesanan. Dart mendukung enhanced enum: enum boleh punya field dan constructor, seperti ukuran gelas…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dart/enum-generics-dan-extension-method", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Dart", "url": "https://ruang-kode-nine.vercel.app/belajar/dart"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Dart", "item": "https://ruang-kode-nine.vercel.app/belajar/dart"}, {"@type": "ListItem", "position": 3, "name": "Enum, generics, dan extension method", "item": "https://ruang-kode-nine.vercel.app/belajar/dart/enum-generics-dan-extension-method"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dart">Dart</a> / Modul 5</nav>
+<div class="eyebrow">Dart · Modul 5 · Konsep &amp; kode</div><h1>Enum, generics, dan extension method</h1><a class="cta" href="/#dart-5-2">Buka versi interaktif</a>
+<p><b>Enum</b> mendaftar pilihan yang pasti, misalnya status pesanan. Dart mendukung <b>enhanced enum</b>: enum boleh punya field dan constructor, seperti ukuran gelas yang menyimpan volume ml.</p>
+<p><b>Generics</b> membuat class atau fungsi yang bekerja untuk berbagai tipe tanpa kehilangan keamanan tipe. <code>List&lt;int&gt;</code> adalah contoh yang sudah kamu pakai. Kamu bisa membuat sendiri, misalnya <code>Kotak&lt;T&gt;</code> atau <code>Hasil&lt;T&gt;</code> untuk respons API.</p>
+<p><b>Extension method</b> menambah method ke tipe yang sudah ada tanpa mengubah aslinya. Contoh: <code>1250000.rp</code> menghasilkan teks Rupiah. Banyak package Flutter memakai extension, misalnya <code>context.go()</code> dari go_router.</p>
+<div class="lbl">KODE</div><pre><code>enum Status { menunggu, dikirim, selesai }
+
+enum Ukuran {
+  kecil(250), sedang(350), besar(500);
+  final int ml;
+  const Ukuran(this.ml);
+}
+
+class Kotak&lt;T&gt; {
+  final T isi;
+  Kotak(this.isi);
+  String info() =&gt; &#x27;Kotak berisi $isi ($T)&#x27;;
+}
+
+extension Rupiah on int {
+  String get rp {
+    final s = toString();
+    final b = StringBuffer();
+    for (var i = 0; i &lt; s.length; i++) {
+      if (i &gt; 0 &amp;&amp; (s.length - i) % 3 == 0) b.write(&#x27;.&#x27;);
+      b.write(s[i]);
+    }
+    return &#x27;Rp$b&#x27;;
+  }
+}
+
+void main() {
+  final s = Status.dikirim;
+  print(&#x27;${s.name} indeks ${s.index}&#x27;);
+  for (final u in Ukuran.values) {
+    print(&#x27;${u.name}: ${u.ml} ml&#x27;);
+  }
+  print(Kotak&lt;int&gt;(7).info());
+  print(Kotak(&#x27;kopi&#x27;).info());
+  print(1250000.rp);
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>dikirim indeks 1
+kecil: 250 ml
+sedang: 350 ml
+besar: 500 ml
+Kotak berisi 7 (int)
+Kotak berisi kopi (String)
+Rp1.250.000</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat extension <code>judul</code> pada String yang mengubah 'belajar dart itu seru' menjadi 'Belajar Dart Itu Seru'.</p><details><summary>Petunjuk</summary><p>split(' '), ubah huruf pertama setiap kata dengan toUpperCase, lalu join(' ').</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>extension Judul on String {
+  String get judul =&gt; split(&#x27; &#x27;)
+      .map((k) =&gt; k.isEmpty ? k : k[0].toUpperCase() + k.substring(1))
+      .join(&#x27; &#x27;);
+}
+
+void main() {
+  print(&#x27;belajar dart itu seru&#x27;.judul);
+}</code></pre></details></li><li><p>Buat fungsi generik <code>terbesar&lt;T extends Comparable&lt;T&gt;&gt;(List&lt;T&gt; xs)</code> dan uji dengan angka dan teks.</p><details><summary>Petunjuk</summary><p>Bandingkan dengan compareTo; > 0 berarti lebih besar.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>T terbesar&lt;T extends Comparable&lt;T&gt;&gt;(List&lt;T&gt; xs) {
+  var m = xs.first;
+  for (final x in xs) {
+    if (x.compareTo(m) &gt; 0) m = x;
+  }
+  return m;
+}
+
+void main() {
+  print(terbesar([3, 9, 2]));
+  print(terbesar([&#x27;apel&#x27;, &#x27;zaitun&#x27;, &#x27;mangga&#x27;]));
+}</code></pre></details></li><li><p>Buat enum <code>Status</code> dengan field <code>label</code> berbahasa Indonesia, lalu cetak label semua status.</p><details><summary>Petunjuk</summary><p>Enhanced enum: menunggu('Menunggu bayar'), ...; final String label; const Status(this.label);</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>enum Status {
+  menunggu(&#x27;Menunggu bayar&#x27;),
+  dikirim(&#x27;Sedang dikirim&#x27;),
+  selesai(&#x27;Sudah diterima&#x27;);
+
+  final String label;
+  const Status(this.label);
+}
+
+void main() {
+  for (final s in Status.values) {
+    print(&#x27;${s.index + 1}. ${s.label}&#x27;);
+  }
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Enhanced enum boleh punya field.</li><li>Generics &lt;T> menjaga keamanan tipe.</li><li>Extension menambah method ke tipe yang ada.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Apa arti T pada class Kotak&amp;lt;T&gt;?</summary><p class="ok">Jawaban: Tipe yang ditentukan saat dipakai</p><p>T diganti tipe nyata, misalnya Kotak&amp;lt;int&gt;.</p></details><details><summary>Extension method mengubah class aslinya?</summary><p class="ok">Jawaban: Tidak, hanya menambah method saat dipakai</p><p>Class asli tidak berubah.</p></details>
+<a class="cta" href="/#dart-5-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dart/exception-try-catch-finally-dan-throw">Exception: try, catch, finally, dan throw</a></p><p>Berikutnya: <a href="/belajar/dart/records-dan-pattern-matching-dart-3">Records dan pattern matching (Dart 3)</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

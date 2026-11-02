@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Form yang rapi · Tailwind CSS · Ruang Kode</title>
+<meta name="description" content="Form dibangun dari utilitas biasa: block, w-full, border, rounded-lg, px-3 py-2, dan focus:ring.">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/tw/form-yang-rapi">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Form yang rapi · Tailwind CSS · Ruang Kode"><meta property="og:description" content="Form dibangun dari utilitas biasa: block, w-full, border, rounded-lg, px-3 py-2, dan focus:ring.">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/tw/form-yang-rapi"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Form yang rapi", "description": "Form dibangun dari utilitas biasa: block, w-full, border, rounded-lg, px-3 py-2, dan focus:ring.", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/tw/form-yang-rapi", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "Tailwind CSS", "url": "https://ruang-kode-nine.vercel.app/belajar/tw"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Tailwind CSS", "item": "https://ruang-kode-nine.vercel.app/belajar/tw"}, {"@type": "ListItem", "position": 3, "name": "Form yang rapi", "item": "https://ruang-kode-nine.vercel.app/belajar/tw/form-yang-rapi"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/tw">Tailwind CSS</a> / Modul 3</nav>
+<div class="eyebrow">Tailwind CSS · Modul 3 · Praktik langsung</div><h1>Form yang rapi</h1><a class="cta" href="/#tw-3-1">Buka versi interaktif</a>
+<p>Form dibangun dari utilitas biasa: <code>block</code>, <code>w-full</code>, <code>border</code>, <code>rounded-lg</code>, <code>px-3 py-2</code>, dan <code>focus:ring</code>.</p>
+<p>Untuk keadaan tidak valid, pakai variant <code>invalid:border-rose-500</code>. Plugin resmi <code>@tailwindcss/forms</code> menyamakan gaya bawaan input di semua browser.</p>
+<p>Tetap pakai <code>&lt;label&gt;</code> yang terhubung ke input lewat <code>for</code>/<code>id</code> agar mudah diakses.</p>
+<div class="lbl">HTML</div><pre><code>&lt;form class=&quot;max-w-sm p-6 space-y-4&quot;&gt;
+  &lt;div&gt;
+    &lt;label for=&quot;email&quot; class=&quot;block text-sm font-medium text-slate-700&quot;&gt;Email&lt;/label&gt;
+    &lt;input id=&quot;email&quot; type=&quot;email&quot; required class=&quot;mt-1 block w-full border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sky-400 outline-none&quot;&gt;
+  &lt;/div&gt;
+  &lt;div&gt;
+    &lt;label for=&quot;sandi&quot; class=&quot;block text-sm font-medium text-slate-700&quot;&gt;Kata sandi&lt;/label&gt;
+    &lt;input id=&quot;sandi&quot; type=&quot;password&quot; class=&quot;mt-1 block w-full border border-slate-300 rounded-lg px-3 py-2&quot;&gt;
+  &lt;/div&gt;
+  &lt;button class=&quot;w-full py-2 bg-sky-600 text-white rounded-lg&quot;&gt;Masuk&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+<h2>Tantangan</h2><ol><li>Samakan input kata sandi dengan input email: tambahkan <code>focus:ring-2</code> dan <code>focus:ring-sky-400</code>.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Tambahkan pesan error merah di bawah input email yang hanya terlihat jika input tidak valid dan sudah diisi.</p><details><summary>Petunjuk</summary><p>Kelas peer pada input, lalu p dengan hidden peer-[&:not(:placeholder-shown):invalid]:block. Bentuk lebih sederhana: invalid:border-rose-500 pada input.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">HTML</div><pre><code>&lt;input type=&quot;email&quot; placeholder=&quot; &quot; class=&quot;peer block w-full border rounded-lg px-3 py-2 invalid:[&amp;:not(:placeholder-shown)]:border-rose-500&quot;&gt;
+&lt;p class=&quot;hidden mt-1 text-sm text-rose-600 peer-[&amp;:not(:placeholder-shown):invalid]:block&quot;&gt;Format email belum benar.&lt;/p&gt;</code></pre></details></li><li><p>Buat select dan textarea yang gayanya seragam dengan input lain.</p><details><summary>Petunjuk</summary><p>Pakai kelas yang sama: block w-full border rounded-lg px-3 py-2.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">HTML</div><pre><code>&lt;select class=&quot;block w-full border border-slate-300 rounded-lg px-3 py-2&quot;&gt;
+  &lt;option&gt;Flutter&lt;/option&gt;&lt;option&gt;Compose&lt;/option&gt;
+&lt;/select&gt;
+&lt;textarea rows=&quot;3&quot; class=&quot;mt-3 block w-full border border-slate-300 rounded-lg px-3 py-2&quot; placeholder=&quot;Catatan&quot;&gt;&lt;/textarea&gt;</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Form = utilitas biasa + focus:ring.</li><li>invalid: untuk validasi visual; @tailwindcss/forms untuk gaya dasar input.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa label tetap penting walau ada placeholder?</summary><p class="ok">Jawaban: Pembaca layar dan klik label membutuhkannya</p><p>Label adalah nama aksesibel input.</p></details>
+<a class="cta" href="/#tw-3-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/tw/hover-focus-dan-mode-gelap">Hover, focus, dan mode gelap</a></p><p>Berikutnya: <a href="/belajar/tw/komponen-dan-apply">Komponen dan @apply</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

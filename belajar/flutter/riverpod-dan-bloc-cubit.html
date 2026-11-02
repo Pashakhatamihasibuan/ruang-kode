@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Riverpod dan BLoC/Cubit · Flutter · Ruang Kode</title>
+<meta name="description" content="Riverpod (dari pembuat Provider) menyimpan state di provider global yang aman dan mudah diuji. Bungkus aplikasi dengan ProviderScope, lalu baca dengan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/flutter/riverpod-dan-bloc-cubit">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Riverpod dan BLoC/Cubit · Flutter · Ruang Kode"><meta property="og:description" content="Riverpod (dari pembuat Provider) menyimpan state di provider global yang aman dan mudah diuji. Bungkus aplikasi dengan ProviderScope, lalu baca dengan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/flutter/riverpod-dan-bloc-cubit"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Riverpod dan BLoC/Cubit", "description": "Riverpod (dari pembuat Provider) menyimpan state di provider global yang aman dan mudah diuji. Bungkus aplikasi dengan ProviderScope, lalu baca dengan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter/riverpod-dan-bloc-cubit", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Flutter", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Flutter", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, {"@type": "ListItem", "position": 3, "name": "Riverpod dan BLoC/Cubit", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter/riverpod-dan-bloc-cubit"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/flutter">Flutter</a> / Modul 3</nav>
+<div class="eyebrow">Flutter · Modul 3 · Konsep &amp; kode</div><h1>Riverpod dan BLoC/Cubit</h1><a class="cta" href="/#flutter-3-3">Buka versi interaktif</a>
+<p><b>Riverpod</b> (dari pembuat Provider) menyimpan state di provider global yang aman dan mudah diuji. Bungkus aplikasi dengan <code>ProviderScope</code>, lalu baca dengan <code>ref.watch</code> di <code>ConsumerWidget</code>. Untuk state yang punya logika, pakai <code>Notifier</code> dan <code>NotifierProvider</code>.</p>
+<p><b>BLoC</b> memisahkan tampilan dari logika: tampilan mengirim <b>event</b>, BLoC mengeluarkan <b>state</b> baru. Versi ringkasnya, <b>Cubit</b>, cukup memanggil <code>emit(stateBaru)</code>. Tampilan memakai <code>BlocBuilder</code>. Banyak perusahaan besar memilih BLoC karena alurnya jelas dan mudah diuji.</p>
+<p>Ketiganya menyelesaikan masalah yang sama. Pelajari satu dengan baik dulu; konsep "state di satu tempat, tampilan hanya membaca" berlaku di semuanya.</p>
+<div class="lbl">KODE</div><pre><code>// ---- Riverpod ----
+class Penghitung extends Notifier&lt;int&gt; {
+  @override
+  int build() =&gt; 0;
+  void tambah() =&gt; state++;
+}
+final penghitungProvider = NotifierProvider&lt;Penghitung, int&gt;(Penghitung.new);
+
+class HalamanAngka extends ConsumerWidget {
+  const HalamanAngka({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final angka = ref.watch(penghitungProvider);
+    return TextButton(
+      onPressed: () =&gt; ref.read(penghitungProvider.notifier).tambah(),
+      child: Text(&#x27;Angka: $angka&#x27;),
+    );
+  }
+}
+// main: runApp(const ProviderScope(child: MyApp()));
+
+// ---- Cubit (flutter_bloc) ----
+class SaldoCubit extends Cubit&lt;int&gt; {
+  SaldoCubit() : super(0);
+  void isi(int n) =&gt; emit(state + n);
+}
+// BlocBuilder&lt;SaldoCubit, int&gt;(builder: (context, saldo) =&gt; Text(&#x27;$saldo&#x27;))</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat <code>FutureProvider</code> Riverpod yang mengambil daftar kota, lalu tampilkan memuat/gagal/berhasil dengan <code>.when</code>.</p><details><summary>Petunjuk</summary><p>ref.watch(provider).when(data: ..., loading: ..., error: ...).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>final kotaProvider = FutureProvider&lt;List&lt;Kota&gt;&gt;((ref) =&gt; ambilCuaca());
+
+class HalamanKota extends ConsumerWidget {
+  const HalamanKota({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ref.watch(kotaProvider).when(
+          loading: () =&gt; const Center(child: CircularProgressIndicator()),
+          error: (e, _) =&gt; Center(child: Text(&#x27;Gagal: $e&#x27;)),
+          data: (daftar) =&gt; ListView(
+            children: [for (final k in daftar) ListTile(title: Text(k.nama))],
+          ),
+        );
+  }
+}</code></pre></details></li><li><p>Buat Cubit <code>TemaCubit</code> yang menyimpan bool gelap dan method <code>ganti()</code>.</p><details><summary>Petunjuk</summary><p>class TemaCubit extends Cubit&lt;bool> { TemaCubit() : super(false); void ganti() => emit(!state); }</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>class TemaCubit extends Cubit&lt;bool&gt; {
+  TemaCubit() : super(false);
+  void ganti() =&gt; emit(!state);
+}
+
+// di MaterialApp
+BlocBuilder&lt;TemaCubit, bool&gt;(
+  builder: (context, gelap) =&gt; MaterialApp(
+    themeMode: gelap ? ThemeMode.dark : ThemeMode.light,
+    darkTheme: ThemeData.dark(useMaterial3: true),
+    home: const Beranda(),
+  ),
+)</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Riverpod: ProviderScope, ref.watch, Notifier.</li><li>Cubit: emit state baru.</li><li>Konsepnya sama: state di satu tempat.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Di Cubit, cara mengubah state?</summary><p class="ok">Jawaban: emit(...)</p><p>emit mengeluarkan state baru.</p></details><details><summary>Di Riverpod, widget yang bisa membaca provider adalah?</summary><p class="ok">Jawaban: ConsumerWidget</p><p>ConsumerWidget menerima WidgetRef.</p></details>
+<a class="cta" href="/#flutter-3-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/flutter/state-management-dengan-provider">State management dengan Provider</a></p><p>Berikutnya: <a href="/belajar/flutter/mengambil-data-api-dengan-http-dan-dio">Mengambil data API dengan http dan dio</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

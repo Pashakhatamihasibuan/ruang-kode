@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Menyiapkan proyek dengan KMP wizard · Kotlin Multiplatform · Ruang Kode</title>
+<meta name="description" content="Cara termudah memulai: buka kmp.jetbrains.com (Kotlin Multiplatform Wizard), pilih target Android, iOS, dan opsional Desktop/Web, lalu pilih apakah UI…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/kmp/menyiapkan-proyek-dengan-kmp-wizard">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Menyiapkan proyek dengan KMP wizard · Kotlin Multiplatform · Ruang Kode"><meta property="og:description" content="Cara termudah memulai: buka kmp.jetbrains.com (Kotlin Multiplatform Wizard), pilih target Android, iOS, dan opsional Desktop/Web, lalu pilih apakah UI…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/kmp/menyiapkan-proyek-dengan-kmp-wizard"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Menyiapkan proyek dengan KMP wizard", "description": "Cara termudah memulai: buka kmp.jetbrains.com (Kotlin Multiplatform Wizard), pilih target Android, iOS, dan opsional Desktop/Web, lalu pilih apakah UI…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/kmp/menyiapkan-proyek-dengan-kmp-wizard", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Kotlin Multiplatform", "url": "https://ruang-kode-nine.vercel.app/belajar/kmp"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Kotlin Multiplatform", "item": "https://ruang-kode-nine.vercel.app/belajar/kmp"}, {"@type": "ListItem", "position": 3, "name": "Menyiapkan proyek dengan KMP wizard", "item": "https://ruang-kode-nine.vercel.app/belajar/kmp/menyiapkan-proyek-dengan-kmp-wizard"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/kmp">Kotlin Multiplatform</a> / Modul 3</nav>
+<div class="eyebrow">Kotlin Multiplatform · Modul 3 · Konsep &amp; kode</div><h1>Menyiapkan proyek dengan KMP wizard</h1><a class="cta" href="/#kmp-3-1">Buka versi interaktif</a>
+<p>Cara termudah memulai: buka <b>kmp.jetbrains.com</b> (Kotlin Multiplatform Wizard), pilih target Android, iOS, dan opsional Desktop/Web, lalu pilih apakah UI iOS memakai Compose Multiplatform atau SwiftUI. Unduh proyeknya dan buka di Android Studio atau IntelliJ IDEA dengan plugin Kotlin Multiplatform.</p>
+<p>Kebutuhan: JDK 17+, Android Studio, dan untuk iOS sebuah Mac dengan Xcode. Jalankan Android dari Android Studio seperti biasa; jalankan iOS dari konfigurasi iosApp atau buka <code>iosApp/iosApp.xcodeproj</code> di Xcode.</p>
+<p>Struktur hasil wizard: <code>composeApp/</code> (UI bersama dan titik masuk Android), <code>shared/</code> (logika bersama, jika dipisah), dan <code>iosApp/</code> (proyek Xcode). Versi library dicatat di <code>gradle/libs.versions.toml</code>.</p>
+<div class="tw"><table><caption>Library KMP yang sering dipakai</caption><thead><tr><th>Kebutuhan</th><th>Library</th></tr></thead><tbody><tr><td>Jaringan</td><td>Ktor Client</td></tr><tr><td>JSON</td><td>kotlinx.serialization</td></tr><tr><td>Asinkron</td><td>kotlinx.coroutines, Flow</td></tr><tr><td>Database</td><td>SQLDelight, Room (KMP)</td></tr><tr><td>Pengaturan</td><td>DataStore (KMP), multiplatform-settings</td></tr><tr><td>Dependency injection</td><td>Koin</td></tr><tr><td>Tanggal dan waktu</td><td>kotlinx-datetime</td></tr><tr><td>Gambar</td><td>Coil 3 (KMP)</td></tr><tr><td>Navigasi UI</td><td>Navigation Compose (KMP), Voyager, Decompose</td></tr><tr><td>ViewModel</td><td>androidx.lifecycle ViewModel (KMP)</td></tr><tr><td>Log</td><td>Kermit, Napier</td></tr><tr><td>Swift interop</td><td>SKIE, KMP-NativeCoroutines</td></tr></tbody></table></div>
+<div class="lbl">TERMINAL</div><pre><code># periksa lingkungan (opsional, alat dari JetBrains)
+brew install kdoctor
+kdoctor
+
+# jalankan dari terminal
+./gradlew :composeApp:installDebug          # Android
+./gradlew :composeApp:run                   # Desktop
+open iosApp/iosApp.xcodeproj                # iOS di Xcode
+
+# jalankan tes kode bersama di semua target
+./gradlew allTests</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis perintah Gradle untuk menjalankan tes kode bersama hanya di JVM/Android, lalu membangun framework iOS.</p><details><summary>Petunjuk</summary><p>Nama task mengikuti target: testDebugUnitTest, linkDebugFrameworkIosSimulatorArm64.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TERMINAL</div><pre><code>./gradlew :shared:testDebugUnitTest
+./gradlew :shared:linkDebugFrameworkIosSimulatorArm64</code></pre></details></li><li><p>Tambahkan kotlinx-datetime ke commonMain dan tampilkan tanggal hari ini.</p><details><summary>Petunjuk</summary><p>Clock.System.now() lalu toLocalDateTime(TimeZone.currentSystemDefault()).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TERMINAL</div><pre><code>// build.gradle.kts
+commonMain.dependencies {
+    implementation(&quot;org.jetbrains.kotlinx:kotlinx-datetime:0.6.1&quot;)
+}
+
+// commonMain
+fun hariIni(): String {
+    val t = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+    return &quot;${t.dayOfMonth}/${t.monthNumber}/${t.year}&quot;
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Mulai dari KMP wizard.</li><li>iOS butuh Mac dan Xcode.</li><li>Catat versi di libs.versions.toml.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Apa yang dibutuhkan untuk menjalankan target iOS?</summary><p class="ok">Jawaban: Mac dengan Xcode</p><p>Kompilasi dan simulator iOS hanya ada di macOS.</p></details>
+<a class="cta" href="/#kmp-3-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/kmp/compose-multiplatform-satu-tampilan-untuk-semua">Compose Multiplatform: satu tampilan untuk semua</a></p><p>Berikutnya: <a href="/belajar/kmp/koin-untuk-dependency-injection">Koin untuk dependency injection</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

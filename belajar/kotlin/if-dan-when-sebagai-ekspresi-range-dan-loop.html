@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>if dan when sebagai ekspresi, range dan loop · Kotlin · Ruang Kode</title>
+<meta name="description" content="Di Kotlin, if dan when adalah ekspresi: hasilnya bisa langsung disimpan. when menggantikan switch dan jauh lebih fleksibel: bisa mencocokkan nilai,…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/kotlin/if-dan-when-sebagai-ekspresi-range-dan-loop">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="if dan when sebagai ekspresi, range dan loop · Kotlin · Ruang Kode"><meta property="og:description" content="Di Kotlin, if dan when adalah ekspresi: hasilnya bisa langsung disimpan. when menggantikan switch dan jauh lebih fleksibel: bisa mencocokkan nilai,…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/kotlin/if-dan-when-sebagai-ekspresi-range-dan-loop"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "if dan when sebagai ekspresi, range dan loop", "description": "Di Kotlin, if dan when adalah ekspresi: hasilnya bisa langsung disimpan. when menggantikan switch dan jauh lebih fleksibel: bisa mencocokkan nilai,…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/kotlin/if-dan-when-sebagai-ekspresi-range-dan-loop", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Kotlin", "url": "https://ruang-kode-nine.vercel.app/belajar/kotlin"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Kotlin", "item": "https://ruang-kode-nine.vercel.app/belajar/kotlin"}, {"@type": "ListItem", "position": 3, "name": "if dan when sebagai ekspresi, range dan loop", "item": "https://ruang-kode-nine.vercel.app/belajar/kotlin/if-dan-when-sebagai-ekspresi-range-dan-loop"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/kotlin">Kotlin</a> / Modul 2</nav>
+<div class="eyebrow">Kotlin · Modul 2 · Konsep &amp; kode</div><h1>if dan when sebagai ekspresi, range dan loop</h1><a class="cta" href="/#kotlin-2-1">Buka versi interaktif</a>
+<p>Di Kotlin, <code>if</code> dan <code>when</code> adalah <b>ekspresi</b>: hasilnya bisa langsung disimpan. <code>when</code> menggantikan switch dan jauh lebih fleksibel: bisa mencocokkan nilai, rentang (<code>in 80..89</code>), atau tipe (<code>is String</code>).</p>
+<p>Loop for memakai <b>range</b>: <code>1..5</code> (1 sampai 5), <code>0 until n</code> (0 sampai n - 1), <code>10 downTo 1</code>, dan <code>step 2</code>. Membaca koleksi cukup <code>for (x in daftar)</code>, dan butuh indeks pakai <code>for ((i, x) in daftar.withIndex())</code>.</p>
+<p><code>while</code> dan <code>do { } while ()</code> tetap ada untuk kasus yang jumlah putarannya belum diketahui.</p>
+<div class="lbl">KODE</div><pre><code>fun main() {
+    val nilai = 87
+    val huruf = when (nilai) {
+        in 90..100 -&gt; &quot;A&quot;
+        in 80..89 -&gt; &quot;B&quot;
+        in 70..79 -&gt; &quot;C&quot;
+        else -&gt; &quot;D&quot;
+    }
+    val status = if (nilai &gt;= 75) &quot;Lulus&quot; else &quot;Remedial&quot;
+    println(&quot;$nilai = $huruf, $status&quot;)
+
+    for (i in 1..3) print(&quot;$i &quot;)
+    println()
+    for (i in 10 downTo 0 step 5) print(&quot;$i &quot;)
+    println()
+    for ((i, kota) in listOf(&quot;Medan&quot;, &quot;Padang&quot;).withIndex()) {
+        println(&quot;$i: $kota&quot;)
+    }
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>87 = B, Lulus
+1 2 3 
+10 5 0 
+0: Medan
+1: Padang</code></pre>
+<h2>Soal latihan</h2><ol><li><p>FizzBuzz 1 sampai 15 memakai <code>when</code> tanpa argumen.</p><details><summary>Petunjuk</summary><p>Cabang pertama i % 15 == 0, lalu % 3, lalu % 5, else angkanya.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>fun main() {
+    for (i in 1..15) {
+        println(
+            when {
+                i % 15 == 0 -&gt; &quot;FizzBuzz&quot;
+                i % 3 == 0 -&gt; &quot;Fizz&quot;
+                i % 5 == 0 -&gt; &quot;Buzz&quot;
+                else -&gt; i
+            }
+        )
+    }
+}</code></pre></details></li><li><p>Jumlahkan bilangan genap 2 sampai 100 dengan range ber-<code>step</code>.</p><details><summary>Petunjuk</summary><p>(2..100 step 2) lalu sum().</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>fun main() {
+    println(&quot;Jumlah genap: ${(2..100 step 2).sum()}&quot;)
+}</code></pre></details></li><li><p>Cetak segitiga bintang terbalik 4 baris.</p><details><summary>Petunjuk</summary><p>for (i in 4 downTo 1) dan "*".repeat(i).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>fun main() {
+    for (i in 4 downTo 1) println(&quot;*&quot;.repeat(i))
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>if dan when menghasilkan nilai.</li><li>Range: .., until, downTo, step.</li><li>withIndex() untuk indeks dan isi.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>for (i in 0 until 3) menghasilkan?</summary><p class="ok">Jawaban: 0 1 2</p><p>until tidak menyertakan batas akhir.</p></details><details><summary>Isi dari 1 until 4?</summary><p class="ok">Jawaban: 1, 2, 3</p><p>until tidak menyertakan batas atas.</p></details>
+<a class="cta" href="/#kotlin-2-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/kotlin/string-template-dan-format-keluaran">String template dan format keluaran</a></p><p>Berikutnya: <a href="/belajar/kotlin/latihan-algoritma-fibonacci-bubble-sort-prima">Latihan algoritma: Fibonacci, bubble sort, prima</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

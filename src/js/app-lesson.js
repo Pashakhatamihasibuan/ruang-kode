@@ -203,6 +203,8 @@ function jsFriendly(msg){for(const [rx,f] of JSERR){const m=rx.exec(msg);if(m)re
 /* ---------- jenis w: editor HTML/CSS/JS/React + pratinjau ---------- */
 const REACT_CDN=['https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js','https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js','https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js'];
 let WID=0;
+const TW_CDN='https://cdn.tailwindcss.com/3.4.17';
+const BS_CDN=['https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css','https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js'];
 function webTabs(l){return [l.html!=null&&['html','HTML','html'],l.css!=null&&['css','CSS','css'],l.js!=null&&['js',l.react?'JSX':'JavaScript',l.react?'jsx':'js']].filter(Boolean)}
 function webHTML(l){
   const tabs=webTabs(l);
@@ -211,12 +213,12 @@ function webHTML(l){
   <section class="wlab" id="wlab"><div class="w-head"><div class="w-tabs" role="tablist">${tabs.map(([k,n],i)=>`<button role="tab" data-t="${k}" aria-selected="${i===0}">${n}</button>`).join('')}</div>
     <div class="w-act"><button class="btn primary" id="wRun">▶ Jalankan <kbd>Ctrl</kbd><kbd>Enter</kbd></button><button class="btn" id="wReset">Reset</button></div></div>
    <div class="w-grid"><div class="w-eds">${tabs.map(([k,n,lang],i)=>`<div class="w-ed" data-t="${k}" ${i?'hidden':''}>${editorHTML('wEd-'+k,l[k],'Editor '+n,lang)}</div>`).join('')}</div>
-    <div class="w-out"><div class="w-prevh"><span>Pratinjau</span>${l.react?'<small>React 18</small>':''}</div><iframe class="w-frame" id="wFrame" sandbox="allow-scripts allow-modals" title="Pratinjau hasil kode"></iframe>
+    <div class="w-out"><div class="w-prevh"><span>Pratinjau</span>${l.react?'<small>React 18</small>':l.tw?'<small>Tailwind CSS 3.4</small>':l.bs?'<small>Bootstrap 5.3</small>':''}</div><iframe class="w-frame" id="wFrame" sandbox="allow-scripts allow-modals" title="Pratinjau hasil kode"></iframe>
      <div class="w-con" id="wCon" ${l.console||l.react?'':'hidden'}><div class="w-conh">Konsol</div><pre id="wLog"></pre></div></div></div></section>
   ${l.task?`<section class="task" id="task"><div class="eyebrow">Tantangan · diperiksa otomatis</div><h3>${l.task.q}</h3>
     <div class="sl-act"><button class="btn primary" id="wChk">Periksa</button>${l.task.hint?'<button class="btn" id="wHint" aria-expanded="false">Petunjuk</button>':''}</div>
     ${l.task.hint?`<p class="hint" id="wHintT" hidden>💡 ${esc(l.task.hint)}</p>`:''}<div id="wFb" aria-live="polite"></div></section>`:''}
-  ${ptsHTML(l)}${qHTML(l)}`;
+  ${soHTML(l,'html')}${ptsHTML(l)}${qHTML(l)}`;
 }
 function previewDoc(l,c,id){
   const scr=s=>String(s||'').replace(/<\/script/gi,'<\\/script');
@@ -232,7 +234,10 @@ addEventListener('message',function(e){if(e.data&&e.data.rkTest===ID)parent.post
 <script type="text/babel" data-presets="react">const {useState,useEffect,useRef,useMemo,useCallback,useReducer,useContext,useId}=React;
 ${scr(c.js)}
 ReactDOM.createRoot(document.getElementById('root')).render(<App/>);<\/script></body></html>`;
-  return `<!doctype html><html><head><meta charset="utf-8">${css}</head><body>${c.html||''}${boot}${c.js!=null?`<script>${scr(c.js)}<\/script>`:''}</body></html>`;
+  const fw=l.tw?`<script src="${TW_CDN}"><\/script><script>if(!window.tailwind){window.tailwind={};console.error('Tailwind CSS belum termuat. Periksa koneksi internet lalu tekan Jalankan lagi.')}<\/script>`
+    :l.bs?(window.BS_CSS?`<style>${window.BS_CSS}</style>`:`<link rel="stylesheet" href="${BS_CDN[0]}">`):'';
+  const fwEnd=l.bs?`<script src="${BS_CDN[1]}"><\/script>`:'';
+  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">${fw}${css}</head><body>${c.html||''}${boot}${fwEnd}${c.js!=null?`<script>${scr(c.js)}<\/script>`:''}</body></html>`;
 }
 let MSGH=null;
 function wireWeb(l,x){

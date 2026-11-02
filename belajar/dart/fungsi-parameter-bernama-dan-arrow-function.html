@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fungsi, parameter bernama, dan arrow function · Dart · Ruang Kode</title>
+<meta name="description" content="Fungsi Dart ditulis dengan tipe kembalian di depan: int tambah(int a, int b) { return a + b; }. Fungsi satu ekspresi bisa memakai arrow: int kali(int a,…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dart/fungsi-parameter-bernama-dan-arrow-function">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Fungsi, parameter bernama, dan arrow function · Dart · Ruang Kode"><meta property="og:description" content="Fungsi Dart ditulis dengan tipe kembalian di depan: int tambah(int a, int b) { return a + b; }. Fungsi satu ekspresi bisa memakai arrow: int kali(int a,…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dart/fungsi-parameter-bernama-dan-arrow-function"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Fungsi, parameter bernama, dan arrow function", "description": "Fungsi Dart ditulis dengan tipe kembalian di depan: int tambah(int a, int b) { return a + b; }. Fungsi satu ekspresi bisa memakai arrow: int kali(int a,…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dart/fungsi-parameter-bernama-dan-arrow-function", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Dart", "url": "https://ruang-kode-nine.vercel.app/belajar/dart"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Dart", "item": "https://ruang-kode-nine.vercel.app/belajar/dart"}, {"@type": "ListItem", "position": 3, "name": "Fungsi, parameter bernama, dan arrow function", "item": "https://ruang-kode-nine.vercel.app/belajar/dart/fungsi-parameter-bernama-dan-arrow-function"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dart">Dart</a> / Modul 2</nav>
+<div class="eyebrow">Dart · Modul 2 · Konsep &amp; kode</div><h1>Fungsi, parameter bernama, dan arrow function</h1><a class="cta" href="/#dart-2-3">Buka versi interaktif</a>
+<p>Fungsi Dart ditulis dengan tipe kembalian di depan: <code>int tambah(int a, int b) { return a + b; }</code>. Fungsi satu ekspresi bisa memakai <b>arrow</b>: <code>int kali(int a, int b) => a * b;</code>.</p>
+<p><b>Parameter bernama</b> ditulis dalam kurung kurawal dan dipanggil dengan namanya: <code>sapa(nama: 'Rina')</code>. Tambahkan <code>required</code> jika wajib, atau beri nilai bawaan. Pola ini dipakai di <b>semua widget Flutter</b>, misalnya <code>Text('Halo', style: ...)</code> dan <code>Padding(padding: ..., child: ...)</code>.</p>
+<p>Fungsi adalah nilai: bisa disimpan di variabel dan dikirim ke fungsi lain. Contohnya <code>onPressed: () { ... }</code> di tombol Flutter.</p>
+<div class="lbl">KODE</div><pre><code>int kali(int a, int b) =&gt; a * b;
+
+String sapa({required String nama, String salam = &#x27;Halo&#x27;}) {
+  return &#x27;$salam, $nama!&#x27;;
+}
+
+double hitungTotal(double harga, {int jumlah = 1, double diskon = 0}) =&gt;
+    harga * jumlah * (1 - diskon);
+
+void main() {
+  print(kali(4, 5));
+  print(sapa(nama: &#x27;Rina&#x27;));
+  print(sapa(nama: &#x27;Budi&#x27;, salam: &#x27;Selamat pagi&#x27;));
+  print(hitungTotal(20000, jumlah: 3, diskon: 0.1));
+  final klik = () =&gt; print(&#x27;Tombol ditekan&#x27;);
+  klik();
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>20
+Halo, Rina!
+Selamat pagi, Budi!
+54000.0
+Tombol ditekan</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat fungsi <code>luas({required double p, required double l})</code> dengan arrow, lalu panggil untuk p=5, l=3.</p><details><summary>Petunjuk</summary><p>double luas({required double p, required double l}) => p * l;</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>double luas({required double p, required double l}) =&gt; p * l;
+
+void main() {
+  print(luas(p: 5, l: 3));
+}</code></pre></details></li><li><p>Buat fungsi <code>sapa(String nama, [String? gelar])</code> dengan parameter posisi opsional.</p><details><summary>Petunjuk</summary><p>Parameter opsional posisi ditulis dalam kurung siku.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>String sapa(String nama, [String? gelar]) =&gt;
+    gelar == null ? &#x27;Halo, $nama&#x27; : &#x27;Halo, $gelar $nama&#x27;;
+
+void main() {
+  print(sapa(&#x27;Rina&#x27;));
+  print(sapa(&#x27;Budi&#x27;, &#x27;Dr.&#x27;));
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>=> untuk fungsi satu ekspresi.</li><li>Parameter bernama {required ...} dipakai di semua widget Flutter.</li><li>Fungsi bisa disimpan dan dikirim sebagai nilai.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Cara memanggil fungsi void kirim({required String ke})?</summary><p class="ok">Jawaban: kirim(ke: &#x27;Medan&#x27;)</p><p>Parameter bernama dipanggil dengan namanya.</p></details><details><summary>Parameter opsional posisi ditulis dengan?</summary><p class="ok">Jawaban: [ ]</p><p>Kurung siku untuk opsional posisi, kurawal untuk bernama.</p></details>
+<a class="cta" href="/#dart-2-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dart/latihan-algoritma-fibonacci-bubble-sort-prima">Latihan algoritma: Fibonacci, bubble sort, prima</a></p><p>Berikutnya: <a href="/belajar/dart/list-map-set-dan-operasi-koleksi">List, Map, Set dan operasi koleksi</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>
