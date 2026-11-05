@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Array multidimensi · Pseudocode · Ruang Kode</title>
+<meta name="description" content="Array dua dimensi (matriks) menyimpan data dalam bentuk tabel: baris dan kolom. Contoh: nilai 3 siswa untuk 4 mata pelajaran, DECLARE nilai : ARRAY[0..2,…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/pseudo/array-multidimensi">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Array multidimensi · Pseudocode · Ruang Kode"><meta property="og:description" content="Array dua dimensi (matriks) menyimpan data dalam bentuk tabel: baris dan kolom. Contoh: nilai 3 siswa untuk 4 mata pelajaran, DECLARE nilai : ARRAY[0..2,…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/pseudo/array-multidimensi"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Array multidimensi", "description": "Array dua dimensi (matriks) menyimpan data dalam bentuk tabel: baris dan kolom. Contoh: nilai 3 siswa untuk 4 mata pelajaran, DECLARE nilai : ARRAY[0..2,…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/pseudo/array-multidimensi", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Pseudocode", "url": "https://ruang-kode-nine.vercel.app/belajar/pseudo"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Pseudocode", "item": "https://ruang-kode-nine.vercel.app/belajar/pseudo"}, {"@type": "ListItem", "position": 3, "name": "Array multidimensi", "item": "https://ruang-kode-nine.vercel.app/belajar/pseudo/array-multidimensi"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/pseudo">Pseudocode</a> / Modul 5</nav>
+<div class="eyebrow">Pseudocode · Modul 5 · Konsep &amp; kode</div><h1>Array multidimensi</h1><a class="cta" href="/#pseudo-5-3">Buka versi interaktif</a>
+<p><b>Array dua dimensi</b> (matriks) menyimpan data dalam bentuk <b>tabel</b>: baris dan kolom. Contoh: nilai 3 siswa untuk 4 mata pelajaran, <code>DECLARE nilai : ARRAY[0..2, 0..3] OF INTEGER</code>. Satu isi diakses dengan dua indeks: <code>nilai[baris][kolom]</code> atau <code>nilai[baris, kolom]</code>.</p>
+<p>Traversal matriks memakai <b>loop bersarang</b>: loop luar untuk baris, loop dalam untuk kolom. Total isi = jumlah baris × jumlah kolom. Pada contoh 3 × 4 = 12 nilai.</p>
+<p>Pemakaian nyata: papan permainan (catur, tic-tac-toe), kursi bioskop, peta grid, gambar (setiap piksel), dan spreadsheet. Array tiga dimensi juga ada (misalnya nilai per siswa, per mapel, per semester), tetapi jarang dipakai.</p>
+<p>Visual menghitung total dan rata-rata setiap siswa (setiap baris). Perhatikan <code>total</code> diisi 0 lagi di <b>awal setiap baris</b>, bukan sekali di awal program.</p>
+<div class="tw"><table><caption>Matriks nilai[3][4]</caption><thead><tr><th></th><th>Kolom 0</th><th>Kolom 1</th><th>Kolom 2</th><th>Kolom 3</th></tr></thead><tbody><tr><td>Baris 0</td><td>80</td><td>75</td><td>90</td><td>85</td></tr><tr><td>Baris 1</td><td>60</td><td>70</td><td>65</td><td>80</td></tr><tr><td>Baris 2</td><td>95</td><td>88</td><td>92</td><td>90</td></tr></tbody></table></div>
+<div class="lbl">PSEUDOCODE</div><pre><code>START
+    DECLARE nilai : ARRAY[3, 4] OF INTEGER
+    nilai ← [[80, 75, 90, 85], [60, 70, 65, 80], [95, 88, 92, 90]]
+    DECLARE b, k, total : INTEGER
+    FOR b ← 0 TO 2 DO
+        total ← 0
+        FOR k ← 0 TO 3 DO
+            total ← total + nilai[b][k]
+        ENDFOR
+        OUTPUT &quot;Siswa &quot;, (b + 1), &quot;: total &quot;, total, &quot;, rata-rata &quot;, total / 4
+    ENDFOR
+END</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Matriks 3 × 3 <code>[[1, 2, 3], [4, 5, 6], [7, 8, 9]]</code>. Hitung jumlah diagonal utama.</p><details><summary>Petunjuk</summary><p>Diagonal utama: m[i][i].</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>total ← 0
+FOR i ← 0 TO 2 DO
+    total ← total + m[i][i]
+ENDFOR
+OUTPUT total</code></pre><div class="lbl">KELUARAN</div><pre><code>15</code></pre></details></li><li><p>Dari matriks nilai yang sama dengan pelajaran (3 siswa × 4 mapel), hitung rata-rata setiap <b>mapel</b> (kolom).</p><details><summary>Petunjuk</summary><p>Tukar loop: luar kolom, dalam baris. Reset total setiap kolom.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>FOR k ← 0 TO 3 DO
+    total ← 0
+    FOR b ← 0 TO 2 DO
+        total ← total + nilai[b][k]
+    ENDFOR
+    OUTPUT &quot;Mapel &quot;, k + 1, &quot;: &quot;, total / 3
+ENDFOR</code></pre><div class="lbl">KELUARAN</div><pre><code>Mapel 1: 78.33
+Mapel 2: 77.67
+Mapel 3: 82.33
+Mapel 4: 85</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Matriks = baris × kolom, akses dengan dua indeks.</li><li>Traversal dengan loop bersarang.</li><li>Reset akumulator per baris jika menghitung per baris.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Pada tabel di atas, nilai[1][3] adalah?</summary><p class="ok">Jawaban: 80</p><p>Baris 1 (kedua), kolom 3 (keempat).</p></details><details><summary>Matriks 5 baris × 6 kolom berisi berapa data?</summary><p class="ok">Jawaban: 30</p><p>5 × 6 = 30.</p></details>
+<a class="cta" href="/#pseudo-5-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pseudo/indeks-traversal-dan-memperbarui-array">Indeks, traversal, dan memperbarui array</a></p><p>Berikutnya: <a href="/belajar/pseudo/struktur-record">Struktur record</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

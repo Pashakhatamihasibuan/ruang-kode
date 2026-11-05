@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Penghentian loop dan infinite loop · Pseudocode · Ruang Kode</title>
+<meta name="description" content="Setiap loop harus punya kondisi berhenti yang pasti tercapai. Tiga syaratnya: (1) variabel kondisi diberi nilai awal, (2) variabel itu berubah di dalam…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/pseudo/penghentian-loop-dan-infinite-loop">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Penghentian loop dan infinite loop · Pseudocode · Ruang Kode"><meta property="og:description" content="Setiap loop harus punya kondisi berhenti yang pasti tercapai. Tiga syaratnya: (1) variabel kondisi diberi nilai awal, (2) variabel itu berubah di dalam…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/pseudo/penghentian-loop-dan-infinite-loop"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Penghentian loop dan infinite loop", "description": "Setiap loop harus punya kondisi berhenti yang pasti tercapai. Tiga syaratnya: (1) variabel kondisi diberi nilai awal, (2) variabel itu berubah di dalam…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/pseudo/penghentian-loop-dan-infinite-loop", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Pseudocode", "url": "https://ruang-kode-nine.vercel.app/belajar/pseudo"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Pseudocode", "item": "https://ruang-kode-nine.vercel.app/belajar/pseudo"}, {"@type": "ListItem", "position": 3, "name": "Penghentian loop dan infinite loop", "item": "https://ruang-kode-nine.vercel.app/belajar/pseudo/penghentian-loop-dan-infinite-loop"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/pseudo">Pseudocode</a> / Modul 3</nav>
+<div class="eyebrow">Pseudocode · Modul 3 · Konsep &amp; kode</div><h1>Penghentian loop dan infinite loop</h1><a class="cta" href="/#pseudo-3-5">Buka versi interaktif</a>
+<p>Setiap loop harus punya <b>kondisi berhenti</b> yang pasti tercapai. Tiga syaratnya: (1) variabel kondisi <b>diberi nilai awal</b>, (2) variabel itu <b>berubah</b> di dalam badan loop, dan (3) perubahannya <b>menuju</b> kondisi berhenti. Jika salah satunya hilang, terjadi <b>infinite loop</b>: program berputar selamanya dan tampak "hang".</p>
+<p>Contoh infinite loop: <code>i ← 1; WHILE i &lt;= 5 DO OUTPUT i ENDWHILE</code> (lupa menaikkan i). Atau <code>i ← 1; WHILE i &lt;&gt; 10 DO i ← i + 2 ENDWHILE</code>: i bernilai 1, 3, 5, 7, 9, 11, ... dan tidak pernah tepat 10. Pakai <code>&lt;</code> atau <code>&lt;=</code> daripada <code>&lt;&gt;</code> untuk kondisi berhenti.</p>
+<p>Cara lain menghentikan loop: <b>sentinel</b> (nilai khusus seperti 0 atau -1 yang berarti "selesai"), <b>flag</b> (variabel BOOLEAN <code>ketemu</code> yang diubah menjadi benar), dan <b>batas pengaman</b> (maksimal 3 kali percobaan PIN). Banyak bahasa juga punya <code>break</code> untuk keluar paksa.</p>
+<p>Visual menghitung banyak digit: n dibagi 10 terus sampai habis. Loop ini pasti berhenti karena n selalu mengecil dan suatu saat menjadi 0. Coba 7, 1000, dan 0.</p>
+<div class="tw"><table><caption>Mencari penyebab infinite loop</caption><thead><tr><th>Kode</th><th>Masalah</th><th>Perbaikan</th></tr></thead><tbody><tr><td>WHILE i &lt;= 5 DO OUTPUT i</td><td>i tidak pernah berubah</td><td>Tambahkan i ← i + 1</td></tr><tr><td>WHILE i &lt;&gt; 10 DO i ← i + 2</td><td>i melompati 10</td><td>Pakai WHILE i &lt; 10</td></tr><tr><td>WHILE i &gt; 0 DO i ← i + 1</td><td>i menjauhi kondisi berhenti</td><td>Pakai i ← i - 1</td></tr><tr><td>REPEAT ... UNTIL x &gt; 5 tanpa mengubah x</td><td>Kondisi tidak pernah berubah</td><td>Ubah x di badan loop</td></tr></tbody></table></div>
+<div class="lbl">PSEUDOCODE</div><pre><code>START
+    DECLARE n, digit : INTEGER
+    INPUT n
+    digit ← 0
+    WHILE n &gt; 0 DO
+        n ← Int(n / 10)
+        digit ← digit + 1
+    ENDWHILE
+    OUTPUT &quot;Banyak digit: &quot;, digit
+END</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Temukan dan perbaiki infinite loop berikut:<br><code>n ← 10; WHILE n &gt; 0 DO OUTPUT n; n ← n + 1 ENDWHILE</code></p><details><summary>Petunjuk</summary><p>Apakah n bergerak menuju kondisi berhenti?</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>n bertambah sehingga n &gt; 0 selalu benar.
+Perbaikan:
+n ← 10
+WHILE n &gt; 0 DO
+    OUTPUT n
+    n ← n - 1
+ENDWHILE</code></pre></details></li><li><p>Tulis algoritma login dengan batas pengaman: maksimal 3 kali percobaan password.</p><details><summary>Petunjuk</summary><p>Loop berhenti jika password benar ATAU percobaan sudah 3.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>DECLARE pw : STRING
+DECLARE coba : INTEGER
+DECLARE berhasil : BOOLEAN
+coba ← 0
+berhasil ← FALSE
+WHILE coba &lt; 3 AND NOT berhasil DO
+    INPUT pw
+    coba ← coba + 1
+    IF pw = &quot;rahasia&quot; THEN
+        berhasil ← TRUE
+    ENDIF
+ENDWHILE
+IF berhasil THEN
+    OUTPUT &quot;Masuk&quot;
+ELSE
+    OUTPUT &quot;Akun dikunci&quot;
+ENDIF</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Nilai awal, berubah, dan menuju kondisi berhenti.</li><li>Hindari <> sebagai kondisi berhenti angka.</li><li>Sentinel, flag, dan batas pengaman.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>i ← 0; WHILE i &lt;&gt; 7 DO i ← i + 2. Apa yang terjadi?</summary><p class="ok">Jawaban: Infinite loop</p><p>i: 0, 2, 4, 6, 8, ... tidak pernah tepat 7.</p></details><details><summary>Apa itu nilai sentinel?</summary><p class="ok">Jawaban: Nilai khusus penanda akhir input</p><p>Contoh: ketik 0 untuk selesai.</p></details>
+<a class="cta" href="/#pseudo-3-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pseudo/for-while-dan-do-while-contoh-sederhana-dan-bedanya">FOR, WHILE, dan DO-WHILE: contoh sederhana dan bedanya</a></p><p>Berikutnya: <a href="/belajar/pseudo/loop-bersarang">Loop bersarang</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

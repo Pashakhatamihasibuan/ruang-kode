@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IF satu cabang · Pseudocode · Ruang Kode</title>
+<meta name="description" content="Bentuk percabangan paling sederhana hanya punya satu jalur: IF kondisi THEN ... ENDIF. Jika kondisi benar, langkah di dalamnya dijalankan. Jika salah,…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/pseudo/if-satu-cabang">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="IF satu cabang · Pseudocode · Ruang Kode"><meta property="og:description" content="Bentuk percabangan paling sederhana hanya punya satu jalur: IF kondisi THEN ... ENDIF. Jika kondisi benar, langkah di dalamnya dijalankan. Jika salah,…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/pseudo/if-satu-cabang"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "IF satu cabang", "description": "Bentuk percabangan paling sederhana hanya punya satu jalur: IF kondisi THEN ... ENDIF. Jika kondisi benar, langkah di dalamnya dijalankan. Jika salah,…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/pseudo/if-satu-cabang", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Pseudocode", "url": "https://ruang-kode-nine.vercel.app/belajar/pseudo"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Pseudocode", "item": "https://ruang-kode-nine.vercel.app/belajar/pseudo"}, {"@type": "ListItem", "position": 3, "name": "IF satu cabang", "item": "https://ruang-kode-nine.vercel.app/belajar/pseudo/if-satu-cabang"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/pseudo">Pseudocode</a> / Modul 2</nav>
+<div class="eyebrow">Pseudocode · Modul 2 · Konsep &amp; kode</div><h1>IF satu cabang</h1><a class="cta" href="/#pseudo-2-2">Buka versi interaktif</a>
+<p>Bentuk percabangan paling sederhana hanya punya <b>satu jalur</b>: <code>IF kondisi THEN ... ENDIF</code>. Jika kondisi benar, langkah di dalamnya dijalankan. Jika salah, langkah itu <b>dilewati</b> begitu saja dan program lanjut ke baris setelah <code>ENDIF</code>.</p>
+<p>Pakai IF satu cabang saat ada langkah <b>tambahan</b> yang hanya terjadi pada kondisi tertentu, sedangkan selain itu tidak ada yang perlu dilakukan. Contoh: memberi bonus, menampilkan peringatan stok menipis, atau menghapus ongkir.</p>
+<p>Pola yang sering dipakai: isi <b>nilai bawaan</b> dulu, lalu ubah dengan IF. Pada contoh, <code>ongkir ← 15000</code> sebagai bawaan; hanya jika belanja minimal 100 ribu, ongkir diubah menjadi 0. Cara ini menghindari ELSE dan memastikan variabel selalu punya nilai.</p>
+<p>Jalankan dengan 120000, lalu 80000. Perhatikan baris di dalam IF dilewati pada input kedua.</p>
+<div class="lbl">PSEUDOCODE</div><pre><code>START
+    DECLARE belanja, ongkir : INTEGER
+    INPUT belanja
+    ongkir ← 15000
+    IF belanja &gt;= 100000 THEN
+        ongkir ← 0
+        OUTPUT &quot;Selamat, gratis ongkir!&quot;
+    ENDIF
+    OUTPUT &quot;Total bayar: &quot;, (belanja + ongkir)
+END</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis pseudocode: jika stok kurang dari 5, tampilkan "Stok menipis". Setelah itu selalu tampilkan sisa stok.</p><details><summary>Petunjuk</summary><p>IF tanpa ELSE, lalu OUTPUT setelah ENDIF.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>DECLARE stok : INTEGER
+INPUT stok
+IF stok &lt; 5 THEN
+    OUTPUT &quot;Stok menipis&quot;
+ENDIF
+OUTPUT &quot;Sisa stok: &quot;, stok</code></pre><div class="lbl">KELUARAN</div><pre><code>Masukan 3 → Stok menipis, Sisa stok: 3</code></pre></details></li><li><p>Poin belanja = belanja DIV 10000. Member mendapat bonus 5 poin. Tulis dengan pola nilai bawaan lalu IF satu cabang.</p><details><summary>Petunjuk</summary><p>Hitung poin dulu, lalu tambahkan bonus hanya jika member.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>DECLARE belanja, poin : INTEGER
+DECLARE member : BOOLEAN
+INPUT belanja
+INPUT member
+poin ← belanja DIV 10000
+IF member THEN
+    poin ← poin + 5
+ENDIF
+OUTPUT &quot;Poin: &quot;, poin</code></pre><div class="lbl">KELUARAN</div><pre><code>belanja 87000, member → Poin: 13</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>IF tanpa ELSE: jika salah, langkahnya dilewati.</li><li>Cocok untuk langkah tambahan pada kondisi tertentu.</li><li>Pola nilai bawaan lalu diubah oleh IF.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Belanja 80000 pada contoh. Berapa total bayar?</summary><p class="ok">Jawaban: 95000</p><p>Ongkir bawaan 15000 tidak diubah.</p></details><details><summary>Kapan IF satu cabang paling cocok?</summary><p class="ok">Jawaban: Ada langkah tambahan hanya pada kondisi tertentu</p><p>Selain kondisi itu, tidak ada yang dilakukan.</p></details>
+<a class="cta" href="/#pseudo-2-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pseudo/ekspresi-boolean-dan-operator-logika">Ekspresi Boolean dan operator logika</a></p><p>Berikutnya: <a href="/belajar/pseudo/if-else-dua-jalur">IF-ELSE: dua jalur</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

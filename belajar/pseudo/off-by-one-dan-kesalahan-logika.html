@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Off-by-one dan kesalahan logika · Pseudocode · Ruang Kode</title>
+<meta name="description" content="Kesalahan sintaks ditangkap oleh compiler. Kesalahan logika tidak: program berjalan, tetapi hasilnya salah. Jenis paling terkenal adalah off-by-one…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/pseudo/off-by-one-dan-kesalahan-logika">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Off-by-one dan kesalahan logika · Pseudocode · Ruang Kode"><meta property="og:description" content="Kesalahan sintaks ditangkap oleh compiler. Kesalahan logika tidak: program berjalan, tetapi hasilnya salah. Jenis paling terkenal adalah off-by-one…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/pseudo/off-by-one-dan-kesalahan-logika"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Off-by-one dan kesalahan logika", "description": "Kesalahan sintaks ditangkap oleh compiler. Kesalahan logika tidak: program berjalan, tetapi hasilnya salah. Jenis paling terkenal adalah off-by-one…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/pseudo/off-by-one-dan-kesalahan-logika", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Pseudocode", "url": "https://ruang-kode-nine.vercel.app/belajar/pseudo"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Pseudocode", "item": "https://ruang-kode-nine.vercel.app/belajar/pseudo"}, {"@type": "ListItem", "position": 3, "name": "Off-by-one dan kesalahan logika", "item": "https://ruang-kode-nine.vercel.app/belajar/pseudo/off-by-one-dan-kesalahan-logika"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/pseudo">Pseudocode</a> / Modul 6</nav>
+<div class="eyebrow">Pseudocode · Modul 6 · Konsep &amp; kode</div><h1>Off-by-one dan kesalahan logika</h1><a class="cta" href="/#pseudo-6-2">Buka versi interaktif</a>
+<p><b>Kesalahan sintaks</b> ditangkap oleh compiler. <b>Kesalahan logika</b> tidak: program berjalan, tetapi hasilnya salah. Jenis paling terkenal adalah <b>off-by-one</b> (meleset satu): loop berjalan satu kali terlalu banyak atau terlalu sedikit.</p>
+<p>Visual di bawah sengaja berisi bug: array 5 data (indeks 0 sampai 4) diproses dengan <code>FOR i ← 0 TO 5</code>. Pada putaran terakhir, <code>nilai[5]</code> tidak ada. Simulator menampilkan hasilnya sebagai NaN (bukan angka); Java akan berhenti dengan <code>ArrayIndexOutOfBoundsException</code>, Python dengan <code>IndexError</code>. Perbaikannya: <code>TO 4</code>, atau umumnya <code>TO n - 1</code>.</p>
+<p>Kesalahan logika lain yang sering: <code>&gt;</code> tertukar dengan <code>&gt;=</code> (nilai tepat 75 tidak lulus), akumulator tidak diisi nilai awal atau diisi di dalam loop, urutan IF bertingkat terbalik, <code>AND</code> tertukar dengan <code>OR</code>, dan pembagian bulat yang tidak disengaja (7 / 2 menjadi 3).</p>
+<p>Cara melawannya: uji <b>kasus batas</b> (nilai minimum, maksimum, tepat di batas, data kosong, satu data), buat trace table, dan bandingkan dengan hasil hitungan manual.</p>
+<div class="tw"><table><caption>Kesalahan logika yang sering</caption><thead><tr><th>Gejala</th><th>Penyebab</th><th>Perbaikan</th></tr></thead><tbody><tr><td>Error indeks di akhir loop</td><td>FOR i ← 0 TO n</td><td>FOR i ← 0 TO n - 1</td></tr><tr><td>Data pertama terlewat</td><td>FOR i ← 1 TO n - 1 padahal indeks mulai 0</td><td>Mulai dari 0</td></tr><tr><td>Nilai tepat 75 tidak lulus</td><td>nilai &gt; 75</td><td>nilai &gt;= 75</td></tr><tr><td>Total hanya berisi data terakhir</td><td>total ← 0 di dalam loop</td><td>Pindahkan ke sebelum loop</td></tr><tr><td>Nilai 90 dapat C</td><td>Urutan IF bertingkat terbalik</td><td>Cek kondisi paling ketat dulu</td></tr><tr><td>Rata-rata 7 / 2 = 3</td><td>Pembagian antar-integer</td><td>Pakai REAL</td></tr></tbody></table></div>
+<div class="tw"><table><caption>Kasus batas yang wajib diuji</caption><thead><tr><th>Kasus</th><th>Contoh untuk &quot;nilai 0 sampai 100, lulus ≥ 75&quot;</th></tr></thead><tbody><tr><td>Tepat di batas</td><td>75 dan 74</td></tr><tr><td>Minimum dan maksimum</td><td>0 dan 100</td></tr><tr><td>Di luar rentang</td><td>-1 dan 101</td></tr><tr><td>Data kosong</td><td>Tidak ada mahasiswa</td></tr><tr><td>Satu data</td><td>Hanya satu mahasiswa</td></tr></tbody></table></div>
+<div class="lbl">PSEUDOCODE</div><pre><code>START
+    DECLARE nilai : ARRAY[5] OF INTEGER
+    nilai ← [70, 85, 62, 91, 78]
+    DECLARE i, total : INTEGER
+    total ← 0
+    FOR i ← 0 TO 5 DO
+        total ← total + nilai[i]
+    ENDFOR
+    OUTPUT &quot;Total: &quot;, total
+END</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Temukan bug: algoritma ini seharusnya mencetak 1 sampai 10.<br><code>i ← 1; WHILE i &lt; 10 DO OUTPUT i; i ← i + 1 ENDWHILE</code></p><details><summary>Petunjuk</summary><p>Uji nilai batas: apakah 10 ikut tercetak?</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Bug off-by-one: kondisi i &lt; 10 berhenti sebelum 10, jadi hanya 1 sampai 9.
+Perbaikan: WHILE i &lt;= 10 DO</code></pre></details></li><li><p>Temukan bug logika: menghitung rata-rata nilai array 5 data.<br><code>FOR i ← 0 TO 4 DO total ← 0; total ← total + a[i] ENDFOR; rata ← total / 5</code></p><details><summary>Petunjuk</summary><p>Di mana nilai awal akumulator diletakkan?</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>total ← 0 berada di dalam loop, sehingga total di-reset setiap putaran
+dan hanya berisi a[4].
+Perbaikan:
+total ← 0
+FOR i ← 0 TO 4 DO
+    total ← total + a[i]
+ENDFOR
+rata ← total / 5</code></pre></details></li><li><p>Tuliskan 5 kasus uji untuk fungsi diskon: "belanja ≥ 100.000 dapat diskon 10%, belanja tidak boleh negatif".</p><details><summary>Petunjuk</summary><p>Uji tepat di batas, di bawah batas, nol, negatif, dan nilai besar.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>99999  → tanpa diskon (tepat di bawah batas)
+100000 → diskon 10000 (tepat di batas)
+0      → tanpa diskon
+-5000  → error: belanja tidak boleh negatif
+5000000 → diskon 500000</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Kesalahan logika tidak ditangkap compiler.</li><li>Off-by-one: batas loop meleset satu.</li><li>Selalu uji kasus batas.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Array 10 data, indeks mulai 0. Batas FOR yang benar?</summary><p class="ok">Jawaban: 0 TO 9</p><p>Indeks 0 sampai n - 1.</p></details><details><summary>total ← 0 ditaruh di dalam loop. Akibatnya?</summary><p class="ok">Jawaban: Total hanya berisi data terakhir</p><p>Total di-reset setiap putaran.</p></details>
+<a class="cta" href="/#pseudo-6-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pseudo/trace-table">Trace table</a></p><p>Berikutnya: <a href="/belajar/pseudo/kompleksitas-waktu-dan-ruang">Kompleksitas waktu dan ruang</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

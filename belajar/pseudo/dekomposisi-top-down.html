@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dekomposisi top-down · Pseudocode · Ruang Kode</title>
+<meta name="description" content="Dekomposisi top-down adalah memecah masalah besar menjadi sub-masalah yang lebih kecil, lalu memecahnya lagi sampai setiap bagian cukup sederhana untuk…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/pseudo/dekomposisi-top-down">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Dekomposisi top-down · Pseudocode · Ruang Kode"><meta property="og:description" content="Dekomposisi top-down adalah memecah masalah besar menjadi sub-masalah yang lebih kecil, lalu memecahnya lagi sampai setiap bagian cukup sederhana untuk…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/pseudo/dekomposisi-top-down"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Dekomposisi top-down", "description": "Dekomposisi top-down adalah memecah masalah besar menjadi sub-masalah yang lebih kecil, lalu memecahnya lagi sampai setiap bagian cukup sederhana untuk…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/pseudo/dekomposisi-top-down", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Pseudocode", "url": "https://ruang-kode-nine.vercel.app/belajar/pseudo"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Pseudocode", "item": "https://ruang-kode-nine.vercel.app/belajar/pseudo"}, {"@type": "ListItem", "position": 3, "name": "Dekomposisi top-down", "item": "https://ruang-kode-nine.vercel.app/belajar/pseudo/dekomposisi-top-down"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/pseudo">Pseudocode</a> / Modul 4</nav>
+<div class="eyebrow">Pseudocode · Modul 4 · Konsep &amp; kode</div><h1>Dekomposisi top-down</h1><a class="cta" href="/#pseudo-4-1">Buka versi interaktif</a>
+<p><b>Dekomposisi top-down</b> adalah memecah masalah besar menjadi sub-masalah yang lebih kecil, lalu memecahnya lagi sampai setiap bagian cukup sederhana untuk ditulis langsung. Mulai dari gambaran besar ("buat kasir"), turun ke langkah utama ("baca belanjaan, hitung diskon, hitung kembalian"), lalu ke detail.</p>
+<p>Setiap sub-masalah menjadi satu <b>modul</b> (prosedur atau fungsi) dengan satu tugas jelas. Program utama cukup memanggil modul-modul itu, sehingga terbaca seperti daftar isi. Modul bisa dikerjakan, diuji, dan diperbaiki terpisah, bahkan oleh orang yang berbeda.</p>
+<p>Visual menjalankan kasir dalam satu blok panjang. Bagian contoh menunjukkan kasir yang sama setelah didekomposisi: program utama hanya empat baris, dan detailnya ada di fungsi masing-masing. Logikanya identik, tetapi jauh lebih mudah dibaca dan diubah.</p>
+<p>Jalankan visual dengan input bawaan: 2 kopi seharga 25.000, 3 roti seharga 18.000, selesai (0), lalu bayar 150.000.</p>
+<div class="tw"><table><caption>Pohon dekomposisi kasir</caption><thead><tr><th>Tingkat</th><th>Modul</th><th>Tugas</th></tr></thead><tbody><tr><td>0</td><td>Kasir</td><td>Seluruh transaksi</td></tr><tr><td>1</td><td>BacaBelanjaan</td><td>Ulangi baca harga dan jumlah sampai 0</td></tr><tr><td>1</td><td>TerapkanDiskon</td><td>Potong 10% jika total &gt; 100 ribu</td></tr><tr><td>1</td><td>ProsesPembayaran</td><td>Terima uang, hitung kembalian atau kekurangan</td></tr></tbody></table></div>
+<div class="lbl">CONTOH</div><pre><code>// Program utama: terbaca seperti daftar isi
+START
+    total ← BacaBelanjaan()
+    total ← TerapkanDiskon(total)
+    OUTPUT &quot;Total: &quot;, total
+    CALL ProsesPembayaran(total)
+END
+
+FUNCTION BacaBelanjaan() RETURNS INTEGER
+    DECLARE harga, jumlah, total : INTEGER
+    total ← 0
+    REPEAT
+        INPUT harga
+        IF harga &gt; 0 THEN
+            INPUT jumlah
+            total ← total + harga * jumlah
+        ENDIF
+    UNTIL harga = 0
+    RETURN total
+ENDFUNCTION
+
+FUNCTION TerapkanDiskon(total : INTEGER) RETURNS INTEGER
+    IF total &gt; 100000 THEN
+        RETURN total - total * 10 DIV 100
+    ENDIF
+    RETURN total
+ENDFUNCTION
+
+PROCEDURE ProsesPembayaran(total : INTEGER)
+    DECLARE bayar : INTEGER
+    INPUT bayar
+    IF bayar &gt;= total THEN
+        OUTPUT &quot;Kembalian: &quot;, bayar - total
+    ELSE
+        OUTPUT &quot;Uang kurang &quot;, total - bayar
+    ENDIF
+ENDPROCEDURE</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Diskon 10% diberikan
+Total: 94500
+Kembalian: 55500</code></pre>
+<div class="lbl">PSEUDOCODE</div><pre><code>START
+    DECLARE harga, jumlah, total, bayar, kembali : INTEGER
+    total ← 0
+    REPEAT
+        INPUT harga
+        IF harga &gt; 0 THEN
+            INPUT jumlah
+            total ← total + harga * jumlah
+        ENDIF
+    UNTIL harga = 0
+    IF total &gt; 100000 THEN
+        total ← total - Int(total * 10 / 100)
+        OUTPUT &quot;Diskon 10% diberikan&quot;
+    ENDIF
+    OUTPUT &quot;Total: &quot;, total
+    INPUT bayar
+    IF bayar &gt;= total THEN
+        kembali ← bayar - total
+        OUTPUT &quot;Kembalian: &quot;, kembali
+    ELSE
+        OUTPUT &quot;Uang kurang &quot;, (total - bayar)
+    ENDIF
+END</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tambahkan pajak 11% yang dihitung dari total setelah diskon.</p><details><summary>Petunjuk</summary><p>pajak ← bayar * 0.11, lalu bayar ← bayar + pajak.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>bayar ← total - diskon
+pajak ← bayar * 0.11
+bayar ← bayar + pajak
+OUTPUT &quot;Pajak: &quot;, pajak
+OUTPUT &quot;Bayar: &quot;, bayar</code></pre></details></li><li><p>Hitung kembalian. Jika uang pembeli kurang, minta masukan lagi.</p><details><summary>Petunjuk</summary><p>REPEAT INPUT uang UNTIL uang >= bayar, lalu kembali ← uang - bayar.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>REPEAT
+    OUTPUT &quot;Uang pembeli: &quot;
+    INPUT uang
+    IF uang &lt; bayar THEN
+        OUTPUT &quot;Uang kurang &quot;, bayar - uang
+    ENDIF
+UNTIL uang &gt;= bayar
+OUTPUT &quot;Kembalian: &quot;, uang - bayar</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Pecah masalah besar menjadi sub-masalah kecil.</li><li>Satu modul, satu tugas.</li><li>Program utama terbaca seperti daftar isi.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Apa langkah pertama dekomposisi top-down?</summary><p class="ok">Jawaban: Menentukan gambaran besar lalu langkah utamanya</p><p>Dari atas ke bawah.</p></details><details><summary>Keuntungan memecah kasir menjadi modul?</summary><p class="ok">Jawaban: Setiap bagian bisa diuji dan diubah terpisah</p><p>Satu modul, satu tugas.</p></details>
+<a class="cta" href="/#pseudo-4-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pseudo/pola-akumulator">Pola akumulator</a></p><p>Berikutnya: <a href="/belajar/pseudo/fungsi-dan-nilai-kembali">Fungsi dan nilai kembali</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

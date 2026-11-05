@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Algoritma sekuensial pertamamu · Pseudocode · Ruang Kode</title>
+<meta name="description" content="Algoritma sekuensial (runtunan) adalah algoritma yang langkahnya dijalankan berurutan dari atas ke bawah, tepat sekali, tanpa percabangan dan tanpa…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/pseudo/algoritma-sekuensial-pertamamu">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Algoritma sekuensial pertamamu · Pseudocode · Ruang Kode"><meta property="og:description" content="Algoritma sekuensial (runtunan) adalah algoritma yang langkahnya dijalankan berurutan dari atas ke bawah, tepat sekali, tanpa percabangan dan tanpa…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/pseudo/algoritma-sekuensial-pertamamu"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Algoritma sekuensial pertamamu", "description": "Algoritma sekuensial (runtunan) adalah algoritma yang langkahnya dijalankan berurutan dari atas ke bawah, tepat sekali, tanpa percabangan dan tanpa…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/pseudo/algoritma-sekuensial-pertamamu", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Pseudocode", "url": "https://ruang-kode-nine.vercel.app/belajar/pseudo"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Pseudocode", "item": "https://ruang-kode-nine.vercel.app/belajar/pseudo"}, {"@type": "ListItem", "position": 3, "name": "Algoritma sekuensial pertamamu", "item": "https://ruang-kode-nine.vercel.app/belajar/pseudo/algoritma-sekuensial-pertamamu"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/pseudo">Pseudocode</a> / Modul 1</nav>
+<div class="eyebrow">Pseudocode · Modul 1 · Konsep &amp; kode</div><h1>Algoritma sekuensial pertamamu</h1><a class="cta" href="/#pseudo-1-6">Buka versi interaktif</a>
+<p>Algoritma <b>sekuensial</b> (runtunan) adalah algoritma yang langkahnya dijalankan berurutan dari atas ke bawah, tepat sekali, tanpa percabangan dan tanpa perulangan. Ini bentuk paling dasar, dan setiap algoritma yang lebih rumit tersusun dari runtunan kecil seperti ini.</p>
+<p>Cara menyusunnya: (1) tulis <b>masalahnya</b> dalam satu kalimat, (2) tentukan <b>input</b> dan <b>output</b>, (3) tulis <b>rumus</b> prosesnya, (4) deklarasikan variabel, (5) susun langkahnya, dan (6) <b>uji</b> dengan data yang hasilnya sudah kamu hitung manual.</p>
+<p>Urutan langkah menentukan hasil. Jika <code>total ← subtotal + pajak</code> ditulis sebelum <code>pajak</code> dihitung, total akan salah karena pajak belum punya nilai. Itulah inti algoritma sekuensial: setiap langkah hanya boleh memakai nilai yang <b>sudah</b> dihitung di atasnya.</p>
+<p>Contoh: struk belanja dengan PPN 11%. Masalah: hitung total bayar. Input: harga dan jumlah. Output: subtotal, PPN, dan total. Hitung manual dulu: 15.000 × 4 = 60.000, PPN 6.600, total 66.600. Lalu jalankan visual dan cocokkan.</p>
+<div class="tw"><table><caption>Lembar perencanaan algoritma</caption><thead><tr><th>Langkah</th><th>Isi untuk struk belanja</th></tr></thead><tbody><tr><td>Masalah</td><td>Hitung total bayar termasuk PPN 11%</td></tr><tr><td>Input</td><td>harga (INTEGER), jumlah (INTEGER)</td></tr><tr><td>Output</td><td>subtotal, pajak, total</td></tr><tr><td>Rumus</td><td>subtotal = harga × jumlah; pajak = subtotal × 11 / 100; total = subtotal + pajak</td></tr><tr><td>Uji manual</td><td>15000 dan 4 → 60000, 6600, 66600</td></tr></tbody></table></div>
+<div class="lbl">PSEUDOCODE</div><pre><code>START
+    DECLARE harga, jumlah, subtotal : INTEGER
+    DECLARE pajak, total : REAL
+    INPUT harga
+    INPUT jumlah
+    subtotal ← harga * jumlah
+    pajak ← subtotal * 11 / 100
+    total ← subtotal + pajak
+    OUTPUT &quot;Subtotal: &quot;, subtotal
+    OUTPUT &quot;PPN 11%: &quot;, pajak
+    OUTPUT &quot;Total: &quot;, total
+END</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat lembar perencanaan dan pseudocode untuk menghitung luas dan keliling lingkaran dari jari-jari.</p><details><summary>Petunjuk</summary><p>Input r (REAL). Luas = 3.14 × r × r, keliling = 2 × 3.14 × r. Uji manual dengan r = 10.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Masalah : luas dan keliling lingkaran
+Input   : r (REAL)
+Output  : luas, keliling
+
+DECLARE r, luas, keliling : REAL
+INPUT r
+luas ← 3.14 * r * r
+keliling ← 2 * 3.14 * r
+OUTPUT &quot;Luas: &quot;, luas
+OUTPUT &quot;Keliling: &quot;, keliling</code></pre><div class="lbl">KELUARAN</div><pre><code>r = 10 → Luas: 314, Keliling: 62.8</code></pre></details></li><li><p>Tulis algoritma menghitung gaji bersih: gaji pokok ditambah tunjangan 500.000, lalu dipotong BPJS 4% dari gaji pokok.</p><details><summary>Petunjuk</summary><p>Hitung potongan dulu, baru gaji bersih. Uji: gaji pokok 5.000.000.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>DECLARE pokok, potongan, bersih : REAL
+INPUT pokok
+potongan ← pokok * 4 / 100
+bersih ← pokok + 500000 - potongan
+OUTPUT &quot;Gaji bersih: &quot;, bersih</code></pre><div class="lbl">KELUARAN</div><pre><code>pokok 5000000 → Gaji bersih: 5300000</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Runtunan: langkah berurutan, masing-masing sekali.</li><li>Rencanakan masalah, input, output, rumus, lalu uji.</li><li>Langkah hanya boleh memakai nilai yang sudah dihitung.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Apa yang terjadi jika total dihitung sebelum pajak?</summary><p class="ok">Jawaban: Total salah karena pajak belum ada nilainya</p><p>Urutan langkah menentukan hasil.</p></details><details><summary>Kapan sebaiknya menghitung hasil secara manual?</summary><p class="ok">Jawaban: Sebelum menjalankan, untuk mencocokkan</p><p>Tanpa jawaban manual, kamu tidak tahu programnya benar atau tidak.</p></details>
+<a class="cta" href="/#pseudo-1-6">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pseudo/operasi-aritmetika-dan-urutan-operator">Operasi aritmetika dan urutan operator</a></p><p>Berikutnya: <a href="/belajar/pseudo/ekspresi-boolean-dan-operator-logika">Ekspresi Boolean dan operator logika</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

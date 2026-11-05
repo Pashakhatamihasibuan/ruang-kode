@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FOR: perulangan pasti · Pseudocode · Ruang Kode</title>
+<meta name="description" content="Jika kita tahu persis berapa kali sesuatu harus diulang, pakai FOR i ← awal TO akhir DO ... ENDFOR. Ini disebut perulangan pasti (definite iteration).…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/pseudo/for-perulangan-pasti">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="FOR: perulangan pasti · Pseudocode · Ruang Kode"><meta property="og:description" content="Jika kita tahu persis berapa kali sesuatu harus diulang, pakai FOR i ← awal TO akhir DO ... ENDFOR. Ini disebut perulangan pasti (definite iteration).…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/pseudo/for-perulangan-pasti"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "FOR: perulangan pasti", "description": "Jika kita tahu persis berapa kali sesuatu harus diulang, pakai FOR i ← awal TO akhir DO ... ENDFOR. Ini disebut perulangan pasti (definite iteration).…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/pseudo/for-perulangan-pasti", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Pseudocode", "url": "https://ruang-kode-nine.vercel.app/belajar/pseudo"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Pseudocode", "item": "https://ruang-kode-nine.vercel.app/belajar/pseudo"}, {"@type": "ListItem", "position": 3, "name": "FOR: perulangan pasti", "item": "https://ruang-kode-nine.vercel.app/belajar/pseudo/for-perulangan-pasti"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/pseudo">Pseudocode</a> / Modul 3</nav>
+<div class="eyebrow">Pseudocode · Modul 3 · Konsep &amp; kode</div><h1>FOR: perulangan pasti</h1><a class="cta" href="/#pseudo-3-1">Buka versi interaktif</a>
+<p>Jika kita tahu persis berapa kali sesuatu harus diulang, pakai <code>FOR i ← awal TO akhir DO ... ENDFOR</code>. Ini disebut <b>perulangan pasti</b> (definite iteration). Variabel <code>i</code> (penghitung) otomatis bertambah 1 setiap putaran sampai melewati nilai akhir.</p>
+<p>Contoh paling sederhana, mencetak 1 sampai 5:<br><code>FOR i ← 1 TO 5 DO</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;OUTPUT i</code><br><code>ENDFOR</code><br>Hasilnya 1, 2, 3, 4, 5. Kita tidak perlu menulis <code>i ← i + 1</code>, karena FOR melakukannya sendiri.</p>
+<p>Contoh berikutnya: menjumlahkan 1 sampai n. Kita butuh variabel <b>akumulator</b> <code>total</code> yang diisi 0 sebelum loop, lalu ditambah <code>i</code> di setiap putaran. FOR juga bisa mundur atau melompat dengan <code>STEP</code>, misalnya <code>FOR i ← 10 TO 0 STEP -2</code>.</p>
+<p>Jalankan visual dan perhatikan kolom variabel: <code>i</code> dan <code>total</code> berubah bersama setiap putaran.</p>
+<div class="lbl">PSEUDOCODE</div><pre><code>START
+    DECLARE n, i, total : INTEGER
+    INPUT n
+    total ← 0
+    FOR i ← 1 TO n DO
+        total ← total + i
+    ENDFOR
+    OUTPUT &quot;Jumlah 1 sampai &quot;, n, &quot; = &quot;, total
+END</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tampilkan bilangan kelipatan 3 dari 3 sampai 30 dan jumlahnya.</p><details><summary>Petunjuk</summary><p>FOR dengan STEP 3, dan akumulator total yang diisi 0 di awal.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>DECLARE i, total : INTEGER
+total ← 0
+FOR i ← 3 TO 30 STEP 3 DO
+    OUTPUT i
+    total ← total + i
+ENDFOR
+OUTPUT &quot;Jumlah = &quot;, total</code></pre><div class="lbl">KELUARAN</div><pre><code>3 6 9 12 15 18 21 24 27 30
+Jumlah = 165</code></pre></details></li><li><p>Hitung faktorial n (n! = 1 × 2 × ... × n). Uji dengan n = 6.</p><details><summary>Petunjuk</summary><p>Akumulator perkalian dimulai dari 1, bukan 0.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>DECLARE n, i, hasil : INTEGER
+INPUT n
+hasil ← 1
+FOR i ← 1 TO n DO
+    hasil ← hasil * i
+ENDFOR
+OUTPUT n, &quot;! = &quot;, hasil</code></pre><div class="lbl">KELUARAN</div><pre><code>6! = 720</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>FOR untuk jumlah putaran yang pasti.</li><li>Akumulator diisi nilai awal sebelum loop.</li><li>STEP mengatur arah dan besar langkah.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Berapa kali FOR i ← 3 TO 7 berputar?</summary><p class="ok">Jawaban: 5</p><p>3, 4, 5, 6, 7: lima kali.</p></details><details><summary>Jika total tidak diisi 0 di awal, apa akibatnya?</summary><p class="ok">Jawaban: Isinya tidak jelas sehingga hasilnya salah</p><p>Akumulator harus punya nilai awal.</p></details>
+<a class="cta" href="/#pseudo-3-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pseudo/guard-clause-untuk-menangani-kesalahan">Guard clause untuk menangani kesalahan</a></p><p>Berikutnya: <a href="/belajar/pseudo/while-perulangan-bersyarat">WHILE: perulangan bersyarat</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

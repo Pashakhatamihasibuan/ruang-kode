@@ -13,7 +13,7 @@ const GROUPS=[
   ['sis','Sistem Informasi','Mengelola sistem informasi agar organisasi bekerja lebih baik.'],
   ['tool','Alat kerja','Alat yang dipakai setiap tim pengembang.']];
 const TRACKS=[
-  {k:'pseudo',g:'logika',name:'Pseudocode',lang:'text',mods:PSEUDO_MODULES,road:'',mark:'PS',h:'Menulis algoritma sebelum menulis kode',d:'Algoritma, aturan menulis pseudocode, percabangan, perulangan, array, searching, sorting, dan menerjemahkannya ke Python, Java, dan JavaScript.'},
+  {k:'pseudo',g:'logika',name:'Pseudocode',lang:'text',mods:PSEUDO_MODULES,road:'',mark:'PS',h:'Menulis algoritma sebelum menulis kode',d:'Enam modul: konstruksi logika inti, percabangan (IF, CASE, guard clause), perulangan (FOR, WHILE, DO-WHILE), desain modular dan rekursi, koleksi data (array, record, searching, sorting), serta verifikasi dan translasi ke Python dan bahasa bertipe kuat.'},
   {k:'flowg',g:'logika',name:'Flowgorithm',lang:'text',mods:FLOWG_MODULES,road:'',mark:'FG',h:'Flowchart yang bisa dijalankan',d:'Simbol flowchart, memakai aplikasi Flowgorithm, input-proses-output, If, For, While, Do, array, fungsi, dan proyek kasir.'},
   {k:'java',g:'prog',name:'Java',lang:'java',mods:JAVA_MODULES,road:'java',mark:'J',h:'Java dari nol sampai siap kerja',d:'Bahasa bertipe statis untuk Android, perbankan, dan backend skala besar. Dari variabel dan OOP sampai konkurensi, JDBC, dan Spring Boot.'},
   {k:'python',g:'prog',name:'Python',lang:'python',mods:PY_MODULES,road:'python',mark:'Py',h:'Python yang rapi dan idiomatik',d:'Bahasa ringkas untuk otomasi, data, AI, dan web. Dari sintaks dasar sampai type hints, testing, asyncio, dan framework web.'},

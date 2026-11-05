@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FOR, WHILE, dan DO-WHILE: contoh sederhana dan bedanya · Pseudocode · Ruang Kode</title>
+<meta name="description" content="Ketiga loop bisa menyelesaikan tugas yang sama. Bedanya ada pada kapan kondisi diperiksa dan siapa yang mengurus penghitung. Contoh di bawah mencetak 1…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/pseudo/for-while-dan-do-while-contoh-sederhana-dan-bedanya">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="FOR, WHILE, dan DO-WHILE: contoh sederhana dan bedanya · Pseudocode · Ruang Kode"><meta property="og:description" content="Ketiga loop bisa menyelesaikan tugas yang sama. Bedanya ada pada kapan kondisi diperiksa dan siapa yang mengurus penghitung. Contoh di bawah mencetak 1…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/pseudo/for-while-dan-do-while-contoh-sederhana-dan-bedanya"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "FOR, WHILE, dan DO-WHILE: contoh sederhana dan bedanya", "description": "Ketiga loop bisa menyelesaikan tugas yang sama. Bedanya ada pada kapan kondisi diperiksa dan siapa yang mengurus penghitung. Contoh di bawah mencetak 1…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/pseudo/for-while-dan-do-while-contoh-sederhana-dan-bedanya", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Pseudocode", "url": "https://ruang-kode-nine.vercel.app/belajar/pseudo"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Pseudocode", "item": "https://ruang-kode-nine.vercel.app/belajar/pseudo"}, {"@type": "ListItem", "position": 3, "name": "FOR, WHILE, dan DO-WHILE: contoh sederhana dan bedanya", "item": "https://ruang-kode-nine.vercel.app/belajar/pseudo/for-while-dan-do-while-contoh-sederhana-dan-bedanya"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/pseudo">Pseudocode</a> / Modul 3</nav>
+<div class="eyebrow">Pseudocode · Modul 3 · Konsep &amp; kode</div><h1>FOR, WHILE, dan DO-WHILE: contoh sederhana dan bedanya</h1><a class="cta" href="/#pseudo-3-4">Buka versi interaktif</a>
+<p>Ketiga loop bisa menyelesaikan tugas yang sama. Bedanya ada pada <b>kapan kondisi diperiksa</b> dan <b>siapa yang mengurus penghitung</b>. Contoh di bawah mencetak 1 sampai 5 dengan ketiganya, dan hasilnya identik: 1 2 3 4 5.</p>
+<p><b>FOR</b>: penghitung diurus otomatis, cocok jika jumlah putaran pasti (cetak 10 baris, proses 30 mahasiswa). <b>WHILE</b>: kondisi dicek <b>di awal</b>, jadi bisa jalan 0 kali; cocok jika jumlah putaran belum diketahui (menabung sampai target, membaca data sampai habis). <b>DO-WHILE / REPEAT-UNTIL</b>: kondisi dicek <b>di akhir</b>, jadi pasti jalan minimal 1 kali; cocok untuk menu dan validasi input.</p>
+<p>Perbedaan paling terasa muncul saat kondisi <b>sudah salah sejak awal</b>. Visual di bawah menjalankan ketiga loop dengan nilai awal <code>n</code>. Jalankan dengan n = 1: ketiganya mencetak 1 sampai 5. Lalu ganti n = <b>10</b>: FOR dan WHILE tidak mencetak apa pun, sedangkan DO-WHILE tetap mencetak 10 satu kali, karena badannya jalan dulu sebelum kondisi diperiksa.</p>
+<p>Cara memilih cepat: tanyakan "apakah aku tahu berapa kali?" Jika ya, FOR. Jika tidak, tanyakan "apakah badannya harus jalan minimal sekali?" Jika ya, DO-WHILE; jika tidak, WHILE.</p>
+<div class="tw"><table><caption>Perbandingan FOR, WHILE, dan DO-WHILE</caption><thead><tr><th>Aspek</th><th>FOR</th><th>WHILE</th><th>DO-WHILE / REPEAT-UNTIL</th></tr></thead><tbody><tr><td>Jumlah putaran</td><td>Sudah diketahui</td><td>Belum diketahui</td><td>Belum diketahui</td></tr><tr><td>Kondisi dicek</td><td>Di awal (otomatis)</td><td>Di awal</td><td>Di akhir</td></tr><tr><td>Minimal jalan</td><td>0 kali</td><td>0 kali</td><td>1 kali</td></tr><tr><td>Penghitung</td><td>Diurus otomatis</td><td>Diurus sendiri</td><td>Diurus sendiri</td></tr><tr><td>Risiko umum</td><td>Batas salah (off-by-one)</td><td>Lupa mengubah kondisi</td><td>Kondisi terbalik</td></tr><tr><td>Contoh pemakaian</td><td>Cetak tabel perkalian</td><td>Menabung sampai target</td><td>Menu dan validasi PIN</td></tr></tbody></table></div>
+<div class="tw"><table><caption>Cetak 1 sampai 5 di tiga bahasa</caption><thead><tr><th>Loop</th><th>Python</th><th>Java</th><th>JavaScript</th></tr></thead><tbody><tr><td>FOR</td><td>for i in range(1, 6): print(i)</td><td>for (int i = 1; i &lt;= 5; i++) System.out.println(i);</td><td>for (let i = 1; i &lt;= 5; i++) console.log(i)</td></tr><tr><td>WHILE</td><td>i = 1
+while i &lt;= 5: print(i); i += 1</td><td>int i = 1; while (i &lt;= 5) { System.out.println(i); i++; }</td><td>let i = 1; while (i &lt;= 5) { console.log(i); i++ }</td></tr><tr><td>DO-WHILE</td><td>i = 1
+while True: print(i); i += 1; if i &gt; 5: break</td><td>int i = 1; do { System.out.println(i); i++; } while (i &lt;= 5);</td><td>let i = 1; do { console.log(i); i++ } while (i &lt;= 5)</td></tr></tbody></table></div>
+<div class="tw"><table><caption>Jika nilai awal sudah melewati batas (n = 10)</caption><thead><tr><th>Loop</th><th>Yang tercetak</th><th>Alasan</th></tr></thead><tbody><tr><td>FOR i ← 10 TO 5</td><td>Tidak ada</td><td>10 sudah melewati 5</td></tr><tr><td>WHILE i &lt;= 5</td><td>Tidak ada</td><td>Kondisi salah sejak awal</td></tr><tr><td>REPEAT ... UNTIL i &gt; 5</td><td>10</td><td>Badan jalan dulu, baru dicek</td></tr></tbody></table></div>
+<div class="lbl">CONTOH</div><pre><code>// 1) FOR: penghitung otomatis
+FOR i ← 1 TO 5 DO
+    OUTPUT i
+ENDFOR
+
+// 2) WHILE: cek di awal, bisa 0 kali
+i ← 1
+WHILE i &lt;= 5 DO
+    OUTPUT i
+    i ← i + 1
+ENDWHILE
+
+// 3) DO-WHILE (REPEAT-UNTIL): cek di akhir, minimal 1 kali
+i ← 1
+REPEAT
+    OUTPUT i
+    i ← i + 1
+UNTIL i &gt; 5</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Ketiganya mencetak:
+1
+2
+3
+4
+5</code></pre>
+<div class="lbl">PSEUDOCODE</div><pre><code>START
+    DECLARE i, n : INTEGER
+    INPUT n
+    OUTPUT &quot;FOR:&quot;
+    FOR i ← n TO 5 DO
+        OUTPUT i
+    ENDFOR
+    OUTPUT &quot;WHILE:&quot;
+    i ← n
+    WHILE i &lt;= 5 DO
+        OUTPUT i
+        i ← i + 1
+    ENDWHILE
+    OUTPUT &quot;DO-WHILE:&quot;
+    i ← n
+    REPEAT
+        OUTPUT i
+        i ← i + 1
+    UNTIL i &gt; 5
+END</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis tiga versi (FOR, WHILE, REPEAT-UNTIL) untuk mencetak bilangan genap 2 sampai 10.</p><details><summary>Petunjuk</summary><p>FOR pakai STEP 2. WHILE dan REPEAT-UNTIL: mulai i ← 2, tambah 2 setiap putaran.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>// FOR
+FOR i ← 2 TO 10 STEP 2 DO
+    OUTPUT i
+ENDFOR
+
+// WHILE
+i ← 2
+WHILE i &lt;= 10 DO
+    OUTPUT i
+    i ← i + 2
+ENDWHILE
+
+// REPEAT-UNTIL
+i ← 2
+REPEAT
+    OUTPUT i
+    i ← i + 2
+UNTIL i &gt; 10</code></pre><div class="lbl">KELUARAN</div><pre><code>2 4 6 8 10 (ketiganya)</code></pre></details></li><li><p>Tulis hitung mundur 5 sampai 1 dengan FOR dan dengan WHILE.</p><details><summary>Petunjuk</summary><p>FOR pakai STEP -1. WHILE: kondisi i &gt;= 1, kurangi i setiap putaran.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>// FOR
+FOR i ← 5 TO 1 STEP -1 DO
+    OUTPUT i
+ENDFOR
+
+// WHILE
+i ← 5
+WHILE i &gt;= 1 DO
+    OUTPUT i
+    i ← i - 1
+ENDWHILE</code></pre><div class="lbl">KELUARAN</div><pre><code>5 4 3 2 1</code></pre></details></li><li><p>Pilih loop yang paling tepat untuk setiap kasus dan beri alasan: (a) cetak 12 bulan, (b) baca angka sampai pengguna mengetik 0, (c) tampilkan menu ATM sampai pilih Keluar.</p><details><summary>Petunjuk</summary><p>Tanyakan: jumlahnya diketahui? Harus jalan minimal sekali?</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>(a) FOR: jumlahnya pasti 12.
+(b) WHILE (atau REPEAT-UNTIL): jumlah input belum diketahui, berhenti di sentinel 0.
+(c) DO-WHILE / REPEAT-UNTIL: menu harus tampil minimal sekali.</code></pre></details></li><li><p>Tulis ketiga loop di Python untuk mencetak 1 sampai 3. Ingat Python tidak punya do-while.</p><details><summary>Petunjuk</summary><p>FOR: range(1, 4). WHILE: i += 1. Do-while: while True lalu break.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code># FOR
+for i in range(1, 4):
+    print(i)
+
+# WHILE
+i = 1
+while i &lt;= 3:
+    print(i)
+    i += 1
+
+# DO-WHILE
+i = 1
+while True:
+    print(i)
+    i += 1
+    if i &gt; 3:
+        break</code></pre><div class="lbl">KELUARAN</div><pre><code>1
+2
+3
+1
+2
+3
+1
+2
+3</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Ketiga loop bisa mengerjakan tugas yang sama.</li><li>FOR: jumlah pasti. WHILE: cek di awal, bisa 0 kali. DO-WHILE: cek di akhir, minimal 1 kali.</li><li>Python tidak punya do-while; pakai while True dengan break.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>i ← 10, lalu WHILE i &lt;= 5 DO OUTPUT i. Berapa kali OUTPUT jalan?</summary><p class="ok">Jawaban: 0</p><p>Kondisi dicek di awal dan langsung salah.</p></details><details><summary>i ← 10, lalu REPEAT OUTPUT i ... UNTIL i &gt; 5. Berapa kali OUTPUT jalan?</summary><p class="ok">Jawaban: 1</p><p>Badan jalan dulu, baru kondisi dicek.</p></details><details><summary>Mencetak daftar 40 mahasiswa paling cocok memakai?</summary><p class="ok">Jawaban: FOR</p><p>Jumlahnya sudah diketahui.</p></details><details><summary>Meminta password sampai benar paling cocok memakai?</summary><p class="ok">Jawaban: DO-WHILE</p><p>Harus meminta minimal sekali, jumlah percobaan belum diketahui.</p></details>
+<a class="cta" href="/#pseudo-3-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pseudo/repeat-until-dicek-di-akhir">REPEAT-UNTIL: dicek di akhir</a></p><p>Berikutnya: <a href="/belajar/pseudo/penghentian-loop-dan-infinite-loop">Penghentian loop dan infinite loop</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

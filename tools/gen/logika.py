@@ -80,7 +80,7 @@ P_MUNDUR = fc('HitungMundur', [D('i', 'Integer'), F('i', '5', '1', [O('i')], '-1
 
 def quiz(*q): return list(q)
 
-PSEUDO = [
+_OLD = [
 {'t': 'Berpikir algoritma', 'lvl': 'Pemula', 'd': 'Apa itu algoritma dan pseudocode, aturan menulis, variabel, tipe data, dan operator.', 'nodes': ['Algoritma', 'Pseudocode'], 'lessons': [
  L('Algoritma dan pseudocode', [
    '<b>Algoritma</b> adalah urutan langkah yang jelas dan terbatas untuk menyelesaikan masalah. Resep masakan, petunjuk arah ke kampus, dan cara menghitung nilai rapor adalah algoritma. Komputer hanya bisa menjalankan algoritma yang ditulis sangat jelas, tanpa langkah yang ambigu.',
@@ -237,6 +237,389 @@ PSEUDO = [
    '<b>Tantangan</b>: tulis ulang algoritma ini di bahasa yang sedang kamu pelajari, lalu tambahkan pajak 11% setelah diskon.'],
    P_KASIR, pts=['Sentinel (misalnya 0) menandai akhir input.', 'Gabungkan loop, akumulator, dan percabangan.', 'Uji juga kasus uang kurang.'],
    q=quiz(['Kenapa loop kasir memakai REPEAT-UNTIL?', ['Harga harus diminta minimal sekali', 'Jumlah barang selalu 5', 'Agar lebih cepat'], 0, 'Kita belum tahu jumlah barang, tetapi minimal sekali harus bertanya.'], ['Apa itu nilai sentinel?', ['Nilai khusus penanda akhir input', 'Nilai terbesar', 'Variabel global'], 0, 'Contoh: harga 0 berarti selesai.'])),
+]},
+]
+
+
+# ---------- Pseudocode: 6 modul x 6 pelajaran (+1 pelajaran perbandingan loop) ----------
+# Pelajaran lama dipakai ulang lewat R() agar isinya tidak hilang.
+_O = {l['t']: l for m in _OLD for l in m['lessons']}
+def R(old, t, **kw):
+    d = dict(_O[old]); d['t'] = t
+    d.update(kw)
+    return d
+
+P_IO = fc('SapaPengguna', [D('nama', 'String'), D('umur', 'Integer'), O('"Siapa namamu?"'), I('nama'), O('"Berapa umurmu?"'), I('umur'),
+    O('"Halo " & nama & ", tahun depan umurmu " & (umur + 1)')], ['Rina', '19'])
+P_DETIK = fc('KonversiDetik', [D('total, jam, menit, detik', 'Integer'), I('total'), A('jam', 'Int(total / 3600)'), A('menit', 'Int((total mod 3600) / 60)'), A('detik', 'total mod 60'),
+    O('jam & " jam " & menit & " menit " & detik & " detik"')], ['7384'])
+P_STRUK = fc('StrukBelanja', [D('harga, jumlah, subtotal', 'Integer'), D('pajak, total', 'Real'), I('harga'), I('jumlah'), A('subtotal', 'harga * jumlah'),
+    A('pajak', 'subtotal * 11 / 100'), A('total', 'subtotal + pajak'), O('"Subtotal: " & subtotal'), O('"PPN 11%: " & pajak'), O('"Total: " & total')], ['15000', '4'])
+P_ONGKIR = fc('GratisOngkir', [D('belanja, ongkir', 'Integer'), I('belanja'), A('ongkir', '15000'),
+    IF('belanja >= 100000', [A('ongkir', '0'), O('"Selamat, gratis ongkir!"')]), O('"Total bayar: " & (belanja + ongkir)')], ['120000'])
+P_MENU3 = fc('PilihMinuman', [D('kode, harga', 'Integer'), D('menu', 'String'), I('kode'),
+    IF('kode = 1', [A('menu', '"Kopi susu"'), A('harga', '18000')], [IF('kode = 2', [A('menu', '"Teh tarik"'), A('harga', '15000')], [IF('kode = 3', [A('menu', '"Jus jeruk"'), A('harga', '20000')], [A('menu', '"Tidak ada"'), A('harga', '0')])])]),
+    O('menu & ": Rp" & harga')], ['2'])
+P_GUARD = fc('ValidasiNilai', [D('nilai', 'Integer'), I('nilai'),
+    IF('nilai < 0 or nilai > 100', [O('"Error: nilai harus 0 sampai 100"')], [IF('nilai >= 75', [O('"Lulus"')], [O('"Remedial"')])])], ['120'])
+P_BEDA = fc('TigaLoop', [D('i, n', 'Integer'), I('n'),
+    O('"FOR:"'), F('i', 'n', '5', [O('i')]),
+    O('"WHILE:"'), A('i', 'n'), W('i <= 5', [O('i'), A('i', 'i + 1')]),
+    O('"DO-WHILE:"'), A('i', 'n'), DO('i <= 5', [O('i'), A('i', 'i + 1')], 'i > 5')], ['1'])
+P_DIGIT = fc('HitungDigit', [D('n, digit', 'Integer'), I('n'), A('digit', '0'), W('n > 0', [A('n', 'Int(n / 10)'), A('digit', 'digit + 1')]), O('"Banyak digit: " & digit')], ['40271'])
+P_AKUM = fc('RekapNilai', [D('i, x, total, lulus, maks', 'Integer'), D('rata', 'Real'), A('total', '0'), A('lulus', '0'), A('maks', '0'),
+    F('i', '1', '5', [I('x'), A('total', 'total + x'), IF('x >= 75', [A('lulus', 'lulus + 1')]), IF('i = 1 or x > maks', [A('maks', 'x')])]),
+    A('rata', 'total / 5'), O('"Total: " & total'), O('"Rata-rata: " & rata'), O('"Lulus: " & lulus & " orang"'), O('"Tertinggi: " & maks')], ['80', '65', '92', '75', '58'])
+P_UPDATE = fc('NaikkanHarga', [D('harga', 'Integer', 5), A('harga', '[12000, 8000, 15000, 5000, 20000]'), D('i', 'Integer'),
+    F('i', '0', '4', [A('harga[i]', 'harga[i] + Int(harga[i] * 10 / 100)')]), O('"Harga baru: " & harga'),
+    F('i', '4', '0', [O('"Indeks " & i & ": " & harga[i]')], '-1')])
+P_MATRIX = fc('NilaiPerSiswa', [D('nilai', 'Integer', '3, 4'), A('nilai', '[[80, 75, 90, 85], [60, 70, 65, 80], [95, 88, 92, 90]]'), D('b, k, total', 'Integer'),
+    F('b', '0', '2', [A('total', '0'), F('k', '0', '3', [A('total', 'total + nilai[b][k]')]), O('"Siswa " & (b + 1) & ": total " & total & ", rata-rata " & total / 4')])])
+P_BINARY = fc('BinarySearch', [D('data', 'Integer', 8), A('data', '[3, 8, 12, 17, 23, 31, 40, 52]'), D('cari, kiri, kanan, tengah, posisi', 'Integer'), I('cari'),
+    A('kiri', '0'), A('kanan', '7'), A('posisi', '-1'),
+    W('kiri <= kanan and posisi = -1', [A('tengah', 'Int((kiri + kanan) / 2)'),
+        IF('data[tengah] = cari', [A('posisi', 'tengah')], [IF('data[tengah] < cari', [A('kiri', 'tengah + 1')], [A('kanan', 'tengah - 1')])])]),
+    IF('posisi = -1', [O('cari & " tidak ditemukan"')], [O('cari & " ada di indeks " & posisi')])], ['31'])
+P_INSERT = fc('InsertionSort', [D('a', 'Integer', 5), A('a', '[29, 10, 14, 37, 13]'), D('i, j, kunci', 'Integer'),
+    F('i', '1', '4', [A('kunci', 'a[i]'), A('j', 'i - 1'), W('j >= 0 and a[j] > kunci', [A('a[j + 1]', 'a[j]'), A('j', 'j - 1')]), A('a[j + 1]', 'kunci')]),
+    O('"Terurut: " & a')])
+P_OBO = fc('TotalNilaiBug', [D('nilai', 'Integer', 5), A('nilai', '[70, 85, 62, 91, 78]'), D('i, total', 'Integer'), A('total', '0'),
+    F('i', '0', '5', [A('total', 'total + nilai[i]')]), O('"Total: " & total')])
+P_LANGKAH = fc('HitungLangkah', [D('n, i, j, langkah', 'Integer'), I('n'), A('langkah', '0'),
+    F('i', '1', 'n', [F('j', '1', 'n', [A('langkah', 'langkah + 1')])]), O('"n = " & n & ", langkah = " & langkah')], ['4'])
+
+PSEUDO = [
+{'t': 'Konstruksi logika inti', 'lvl': 'Pemula', 'd': 'Tujuan pseudocode yang tidak terikat bahasa, kata kunci standar, variabel dan tipe data, input-output, operator aritmetika, dan algoritma sekuensial pertama.', 'nodes': ['Algoritma', 'Pseudocode'], 'lessons': [
+ R('Algoritma dan pseudocode', 'Tujuan pseudocode yang tidak terikat bahasa', b=_O['Algoritma dan pseudocode']['b'][:2] + [
+   '<b>Pseudocode</b> adalah cara menulis algoritma dengan bahasa yang mirip kode program, tetapi <b>tidak terikat bahasa tertentu</b> (language-agnostic). Tujuannya: memikirkan <b>logika</b> dulu sebelum memikirkan titik koma, kurung kurawal, atau aturan Java dan Python. Pseudocode yang baik bisa diterjemahkan ke bahasa apa pun oleh siapa pun.',
+   'Kenapa ini penting? Pertama, <b>komunikasi</b>: dosen, rekan satu tim, dan pewawancara kerja bisa membaca pseudocode tanpa tahu bahasa favoritmu. Kedua, <b>fokus</b>: kesalahan logika lebih mudah terlihat tanpa gangguan error sintaks. Ketiga, <b>tahan lama</b>: bahasa pemrograman datang dan pergi, tetapi algoritma tetap sama.',
+   'Visual di bawah menunjukkan satu algoritma dalam dua bentuk: <b>flowchart</b> (gambar) dan <b>pseudocode</b> (teks). Tekan Berikutnya dan perhatikan baris yang aktif di keduanya berjalan bersamaan. Ganti inputnya, lalu jalankan lagi.']),
+ R('Aturan menulis pseudocode', 'Kata kunci standar dan gaya penulisan', b=_O['Aturan menulis pseudocode']['b'] + [
+   'Ada dua <b>gaya penulisan</b> yang sering dipakai. <b>Gaya terstruktur</b> (seperti di Ruang Kode dan kurikulum Cambridge) memakai kata kunci huruf besar dan penutup blok (<code>ENDIF</code>). <b>Gaya ringkas</b> (sering di buku algoritma dan wawancara kerja) mirip Python: tanpa penutup blok, cukup indentasi. Pilih satu gaya dan konsisten dalam satu dokumen.']),
+ R('Variabel, tipe data, dan operator', 'Variabel, tipe data, dan pengisian nilai', b=[
+   '<b>Variabel</b> adalah kotak bernama untuk menyimpan nilai. Sebelum dipakai, variabel dideklarasikan beserta <b>tipe</b>-nya, agar jelas jenis isi yang boleh masuk: <code>DECLARE umur : INTEGER</code>. Tipe dasar: <code>INTEGER</code> (bilangan bulat), <code>REAL</code> (bilangan pecahan), <code>STRING</code> (teks), <code>BOOLEAN</code> (benar/salah), dan <code>CHAR</code> (satu huruf).',
+   '<b>Pengisian nilai</b> (assignment) ditulis dengan panah: <code>umur ← 19</code>. Bacanya dari kanan ke kiri: hitung nilai di kanan, lalu simpan ke variabel di kiri. Nilai lama di dalam kotak <b>tertimpa</b> dan hilang. Itulah sebabnya <code>x ← x + 1</code> masuk akal: ambil x lama, tambah 1, simpan lagi ke x.',
+   'Beri nama variabel yang <b>bermakna</b>: <code>hargaSatuan</code> lebih jelas daripada <code>h</code>. Nama tidak boleh diawali angka dan tidak boleh berisi spasi. Variabel yang belum diisi nilainya tidak boleh dibaca, karena isinya belum jelas.',
+   'Contoh visual mengubah suhu Celcius ke Fahrenheit dengan tipe <code>REAL</code>, karena hasilnya bisa pecahan. Perhatikan kolom variabel: <code>fahrenheit</code> masih kosong sampai baris pengisian dijalankan. Coba input 100 atau -40.'],
+   tb=[_O['Variabel, tipe data, dan operator']['tb'][0], {'c': 'Pengisian nilai langkah demi langkah', 'h': ['Baris', 'a', 'b', 'Keterangan'], 'r': [['a ← 5', '5', '—', 'a diisi 5'], ['b ← a * 2', '5', '10', 'b dihitung dari a'], ['a ← a + b', '15', '10', 'nilai lama a (5) tertimpa'], ['b ← 0', '15', '0', 'a tidak ikut berubah']]}],
+   pts=['Deklarasikan variabel dengan tipenya.', '← mengisi nilai: hitung kanan, simpan ke kiri, nilai lama tertimpa.', 'Nama variabel harus bermakna.'],
+   q=quiz(['Tipe yang tepat untuk menyimpan IPK 3.75?', ['INTEGER', 'REAL', 'BOOLEAN'], 1, 'IPK berupa bilangan pecahan.'],
+          ['a ← 4, lalu a ← a * 3. Berapa a sekarang?', ['4', '7', '12'], 2, 'Hitung 4 × 3 = 12, lalu simpan ke a.'],
+          ['Nama variabel mana yang sah dan bermakna?', ['2nilai', 'total harga', 'totalHarga'], 2, 'Tidak diawali angka dan tanpa spasi.'])),
+ L('Input dan output dasar', [
+   'Hampir semua program mengikuti pola <b>IPO</b>: <b>Input</b> (terima data), <b>Proses</b> (olah data), <b>Output</b> (tampilkan hasil). <code>INPUT nama</code> berarti program berhenti sejenak, menunggu pengguna mengetik, lalu menyimpan ketikan itu ke variabel <code>nama</code>.',
+   '<code>OUTPUT</code> menampilkan teks atau isi variabel. Teks ditulis di antara tanda kutip, variabel tanpa kutip: <code>OUTPUT "Halo ", nama</code>. Perbedaan ini penting: <code>OUTPUT "nama"</code> menampilkan tulisan nama, sedangkan <code>OUTPUT nama</code> menampilkan isinya, misalnya Rina.',
+   'Program yang ramah selalu menampilkan <b>prompt</b> (pertanyaan) sebelum INPUT, agar pengguna tahu apa yang harus diketik. Di Flowgorithm dan di visual ini, teks dan variabel digabung dengan tanda <code>&amp;</code>.',
+   'Jalankan visual. Ganti input nama dan umur, lalu lihat outputnya berubah tanpa mengubah satu baris pun algoritmanya.'],
+   P_IO,
+   tb=[{'c': 'INPUT dan OUTPUT di beberapa bahasa', 'h': ['Pseudocode', 'Python', 'Java', 'JavaScript'], 'r': [
+     ['INPUT nama', 'nama = input()', 'nama = sc.nextLine();', 'nama = prompt()'], ['INPUT umur (angka)', 'umur = int(input())', 'umur = sc.nextInt();', 'umur = Number(prompt())'],
+     ['OUTPUT "Halo ", nama', 'print("Halo", nama)', 'System.out.println("Halo " + nama);', 'console.log("Halo " + nama)']]}],
+   pts=['Pola IPO: Input, Proses, Output.', 'Teks pakai kutip, variabel tanpa kutip.', 'Tampilkan prompt sebelum INPUT.'],
+   q=quiz(['nama berisi "Budi". Apa hasil OUTPUT "nama"?', ['Budi', 'nama', 'Error'], 1, 'Teks di dalam kutip ditampilkan apa adanya.'],
+          ['Kenapa sebaiknya ada OUTPUT pertanyaan sebelum INPUT?', ['Wajib secara aturan', 'Agar pengguna tahu apa yang harus diketik', 'Agar lebih cepat'], 1, 'Prompt membuat program ramah pengguna.'])),
+ L('Operasi aritmetika dan urutan operator', [
+   '<b>Operator aritmetika</b>: <code>+ - * /</code>, ditambah <code>MOD</code> (sisa bagi, 17 MOD 5 = 2) dan <code>DIV</code> atau <code>Int(a / b)</code> (hasil bagi bulat, 17 DIV 5 = 3). MOD dan DIV sangat sering dipakai: mengecek genap-ganjil, memecah detik menjadi jam, dan mengambil digit terakhir angka.',
+   '<b>Urutan operator</b> (precedence) mengikuti matematika: <b>kurung</b> dulu, lalu <b>kali, bagi, MOD, DIV</b>, lalu <b>tambah dan kurang</b>. Operator dengan tingkat sama dihitung dari kiri ke kanan. Jadi <code>2 + 3 * 4</code> = 14, bukan 20, dan <code>(2 + 3) * 4</code> = 20.',
+   'Jebakan klasik: rata-rata tiga nilai ditulis <code>a + b + c / 3</code>. Yang dibagi 3 hanya c! Yang benar <code>(a + b + c) / 3</code>. Saat ragu, pakai kurung agar pembaca dan komputer tidak salah tafsir.',
+   'Visual mengubah total detik menjadi jam, menit, dan detik. 7384 detik = 2 jam (7200), sisa 184 detik = 3 menit (180), sisa 4 detik. Coba 3661 dan 59.'],
+   P_DETIK,
+   tb=[_O['Variabel, tipe data, dan operator']['tb'][1], {'c': 'Urutan operator (atas lebih dulu)', 'h': ['Tingkat', 'Operator', 'Contoh'], 'r': [['1', '( )', '(2 + 3) * 4 = 20'], ['2', '* / MOD DIV', '2 + 3 * 4 = 14'], ['3', '+ -', '10 - 4 + 1 = 7 (kiri ke kanan)'], ['4', '= <> < > <= >=', '2 + 3 > 4 → benar'], ['5', 'NOT, lalu AND, lalu OR', 'benar OR salah AND salah → benar']]}],
+   pts=['MOD = sisa bagi, DIV = hasil bagi bulat.', 'Kurung, lalu kali-bagi, lalu tambah-kurang.', 'Rata-rata: (a + b + c) / 3, bukan a + b + c / 3.'],
+   q=quiz(['Berapa 23 MOD 4?', ['5', '3', '5.75'], 1, '23 = 4 × 5 + 3, sisanya 3.'], ['Berapa 10 - 2 * 3?', ['24', '4', '16'], 1, 'Kali dulu: 2 × 3 = 6, lalu 10 - 6 = 4.'],
+          ['Berapa 125 DIV 60?', ['2', '5', '2.08'], 0, 'Hasil bagi bulat: 60 masuk 2 kali.'])),
+ L('Algoritma sekuensial pertamamu', [
+   'Algoritma <b>sekuensial</b> (runtunan) adalah algoritma yang langkahnya dijalankan berurutan dari atas ke bawah, tepat sekali, tanpa percabangan dan tanpa perulangan. Ini bentuk paling dasar, dan setiap algoritma yang lebih rumit tersusun dari runtunan kecil seperti ini.',
+   'Cara menyusunnya: (1) tulis <b>masalahnya</b> dalam satu kalimat, (2) tentukan <b>input</b> dan <b>output</b>, (3) tulis <b>rumus</b> prosesnya, (4) deklarasikan variabel, (5) susun langkahnya, dan (6) <b>uji</b> dengan data yang hasilnya sudah kamu hitung manual.',
+   'Urutan langkah menentukan hasil. Jika <code>total ← subtotal + pajak</code> ditulis sebelum <code>pajak</code> dihitung, total akan salah karena pajak belum punya nilai. Itulah inti algoritma sekuensial: setiap langkah hanya boleh memakai nilai yang <b>sudah</b> dihitung di atasnya.',
+   'Contoh: struk belanja dengan PPN 11%. Masalah: hitung total bayar. Input: harga dan jumlah. Output: subtotal, PPN, dan total. Hitung manual dulu: 15.000 × 4 = 60.000, PPN 6.600, total 66.600. Lalu jalankan visual dan cocokkan.'],
+   P_STRUK,
+   tb=[{'c': 'Lembar perencanaan algoritma', 'h': ['Langkah', 'Isi untuk struk belanja'], 'r': [['Masalah', 'Hitung total bayar termasuk PPN 11%'], ['Input', 'harga (INTEGER), jumlah (INTEGER)'], ['Output', 'subtotal, pajak, total'], ['Rumus', 'subtotal = harga × jumlah; pajak = subtotal × 11 / 100; total = subtotal + pajak'], ['Uji manual', '15000 dan 4 → 60000, 6600, 66600']]}],
+   pts=['Runtunan: langkah berurutan, masing-masing sekali.', 'Rencanakan masalah, input, output, rumus, lalu uji.', 'Langkah hanya boleh memakai nilai yang sudah dihitung.'],
+   q=quiz(['Apa yang terjadi jika total dihitung sebelum pajak?', ['Hasilnya tetap benar', 'Total salah karena pajak belum ada nilainya', 'Program lebih cepat'], 1, 'Urutan langkah menentukan hasil.'],
+          ['Kapan sebaiknya menghitung hasil secara manual?', ['Tidak perlu', 'Sebelum menjalankan, untuk mencocokkan', 'Setelah program dipakai pengguna'], 1, 'Tanpa jawaban manual, kamu tidak tahu programnya benar atau tidak.'])),
+]},
+{'t': 'Percabangan kondisional', 'lvl': 'Pemula', 'd': 'Ekspresi Boolean, IF satu cabang, IF-ELSE, CASE, percabangan bersarang, dan guard clause untuk menangani kesalahan.', 'nodes': ['Percabangan'], 'lessons': [
+ R('Operator logika: and, or, not', 'Ekspresi Boolean dan operator logika', b=[
+   'Setiap percabangan bergantung pada <b>ekspresi Boolean</b>: ekspresi yang hasilnya hanya <b>benar</b> atau <b>salah</b>. Contoh: <code>nilai &gt;= 75</code>, <code>stok = 0</code>, <code>password &lt;&gt; ""</code>. Hasilnya bisa langsung dipakai di IF atau disimpan dulu di variabel BOOLEAN.'] + _O['Operator logika: and, or, not']['b']),
+ L('IF satu cabang', [
+   'Bentuk percabangan paling sederhana hanya punya <b>satu jalur</b>: <code>IF kondisi THEN ... ENDIF</code>. Jika kondisi benar, langkah di dalamnya dijalankan. Jika salah, langkah itu <b>dilewati</b> begitu saja dan program lanjut ke baris setelah <code>ENDIF</code>.',
+   'Pakai IF satu cabang saat ada langkah <b>tambahan</b> yang hanya terjadi pada kondisi tertentu, sedangkan selain itu tidak ada yang perlu dilakukan. Contoh: memberi bonus, menampilkan peringatan stok menipis, atau menghapus ongkir.',
+   'Pola yang sering dipakai: isi <b>nilai bawaan</b> dulu, lalu ubah dengan IF. Pada contoh, <code>ongkir ← 15000</code> sebagai bawaan; hanya jika belanja minimal 100 ribu, ongkir diubah menjadi 0. Cara ini menghindari ELSE dan memastikan variabel selalu punya nilai.',
+   'Jalankan dengan 120000, lalu 80000. Perhatikan baris di dalam IF dilewati pada input kedua.'],
+   P_ONGKIR,
+   pts=['IF tanpa ELSE: jika salah, langkahnya dilewati.', 'Cocok untuk langkah tambahan pada kondisi tertentu.', 'Pola nilai bawaan lalu diubah oleh IF.'],
+   q=quiz(['Belanja 80000 pada contoh. Berapa total bayar?', ['80000', '95000', '15000'], 1, 'Ongkir bawaan 15000 tidak diubah.'],
+          ['Kapan IF satu cabang paling cocok?', ['Ada langkah tambahan hanya pada kondisi tertentu', 'Harus memilih satu dari dua hasil', 'Ada lima pilihan'], 0, 'Selain kondisi itu, tidak ada yang dilakukan.'])),
+ R('IF dan ELSE', 'IF-ELSE: dua jalur'),
+ L('CASE: memilih banyak jalur', [
+   'Jika pilihan bergantung pada <b>satu nilai yang tepat</b>, misalnya kode menu 1, 2, 3, pakai <code>CASE OF variabel ... OTHERWISE ... ENDCASE</code>. Lebih rapi daripada IF bertingkat yang panjang, karena setiap pilihan berdiri di satu baris.',
+   'Bagian <code>OTHERWISE</code> menangani nilai yang tidak terdaftar, misalnya pengguna mengetik 9. <b>Selalu sediakan OTHERWISE</b>: pengguna pasti suatu saat mengetik sesuatu yang tidak kamu duga.',
+   'CASE di bahasa nyata: <code>switch</code> di Java, JavaScript, dan Dart; <code>match</code> di Python 3.10+; <code>when</code> di Kotlin. Hati-hati di Java dan JavaScript: setiap <code>case</code> butuh <code>break</code>, jika tidak, eksekusi "jatuh" ke case berikutnya.',
+   'Visual di bawah menjalankan logika yang sama dengan IF bertingkat (simulator belum punya simbol CASE). Bandingkan dengan pseudocode CASE di bagian contoh. Coba kode 1, 3, lalu 9.'],
+   P_MENU3,
+   code='DECLARE kode, harga : INTEGER\nDECLARE menu : STRING\nINPUT kode\nCASE OF kode\n    1 : menu ← "Kopi susu"\n        harga ← 18000\n    2 : menu ← "Teh tarik"\n        harga ← 15000\n    3 : menu ← "Jus jeruk"\n        harga ← 20000\n    OTHERWISE : menu ← "Tidak ada"\n                harga ← 0\nENDCASE\nOUTPUT menu, ": Rp", harga', out='Teh tarik: Rp15000', run=False,
+   tb=[{'c': 'CASE atau IF bertingkat?', 'h': ['Situasi', 'Pilihan', 'Alasan'], 'r': [['Kode menu 1, 2, 3', 'CASE', 'Mencocokkan nilai tepat'], ['Nama hari dari angka 1 sampai 7', 'CASE', 'Nilai tepat, banyak pilihan'], ['Nilai 85 ke atas A, 70 ke atas B', 'IF bertingkat', 'Berupa rentang nilai'], ['Dua syarat digabung (hadir dan lunas)', 'IF dengan AND', 'Kondisi gabungan']]}],
+   pts=['CASE untuk mencocokkan satu nilai tepat dengan banyak pilihan.', 'Selalu sediakan OTHERWISE.', 'Rentang nilai lebih cocok dengan IF bertingkat.'],
+   q=quiz(['Pengguna mengetik 9 pada menu 1 sampai 3. Bagian mana yang jalan?', ['Pilihan 1', 'OTHERWISE', 'Tidak ada'], 1, 'OTHERWISE menangkap nilai yang tidak terdaftar.'],
+          ['Menentukan nilai huruf dari angka 0 sampai 100 lebih cocok memakai?', ['CASE', 'IF bertingkat'], 1, 'Berupa rentang, bukan nilai tepat.'])),
+ R('Percabangan bertingkat', 'Percabangan bersarang', b=[
+   'Jika pilihannya lebih dari dua, kita bisa menaruh IF <b>di dalam</b> IF lain. Ini disebut <b>percabangan bersarang</b> (nested conditional). Ada dua bentuk: <b>berantai</b> (IF di dalam ELSE, seperti nilai huruf A, B, C, D) dan <b>bersarang sungguhan</b> (IF di dalam THEN, misalnya "jika member, cek lagi apakah belanja di atas 200 ribu").',
+   'Pada bentuk berantai, kondisi dicek dari atas ke bawah, dan begitu satu kondisi benar, sisanya tidak dicek lagi. Urutan kondisi sangat penting. Jika kita mengecek <code>nilai &gt;= 55</code> lebih dulu, nilai 90 akan mendapat C, karena 90 juga ≥ 55. Aturannya: <b>mulai dari kondisi paling ketat</b> ke yang paling longgar.',
+   'Sarang yang terlalu dalam (lebih dari 3 tingkat) sulit dibaca. Tanda bahaya: indentasi terus bergeser ke kanan. Solusinya: gabungkan kondisi dengan AND, pakai CASE, atau pakai <b>guard clause</b> di pelajaran berikutnya.',
+   'Uji visual dengan 85, 84, 70, 55, dan 40. Kelima angka itu mencakup setiap jalur dan setiap batas.']),
+ L('Guard clause untuk menangani kesalahan', [
+   '<b>Guard clause</b> (klausa penjaga) adalah pemeriksaan di <b>awal</b> algoritma yang langsung menolak data yang tidak sah, sebelum logika utama dijalankan. Daripada membungkus seluruh logika di dalam IF yang dalam, kita tangani kasus buruk dulu, lalu keluar.',
+   'Contoh: nilai ujian harus 0 sampai 100. Tanpa penjaga, input 120 akan dianggap "Lulus", padahal datanya salah. Dengan penjaga, input di luar rentang langsung dijawab dengan pesan error yang jelas.',
+   'Di dalam fungsi, guard clause biasanya memakai <code>RETURN</code> lebih awal, sehingga logika utama tidak perlu menjorok ke dalam. Lihat pseudocode di bagian contoh: setiap penjaga berdiri sendiri, dan logika utama tetap rata kiri.',
+   'Kasus yang perlu dijaga: angka di luar rentang, teks kosong, pembagian dengan nol, stok tidak cukup, dan data yang belum diisi. Jalankan visual dengan 120, -5, 80, dan 60.'],
+   P_GUARD,
+   code='FUNCTION StatusNilai(nilai : INTEGER) RETURNS STRING\n    // penjaga: tolak data tidak sah lebih dulu\n    IF nilai < 0 OR nilai > 100 THEN\n        RETURN "Error: nilai harus 0 sampai 100"\n    ENDIF\n    // logika utama\n    IF nilai >= 75 THEN\n        RETURN "Lulus"\n    ENDIF\n    RETURN "Remedial"\nENDFUNCTION\n\nFUNCTION BagiAman(a : REAL, b : REAL) RETURNS REAL\n    IF b = 0 THEN\n        OUTPUT "Tidak bisa membagi dengan nol"\n        RETURN 0\n    ENDIF\n    RETURN a / b\nENDFUNCTION', out='StatusNilai(120) → Error: nilai harus 0 sampai 100\nStatusNilai(80)  → Lulus\nBagiAman(10, 0)  → Tidak bisa membagi dengan nol', run=False,
+   pts=['Tolak data tidak sah di awal.', 'Pesan error harus jelas: apa yang salah dan apa yang benar.', 'Guard clause membuat logika utama tidak menjorok terlalu dalam.'],
+   q=quiz(['Tanpa penjaga, nilai 150 pada contoh menghasilkan?', ['Error', 'Lulus', 'Remedial'], 1, '150 >= 75 benar, padahal datanya tidak sah.'],
+          ['Di mana guard clause diletakkan?', ['Di akhir algoritma', 'Di awal, sebelum logika utama', 'Di dalam loop terdalam'], 1, 'Tangani kasus buruk dulu.'])),
+]},
+{'t': 'Proses perulangan', 'lvl': 'Pemula', 'd': 'FOR, WHILE, REPEAT-UNTIL, perbandingan ketiganya dengan contoh sederhana, penghentian loop, loop bersarang, dan pola akumulator.', 'nodes': ['Perulangan'], 'lessons': [
+ R('FOR: jumlah putaran sudah diketahui', 'FOR: perulangan pasti', b=[
+   'Jika kita tahu persis berapa kali sesuatu harus diulang, pakai <code>FOR i ← awal TO akhir DO ... ENDFOR</code>. Ini disebut <b>perulangan pasti</b> (definite iteration). Variabel <code>i</code> (penghitung) otomatis bertambah 1 setiap putaran sampai melewati nilai akhir.',
+   'Contoh paling sederhana, mencetak 1 sampai 5:<br><code>FOR i ← 1 TO 5 DO</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;OUTPUT i</code><br><code>ENDFOR</code><br>Hasilnya 1, 2, 3, 4, 5. Kita tidak perlu menulis <code>i ← i + 1</code>, karena FOR melakukannya sendiri.',
+   'Contoh berikutnya: menjumlahkan 1 sampai n. Kita butuh variabel <b>akumulator</b> <code>total</code> yang diisi 0 sebelum loop, lalu ditambah <code>i</code> di setiap putaran. FOR juga bisa mundur atau melompat dengan <code>STEP</code>, misalnya <code>FOR i ← 10 TO 0 STEP -2</code>.',
+   'Jalankan visual dan perhatikan kolom variabel: <code>i</code> dan <code>total</code> berubah bersama setiap putaran.']),
+ R('WHILE: ulangi selama kondisi benar', 'WHILE: perulangan bersyarat', b=[
+   '<code>WHILE kondisi DO ... ENDWHILE</code> memeriksa kondisi <b>sebelum</b> setiap putaran. Selama kondisinya benar, badan loop dijalankan. Pakai WHILE jika jumlah putaran <b>belum diketahui</b>, yang diketahui hanya kapan harus berhenti.',
+   'Contoh sederhana, mencetak 1 sampai 5 dengan WHILE:<br><code>i ← 1</code><br><code>WHILE i &lt;= 5 DO</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;OUTPUT i</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;i ← i + 1</code><br><code>ENDWHILE</code><br>Berbeda dengan FOR, di sini kita sendiri yang mengisi nilai awal <code>i</code> dan menaikkannya. Lupa <code>i ← i + 1</code> membuat loop berputar selamanya.',
+   'Jika kondisinya sudah salah sejak awal, badan WHILE <b>tidak dijalankan sama sekali</b>. Ini beda penting dengan REPEAT-UNTIL di pelajaran berikutnya.',
+   'Visual: menabung 30 ribu per minggu sampai saldo minimal 100 ribu. Berapa minggu? Kita tidak tahu di awal, jadi WHILE yang tepat.']),
+ R('REPEAT-UNTIL: jalan minimal sekali', 'REPEAT-UNTIL: dicek di akhir', b=[
+   '<code>REPEAT ... UNTIL kondisi</code> menjalankan badan loop <b>dulu</b>, baru memeriksa kondisi di akhir. Loop berhenti saat kondisinya <b>benar</b>. Karena dicek di akhir, badannya pasti jalan <b>minimal sekali</b>. Di Java, JavaScript, C, dan Flowgorithm bentuk ini disebut <b>do-while</b>.',
+   'Contoh sederhana, mencetak 1 sampai 5:<br><code>i ← 1</code><br><code>REPEAT</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;OUTPUT i</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;i ← i + 1</code><br><code>UNTIL i &gt; 5</code><br>Perhatikan kondisinya: WHILE memakai <code>i &lt;= 5</code> (syarat lanjut), REPEAT-UNTIL memakai <code>i &gt; 5</code> (syarat berhenti).',
+   'Contoh paling tepat: <b>validasi input</b>. Kita harus meminta PIN dulu sebelum bisa memeriksanya. Dengan WHILE, kita terpaksa meminta PIN dua kali (sebelum loop dan di dalam loop). Do-while di Java dan JavaScript <b>lanjut</b> saat kondisi benar (<code>while (pin != 2468)</code>), REPEAT-UNTIL <b>berhenti</b> saat kondisi benar. Keduanya sama, hanya kondisinya dibalik.',
+   'Input di visual adalah tiga percobaan: 1111, 1234, lalu 2468. Ubah urutannya, misalnya langsung 2468, dan lihat badan loop tetap jalan sekali.']),
+ L('FOR, WHILE, dan DO-WHILE: contoh sederhana dan bedanya', [
+   'Ketiga loop bisa menyelesaikan tugas yang sama. Bedanya ada pada <b>kapan kondisi diperiksa</b> dan <b>siapa yang mengurus penghitung</b>. Contoh di bawah mencetak 1 sampai 5 dengan ketiganya, dan hasilnya identik: 1 2 3 4 5.',
+   '<b>FOR</b>: penghitung diurus otomatis, cocok jika jumlah putaran pasti (cetak 10 baris, proses 30 mahasiswa). <b>WHILE</b>: kondisi dicek <b>di awal</b>, jadi bisa jalan 0 kali; cocok jika jumlah putaran belum diketahui (menabung sampai target, membaca data sampai habis). <b>DO-WHILE / REPEAT-UNTIL</b>: kondisi dicek <b>di akhir</b>, jadi pasti jalan minimal 1 kali; cocok untuk menu dan validasi input.',
+   'Perbedaan paling terasa muncul saat kondisi <b>sudah salah sejak awal</b>. Visual di bawah menjalankan ketiga loop dengan nilai awal <code>n</code>. Jalankan dengan n = 1: ketiganya mencetak 1 sampai 5. Lalu ganti n = <b>10</b>: FOR dan WHILE tidak mencetak apa pun, sedangkan DO-WHILE tetap mencetak 10 satu kali, karena badannya jalan dulu sebelum kondisi diperiksa.',
+   'Cara memilih cepat: tanyakan "apakah aku tahu berapa kali?" Jika ya, FOR. Jika tidak, tanyakan "apakah badannya harus jalan minimal sekali?" Jika ya, DO-WHILE; jika tidak, WHILE.'],
+   P_BEDA,
+   code='// 1) FOR: penghitung otomatis\nFOR i ← 1 TO 5 DO\n    OUTPUT i\nENDFOR\n\n// 2) WHILE: cek di awal, bisa 0 kali\ni ← 1\nWHILE i <= 5 DO\n    OUTPUT i\n    i ← i + 1\nENDWHILE\n\n// 3) DO-WHILE (REPEAT-UNTIL): cek di akhir, minimal 1 kali\ni ← 1\nREPEAT\n    OUTPUT i\n    i ← i + 1\nUNTIL i > 5', out='Ketiganya mencetak:\n1\n2\n3\n4\n5', run=False,
+   tb=[{'c': 'Perbandingan FOR, WHILE, dan DO-WHILE', 'h': ['Aspek', 'FOR', 'WHILE', 'DO-WHILE / REPEAT-UNTIL'], 'r': [
+     ['Jumlah putaran', 'Sudah diketahui', 'Belum diketahui', 'Belum diketahui'], ['Kondisi dicek', 'Di awal (otomatis)', 'Di awal', 'Di akhir'],
+     ['Minimal jalan', '0 kali', '0 kali', '1 kali'], ['Penghitung', 'Diurus otomatis', 'Diurus sendiri', 'Diurus sendiri'],
+     ['Risiko umum', 'Batas salah (off-by-one)', 'Lupa mengubah kondisi', 'Kondisi terbalik'], ['Contoh pemakaian', 'Cetak tabel perkalian', 'Menabung sampai target', 'Menu dan validasi PIN']]},
+     {'c': 'Cetak 1 sampai 5 di tiga bahasa', 'h': ['Loop', 'Python', 'Java', 'JavaScript'], 'r': [
+     ['FOR', 'for i in range(1, 6): print(i)', 'for (int i = 1; i <= 5; i++) System.out.println(i);', 'for (let i = 1; i <= 5; i++) console.log(i)'],
+     ['WHILE', 'i = 1\nwhile i <= 5: print(i); i += 1', 'int i = 1; while (i <= 5) { System.out.println(i); i++; }', 'let i = 1; while (i <= 5) { console.log(i); i++ }'],
+     ['DO-WHILE', 'i = 1\nwhile True: print(i); i += 1; if i > 5: break', 'int i = 1; do { System.out.println(i); i++; } while (i <= 5);', 'let i = 1; do { console.log(i); i++ } while (i <= 5)']]},
+     {'c': 'Jika nilai awal sudah melewati batas (n = 10)', 'h': ['Loop', 'Yang tercetak', 'Alasan'], 'r': [['FOR i ← 10 TO 5', 'Tidak ada', '10 sudah melewati 5'], ['WHILE i <= 5', 'Tidak ada', 'Kondisi salah sejak awal'], ['REPEAT ... UNTIL i > 5', '10', 'Badan jalan dulu, baru dicek']]}],
+   pts=['Ketiga loop bisa mengerjakan tugas yang sama.', 'FOR: jumlah pasti. WHILE: cek di awal, bisa 0 kali. DO-WHILE: cek di akhir, minimal 1 kali.', 'Python tidak punya do-while; pakai while True dengan break.'],
+   q=quiz(['i ← 10, lalu WHILE i <= 5 DO OUTPUT i. Berapa kali OUTPUT jalan?', ['0', '1', '5'], 0, 'Kondisi dicek di awal dan langsung salah.'],
+          ['i ← 10, lalu REPEAT OUTPUT i ... UNTIL i > 5. Berapa kali OUTPUT jalan?', ['0', '1', '5'], 1, 'Badan jalan dulu, baru kondisi dicek.'],
+          ['Mencetak daftar 40 mahasiswa paling cocok memakai?', ['FOR', 'WHILE', 'DO-WHILE'], 0, 'Jumlahnya sudah diketahui.'],
+          ['Meminta password sampai benar paling cocok memakai?', ['FOR', 'DO-WHILE'], 1, 'Harus meminta minimal sekali, jumlah percobaan belum diketahui.'])),
+ L('Penghentian loop dan infinite loop', [
+   'Setiap loop harus punya <b>kondisi berhenti</b> yang pasti tercapai. Tiga syaratnya: (1) variabel kondisi <b>diberi nilai awal</b>, (2) variabel itu <b>berubah</b> di dalam badan loop, dan (3) perubahannya <b>menuju</b> kondisi berhenti. Jika salah satunya hilang, terjadi <b>infinite loop</b>: program berputar selamanya dan tampak "hang".',
+   'Contoh infinite loop: <code>i ← 1; WHILE i &lt;= 5 DO OUTPUT i ENDWHILE</code> (lupa menaikkan i). Atau <code>i ← 1; WHILE i &lt;&gt; 10 DO i ← i + 2 ENDWHILE</code>: i bernilai 1, 3, 5, 7, 9, 11, ... dan tidak pernah tepat 10. Pakai <code>&lt;</code> atau <code>&lt;=</code> daripada <code>&lt;&gt;</code> untuk kondisi berhenti.',
+   'Cara lain menghentikan loop: <b>sentinel</b> (nilai khusus seperti 0 atau -1 yang berarti "selesai"), <b>flag</b> (variabel BOOLEAN <code>ketemu</code> yang diubah menjadi benar), dan <b>batas pengaman</b> (maksimal 3 kali percobaan PIN). Banyak bahasa juga punya <code>break</code> untuk keluar paksa.',
+   'Visual menghitung banyak digit: n dibagi 10 terus sampai habis. Loop ini pasti berhenti karena n selalu mengecil dan suatu saat menjadi 0. Coba 7, 1000, dan 0.'],
+   P_DIGIT,
+   tb=[{'c': 'Mencari penyebab infinite loop', 'h': ['Kode', 'Masalah', 'Perbaikan'], 'r': [['WHILE i <= 5 DO OUTPUT i', 'i tidak pernah berubah', 'Tambahkan i ← i + 1'], ['WHILE i <> 10 DO i ← i + 2', 'i melompati 10', 'Pakai WHILE i < 10'], ['WHILE i > 0 DO i ← i + 1', 'i menjauhi kondisi berhenti', 'Pakai i ← i - 1'], ['REPEAT ... UNTIL x > 5 tanpa mengubah x', 'Kondisi tidak pernah berubah', 'Ubah x di badan loop']]}],
+   pts=['Nilai awal, berubah, dan menuju kondisi berhenti.', 'Hindari <> sebagai kondisi berhenti angka.', 'Sentinel, flag, dan batas pengaman.'],
+   q=quiz(['i ← 0; WHILE i <> 7 DO i ← i + 2. Apa yang terjadi?', ['Berhenti di 7', 'Infinite loop', 'Tidak jalan sama sekali'], 1, 'i: 0, 2, 4, 6, 8, ... tidak pernah tepat 7.'],
+          ['Apa itu nilai sentinel?', ['Nilai khusus penanda akhir input', 'Nilai terbesar', 'Batas memori'], 0, 'Contoh: ketik 0 untuk selesai.'])),
+ _O['Loop bersarang'],
+ L('Pola akumulator', [
+   '<b>Akumulator</b> adalah variabel yang <b>mengumpulkan</b> hasil selama loop berjalan. Polanya selalu sama: (1) beri nilai awal <b>sebelum</b> loop, (2) perbarui <b>di dalam</b> loop, (3) pakai hasilnya <b>setelah</b> loop.',
+   'Empat akumulator yang paling sering: <b>penjumlah</b> (<code>total ← 0</code>, lalu <code>total ← total + x</code>), <b>penghitung</b> (<code>lulus ← 0</code>, lalu <code>lulus ← lulus + 1</code> jika syarat terpenuhi), <b>pengali</b> (<code>hasil ← 1</code>, lalu <code>hasil ← hasil * x</code>, misalnya faktorial), dan <b>pencari ekstrem</b> (maksimum atau minimum).',
+   'Nilai awal harus sesuai jenisnya: penjumlah dan penghitung mulai dari <b>0</b>, pengali mulai dari <b>1</b> (jika 0, hasilnya selalu 0). Untuk maksimum, ambil data <b>pertama</b> sebagai nilai awal; pada contoh dipakai kondisi <code>i = 1 OR x &gt; maks</code> agar data pertama langsung menjadi maks.',
+   'Visual membaca 5 nilai dan menghitung empat hal sekaligus dalam satu loop. Coba ganti nilai-nilainya dan prediksi hasilnya sebelum menekan Jalankan.'],
+   P_AKUM,
+   tb=[{'c': 'Jenis akumulator', 'h': ['Jenis', 'Nilai awal', 'Di dalam loop', 'Contoh'], 'r': [['Penjumlah', '0', 'total ← total + x', 'Total belanja'], ['Penghitung', '0', 'IF syarat THEN n ← n + 1', 'Jumlah yang lulus'], ['Pengali', '1', 'hasil ← hasil * x', 'Faktorial, pangkat'], ['Maksimum', 'Data pertama', 'IF x > maks THEN maks ← x', 'Nilai tertinggi'], ['Penggabung teks', '""', 's ← s & x', 'Membuat baris bintang']]}],
+   pts=['Nilai awal sebelum loop, perbarui di dalam, pakai setelahnya.', 'Penjumlah 0, pengali 1, maksimum dari data pertama.', 'Satu loop bisa mengurus beberapa akumulator.'],
+   q=quiz(['Nilai awal yang benar untuk menghitung faktorial?', ['0', '1', 'n'], 1, 'Jika 0, hasil perkalian selalu 0.'],
+          ['Nilai 80, 65, 92, 75, 58. Berapa yang lulus (≥ 75)?', ['2', '3', '4'], 1, '80, 92, dan 75.'])),
+]},
+{'t': 'Desain modular', 'lvl': 'Menengah', 'd': 'Dekomposisi top-down, fungsi dan nilai kembali, prosedur, parameter by value dan by reference, ruang lingkup variabel, dan rekursi.', 'nodes': ['Fungsi', 'Rekursi'], 'lessons': [
+ L('Dekomposisi top-down', [
+   '<b>Dekomposisi top-down</b> adalah memecah masalah besar menjadi sub-masalah yang lebih kecil, lalu memecahnya lagi sampai setiap bagian cukup sederhana untuk ditulis langsung. Mulai dari gambaran besar ("buat kasir"), turun ke langkah utama ("baca belanjaan, hitung diskon, hitung kembalian"), lalu ke detail.',
+   'Setiap sub-masalah menjadi satu <b>modul</b> (prosedur atau fungsi) dengan satu tugas jelas. Program utama cukup memanggil modul-modul itu, sehingga terbaca seperti daftar isi. Modul bisa dikerjakan, diuji, dan diperbaiki terpisah, bahkan oleh orang yang berbeda.',
+   'Visual menjalankan kasir dalam satu blok panjang. Bagian contoh menunjukkan kasir yang sama setelah didekomposisi: program utama hanya empat baris, dan detailnya ada di fungsi masing-masing. Logikanya identik, tetapi jauh lebih mudah dibaca dan diubah.',
+   'Jalankan visual dengan input bawaan: 2 kopi seharga 25.000, 3 roti seharga 18.000, selesai (0), lalu bayar 150.000.'],
+   P_KASIR,
+   code='// Program utama: terbaca seperti daftar isi\nSTART\n    total ← BacaBelanjaan()\n    total ← TerapkanDiskon(total)\n    OUTPUT "Total: ", total\n    CALL ProsesPembayaran(total)\nEND\n\nFUNCTION BacaBelanjaan() RETURNS INTEGER\n    DECLARE harga, jumlah, total : INTEGER\n    total ← 0\n    REPEAT\n        INPUT harga\n        IF harga > 0 THEN\n            INPUT jumlah\n            total ← total + harga * jumlah\n        ENDIF\n    UNTIL harga = 0\n    RETURN total\nENDFUNCTION\n\nFUNCTION TerapkanDiskon(total : INTEGER) RETURNS INTEGER\n    IF total > 100000 THEN\n        RETURN total - total * 10 DIV 100\n    ENDIF\n    RETURN total\nENDFUNCTION\n\nPROCEDURE ProsesPembayaran(total : INTEGER)\n    DECLARE bayar : INTEGER\n    INPUT bayar\n    IF bayar >= total THEN\n        OUTPUT "Kembalian: ", bayar - total\n    ELSE\n        OUTPUT "Uang kurang ", total - bayar\n    ENDIF\nENDPROCEDURE', out='Total: 93600\nKembalian: 56400', run=False,
+   tb=[{'c': 'Pohon dekomposisi kasir', 'h': ['Tingkat', 'Modul', 'Tugas'], 'r': [['0', 'Kasir', 'Seluruh transaksi'], ['1', 'BacaBelanjaan', 'Ulangi baca harga dan jumlah sampai 0'], ['1', 'TerapkanDiskon', 'Potong 10% jika total > 100 ribu'], ['1', 'ProsesPembayaran', 'Terima uang, hitung kembalian atau kekurangan']]}],
+   pts=['Pecah masalah besar menjadi sub-masalah kecil.', 'Satu modul, satu tugas.', 'Program utama terbaca seperti daftar isi.'],
+   q=quiz(['Apa langkah pertama dekomposisi top-down?', ['Menulis detail terkecil', 'Menentukan gambaran besar lalu langkah utamanya', 'Memilih bahasa pemrograman'], 1, 'Dari atas ke bawah.'],
+          ['Keuntungan memecah kasir menjadi modul?', ['Program pasti lebih cepat', 'Setiap bagian bisa diuji dan diubah terpisah', 'Tidak butuh variabel'], 1, 'Satu modul, satu tugas.'])),
+ R('Prosedur dan fungsi', 'Fungsi dan nilai kembali', b=[
+   '<b>Fungsi</b> adalah modul yang menerima input lewat <b>parameter</b>, menghitung, lalu <b>mengembalikan satu nilai</b> dengan <code>RETURN</code>. Bentuknya: <code>FUNCTION Nama(parameter : TIPE) RETURNS TIPE ... ENDFUNCTION</code>.',
+   'Nilai kembali bisa langsung dipakai di ekspresi: <code>luas ← Luas(8, 5)</code>, <code>OUTPUT Luas(3, 4) + 10</code>, atau <code>IF Luas(p, l) &gt; 100 THEN</code>. Begitu <code>RETURN</code> dijalankan, fungsi <b>langsung selesai</b>; baris di bawahnya tidak dijalankan.',
+   'Fungsi yang baik itu <b>murni</b>: hasilnya hanya bergantung pada parameternya, dan ia tidak menampilkan apa pun atau mengubah variabel di luar. Fungsi murni mudah diuji: <code>Luas(8, 5)</code> selalu 40. Jika ingin menampilkan sesuatu, serahkan ke pemanggilnya atau ke prosedur.'],
+   code='FUNCTION Luas(p : INTEGER, l : INTEGER) RETURNS INTEGER\n    RETURN p * l\nENDFUNCTION\n\nFUNCTION HargaSetelahDiskon(harga : REAL, persen : REAL) RETURNS REAL\n    RETURN harga - harga * persen / 100\nENDFUNCTION\n\nSTART\n    OUTPUT Luas(8, 5)\n    OUTPUT Luas(3, 4) + 10\n    OUTPUT HargaSetelahDiskon(200000, 15)\nEND', out='40\n22\n170000',
+   tb=[{'c': 'Anatomi fungsi', 'h': ['Bagian', 'Contoh', 'Arti'], 'r': [['Nama', 'Luas', 'Kata kerja atau kata benda yang jelas'], ['Parameter', 'p : INTEGER, l : INTEGER', 'Data yang diterima'], ['Tipe kembali', 'RETURNS INTEGER', 'Jenis nilai yang dikembalikan'], ['RETURN', 'RETURN p * l', 'Mengirim hasil dan mengakhiri fungsi'], ['Pemanggilan', 'x ← Luas(8, 5)', 'Argumen 8 dan 5 masuk ke p dan l']]}],
+   pts=['Fungsi mengembalikan satu nilai dengan RETURN.', 'RETURN langsung mengakhiri fungsi.', 'Fungsi murni mudah diuji.'],
+   q=quiz(['Apa yang dicetak OUTPUT Luas(2, 3) * 2?', ['6', '12', '23'], 1, 'Luas(2, 3) = 6, lalu × 2.'],
+          ['Baris setelah RETURN di dalam fungsi yang sama...', ['Tetap dijalankan', 'Tidak dijalankan', 'Dijalankan dua kali'], 1, 'RETURN mengakhiri fungsi.'])),
+ L('Prosedur untuk efek samping', [
+   '<b>Prosedur</b> adalah modul yang <b>tidak mengembalikan nilai</b>. Ia dipanggil karena <b>efek samping</b>-nya: menampilkan sesuatu ke layar, mencetak struk, menyimpan data, atau mengubah isi variabel yang dikirim kepadanya. Dipanggil dengan <code>CALL NamaProsedur(argumen)</code>.',
+   'Bedanya dengan fungsi: fungsi <b>menjawab pertanyaan</b> ("berapa luasnya?"), prosedur <b>melakukan pekerjaan</b> ("cetak garis sepanjang 20"). Karena tidak ada nilai kembali, prosedur tidak bisa dipakai di dalam ekspresi: <code>x ← CetakGaris(3)</code> salah.',
+   'Pisahkan perhitungan dari tampilan. Hitung dengan fungsi, tampilkan dengan prosedur. Contoh: <code>total ← HitungTotal(...)</code> lalu <code>CALL CetakStruk(total)</code>. Dengan begitu, fungsi perhitungan bisa dipakai ulang di aplikasi web, mobile, maupun konsol.'],
+   code='PROCEDURE CetakGaris(n : INTEGER)\n    DECLARE i : INTEGER\n    DECLARE s : STRING\n    s ← ""\n    FOR i ← 1 TO n DO\n        s ← s & "-"\n    ENDFOR\n    OUTPUT s\nENDPROCEDURE\n\nPROCEDURE CetakStruk(nama : STRING, total : INTEGER)\n    CALL CetakGaris(20)\n    OUTPUT "Pelanggan: ", nama\n    OUTPUT "Total    : Rp", total\n    CALL CetakGaris(20)\nENDPROCEDURE\n\nSTART\n    CALL CetakStruk("Rina", 66600)\nEND', out='--------------------\nPelanggan: Rina\nTotal    : Rp66600\n--------------------', run=False,
+   tb=[_O['Prosedur dan fungsi']['tb'][0]],
+   pts=['Prosedur dipanggil karena efek sampingnya.', 'Prosedur tidak bisa dipakai di dalam ekspresi.', 'Hitung dengan fungsi, tampilkan dengan prosedur.'],
+   q=quiz(['Mencetak kop surat lebih cocok dibuat sebagai?', ['Fungsi', 'Prosedur'], 1, 'Pekerjaannya menampilkan, tidak mengembalikan nilai.'],
+          ['Mana pemanggilan yang SALAH?', ['CALL CetakGaris(5)', 'x ← CetakGaris(5)', 'CALL CetakStruk("Andi", 1000)'], 1, 'Prosedur tidak punya nilai kembali.'])),
+ L('Parameter by value dan by reference', [
+   'Ada dua cara mengirim data ke modul. <b>By value</b> (BYVAL): modul menerima <b>salinan</b> nilai. Mengubah parameter di dalam modul tidak mengubah variabel asli di pemanggil. Ini cara bawaan dan paling aman.',
+   '<b>By reference</b> (BYREF): modul menerima <b>alamat</b> variabel asli. Mengubah parameter berarti mengubah variabel pemanggil. Dipakai saat modul memang harus mengubah data pemanggil, misalnya prosedur <code>Tukar(a, b)</code> yang menukar isi dua variabel.',
+   'Analogi: by value seperti memberi <b>fotokopi</b> dokumen, coretan di fotokopi tidak mengubah aslinya. By reference seperti meminjamkan <b>dokumen asli</b>.',
+   'Di bahasa nyata: Java dan Python mengirim tipe dasar (int, float) secara by value. Objek dan list dikirim sebagai <b>salinan referensi</b>, sehingga isi list bisa diubah dari dalam fungsi. C++ dan C# punya penanda eksplisit (<code>&amp;</code>, <code>ref</code>).'],
+   code='PROCEDURE NaikkanByVal(BYVAL x : INTEGER)\n    x ← x + 10\n    OUTPUT "Di dalam: ", x\nENDPROCEDURE\n\nPROCEDURE NaikkanByRef(BYREF x : INTEGER)\n    x ← x + 10\nENDPROCEDURE\n\nPROCEDURE Tukar(BYREF a : INTEGER, BYREF b : INTEGER)\n    DECLARE t : INTEGER\n    t ← a\n    a ← b\n    b ← t\nENDPROCEDURE\n\nSTART\n    nilai ← 5\n    CALL NaikkanByVal(nilai)\n    OUTPUT "Setelah ByVal: ", nilai\n    CALL NaikkanByRef(nilai)\n    OUTPUT "Setelah ByRef: ", nilai\n    p ← 1\n    q ← 2\n    CALL Tukar(p, q)\n    OUTPUT p, " ", q\nEND', out='Di dalam: 15\nSetelah ByVal: 5\nSetelah ByRef: 15\n2 1', run=False,
+   tb=[{'c': 'By value vs by reference', 'h': ['Aspek', 'BYVAL', 'BYREF'], 'r': [['Yang dikirim', 'Salinan nilai', 'Alamat variabel asli'], ['Variabel pemanggil', 'Tidak berubah', 'Ikut berubah'], ['Keamanan', 'Aman dari perubahan tak sengaja', 'Harus hati-hati'], ['Contoh', 'Luas(p, l)', 'Tukar(a, b)']]}],
+   pts=['BYVAL mengirim salinan, aslinya aman.', 'BYREF mengirim alamat, aslinya ikut berubah.', 'Pakai BYREF hanya jika modul memang harus mengubah data pemanggil.'],
+   q=quiz(['x ← 3; CALL Gandakan(x) dengan BYVAL, di dalamnya x ← x * 2. Berapa x setelahnya?', ['3', '6'], 0, 'Yang diubah hanya salinannya.'],
+          ['Prosedur Tukar(a, b) harus memakai?', ['BYVAL', 'BYREF'], 1, 'Tujuannya memang mengubah variabel pemanggil.'])),
+ L('Ruang lingkup variabel dan enkapsulasi state', [
+   '<b>Ruang lingkup</b> (scope) menentukan di mana sebuah variabel bisa dipakai. Variabel <b>lokal</b> dideklarasikan di dalam modul dan hanya hidup selama modul itu berjalan; setelah modul selesai, variabelnya hilang. Variabel <b>global</b> dideklarasikan di luar semua modul dan bisa dibaca serta diubah dari mana saja.',
+   'Variabel global terlihat praktis, tetapi berbahaya: jika ada bug, <b>modul mana pun</b> bisa menjadi penyebabnya. Aturan praktis: pakai variabel lokal dan parameter, kirim data masuk lewat parameter dan keluar lewat RETURN.',
+   'Dua modul boleh punya variabel lokal dengan <b>nama sama</b> tanpa saling mengganggu. <code>i</code> di prosedur A dan <code>i</code> di prosedur B adalah dua kotak berbeda.',
+   '<b>Enkapsulasi state</b> berarti menyembunyikan data di balik modul, dan hanya mengizinkan perubahan lewat modul itu. Contoh: saldo rekening hanya boleh berubah lewat <code>Setor</code> dan <code>Tarik</code>, yang memeriksa aturan (penarikan tidak boleh melebihi saldo). Inilah benih dari konsep <b>class</b> dan <b>object</b> di Java, Kotlin, Dart, dan Python.'],
+   code='DECLARE saldo : INTEGER          // state, hanya diubah lewat Setor dan Tarik\nsaldo ← 0\n\nPROCEDURE Setor(jumlah : INTEGER)\n    IF jumlah <= 0 THEN\n        OUTPUT "Jumlah setoran tidak sah"\n    ELSE\n        saldo ← saldo + jumlah\n    ENDIF\nENDPROCEDURE\n\nPROCEDURE Tarik(jumlah : INTEGER)\n    IF jumlah > saldo THEN\n        OUTPUT "Saldo tidak cukup"\n    ELSE\n        saldo ← saldo - jumlah\n    ENDIF\nENDPROCEDURE\n\nFUNCTION Hitung() RETURNS INTEGER\n    DECLARE i, total : INTEGER   // lokal: hilang setelah fungsi selesai\n    total ← 0\n    FOR i ← 1 TO 3 DO\n        total ← total + i\n    ENDFOR\n    RETURN total\nENDFUNCTION\n\nSTART\n    CALL Setor(50000)\n    CALL Tarik(80000)\n    CALL Tarik(20000)\n    OUTPUT "Saldo: ", saldo\n    OUTPUT Hitung()\nEND', out='Saldo tidak cukup\nSaldo: 30000\n6', run=False,
+   tb=[{'c': 'Lokal vs global', 'h': ['Aspek', 'Lokal', 'Global'], 'r': [['Dideklarasikan', 'Di dalam modul', 'Di luar semua modul'], ['Bisa dipakai', 'Hanya di modul itu', 'Di mana saja'], ['Umur', 'Selama modul berjalan', 'Selama program berjalan'], ['Risiko', 'Rendah', 'Bug sulit dilacak']]}],
+   pts=['Variabel lokal hanya hidup di modulnya.', 'Hindari global; pakai parameter dan RETURN.', 'Enkapsulasi: state hanya diubah lewat modul yang memeriksa aturan.'],
+   q=quiz(['Variabel total di dalam fungsi Hitung bisa dibaca dari program utama?', ['Ya', 'Tidak'], 1, 'total adalah variabel lokal.'],
+          ['Kenapa saldo hanya boleh diubah lewat Setor dan Tarik?', ['Agar aturan seperti saldo cukup selalu diperiksa', 'Agar lebih cepat', 'Aturan bahasa'], 0, 'Inilah enkapsulasi.'])),
+ L('Rekursi dan base case', [
+   '<b>Rekursi</b> adalah fungsi yang <b>memanggil dirinya sendiri</b> dengan masalah yang lebih kecil. Contoh: faktorial. 5! = 5 × 4!, 4! = 4 × 3!, dan seterusnya sampai 1! = 1.',
+   'Setiap fungsi rekursif wajib punya dua bagian. <b>Base case</b> (kasus dasar): kondisi berhenti yang dijawab langsung tanpa memanggil diri sendiri, misalnya <code>IF n &lt;= 1 THEN RETURN 1</code>. <b>Recursive case</b>: memanggil diri sendiri dengan input yang <b>mendekati</b> base case, misalnya <code>RETURN n * Faktorial(n - 1)</code>.',
+   'Tanpa base case, atau jika inputnya tidak mendekati base case, fungsi memanggil dirinya terus sampai memori tumpukan (call stack) habis: <b>stack overflow</b>. Ini versi rekursi dari infinite loop.',
+   'Rekursi cocok untuk masalah yang bentuknya berulang ke dalam: struktur folder, pohon menu, binary search, dan Menara Hanoi. Untuk hitungan sederhana, versi loop biasanya lebih hemat memori. Visual di bawah menghitung faktorial dengan loop; bandingkan dengan versi rekursif di bagian contoh.'],
+   P_FAKT,
+   code='FUNCTION Faktorial(n : INTEGER) RETURNS INTEGER\n    IF n <= 1 THEN            // base case\n        RETURN 1\n    ENDIF\n    RETURN n * Faktorial(n - 1)   // recursive case\nENDFUNCTION\n\nFUNCTION Pangkat(a : INTEGER, b : INTEGER) RETURNS INTEGER\n    IF b = 0 THEN\n        RETURN 1\n    ENDIF\n    RETURN a * Pangkat(a, b - 1)\nENDFUNCTION\n\nSTART\n    OUTPUT Faktorial(5)\n    OUTPUT Pangkat(2, 10)\nEND', out='120\n1024', run=False,
+   tb=[{'c': 'Jejak Faktorial(4)', 'h': ['Panggilan', 'Menunggu', 'Kembali'], 'r': [['Faktorial(4)', '4 × Faktorial(3)', '24'], ['Faktorial(3)', '3 × Faktorial(2)', '6'], ['Faktorial(2)', '2 × Faktorial(1)', '2'], ['Faktorial(1)', 'base case', '1']]}],
+   pts=['Rekursi: fungsi memanggil dirinya dengan masalah lebih kecil.', 'Wajib ada base case.', 'Input harus mendekati base case, jika tidak terjadi stack overflow.'],
+   q=quiz(['Apa base case pada Pangkat(a, b)?', ['b = 0', 'a = 0', 'b = 1'], 0, 'a pangkat 0 = 1.'],
+          ['Fungsi rekursif tanpa base case akan...', ['Mengembalikan 0', 'Memanggil dirinya terus sampai stack overflow', 'Berhenti sendiri'], 1, 'Tidak ada kondisi berhenti.'])),
+]},
+{'t': 'Koleksi data', 'lvl': 'Menengah', 'd': 'Array satu dimensi, indeks dan traversal, array multidimensi, record, linear dan binary search, bubble sort dan insertion sort.', 'nodes': ['Array', 'Searching', 'Sorting'], 'lessons': [
+ R('Array: banyak nilai dalam satu nama', 'Array satu dimensi'),
+ L('Indeks, traversal, dan memperbarui array', [
+   '<b>Indeks</b> adalah nomor kotak di array. Di kebanyakan bahasa, indeks dimulai dari 0, sehingga array berisi n data punya indeks 0 sampai n - 1. <code>harga[2]</code> berarti kotak <b>ketiga</b>. Beberapa buku pseudocode memakai indeks mulai 1; selalu periksa konvensi yang dipakai.',
+   '<b>Traversal</b> berarti mengunjungi setiap isi array satu per satu, biasanya dengan FOR. Maju: <code>FOR i ← 0 TO n - 1</code>. Mundur: <code>FOR i ← n - 1 TO 0 STEP -1</code>. Hampir semua algoritma array (jumlah, cari, hitung, urutkan) adalah traversal ditambah sedikit logika.',
+   '<b>Memperbarui</b> isi array sama seperti mengisi variabel, tetapi dengan indeks: <code>harga[i] ← harga[i] + 1000</code>. Di dalam traversal, kita bisa memperbarui setiap isi sekaligus, misalnya menaikkan semua harga 10%.',
+   'Visual menaikkan lima harga sebesar 10%, lalu menampilkannya dari indeks terakhir ke indeks pertama (traversal mundur).'],
+   P_UPDATE,
+   tb=[{'c': 'Pola traversal', 'h': ['Tujuan', 'Pseudocode'], 'r': [['Maju semua', 'FOR i ← 0 TO n - 1'], ['Mundur semua', 'FOR i ← n - 1 TO 0 STEP -1'], ['Indeks genap saja', 'FOR i ← 0 TO n - 1 STEP 2'], ['Mulai dari kedua', 'FOR i ← 1 TO n - 1'], ['Pasangan bersebelahan', 'FOR i ← 0 TO n - 2 (pakai a[i] dan a[i + 1])']]}],
+   pts=['Indeks 0 sampai n - 1.', 'Traversal: kunjungi setiap isi dengan FOR.', 'Perbarui isi dengan a[i] ← ...'],
+   q=quiz(['Array 8 data. Traversal mundur dimulai dari indeks?', ['8', '7', '0'], 1, 'Indeks terakhir = n - 1.'],
+          ['Untuk membandingkan a[i] dengan a[i + 1], batas akhir FOR adalah?', ['n - 1', 'n - 2', 'n'], 1, 'Agar a[i + 1] tidak keluar dari array.'])),
+ L('Array multidimensi', [
+   '<b>Array dua dimensi</b> (matriks) menyimpan data dalam bentuk <b>tabel</b>: baris dan kolom. Contoh: nilai 3 siswa untuk 4 mata pelajaran, <code>DECLARE nilai : ARRAY[0..2, 0..3] OF INTEGER</code>. Satu isi diakses dengan dua indeks: <code>nilai[baris][kolom]</code> atau <code>nilai[baris, kolom]</code>.',
+   'Traversal matriks memakai <b>loop bersarang</b>: loop luar untuk baris, loop dalam untuk kolom. Total isi = jumlah baris × jumlah kolom. Pada contoh 3 × 4 = 12 nilai.',
+   'Pemakaian nyata: papan permainan (catur, tic-tac-toe), kursi bioskop, peta grid, gambar (setiap piksel), dan spreadsheet. Array tiga dimensi juga ada (misalnya nilai per siswa, per mapel, per semester), tetapi jarang dipakai.',
+   'Visual menghitung total dan rata-rata setiap siswa (setiap baris). Perhatikan <code>total</code> diisi 0 lagi di <b>awal setiap baris</b>, bukan sekali di awal program.'],
+   P_MATRIX,
+   tb=[{'c': 'Matriks nilai[3][4]', 'h': ['', 'Kolom 0', 'Kolom 1', 'Kolom 2', 'Kolom 3'], 'r': [['Baris 0', '80', '75', '90', '85'], ['Baris 1', '60', '70', '65', '80'], ['Baris 2', '95', '88', '92', '90']]}],
+   pts=['Matriks = baris × kolom, akses dengan dua indeks.', 'Traversal dengan loop bersarang.', 'Reset akumulator per baris jika menghitung per baris.'],
+   q=quiz(['Pada tabel di atas, nilai[1][3] adalah?', ['85', '80', '65'], 1, 'Baris 1 (kedua), kolom 3 (keempat).'],
+          ['Matriks 5 baris × 6 kolom berisi berapa data?', ['11', '30', '56'], 1, '5 × 6 = 30.'])),
+ L('Struktur record', [
+   'Array menyimpan banyak data <b>sejenis</b>. <b>Record</b> (struct) menyimpan beberapa data <b>berbeda jenis</b> yang menjadi satu kesatuan. Contoh: satu mahasiswa punya NIM (STRING), nama (STRING), IPK (REAL), dan status aktif (BOOLEAN).',
+   'Record didefinisikan sebagai <b>tipe baru</b>: <code>TYPE Mahasiswa ... ENDTYPE</code>. Setiap bagian disebut <b>field</b>, diakses dengan titik: <code>mhs.nama</code>, <code>mhs.ipk</code>.',
+   'Kekuatan sebenarnya muncul saat record digabung dengan array: <code>ARRAY[0..29] OF Mahasiswa</code> menyimpan data satu kelas. Tanpa record, kita butuh empat array terpisah (nim[], nama[], ipk[], aktif[]) yang harus dijaga agar indeksnya selalu sejajar, dan itu rawan salah.',
+   'Record adalah cikal bakal <code>class</code> di Java dan Kotlin, <code>data class</code> di Kotlin, <code>dataclass</code> di Python, <code>interface</code> atau object di TypeScript, dan baris tabel di SQL.'],
+   code='TYPE Mahasiswa\n    nim   : STRING\n    nama  : STRING\n    ipk   : REAL\n    aktif : BOOLEAN\nENDTYPE\n\nDECLARE kelas : ARRAY[0..2] OF Mahasiswa\nDECLARE i : INTEGER\nDECLARE terbaik : Mahasiswa\n\nkelas[0] ← Mahasiswa("2301", "Rina", 3.62, TRUE)\nkelas[1] ← Mahasiswa("2302", "Budi", 3.15, TRUE)\nkelas[2] ← Mahasiswa("2303", "Sari", 3.88, FALSE)\n\nterbaik ← kelas[0]\nFOR i ← 1 TO 2 DO\n    IF kelas[i].ipk > terbaik.ipk THEN\n        terbaik ← kelas[i]\n    ENDIF\nENDFOR\nOUTPUT "IPK tertinggi: ", terbaik.nama, " (", terbaik.ipk, ")"', out='IPK tertinggi: Sari (3.88)', run=False,
+   tb=[{'c': 'Record di beberapa bahasa', 'h': ['Bahasa', 'Bentuk'], 'r': [['Pseudocode', 'TYPE Mahasiswa ... ENDTYPE'], ['Python', '@dataclass class Mahasiswa'], ['Java', 'record Mahasiswa(String nim, ...)'], ['Kotlin', 'data class Mahasiswa(val nim: String, ...)'], ['TypeScript', 'type Mahasiswa = { nim: string; ... }'], ['SQL', 'Satu baris di tabel mahasiswa']]}],
+   pts=['Record = beberapa field berbeda jenis dalam satu kesatuan.', 'Akses field dengan titik: mhs.nama.', 'Array of record lebih aman daripada beberapa array sejajar.'],
+   q=quiz(['Cara mengambil IPK mahasiswa ke-2 dari array kelas?', ['kelas.ipk[1]', 'kelas[1].ipk', 'ipk[kelas]'], 1, 'Indeks array dulu, lalu field.'],
+          ['Kenapa array of record lebih baik dari 4 array sejajar?', ['Data satu orang selalu tetap bersama', 'Lebih sedikit memori', 'Wajib di semua bahasa'], 0, 'Tidak ada risiko indeks tidak sejajar.'])),
+ R('Linear search: mencari satu per satu', 'Linear search dan binary search', b=[
+   '<b>Linear search</b> memeriksa isi array satu per satu dari depan sampai data ditemukan atau array habis. Cara ini bekerja untuk data apa pun, terurut atau tidak. Kita pakai WHILE dengan dua syarat: masih ada data <b>dan</b> belum ketemu. Nilai -1 menjadi tanda "belum ditemukan", karena tidak ada indeks negatif.',
+   '<b>Binary search</b> jauh lebih cepat, tetapi <b>datanya harus terurut</b>. Caranya seperti mencari kata di kamus: buka bagian <b>tengah</b>. Jika yang dicari lebih besar, buang separuh kiri; jika lebih kecil, buang separuh kanan. Ulangi sampai ketemu atau tidak ada data tersisa (<code>kiri &gt; kanan</code>).',
+   'Bedanya sangat besar untuk data banyak. 1.000.000 data: linear search butuh sampai 1.000.000 pemeriksaan, binary search paling banyak sekitar <b>20</b>, karena setiap langkah membuang separuh data.',
+   'Visual menjalankan binary search pada 8 data terurut. Cari 31 (ketemu di langkah kedua), lalu 3, 52, dan 20 (tidak ada). Perhatikan <code>kiri</code>, <code>kanan</code>, dan <code>tengah</code> bergerak. Versi linear search ada di bagian contoh.'],
+   fc=P_BINARY,
+   code='// Linear search: data boleh tidak terurut\ni ← 0\nposisi ← -1\nWHILE i < n AND posisi = -1 DO\n    IF data[i] = cari THEN\n        posisi ← i\n    ENDIF\n    i ← i + 1\nENDWHILE\n\n// Binary search: data WAJIB terurut\nkiri ← 0\nkanan ← n - 1\nposisi ← -1\nWHILE kiri <= kanan AND posisi = -1 DO\n    tengah ← (kiri + kanan) DIV 2\n    IF data[tengah] = cari THEN\n        posisi ← tengah\n    ELSE IF data[tengah] < cari THEN\n        kiri ← tengah + 1\n    ELSE\n        kanan ← tengah - 1\n    ENDIF\nENDWHILE', run=False,
+   tb=[{'c': 'Linear vs binary search', 'h': ['Aspek', 'Linear', 'Binary'], 'r': [['Syarat data', 'Bebas', 'Harus terurut'], ['Cara', 'Satu per satu dari depan', 'Cek tengah, buang separuh'], ['Langkah terburuk, 1.000 data', '1.000', '10'], ['Langkah terburuk, 1.000.000 data', '1.000.000', '20'], ['Kompleksitas', 'O(n)', 'O(log n)']]}],
+   pts=['Linear: bebas syarat, satu per satu.', 'Binary: data terurut, buang separuh setiap langkah.', '-1 sebagai tanda belum ditemukan.'],
+   q=quiz(['Syarat wajib binary search?', ['Data berjumlah genap', 'Data terurut', 'Data berupa angka positif'], 1, 'Tanpa urutan, kita tidak tahu separuh mana yang dibuang.'],
+          ['Data [3, 8, 12, 17, 23, 31, 40, 52], cari 31. Indeks tengah pertama?', ['3', '4', '5'], 0, '(0 + 7) DIV 2 = 3, berisi 17.'],
+          ['Berapa langkah terburuk linear search untuk 100 data?', ['7', '50', '100'], 2, 'Jika data di akhir atau tidak ada, semua diperiksa.'])),
+ R('Bubble sort dalam pseudocode', 'Bubble sort dan insertion sort', b=[
+   '<b>Bubble sort</b> mengurutkan dengan membandingkan pasangan <b>bersebelahan</b> dan menukarnya jika salah urutan. Setelah putaran pertama, angka terbesar sudah di ujung kanan, seperti gelembung yang naik. Menukar butuh variabel bantu <code>t</code>: <code>t ← a[j]</code>, <code>a[j] ← a[j + 1]</code>, <code>a[j + 1] ← t</code>.',
+   '<b>Insertion sort</b> bekerja seperti merapikan kartu di tangan. Ambil satu kartu (<code>kunci</code>), geser kartu-kartu di kirinya yang lebih besar satu langkah ke kanan, lalu <b>sisipkan</b> kunci di celah yang terbuka. Bagian kiri array selalu sudah terurut.',
+   'Keduanya butuh sekitar n² langkah untuk data acak, jadi lambat untuk data besar. Tetapi insertion sort <b>sangat cepat</b> untuk data yang hampir terurut, karena hampir tidak ada yang perlu digeser. Itulah sebabnya Python dan Java memakai insertion sort untuk potongan kecil di dalam algoritma sort bawaannya.',
+   'Visual menjalankan insertion sort pada [29, 10, 14, 37, 13]. Perhatikan <code>kunci</code> dan <code>j</code>, lalu lihat isi array berubah. Versi bubble sort ada di bagian contoh.'],
+   fc=P_INSERT,
+   code='// Bubble sort\nFOR i ← 0 TO n - 2 DO\n    FOR j ← 0 TO n - 2 - i DO\n        IF a[j] > a[j + 1] THEN\n            t ← a[j]\n            a[j] ← a[j + 1]\n            a[j + 1] ← t\n        ENDIF\n    ENDFOR\nENDFOR\n\n// Insertion sort\nFOR i ← 1 TO n - 1 DO\n    kunci ← a[i]\n    j ← i - 1\n    WHILE j >= 0 AND a[j] > kunci DO\n        a[j + 1] ← a[j]\n        j ← j - 1\n    ENDWHILE\n    a[j + 1] ← kunci\nENDFOR', out='[29, 10, 14, 37, 13] → [10, 13, 14, 29, 37]', run=False,
+   tb=[{'c': 'Bubble vs insertion sort', 'h': ['Aspek', 'Bubble', 'Insertion'], 'r': [['Ide', 'Tukar pasangan bersebelahan', 'Sisipkan ke bagian kiri yang terurut'], ['Data acak', 'Sekitar n² langkah', 'Sekitar n² langkah'], ['Data hampir terurut', 'Tetap lambat (tanpa optimasi)', 'Sangat cepat'], ['Pemakaian nyata', 'Belajar konsep', 'Data kecil, bagian dari sort bawaan']]},
+       {'c': 'Jejak insertion sort', 'h': ['i', 'kunci', 'Array setelahnya'], 'r': [['awal', '—', '[29, 10, 14, 37, 13]'], ['1', '10', '[10, 29, 14, 37, 13]'], ['2', '14', '[10, 14, 29, 37, 13]'], ['3', '37', '[10, 14, 29, 37, 13]'], ['4', '13', '[10, 13, 14, 29, 37]']]}],
+   pts=['Bubble: tukar pasangan bersebelahan.', 'Insertion: sisipkan kunci ke bagian kiri yang sudah terurut.', 'Insertion sort unggul untuk data hampir terurut.'],
+   q=quiz(['Kenapa menukar nilai butuh variabel t?', ['Agar nilai lama tidak hilang tertimpa', 'Agar lebih cepat', 'Aturan pseudocode'], 0, 'Seperti menukar isi dua gelas.'],
+          ['Pada insertion sort, apa yang selalu benar tentang bagian kiri array?', ['Kosong', 'Sudah terurut', 'Berisi nilai terbesar'], 1, 'Setiap kunci disisipkan ke bagian yang sudah terurut.'])),
+]},
+{'t': 'Verifikasi dan translasi', 'lvl': 'Menengah', 'd': 'Trace table, off-by-one dan kesalahan logika, kompleksitas waktu dan ruang, menerjemahkan ke Python, adaptasi ke bahasa bertipe kuat, dan standar dokumentasi.', 'nodes': ['Verifikasi', 'Translasi'], 'lessons': [
+ L('Trace table', [
+   '<b>Trace table</b> (tabel jejak) adalah cara menjalankan algoritma <b>di atas kertas</b>, baris demi baris, sambil mencatat nilai setiap variabel. Setiap kolom satu variabel (ditambah kolom kondisi dan output), setiap baris satu langkah yang mengubah nilai.',
+   'Trace table dipakai untuk tiga hal: (1) <b>memahami</b> algoritma orang lain, (2) <b>menemukan bug</b> dengan membandingkan isi tabel dengan yang seharusnya, dan (3) menjawab soal ujian "apa output algoritma berikut?". Ini keterampilan wajib di ujian algoritma kampus dan tes masuk kerja.',
+   'Tipsnya: tulis hanya saat nilai <b>berubah</b>, catat hasil kondisi (benar/salah) di setiap pengecekan loop, dan jangan melompati langkah walaupun terasa jelas. Kesalahan biasanya bersembunyi di langkah yang kita anggap jelas.',
+   'Kolom variabel di visual adalah trace table otomatis. Isi tabel di bawah dengan tanganmu dulu untuk n = 5, baru jalankan visual dan cocokkan langkah demi langkah.'],
+   P_FAKT,
+   tb=[{'c': 'Trace table Faktorial, n = 5', 'h': ['Langkah', 'i', 'i <= n?', 'hasil', 'Output'], 'r': [['awal', '—', '—', '1', ''], ['1', '2', 'benar', '2', ''], ['2', '3', 'benar', '6', ''], ['3', '4', 'benar', '24', ''], ['4', '5', 'benar', '120', ''], ['5', '6', 'salah', '120', '5! = 120']]}],
+   pts=['Satu kolom per variabel, satu baris per perubahan.', 'Catat hasil setiap kondisi.', 'Jangan melompati langkah yang terasa jelas.'],
+   q=quiz(['Pada trace di atas, berapa nilai hasil saat i = 4 selesai diproses?', ['6', '24', '120'], 1, '6 × 4 = 24.'],
+          ['Apa fungsi utama trace table?', ['Mempercepat program', 'Menjalankan algoritma di kertas untuk memahami dan mencari bug', 'Menggambar flowchart'], 1, 'Kita menjadi komputernya.'])),
+ L('Off-by-one dan kesalahan logika', [
+   '<b>Kesalahan sintaks</b> ditangkap oleh compiler. <b>Kesalahan logika</b> tidak: program berjalan, tetapi hasilnya salah. Jenis paling terkenal adalah <b>off-by-one</b> (meleset satu): loop berjalan satu kali terlalu banyak atau terlalu sedikit.',
+   'Visual di bawah sengaja berisi bug: array 5 data (indeks 0 sampai 4) diproses dengan <code>FOR i ← 0 TO 5</code>. Pada putaran terakhir, <code>nilai[5]</code> tidak ada. Simulator menampilkan hasilnya sebagai NaN (bukan angka); Java akan berhenti dengan <code>ArrayIndexOutOfBoundsException</code>, Python dengan <code>IndexError</code>. Perbaikannya: <code>TO 4</code>, atau umumnya <code>TO n - 1</code>.',
+   'Kesalahan logika lain yang sering: <code>&gt;</code> tertukar dengan <code>&gt;=</code> (nilai tepat 75 tidak lulus), akumulator tidak diisi nilai awal atau diisi di dalam loop, urutan IF bertingkat terbalik, <code>AND</code> tertukar dengan <code>OR</code>, dan pembagian bulat yang tidak disengaja (7 / 2 menjadi 3).',
+   'Cara melawannya: uji <b>kasus batas</b> (nilai minimum, maksimum, tepat di batas, data kosong, satu data), buat trace table, dan bandingkan dengan hasil hitungan manual.'],
+   P_OBO,
+   tb=[{'c': 'Kesalahan logika yang sering', 'h': ['Gejala', 'Penyebab', 'Perbaikan'], 'r': [['Error indeks di akhir loop', 'FOR i ← 0 TO n', 'FOR i ← 0 TO n - 1'], ['Data pertama terlewat', 'FOR i ← 1 TO n - 1 padahal indeks mulai 0', 'Mulai dari 0'], ['Nilai tepat 75 tidak lulus', 'nilai > 75', 'nilai >= 75'], ['Total hanya berisi data terakhir', 'total ← 0 di dalam loop', 'Pindahkan ke sebelum loop'], ['Nilai 90 dapat C', 'Urutan IF bertingkat terbalik', 'Cek kondisi paling ketat dulu'], ['Rata-rata 7 / 2 = 3', 'Pembagian antar-integer', 'Pakai REAL']]},
+       {'c': 'Kasus batas yang wajib diuji', 'h': ['Kasus', 'Contoh untuk "nilai 0 sampai 100, lulus ≥ 75"'], 'r': [['Tepat di batas', '75 dan 74'], ['Minimum dan maksimum', '0 dan 100'], ['Di luar rentang', '-1 dan 101'], ['Data kosong', 'Tidak ada mahasiswa'], ['Satu data', 'Hanya satu mahasiswa']]}],
+   pts=['Kesalahan logika tidak ditangkap compiler.', 'Off-by-one: batas loop meleset satu.', 'Selalu uji kasus batas.'],
+   q=quiz(['Array 10 data, indeks mulai 0. Batas FOR yang benar?', ['0 TO 10', '0 TO 9', '1 TO 10'], 1, 'Indeks 0 sampai n - 1.'],
+          ['total ← 0 ditaruh di dalam loop. Akibatnya?', ['Total benar', 'Total hanya berisi data terakhir', 'Infinite loop'], 1, 'Total di-reset setiap putaran.'])),
+ L('Kompleksitas waktu dan ruang', [
+   '<b>Kompleksitas waktu</b> mengukur bagaimana <b>jumlah langkah</b> bertambah saat data bertambah. Kita tidak mengukur detik (karena bergantung komputer), melainkan pertumbuhannya, ditulis dengan notasi <b>Big-O</b>.',
+   'Yang paling sering: <b>O(1)</b> konstan, tidak bergantung jumlah data (mengakses <code>a[5]</code>). <b>O(log n)</b> logaritmik, membuang separuh setiap langkah (binary search). <b>O(n)</b> linear, satu loop (linear search, menjumlah array). <b>O(n²)</b> kuadratik, dua loop bersarang (bubble sort). Aturan cepat: hitung loop bersarang yang bergantung pada n.',
+   '<b>Kompleksitas ruang</b> mengukur <b>memori tambahan</b> yang dipakai. Menjumlah array cukup satu variabel <code>total</code>: O(1). Menyalin array ke array baru: O(n). Matriks n × n: O(n²). Rekursi juga memakai ruang untuk setiap panggilan di call stack.',
+   'Visual menghitung berapa kali badan loop bersarang dijalankan. Coba n = 4, 8, lalu 16. Saat n dua kali lipat, langkahnya menjadi <b>empat</b> kali lipat: itulah ciri O(n²).'],
+   P_LANGKAH,
+   tb=[{'c': 'Pertumbuhan jumlah langkah', 'h': ['n', 'O(1)', 'O(log n)', 'O(n)', 'O(n²)'], 'r': [['10', '1', '4', '10', '100'], ['100', '1', '7', '100', '10.000'], ['1.000', '1', '10', '1.000', '1.000.000'], ['1.000.000', '1', '20', '1.000.000', '1.000.000.000.000']]},
+       {'c': 'Kompleksitas algoritma di jalur ini', 'h': ['Algoritma', 'Waktu', 'Ruang tambahan'], 'r': [['Akses a[i]', 'O(1)', 'O(1)'], ['Jumlah, maksimum, linear search', 'O(n)', 'O(1)'], ['Binary search (loop)', 'O(log n)', 'O(1)'], ['Bubble sort, insertion sort', 'O(n²)', 'O(1)'], ['Faktorial rekursif', 'O(n)', 'O(n), call stack'], ['Traversal matriks n × n', 'O(n²)', 'O(1)']]}],
+   pts=['Big-O mengukur pertumbuhan, bukan detik.', 'Satu loop O(n), dua loop bersarang O(n²), membuang separuh O(log n).', 'Ruang: memori tambahan, termasuk call stack.'],
+   q=quiz(['Kompleksitas waktu bubble sort?', ['O(n)', 'O(log n)', 'O(n²)'], 2, 'Dua loop bersarang.'],
+          ['Algoritma O(n²) butuh 1 detik untuk 1.000 data. Kira-kira berapa untuk 2.000 data?', ['2 detik', '4 detik', '1 detik'], 1, 'n dua kali lipat, langkah empat kali lipat.'])),
+ R('Menerjemahkan pseudocode ke bahasa pemrograman', 'Menerjemahkan pseudocode ke Python', b=[
+   'Setelah logikanya benar di pseudocode, menulis kode tinggal menerjemahkan baris demi baris. Struktur IF, WHILE, FOR tidak berubah; yang berubah hanya cara penulisannya. Python paling dekat dengan pseudocode: tanpa deklarasi tipe, tanpa titik koma, dan blok ditandai indentasi.',
+   'Jebakan saat menerjemahkan ke Python. Pertama, <code>=</code> pembanding menjadi <code>==</code>, dan <code>←</code> menjadi <code>=</code>. Kedua, <code>FOR i ← 1 TO n</code> menjadi <code>range(1, n + 1)</code>, karena batas akhir range tidak ikut. Ketiga, <code>DIV</code> menjadi <code>//</code> dan <code>MOD</code> menjadi <code>%</code>. Keempat, <code>INPUT</code> selalu menghasilkan teks, jadi angka harus diubah dengan <code>int()</code> atau <code>float()</code>.',
+   'Python tidak punya REPEAT-UNTIL atau do-while. Polanya: <code>while True:</code>, badan loop, lalu <code>if kondisi_berhenti: break</code>. CASE menjadi <code>match</code> (Python 3.10+) atau <code>if/elif/else</code>.',
+   'Kode Python di bawah adalah terjemahan langsung program "jumlah 1 sampai n" dari modul perulangan. Ubah nilai <code>n</code>, lalu jalankan.']),
+ L('Adaptasi ke bahasa bertipe kuat', [
+   'Bahasa <b>bertipe statis dan kuat</b> seperti Java, Kotlin, Dart, C#, dan TypeScript memeriksa tipe data <b>sebelum</b> program dijalankan. Kabar baiknya: pseudocode kita sudah punya <code>DECLARE x : INTEGER</code>, jadi informasi tipenya sudah ada. Tinggal dipetakan ke tipe bahasa tujuan.',
+   'Hal yang perlu diperhatikan. Pertama, <b>pilih tipe angka</b>: INTEGER menjadi <code>int</code> (atau <code>long</code> untuk angka besar seperti rupiah triliunan), REAL menjadi <code>double</code>. Kedua, <b>pembagian</b>: di Java, <code>7 / 2</code> antar-int menghasilkan 3; agar 3.5, salah satunya harus double. Ketiga, <b>INPUT</b> harus diubah ke tipe yang tepat (<code>sc.nextInt()</code>, <code>readln().toInt()</code>).',
+   'Keempat, <b>fungsi</b> menulis tipe parameter dan tipe kembali secara eksplisit: <code>FUNCTION Luas(p : INTEGER, l : INTEGER) RETURNS INTEGER</code> menjadi <code>static int luas(int p, int l)</code> di Java. Kelima, perbandingan <b>STRING</b> di Java memakai <code>.equals()</code>, bukan <code>==</code>.',
+   'Contoh di bawah menerjemahkan algoritma rekap nilai (pola akumulator) ke Java. Bandingkan baris demi baris dengan pseudocodenya.'],
+   lang='java', code='import java.util.Scanner;\n\npublic class RekapNilai {\n    // FUNCTION RataRata(total : INTEGER, n : INTEGER) RETURNS REAL\n    static double rataRata(int total, int n) {\n        return (double) total / n;   // cegah pembagian bulat\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int total = 0, lulus = 0, maks = 0;      // DECLARE ... : INTEGER\n        for (int i = 1; i <= 5; i++) {           // FOR i <- 1 TO 5\n            int x = sc.nextInt();                // INPUT x\n            total += x;\n            if (x >= 75) lulus++;\n            if (i == 1 || x > maks) maks = x;\n        }\n        System.out.println("Total: " + total);\n        System.out.println("Rata-rata: " + rataRata(total, 5));\n        System.out.println("Lulus: " + lulus + " orang");\n        System.out.println("Tertinggi: " + maks);\n    }\n}', out='Input: 80 65 92 75 58\nTotal: 370\nRata-rata: 74.0\nLulus: 3 orang\nTertinggi: 92', run=False,
+   tb=[{'c': 'Pemetaan tipe data', 'h': ['Pseudocode', 'Java', 'Kotlin', 'Dart', 'TypeScript'], 'r': [
+     ['INTEGER', 'int / long', 'Int / Long', 'int', 'number'], ['REAL', 'double', 'Double', 'double', 'number'], ['STRING', 'String', 'String', 'String', 'string'],
+     ['BOOLEAN', 'boolean', 'Boolean', 'bool', 'boolean'], ['CHAR', 'char', 'Char', 'String (1 huruf)', 'string'],
+     ['ARRAY[0..4] OF INTEGER', 'int[] a = new int[5]', 'IntArray(5)', 'List<int>.filled(5, 0)', 'number[]'], ['TYPE Mahasiswa', 'record / class', 'data class', 'class', 'type / interface']]},
+       {'c': 'Jebakan saat pindah ke bahasa bertipe kuat', 'h': ['Pseudocode', 'Jebakan', 'Solusi di Java'], 'r': [['rata ← total / n', '370 / 5 aman, 7 / 2 menjadi 3', '(double) total / n'], ['IF nama = "Rina"', '== membandingkan alamat objek', 'nama.equals("Rina")'], ['INPUT x', 'Hasil teks atau token', 'sc.nextInt(), Integer.parseInt()'], ['total ← total + harga', 'int meluap di atas 2,1 miliar', 'Pakai long']]}],
+   pts=['Tipe di DECLARE dipetakan ke tipe bahasa tujuan.', 'Waspadai pembagian bulat dan batas int.', 'Tulis tipe parameter dan tipe kembali fungsi.'],
+   q=quiz(['Di Java, 7 / 2 dengan keduanya int menghasilkan?', ['3.5', '3', '4'], 1, 'Pembagian antar-int dibulatkan ke bawah.'],
+          ['REAL di pseudocode menjadi apa di Kotlin?', ['Int', 'Double', 'String'], 1, 'Bilangan pecahan.'],
+          ['Membandingkan dua String di Java sebaiknya memakai?', ['==', '.equals()', '='], 1, '== membandingkan alamat objek.'])),
+ L('Standar dokumentasi dan keterbacaan', [
+   'Pseudocode ditulis untuk <b>dibaca manusia</b>: dosen, rekan tim, atau dirimu sendiri enam bulan lagi. Algoritma yang benar tetapi sulit dibaca tetap merepotkan saat perlu diperbaiki.',
+   'Standar yang dipakai di dunia kerja dan kampus. (1) <b>Kepala algoritma</b>: nama, tujuan, input, output, dan penulis. (2) <b>Nama bermakna</b>: <code>hargaSatuan</code>, bukan <code>h</code>; fungsi diawali kata kerja (<code>HitungPajak</code>). (3) <b>Konsisten</b>: satu gaya kata kunci, satu gaya penamaan (camelCase atau snake_case), indentasi 4 spasi. (4) <b>Konstanta bernama</b>: <code>CONSTANT PPN ← 0.11</code>, bukan angka 0.11 yang muncul tiba-tiba (magic number).',
+   '(5) <b>Komentar</b> menjelaskan <b>kenapa</b>, bukan <b>apa</b>. <code>// tambah 1 ke i</code> tidak berguna; <code>// indeks mulai 0, jadi batas n - 1</code> berguna. (6) <b>Satu modul satu tugas</b>, dan modul cukup pendek untuk dibaca dalam satu layar. (7) Sertakan <b>contoh uji</b> beserta hasil yang diharapkan.',
+   'Bandingkan versi sulit dibaca dan versi terdokumentasi di bagian contoh. Keduanya menghasilkan angka yang sama.'],
+   code='// ===== Sulit dibaca =====\nINPUT a\nINPUT b\nc ← a * b\nd ← c * 0.11\nOUTPUT c + d\n\n// ===== Terdokumentasi =====\n// Nama    : HitungTotalBayar\n// Tujuan  : menghitung total belanja termasuk PPN\n// Input   : hargaSatuan (INTEGER), jumlah (INTEGER)\n// Output  : totalBayar (REAL)\n// Uji     : 15000, 4 -> 66600\nCONSTANT TARIF_PPN ← 0.11      // PPN 11% sejak April 2022\n\nDECLARE hargaSatuan, jumlah, subtotal : INTEGER\nDECLARE pajak, totalBayar : REAL\n\nINPUT hargaSatuan\nINPUT jumlah\nsubtotal ← hargaSatuan * jumlah\npajak ← subtotal * TARIF_PPN\ntotalBayar ← subtotal + pajak\nOUTPUT "Total bayar: ", totalBayar', out='Masukan 15000 dan 4 → Total bayar: 66600', run=False,
+   tb=[{'c': 'Daftar periksa keterbacaan', 'h': ['Periksa', 'Contoh baik'], 'r': [['Ada kepala algoritma', 'Nama, tujuan, input, output, contoh uji'], ['Nama variabel bermakna', 'totalBayar, jumlahLulus'], ['Fungsi diawali kata kerja', 'HitungPajak, CetakStruk'], ['Tanpa magic number', 'CONSTANT TARIF_PPN ← 0.11'], ['Indentasi konsisten', '4 spasi per tingkat'], ['Komentar menjelaskan alasan', '// batas n - 1 karena indeks mulai 0'], ['Modul pendek dan satu tugas', 'Muat dalam satu layar']]}],
+   pts=['Tulis untuk manusia: kepala algoritma, nama bermakna, konsisten.', 'Konstanta bernama menggantikan magic number.', 'Komentar menjelaskan kenapa, bukan apa.'],
+   q=quiz(['Komentar mana yang paling berguna?', ['// i ditambah 1', '// batas n - 1 karena indeks mulai dari 0', '// loop'], 1, 'Menjelaskan alasan, bukan mengulang kode.'],
+          ['Apa itu magic number?', ['Angka acak', 'Angka penting yang muncul tanpa nama atau penjelasan', 'Angka yang sangat besar'], 1, 'Ganti dengan konstanta bernama.'])),
 ]},
 ]
 

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CASE: memilih banyak jalur · Pseudocode · Ruang Kode</title>
+<meta name="description" content="Jika pilihan bergantung pada satu nilai yang tepat, misalnya kode menu 1, 2, 3, pakai CASE OF variabel ... OTHERWISE ... ENDCASE. Lebih rapi daripada IF…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/pseudo/case-memilih-banyak-jalur">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="CASE: memilih banyak jalur · Pseudocode · Ruang Kode"><meta property="og:description" content="Jika pilihan bergantung pada satu nilai yang tepat, misalnya kode menu 1, 2, 3, pakai CASE OF variabel ... OTHERWISE ... ENDCASE. Lebih rapi daripada IF…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/pseudo/case-memilih-banyak-jalur"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "CASE: memilih banyak jalur", "description": "Jika pilihan bergantung pada satu nilai yang tepat, misalnya kode menu 1, 2, 3, pakai CASE OF variabel ... OTHERWISE ... ENDCASE. Lebih rapi daripada IF…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/pseudo/case-memilih-banyak-jalur", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Pseudocode", "url": "https://ruang-kode-nine.vercel.app/belajar/pseudo"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Pseudocode", "item": "https://ruang-kode-nine.vercel.app/belajar/pseudo"}, {"@type": "ListItem", "position": 3, "name": "CASE: memilih banyak jalur", "item": "https://ruang-kode-nine.vercel.app/belajar/pseudo/case-memilih-banyak-jalur"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/pseudo">Pseudocode</a> / Modul 2</nav>
+<div class="eyebrow">Pseudocode · Modul 2 · Konsep &amp; kode</div><h1>CASE: memilih banyak jalur</h1><a class="cta" href="/#pseudo-2-4">Buka versi interaktif</a>
+<p>Jika pilihan bergantung pada <b>satu nilai yang tepat</b>, misalnya kode menu 1, 2, 3, pakai <code>CASE OF variabel ... OTHERWISE ... ENDCASE</code>. Lebih rapi daripada IF bertingkat yang panjang, karena setiap pilihan berdiri di satu baris.</p>
+<p>Bagian <code>OTHERWISE</code> menangani nilai yang tidak terdaftar, misalnya pengguna mengetik 9. <b>Selalu sediakan OTHERWISE</b>: pengguna pasti suatu saat mengetik sesuatu yang tidak kamu duga.</p>
+<p>CASE di bahasa nyata: <code>switch</code> di Java, JavaScript, dan Dart; <code>match</code> di Python 3.10+; <code>when</code> di Kotlin. Hati-hati di Java dan JavaScript: setiap <code>case</code> butuh <code>break</code>, jika tidak, eksekusi "jatuh" ke case berikutnya.</p>
+<p>Visual di bawah menjalankan logika yang sama dengan IF bertingkat (simulator belum punya simbol CASE). Bandingkan dengan pseudocode CASE di bagian contoh. Coba kode 1, 3, lalu 9.</p>
+<div class="tw"><table><caption>CASE atau IF bertingkat?</caption><thead><tr><th>Situasi</th><th>Pilihan</th><th>Alasan</th></tr></thead><tbody><tr><td>Kode menu 1, 2, 3</td><td>CASE</td><td>Mencocokkan nilai tepat</td></tr><tr><td>Nama hari dari angka 1 sampai 7</td><td>CASE</td><td>Nilai tepat, banyak pilihan</td></tr><tr><td>Nilai 85 ke atas A, 70 ke atas B</td><td>IF bertingkat</td><td>Berupa rentang nilai</td></tr><tr><td>Dua syarat digabung (hadir dan lunas)</td><td>IF dengan AND</td><td>Kondisi gabungan</td></tr></tbody></table></div>
+<div class="lbl">CONTOH</div><pre><code>DECLARE kode, harga : INTEGER
+DECLARE menu : STRING
+INPUT kode
+CASE OF kode
+    1 : menu ← &quot;Kopi susu&quot;
+        harga ← 18000
+    2 : menu ← &quot;Teh tarik&quot;
+        harga ← 15000
+    3 : menu ← &quot;Jus jeruk&quot;
+        harga ← 20000
+    OTHERWISE : menu ← &quot;Tidak ada&quot;
+                harga ← 0
+ENDCASE
+OUTPUT menu, &quot;: Rp&quot;, harga</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Teh tarik: Rp15000</code></pre>
+<div class="lbl">PSEUDOCODE</div><pre><code>START
+    DECLARE kode, harga : INTEGER
+    DECLARE menu : STRING
+    INPUT kode
+    IF kode = 1 THEN
+        menu ← &quot;Kopi susu&quot;
+        harga ← 18000
+    ELSE
+        IF kode = 2 THEN
+            menu ← &quot;Teh tarik&quot;
+            harga ← 15000
+        ELSE
+            IF kode = 3 THEN
+                menu ← &quot;Jus jeruk&quot;
+                harga ← 20000
+            ELSE
+                menu ← &quot;Tidak ada&quot;
+                harga ← 0
+            ENDIF
+        ENDIF
+    ENDIF
+    OUTPUT menu, &quot;: Rp&quot;, harga
+END</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis CASE yang mengubah angka 1 sampai 7 menjadi nama hari (1 = Senin). Angka lain menghasilkan "Tidak valid".</p><details><summary>Petunjuk</summary><p>Tujuh pilihan ditambah OTHERWISE.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>DECLARE k : INTEGER
+DECLARE hari : STRING
+INPUT k
+CASE OF k
+    1 : hari ← &quot;Senin&quot;
+    2 : hari ← &quot;Selasa&quot;
+    3 : hari ← &quot;Rabu&quot;
+    4 : hari ← &quot;Kamis&quot;
+    5 : hari ← &quot;Jumat&quot;
+    6 : hari ← &quot;Sabtu&quot;
+    7 : hari ← &quot;Minggu&quot;
+    OTHERWISE : hari ← &quot;Tidak valid&quot;
+ENDCASE
+OUTPUT hari</code></pre><div class="lbl">KELUARAN</div><pre><code>Masukan 5 → Jumat</code></pre></details></li><li><p>Tulis kalkulator sederhana: input a, b, dan operator (+, -, *, /). Pakai CASE untuk operatornya, dan jaga pembagian dengan nol.</p><details><summary>Petunjuk</summary><p>CASE pada STRING op. Di cabang "/" cek b = 0 dulu.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>DECLARE a, b : REAL
+DECLARE op : STRING
+INPUT a
+INPUT op
+INPUT b
+CASE OF op
+    &quot;+&quot; : OUTPUT a + b
+    &quot;-&quot; : OUTPUT a - b
+    &quot;*&quot; : OUTPUT a * b
+    &quot;/&quot; : IF b = 0 THEN
+              OUTPUT &quot;Tidak bisa membagi dengan nol&quot;
+          ELSE
+              OUTPUT a / b
+          ENDIF
+    OTHERWISE : OUTPUT &quot;Operator tidak dikenal&quot;
+ENDCASE</code></pre><div class="lbl">KELUARAN</div><pre><code>12 * 3 → 36 · 7 / 0 → Tidak bisa membagi dengan nol</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>CASE untuk mencocokkan satu nilai tepat dengan banyak pilihan.</li><li>Selalu sediakan OTHERWISE.</li><li>Rentang nilai lebih cocok dengan IF bertingkat.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Pengguna mengetik 9 pada menu 1 sampai 3. Bagian mana yang jalan?</summary><p class="ok">Jawaban: OTHERWISE</p><p>OTHERWISE menangkap nilai yang tidak terdaftar.</p></details><details><summary>Menentukan nilai huruf dari angka 0 sampai 100 lebih cocok memakai?</summary><p class="ok">Jawaban: IF bertingkat</p><p>Berupa rentang, bukan nilai tepat.</p></details>
+<a class="cta" href="/#pseudo-2-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pseudo/if-else-dua-jalur">IF-ELSE: dua jalur</a></p><p>Berikutnya: <a href="/belajar/pseudo/percabangan-bersarang">Percabangan bersarang</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

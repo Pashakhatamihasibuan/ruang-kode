@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bubble sort dan insertion sort · Pseudocode · Ruang Kode</title>
+<meta name="description" content="Bubble sort mengurutkan dengan membandingkan pasangan bersebelahan dan menukarnya jika salah urutan. Setelah putaran pertama, angka terbesar sudah di…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/pseudo/bubble-sort-dan-insertion-sort">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Bubble sort dan insertion sort · Pseudocode · Ruang Kode"><meta property="og:description" content="Bubble sort mengurutkan dengan membandingkan pasangan bersebelahan dan menukarnya jika salah urutan. Setelah putaran pertama, angka terbesar sudah di…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/pseudo/bubble-sort-dan-insertion-sort"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Bubble sort dan insertion sort", "description": "Bubble sort mengurutkan dengan membandingkan pasangan bersebelahan dan menukarnya jika salah urutan. Setelah putaran pertama, angka terbesar sudah di…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/pseudo/bubble-sort-dan-insertion-sort", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Pseudocode", "url": "https://ruang-kode-nine.vercel.app/belajar/pseudo"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Pseudocode", "item": "https://ruang-kode-nine.vercel.app/belajar/pseudo"}, {"@type": "ListItem", "position": 3, "name": "Bubble sort dan insertion sort", "item": "https://ruang-kode-nine.vercel.app/belajar/pseudo/bubble-sort-dan-insertion-sort"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/pseudo">Pseudocode</a> / Modul 5</nav>
+<div class="eyebrow">Pseudocode · Modul 5 · Konsep &amp; kode</div><h1>Bubble sort dan insertion sort</h1><a class="cta" href="/#pseudo-5-6">Buka versi interaktif</a>
+<p><b>Bubble sort</b> mengurutkan dengan membandingkan pasangan <b>bersebelahan</b> dan menukarnya jika salah urutan. Setelah putaran pertama, angka terbesar sudah di ujung kanan, seperti gelembung yang naik. Menukar butuh variabel bantu <code>t</code>: <code>t ← a[j]</code>, <code>a[j] ← a[j + 1]</code>, <code>a[j + 1] ← t</code>.</p>
+<p><b>Insertion sort</b> bekerja seperti merapikan kartu di tangan. Ambil satu kartu (<code>kunci</code>), geser kartu-kartu di kirinya yang lebih besar satu langkah ke kanan, lalu <b>sisipkan</b> kunci di celah yang terbuka. Bagian kiri array selalu sudah terurut.</p>
+<p>Keduanya butuh sekitar n² langkah untuk data acak, jadi lambat untuk data besar. Tetapi insertion sort <b>sangat cepat</b> untuk data yang hampir terurut, karena hampir tidak ada yang perlu digeser. Itulah sebabnya Python dan Java memakai insertion sort untuk potongan kecil di dalam algoritma sort bawaannya.</p>
+<p>Visual menjalankan insertion sort pada [29, 10, 14, 37, 13]. Perhatikan <code>kunci</code> dan <code>j</code>, lalu lihat isi array berubah. Versi bubble sort ada di bagian contoh.</p>
+<div class="tw"><table><caption>Bubble vs insertion sort</caption><thead><tr><th>Aspek</th><th>Bubble</th><th>Insertion</th></tr></thead><tbody><tr><td>Ide</td><td>Tukar pasangan bersebelahan</td><td>Sisipkan ke bagian kiri yang terurut</td></tr><tr><td>Data acak</td><td>Sekitar n² langkah</td><td>Sekitar n² langkah</td></tr><tr><td>Data hampir terurut</td><td>Tetap lambat (tanpa optimasi)</td><td>Sangat cepat</td></tr><tr><td>Pemakaian nyata</td><td>Belajar konsep</td><td>Data kecil, bagian dari sort bawaan</td></tr></tbody></table></div>
+<div class="tw"><table><caption>Jejak insertion sort</caption><thead><tr><th>i</th><th>kunci</th><th>Array setelahnya</th></tr></thead><tbody><tr><td>awal</td><td>—</td><td>[29, 10, 14, 37, 13]</td></tr><tr><td>1</td><td>10</td><td>[10, 29, 14, 37, 13]</td></tr><tr><td>2</td><td>14</td><td>[10, 14, 29, 37, 13]</td></tr><tr><td>3</td><td>37</td><td>[10, 14, 29, 37, 13]</td></tr><tr><td>4</td><td>13</td><td>[10, 13, 14, 29, 37]</td></tr></tbody></table></div>
+<div class="lbl">CONTOH</div><pre><code>// Bubble sort
+FOR i ← 0 TO n - 2 DO
+    FOR j ← 0 TO n - 2 - i DO
+        IF a[j] &gt; a[j + 1] THEN
+            t ← a[j]
+            a[j] ← a[j + 1]
+            a[j + 1] ← t
+        ENDIF
+    ENDFOR
+ENDFOR
+
+// Insertion sort
+FOR i ← 1 TO n - 1 DO
+    kunci ← a[i]
+    j ← i - 1
+    WHILE j &gt;= 0 AND a[j] &gt; kunci DO
+        a[j + 1] ← a[j]
+        j ← j - 1
+    ENDWHILE
+    a[j + 1] ← kunci
+ENDFOR</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>[29, 10, 14, 37, 13] → [10, 13, 14, 29, 37]</code></pre>
+<div class="lbl">PSEUDOCODE</div><pre><code>START
+    DECLARE a : ARRAY[5] OF INTEGER
+    a ← [29, 10, 14, 37, 13]
+    DECLARE i, j, kunci : INTEGER
+    FOR i ← 1 TO 4 DO
+        kunci ← a[i]
+        j ← i - 1
+        WHILE j &gt;= 0 and a[j] &gt; kunci DO
+            a[j + 1] ← a[j]
+            j ← j - 1
+        ENDWHILE
+        a[j + 1] ← kunci
+    ENDFOR
+    OUTPUT &quot;Terurut: &quot;, a
+END</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Ubah bubble sort agar mengurutkan dari terbesar ke terkecil.</p><details><summary>Petunjuk</summary><p>Cukup balik tanda perbandingan: tukar jika a[j] &lt; a[j + 1].</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>FOR i ← 0 TO n - 2 DO
+    FOR j ← 0 TO n - 2 - i DO
+        IF a[j] &lt; a[j + 1] THEN
+            t ← a[j]
+            a[j] ← a[j + 1]
+            a[j + 1] ← t
+        ENDIF
+    ENDFOR
+ENDFOR</code></pre><div class="lbl">KELUARAN</div><pre><code>[5, 1, 4, 2] → [5, 4, 2, 1]</code></pre></details></li><li><p>Tuliskan isi array [5, 1, 4, 2] setelah putaran luar pertama bubble sort menaik.</p><details><summary>Petunjuk</summary><p>Bandingkan pasangan bersebelahan dari kiri: (5,1) tukar, (5,4) tukar, (5,2) tukar.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Awal      : [5, 1, 4, 2]
+j = 0     : [1, 5, 4, 2]
+j = 1     : [1, 4, 5, 2]
+j = 2     : [1, 4, 2, 5]
+Setelah putaran 1, angka terbesar (5) sudah di ujung.</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Bubble: tukar pasangan bersebelahan.</li><li>Insertion: sisipkan kunci ke bagian kiri yang sudah terurut.</li><li>Insertion sort unggul untuk data hampir terurut.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa menukar nilai butuh variabel t?</summary><p class="ok">Jawaban: Agar nilai lama tidak hilang tertimpa</p><p>Seperti menukar isi dua gelas.</p></details><details><summary>Pada insertion sort, apa yang selalu benar tentang bagian kiri array?</summary><p class="ok">Jawaban: Sudah terurut</p><p>Setiap kunci disisipkan ke bagian yang sudah terurut.</p></details>
+<a class="cta" href="/#pseudo-5-6">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pseudo/linear-search-dan-binary-search">Linear search dan binary search</a></p><p>Berikutnya: <a href="/belajar/pseudo/trace-table">Trace table</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pola akumulator · Pseudocode · Ruang Kode</title>
+<meta name="description" content="Akumulator adalah variabel yang mengumpulkan hasil selama loop berjalan. Polanya selalu sama: (1) beri nilai awal sebelum loop, (2) perbarui di dalam…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/pseudo/pola-akumulator">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Pola akumulator · Pseudocode · Ruang Kode"><meta property="og:description" content="Akumulator adalah variabel yang mengumpulkan hasil selama loop berjalan. Polanya selalu sama: (1) beri nilai awal sebelum loop, (2) perbarui di dalam…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/pseudo/pola-akumulator"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Pola akumulator", "description": "Akumulator adalah variabel yang mengumpulkan hasil selama loop berjalan. Polanya selalu sama: (1) beri nilai awal sebelum loop, (2) perbarui di dalam…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/pseudo/pola-akumulator", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Pseudocode", "url": "https://ruang-kode-nine.vercel.app/belajar/pseudo"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Pseudocode", "item": "https://ruang-kode-nine.vercel.app/belajar/pseudo"}, {"@type": "ListItem", "position": 3, "name": "Pola akumulator", "item": "https://ruang-kode-nine.vercel.app/belajar/pseudo/pola-akumulator"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/pseudo">Pseudocode</a> / Modul 3</nav>
+<div class="eyebrow">Pseudocode · Modul 3 · Konsep &amp; kode</div><h1>Pola akumulator</h1><a class="cta" href="/#pseudo-3-7">Buka versi interaktif</a>
+<p><b>Akumulator</b> adalah variabel yang <b>mengumpulkan</b> hasil selama loop berjalan. Polanya selalu sama: (1) beri nilai awal <b>sebelum</b> loop, (2) perbarui <b>di dalam</b> loop, (3) pakai hasilnya <b>setelah</b> loop.</p>
+<p>Empat akumulator yang paling sering: <b>penjumlah</b> (<code>total ← 0</code>, lalu <code>total ← total + x</code>), <b>penghitung</b> (<code>lulus ← 0</code>, lalu <code>lulus ← lulus + 1</code> jika syarat terpenuhi), <b>pengali</b> (<code>hasil ← 1</code>, lalu <code>hasil ← hasil * x</code>, misalnya faktorial), dan <b>pencari ekstrem</b> (maksimum atau minimum).</p>
+<p>Nilai awal harus sesuai jenisnya: penjumlah dan penghitung mulai dari <b>0</b>, pengali mulai dari <b>1</b> (jika 0, hasilnya selalu 0). Untuk maksimum, ambil data <b>pertama</b> sebagai nilai awal; pada contoh dipakai kondisi <code>i = 1 OR x &gt; maks</code> agar data pertama langsung menjadi maks.</p>
+<p>Visual membaca 5 nilai dan menghitung empat hal sekaligus dalam satu loop. Coba ganti nilai-nilainya dan prediksi hasilnya sebelum menekan Jalankan.</p>
+<div class="tw"><table><caption>Jenis akumulator</caption><thead><tr><th>Jenis</th><th>Nilai awal</th><th>Di dalam loop</th><th>Contoh</th></tr></thead><tbody><tr><td>Penjumlah</td><td>0</td><td>total ← total + x</td><td>Total belanja</td></tr><tr><td>Penghitung</td><td>0</td><td>IF syarat THEN n ← n + 1</td><td>Jumlah yang lulus</td></tr><tr><td>Pengali</td><td>1</td><td>hasil ← hasil * x</td><td>Faktorial, pangkat</td></tr><tr><td>Maksimum</td><td>Data pertama</td><td>IF x &gt; maks THEN maks ← x</td><td>Nilai tertinggi</td></tr><tr><td>Penggabung teks</td><td>&quot;&quot;</td><td>s ← s &amp; x</td><td>Membuat baris bintang</td></tr></tbody></table></div>
+<div class="lbl">PSEUDOCODE</div><pre><code>START
+    DECLARE i, x, total, lulus, maks : INTEGER
+    DECLARE rata : REAL
+    total ← 0
+    lulus ← 0
+    maks ← 0
+    FOR i ← 1 TO 5 DO
+        INPUT x
+        total ← total + x
+        IF x &gt;= 75 THEN
+            lulus ← lulus + 1
+        ENDIF
+        IF i = 1 or x &gt; maks THEN
+            maks ← x
+        ENDIF
+    ENDFOR
+    rata ← total / 5
+    OUTPUT &quot;Total: &quot;, total
+    OUTPUT &quot;Rata-rata: &quot;, rata
+    OUTPUT &quot;Lulus: &quot;, lulus, &quot; orang&quot;
+    OUTPUT &quot;Tertinggi: &quot;, maks
+END</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Baca 6 suhu harian, lalu tampilkan suhu terendah dan berapa hari suhunya di atas 32.</p><details><summary>Petunjuk</summary><p>Dua akumulator: minimum (mulai dari data pertama) dan penghitung (mulai 0).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>DECLARE i, x, minim, panas : INTEGER
+panas ← 0
+FOR i ← 1 TO 6 DO
+    INPUT x
+    IF i = 1 OR x &lt; minim THEN
+        minim ← x
+    ENDIF
+    IF x &gt; 32 THEN
+        panas ← panas + 1
+    ENDIF
+ENDFOR
+OUTPUT &quot;Terendah: &quot;, minim
+OUTPUT &quot;Hari panas: &quot;, panas</code></pre><div class="lbl">KELUARAN</div><pre><code>30 33 29 35 31 34 → Terendah: 29, Hari panas: 3</code></pre></details></li><li><p>Hitung 2 pangkat 10 dengan akumulator pengali.</p><details><summary>Petunjuk</summary><p>Nilai awal pengali 1, kalikan 2 sebanyak 10 kali.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>DECLARE i, hasil : INTEGER
+hasil ← 1
+FOR i ← 1 TO 10 DO
+    hasil ← hasil * 2
+ENDFOR
+OUTPUT hasil</code></pre><div class="lbl">KELUARAN</div><pre><code>1024</code></pre></details></li><li><p>Gabungkan huruf-huruf "R", "U", "A", "N", "G" menjadi satu kata dengan akumulator teks.</p><details><summary>Petunjuk</summary><p>Nilai awal "" lalu s ← s &amp; huruf.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>DECLARE huruf : ARRAY[0..4] OF CHAR
+DECLARE s : STRING
+DECLARE i : INTEGER
+huruf ← [&#x27;R&#x27;, &#x27;U&#x27;, &#x27;A&#x27;, &#x27;N&#x27;, &#x27;G&#x27;]
+s ← &quot;&quot;
+FOR i ← 0 TO 4 DO
+    s ← s &amp; huruf[i]
+ENDFOR
+OUTPUT s</code></pre><div class="lbl">KELUARAN</div><pre><code>RUANG</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Nilai awal sebelum loop, perbarui di dalam, pakai setelahnya.</li><li>Penjumlah 0, pengali 1, maksimum dari data pertama.</li><li>Satu loop bisa mengurus beberapa akumulator.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Nilai awal yang benar untuk menghitung faktorial?</summary><p class="ok">Jawaban: 1</p><p>Jika 0, hasil perkalian selalu 0.</p></details><details><summary>Nilai 80, 65, 92, 75, 58. Berapa yang lulus (≥ 75)?</summary><p class="ok">Jawaban: 3</p><p>80, 92, dan 75.</p></details>
+<a class="cta" href="/#pseudo-3-7">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pseudo/loop-bersarang">Loop bersarang</a></p><p>Berikutnya: <a href="/belajar/pseudo/dekomposisi-top-down">Dekomposisi top-down</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

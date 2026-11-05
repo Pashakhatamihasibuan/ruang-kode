@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kompleksitas waktu dan ruang · Pseudocode · Ruang Kode</title>
+<meta name="description" content="Kompleksitas waktu mengukur bagaimana jumlah langkah bertambah saat data bertambah. Kita tidak mengukur detik (karena bergantung komputer), melainkan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/pseudo/kompleksitas-waktu-dan-ruang">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Kompleksitas waktu dan ruang · Pseudocode · Ruang Kode"><meta property="og:description" content="Kompleksitas waktu mengukur bagaimana jumlah langkah bertambah saat data bertambah. Kita tidak mengukur detik (karena bergantung komputer), melainkan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/pseudo/kompleksitas-waktu-dan-ruang"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Kompleksitas waktu dan ruang", "description": "Kompleksitas waktu mengukur bagaimana jumlah langkah bertambah saat data bertambah. Kita tidak mengukur detik (karena bergantung komputer), melainkan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/pseudo/kompleksitas-waktu-dan-ruang", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Pseudocode", "url": "https://ruang-kode-nine.vercel.app/belajar/pseudo"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Pseudocode", "item": "https://ruang-kode-nine.vercel.app/belajar/pseudo"}, {"@type": "ListItem", "position": 3, "name": "Kompleksitas waktu dan ruang", "item": "https://ruang-kode-nine.vercel.app/belajar/pseudo/kompleksitas-waktu-dan-ruang"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/pseudo">Pseudocode</a> / Modul 6</nav>
+<div class="eyebrow">Pseudocode · Modul 6 · Konsep &amp; kode</div><h1>Kompleksitas waktu dan ruang</h1><a class="cta" href="/#pseudo-6-3">Buka versi interaktif</a>
+<p><b>Kompleksitas waktu</b> mengukur bagaimana <b>jumlah langkah</b> bertambah saat data bertambah. Kita tidak mengukur detik (karena bergantung komputer), melainkan pertumbuhannya, ditulis dengan notasi <b>Big-O</b>.</p>
+<p>Yang paling sering: <b>O(1)</b> konstan, tidak bergantung jumlah data (mengakses <code>a[5]</code>). <b>O(log n)</b> logaritmik, membuang separuh setiap langkah (binary search). <b>O(n)</b> linear, satu loop (linear search, menjumlah array). <b>O(n²)</b> kuadratik, dua loop bersarang (bubble sort). Aturan cepat: hitung loop bersarang yang bergantung pada n.</p>
+<p><b>Kompleksitas ruang</b> mengukur <b>memori tambahan</b> yang dipakai. Menjumlah array cukup satu variabel <code>total</code>: O(1). Menyalin array ke array baru: O(n). Matriks n × n: O(n²). Rekursi juga memakai ruang untuk setiap panggilan di call stack.</p>
+<p>Visual menghitung berapa kali badan loop bersarang dijalankan. Coba n = 4, 8, lalu 16. Saat n dua kali lipat, langkahnya menjadi <b>empat</b> kali lipat: itulah ciri O(n²).</p>
+<div class="tw"><table><caption>Pertumbuhan jumlah langkah</caption><thead><tr><th>n</th><th>O(1)</th><th>O(log n)</th><th>O(n)</th><th>O(n²)</th></tr></thead><tbody><tr><td>10</td><td>1</td><td>4</td><td>10</td><td>100</td></tr><tr><td>100</td><td>1</td><td>7</td><td>100</td><td>10.000</td></tr><tr><td>1.000</td><td>1</td><td>10</td><td>1.000</td><td>1.000.000</td></tr><tr><td>1.000.000</td><td>1</td><td>20</td><td>1.000.000</td><td>1.000.000.000.000</td></tr></tbody></table></div>
+<div class="tw"><table><caption>Kompleksitas algoritma di jalur ini</caption><thead><tr><th>Algoritma</th><th>Waktu</th><th>Ruang tambahan</th></tr></thead><tbody><tr><td>Akses a[i]</td><td>O(1)</td><td>O(1)</td></tr><tr><td>Jumlah, maksimum, linear search</td><td>O(n)</td><td>O(1)</td></tr><tr><td>Binary search (loop)</td><td>O(log n)</td><td>O(1)</td></tr><tr><td>Bubble sort, insertion sort</td><td>O(n²)</td><td>O(1)</td></tr><tr><td>Faktorial rekursif</td><td>O(n)</td><td>O(n), call stack</td></tr><tr><td>Traversal matriks n × n</td><td>O(n²)</td><td>O(1)</td></tr></tbody></table></div>
+<div class="lbl">PSEUDOCODE</div><pre><code>START
+    DECLARE n, i, j, langkah : INTEGER
+    INPUT n
+    langkah ← 0
+    FOR i ← 1 TO n DO
+        FOR j ← 1 TO n DO
+            langkah ← langkah + 1
+        ENDFOR
+    ENDFOR
+    OUTPUT &quot;n = &quot;, n, &quot;, langkah = &quot;, langkah
+END</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tentukan kompleksitas waktu setiap potongan: (a) satu FOR 1 sampai n, (b) FOR i 1 sampai n berisi FOR j 1 sampai n, (c) WHILE n &gt; 1 DO n ← n DIV 2, (d) OUTPUT a[0].</p><details><summary>Petunjuk</summary><p>Hitung loop yang bergantung n; membagi dua setiap langkah berarti log n.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>(a) O(n)
+(b) O(n²)
+(c) O(log n)
+(d) O(1)</code></pre></details></li><li><p>Dua loop berurutan (bukan bersarang), masing-masing 1 sampai n. Berapa kompleksitasnya, dan kenapa bukan O(n²)?</p><details><summary>Petunjuk</summary><p>Berurutan berarti dijumlah, bersarang berarti dikali.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>n + n = 2n langkah → O(n).
+Konstanta 2 diabaikan di Big-O.
+O(n²) hanya jika loop kedua berada DI DALAM loop pertama.</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Big-O mengukur pertumbuhan, bukan detik.</li><li>Satu loop O(n), dua loop bersarang O(n²), membuang separuh O(log n).</li><li>Ruang: memori tambahan, termasuk call stack.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kompleksitas waktu bubble sort?</summary><p class="ok">Jawaban: O(n²)</p><p>Dua loop bersarang.</p></details><details><summary>Algoritma O(n²) butuh 1 detik untuk 1.000 data. Kira-kira berapa untuk 2.000 data?</summary><p class="ok">Jawaban: 4 detik</p><p>n dua kali lipat, langkah empat kali lipat.</p></details>
+<a class="cta" href="/#pseudo-6-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pseudo/off-by-one-dan-kesalahan-logika">Off-by-one dan kesalahan logika</a></p><p>Berikutnya: <a href="/belajar/pseudo/menerjemahkan-pseudocode-ke-python">Menerjemahkan pseudocode ke Python</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>
