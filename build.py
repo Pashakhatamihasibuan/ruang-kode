@@ -27,10 +27,10 @@ TRACK_JS = ["track-java.js", "track-python.js", "track-sql.js", "track-sql-extra
             "track-de.js", "track-ux.js", "track-ds.js", "track-msi.js", "track-sim.js", "track-logika.js", "track-mobile.js", "track-cssfw.js", "track-more.js", "track-algo.js", "track-rute.js", "track-so.js", "tips.js", "bugs.js", "traces.js"]
 RT_JS = ["viz.js", "sqlengine.js", "sqldata.js", "sqldata-bi.js", "viz2.js", "viz3.js", "viz-msi.js", "viz-var.js", "viz-fc.js"]
 BOOK_JS = ["data.js", "lang-only.js", "app-javapy.js", "app-extra.js"]
-CORE_JS = ["gl.js", "app.js", "app-pages.js", "app-lesson.js", "codeanim.js", "practice.js", "tracer.js", "setup.js", "app-nav.js"]
+CORE_JS = ["gl.js", "app.js", "app-pages.js", "app-lesson.js", "viz3d.js", "codeanim.js", "practice.js", "tracer.js", "setup.js", "app-nav.js"]
 # urutan versi satu file (sama dengan urutan sebelum materi dipecah)
 ALL_JS = (["data.js", "lang-only.js", "util.js", "gl.js", "viz.js", "sqlengine.js", "sqldata.js", "sqldata-bi.js"] + TRACK_JS
-          + ["viz2.js", "viz3.js", "viz-msi.js", "viz-var.js", "viz-fc.js", "bs-css.js", "app.js", "app-pages.js", "app-lesson.js", "codeanim.js", "app-javapy.js",
+          + ["viz2.js", "viz3.js", "viz-msi.js", "viz-var.js", "viz-fc.js", "bs-css.js", "app.js", "app-pages.js", "app-lesson.js", "viz3d.js", "codeanim.js", "app-javapy.js",
              "app-extra.js", "practice.js", "tracer.js", "setup.js", "app-nav.js"])
 
 DESC = ("Akademi coding, data, dan desain berbahasa Indonesia: 36 jalur termasuk Struktur Data & Algoritma, PostgreSQL DBA, QA Engineer, Django, Next.js, Vue.js, UI Design, Slicing Website, Slicing Mobile, Dart, Flutter, Kotlin, Jetpack Compose, Kotlin Multiplatform, Tailwind CSS, Bootstrap 5, Pseudocode, Flowgorithm, dan Sistem Informasi, "
