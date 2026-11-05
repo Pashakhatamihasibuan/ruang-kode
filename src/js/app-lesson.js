@@ -33,6 +33,7 @@ function renderLesson(x){
   else if(l.k==='w')body=webHTML(l);
   else if(l.k==='proj')body=projHTML(l,y);
   else body=sqlLessonHTML(l);
+  if(typeof sekilasHTML==='function')body=sekilasHTML(x,y,l.pts||(l.k==='lab'&&typeof chFor==='function'?(chFor(l.n,y.t.lang)||{}).points:null))+body;
   const va=typeof varAnimOf==='function'&&varAnimOf(y.t.k,l);
   if(va)body=`<section class="viz va-sec" id="varAnim"><div class="viz-head"><span class="eyebrow">Animasi</span><h3>Bagaimana variabel dibuat dan diubah</h3><p>Tekan Berikutnya atau Putar otomatis. Kiri: kode dijalankan baris demi baris. Kanan: isi memori.</p></div><div id="varHost" class="vizhost"></div></section>`+body;
   return `<div class="l-top"><button class="btn ol-btn" id="olBtn" aria-controls="outline" aria-expanded="false"><span aria-hidden="true">☰</span> <span class="ol-lab">Daftar materi</span></button>
