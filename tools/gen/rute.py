@@ -24,6 +24,15 @@ try:
 except ImportError:
     pass
 
+try:
+    from studi_kasus import SLW_KASUS, SLM_KASUS, UI_PROYEK, UX_DS
+    tambah = {'UI': UI_PROYEK, 'SLW': SLW_KASUS, 'SLM': SLM_KASUS}
+    for nama, mods, so in JALUR:
+        mods += tambah.get(nama, [])
+    JALUR.append(('UX+', UX_DS, {}))  # ditambahkan ke UX_MODULES yang ditulis tangan
+except ImportError:
+    pass
+
 cek = {}
 out = []
 for nama, mods, so in JALUR:
@@ -45,7 +54,10 @@ for nama, mods, so in JALUR:
     n = sum(len(m['lessons']) for m in mods)
     s = sum(len(l.get('so', [])) for m in mods for l in m['lessons'])
     print(f'{nama}: {len(mods)} modul, {n} pelajaran, {s} soal')
-    out.append(f'const {nama}_MODULES={json.dumps(mods, ensure_ascii=False)};\n')
+    if nama.endswith('+'):
+        out.append(f'{nama[:-1]}_MODULES.push(...{json.dumps(mods, ensure_ascii=False)});\n')
+    else:
+        out.append(f'const {nama}_MODULES={json.dumps(mods, ensure_ascii=False)};\n')
 
 (root / 'src/js/track-rute.js').write_text('/* ===================== JALUR TAMBAHAN =====================\n   Dibuat oleh tools/gen/rute.py. Jangan diedit langsung. */\n' + ''.join(out))
 import os

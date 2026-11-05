@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Langkah 1: audit desain dan inventaris komponen · Slicing Website · Ruang Kode</title>
+<meta name="description" content="Slicer profesional tidak langsung menulis CSS. Langkah pertama adalah audit desain selama 15 sampai 30 menit: buka semua frame (mobile, tablet, desktop),…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/slw/langkah-1-audit-desain-dan-inventaris-komponen">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Langkah 1: audit desain dan inventaris komponen · Slicing Website · Ruang Kode"><meta property="og:description" content="Slicer profesional tidak langsung menulis CSS. Langkah pertama adalah audit desain selama 15 sampai 30 menit: buka semua frame (mobile, tablet, desktop),…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/slw/langkah-1-audit-desain-dan-inventaris-komponen"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Langkah 1: audit desain dan inventaris komponen", "description": "Slicer profesional tidak langsung menulis CSS. Langkah pertama adalah audit desain selama 15 sampai 30 menit: buka semua frame (mobile, tablet, desktop),…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/slw/langkah-1-audit-desain-dan-inventaris-komponen", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Slicing Website", "url": "https://ruang-kode-nine.vercel.app/belajar/slw"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Slicing Website", "item": "https://ruang-kode-nine.vercel.app/belajar/slw"}, {"@type": "ListItem", "position": 3, "name": "Langkah 1: audit desain dan inventaris komponen", "item": "https://ruang-kode-nine.vercel.app/belajar/slw/langkah-1-audit-desain-dan-inventaris-komponen"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/slw">Slicing Website</a> / Modul 6</nav>
+<div class="eyebrow">Slicing Website · Modul 6 · Konsep &amp; kode</div><h1>Langkah 1: audit desain dan inventaris komponen</h1><a class="cta" href="/#slw-6-2">Buka versi interaktif</a>
+<p>Slicer profesional tidak langsung menulis CSS. Langkah pertama adalah <b>audit desain</b> selama 15 sampai 30 menit: buka semua frame (mobile, tablet, desktop), catat section, komponen berulang, token, aset, dan hal yang belum jelas.</p>
+<p>Hasil audit berupa <b>inventaris</b>: daftar section, daftar komponen beserta variannya (tombol primer, tombol garis, tombol aksen), daftar token, daftar aset yang harus diekspor, dan daftar <b>pertanyaan untuk desainer</b>. Pertanyaan yang ditanyakan di awal jauh lebih murah daripada revisi di akhir.</p>
+<p>Yang sering terlewat dan wajib ditanyakan: state hover, fokus, nonaktif, dan error; perilaku teks yang sangat panjang; tampilan saat data kosong; dan apa yang terjadi di antara dua breakpoint (misalnya lebar 600 px).</p>
+<div class="tw"><table><caption>Checklist audit desain</caption><thead><tr><th>Periksa</th><th>Pertanyaan</th></tr></thead><tbody><tr><td>Frame</td><td>Ada versi mobile, tablet, desktop? Mana yang Ready for dev?</td></tr><tr><td>Komponen</td><td>Apa saja yang berulang? Berapa varian?</td></tr><tr><td>Token</td><td>Apakah warna dan teks memakai variabel atau style Figma?</td></tr><tr><td>State</td><td>Hover, fokus, aktif, nonaktif, error, memuat, kosong?</td></tr><tr><td>Konten</td><td>Teks panjang, angka besar, nama dua baris?</td></tr><tr><td>Aset</td><td>Format apa, ukuran berapa, perlu 2x?</td></tr><tr><td>Interaksi</td><td>Animasi, sticky, scroll, modal?</td></tr></tbody></table></div>
+<div class="lbl">CONTOH</div><pre><code>INVENTARIS · Landing Kopi Kita
+
+Section  : nav, hero, produk (3 kartu), cta langganan, footer
+Komponen : Tombol (primer, garis, aksen) tinggi 44, radius 12
+           Kartu produk: foto 1:1, nama, asal, harga, tombol
+           Input email + tombol (form satu baris, membungkus di layar sempit)
+Token    : 6 warna, radius 12, jarak 8/16/24/32/48, H1 28-&gt;40
+Aset     : logo SVG, 3 foto produk WebP (2x), foto hero WebP
+Breakpoint: 768 px (menu tampil, hero 2 kolom, produk 3 kolom)
+
+PERTANYAAN UNTUK DESAINER
+1. State hover dan fokus tombol belum ada di file. Boleh pakai brightness +8% dan outline aksen?
+2. Di mobile, menu disembunyikan. Apakah perlu tombol hamburger?
+3. Nama produk yang panjang (2 baris) dipotong atau dibiarkan membungkus?</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat inventaris singkat untuk sebuah halaman login: section, komponen, token, dan dua pertanyaan untuk desainer.</p><details><summary>Petunjuk</summary><p>Pikirkan state error dan lupa kata sandi.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Section: logo, judul, form, tautan daftar
+Komponen: input (default, fokus, error), tombol primer, tautan
+Token: warna primer, merah error, radius 12, jarak 8/16/24
+Pertanyaan: 1) Pesan error tampil di bawah input atau di atas form? 2) Ada opsi tampilkan kata sandi?</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Audit 15 sampai 30 menit sebelum coding.</li><li>Inventaris: section, komponen, token, aset, pertanyaan.</li><li>Tanyakan state dan kasus ekstrem di awal.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kapan waktu terbaik bertanya soal state hover yang tidak ada di desain?</summary><p class="ok">Jawaban: Saat audit, sebelum coding</p><p>Murah di awal, mahal di akhir.</p></details>
+<a class="cta" href="/#slw-6-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/slw/contoh-desain-papan-figma-kopi-kita">Contoh desain: papan Figma &quot;Kopi Kita&quot;</a></p><p>Berikutnya: <a href="/belajar/slw/langkah-2-token-desain-menjadi-css-variables">Langkah 2: token desain menjadi CSS variables</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

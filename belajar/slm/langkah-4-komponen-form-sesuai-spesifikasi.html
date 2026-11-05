@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Langkah 4: komponen form sesuai spesifikasi · Slicing Mobile · Ruang Kode</title>
+<meta name="description" content="Buat field email dan kata sandi dengan TextFormField (Flutter) atau OutlinedTextField (Compose). Lengkapi atribut yang tidak terlihat di desain tetapi…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/slm/langkah-4-komponen-form-sesuai-spesifikasi">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Langkah 4: komponen form sesuai spesifikasi · Slicing Mobile · Ruang Kode"><meta property="og:description" content="Buat field email dan kata sandi dengan TextFormField (Flutter) atau OutlinedTextField (Compose). Lengkapi atribut yang tidak terlihat di desain tetapi…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/slm/langkah-4-komponen-form-sesuai-spesifikasi"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Langkah 4: komponen form sesuai spesifikasi", "description": "Buat field email dan kata sandi dengan TextFormField (Flutter) atau OutlinedTextField (Compose). Lengkapi atribut yang tidak terlihat di desain tetapi…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/slm/langkah-4-komponen-form-sesuai-spesifikasi", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Slicing Mobile", "url": "https://ruang-kode-nine.vercel.app/belajar/slm"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Slicing Mobile", "item": "https://ruang-kode-nine.vercel.app/belajar/slm"}, {"@type": "ListItem", "position": 3, "name": "Langkah 4: komponen form sesuai spesifikasi", "item": "https://ruang-kode-nine.vercel.app/belajar/slm/langkah-4-komponen-form-sesuai-spesifikasi"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/slm">Slicing Mobile</a> / Modul 5</nav>
+<div class="eyebrow">Slicing Mobile · Modul 5 · Konsep &amp; kode</div><h1>Langkah 4: komponen form sesuai spesifikasi</h1><a class="cta" href="/#slm-5-5">Buka versi interaktif</a>
+<p>Buat field email dan kata sandi dengan <code>TextFormField</code> (Flutter) atau <code>OutlinedTextField</code> (Compose). Lengkapi atribut yang tidak terlihat di desain tetapi penting: <code>keyboardType</code>, <code>textInputAction</code>, <code>autofillHints</code> (agar password manager bekerja), dan ikon untuk menampilkan kata sandi.</p>
+<p>Jarak antar elemen mengikuti redline (16, 8, 24 dp). Tombol utama memakai FilledButton lebar penuh setinggi 48 dp dari tema; tombol Google memakai OutlinedButton.</p>
+<p>Label teks yang dibaca pembaca layar (TalkBack) harus jelas: ikon mata perlu <code>tooltip</code> atau contentDescription "Tampilkan kata sandi".</p>
+<div class="lbl">KODE</div><pre><code>class FormMasuk extends StatefulWidget {
+  const FormMasuk({super.key});
+  @override
+  State&lt;FormMasuk&gt; createState() =&gt; _FormMasukState();
+}
+
+class _FormMasukState extends State&lt;FormMasuk&gt; {
+  bool sembunyi = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return AutofillGroup(
+      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        const TextField(
+          keyboardType: TextInputType.emailAddress,
+          textInputAction: TextInputAction.next,
+          autofillHints: [AutofillHints.email],
+          decoration: InputDecoration(labelText: &#x27;Email&#x27;),
+        ),
+        const SizedBox(height: 16),
+        TextField(
+          obscureText: sembunyi,
+          textInputAction: TextInputAction.done,
+          autofillHints: const [AutofillHints.password],
+          decoration: InputDecoration(
+            labelText: &#x27;Kata sandi&#x27;,
+            suffixIcon: IconButton(
+              tooltip: sembunyi ? &#x27;Tampilkan kata sandi&#x27; : &#x27;Sembunyikan kata sandi&#x27;,
+              icon: Icon(sembunyi ? Icons.visibility : Icons.visibility_off),
+              onPressed: () =&gt; setState(() =&gt; sembunyi = !sembunyi),
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Align(alignment: Alignment.centerRight,
+            child: TextButton(onPressed: () {}, child: const Text(&#x27;Lupa kata sandi?&#x27;))),
+        const SizedBox(height: 24),
+        FilledButton(onPressed: () {}, child: const Text(&#x27;Masuk&#x27;)),
+        const SizedBox(height: 16),
+        const Text(&#x27;atau&#x27;, textAlign: TextAlign.center),
+        const SizedBox(height: 16),
+        OutlinedButton(onPressed: () {}, child: const Text(&#x27;Lanjut dengan Google&#x27;)),
+      ]),
+    );
+  }
+}</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis field kata sandi Compose dengan ikon mata untuk menampilkan atau menyembunyikan, tinggi minimal 56 dp.</p><details><summary>Petunjuk</summary><p>OutlinedTextField + visualTransformation + trailingIcon.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>var sandi by remember { mutableStateOf(&quot;&quot;) }
+var lihat by remember { mutableStateOf(false) }
+OutlinedTextField(
+    value = sandi,
+    onValueChange = { sandi = it },
+    label = { Text(&quot;Kata sandi&quot;) },
+    singleLine = true,
+    visualTransformation = if (lihat) VisualTransformation.None else PasswordVisualTransformation(),
+    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+    trailingIcon = {
+        IconButton(onClick = { lihat = !lihat }) {
+            Icon(if (lihat) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                 contentDescription = if (lihat) &quot;Sembunyikan kata sandi&quot; else &quot;Tampilkan kata sandi&quot;)
+        }
+    },
+    shape = RoundedCornerShape(12.dp),
+    modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp),
+)</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>keyboardType, textInputAction, autofillHints.</li><li>Jarak sesuai redline, ukuran dari tema.</li><li>Tooltip untuk ikon agar terbaca TalkBack.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Atribut yang membuat password manager bisa mengisi form?</summary><p class="ok">Jawaban: autofillHints</p><p>Membantu juga aksesibilitas (WCAG 3.3.8).</p></details>
+<a class="cta" href="/#slm-5-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/slm/langkah-3-kerangka-layar-safe-area-dan-scroll">Langkah 3: kerangka layar, safe area, dan scroll</a></p><p>Berikutnya: <a href="/belajar/slm/langkah-5-state-validasi-dan-memuat">Langkah 5: state, validasi, dan memuat</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

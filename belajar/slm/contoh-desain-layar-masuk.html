@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contoh desain: layar Masuk · Slicing Mobile · Ruang Kode</title>
+<meta name="description" content="Pratinjau menampilkan tiruan frame Figma untuk layar Masuk aplikasi Android: margin layar 24 dp, judul 24/32 sp tebal, input setinggi 56 dp dengan radius…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/slm/contoh-desain-layar-masuk">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Contoh desain: layar Masuk · Slicing Mobile · Ruang Kode"><meta property="og:description" content="Pratinjau menampilkan tiruan frame Figma untuk layar Masuk aplikasi Android: margin layar 24 dp, judul 24/32 sp tebal, input setinggi 56 dp dengan radius…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/slm/contoh-desain-layar-masuk"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Contoh desain: layar Masuk", "description": "Pratinjau menampilkan tiruan frame Figma untuk layar Masuk aplikasi Android: margin layar 24 dp, judul 24/32 sp tebal, input setinggi 56 dp dengan radius…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/slm/contoh-desain-layar-masuk", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "Slicing Mobile", "url": "https://ruang-kode-nine.vercel.app/belajar/slm"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Slicing Mobile", "item": "https://ruang-kode-nine.vercel.app/belajar/slm"}, {"@type": "ListItem", "position": 3, "name": "Contoh desain: layar Masuk", "item": "https://ruang-kode-nine.vercel.app/belajar/slm/contoh-desain-layar-masuk"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/slm">Slicing Mobile</a> / Modul 5</nav>
+<div class="eyebrow">Slicing Mobile · Modul 5 · Praktik langsung</div><h1>Contoh desain: layar Masuk</h1><a class="cta" href="/#slm-5-1">Buka versi interaktif</a>
+<p>Pratinjau menampilkan tiruan frame <b>Figma</b> untuk layar Masuk aplikasi Android: margin layar 24 dp, judul 24/32 sp tebal, input setinggi 56 dp dengan radius 12, jarak antar field 16 dp, dan tombol utama 48 dp. Tabel token di bawahnya sudah memetakan setiap nilai ke Flutter dan Compose.</p>
+<p>Ingat satuan mobile: <b>dp</b> (density-independent pixel) untuk ukuran dan jarak, <b>sp</b> untuk teks agar ikut membesar saat pengguna memperbesar huruf di pengaturan. 1 px di Figma pada frame 360 sama dengan 1 dp.</p>
+<p>Ada hal yang tidak terlihat di gambar statis tetapi tetap harus dibuat: keyboard yang menutupi form, pesan error, tombol saat memuat, tampilan kata sandi, mode gelap, dan layar kecil atau tablet. Langkah-langkah berikut menanganinya satu per satu.</p>
+<div class="lbl">HTML</div><pre><code>&lt;div class=&quot;papan&quot;&gt;
+  &lt;p class=&quot;label&quot;&gt;Frame · Android 360 × 800 dp · Masuk (Ready for dev)&lt;/p&gt;
+  &lt;div class=&quot;hp&quot;&gt;
+    &lt;div class=&quot;status&quot;&gt;&lt;span&gt;09.41&lt;/span&gt;&lt;span&gt;▲ ◼ 87%&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;isi&quot;&gt;
+      &lt;div class=&quot;logo&quot;&gt;KK&lt;/div&gt;
+      &lt;h1&gt;Masuk&lt;/h1&gt;
+      &lt;p class=&quot;sub&quot;&gt;Pesan kopi favoritmu lebih cepat.&lt;/p&gt;
+      &lt;label&gt;Email&lt;span class=&quot;in&quot;&gt;rina@contoh.id&lt;/span&gt;&lt;/label&gt;
+      &lt;label&gt;Kata sandi&lt;span class=&quot;in&quot;&gt;••••••••&lt;b&gt;👁&lt;/b&gt;&lt;/span&gt;&lt;/label&gt;
+      &lt;p class=&quot;lupa&quot;&gt;Lupa kata sandi?&lt;/p&gt;
+      &lt;span class=&quot;btn&quot;&gt;Masuk&lt;/span&gt;
+      &lt;p class=&quot;atau&quot;&gt;atau&lt;/p&gt;
+      &lt;span class=&quot;btn garis&quot;&gt;Lanjut dengan Google&lt;/span&gt;
+      &lt;p class=&quot;daftar&quot;&gt;Belum punya akun? &lt;b&gt;Daftar&lt;/b&gt;&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;span class=&quot;rl&quot; style=&quot;top:118px;left:0;width:24px&quot; data-v=&quot;24&quot;&gt;&lt;/span&gt;
+    &lt;span class=&quot;tag&quot; style=&quot;top:150px;right:4px&quot;&gt;Judul 24/32 sp · Bold&lt;/span&gt;
+    &lt;span class=&quot;tag&quot; style=&quot;top:214px;right:4px&quot;&gt;Input 56 dp · r12&lt;/span&gt;
+    &lt;span class=&quot;tag&quot; style=&quot;top:356px;right:4px&quot;&gt;Tombol 48 dp · r12&lt;/span&gt;
+    &lt;span class=&quot;rl v&quot; style=&quot;top:282px;left:60px;height:16px&quot; data-v=&quot;16&quot;&gt;&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;p class=&quot;label&quot;&gt;Token&lt;/p&gt;
+  &lt;table class=&quot;spek&quot;&gt;&lt;tr&gt;&lt;th&gt;Token&lt;/th&gt;&lt;th&gt;Nilai&lt;/th&gt;&lt;th&gt;Flutter&lt;/th&gt;&lt;th&gt;Compose&lt;/th&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;primary&lt;/td&gt;&lt;td&gt;#8A4B2A&lt;/td&gt;&lt;td&gt;colorScheme.primary&lt;/td&gt;&lt;td&gt;MaterialTheme.colorScheme.primary&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;surface&lt;/td&gt;&lt;td&gt;#FBF7F2&lt;/td&gt;&lt;td&gt;colorScheme.surface&lt;/td&gt;&lt;td&gt;colorScheme.surface&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;Judul&lt;/td&gt;&lt;td&gt;24/32 sp bold&lt;/td&gt;&lt;td&gt;textTheme.headlineSmall&lt;/td&gt;&lt;td&gt;typography.headlineSmall&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;Margin layar&lt;/td&gt;&lt;td&gt;24 dp&lt;/td&gt;&lt;td&gt;EdgeInsets.all(24)&lt;/td&gt;&lt;td&gt;padding(24.dp)&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;Jarak antar field&lt;/td&gt;&lt;td&gt;16 dp&lt;/td&gt;&lt;td&gt;SizedBox(height: 16)&lt;/td&gt;&lt;td&gt;Spacer(Modifier.height(16.dp))&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;</code></pre>
+<div class="lbl">CSS</div><pre><code>body { margin: 0; background: #2C2C2C; font-family: system-ui, sans-serif; }
+.papan { padding: 16px; color: #EDEDED; }
+.label { font-size: 12px; color: #B5B5B5; margin: 16px 0 8px; }
+.hp { position: relative; width: 300px; max-width: 100%; background: #FBF7F2; color: #2B2724; border-radius: 24px; overflow: hidden; box-shadow: 0 0 0 1px #4A90E2; }
+.status { display: flex; justify-content: space-between; font-size: 11px; padding: 8px 20px; }
+.isi { padding: 16px 20px 24px; display: grid; gap: 10px; }
+.logo { width: 48px; height: 48px; border-radius: 12px; background: #8A4B2A; color: #fff; display: grid; place-items: center; font-weight: 800; }
+h1 { margin: 6px 0 0; font-size: 22px; }
+.sub { margin: 0; color: #6B625B; font-size: 13px; }
+label { display: grid; gap: 4px; font-size: 12px; font-weight: 600; }
+.in { display: flex; justify-content: space-between; height: 44px; align-items: center; padding: 0 12px; border: 1px solid #C9BBAE; border-radius: 12px; font-weight: 400; font-size: 14px; background: #fff; }
+.in b { font-weight: 400; }
+.lupa { margin: 0; text-align: right; font-size: 12px; color: #8A4B2A; font-weight: 600; }
+.btn { display: grid; place-items: center; height: 40px; border-radius: 12px; background: #8A4B2A; color: #fff; font-weight: 700; font-size: 14px; }
+.btn.garis { background: #fff; color: #2B2724; border: 1px solid #C9BBAE; }
+.atau { margin: 0; text-align: center; font-size: 12px; color: #6B625B; }
+.daftar { margin: 4px 0 0; text-align: center; font-size: 12px; }
+.daftar b { color: #8A4B2A; }
+.rl { position: absolute; border-top: 1px solid #F24E1E; }
+.rl.v { border-top: 0; border-left: 1px solid #F24E1E; }
+.rl::after { content: attr(data-v); position: absolute; background: #F24E1E; color: #fff; font: 600 10px/1 system-ui; padding: 2px 4px; border-radius: 3px; top: -8px; left: 4px; }
+.tag { position: absolute; background: #7B61FF; color: #fff; font: 600 10px/1 system-ui; padding: 3px 6px; border-radius: 3px; }
+.spek { border-collapse: collapse; font-size: 11px; color: #EDEDED; display: block; overflow-x: auto; }
+.spek td, .spek th { border: 1px solid #555; padding: 4px 6px; text-align: left; white-space: nowrap; }
+</code></pre>
+<h2>Poin penting</h2><ul><li>dp untuk ukuran, sp untuk teks.</li><li>Token desain dipetakan ke tema Flutter dan Compose.</li><li>Rencanakan state yang tidak terlihat di desain.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Satuan untuk ukuran teks di Android?</summary><p class="ok">Jawaban: sp</p><p>Ikut pengaturan ukuran huruf pengguna.</p></details>
+<a class="cta" href="/#slm-5-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/slm/proyek-slicing-aplikasi-kedai-kopi">Proyek: slicing aplikasi kedai kopi</a></p><p>Berikutnya: <a href="/belajar/slm/langkah-1-membaca-spesifikasi-dan-memecah-layar">Langkah 1: membaca spesifikasi dan memecah layar</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

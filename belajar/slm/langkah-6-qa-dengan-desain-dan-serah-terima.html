@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Langkah 6: QA dengan desain dan serah terima · Slicing Mobile · Ruang Kode</title>
+<meta name="description" content="Bandingkan hasil dengan desain di perangkat nyata atau emulator 360 × 800 dp. Ambil tangkapan layar dan tumpuk di atas frame Figma (opacity 50%). Periksa…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/slm/langkah-6-qa-dengan-desain-dan-serah-terima">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Langkah 6: QA dengan desain dan serah terima · Slicing Mobile · Ruang Kode"><meta property="og:description" content="Bandingkan hasil dengan desain di perangkat nyata atau emulator 360 × 800 dp. Ambil tangkapan layar dan tumpuk di atas frame Figma (opacity 50%). Periksa…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/slm/langkah-6-qa-dengan-desain-dan-serah-terima"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Langkah 6: QA dengan desain dan serah terima", "description": "Bandingkan hasil dengan desain di perangkat nyata atau emulator 360 × 800 dp. Ambil tangkapan layar dan tumpuk di atas frame Figma (opacity 50%). Periksa…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/slm/langkah-6-qa-dengan-desain-dan-serah-terima", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Slicing Mobile", "url": "https://ruang-kode-nine.vercel.app/belajar/slm"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Slicing Mobile", "item": "https://ruang-kode-nine.vercel.app/belajar/slm"}, {"@type": "ListItem", "position": 3, "name": "Langkah 6: QA dengan desain dan serah terima", "item": "https://ruang-kode-nine.vercel.app/belajar/slm/langkah-6-qa-dengan-desain-dan-serah-terima"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/slm">Slicing Mobile</a> / Modul 5</nav>
+<div class="eyebrow">Slicing Mobile · Modul 5 · Konsep &amp; kode</div><h1>Langkah 6: QA dengan desain dan serah terima</h1><a class="cta" href="/#slm-5-7">Buka versi interaktif</a>
+<p>Bandingkan hasil dengan desain di <b>perangkat nyata</b> atau emulator 360 × 800 dp. Ambil tangkapan layar dan tumpuk di atas frame Figma (opacity 50%). Periksa jarak, ukuran teks, warna, dan radius.</p>
+<p>Uji kasus yang tidak ada di desain: ukuran huruf sistem 200%, layar kecil 320 dp, tablet, mode gelap, orientasi lanskap, TalkBack, dan keyboard terbuka. Kunci tampilan dengan <b>golden test</b> (Flutter) atau <b>screenshot test</b> seperti Roborazzi atau Paparazzi (Compose) agar perubahan tak sengaja langsung ketahuan.</p>
+<p>Serah terima: rekaman layar alur Masuk, tangkapan layar setiap state, daftar perbedaan yang disengaja, dan build uji (Firebase App Distribution atau internal testing Play).</p>
+<div class="tw"><table><caption>Checklist QA slicing mobile</caption><thead><tr><th>Uji</th><th>Lulus jika</th></tr></thead><tbody><tr><td>Overlay 360 × 800</td><td>Jarak, teks, warna, radius sesuai desain</td></tr><tr><td>Huruf 200%</td><td>Teks tidak terpotong, layar bisa di-scroll</td></tr><tr><td>Layar 320 dp dan tablet</td><td>Tidak ada overflow, form maksimal 480 dp</td></tr><tr><td>Mode gelap</td><td>Kontras tetap AA</td></tr><tr><td>TalkBack</td><td>Semua tombol dan ikon terbaca jelas</td></tr><tr><td>Keyboard terbuka</td><td>Tombol Masuk tetap bisa dicapai</td></tr><tr><td>Golden test</td><td>Lulus di CI</td></tr></tbody></table></div>
+<div class="lbl">KODE</div><pre><code>testWidgets(&#x27;layar Masuk sesuai desain&#x27;, (tester) async {
+  tester.view.physicalSize = const Size(1080, 2400);   // 360 × 800 dp pada 3x
+  tester.view.devicePixelRatio = 3;
+  await tester.pumpWidget(MaterialApp(theme: temaKopi, home: const LayarMasuk()));
+  await expectLater(find.byType(LayarMasuk), matchesGoldenFile(&#x27;goldens/masuk_360.png&#x27;));
+});
+
+// perbarui golden setelah desain disetujui:
+// flutter test --update-goldens</code></pre>
+<h2>Poin penting</h2><ul><li>Overlay dengan frame Figma di 360 × 800 dp.</li><li>Uji huruf besar, layar kecil, tablet, gelap, TalkBack.</li><li>Golden atau screenshot test untuk mengunci tampilan.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Alat Flutter untuk mengunci tampilan layar dari perubahan tak sengaja?</summary><p class="ok">Jawaban: Golden test</p><p>Membandingkan gambar piksel.</p></details>
+<a class="cta" href="/#slm-5-7">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/slm/langkah-5-state-validasi-dan-memuat">Langkah 5: state, validasi, dan memuat</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

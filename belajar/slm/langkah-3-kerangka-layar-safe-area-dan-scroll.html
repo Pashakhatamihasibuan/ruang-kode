@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Langkah 3: kerangka layar, safe area, dan scroll · Slicing Mobile · Ruang Kode</title>
+<meta name="description" content="Bungkus layar dengan Scaffold dan safe area agar tidak tertimpa status bar atau notch. Isi diletakkan dalam kolom yang bisa di-scroll, supaya saat…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/slm/langkah-3-kerangka-layar-safe-area-dan-scroll">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Langkah 3: kerangka layar, safe area, dan scroll · Slicing Mobile · Ruang Kode"><meta property="og:description" content="Bungkus layar dengan Scaffold dan safe area agar tidak tertimpa status bar atau notch. Isi diletakkan dalam kolom yang bisa di-scroll, supaya saat…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/slm/langkah-3-kerangka-layar-safe-area-dan-scroll"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Langkah 3: kerangka layar, safe area, dan scroll", "description": "Bungkus layar dengan Scaffold dan safe area agar tidak tertimpa status bar atau notch. Isi diletakkan dalam kolom yang bisa di-scroll, supaya saat…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/slm/langkah-3-kerangka-layar-safe-area-dan-scroll", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Slicing Mobile", "url": "https://ruang-kode-nine.vercel.app/belajar/slm"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Slicing Mobile", "item": "https://ruang-kode-nine.vercel.app/belajar/slm"}, {"@type": "ListItem", "position": 3, "name": "Langkah 3: kerangka layar, safe area, dan scroll", "item": "https://ruang-kode-nine.vercel.app/belajar/slm/langkah-3-kerangka-layar-safe-area-dan-scroll"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/slm">Slicing Mobile</a> / Modul 5</nav>
+<div class="eyebrow">Slicing Mobile · Modul 5 · Konsep &amp; kode</div><h1>Langkah 3: kerangka layar, safe area, dan scroll</h1><a class="cta" href="/#slm-5-4">Buka versi interaktif</a>
+<p>Bungkus layar dengan <code>Scaffold</code> dan <b>safe area</b> agar tidak tertimpa status bar atau notch. Isi diletakkan dalam kolom yang bisa di-<b>scroll</b>, supaya saat keyboard muncul pengguna tetap bisa mencapai tombol Masuk.</p>
+<p>Pakai padding 24 dp dari token. Batasi lebar maksimum isi (misalnya 480 dp) dan letakkan di tengah agar di tablet form tidak melebar sepanjang layar.</p>
+<p>Kerangka Compose padanannya: <code>Scaffold</code> + <code>Column(Modifier.verticalScroll(rememberScrollState()).imePadding().padding(24.dp).widthIn(max = 480.dp))</code>.</p>
+<div class="lbl">KODE</div><pre><code>class LayarMasuk extends StatelessWidget {
+  const LayarMasuk({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Theme.of(context).textTheme;
+    return Scaffold(
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 480),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Align(alignment: Alignment.centerLeft, child: LogoKopi(ukuran: 48)),
+                  const SizedBox(height: 24),
+                  Text(&#x27;Masuk&#x27;, style: t.headlineSmall),
+                  const SizedBox(height: 4),
+                  Text(&#x27;Pesan kopi favoritmu lebih cepat.&#x27;, style: t.bodyMedium),
+                  const SizedBox(height: 32),
+                  const FormMasuk(),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}</code></pre>
+<h2>Poin penting</h2><ul><li>Scaffold + SafeArea.</li><li>Isi bisa di-scroll agar tidak tertutup keyboard.</li><li>Lebar maksimum 480 dp untuk tablet.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa isi layar Masuk dibungkus scroll?</summary><p class="ok">Jawaban: Agar tombol tetap terjangkau saat keyboard muncul</p><p>Keyboard memakan separuh layar.</p></details>
+<a class="cta" href="/#slm-5-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/slm/langkah-2-token-menjadi-tema">Langkah 2: token menjadi tema</a></p><p>Berikutnya: <a href="/belajar/slm/langkah-4-komponen-form-sesuai-spesifikasi">Langkah 4: komponen form sesuai spesifikasi</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

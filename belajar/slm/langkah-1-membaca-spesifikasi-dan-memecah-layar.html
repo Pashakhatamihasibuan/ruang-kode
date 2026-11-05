@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Langkah 1: membaca spesifikasi dan memecah layar · Slicing Mobile · Ruang Kode</title>
+<meta name="description" content="Pecah layar dari atas ke bawah menjadi blok: status bar dan safe area, logo, judul dan subjudul, field email, field kata sandi dengan ikon mata, tautan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/slm/langkah-1-membaca-spesifikasi-dan-memecah-layar">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Langkah 1: membaca spesifikasi dan memecah layar · Slicing Mobile · Ruang Kode"><meta property="og:description" content="Pecah layar dari atas ke bawah menjadi blok: status bar dan safe area, logo, judul dan subjudul, field email, field kata sandi dengan ikon mata, tautan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/slm/langkah-1-membaca-spesifikasi-dan-memecah-layar"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Langkah 1: membaca spesifikasi dan memecah layar", "description": "Pecah layar dari atas ke bawah menjadi blok: status bar dan safe area, logo, judul dan subjudul, field email, field kata sandi dengan ikon mata, tautan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/slm/langkah-1-membaca-spesifikasi-dan-memecah-layar", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Slicing Mobile", "url": "https://ruang-kode-nine.vercel.app/belajar/slm"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Slicing Mobile", "item": "https://ruang-kode-nine.vercel.app/belajar/slm"}, {"@type": "ListItem", "position": 3, "name": "Langkah 1: membaca spesifikasi dan memecah layar", "item": "https://ruang-kode-nine.vercel.app/belajar/slm/langkah-1-membaca-spesifikasi-dan-memecah-layar"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/slm">Slicing Mobile</a> / Modul 5</nav>
+<div class="eyebrow">Slicing Mobile · Modul 5 · Konsep &amp; kode</div><h1>Langkah 1: membaca spesifikasi dan memecah layar</h1><a class="cta" href="/#slm-5-2">Buka versi interaktif</a>
+<p>Pecah layar dari atas ke bawah menjadi blok: status bar dan safe area, logo, judul dan subjudul, field email, field kata sandi dengan ikon mata, tautan lupa, tombol Masuk, pemisah "atau", tombol Google, dan tautan daftar.</p>
+<p>Catat untuk setiap blok: ukuran, jarak ke blok sebelumnya, gaya teks, dan <b>perilaku</b>. Contoh: field email memakai keyboard email dan tombol Next; field kata sandi memakai tombol Done yang langsung menekan Masuk.</p>
+<p>Tentukan juga apa yang terjadi saat keyboard muncul: isi harus bisa di-scroll agar tombol Masuk tidak tertutup.</p>
+<div class="lbl">CONTOH</div><pre><code>Masuk (360 × 800 dp)
+├─ SafeArea, padding 24
+├─ Logo 48 × 48, r12              jarak bawah 24
+├─ Judul &quot;Masuk&quot; headlineSmall      jarak bawah 4
+├─ Subjudul bodyMedium, onSurfaceVariant   jarak bawah 32
+├─ TextField Email (56, r12)       keyboard email, aksi Next   jarak 16
+├─ TextField Kata sandi (56, r12)  ikon mata, aksi Done        jarak 8
+├─ &quot;Lupa kata sandi?&quot; rata kanan, TextButton                   jarak 24
+├─ Tombol Masuk FilledButton 48, lebar penuh                   jarak 16
+├─ Pemisah &quot;atau&quot;                                              jarak 16
+├─ OutlinedButton Google 48, lebar penuh                       jarak 24
+└─ &quot;Belum punya akun? Daftar&quot; rata tengah
+
+State: default · fokus · error per field · memuat (tombol nonaktif + spinner) · gagal (snackbar)</code></pre>
+<h2>Poin penting</h2><ul><li>Pecah layar menjadi blok dari atas ke bawah.</li><li>Catat ukuran, jarak, gaya, dan perilaku keyboard.</li><li>Daftar state sebelum coding.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Aksi keyboard yang tepat untuk field kata sandi terakhir?</summary><p class="ok">Jawaban: Done, lalu langsung menekan Masuk</p><p>Menghemat satu ketukan.</p></details>
+<a class="cta" href="/#slm-5-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/slm/contoh-desain-layar-masuk">Contoh desain: layar Masuk</a></p><p>Berikutnya: <a href="/belajar/slm/langkah-2-token-menjadi-tema">Langkah 2: token menjadi tema</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

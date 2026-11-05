@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Memakai design system lewat CDN dan paket · UX Design · Ruang Kode</title>
+<meta name="description" content="Banyak design system bisa langsung dipakai di halaman web lewat CDN (Content Delivery Network) tanpa proses build: cukup satu tag &lt;script&gt; atau &lt;link&gt;.…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/ux/memakai-design-system-lewat-cdn-dan-paket">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Memakai design system lewat CDN dan paket · UX Design · Ruang Kode"><meta property="og:description" content="Banyak design system bisa langsung dipakai di halaman web lewat CDN (Content Delivery Network) tanpa proses build: cukup satu tag &lt;script&gt; atau &lt;link&gt;.…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/ux/memakai-design-system-lewat-cdn-dan-paket"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Memakai design system lewat CDN dan paket", "description": "Banyak design system bisa langsung dipakai di halaman web lewat CDN (Content Delivery Network) tanpa proses build: cukup satu tag <script> atau <link>.…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/ux/memakai-design-system-lewat-cdn-dan-paket", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "UX Design", "url": "https://ruang-kode-nine.vercel.app/belajar/ux"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "UX Design", "item": "https://ruang-kode-nine.vercel.app/belajar/ux"}, {"@type": "ListItem", "position": 3, "name": "Memakai design system lewat CDN dan paket", "item": "https://ruang-kode-nine.vercel.app/belajar/ux/memakai-design-system-lewat-cdn-dan-paket"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/ux">UX Design</a> / Modul 9</nav>
+<div class="eyebrow">UX Design · Modul 9 · Konsep &amp; kode</div><h1>Memakai design system lewat CDN dan paket</h1><a class="cta" href="/#ux-9-3">Buka versi interaktif</a>
+<p>Banyak design system bisa langsung dipakai di halaman web lewat <b>CDN</b> (Content Delivery Network) tanpa proses build: cukup satu tag <code>&lt;script&gt;</code> atau <code>&lt;link&gt;</code>. Cocok untuk prototipe cepat, uji usability dengan HTML sungguhan, atau halaman statis.</p>
+<p>Contoh: <b>Bootstrap</b> dari jsDelivr, <b>Material Web</b> (komponen Material 3 untuk web), <b>Shoelace / Web Awesome</b> (web components netral), <b>Google Fonts</b> untuk tipografi, dan <b>Material Symbols</b> untuk ikon. Selalu tulis versi yang pasti agar tampilan tidak berubah sendiri.</p>
+<p>Untuk produk jangka panjang, pasang lewat <b>npm</b> agar versinya terkunci, ukuran bisa dioptimasi, dan tidak bergantung pada server pihak ketiga. Pertimbangkan juga privasi pengguna: CDN pihak ketiga dapat melihat alamat IP pengunjung.</p>
+<div class="lbl">HTML</div><pre><code>&lt;!-- Tipografi dan ikon dari Google Fonts --&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700&amp;display=swap&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded&quot;&gt;
+
+&lt;!-- Bootstrap 5 dari jsDelivr (versi dikunci) --&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css&quot;&gt;
+
+&lt;!-- Komponen Material 3 untuk web --&gt;
+&lt;script type=&quot;module&quot;&gt;
+  import &#x27;https://esm.run/@material/web@2.2.0/all.js&#x27;;
+&lt;/script&gt;
+
+&lt;md-filled-button&gt;Pesan sekarang&lt;/md-filled-button&gt;
+&lt;md-outlined-text-field label=&quot;Email&quot; type=&quot;email&quot;&gt;&lt;/md-outlined-text-field&gt;
+&lt;span class=&quot;material-symbols-rounded&quot;&gt;local_cafe&lt;/span&gt;
+
+&lt;!-- Ganti warna Material lewat token CSS --&gt;
+&lt;style&gt;
+  :root { --md-sys-color-primary: #8A4B2A; --md-sys-shape-corner-full: 12px; }
+&lt;/style&gt;</code></pre>
+<h2>Poin penting</h2><ul><li>CDN: satu tag, cocok untuk prototipe dan halaman statis.</li><li>Kunci versi di URL.</li><li>npm untuk produk jangka panjang.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa versi di URL CDN harus ditulis pasti?</summary><p class="ok">Jawaban: Agar tampilan tidak berubah tiba-tiba saat versi baru rilis</p><p>Versi terbaru bisa mengubah komponen.</p></details>
+<a class="cta" href="/#ux-9-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/ux/material-design-3-apple-hig-dan-design-system-besar-lainnya">Material Design 3, Apple HIG, dan design system besar lainnya</a></p><p>Berikutnya: <a href="/belajar/ux/memilih-mengadaptasi-dan-mengaudit-design-system">Memilih, mengadaptasi, dan mengaudit design system</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Langkah 4: layout mobile-first untuk navbar dan hero · Slicing Website · Ruang Kode</title>
+<meta name="description" content="Tulis CSS untuk layar terkecil dulu (360 px), tanpa media query. Navbar: logo kiri, tombol kanan, sejajar vertikal, dengan flexbox. Menu disembunyikan di…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/slw/langkah-4-layout-mobile-first-untuk-navbar-dan-hero">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Langkah 4: layout mobile-first untuk navbar dan hero · Slicing Website · Ruang Kode"><meta property="og:description" content="Tulis CSS untuk layar terkecil dulu (360 px), tanpa media query. Navbar: logo kiri, tombol kanan, sejajar vertikal, dengan flexbox. Menu disembunyikan di…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/slw/langkah-4-layout-mobile-first-untuk-navbar-dan-hero"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Langkah 4: layout mobile-first untuk navbar dan hero", "description": "Tulis CSS untuk layar terkecil dulu (360 px), tanpa media query. Navbar: logo kiri, tombol kanan, sejajar vertikal, dengan flexbox. Menu disembunyikan di…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/slw/langkah-4-layout-mobile-first-untuk-navbar-dan-hero", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "Slicing Website", "url": "https://ruang-kode-nine.vercel.app/belajar/slw"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Slicing Website", "item": "https://ruang-kode-nine.vercel.app/belajar/slw"}, {"@type": "ListItem", "position": 3, "name": "Langkah 4: layout mobile-first untuk navbar dan hero", "item": "https://ruang-kode-nine.vercel.app/belajar/slw/langkah-4-layout-mobile-first-untuk-navbar-dan-hero"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/slw">Slicing Website</a> / Modul 6</nav>
+<div class="eyebrow">Slicing Website · Modul 6 · Praktik langsung</div><h1>Langkah 4: layout mobile-first untuk navbar dan hero</h1><a class="cta" href="/#slw-6-5">Buka versi interaktif</a>
+<p>Tulis CSS untuk layar <b>terkecil dulu</b> (360 px), tanpa media query. Navbar: logo kiri, tombol kanan, sejajar vertikal, dengan <b>flexbox</b>. Menu disembunyikan di mobile sesuai desain. Hero: satu kolom, judul 28 px, jarak sesuai redline.</p>
+<p>Salin angka dari redline, bukan dari perkiraan mata: padding 16 px di sisi, 32 px di atas dan bawah hero, jarak antar tombol 8 px. Semua angka itu ada di skala token (<code>--ruang-1</code> sampai <code>--ruang-5</code>), jadi pakai variabelnya.</p>
+<p>Pratinjau sudah punya token dan gaya tombol, tetapi navbar dan hero belum ditata.</p>
+<div class="lbl">HTML</div><pre><code>&lt;header class=&quot;nav&quot;&gt;
+    &lt;a class=&quot;logo&quot; href=&quot;#&quot;&gt;Kopi Kita&lt;/a&gt;
+    &lt;nav class=&quot;menu&quot; aria-label=&quot;Utama&quot;&gt;&lt;a href=&quot;#&quot;&gt;Menu&lt;/a&gt;&lt;a href=&quot;#&quot;&gt;Cerita&lt;/a&gt;&lt;a href=&quot;#&quot;&gt;Lokasi&lt;/a&gt;&lt;/nav&gt;
+    &lt;a class=&quot;btn btn-primer&quot; href=&quot;#&quot;&gt;Pesan&lt;/a&gt;
+  &lt;/header&gt;
+  &lt;main&gt;
+    &lt;section class=&quot;hero&quot;&gt;
+      &lt;div class=&quot;hero-teks&quot;&gt;
+        &lt;p class=&quot;eyebrow&quot;&gt;Roastery Medan sejak 2019&lt;/p&gt;
+        &lt;h1&gt;Kopi Nusantara, dipanggang setiap minggu&lt;/h1&gt;
+        &lt;p class=&quot;lead&quot;&gt;Biji pilihan dari Gayo, Toraja, dan Kintamani, dikirim ke rumahmu dalam 2 hari.&lt;/p&gt;
+        &lt;div class=&quot;aksi&quot;&gt;&lt;a class=&quot;btn btn-primer&quot; href=&quot;#&quot;&gt;Lihat menu&lt;/a&gt;&lt;a class=&quot;btn btn-garis&quot; href=&quot;#&quot;&gt;Langganan&lt;/a&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;hero-gambar&quot; role=&quot;img&quot; aria-label=&quot;Biji kopi di atas karung goni&quot;&gt;&lt;/div&gt;
+    &lt;/section&gt;
+    &lt;section class=&quot;produk&quot;&gt;
+      &lt;h2&gt;Paling dicari&lt;/h2&gt;
+      &lt;div class=&quot;grid&quot;&gt;
+      &lt;article class=&quot;kartu&quot;&gt;
+        &lt;div class=&quot;kartu-foto&quot; style=&quot;--foto:#B07A52&quot; role=&quot;img&quot; aria-label=&quot;Kemasan Kopi Gayo&quot;&gt;&lt;/div&gt;
+        &lt;h3&gt;Kopi Gayo&lt;/h3&gt;
+        &lt;p class=&quot;asal&quot;&gt;Aceh · medium roast&lt;/p&gt;
+        &lt;p class=&quot;harga&quot;&gt;Rp85.000&lt;/p&gt;
+        &lt;a class=&quot;btn btn-primer&quot; href=&quot;#&quot;&gt;Tambah&lt;/a&gt;
+      &lt;/article&gt;
+      &lt;article class=&quot;kartu&quot;&gt;
+        &lt;div class=&quot;kartu-foto&quot; style=&quot;--foto:#6E4A33&quot; role=&quot;img&quot; aria-label=&quot;Kemasan Kopi Toraja&quot;&gt;&lt;/div&gt;
+        &lt;h3&gt;Kopi Toraja&lt;/h3&gt;
+        &lt;p class=&quot;asal&quot;&gt;Sulawesi · dark roast&lt;/p&gt;
+        &lt;p class=&quot;harga&quot;&gt;Rp95.000&lt;/p&gt;
+        &lt;a class=&quot;btn btn-primer&quot; href=&quot;#&quot;&gt;Tambah&lt;/a&gt;
+      &lt;/article&gt;
+      &lt;article class=&quot;kartu&quot;&gt;
+        &lt;div class=&quot;kartu-foto&quot; style=&quot;--foto:#C9A27E&quot; role=&quot;img&quot; aria-label=&quot;Kemasan Kopi Kintamani&quot;&gt;&lt;/div&gt;
+        &lt;h3&gt;Kopi Kintamani&lt;/h3&gt;
+        &lt;p class=&quot;asal&quot;&gt;Bali · light roast&lt;/p&gt;
+        &lt;p class=&quot;harga&quot;&gt;Rp90.000&lt;/p&gt;
+        &lt;a class=&quot;btn btn-primer&quot; href=&quot;#&quot;&gt;Tambah&lt;/a&gt;
+      &lt;/article&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+    &lt;section class=&quot;cta&quot;&gt;
+      &lt;h2&gt;Diskon 10% untuk langganan pertama&lt;/h2&gt;
+      &lt;form class=&quot;cta-form&quot; onsubmit=&quot;return false&quot;&gt;
+        &lt;label class=&quot;sr&quot; for=&quot;em&quot;&gt;Email&lt;/label&gt;
+        &lt;input id=&quot;em&quot; type=&quot;email&quot; placeholder=&quot;email@contoh.id&quot;&gt;
+        &lt;button class=&quot;btn btn-aksen&quot;&gt;Daftar&lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/section&gt;
+  &lt;/main&gt;
+  &lt;footer class=&quot;kaki&quot;&gt;&lt;p&gt;© 2026 Kopi Kita · Jl. Gatot Subroto 12, Medan&lt;/p&gt;&lt;/footer&gt;</code></pre>
+<div class="lbl">CSS</div><pre><code>:root {
+  --warna-primer: #8A4B2A;
+  --warna-primer-gelap: #6B3A20;
+  --warna-aksen: #E9B872;
+  --latar: #FBF7F2;
+  --permukaan: #FFFFFF;
+  --teks: #2B2724;
+  --teks-2: #6B625B;
+  --garis: #E8DFD5;
+  --radius: 12px;
+  --ruang-1: 8px; --ruang-2: 16px; --ruang-3: 24px; --ruang-4: 32px; --ruang-5: 48px;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font: 16px/1.5 system-ui, sans-serif; background: var(--latar); color: var(--teks); }
+h1, h2, h3, p { margin: 0; }
+a { color: inherit; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.btn { display: inline-flex; align-items: center; justify-content: center; padding: 0 var(--ruang-2); height: 44px;
+       border-radius: var(--radius); font-weight: 600; text-decoration: none; border: 2px solid transparent; font-size: 15px; cursor: pointer; }
+.btn-primer { background: var(--warna-primer); color: #fff; }
+.btn-garis { border-color: var(--warna-primer); color: var(--warna-primer); }
+.btn-aksen { background: var(--warna-aksen); color: var(--teks); }
+.produk { clear: both;  padding: var(--ruang-4) var(--ruang-2); }
+.produk h2, .cta h2 { font-size: 22px; margin-bottom: var(--ruang-3); }
+.grid { display: grid; gap: var(--ruang-2); }
+.kartu { background: var(--permukaan); border: 1px solid var(--garis); border-radius: var(--radius); padding: var(--ruang-2); display: grid; gap: var(--ruang-1); }
+.kartu-foto { aspect-ratio: 1; border-radius: 8px; background: var(--foto); }
+.kartu h3 { font-size: 18px; }
+.asal { font-size: 14px; color: var(--teks-2); }
+.harga { font-weight: 700; font-size: 18px; }
+.cta { margin: 0 var(--ruang-2) var(--ruang-4); padding: var(--ruang-3); border-radius: var(--radius); background: var(--warna-primer-gelap); color: #fff; }
+.cta h2 { margin-bottom: var(--ruang-2); }
+.cta-form { display: flex; flex-wrap: wrap; gap: var(--ruang-1); }
+.cta-form input { flex: 1 1 180px; height: 44px; padding: 0 12px; border-radius: var(--radius); border: 0; font-size: 16px; }
+.kaki { padding: var(--ruang-3) var(--ruang-2); font-size: 14px; color: var(--teks-2); border-top: 1px solid var(--garis); }
+</code></pre>
+<h2>Tantangan</h2><ol><li>Tata <code>.nav</code> dengan flex: <code>justify-content: space-between</code> dan <code>align-items: center</code>. Beri <code>.hero h1</code> ukuran 28px, dan sembunyikan <code>.menu</code> di mobile.</li></ol>
+<h2>Poin penting</h2><ul><li>Mobile dulu, tanpa media query.</li><li>Angka dari redline, ditulis dengan token.</li><li>Flexbox untuk navbar.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa menulis CSS mobile lebih dulu?</summary><p class="ok">Jawaban: Gaya dasar sederhana lalu ditambah untuk layar lebar</p><p>Min-width menambah, bukan membatalkan.</p></details>
+<a class="cta" href="/#slw-6-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/slw/langkah-3-kerangka-html-semantik">Langkah 3: kerangka HTML semantik</a></p><p>Berikutnya: <a href="/belajar/slw/langkah-5-komponen-kartu-produk-dan-grid">Langkah 5: komponen kartu produk dan grid</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>
