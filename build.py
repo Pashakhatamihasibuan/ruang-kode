@@ -20,7 +20,7 @@ from tools.build import site
 ROOT = Path(__file__).parent
 SRC = ROOT / "src"
 SITE_URL = "https://ruang-kode-nine.vercel.app"
-CSS = ["base.css", "lms.css", "v4.css"]
+CSS = ["base.css", "lms.css", "v4.css", "tema-jalur.css", "v5.css"]
 TRACK_JS = ["track-java.js", "track-python.js", "track-sql.js", "track-sql-extra.js",
             "track-html.js", "track-css.js", "track-fe0.js", "track-fe.js", "track-react.js",
             "track-ts.js", "track-git.js", "track-pda.js", "track-da.js", "track-bi.js",
@@ -38,7 +38,7 @@ DESC = ("Akademi coding, data, dan desain berbahasa Indonesia: 36 jalur termasuk
         "Dikembangkan oleh Pasha Khatami Hasibuan.")
 FONTS = """<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@500;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,400..700,0..100;1,9..144,400..700,0..100&family=Plus+Jakarta+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;600&display=swap">
 """
 HEAD = f"""<title>Ruang Kode</title>
 <meta name="claude:viewport-fit-sides" content="cover">

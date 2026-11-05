@@ -1,0 +1,96 @@
+/* ===================== Tampilan v5: "Nila & Gading" =====================
+   Latar gading hangat, tinta biru-malam, satu aksen nila (indigo) dengan sentuhan emas.
+   Judul memakai Fraunces (serif lembut), teks memakai Plus Jakarta Sans (dirancang di Jakarta),
+   kode memakai JetBrains Mono. Semua warna lewat token; mode gelap memakai biru-malam pekat. */
+:root{
+  --bg:#F6F4EF; --surface:#FFFEFB; --sunk:#EFECE5; --ink:#1D2130; --muted:#5A5F6E; --line:#E3DED3;
+  --brand:#3E47A6; --brand-soft:#E8E9F5; --on-brand:#FFFFFF; --gold:#A87A22; --gold-soft:#F5EBD6;
+  --java:var(--c-java); --py:var(--c-python); --sqlc:var(--c-sql);
+  --java-soft:color-mix(in srgb,var(--c-java) 12%,var(--surface)); --py-soft:color-mix(in srgb,var(--c-python) 12%,var(--surface));
+  --ok:#2C7650; --ok-soft:#E5F1E9; --bad:#AE3A30; --bad-soft:#F7E7E3; --hl:#F6E3A6; --hl-ink:#3A2C00;
+  --code-bg:#1A1D27; --code-fg:#DFE3EC;
+  --f-serif:"Fraunces",Georgia,"Times New Roman",serif;
+  --f-display:"Plus Jakarta Sans","Segoe UI",system-ui,sans-serif;
+  --f-body:"Plus Jakarta Sans","Segoe UI",system-ui,-apple-system,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --shadow-1:0 1px 2px rgb(29 33 48/.05),0 6px 18px -12px rgb(29 33 48/.18);
+  --shadow-2:0 2px 4px rgb(29 33 48/.05),0 18px 40px -22px rgb(29 33 48/.30);
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F1117; --surface:#161922; --sunk:#1D212C; --ink:#E9E7E2; --muted:#A1A6B3; --line:#272C38;
+  --brand:#A9B1F4; --brand-soft:#22264A; --on-brand:#0F1117; --gold:#E2BC6E; --gold-soft:#2E2617;
+  --ok:#74C69A; --ok-soft:#14261C; --bad:#EE9488; --bad-soft:#2E1A17; --hl:#5A4A1A; --hl-ink:#FFF3CC;
+  --code-bg:#0B0D12; --code-fg:#DFE3EC;
+  --shadow-1:0 1px 2px rgb(0 0 0/.35),0 8px 22px -14px rgb(0 0 0/.6);
+  --shadow-2:0 2px 6px rgb(0 0 0/.4),0 22px 44px -22px rgb(0 0 0/.75);
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0F1117; --surface:#161922; --sunk:#1D212C; --ink:#E9E7E2; --muted:#A1A6B3; --line:#272C38;
+  --brand:#A9B1F4; --brand-soft:#22264A; --on-brand:#0F1117; --gold:#E2BC6E; --gold-soft:#2E2617;
+  --ok:#74C69A; --ok-soft:#14261C; --bad:#EE9488; --bad-soft:#2E1A17; --hl:#5A4A1A; --hl-ink:#FFF3CC;
+  --code-bg:#0B0D12; --code-fg:#DFE3EC;
+  --shadow-1:0 1px 2px rgb(0 0 0/.35),0 8px 22px -14px rgb(0 0 0/.6);
+  --shadow-2:0 2px 6px rgb(0 0 0/.4),0 22px 44px -22px rgb(0 0 0/.75);
+  color-scheme:dark;
+}
+
+/* ---------- tipografi ---------- */
+body{background:var(--bg);color:var(--ink);font:400 16px/1.72 var(--f-body);letter-spacing:0;font-feature-settings:"ss01","cv11"}
+h1,h2,.h-serif{font-family:var(--f-serif);font-optical-sizing:auto;font-variation-settings:"SOFT" 50}
+h1{font-weight:500;font-size:clamp(2.2rem,4.4vw,3.3rem);line-height:1.08;letter-spacing:-.02em}
+h2{font-weight:500;font-size:clamp(1.5rem,2.6vw,1.9rem);line-height:1.18;letter-spacing:-.012em}
+h3{font:650 1.04rem/1.35 var(--f-display);letter-spacing:-.01em}
+.eyebrow{font:700 .7rem/1.4 var(--f-body);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.lead{font-size:1.06rem;line-height:1.7;color:var(--muted)}
+.prose{font-size:1.02rem}
+.prose p,.prose li{line-height:1.78}
+.prose b,.prose strong{font-weight:650;color:var(--ink)}
+.prose a,.l-body a:not(.btn){color:var(--brand);text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--brand) 35%,transparent);text-underline-offset:3px}
+.prose a:hover{text-decoration-color:currentColor}
+code{font-family:var(--f-mono);font-size:.88em;background:color-mix(in srgb,var(--brand) 7%,var(--sunk));color:var(--ink);border-radius:5px;padding:.1em .35em}
+pre code{background:none;padding:0;font-size:inherit;color:inherit}
+::selection{background:color-mix(in srgb,var(--brand) 24%,transparent)}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+
+/* serif dipakai juga untuk judul besar lain yang sebelumnya memakai Instrument Serif */
+.tcard h3,.mod-card h3,.viz-head h3,.mcard b,.tc-stats b,.tc-ring.big>span,.method span{font-family:var(--f-serif);font-weight:500;letter-spacing:-.01em}
+
+/* ---------- kerangka ---------- */
+.topbar{background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:saturate(1.4) blur(12px);-webkit-backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid var(--line)}
+.brand-mark{background:linear-gradient(135deg,var(--brand),color-mix(in srgb,var(--brand) 55%,var(--gold)));color:var(--on-brand);border-radius:10px;box-shadow:var(--shadow-1)}
+.brand b{font:700 1.02rem var(--f-display);letter-spacing:-.015em}
+
+/* ---------- tombol ---------- */
+.btn{border-radius:999px;font-weight:600;font-size:.88rem;min-height:40px;padding:8px 18px;border:1px solid var(--line);background:var(--surface);color:var(--ink);
+  transition:background .18s,border-color .18s,box-shadow .18s,transform .18s}
+.btn:hover{border-color:color-mix(in srgb,var(--ink) 30%,var(--line));box-shadow:var(--shadow-1)}
+.btn:active{transform:translateY(1px)}
+.btn.primary,a.btn.primary{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+.btn.primary:hover{background:color-mix(in srgb,var(--brand) 88%,var(--ink));box-shadow:0 8px 20px -10px color-mix(in srgb,var(--brand) 70%,transparent)}
+.tcard .btn.primary,.c-prog .btn.primary,.l-foot .btn.primary{background:var(--acc);border-color:var(--acc);color:var(--surface)}
+.tlink{color:var(--brand);font-weight:600}
+
+/* ---------- kartu dan permukaan ---------- */
+.tcard2,.rcard,.mod-card,.c-act,.c-prog,.viz,.resume-big,.cpath,.mcard,.tcard{border-color:var(--line);background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow-1)}
+.tcard2,.rcard,.c-act,.tcard,.cpath{transition:transform .25s cubic-bezier(.2,.75,.2,1),box-shadow .25s,border-color .25s}
+.tcard2:hover,.rcard:hover,.c-act:hover,.cpath:hover{transform:translateY(-2px);box-shadow:var(--shadow-2);border-color:color-mix(in srgb,var(--acc,var(--brand)) 40%,var(--line))}
+.tmark{border-radius:10px;background:color-mix(in srgb,var(--acc) 13%,var(--surface));color:var(--acc);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--acc) 22%,transparent)}
+.chip{border-radius:999px;font-weight:600}
+.chip[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+
+/* ---------- beranda ---------- */
+.h-hero h1 em{font-style:italic;font-weight:500}
+.h-hero h1 em:nth-of-type(1){color:var(--brand)}.h-hero h1 em:nth-of-type(2){color:var(--c-sql)}.h-hero h1 em:nth-of-type(3){color:var(--gold)}
+
+/* ---------- pelajaran ---------- */
+.l-head h1{font-size:clamp(2rem,3.8vw,2.8rem)}
+.viz{border-radius:var(--r)}
+pre.code,.code{border-radius:12px}
+.quiz .q{border-radius:12px}
+.okc{color:var(--ok);font-weight:600}
+/* ---------- katalog ---------- */
+section.cat-row{display:flex;flex-direction:column;gap:16px;margin-top:36px}
+.cat-hd{display:flex;flex-direction:column;gap:4px}
+.cat-hd .muted{color:var(--muted)}
