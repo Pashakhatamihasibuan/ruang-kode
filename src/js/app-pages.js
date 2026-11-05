@@ -75,6 +75,13 @@ function wireCatalog(){
 }
 
 /* ---------- halaman jalur ---------- */
+/* Kubus 3D beranimasi untuk tiap jalur: sisi depan lambang jalur, sisi lain potongan sintaks bahasanya. */
+const CUBE_G={java:['class','void','{ }','new','int'],python:['def','>>>','print()','import',':'],sql:['SELECT','JOIN','WHERE','GROUP','*'],
+  js:['=>','const','{ }','async','[ ]'],jsx:['</>','=>','props','useState','{ }'],ts:[': T','=>','type','<T>','{ }'],tsx:['</>',': T','=>','props','<T>'],
+  html:['</>','<a>','<p>','<div>','alt'],css:['{ }','px','#fff','grid','::'],dart:['void','=>','final','Widget','?.'],kotlin:['fun','val','?:','->','{ }'],
+  bash:['$','|','~/','&&','>_'],text:['✦','◐','▲','●','■'],tx:['=>','{ }','f(x)','[ ]','::']};
+function cube3d(t){const g=CUBE_G[t.lang]||CUBE_G.text,f=['depan','belakang','kanan','kiri','atas','bawah'];
+  return `<div class="cube3d" aria-hidden="true"><div class="cb-in">${f.map((c,i)=>`<span class="cb-f cb-${c}">${esc(i?g[i-1]:t.mark)}</span>`).join('')}</div><i class="cb-shadow"></i></div>`}
 let lvFilter='Semua';
 const examKey=(tk,mi)=>`${tk}-${mi}`;
 function renderCourse(t){
@@ -82,6 +89,7 @@ function renderCourse(t){
   return `<header class="c-hero ${tcls(t)}">
     <nav class="crumb" aria-label="Lokasi"><a href="#beranda">Beranda</a><span>/</span><a href="#katalog">Katalog</a><span>/</span><span>${t.name}</span></nav>
     <div class="c-grid"><div>
+      ${cube3d(t)}
       <div class="eyebrow">${GROUPS.find(g=>g[0]===t.g)[1]} · ${t.road?`<a href="https://roadmap.sh/${t.road}" target="_blank" rel="noopener">mengikuti roadmap.sh/${t.road}</a>`:'kurikulum Ruang Kode'}</div>
       <h1>${t.h}</h1><p class="lead">${t.d}</p>
       <ul class="tc-stats"><li><b>${t.mods.length}</b> modul</li><li><b>${p.n}</b> pelajaran</li><li><b>±${hours(t)}</b> jam belajar</li></ul>

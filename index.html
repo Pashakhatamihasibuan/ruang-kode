@@ -1902,6 +1902,29 @@ button.gt:focus-visible{outline:2px solid var(--acc,var(--py));outline-offset:2p
 .va-ln.cur code{overflow:visible}
 .v-jl li{overflow:visible;white-space:normal;flex-wrap:wrap;row-gap:0}
 
+/* ===== Kubus 3D jalur ===== */
+.cube3d{--cs:72px;position:relative;width:var(--cs);height:var(--cs);margin:6px 0 10px 4px;perspective:420px}
+.cb-in{position:absolute;inset:0;transform-style:preserve-3d;animation:cbSpin 14s linear infinite}
+.cube3d:hover .cb-in{animation-play-state:paused}
+.cb-f{position:absolute;inset:0;display:grid;place-items:center;border-radius:14px;border:1.5px solid color-mix(in srgb,var(--acc) 55%,transparent);
+  background:color-mix(in srgb,var(--acc-soft) 88%,transparent);color:var(--acc);font:700 .95rem var(--f-mono);backface-visibility:hidden;
+  box-shadow:inset 0 0 18px color-mix(in srgb,var(--acc) 18%,transparent)}
+.cb-depan{transform:translateZ(calc(var(--cs)/2));font-size:1.15rem;background:var(--acc);color:var(--bg,#fff);border-color:var(--acc)}
+.cb-belakang{transform:rotateY(180deg) translateZ(calc(var(--cs)/2))}
+.cb-kanan{transform:rotateY(90deg) translateZ(calc(var(--cs)/2))}
+.cb-kiri{transform:rotateY(-90deg) translateZ(calc(var(--cs)/2))}
+.cb-atas{transform:rotateX(90deg) translateZ(calc(var(--cs)/2))}
+.cb-bawah{transform:rotateX(-90deg) translateZ(calc(var(--cs)/2))}
+.cb-shadow{position:absolute;left:10%;right:10%;bottom:-16px;height:10px;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--acc) 35%,transparent),transparent);animation:cbShadow 14s ease-in-out infinite}
+@keyframes cbSpin{0%{transform:rotateX(-18deg) rotateY(0)}25%{transform:rotateX(-30deg) rotateY(90deg)}50%{transform:rotateX(-12deg) rotateY(180deg)}75%{transform:rotateX(60deg) rotateY(270deg)}100%{transform:rotateX(-18deg) rotateY(360deg)}}
+@keyframes cbShadow{0%,100%{transform:scaleX(1);opacity:.9}50%{transform:scaleX(.75);opacity:.6}}
+/* lambang jalur ikut berputar 3D saat kartu disentuh */
+.tcard2 .tmark,.mg-t .tmark{transition:transform .6s cubic-bezier(.2,.8,.2,1);transform-style:preserve-3d}
+.tcard2:hover .tmark,.tcard2:focus-visible .tmark,.mg-t:hover .tmark{transform:perspective(200px) rotateY(360deg) rotateX(12deg)}
+@media (prefers-reduced-motion:reduce){.cb-in{animation:none;transform:rotateX(-20deg) rotateY(-32deg)}.cb-shadow{animation:none}
+  .tcard2:hover .tmark,.tcard2:focus-visible .tmark,.mg-t:hover .tmark{transform:none}}
+@media (max-width:640px){.cube3d{--cs:56px}}
+
 </style>
 </head>
 <body>
@@ -2657,6 +2680,13 @@ function wireCatalog(){
 }
 
 /* ---------- halaman jalur ---------- */
+/* Kubus 3D beranimasi untuk tiap jalur: sisi depan lambang jalur, sisi lain potongan sintaks bahasanya. */
+const CUBE_G={java:['class','void','{ }','new','int'],python:['def','>>>','print()','import',':'],sql:['SELECT','JOIN','WHERE','GROUP','*'],
+  js:['=>','const','{ }','async','[ ]'],jsx:['</>','=>','props','useState','{ }'],ts:[': T','=>','type','<T>','{ }'],tsx:['</>',': T','=>','props','<T>'],
+  html:['</>','<a>','<p>','<div>','alt'],css:['{ }','px','#fff','grid','::'],dart:['void','=>','final','Widget','?.'],kotlin:['fun','val','?:','->','{ }'],
+  bash:['$','|','~/','&&','>_'],text:['✦','◐','▲','●','■'],tx:['=>','{ }','f(x)','[ ]','::']};
+function cube3d(t){const g=CUBE_G[t.lang]||CUBE_G.text,f=['depan','belakang','kanan','kiri','atas','bawah'];
+  return `<div class="cube3d" aria-hidden="true"><div class="cb-in">${f.map((c,i)=>`<span class="cb-f cb-${c}">${esc(i?g[i-1]:t.mark)}</span>`).join('')}</div><i class="cb-shadow"></i></div>`}
 let lvFilter='Semua';
 const examKey=(tk,mi)=>`${tk}-${mi}`;
 function renderCourse(t){
@@ -2664,6 +2694,7 @@ function renderCourse(t){
   return `<header class="c-hero ${tcls(t)}">
     <nav class="crumb" aria-label="Lokasi"><a href="#beranda">Beranda</a><span>/</span><a href="#katalog">Katalog</a><span>/</span><span>${t.name}</span></nav>
     <div class="c-grid"><div>
+      ${cube3d(t)}
       <div class="eyebrow">${GROUPS.find(g=>g[0]===t.g)[1]} · ${t.road?`<a href="https://roadmap.sh/${t.road}" target="_blank" rel="noopener">mengikuti roadmap.sh/${t.road}</a>`:'kurikulum Ruang Kode'}</div>
       <h1>${t.h}</h1><p class="lead">${t.d}</p>
       <ul class="tc-stats"><li><b>${t.mods.length}</b> modul</li><li><b>${p.n}</b> pelajaran</li><li><b>±${hours(t)}</b> jam belajar</li></ul>

@@ -764,3 +764,26 @@ button.gt:focus-visible{outline:2px solid var(--acc,var(--py));outline-offset:2p
 .va-ln code{white-space:pre-wrap;overflow-wrap:anywhere;min-width:0}
 .va-ln.cur code{overflow:visible}
 .v-jl li{overflow:visible;white-space:normal;flex-wrap:wrap;row-gap:0}
+
+/* ===== Kubus 3D jalur ===== */
+.cube3d{--cs:72px;position:relative;width:var(--cs);height:var(--cs);margin:6px 0 10px 4px;perspective:420px}
+.cb-in{position:absolute;inset:0;transform-style:preserve-3d;animation:cbSpin 14s linear infinite}
+.cube3d:hover .cb-in{animation-play-state:paused}
+.cb-f{position:absolute;inset:0;display:grid;place-items:center;border-radius:14px;border:1.5px solid color-mix(in srgb,var(--acc) 55%,transparent);
+  background:color-mix(in srgb,var(--acc-soft) 88%,transparent);color:var(--acc);font:700 .95rem var(--f-mono);backface-visibility:hidden;
+  box-shadow:inset 0 0 18px color-mix(in srgb,var(--acc) 18%,transparent)}
+.cb-depan{transform:translateZ(calc(var(--cs)/2));font-size:1.15rem;background:var(--acc);color:var(--bg,#fff);border-color:var(--acc)}
+.cb-belakang{transform:rotateY(180deg) translateZ(calc(var(--cs)/2))}
+.cb-kanan{transform:rotateY(90deg) translateZ(calc(var(--cs)/2))}
+.cb-kiri{transform:rotateY(-90deg) translateZ(calc(var(--cs)/2))}
+.cb-atas{transform:rotateX(90deg) translateZ(calc(var(--cs)/2))}
+.cb-bawah{transform:rotateX(-90deg) translateZ(calc(var(--cs)/2))}
+.cb-shadow{position:absolute;left:10%;right:10%;bottom:-16px;height:10px;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--acc) 35%,transparent),transparent);animation:cbShadow 14s ease-in-out infinite}
+@keyframes cbSpin{0%{transform:rotateX(-18deg) rotateY(0)}25%{transform:rotateX(-30deg) rotateY(90deg)}50%{transform:rotateX(-12deg) rotateY(180deg)}75%{transform:rotateX(60deg) rotateY(270deg)}100%{transform:rotateX(-18deg) rotateY(360deg)}}
+@keyframes cbShadow{0%,100%{transform:scaleX(1);opacity:.9}50%{transform:scaleX(.75);opacity:.6}}
+/* lambang jalur ikut berputar 3D saat kartu disentuh */
+.tcard2 .tmark,.mg-t .tmark{transition:transform .6s cubic-bezier(.2,.8,.2,1);transform-style:preserve-3d}
+.tcard2:hover .tmark,.tcard2:focus-visible .tmark,.mg-t:hover .tmark{transform:perspective(200px) rotateY(360deg) rotateX(12deg)}
+@media (prefers-reduced-motion:reduce){.cb-in{animation:none;transform:rotateX(-20deg) rotateY(-32deg)}.cb-shadow{animation:none}
+  .tcard2:hover .tmark,.tcard2:focus-visible .tmark,.mg-t:hover .tmark{transform:none}}
+@media (max-width:640px){.cube3d{--cs:56px}}
