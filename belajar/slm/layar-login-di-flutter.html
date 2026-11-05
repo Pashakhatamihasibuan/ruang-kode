@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Layar login di Flutter · Slicing Mobile · Ruang Kode</title>
+<meta name="description" content="Desain login: logo, judul &quot;Masuk&quot;, subjudul, field email, field kata sandi dengan tombol tampilkan, link &quot;Lupa kata sandi&quot; rata kanan, tombol Masuk lebar…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/slm/layar-login-di-flutter">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Layar login di Flutter · Slicing Mobile · Ruang Kode"><meta property="og:description" content="Desain login: logo, judul &quot;Masuk&quot;, subjudul, field email, field kata sandi dengan tombol tampilkan, link &quot;Lupa kata sandi&quot; rata kanan, tombol Masuk lebar…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/slm/layar-login-di-flutter"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Layar login di Flutter", "description": "Desain login: logo, judul \"Masuk\", subjudul, field email, field kata sandi dengan tombol tampilkan, link \"Lupa kata sandi\" rata kanan, tombol Masuk lebar…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/slm/layar-login-di-flutter", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Slicing Mobile", "url": "https://ruang-kode-nine.vercel.app/belajar/slm"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Slicing Mobile", "item": "https://ruang-kode-nine.vercel.app/belajar/slm"}, {"@type": "ListItem", "position": 3, "name": "Layar login di Flutter", "item": "https://ruang-kode-nine.vercel.app/belajar/slm/layar-login-di-flutter"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/slm">Slicing Mobile</a> / Modul 2</nav>
+<div class="eyebrow">Slicing Mobile · Modul 2 · Konsep &amp; kode</div><h1>Layar login di Flutter</h1><a class="cta" href="/#slm-2-2">Buka versi interaktif</a>
+<p>Desain login: logo, judul "Masuk", subjudul, field email, field kata sandi dengan tombol tampilkan, link "Lupa kata sandi" rata kanan, tombol Masuk lebar penuh, dan teks "Belum punya akun? Daftar" di bawah. Padding layar 24, gap antar field 16, tombol tinggi 52.</p>
+<p>Strukturnya: <code>Scaffold</code> → <code>SafeArea</code> → <code>SingleChildScrollView</code> (agar tidak tertutup keyboard) → <code>Padding</code> → <code>Column</code>. Warna dan teks diambil dari tema. Field memakai <code>TextFormField</code> dengan <code>InputDecoration</code> berlabel, bukan hanya hint.</p>
+<p>Perhatikan detail dari desain yang sering terlewat: <code>keyboardType: TextInputType.emailAddress</code>, <code>textInputAction: TextInputAction.next</code> agar tombol keyboard pindah ke field berikutnya, dan <code>autofillHints</code> agar pengelola sandi bisa mengisi otomatis.</p>
+<div class="lbl">KODE</div><pre><code>class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+  @override
+  State&lt;LoginPage&gt; createState() =&gt; _LoginPageState();
+}
+
+class _LoginPageState extends State&lt;LoginPage&gt; {
+  bool _sembunyi = true;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Theme.of(context);
+    return Scaffold(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            spacing: 16,
+            children: [
+              const SizedBox(height: 32),
+              Text(&#x27;Masuk&#x27;, style: t.textTheme.headlineMedium),
+              Text(&#x27;Lanjutkan belajarmu hari ini.&#x27;, style: t.textTheme.bodyLarge),
+              const TextField(
+                keyboardType: TextInputType.emailAddress,
+                textInputAction: TextInputAction.next,
+                autofillHints: [AutofillHints.email],
+                decoration: InputDecoration(labelText: &#x27;Email&#x27;, border: OutlineInputBorder()),
+              ),
+              TextField(
+                obscureText: _sembunyi,
+                autofillHints: const [AutofillHints.password],
+                decoration: InputDecoration(
+                  labelText: &#x27;Kata sandi&#x27;,
+                  border: const OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    tooltip: _sembunyi ? &#x27;Tampilkan sandi&#x27; : &#x27;Sembunyikan sandi&#x27;,
+                    icon: Icon(_sembunyi ? Icons.visibility : Icons.visibility_off),
+                    onPressed: () =&gt; setState(() =&gt; _sembunyi = !_sembunyi),
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(onPressed: () {}, child: const Text(&#x27;Lupa kata sandi?&#x27;)),
+              ),
+              FilledButton(
+                style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(52)),
+                onPressed: () {},
+                child: const Text(&#x27;Masuk&#x27;),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tambahkan validasi pada field email login: wajib diisi dan harus mengandung @, dengan pesan error berbahasa Indonesia.</p><details><summary>Petunjuk</summary><p>TextFormField + validator di dalam Form.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>TextFormField(
+  decoration: const InputDecoration(labelText: &#x27;Email&#x27;, border: OutlineInputBorder()),
+  keyboardType: TextInputType.emailAddress,
+  validator: (v) {
+    if (v == null || v.trim().isEmpty) return &#x27;Email wajib diisi&#x27;;
+    if (!v.contains(&#x27;@&#x27;)) return &#x27;Format email belum benar, contoh: nama@contoh.com&#x27;;
+    return null;
+  },
+)</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Scaffold → SafeArea → SingleChildScrollView → Column.</li><li>labelText, keyboardType, textInputAction, autofillHints.</li><li>Tombol lebar penuh: minimumSize Size.fromHeight(52).</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa layar login dibungkus SingleChildScrollView?</summary><p class="ok">Jawaban: Agar tidak tertutup keyboard dan bisa digulir</p><p>Keyboard memakan separuh layar.</p></details><details><summary>Properti yang membuat tombol keyboard pindah ke field berikutnya?</summary><p class="ok">Jawaban: textInputAction: TextInputAction.next</p><p>Keyboard menampilkan tombol Next.</p></details>
+<a class="cta" href="/#slm-2-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/slm/memetakan-auto-layout-ke-row-dan-column">Memetakan auto layout ke Row dan Column</a></p><p>Berikutnya: <a href="/belajar/slm/layar-login-di-jetpack-compose">Layar login di Jetpack Compose</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

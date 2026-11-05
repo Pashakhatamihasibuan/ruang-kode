@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mobile-first dan breakpoint dari desain · Slicing Website · Ruang Kode</title>
+<meta name="description" content="Desainer biasanya memberi dua atau tiga frame: mobile (360 atau 390), tablet (768), dan desktop (1440). Mobile-first berarti CSS dasar ditulis untuk…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/slw/mobile-first-dan-breakpoint-dari-desain">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Mobile-first dan breakpoint dari desain · Slicing Website · Ruang Kode"><meta property="og:description" content="Desainer biasanya memberi dua atau tiga frame: mobile (360 atau 390), tablet (768), dan desktop (1440). Mobile-first berarti CSS dasar ditulis untuk…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/slw/mobile-first-dan-breakpoint-dari-desain"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Mobile-first dan breakpoint dari desain", "description": "Desainer biasanya memberi dua atau tiga frame: mobile (360 atau 390), tablet (768), dan desktop (1440). Mobile-first berarti CSS dasar ditulis untuk…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/slw/mobile-first-dan-breakpoint-dari-desain", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "Slicing Website", "url": "https://ruang-kode-nine.vercel.app/belajar/slw"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Slicing Website", "item": "https://ruang-kode-nine.vercel.app/belajar/slw"}, {"@type": "ListItem", "position": 3, "name": "Mobile-first dan breakpoint dari desain", "item": "https://ruang-kode-nine.vercel.app/belajar/slw/mobile-first-dan-breakpoint-dari-desain"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/slw">Slicing Website</a> / Modul 4</nav>
+<div class="eyebrow">Slicing Website · Modul 4 · Praktik langsung</div><h1>Mobile-first dan breakpoint dari desain</h1><a class="cta" href="/#slw-4-1">Buka versi interaktif</a>
+<p>Desainer biasanya memberi dua atau tiga frame: mobile (360 atau 390), tablet (768), dan desktop (1440). <b>Mobile-first</b> berarti CSS dasar ditulis untuk mobile, lalu ditambah dengan <code>@media (min-width: ...)</code> untuk layar yang lebih lebar. Kodenya lebih ringkas daripada sebaliknya.</p>
+<p>Breakpoint diambil dari titik desain <b>berubah</b>, bukan dari nama perangkat. Jika frame tablet menunjukkan kartu menjadi 2 kolom, tulis <code>@media (min-width: 768px)</code>. Di antara dua frame, bayangkan sendiri perilakunya: apa yang melar, apa yang dibatasi lebar maksimumnya.</p>
+<p>Uji di DevTools (Ctrl + Shift + M) dengan menyeret lebar layar pelan-pelan dari 320 sampai 1600 px. Bagian yang rusak di lebar "tanggung" seperti 900 px sering terlewat jika hanya mengecek tiga ukuran frame.</p>
+<p>Daftar kelas di pratinjau satu kolom. Buat 2 kolom mulai lebar 600px.</p>
+<div class="lbl">HTML</div><pre><code>&lt;ul class=&quot;daftar&quot;&gt;
+  &lt;li&gt;HTML&lt;/li&gt;&lt;li&gt;CSS&lt;/li&gt;&lt;li&gt;JavaScript&lt;/li&gt;&lt;li&gt;Figma&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+<div class="lbl">CSS</div><pre><code>body { font-family: system-ui, sans-serif; margin: 0; color: #1F2933; }
+.daftar { list-style: none; margin: 0; padding: 16px; display: grid; gap: 12px; }
+.daftar li { padding: 16px; border-radius: 12px; background: #F0FDFA; font-weight: 600; }
+/* tulis media query di bawah */</code></pre>
+<h2>Tantangan</h2><ol><li>Tambahkan <code>@media (min-width: 600px) { .daftar { grid-template-columns: 1fr 1fr; } }</code>.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Desain punya frame 390 (1 kolom kartu), 834 (2 kolom), 1440 (4 kolom, lebar konten maks 1200). Tulis rencana breakpoint dan CSS-nya.</p><details><summary>Petunjuk</summary><p>Breakpoint dari titik perubahan; container maks 1200.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>.wrap { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+.grid { display: grid; gap: 16px; }
+@media (min-width: 768px)  { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1200px) { .grid { grid-template-columns: repeat(4, 1fr); } }</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>CSS dasar untuk mobile, tambah dengan min-width.</li><li>Breakpoint dari titik desain berubah.</li><li>Seret lebar layar pelan-pelan, jangan hanya 3 ukuran.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Mobile-first memakai media query?</summary><p class="ok">Jawaban: min-width</p><p>Aturan ditambahkan saat layar melebar.</p></details>
+<a class="cta" href="/#slw-4-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/slw/footer-dan-form-newsletter">Footer dan form newsletter</a></p><p>Berikutnya: <a href="/belajar/slw/gambar-responsif-dengan-srcset">Gambar responsif dengan srcset</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

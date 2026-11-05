@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HTML semantik dari desain · Slicing Website · Ruang Kode</title>
+<meta name="description" content="Desain hanya menunjukkan rupa; slicer yang menentukan makna. Navbar adalah &lt;header&gt; berisi &lt;nav&gt;, isi utama adalah &lt;main&gt;, setiap bagian adalah &lt;section&gt;…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/slw/html-semantik-dari-desain">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="HTML semantik dari desain · Slicing Website · Ruang Kode"><meta property="og:description" content="Desain hanya menunjukkan rupa; slicer yang menentukan makna. Navbar adalah &lt;header&gt; berisi &lt;nav&gt;, isi utama adalah &lt;main&gt;, setiap bagian adalah &lt;section&gt;…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/slw/html-semantik-dari-desain"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "HTML semantik dari desain", "description": "Desain hanya menunjukkan rupa; slicer yang menentukan makna. Navbar adalah <header> berisi <nav>, isi utama adalah <main>, setiap bagian adalah <section>…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/slw/html-semantik-dari-desain", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "Slicing Website", "url": "https://ruang-kode-nine.vercel.app/belajar/slw"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Slicing Website", "item": "https://ruang-kode-nine.vercel.app/belajar/slw"}, {"@type": "ListItem", "position": 3, "name": "HTML semantik dari desain", "item": "https://ruang-kode-nine.vercel.app/belajar/slw/html-semantik-dari-desain"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/slw">Slicing Website</a> / Modul 1</nav>
+<div class="eyebrow">Slicing Website · Modul 1 · Praktik langsung</div><h1>HTML semantik dari desain</h1><a class="cta" href="/#slw-1-4">Buka versi interaktif</a>
+<p>Desain hanya menunjukkan <b>rupa</b>; slicer yang menentukan <b>makna</b>. Navbar adalah <code>&lt;header&gt;</code> berisi <code>&lt;nav&gt;</code>, isi utama adalah <code>&lt;main&gt;</code>, setiap bagian adalah <code>&lt;section&gt;</code> dengan judul, kartu artikel adalah <code>&lt;article&gt;</code>, dan bagian bawah adalah <code>&lt;footer&gt;</code>.</p>
+<p>Judul harus berurutan: satu <code>&lt;h1&gt;</code> per halaman (biasanya judul hero), lalu <code>&lt;h2&gt;</code> untuk judul section, <code>&lt;h3&gt;</code> untuk judul kartu. Pilih tag berdasarkan <b>tingkat</b>, bukan ukuran huruf di desain; ukuran diatur oleh CSS.</p>
+<p>Yang terlihat seperti tombol tetapi pindah halaman adalah <code>&lt;a&gt;</code>; yang menjalankan aksi di halaman yang sama adalah <code>&lt;button&gt;</code>. HTML semantik membuat halaman terbaca pembaca layar, mudah ditemukan Google, dan lebih mudah di-styling.</p>
+<p>Kerangka di pratinjau hanya berisi div. Ganti dengan landmark yang tepat.</p>
+<div class="lbl">HTML</div><pre><code>&lt;div class=&quot;atas&quot;&gt;&lt;div class=&quot;logo&quot;&gt;RuangKode&lt;/div&gt;&lt;div class=&quot;menu&quot;&gt;&lt;a href=&quot;#&quot;&gt;Kelas&lt;/a&gt;&lt;a href=&quot;#&quot;&gt;Harga&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;isi&quot;&gt;
+  &lt;div class=&quot;judul-besar&quot;&gt;Belajar slicing dari desain nyata&lt;/div&gt;
+  &lt;p&gt;Latihan dengan file Figma sungguhan.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;bawah&quot;&gt;© 2026 RuangKode&lt;/div&gt;</code></pre>
+<div class="lbl">CSS</div><pre><code>body { font-family: system-ui, sans-serif; margin: 0; color: #1F2933; }
+.atas, header { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid #E4E7EB; }
+.menu, nav { display: flex; gap: 16px; }
+.isi, main { padding: 24px 16px; }
+.judul-besar, h1 { font-size: 28px; font-weight: 700; margin: 0 0 8px; }
+.bawah, footer { padding: 16px; color: #52606D; font-size: 14px; }</code></pre>
+<h2>Tantangan</h2><ol><li>Ganti kerangkanya: <code>header</code> berisi <code>nav</code>, <code>main</code> berisi <code>h1</code>, dan <code>footer</code>.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Tulis kerangka HTML semantik untuk halaman blog: navbar, judul artikel, info penulis, isi, artikel terkait (3 kartu), footer.</p><details><summary>Petunjuk</summary><p>header/nav, main/article, aside atau section, footer.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">HTML</div><pre><code>&lt;header&gt;&lt;nav&gt;...&lt;/nav&gt;&lt;/header&gt;
+&lt;main&gt;
+  &lt;article&gt;
+    &lt;h1&gt;Judul artikel&lt;/h1&gt;
+    &lt;p class=&quot;meta&quot;&gt;Oleh Rina · 5 menit baca&lt;/p&gt;
+    &lt;p&gt;Isi...&lt;/p&gt;
+  &lt;/article&gt;
+  &lt;section aria-labelledby=&quot;terkait&quot;&gt;
+    &lt;h2 id=&quot;terkait&quot;&gt;Artikel terkait&lt;/h2&gt;
+    &lt;article&gt;&lt;h3&gt;...&lt;/h3&gt;&lt;/article&gt;
+    &lt;article&gt;&lt;h3&gt;...&lt;/h3&gt;&lt;/article&gt;
+    &lt;article&gt;&lt;h3&gt;...&lt;/h3&gt;&lt;/article&gt;
+  &lt;/section&gt;
+&lt;/main&gt;
+&lt;footer&gt;...&lt;/footer&gt;</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>header, nav, main, section, article, footer.</li><li>Satu h1, judul berurutan.</li><li>Pindah halaman: a. Aksi di halaman: button.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Tombol &quot;Lihat kelas&quot; yang membuka halaman lain sebaiknya memakai?</summary><p class="ok">Jawaban: a</p><p>Navigasi memakai tautan.</p></details><details><summary>Berapa h1 dalam satu halaman?</summary><p class="ok">Jawaban: Satu</p><p>h1 adalah judul halaman.</p></details>
+<a class="cta" href="/#slw-1-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/slw/token-desain-ke-css-variables">Token desain ke CSS variables</a></p><p>Berikutnya: <a href="/belajar/slw/navbar-responsif">Navbar responsif</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

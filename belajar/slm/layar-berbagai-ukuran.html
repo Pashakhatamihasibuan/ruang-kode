@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Layar berbagai ukuran · Slicing Mobile · Ruang Kode</title>
+<meta name="description" content="Desain biasanya hanya untuk ponsel 360 sampai 393 dp, tetapi aplikasi juga berjalan di ponsel kecil (320 dp), ponsel lipat, dan tablet. Uji desain di…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/slm/layar-berbagai-ukuran">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Layar berbagai ukuran · Slicing Mobile · Ruang Kode"><meta property="og:description" content="Desain biasanya hanya untuk ponsel 360 sampai 393 dp, tetapi aplikasi juga berjalan di ponsel kecil (320 dp), ponsel lipat, dan tablet. Uji desain di…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/slm/layar-berbagai-ukuran"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Layar berbagai ukuran", "description": "Desain biasanya hanya untuk ponsel 360 sampai 393 dp, tetapi aplikasi juga berjalan di ponsel kecil (320 dp), ponsel lipat, dan tablet. Uji desain di…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/slm/layar-berbagai-ukuran", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Slicing Mobile", "url": "https://ruang-kode-nine.vercel.app/belajar/slm"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Slicing Mobile", "item": "https://ruang-kode-nine.vercel.app/belajar/slm"}, {"@type": "ListItem", "position": 3, "name": "Layar berbagai ukuran", "item": "https://ruang-kode-nine.vercel.app/belajar/slm/layar-berbagai-ukuran"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/slm">Slicing Mobile</a> / Modul 4</nav>
+<div class="eyebrow">Slicing Mobile · Modul 4 · Konsep &amp; kode</div><h1>Layar berbagai ukuran</h1><a class="cta" href="/#slm-4-1">Buka versi interaktif</a>
+<p>Desain biasanya hanya untuk ponsel 360 sampai 393 dp, tetapi aplikasi juga berjalan di ponsel kecil (320 dp), ponsel lipat, dan tablet. Uji desain di ukuran <b>terkecil</b> (teks tidak terpotong, tombol tidak bertumpuk) dan <b>terbesar</b> (konten tidak melar terlalu lebar).</p>
+<p>Flutter: <code>LayoutBuilder</code> memberi lebar induk, <code>MediaQuery.sizeOf(context)</code> memberi ukuran layar. Compose: <code>currentWindowAdaptiveInfo().windowSizeClass</code> memberi kelas <b>compact</b> (&lt; 600 dp), <b>medium</b> (600 sampai 839), dan <b>expanded</b> (≥ 840). Pustaka <b>adaptive navigation suite</b> otomatis mengganti NavigationBar menjadi NavigationRail di layar lebar.</p>
+<p>Jangan lupa pengguna dengan <b>ukuran huruf besar</b> di pengaturan sistem. Uji dengan skala huruf 1,3× dan 2×: tinggi tetap pada kontainer teks adalah penyebab utama teks terpotong. Pakai tinggi minimum, bukan tinggi tetap.</p>
+<div class="tw"><table><caption>Kelas ukuran jendela</caption><thead><tr><th>Kelas</th><th>Lebar</th><th>Contoh perangkat</th><th>Navigasi</th></tr></thead><tbody><tr><td>Compact</td><td>&lt; 600 dp</td><td>Ponsel tegak</td><td>NavigationBar</td></tr><tr><td>Medium</td><td>600–839 dp</td><td>Tablet tegak, lipat terbuka</td><td>NavigationRail</td></tr><tr><td>Expanded</td><td>≥ 840 dp</td><td>Tablet mendatar, desktop</td><td>NavigationRail atau drawer</td></tr></tbody></table></div>
+<div class="lbl">KODE</div><pre><code>// Flutter: 2 kolom di ponsel, 4 kolom mulai 600 dp
+LayoutBuilder(
+  builder: (context, c) {
+    final kolom = c.maxWidth &gt;= 840 ? 4 : c.maxWidth &gt;= 600 ? 3 : 2;
+    return GridView.count(crossAxisCount: kolom, children: kartu);
+  },
+)
+
+// Compose: NavigationBar di ponsel, NavigationRail di layar lebar
+val kelas = currentWindowAdaptiveInfo().windowSizeClass
+if (kelas.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)) {
+    Row { NavigationRail { /* ... */ }; Konten() }
+} else {
+    Scaffold(bottomBar = { NavigationBar { /* ... */ } }) { Konten() }
+}</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Batasi lebar konten maksimal 600 dan letakkan di tengah agar tidak melar di tablet.</p><details><summary>Petunjuk</summary><p>Center + ConstrainedBox.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>Center(
+  child: ConstrainedBox(
+    constraints: const BoxConstraints(maxWidth: 600),
+    child: konten,
+  ),
+)</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Uji di ukuran terkecil dan terbesar.</li><li>LayoutBuilder / WindowSizeClass: compact, medium, expanded.</li><li>Uji skala huruf 1,3× dan 2×; hindari tinggi tetap.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Teks terpotong saat pengguna memperbesar huruf. Penyebab paling umum?</summary><p class="ok">Jawaban: Kontainer dengan tinggi tetap</p><p>Pakai tinggi minimum.</p></details>
+<a class="cta" href="/#slm-4-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/slm/bottom-navigation-dan-top-app-bar">Bottom navigation dan top app bar</a></p><p>Berikutnya: <a href="/belajar/slm/pixel-perfect-dan-golden-test">Pixel-perfect dan golden test</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

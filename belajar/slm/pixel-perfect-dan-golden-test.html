@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pixel-perfect dan golden test · Slicing Mobile · Ruang Kode</title>
+<meta name="description" content="Di mobile, membandingkan dengan desain dilakukan dengan menjalankan aplikasi di emulator berukuran sama dengan frame Figma (misalnya Pixel 7, 412 × 915…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/slm/pixel-perfect-dan-golden-test">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Pixel-perfect dan golden test · Slicing Mobile · Ruang Kode"><meta property="og:description" content="Di mobile, membandingkan dengan desain dilakukan dengan menjalankan aplikasi di emulator berukuran sama dengan frame Figma (misalnya Pixel 7, 412 × 915…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/slm/pixel-perfect-dan-golden-test"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Pixel-perfect dan golden test", "description": "Di mobile, membandingkan dengan desain dilakukan dengan menjalankan aplikasi di emulator berukuran sama dengan frame Figma (misalnya Pixel 7, 412 × 915…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/slm/pixel-perfect-dan-golden-test", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Slicing Mobile", "url": "https://ruang-kode-nine.vercel.app/belajar/slm"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Slicing Mobile", "item": "https://ruang-kode-nine.vercel.app/belajar/slm"}, {"@type": "ListItem", "position": 3, "name": "Pixel-perfect dan golden test", "item": "https://ruang-kode-nine.vercel.app/belajar/slm/pixel-perfect-dan-golden-test"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/slm">Slicing Mobile</a> / Modul 4</nav>
+<div class="eyebrow">Slicing Mobile · Modul 4 · Konsep &amp; kode</div><h1>Pixel-perfect dan golden test</h1><a class="cta" href="/#slm-4-2">Buka versi interaktif</a>
+<p>Di mobile, membandingkan dengan desain dilakukan dengan menjalankan aplikasi di emulator berukuran sama dengan frame Figma (misalnya Pixel 7, 412 × 915 dp), mengambil tangkapan layar, lalu menumpuknya dengan ekspor frame di Figma (opacity 50%). Flutter juga punya <b>Flutter Inspector</b> dengan "Show guidelines" untuk melihat padding dan batas widget.</p>
+<p>Agar tampilan yang sudah benar tidak rusak diam-diam di kemudian hari, buat <b>golden test</b> (Flutter) atau <b>screenshot test</b> (Compose, dengan Roborazzi atau Paparazzi). Tes merender widget, menyimpan gambar acuan, dan gagal jika tampilan berubah walau satu piksel.</p>
+<p>Simpan gambar acuan di repositori, dan perbarui hanya jika perubahan tampilan memang disengaja (<code>flutter test --update-goldens</code>).</p>
+<div class="lbl">KODE</div><pre><code>// test/kartu_produk_golden_test.dart
+void main() {
+  testWidgets(&#x27;KartuProduk sesuai desain&#x27;, (tester) async {
+    tester.view.physicalSize = const Size(360, 300);
+    tester.view.devicePixelRatio = 1.0;
+    await tester.pumpWidget(MaterialApp(
+      theme: temaKopiNusa,
+      home: const Scaffold(body: KartuProduk(nama: &#x27;Kopi Susu Aren&#x27;, harga: 22000)),
+    ));
+    await expectLater(find.byType(KartuProduk), matchesGoldenFile(&#x27;goldens/kartu_produk.png&#x27;));
+  });
+}
+
+// Jalankan pertama kali (membuat gambar acuan):
+//   flutter test --update-goldens
+// Jalankan berikutnya (membandingkan):
+//   flutter test</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis langkah membandingkan layar Beranda di emulator dengan frame Figma.</p><details><summary>Petunjuk</summary><p>Ukuran sama, tangkapan layar, tumpuk dengan opacity.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>1. Buat emulator dengan lebar sama dengan frame (misal 412 dp).
+2. Jalankan aplikasi, ambil tangkapan layar Beranda.
+3. Ekspor frame Figma pada skala yang sama dengan densitas emulator.
+4. Tumpuk di Figma: tangkapan layar di atas, opacity 50%.
+5. Catat selisih jarak, ukuran huruf, warna; perbaiki yang berdampak besar dulu.</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Bandingkan di emulator berukuran sama dengan frame Figma.</li><li>Golden test (Flutter) dan screenshot test (Roborazzi, Paparazzi).</li><li>Perbarui acuan hanya untuk perubahan yang disengaja.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Apa fungsi golden test?</summary><p class="ok">Jawaban: Mendeteksi perubahan tampilan yang tidak disengaja</p><p>Gambar acuan dibandingkan setiap kali tes jalan.</p></details>
+<a class="cta" href="/#slm-4-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/slm/layar-berbagai-ukuran">Layar berbagai ukuran</a></p><p>Berikutnya: <a href="/belajar/slm/proyek-slicing-aplikasi-kedai-kopi">Proyek: slicing aplikasi kedai kopi</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

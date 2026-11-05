@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gambar responsif dengan srcset · Slicing Website · Ruang Kode</title>
+<meta name="description" content="Satu gambar besar untuk semua layar membuang kuota pengguna ponsel. Atribut srcset memberi browser beberapa pilihan file, dan sizes memberi tahu lebar…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/slw/gambar-responsif-dengan-srcset">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Gambar responsif dengan srcset · Slicing Website · Ruang Kode"><meta property="og:description" content="Satu gambar besar untuk semua layar membuang kuota pengguna ponsel. Atribut srcset memberi browser beberapa pilihan file, dan sizes memberi tahu lebar…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/slw/gambar-responsif-dengan-srcset"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Gambar responsif dengan srcset", "description": "Satu gambar besar untuk semua layar membuang kuota pengguna ponsel. Atribut srcset memberi browser beberapa pilihan file, dan sizes memberi tahu lebar…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/slw/gambar-responsif-dengan-srcset", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "Slicing Website", "url": "https://ruang-kode-nine.vercel.app/belajar/slw"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Slicing Website", "item": "https://ruang-kode-nine.vercel.app/belajar/slw"}, {"@type": "ListItem", "position": 3, "name": "Gambar responsif dengan srcset", "item": "https://ruang-kode-nine.vercel.app/belajar/slw/gambar-responsif-dengan-srcset"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/slw">Slicing Website</a> / Modul 4</nav>
+<div class="eyebrow">Slicing Website · Modul 4 · Praktik langsung</div><h1>Gambar responsif dengan srcset</h1><a class="cta" href="/#slw-4-2">Buka versi interaktif</a>
+<p>Satu gambar besar untuk semua layar membuang kuota pengguna ponsel. Atribut <code>srcset</code> memberi browser beberapa pilihan file, dan <code>sizes</code> memberi tahu lebar tampil gambar. Browser lalu memilih file terkecil yang tetap tajam untuk layar itu.</p>
+<p>Contoh: <code>srcset="kopi-480.webp 480w, kopi-960.webp 960w, kopi-1440.webp 1440w"</code> dan <code>sizes="(min-width: 768px) 50vw, 100vw"</code>. Artinya: di layar lebar gambar tampil selebar setengah layar, di ponsel selebar penuh.</p>
+<p>Jika desain meminta <b>potongan berbeda</b> (art direction), misalnya foto lebar di desktop tetapi potongan persegi di mobile, pakai <code>&lt;picture&gt;</code> dengan beberapa <code>&lt;source media="..."&gt;</code>.</p>
+<p>Gambar di pratinjau hanya punya satu file.</p>
+<div class="lbl">HTML</div><pre><code>&lt;img class=&quot;foto&quot; src=&quot;kopi-960.webp&quot; alt=&quot;Barista menyeduh kopi&quot; width=&quot;960&quot; height=&quot;640&quot;&gt;</code></pre>
+<div class="lbl">CSS</div><pre><code>body { font-family: system-ui, sans-serif; margin: 0; color: #1F2933; }
+.foto { display: block; max-width: 100%; height: auto; background: #D7B899; }</code></pre>
+<h2>Tantangan</h2><ol><li>Tambahkan <code>srcset</code> dengan tiga ukuran (480w, 960w, 1440w) dan <code>sizes="(min-width: 768px) 50vw, 100vw"</code>.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Tulis elemen picture: desktop memakai foto lebar 16:9, ponsel memakai potongan persegi.</p><details><summary>Petunjuk</summary><p>source dengan media min-width untuk desktop, img sebagai cadangan.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">HTML</div><pre><code>&lt;picture&gt;
+  &lt;source media=&quot;(min-width: 768px)&quot; srcset=&quot;hero-lebar-1280.webp 1280w, hero-lebar-1920.webp 1920w&quot; sizes=&quot;100vw&quot;&gt;
+  &lt;img src=&quot;hero-persegi-720.webp&quot; srcset=&quot;hero-persegi-480.webp 480w, hero-persegi-720.webp 720w&quot; sizes=&quot;100vw&quot; alt=&quot;Kedai KopiNusa&quot; width=&quot;720&quot; height=&quot;720&quot;&gt;
+&lt;/picture&gt;</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>srcset: daftar file dengan lebar aslinya (w).</li><li>sizes: lebar tampil gambar di setiap kondisi.</li><li>picture + source untuk potongan berbeda.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Apa arti 960w di srcset?</summary><p class="ok">Jawaban: Lebar asli file 960 piksel</p><p>Browser memakai info ini untuk memilih.</p></details>
+<a class="cta" href="/#slw-4-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/slw/mobile-first-dan-breakpoint-dari-desain">Mobile-first dan breakpoint dari desain</a></p><p>Berikutnya: <a href="/belajar/slw/pixel-perfect-membandingkan-dengan-desain">Pixel-perfect: membandingkan dengan desain</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

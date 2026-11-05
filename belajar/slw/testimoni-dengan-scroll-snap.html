@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Testimoni dengan scroll-snap · Slicing Website · Ruang Kode</title>
+<meta name="description" content="Desain mobile sering menampilkan testimoni sebagai carousel yang digeser horizontal. Kamu tidak perlu library JavaScript: CSS scroll-snap sudah cukup.…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/slw/testimoni-dengan-scroll-snap">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Testimoni dengan scroll-snap · Slicing Website · Ruang Kode"><meta property="og:description" content="Desain mobile sering menampilkan testimoni sebagai carousel yang digeser horizontal. Kamu tidak perlu library JavaScript: CSS scroll-snap sudah cukup.…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/slw/testimoni-dengan-scroll-snap"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Testimoni dengan scroll-snap", "description": "Desain mobile sering menampilkan testimoni sebagai carousel yang digeser horizontal. Kamu tidak perlu library JavaScript: CSS scroll-snap sudah cukup.…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/slw/testimoni-dengan-scroll-snap", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "Slicing Website", "url": "https://ruang-kode-nine.vercel.app/belajar/slw"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Slicing Website", "item": "https://ruang-kode-nine.vercel.app/belajar/slw"}, {"@type": "ListItem", "position": 3, "name": "Testimoni dengan scroll-snap", "item": "https://ruang-kode-nine.vercel.app/belajar/slw/testimoni-dengan-scroll-snap"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/slw">Slicing Website</a> / Modul 3</nav>
+<div class="eyebrow">Slicing Website · Modul 3 · Praktik langsung</div><h1>Testimoni dengan scroll-snap</h1><a class="cta" href="/#slw-3-2">Buka versi interaktif</a>
+<p>Desain mobile sering menampilkan testimoni sebagai <b>carousel</b> yang digeser horizontal. Kamu tidak perlu library JavaScript: CSS <b>scroll-snap</b> sudah cukup. Wadahnya <code>display: flex; overflow-x: auto; scroll-snap-type: x mandatory</code>, setiap kartu <code>scroll-snap-align: start</code> dan lebar tetap (misalnya 85% layar).</p>
+<p>Sisakan sebagian kartu berikutnya terlihat (peek) agar pengguna tahu bisa digeser. Pastikan carousel juga bisa digeser dengan keyboard (beri <code>tabindex="0"</code> dan label pada wadah), dan jangan memutar otomatis tanpa tombol jeda.</p>
+<p>Di desktop, carousel yang sama bisa berubah menjadi grid tiga kolom dengan media query.</p>
+<p>Wadah testimoni di pratinjau sudah menggulir, tetapi belum "mengunci" ke kartu.</p>
+<div class="lbl">HTML</div><pre><code>&lt;section class=&quot;testi&quot; aria-label=&quot;Testimoni siswa&quot; tabindex=&quot;0&quot;&gt;
+  &lt;blockquote class=&quot;k&quot;&gt;&quot;Akhirnya paham flexbox setelah 3 hari.&quot;&lt;cite&gt;Rina, Medan&lt;/cite&gt;&lt;/blockquote&gt;
+  &lt;blockquote class=&quot;k&quot;&gt;&quot;Proyek slicing pertamaku diterima klien.&quot;&lt;cite&gt;Andi, Makassar&lt;/cite&gt;&lt;/blockquote&gt;
+  &lt;blockquote class=&quot;k&quot;&gt;&quot;Materinya runtut dan ada soal latihannya.&quot;&lt;cite&gt;Sari, Bandung&lt;/cite&gt;&lt;/blockquote&gt;
+&lt;/section&gt;</code></pre>
+<div class="lbl">CSS</div><pre><code>body { font-family: system-ui, sans-serif; margin: 0; color: #1F2933; }
+.testi { display: flex; gap: 12px; overflow-x: auto; padding: 16px; }
+.k { flex: 0 0 85%; margin: 0; padding: 24px; border-radius: 16px; background: #EEF2FF; font-size: 17px; }
+.k cite { display: block; margin-top: 12px; font-size: 14px; font-style: normal; color: #4338CA; }</code></pre>
+<h2>Tantangan</h2><ol><li>Tambahkan <code>scroll-snap-type: x mandatory</code> pada <code>.testi</code> dan <code>scroll-snap-align: start</code> pada <code>.k</code>.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Ubah carousel testimoni menjadi grid 3 kolom tanpa scroll di layar ≥ 1024px.</p><details><summary>Petunjuk</summary><p>Di media query, ganti display dan matikan overflow.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CSS</div><pre><code>@media (min-width: 1024px) {
+  .testi { display: grid; grid-template-columns: repeat(3, 1fr); overflow: visible; }
+  .k { flex: none; }
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Carousel tanpa JS: overflow-x + scroll-snap.</li><li>Sisakan peek kartu berikutnya.</li><li>Bisa digeser keyboard, jangan autoplay tanpa jeda.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa kartu carousel dibuat 85% lebar, bukan 100%?</summary><p class="ok">Jawaban: Agar kartu berikutnya terlihat sedikit sebagai petunjuk bisa digeser</p><p>Peek memberi isyarat.</p></details>
+<a class="cta" href="/#slw-3-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/slw/section-fitur-dengan-grid">Section fitur dengan grid</a></p><p>Berikutnya: <a href="/belajar/slw/tabel-harga-dengan-paket-unggulan">Tabel harga dengan paket unggulan</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

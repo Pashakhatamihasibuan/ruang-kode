@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Membaca desain mobile · Slicing Mobile · Ruang Kode</title>
+<meta name="description" content="Desain mobile di Figma biasanya memakai frame 360 × 800 (Android) atau 390 × 844 / 393 × 852 (iPhone). Satuan di Figma adalah piksel logis, yang sama…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/slm/membaca-desain-mobile">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Membaca desain mobile · Slicing Mobile · Ruang Kode"><meta property="og:description" content="Desain mobile di Figma biasanya memakai frame 360 × 800 (Android) atau 390 × 844 / 393 × 852 (iPhone). Satuan di Figma adalah piksel logis, yang sama…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/slm/membaca-desain-mobile"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Membaca desain mobile", "description": "Desain mobile di Figma biasanya memakai frame 360 × 800 (Android) atau 390 × 844 / 393 × 852 (iPhone). Satuan di Figma adalah piksel logis, yang sama…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/slm/membaca-desain-mobile", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Slicing Mobile", "url": "https://ruang-kode-nine.vercel.app/belajar/slm"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Slicing Mobile", "item": "https://ruang-kode-nine.vercel.app/belajar/slm"}, {"@type": "ListItem", "position": 3, "name": "Membaca desain mobile", "item": "https://ruang-kode-nine.vercel.app/belajar/slm/membaca-desain-mobile"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/slm">Slicing Mobile</a> / Modul 1</nav>
+<div class="eyebrow">Slicing Mobile · Modul 1 · Konsep &amp; kode</div><h1>Membaca desain mobile</h1><a class="cta" href="/#slm-1-1">Buka versi interaktif</a>
+<p>Desain mobile di Figma biasanya memakai frame <b>360 × 800</b> (Android) atau <b>390 × 844</b> / <b>393 × 852</b> (iPhone). Satuan di Figma adalah piksel logis, yang sama dengan <b>dp</b> di Android (dan Flutter) dan <b>pt</b> di iOS. Jadi padding 16 di Figma menjadi <code>16.dp</code> di Compose dan <code>16</code> di Flutter, tanpa konversi.</p>
+<p>Perhatikan area yang tidak boleh diisi konten penting: <b>status bar</b> di atas, <b>notch</b> atau kamera, dan <b>gesture bar</b> di bawah. Di Flutter, bungkus layar dengan <code>SafeArea</code>; di Compose, pakai <code>Scaffold</code> dan parameter <code>innerPadding</code> atau <code>Modifier.windowInsetsPadding</code>. Sejak Android 15, aplikasi tampil <b>edge-to-edge</b> secara bawaan, jadi inset wajib ditangani.</p>
+<p>Ukuran target sentuh minimal <b>48 × 48 dp</b> di Android dan <b>44 × 44 pt</b> di iOS, walau ikonnya hanya 24. Jika desain menunjukkan ikon tanpa area sentuh, tanyakan ke desainer atau perbesar area sentuhnya tanpa mengubah tampilan.</p>
+<div class="tw"><table><caption>Figma ke Flutter dan Compose</caption><thead><tr><th>Figma</th><th>Flutter</th><th>Jetpack Compose</th></tr></thead><tbody><tr><td>16 (px logis)</td><td>16 (logical pixel)</td><td>16.dp</td></tr><tr><td>Text 16</td><td>fontSize: 16</td><td>16.sp</td></tr><tr><td>Frame 360 × 800</td><td>MediaQuery.sizeOf(context)</td><td>LocalConfiguration / WindowSizeClass</td></tr><tr><td>Safe area</td><td>SafeArea(child: ...)</td><td>Scaffold innerPadding, WindowInsets</td></tr><tr><td>Target sentuh 48</td><td>minimumSize: Size(48, 48)</td><td>Modifier.minimumInteractiveComponentSize()</td></tr></tbody></table></div>
+<h2>Soal latihan</h2><ol><li><p>Frame Figma 390 × 844 berisi: padding layar 20, judul 28/34, kartu tinggi 120 radius 16, tombol tinggi 52. Tulis nilai Flutter dan Compose-nya.</p><details><summary>Petunjuk</summary><p>Satu banding satu; huruf memakai sp di Compose.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Flutter : EdgeInsets.all(20), TextStyle(fontSize: 28, height: 34 / 28), SizedBox(height: 120), BorderRadius.circular(16), Size.fromHeight(52)
+Compose : Modifier.padding(20.dp), fontSize = 28.sp, lineHeight = 34.sp, Modifier.height(120.dp), RoundedCornerShape(16.dp), Modifier.height(52.dp)</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Piksel Figma = dp (Android, Flutter) = pt (iOS).</li><li>Hormati status bar, notch, gesture bar: SafeArea dan insets.</li><li>Target sentuh 48 dp / 44 pt.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Padding 24 di Figma menjadi apa di Compose?</summary><p class="ok">Jawaban: 24.dp</p><p>Satu banding satu.</p></details><details><summary>Ukuran huruf di Compose memakai satuan?</summary><p class="ok">Jawaban: sp</p><p>sp mengikuti pengaturan ukuran huruf pengguna.</p></details>
+<a class="cta" href="/#slm-1-1">Kerjakan latihannya di aplikasi</a><p>Berikutnya: <a href="/belajar/slm/ekspor-aset-dan-ikon">Ekspor aset dan ikon</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

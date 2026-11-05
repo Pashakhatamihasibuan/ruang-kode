@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Layar login di Jetpack Compose · Slicing Mobile · Ruang Kode</title>
+<meta name="description" content="Desain yang sama di Compose: Scaffold memberi innerPadding untuk inset sistem, lalu Column dengan verticalScroll, imePadding() agar naik di atas…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/slm/layar-login-di-jetpack-compose">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Layar login di Jetpack Compose · Slicing Mobile · Ruang Kode"><meta property="og:description" content="Desain yang sama di Compose: Scaffold memberi innerPadding untuk inset sistem, lalu Column dengan verticalScroll, imePadding() agar naik di atas…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/slm/layar-login-di-jetpack-compose"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Layar login di Jetpack Compose", "description": "Desain yang sama di Compose: Scaffold memberi innerPadding untuk inset sistem, lalu Column dengan verticalScroll, imePadding() agar naik di atas…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/slm/layar-login-di-jetpack-compose", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Slicing Mobile", "url": "https://ruang-kode-nine.vercel.app/belajar/slm"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Slicing Mobile", "item": "https://ruang-kode-nine.vercel.app/belajar/slm"}, {"@type": "ListItem", "position": 3, "name": "Layar login di Jetpack Compose", "item": "https://ruang-kode-nine.vercel.app/belajar/slm/layar-login-di-jetpack-compose"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/slm">Slicing Mobile</a> / Modul 2</nav>
+<div class="eyebrow">Slicing Mobile · Modul 2 · Konsep &amp; kode</div><h1>Layar login di Jetpack Compose</h1><a class="cta" href="/#slm-2-3">Buka versi interaktif</a>
+<p>Desain yang sama di Compose: <code>Scaffold</code> memberi <code>innerPadding</code> untuk inset sistem, lalu <code>Column</code> dengan <code>verticalScroll</code>, <code>imePadding()</code> agar naik di atas keyboard, dan <code>Arrangement.spacedBy(16.dp)</code> untuk gap.</p>
+<p>State field disimpan dengan <code>rememberSaveable</code> agar tidak hilang saat layar diputar. <code>OutlinedTextField</code> sudah punya label mengambang sesuai Material 3. Opsi keyboard diatur lewat <code>KeyboardOptions</code>.</p>
+<p>Nilai ukuran diambil langsung dari Figma: padding 24.dp, tinggi tombol 52.dp, radius 12.dp. Warna dan gaya teks dari <code>MaterialTheme</code>.</p>
+<div class="lbl">KODE</div><pre><code>@Composable
+fun LoginScreen(onMasuk: (String, String) -&gt; Unit) {
+    var email by rememberSaveable { mutableStateOf(&quot;&quot;) }
+    var sandi by rememberSaveable { mutableStateOf(&quot;&quot;) }
+    var sembunyi by rememberSaveable { mutableStateOf(true) }
+
+    Scaffold { innerPadding -&gt;
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .imePadding()
+                .verticalScroll(rememberScrollState())
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Spacer(Modifier.height(32.dp))
+            Text(&quot;Masuk&quot;, style = MaterialTheme.typography.headlineMedium)
+            Text(&quot;Lanjutkan belajarmu hari ini.&quot;, style = MaterialTheme.typography.bodyLarge)
+            OutlinedTextField(
+                value = email, onValueChange = { email = it },
+                label = { Text(&quot;Email&quot;) }, singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
+                value = sandi, onValueChange = { sandi = it },
+                label = { Text(&quot;Kata sandi&quot;) }, singleLine = true,
+                visualTransformation = if (sembunyi) PasswordVisualTransformation() else VisualTransformation.None,
+                trailingIcon = {
+                    IconButton(onClick = { sembunyi = !sembunyi }) {
+                        Icon(
+                            if (sembunyi) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                            contentDescription = if (sembunyi) &quot;Tampilkan sandi&quot; else &quot;Sembunyikan sandi&quot;
+                        )
+                    }
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+                modifier = Modifier.fillMaxWidth()
+            )
+            TextButton(onClick = {}, modifier = Modifier.align(Alignment.End)) { Text(&quot;Lupa kata sandi?&quot;) }
+            Button(
+                onClick = { onMasuk(email, sandi) },
+                shape = RoundedCornerShape(12.dp),
+                modifier = Modifier.fillMaxWidth().height(52.dp)
+            ) { Text(&quot;Masuk&quot;) }
+        }
+    }
+}</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tampilkan pesan error di bawah OutlinedTextField email jika tidak mengandung @.</p><details><summary>Petunjuk</summary><p>Parameter isError dan supportingText.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>val salah = email.isNotEmpty() &amp;&amp; !email.contains(&quot;@&quot;)
+OutlinedTextField(
+    value = email, onValueChange = { email = it },
+    label = { Text(&quot;Email&quot;) },
+    isError = salah,
+    supportingText = { if (salah) Text(&quot;Format email belum benar, contoh: nama@contoh.com&quot;) },
+    modifier = Modifier.fillMaxWidth()
+)</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Scaffold innerPadding + imePadding + verticalScroll.</li><li>rememberSaveable untuk state field.</li><li>contentDescription untuk ikon yang bisa ditekan.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Modifier yang membuat konten naik di atas keyboard?</summary><p class="ok">Jawaban: imePadding()</p><p>IME = keyboard di layar.</p></details><details><summary>Kenapa memakai rememberSaveable, bukan remember?</summary><p class="ok">Jawaban: Isi field tidak hilang saat layar diputar</p><p>Bertahan saat konfigurasi berubah.</p></details>
+<a class="cta" href="/#slm-2-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/slm/layar-login-di-flutter">Layar login di Flutter</a></p><p>Berikutnya: <a href="/belajar/slm/kartu-produk-dan-grid-di-flutter">Kartu produk dan grid di Flutter</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

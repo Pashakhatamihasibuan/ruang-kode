@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Properti warna dan model warna layar · UI Design · Ruang Kode</title>
+<meta name="description" content="Setiap warna punya tiga properti: hue (rona: merah, biru, hijau, diukur 0 sampai 360 derajat di roda warna), saturation (kepekatan: abu-abu sampai…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/ui/properti-warna-dan-model-warna-layar">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Properti warna dan model warna layar · UI Design · Ruang Kode"><meta property="og:description" content="Setiap warna punya tiga properti: hue (rona: merah, biru, hijau, diukur 0 sampai 360 derajat di roda warna), saturation (kepekatan: abu-abu sampai…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/ui/properti-warna-dan-model-warna-layar"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Properti warna dan model warna layar", "description": "Setiap warna punya tiga properti: hue (rona: merah, biru, hijau, diukur 0 sampai 360 derajat di roda warna), saturation (kepekatan: abu-abu sampai…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/ui/properti-warna-dan-model-warna-layar", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "UI Design", "url": "https://ruang-kode-nine.vercel.app/belajar/ui"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "UI Design", "item": "https://ruang-kode-nine.vercel.app/belajar/ui"}, {"@type": "ListItem", "position": 3, "name": "Properti warna dan model warna layar", "item": "https://ruang-kode-nine.vercel.app/belajar/ui/properti-warna-dan-model-warna-layar"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/ui">UI Design</a> / Modul 3</nav>
+<div class="eyebrow">UI Design · Modul 3 · Praktik langsung</div><h1>Properti warna dan model warna layar</h1><a class="cta" href="/#ui-3-1">Buka versi interaktif</a>
+<p>Setiap warna punya tiga properti: <b>hue</b> (rona: merah, biru, hijau, diukur 0 sampai 360 derajat di roda warna), <b>saturation</b> (kepekatan: abu-abu sampai menyala), dan <b>lightness</b> atau value (gelap sampai terang).</p>
+<p>Layar membuat warna dari cahaya merah, hijau, dan biru: model <b>RGB</b>, ditulis heksadesimal (<code>#8A4B2A</code>) atau <code>rgb(138 75 42)</code>. Untuk desainer, <b>HSL</b> lebih intuitif: <code>hsl(21 53% 35%)</code>, karena membuat versi lebih terang cukup menaikkan angka lightness. Model <b>OKLCH</b> yang lebih baru membuat perubahan lightness terasa merata di semua hue, sehingga kini dipakai Tailwind v4.</p>
+<p>Cetak memakai <b>CMYK</b> (tinta), bukan RGB. Itulah sebabnya warna yang menyala di layar bisa terlihat kusam saat dicetak. Untuk produk digital, bekerja di ruang warna sRGB (atau Display P3 untuk layar modern) dan selalu cek di perangkat nyata.</p>
+<p>Tombol di pratinjau memakai HSL dengan hue dari variabel. Ubah hue-nya.</p>
+<div class="lbl">HTML</div><pre><code>&lt;div class=&quot;baris&quot;&gt;
+  &lt;button class=&quot;tombol&quot;&gt;Daftar sekarang&lt;/button&gt;
+  &lt;span class=&quot;kode&quot;&gt;hsl(var(--hue) 70% 40%)&lt;/span&gt;
+&lt;/div&gt;</code></pre>
+<div class="lbl">CSS</div><pre><code>:root { --hue: 21; }
+body { font-family: system-ui, sans-serif; margin: 0; padding: 24px; }
+.baris { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+.tombol { background: hsl(var(--hue) 70% 40%); color: #fff; border: 0; padding: 12px 24px; border-radius: 10px; font-size: 16px; }
+.kode { font-family: ui-monospace, monospace; color: #52606D; }</code></pre>
+<h2>Tantangan</h2><ol><li>Ubah <code>--hue</code> menjadi <b>210</b> agar tombol menjadi biru, tanpa menyentuh saturation dan lightness.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Ubah warna hsl(210 70% 40%) menjadi versi lebih terang untuk latar, versi lebih gelap untuk teks, dan versi abu-abu.</p><details><summary>Petunjuk</summary><p>Ubah lightness untuk terang-gelap, saturation untuk abu-abu.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Latar terang : hsl(210 70% 94%)
+Teks gelap   : hsl(210 70% 22%)
+Abu-abu      : hsl(210 8% 40%)</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Hue, saturation, lightness.</li><li>Layar memakai RGB; HSL dan OKLCH lebih mudah diatur desainer.</li><li>Cetak memakai CMYK, warna bisa berbeda.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Untuk membuat versi warna lebih terang di HSL, ubah?</summary><p class="ok">Jawaban: Lightness</p><p>Lightness mengatur gelap-terang.</p></details><details><summary>Hue 120 kira-kira berwarna?</summary><p class="ok">Jawaban: Hijau</p><p>0 merah, 120 hijau, 240 biru.</p></details>
+<a class="cta" href="/#ui-3-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/ui/tipografi-responsif">Tipografi responsif</a></p><p>Berikutnya: <a href="/belajar/ui/kontras-wcag">Kontras WCAG</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

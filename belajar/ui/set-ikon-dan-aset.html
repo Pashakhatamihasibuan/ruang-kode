@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Set ikon dan aset · UI Design · Ruang Kode</title>
+<meta name="description" content="Ikon dalam satu produk harus berasal dari satu set dengan gaya seragam: grid yang sama (biasanya 24 × 24 dengan area aman 2 px), ketebalan garis sama…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/ui/set-ikon-dan-aset">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Set ikon dan aset · UI Design · Ruang Kode"><meta property="og:description" content="Ikon dalam satu produk harus berasal dari satu set dengan gaya seragam: grid yang sama (biasanya 24 × 24 dengan area aman 2 px), ketebalan garis sama…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/ui/set-ikon-dan-aset"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Set ikon dan aset", "description": "Ikon dalam satu produk harus berasal dari satu set dengan gaya seragam: grid yang sama (biasanya 24 × 24 dengan area aman 2 px), ketebalan garis sama…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/ui/set-ikon-dan-aset", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "UI Design", "url": "https://ruang-kode-nine.vercel.app/belajar/ui"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "UI Design", "item": "https://ruang-kode-nine.vercel.app/belajar/ui"}, {"@type": "ListItem", "position": 3, "name": "Set ikon dan aset", "item": "https://ruang-kode-nine.vercel.app/belajar/ui/set-ikon-dan-aset"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/ui">UI Design</a> / Modul 5</nav>
+<div class="eyebrow">UI Design · Modul 5 · Praktik langsung</div><h1>Set ikon dan aset</h1><a class="cta" href="/#ui-5-4">Buka versi interaktif</a>
+<p>Ikon dalam satu produk harus berasal dari <b>satu set</b> dengan gaya seragam: grid yang sama (biasanya 24 × 24 dengan area aman 2 px), ketebalan garis sama (1,5 atau 2 px), sudut sama, dan gaya sama (outline atau filled). Set populer: Material Symbols, Lucide, Phosphor, Heroicons. Mencampur set membuat UI terasa "tambal sulam".</p>
+<p>Format: <b>SVG</b> untuk ikon dan ilustrasi sederhana (tajam di semua ukuran, bisa diwarnai dengan <code>currentColor</code>). <b>PNG</b> atau <b>WebP</b> untuk foto dan gambar kompleks, diekspor @1x, @2x, @3x untuk mobile. Di Figma, atur <b>Export settings</b> pada setiap aset dan beri nama dengan pola konsisten: <code>ic_cart_24.svg</code>, <code>img_onboarding_1@2x.png</code>.</p>
+<p>Aksesibilitas ikon: ikon dekoratif diberi <code>aria-hidden="true"</code>. Tombol yang hanya berisi ikon <b>wajib</b> punya nama yang bisa dibaca: <code>aria-label="Keranjang"</code>. Target sentuhnya tetap minimal 44 sampai 48 px walau ikonnya 24 px.</p>
+<p>Tombol keranjang di pratinjau hanya berisi ikon dan tidak punya nama.</p>
+<div class="lbl">HTML</div><pre><code>&lt;button class=&quot;ikon-btn&quot;&gt;
+  &lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;9&quot; cy=&quot;20&quot; r=&quot;1.5&quot;/&gt;&lt;circle cx=&quot;18&quot; cy=&quot;20&quot; r=&quot;1.5&quot;/&gt;&lt;path d=&quot;M2 3h3l2.6 12.4a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L22 7H6&quot;/&gt;&lt;/svg&gt;
+&lt;/button&gt;</code></pre>
+<div class="lbl">CSS</div><pre><code>body { font-family: system-ui, sans-serif; margin: 0; padding: 24px; }
+.ikon-btn { width: 48px; height: 48px; display: grid; place-items: center; border: 0; border-radius: 12px; background: #E8F1FB; color: #1D5FA8; }</code></pre>
+<h2>Tantangan</h2><ol><li>Beri tombol <code>aria-label="Keranjang"</code>, dan beri SVG di dalamnya <code>aria-hidden="true"</code>.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Buat aturan penamaan file untuk 3 ikon dan 2 ilustrasi onboarding yang diekspor untuk Android dan iOS.</p><details><summary>Petunjuk</summary><p>Pola: jenis_nama_ukuran, kepadatan @2x @3x.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>ic_home_24.svg
+ic_search_24.svg
+ic_cart_24.svg
+img_onboarding_1.png, img_onboarding_1@2x.png, img_onboarding_1@3x.png
+img_onboarding_2.png, img_onboarding_2@2x.png, img_onboarding_2@3x.png</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Satu set ikon dengan grid, garis, dan gaya seragam.</li><li>SVG untuk ikon, PNG/WebP @1x @2x @3x untuk gambar.</li><li>Tombol ikon wajib punya aria-label, ikon dekoratif aria-hidden.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Format terbaik untuk ikon yang perlu berubah warna mengikuti teks?</summary><p class="ok">Jawaban: SVG dengan currentColor</p><p>SVG tajam dan bisa diwarnai.</p></details><details><summary>Tombol hanya berisi ikon tempat sampah. Apa yang wajib ditambahkan?</summary><p class="ok">Jawaban: aria-label=&quot;Hapus&quot;</p><p>Pembaca layar butuh nama tombol.</p></details>
+<a class="cta" href="/#ui-5-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/ui/varian-dan-properti-komponen">Varian dan properti komponen</a></p><p>Berikutnya: <a href="/belajar/ui/dokumentasi-pedoman-pola">Dokumentasi pedoman pola</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

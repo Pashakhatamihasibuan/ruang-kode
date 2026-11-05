@@ -39,19 +39,22 @@ const TRACKS=[
   {k:'ds',g:'des',name:'Design System',lang:'css',mods:DS_MODULES,road:'design-system',mark:'DS',h:'Satu sumber kebenaran desain',d:'Bahasa desain, token, komponen dengan semua state, dokumentasi, versi, dan tata kelola.'},
   {k:'sim',g:'sis',name:'Sistem Informasi Manajemen',lang:'text',mods:SIM_MODULES,road:'',mark:'SIM',h:'Data transaksi menjadi laporan untuk keputusan',d:'Pengertian SIM, jenis laporan (terjadwal, pengecualian, drill-down), dasbor, data dan SQL di baliknya, SIM spreadsheet, dan mengukur keberhasilan SIM.'},
   {k:'msi',g:'sis',name:'Manajemen Sistem Informasi',lang:'text',mods:MSI_MODULES,road:'',mark:'MSI',h:'Mengelola sistem informasi organisasi',d:'Beda MSI dan SIM, jenis sistem (ERP, CRM, DSS), data, SDLC, keamanan, tata kelola TI, dengan contoh di perusahaan, startup, sekolah, dan organisasi.'},
-  {k:'git',g:'tool',name:'Git & GitHub',lang:'bash',mods:GIT_MODULES,road:'git-github-beginner',mark:'git',h:'Version control dan kolaborasi',d:'Commit, branch, merge, remote, pull request, GitHub Pages, Actions, dan keamanan repositori.'}];
+  {k:'git',g:'tool',name:'Git & GitHub',lang:'bash',mods:GIT_MODULES,road:'git-github-beginner',mark:'git',h:'Version control dan kolaborasi',d:'Commit, branch, merge, remote, pull request, GitHub Pages, Actions, dan keamanan repositori.'},
+  {k:'ui',g:'des',name:'UI Design',lang:'css',mods:UI_MODULES,road:'',mark:'UI',h:'Antarmuka yang jelas, konsisten, dan aksesibel',d:'Hierarki visual, Gestalt, grid 8 poin, sistem tipografi, warna dan kontras WCAG, dark mode, anatomi komponen, design token, layout responsif, redlining, dan handoff ke developer.'},
+  {k:'slw',g:'web',name:'Slicing Website',lang:'css',mods:SLW_MODULES,road:'',mark:'SW',h:'Dari desain Figma ke HTML dan CSS yang presisi',d:'Membaca file desain dan redline, memecah layout jadi komponen, slicing navbar, hero, kartu, form, dan footer, responsif mobile-first, pixel-perfect, aset dan ikon, sampai serah terima proyek.'},
+  {k:'slm',g:'mob',name:'Slicing Mobile',lang:'dart',mods:SLM_MODULES,road:'',mark:'SM',h:'Dari desain Figma ke layar Flutter dan Compose',d:'Membaca spesifikasi layar mobile, dp dan sp, safe area, slicing layar login, daftar kartu, dan navigasi bawah di Flutter dan Jetpack Compose, layout adaptif, pixel-perfect, dan ekspor aset.'}];
 const TK=Object.fromEntries(TRACKS.map(t=>[t.k,t]));
 const PATHS=[
   {k:'pseudo',t:'Dasar Logika Pemrograman',d:'Melatih cara berpikir algoritma sebelum masuk ke bahasa pemrograman.',tr:['pseudo','flowg','python','java']},
   {k:'fe',t:'Frontend Developer',d:'Membangun antarmuka web yang cepat dan mudah dipakai.',tr:['fe0','html','css','git','ts','react','fe']},
   {k:'da',t:'Data Analyst',d:'Menjawab pertanyaan bisnis dengan data.',tr:['sql','pda','da','bi']},
   {k:'de',t:'Data Engineer',d:'Membangun jalur data dari sumber ke dashboard.',tr:['python','sql','git','pda','de']},
-  {k:'ux',t:'UI/UX Designer',d:'Merancang pengalaman dan sistem desain.',tr:['ux','ds','html','css','msi']},
+  {k:'ux',t:'UI/UX Designer',d:'Merancang pengalaman dan sistem desain.',tr:['ux','ui','ds','html','css','slw','msi']},
   {k:'msi',t:'Analis Sistem Informasi',d:'Menjembatani kebutuhan bisnis dengan teknologi.',tr:['sim','msi','ux','sql','bi']},
   {k:'be',t:'Backend Java',d:'Membangun layanan dan API yang andal.',tr:['java','sql','git']},
-  {k:'flutterdev',t:'Mobile Developer (Flutter)',d:'Membangun aplikasi Android dan iOS dari satu kode.',tr:['pseudo','dart','flutter','git']},
-  {k:'android',t:'Android Developer',d:'Membangun aplikasi Android native lalu berbagi kode ke iOS.',tr:['kotlin','compose','kmp','git']},
-  {k:'webui',t:'Web UI dengan Framework CSS',d:'Membangun tampilan web cepat dengan Tailwind dan Bootstrap.',tr:['html','css','tw','bs','git']}];
+  {k:'flutterdev',t:'Mobile Developer (Flutter)',d:'Membangun aplikasi Android dan iOS dari satu kode.',tr:['pseudo','dart','flutter','slm','git']},
+  {k:'android',t:'Android Developer',d:'Membangun aplikasi Android native lalu berbagi kode ke iOS.',tr:['kotlin','compose','slm','kmp','git']},
+  {k:'webui',t:'Web UI dengan Framework CSS',d:'Membangun tampilan web cepat dengan Tailwind dan Bootstrap.',tr:['html','css','tw','bs','slw','git']}];
 const LVL4=['Pemula','Menengah','Lanjutan','Profesional'];
 const KIND={lab:'Konsep & lab',topic:'Topik 5 langkah',c:'Konsep & kode',s:'Praktik SQL',w:'Praktik langsung',proj:'Proyek akhir',mini:'Proyek mini'};
 const MIN={lab:15,topic:12,c:8,s:10,w:12,proj:60};

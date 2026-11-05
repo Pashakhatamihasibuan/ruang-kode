@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Token desain ke ThemeData dan MaterialTheme · Slicing Mobile · Ruang Kode</title>
+<meta name="description" content="Sama seperti di web, langkah pertama slicing mobile adalah memindahkan token. Di Flutter, warna masuk ke ColorScheme dan gaya teks ke TextTheme di dalam…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/slm/token-desain-ke-themedata-dan-materialtheme">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Token desain ke ThemeData dan MaterialTheme · Slicing Mobile · Ruang Kode"><meta property="og:description" content="Sama seperti di web, langkah pertama slicing mobile adalah memindahkan token. Di Flutter, warna masuk ke ColorScheme dan gaya teks ke TextTheme di dalam…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/slm/token-desain-ke-themedata-dan-materialtheme"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Token desain ke ThemeData dan MaterialTheme", "description": "Sama seperti di web, langkah pertama slicing mobile adalah memindahkan token. Di Flutter, warna masuk ke ColorScheme dan gaya teks ke TextTheme di dalam…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/slm/token-desain-ke-themedata-dan-materialtheme", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Slicing Mobile", "url": "https://ruang-kode-nine.vercel.app/belajar/slm"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Slicing Mobile", "item": "https://ruang-kode-nine.vercel.app/belajar/slm"}, {"@type": "ListItem", "position": 3, "name": "Token desain ke ThemeData dan MaterialTheme", "item": "https://ruang-kode-nine.vercel.app/belajar/slm/token-desain-ke-themedata-dan-materialtheme"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/slm">Slicing Mobile</a> / Modul 1</nav>
+<div class="eyebrow">Slicing Mobile · Modul 1 · Konsep &amp; kode</div><h1>Token desain ke ThemeData dan MaterialTheme</h1><a class="cta" href="/#slm-1-3">Buka versi interaktif</a>
+<p>Sama seperti di web, langkah pertama slicing mobile adalah memindahkan token. Di Flutter, warna masuk ke <code>ColorScheme</code> dan gaya teks ke <code>TextTheme</code> di dalam <code>ThemeData</code>. Di Compose, warna masuk ke <code>lightColorScheme()</code> atau <code>darkColorScheme()</code> dan teks ke <code>Typography</code> di dalam <code>MaterialTheme</code>.</p>
+<p>Setelah itu, widget mengambil warna dari tema, bukan kode hex: <code>Theme.of(context).colorScheme.primary</code> di Flutter, <code>MaterialTheme.colorScheme.primary</code> di Compose. Dark mode cukup menyediakan skema kedua.</p>
+<p>Jika desainer memakai Material Theme Builder di Figma, kamu bisa langsung mengekspor kode tema untuk Flutter dan Compose dari plugin itu.</p>
+<div class="tw"><table><caption>Token ke tema</caption><thead><tr><th>Token</th><th>Flutter</th><th>Compose</th></tr></thead><tbody><tr><td>color/primary</td><td>colorScheme.primary</td><td>MaterialTheme.colorScheme.primary</td></tr><tr><td>color/surface</td><td>colorScheme.surface</td><td>MaterialTheme.colorScheme.surface</td></tr><tr><td>Title/Medium</td><td>textTheme.titleMedium</td><td>MaterialTheme.typography.titleMedium</td></tr><tr><td>radius/md 12</td><td>BorderRadius.circular(12)</td><td>RoundedCornerShape(12.dp)</td></tr><tr><td>spacing/4 16</td><td>EdgeInsets.all(16)</td><td>Modifier.padding(16.dp)</td></tr></tbody></table></div>
+<div class="lbl">KODE</div><pre><code>// Flutter
+final tema = ThemeData(
+  useMaterial3: true,
+  colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF6D4C41)),
+  textTheme: const TextTheme(
+    headlineSmall: TextStyle(fontSize: 24, fontWeight: FontWeight.w600, height: 32 / 24),
+    bodyLarge: TextStyle(fontSize: 16, height: 24 / 16),
+    labelLarge: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, letterSpacing: 0.1),
+  ),
+);
+
+// Pemakaian
+Text(&#x27;Menu favorit&#x27;, style: Theme.of(context).textTheme.headlineSmall);
+Container(color: Theme.of(context).colorScheme.primaryContainer);</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat skema warna terang Compose dari token: primary #6D4C41, onPrimary #FFFFFF, primaryContainer #FFDBCF, surface #FFF8F5.</p><details><summary>Petunjuk</summary><p>lightColorScheme dengan parameter bernama.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>val KopiLight = lightColorScheme(
+    primary = Color(0xFF6D4C41),
+    onPrimary = Color(0xFFFFFFFF),
+    primaryContainer = Color(0xFFFFDBCF),
+    surface = Color(0xFFFFF8F5)
+)
+
+@Composable
+fun KopiTheme(content: @Composable () -&gt; Unit) {
+    MaterialTheme(colorScheme = KopiLight, content = content)
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Warna ke ColorScheme, teks ke TextTheme / Typography.</li><li>Widget mengambil dari tema, bukan hex.</li><li>Material Theme Builder bisa mengekspor kode tema.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Di Compose, warna utama tema diambil dengan?</summary><p class="ok">Jawaban: MaterialTheme.colorScheme.primary</p><p>Dari tema yang aktif.</p></details>
+<a class="cta" href="/#slm-1-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/slm/ekspor-aset-dan-ikon">Ekspor aset dan ikon</a></p><p>Berikutnya: <a href="/belajar/slm/memetakan-auto-layout-ke-row-dan-column">Memetakan auto layout ke Row dan Column</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

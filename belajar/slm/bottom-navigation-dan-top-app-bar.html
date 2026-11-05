@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bottom navigation dan top app bar · Slicing Mobile · Ruang Kode</title>
+<meta name="description" content="Material 3 menyebut bottom navigation sebagai NavigationBar: 3 sampai 5 tujuan, ikon dan label, indikator pill di item aktif. Di Flutter: NavigationBar…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/slm/bottom-navigation-dan-top-app-bar">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Bottom navigation dan top app bar · Slicing Mobile · Ruang Kode"><meta property="og:description" content="Material 3 menyebut bottom navigation sebagai NavigationBar: 3 sampai 5 tujuan, ikon dan label, indikator pill di item aktif. Di Flutter: NavigationBar…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/slm/bottom-navigation-dan-top-app-bar"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Bottom navigation dan top app bar", "description": "Material 3 menyebut bottom navigation sebagai NavigationBar: 3 sampai 5 tujuan, ikon dan label, indikator pill di item aktif. Di Flutter: NavigationBar…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/slm/bottom-navigation-dan-top-app-bar", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Slicing Mobile", "url": "https://ruang-kode-nine.vercel.app/belajar/slm"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Slicing Mobile", "item": "https://ruang-kode-nine.vercel.app/belajar/slm"}, {"@type": "ListItem", "position": 3, "name": "Bottom navigation dan top app bar", "item": "https://ruang-kode-nine.vercel.app/belajar/slm/bottom-navigation-dan-top-app-bar"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/slm">Slicing Mobile</a> / Modul 3</nav>
+<div class="eyebrow">Slicing Mobile · Modul 3 · Konsep &amp; kode</div><h1>Bottom navigation dan top app bar</h1><a class="cta" href="/#slm-3-3">Buka versi interaktif</a>
+<p>Material 3 menyebut bottom navigation sebagai <b>NavigationBar</b>: 3 sampai 5 tujuan, ikon dan label, indikator pill di item aktif. Di Flutter: <code>NavigationBar</code> dengan <code>NavigationDestination</code>. Di Compose: <code>NavigationBar</code> dengan <code>NavigationBarItem</code>.</p>
+<p>Gunakan ikon <b>outlined</b> untuk item tidak aktif dan <b>filled</b> untuk item aktif jika desain memintanya (Flutter: <code>icon</code> dan <code>selectedIcon</code>). Badge jumlah notifikasi memakai widget <code>Badge</code> di keduanya.</p>
+<p><b>Top app bar</b>: <code>AppBar</code> (Flutter) atau <code>TopAppBar</code> / <code>CenterAlignedTopAppBar</code> (Compose). Desain dengan judul besar yang mengecil saat menggulir menjadi <code>SliverAppBar.large</code> di Flutter dan <code>LargeTopAppBar</code> dengan <code>scrollBehavior</code> di Compose.</p>
+<div class="lbl">KODE</div><pre><code>// Flutter
+NavigationBar(
+  selectedIndex: indeks,
+  onDestinationSelected: (i) =&gt; setState(() =&gt; indeks = i),
+  destinations: const [
+    NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home), label: &#x27;Beranda&#x27;),
+    NavigationDestination(icon: Icon(Icons.menu_book_outlined), selectedIcon: Icon(Icons.menu_book), label: &#x27;Menu&#x27;),
+    NavigationDestination(
+      icon: Badge(label: Text(&#x27;2&#x27;), child: Icon(Icons.shopping_bag_outlined)),
+      selectedIcon: Icon(Icons.shopping_bag), label: &#x27;Pesanan&#x27;),
+    NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person), label: &#x27;Profil&#x27;),
+  ],
+)
+
+// Jetpack Compose
+NavigationBar {
+    tujuan.forEachIndexed { i, t -&gt;
+        NavigationBarItem(
+            selected = indeks == i,
+            onClick = { indeks = i },
+            icon = { Icon(if (indeks == i) t.ikonAktif else t.ikon, contentDescription = null) },
+            label = { Text(t.label) }
+        )
+    }
+}</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat CenterAlignedTopAppBar dengan judul "KopiNusa" dan tombol ikon keranjang di kanan.</p><details><summary>Petunjuk</summary><p>actions berisi IconButton dengan contentDescription.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>CenterAlignedTopAppBar(
+    title = { Text(&quot;KopiNusa&quot;) },
+    actions = {
+        IconButton(onClick = onKeranjang) {
+            Icon(Icons.Outlined.ShoppingCart, contentDescription = &quot;Keranjang&quot;)
+        }
+    }
+)</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>NavigationBar: 3–5 tujuan, ikon + label, indikator.</li><li>icon dan selectedIcon untuk outlined dan filled.</li><li>SliverAppBar.large / LargeTopAppBar untuk judul besar yang mengecil.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa contentDescription ikon NavigationBarItem boleh null?</summary><p class="ok">Jawaban: Karena label teks sudah menjelaskan tujuannya</p><p>Menghindari dibacakan dua kali.</p></details>
+<a class="cta" href="/#slm-3-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/slm/kartu-produk-dan-lazyverticalgrid-di-compose">Kartu produk dan LazyVerticalGrid di Compose</a></p><p>Berikutnya: <a href="/belajar/slm/layar-berbagai-ukuran">Layar berbagai ukuran</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

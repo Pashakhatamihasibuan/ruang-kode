@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Line height, tracking, dan panjang baris · UI Design · Ruang Kode</title>
+<meta name="description" content="Line height (leading) adalah jarak antar baris. Paragraf butuh 1,4 sampai 1,6; judul besar cukup 1,1 sampai 1,25, karena jarak yang terlalu lega membuat…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/ui/line-height-tracking-dan-panjang-baris">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Line height, tracking, dan panjang baris · UI Design · Ruang Kode"><meta property="og:description" content="Line height (leading) adalah jarak antar baris. Paragraf butuh 1,4 sampai 1,6; judul besar cukup 1,1 sampai 1,25, karena jarak yang terlalu lega membuat…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/ui/line-height-tracking-dan-panjang-baris"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Line height, tracking, dan panjang baris", "description": "Line height (leading) adalah jarak antar baris. Paragraf butuh 1,4 sampai 1,6; judul besar cukup 1,1 sampai 1,25, karena jarak yang terlalu lega membuat…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/ui/line-height-tracking-dan-panjang-baris", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "UI Design", "url": "https://ruang-kode-nine.vercel.app/belajar/ui"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "UI Design", "item": "https://ruang-kode-nine.vercel.app/belajar/ui"}, {"@type": "ListItem", "position": 3, "name": "Line height, tracking, dan panjang baris", "item": "https://ruang-kode-nine.vercel.app/belajar/ui/line-height-tracking-dan-panjang-baris"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/ui">UI Design</a> / Modul 2</nav>
+<div class="eyebrow">UI Design · Modul 2 · Praktik langsung</div><h1>Line height, tracking, dan panjang baris</h1><a class="cta" href="/#ui-2-3">Buka versi interaktif</a>
+<p><b>Line height</b> (leading) adalah jarak antar baris. Paragraf butuh 1,4 sampai 1,6; judul besar cukup 1,1 sampai 1,25, karena jarak yang terlalu lega membuat baris judul terlihat terpisah.</p>
+<p><b>Tracking</b> (letter-spacing) adalah jarak antar huruf. Teks kecil berhuruf kapital (label, overline) butuh tracking positif sekitar 0,04 sampai 0,1 em agar terbaca. Judul sangat besar justru sedikit dirapatkan (-0,01 sampai -0,02 em).</p>
+<p><b>Panjang baris</b> (measure) yang nyaman adalah <b>45 sampai 75 karakter</b>, ideal sekitar 65. Baris terlalu panjang membuat mata kehilangan awal baris berikutnya. Di CSS, satuan <code>ch</code> (lebar karakter 0) pas untuk ini: <code>max-width: 65ch</code>.</p>
+<p>Artikel di pratinjau terlalu rapat dan terlalu lebar di layar besar. Perbaiki.</p>
+<div class="lbl">HTML</div><pre><code>&lt;article class=&quot;artikel&quot;&gt;
+  &lt;p class=&quot;overline&quot;&gt;Tips belajar&lt;/p&gt;
+  &lt;h2&gt;Belajar 30 menit sehari lebih efektif daripada 5 jam sekali seminggu&lt;/h2&gt;
+  &lt;p class=&quot;isi&quot;&gt;Otak memperkuat ingatan saat kita mengulang materi dengan jeda. Teknik ini disebut spaced repetition. Mulailah dengan satu pelajaran pendek, kerjakan kuisnya, lalu ulangi pelajaran yang sama dua hari kemudian sebelum lanjut ke materi baru.&lt;/p&gt;
+&lt;/article&gt;</code></pre>
+<div class="lbl">CSS</div><pre><code>body { font-family: system-ui, sans-serif; margin: 0; padding: 24px; color: #1F2933; }
+.overline { font-size: 12px; text-transform: uppercase; color: #8A4B2A; margin: 0; }
+h2 { font-size: 28px; line-height: 1.6; margin: 8px 0 16px; }
+.isi { font-size: 17px; line-height: 1.15; }</code></pre>
+<h2>Tantangan</h2><ol><li>Atur: <code>.artikel</code> max-width 65ch, <code>.isi</code> line-height 1.6, dan <code>.overline</code> letter-spacing positif.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Tulis CSS untuk: overline 12px kapital tracking 0.08em, judul 32px line-height 1.2 tracking -0.01em, paragraf 17px line-height 1.6 max 65ch.</p><details><summary>Petunjuk</summary><p>Tiga aturan terpisah.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CSS</div><pre><code>.overline { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+h1 { font-size: 32px; line-height: 1.2; letter-spacing: -0.01em; }
+p { font-size: 17px; line-height: 1.6; max-width: 65ch; }</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Paragraf 1,4–1,6; judul besar 1,1–1,25.</li><li>Label kapital kecil: tracking positif.</li><li>Panjang baris 45–75 karakter, max-width: 65ch.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Panjang baris ideal untuk paragraf?</summary><p class="ok">Jawaban: Sekitar 65 karakter</p><p>Antara 45 dan 75.</p></details><details><summary>Label kecil huruf kapital sebaiknya diberi tracking?</summary><p class="ok">Jawaban: Positif</p><p>Huruf kapital kecil terlihat terlalu rapat tanpa tracking.</p></details>
+<a class="cta" href="/#ui-2-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/ui/skala-tipe-modular">Skala tipe modular</a></p><p>Berikutnya: <a href="/belajar/ui/peran-tipografi-semantik">Peran tipografi semantik</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

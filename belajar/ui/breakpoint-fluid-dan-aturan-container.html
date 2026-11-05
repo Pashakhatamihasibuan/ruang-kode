@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Breakpoint fluid dan aturan container · UI Design · Ruang Kode</title>
+<meta name="description" content="Breakpoint adalah lebar layar tempat tata letak berubah. Titik yang umum: &lt; 600 (ponsel), 600 sampai 839 (tablet tegak dan lipat), 840 sampai 1199…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/ui/breakpoint-fluid-dan-aturan-container">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Breakpoint fluid dan aturan container · UI Design · Ruang Kode"><meta property="og:description" content="Breakpoint adalah lebar layar tempat tata letak berubah. Titik yang umum: &lt; 600 (ponsel), 600 sampai 839 (tablet tegak dan lipat), 840 sampai 1199…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/ui/breakpoint-fluid-dan-aturan-container"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Breakpoint fluid dan aturan container", "description": "Breakpoint adalah lebar layar tempat tata letak berubah. Titik yang umum: < 600 (ponsel), 600 sampai 839 (tablet tegak dan lipat), 840 sampai 1199…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/ui/breakpoint-fluid-dan-aturan-container", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "UI Design", "url": "https://ruang-kode-nine.vercel.app/belajar/ui"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "UI Design", "item": "https://ruang-kode-nine.vercel.app/belajar/ui"}, {"@type": "ListItem", "position": 3, "name": "Breakpoint fluid dan aturan container", "item": "https://ruang-kode-nine.vercel.app/belajar/ui/breakpoint-fluid-dan-aturan-container"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/ui">UI Design</a> / Modul 6</nav>
+<div class="eyebrow">UI Design · Modul 6 · Praktik langsung</div><h1>Breakpoint fluid dan aturan container</h1><a class="cta" href="/#ui-6-1">Buka versi interaktif</a>
+<p><b>Breakpoint</b> adalah lebar layar tempat tata letak berubah. Titik yang umum: <b>&lt; 600</b> (ponsel), <b>600 sampai 839</b> (tablet tegak dan lipat), <b>840 sampai 1199</b> (tablet mendatar, laptop kecil), <b>≥ 1200</b> (desktop). Material 3 menamainya compact, medium, expanded, large, dan extra-large. Tentukan breakpoint dari <b>konten</b> yang mulai rusak, bukan dari merek perangkat.</p>
+<p>Di antara breakpoint, layout harus <b>fluid</b>: kolom melebar mengikuti layar. Grid web yang umum: 4 kolom di ponsel (margin 16 px), 8 kolom di tablet (margin 24 sampai 32 px), 12 kolom di desktop. <b>Container</b> membatasi lebar maksimum isi (misalnya 1200 px) agar baris teks tidak terlalu panjang di monitor lebar.</p>
+<p>Teknik CSS tanpa media query: <code>grid-template-columns: repeat(auto-fit, minmax(240px, 1fr))</code> membuat kartu otomatis 1, 2, 3, atau 4 kolom sesuai ruang. Container query (<code>@container</code>) membuat komponen menyesuaikan lebar <b>induknya</b>, bukan lebar layar.</p>
+<p>Grid kartu di pratinjau terkunci 3 kolom dan sesak di layar kecil.</p>
+<div class="lbl">HTML</div><pre><code>&lt;div class=&quot;container&quot;&gt;
+  &lt;div class=&quot;grid&quot;&gt;
+    &lt;div class=&quot;kartu&quot;&gt;Dart&lt;/div&gt;&lt;div class=&quot;kartu&quot;&gt;Flutter&lt;/div&gt;&lt;div class=&quot;kartu&quot;&gt;Kotlin&lt;/div&gt;
+    &lt;div class=&quot;kartu&quot;&gt;Compose&lt;/div&gt;&lt;div class=&quot;kartu&quot;&gt;KMP&lt;/div&gt;&lt;div class=&quot;kartu&quot;&gt;UI Design&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+<div class="lbl">CSS</div><pre><code>body { font-family: system-ui, sans-serif; margin: 0; }
+.container { max-width: 1200px; margin: 0 auto; padding: 16px clamp(16px, 4vw, 32px); }
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.kartu { padding: 24px 16px; border-radius: 12px; background: #E8F1FB; font-weight: 600; }</code></pre>
+<h2>Tantangan</h2><ol><li>Ubah <code>.grid</code> menjadi fluid: <code>grid-template-columns: repeat(auto-fit, minmax(160px, 1fr))</code>.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Buat komponen kartu yang berubah menjadi horizontal saat induknya minimal 480px, memakai container query.</p><details><summary>Petunjuk</summary><p>container-type: inline-size, lalu @container.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CSS</div><pre><code>.wadah { container-type: inline-size; }
+.kartu { display: grid; gap: 12px; }
+@container (min-width: 480px) {
+  .kartu { grid-template-columns: 160px 1fr; }
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Breakpoint dari konten: compact, medium, expanded.</li><li>4, 8, 12 kolom; container membatasi lebar maksimum.</li><li>auto-fit + minmax dan container query.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Breakpoint sebaiknya ditentukan berdasarkan?</summary><p class="ok">Jawaban: Titik saat konten mulai rusak</p><p>Konten yang menentukan.</p></details><details><summary>repeat(auto-fit, minmax(240px, 1fr)) di layar 1000 px menghasilkan berapa kolom (abaikan gap)?</summary><p class="ok">Jawaban: 4</p><p>1000 / 240 = 4 kolom muat.</p></details>
+<a class="cta" href="/#ui-6-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/ui/dokumentasi-pedoman-pola">Dokumentasi pedoman pola</a></p><p>Berikutnya: <a href="/belajar/ui/pola-navigasi-mobile">Pola navigasi mobile</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Footer dan form newsletter · Slicing Website · Ruang Kode</title>
+<meta name="description" content="Footer berisi kelompok link (Produk, Perusahaan, Bantuan), media sosial, form newsletter, dan hak cipta. Di desktop kelompok link berdampingan; di mobile…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/slw/footer-dan-form-newsletter">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Footer dan form newsletter · Slicing Website · Ruang Kode"><meta property="og:description" content="Footer berisi kelompok link (Produk, Perusahaan, Bantuan), media sosial, form newsletter, dan hak cipta. Di desktop kelompok link berdampingan; di mobile…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/slw/footer-dan-form-newsletter"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Footer dan form newsletter", "description": "Footer berisi kelompok link (Produk, Perusahaan, Bantuan), media sosial, form newsletter, dan hak cipta. Di desktop kelompok link berdampingan; di mobile…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/slw/footer-dan-form-newsletter", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "Slicing Website", "url": "https://ruang-kode-nine.vercel.app/belajar/slw"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Slicing Website", "item": "https://ruang-kode-nine.vercel.app/belajar/slw"}, {"@type": "ListItem", "position": 3, "name": "Footer dan form newsletter", "item": "https://ruang-kode-nine.vercel.app/belajar/slw/footer-dan-form-newsletter"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/slw">Slicing Website</a> / Modul 3</nav>
+<div class="eyebrow">Slicing Website · Modul 3 · Praktik langsung</div><h1>Footer dan form newsletter</h1><a class="cta" href="/#slw-3-4">Buka versi interaktif</a>
+<p>Footer berisi kelompok link (Produk, Perusahaan, Bantuan), media sosial, form newsletter, dan hak cipta. Di desktop kelompok link berdampingan; di mobile bertumpuk atau dilipat.</p>
+<p>Form newsletter di desain sering hanya menampilkan input dengan placeholder "Email kamu" dan tombol. Input tetap butuh <b>label</b>; jika desain tidak menampilkannya, sembunyikan secara visual dengan kelas <code>.sr-only</code> tetapi tetap terbaca pembaca layar. Pakai <code>type="email"</code> dan <code>autocomplete="email"</code> agar keyboard ponsel menampilkan tombol @.</p>
+<p>Ikon media sosial yang hanya berupa ikon wajib punya <code>aria-label</code> ("Instagram Ruang Kode").</p>
+<p>Form newsletter di pratinjau belum punya label dan tipe input yang tepat.</p>
+<div class="lbl">HTML</div><pre><code>&lt;footer class=&quot;kaki&quot;&gt;
+  &lt;form class=&quot;news&quot;&gt;
+    &lt;input id=&quot;surel&quot; placeholder=&quot;Email kamu&quot;&gt;
+    &lt;button&gt;Langganan&lt;/button&gt;
+  &lt;/form&gt;
+  &lt;p&gt;© 2026 RuangKode&lt;/p&gt;
+&lt;/footer&gt;</code></pre>
+<div class="lbl">CSS</div><pre><code>body { font-family: system-ui, sans-serif; margin: 0; color: #1F2933; }
+.kaki { padding: 32px 16px; background: #0F172A; color: #CBD5E1; }
+.news { display: flex; gap: 8px; flex-wrap: wrap; max-width: 420px; }
+.news input { flex: 1; min-width: 200px; padding: 12px; border-radius: 10px; border: 1px solid #475569; background: #1E293B; color: #fff; font-size: 16px; }
+.news button { padding: 12px 20px; border: 0; border-radius: 10px; background: #F59E0B; color: #1F2933; font-weight: 600; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }</code></pre>
+<h2>Tantangan</h2><ol><li>Tambahkan <code>&lt;label class="sr-only" for="surel"&gt;Email&lt;/label&gt;</code>, lalu beri input <code>type="email"</code> dan <code>autocomplete="email"</code>.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Tulis tautan ikon Instagram dan YouTube yang aksesibel.</p><details><summary>Petunjuk</summary><p>aria-label pada tautan, aria-hidden pada ikon.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">HTML</div><pre><code>&lt;a href=&quot;https://instagram.com/ruangkode&quot; aria-label=&quot;Instagram Ruang Kode&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; width=&quot;24&quot; height=&quot;24&quot;&gt;...&lt;/svg&gt;&lt;/a&gt;
+&lt;a href=&quot;https://youtube.com/@ruangkode&quot; aria-label=&quot;YouTube Ruang Kode&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; width=&quot;24&quot; height=&quot;24&quot;&gt;...&lt;/svg&gt;&lt;/a&gt;</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Label tetap ada; sembunyikan secara visual dengan .sr-only.</li><li>type="email" dan autocomplete="email".</li><li>Ikon sosial butuh aria-label.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Desain tidak menampilkan label input. Solusi yang benar?</summary><p class="ok">Jawaban: Label dengan kelas sr-only</p><p>Tetap terbaca pembaca layar.</p></details>
+<a class="cta" href="/#slw-3-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/slw/tabel-harga-dengan-paket-unggulan">Tabel harga dengan paket unggulan</a></p><p>Berikutnya: <a href="/belajar/slw/mobile-first-dan-breakpoint-dari-desain">Mobile-first dan breakpoint dari desain</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

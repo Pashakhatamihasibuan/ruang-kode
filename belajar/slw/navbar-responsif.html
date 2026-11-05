@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Navbar responsif · Slicing Website · Ruang Kode</title>
+<meta name="description" content="Navbar di desain biasanya: logo di kiri, link di tengah atau kanan, tombol aksi di kanan. Di CSS cukup flexbox: display: flex; justify-content:…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/slw/navbar-responsif">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Navbar responsif · Slicing Website · Ruang Kode"><meta property="og:description" content="Navbar di desain biasanya: logo di kiri, link di tengah atau kanan, tombol aksi di kanan. Di CSS cukup flexbox: display: flex; justify-content:…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/slw/navbar-responsif"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Navbar responsif", "description": "Navbar di desain biasanya: logo di kiri, link di tengah atau kanan, tombol aksi di kanan. Di CSS cukup flexbox: display: flex; justify-content:…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/slw/navbar-responsif", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "Slicing Website", "url": "https://ruang-kode-nine.vercel.app/belajar/slw"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Slicing Website", "item": "https://ruang-kode-nine.vercel.app/belajar/slw"}, {"@type": "ListItem", "position": 3, "name": "Navbar responsif", "item": "https://ruang-kode-nine.vercel.app/belajar/slw/navbar-responsif"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/slw">Slicing Website</a> / Modul 2</nav>
+<div class="eyebrow">Slicing Website · Modul 2 · Praktik langsung</div><h1>Navbar responsif</h1><a class="cta" href="/#slw-2-1">Buka versi interaktif</a>
+<p>Navbar di desain biasanya: logo di kiri, link di tengah atau kanan, tombol aksi di kanan. Di CSS cukup flexbox: <code>display: flex; justify-content: space-between; align-items: center</code>.</p>
+<p>Di mobile, link biasanya disembunyikan di balik tombol menu (hamburger). Cara tanpa JavaScript: <code>&lt;details&gt;</code> dan <code>&lt;summary&gt;</code>. Cara umum: tombol dengan <code>aria-expanded</code> yang mengubah kelas menu lewat JavaScript. Ukur tinggi navbar dari desain (biasanya 56 sampai 72 px) dan pastikan setiap link punya area klik yang cukup.</p>
+<p>Untuk navbar yang tetap terlihat saat menggulir, pakai <code>position: sticky; top: 0</code> dan beri latar serta <code>z-index</code> agar konten tidak tembus.</p>
+<p>Navbar di pratinjau masih menumpuk. Susun dengan flexbox.</p>
+<div class="lbl">HTML</div><pre><code>&lt;header class=&quot;nav&quot;&gt;
+  &lt;a class=&quot;logo&quot; href=&quot;#&quot;&gt;Kopi&lt;b&gt;Nusa&lt;/b&gt;&lt;/a&gt;
+  &lt;nav class=&quot;link&quot;&gt;&lt;a href=&quot;#&quot;&gt;Menu&lt;/a&gt;&lt;a href=&quot;#&quot;&gt;Lokasi&lt;/a&gt;&lt;a href=&quot;#&quot;&gt;Tentang&lt;/a&gt;&lt;/nav&gt;
+  &lt;a class=&quot;cta&quot; href=&quot;#&quot;&gt;Pesan&lt;/a&gt;
+&lt;/header&gt;
+&lt;main style=&quot;padding:16px&quot;&gt;Konten halaman...&lt;/main&gt;</code></pre>
+<div class="lbl">CSS</div><pre><code>body { font-family: system-ui, sans-serif; margin: 0; color: #1F2933; }
+.nav { padding: 12px 16px; border-bottom: 1px solid #E7E0D8; background: #FFFBF5; }
+.logo { font-size: 20px; color: #3E2723; text-decoration: none; }
+.link { display: flex; gap: 16px; }
+.link a { color: #5D4037; text-decoration: none; padding: 8px 0; }
+.cta { background: #6D4C41; color: #fff; padding: 8px 16px; border-radius: 999px; text-decoration: none; }</code></pre>
+<h2>Tantangan</h2><ol><li>Jadikan <code>.nav</code> flex: <code>display: flex; justify-content: space-between; align-items: center</code>, dan buat navbar menempel saat menggulir (<code>position: sticky; top: 0</code>).</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Buat navbar dengan tombol menu mobile tanpa JavaScript memakai details dan summary.</p><details><summary>Petunjuk</summary><p>summary menjadi tombol, isi details adalah daftar link.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">HTML</div><pre><code>&lt;header class=&quot;nav&quot;&gt;
+  &lt;a class=&quot;logo&quot; href=&quot;/&quot;&gt;KopiNusa&lt;/a&gt;
+  &lt;details class=&quot;menu-m&quot;&gt;
+    &lt;summary aria-label=&quot;Buka menu&quot;&gt;☰&lt;/summary&gt;
+    &lt;nav&gt;&lt;a href=&quot;#menu&quot;&gt;Menu&lt;/a&gt;&lt;a href=&quot;#lokasi&quot;&gt;Lokasi&lt;/a&gt;&lt;a href=&quot;#tentang&quot;&gt;Tentang&lt;/a&gt;&lt;/nav&gt;
+  &lt;/details&gt;
+&lt;/header&gt;</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Navbar: flex + space-between + align-items center.</li><li>Mobile: menu tersembunyi dengan aria-expanded.</li><li>Sticky: position sticky, top 0, latar, z-index.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Properti yang mendorong logo ke kiri dan tombol ke kanan?</summary><p class="ok">Jawaban: justify-content: space-between</p><p>Ruang dibagi di antara item.</p></details>
+<a class="cta" href="/#slw-2-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/slw/html-semantik-dari-desain">HTML semantik dari desain</a></p><p>Berikutnya: <a href="/belajar/slw/hero-section">Hero section</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

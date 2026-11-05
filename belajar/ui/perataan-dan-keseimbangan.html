@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Perataan dan keseimbangan · UI Design · Ruang Kode</title>
+<meta name="description" content="Perataan (alignment) membuat elemen terasa terhubung walau berjauhan. Setiap elemen sebaiknya sejajar dengan sesuatu: tepi kiri judul sejajar dengan tepi…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/ui/perataan-dan-keseimbangan">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Perataan dan keseimbangan · UI Design · Ruang Kode"><meta property="og:description" content="Perataan (alignment) membuat elemen terasa terhubung walau berjauhan. Setiap elemen sebaiknya sejajar dengan sesuatu: tepi kiri judul sejajar dengan tepi…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/ui/perataan-dan-keseimbangan"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Perataan dan keseimbangan", "description": "Perataan (alignment) membuat elemen terasa terhubung walau berjauhan. Setiap elemen sebaiknya sejajar dengan sesuatu: tepi kiri judul sejajar dengan tepi…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/ui/perataan-dan-keseimbangan", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "UI Design", "url": "https://ruang-kode-nine.vercel.app/belajar/ui"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "UI Design", "item": "https://ruang-kode-nine.vercel.app/belajar/ui"}, {"@type": "ListItem", "position": 3, "name": "Perataan dan keseimbangan", "item": "https://ruang-kode-nine.vercel.app/belajar/ui/perataan-dan-keseimbangan"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/ui">UI Design</a> / Modul 1</nav>
+<div class="eyebrow">UI Design · Modul 1 · Praktik langsung</div><h1>Perataan dan keseimbangan</h1><a class="cta" href="/#ui-1-4">Buka versi interaktif</a>
+<p><b>Perataan</b> (alignment) membuat elemen terasa terhubung walau berjauhan. Setiap elemen sebaiknya sejajar dengan sesuatu: tepi kiri judul sejajar dengan tepi kiri paragraf, tombol sejajar dengan input di atasnya. Di Figma, perhatikan garis merah petunjuk saat menggeser elemen.</p>
+<p>Untuk teks lebih dari dua baris, <b>rata kiri</b> paling mudah dibaca, karena mata selalu kembali ke titik awal yang sama. Rata tengah cocok untuk judul pendek atau empty state, tetapi melelahkan untuk paragraf. Jangan mencampur rata kiri dan rata tengah dalam satu kartu.</p>
+<p><b>Keseimbangan</b> adalah sebaran "berat visual" di layar. <b>Simetris</b> terasa formal dan stabil (halaman login). <b>Asimetris</b> terasa dinamis (hero dengan teks di kiri dan gambar besar di kanan), tetapi tetap butuh grid agar tidak terlihat berantakan.</p>
+<p>Kartu di pratinjau mencampur rata tengah dan rata kiri. Samakan perataannya.</p>
+<div class="lbl">HTML</div><pre><code>&lt;article class=&quot;isi&quot;&gt;
+  &lt;h3 class=&quot;tengah&quot;&gt;Promo Akhir Bulan&lt;/h3&gt;
+  &lt;p&gt;Diskon 20% untuk semua kelas mobile sampai 30 November.&lt;/p&gt;
+  &lt;p class=&quot;tengah&quot;&gt;Gunakan kode RUANG20 saat pembayaran.&lt;/p&gt;
+  &lt;a href=&quot;#&quot;&gt;Lihat syarat&lt;/a&gt;
+&lt;/article&gt;</code></pre>
+<div class="lbl">CSS</div><pre><code>body { font-family: system-ui, sans-serif; margin: 0; padding: 24px; }
+.isi { max-width: 340px; padding: 24px; background: #FFF7E6; border-radius: 12px; }
+.isi &gt; * { margin: 0 0 8px; }
+.tengah { text-align: center; }</code></pre>
+<h2>Tantangan</h2><ol><li>Buat semua isi kartu rata kiri, sejajar satu garis.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Halaman login: logo, judul, dua input, tombol, dan link "Lupa sandi". Usulkan perataan dan keseimbangannya, beri alasan.</p><details><summary>Petunjuk</summary><p>Login sederhana cocok simetris; input dan tombol sejajar satu kolom.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>Keseimbangan simetris: satu kolom di tengah, lebar maks 400px.
+Logo dan judul rata tengah (teks pendek).
+Label, input, tombol rata kiri dalam kolom yang sama, lebar penuh.
+Link &quot;Lupa sandi&quot; rata kanan di bawah field sandi, sejajar tepi kanan input.</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Setiap elemen sejajar dengan sesuatu.</li><li>Paragraf: rata kiri. Rata tengah hanya untuk teks pendek.</li><li>Simetris terasa stabil, asimetris terasa dinamis.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Perataan paling mudah dibaca untuk paragraf panjang?</summary><p class="ok">Jawaban: Rata kiri</p><p>Mata kembali ke titik awal yang sama setiap baris.</p></details><details><summary>Hero dengan teks di kiri dan foto besar di kanan adalah keseimbangan?</summary><p class="ok">Jawaban: Asimetris</p><p>Berat visual tidak dicerminkan.</p></details>
+<a class="cta" href="/#ui-1-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/ui/grid-8-poin">Grid 8 poin</a></p><p>Berikutnya: <a href="/belajar/ui/jarak-untuk-kepadatan-dan-keterbacaan">Jarak untuk kepadatan dan keterbacaan</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

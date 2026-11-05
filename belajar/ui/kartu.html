@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kartu · UI Design · Ruang Kode</title>
+<meta name="description" content="Kartu mengelompokkan informasi tentang satu hal: satu produk, satu artikel, satu kelas. Anatominya: media (gambar), header (judul, subjudul), isi…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/ui/kartu">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Kartu · UI Design · Ruang Kode"><meta property="og:description" content="Kartu mengelompokkan informasi tentang satu hal: satu produk, satu artikel, satu kelas. Anatominya: media (gambar), header (judul, subjudul), isi…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/ui/kartu"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Kartu", "description": "Kartu mengelompokkan informasi tentang satu hal: satu produk, satu artikel, satu kelas. Anatominya: media (gambar), header (judul, subjudul), isi…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/ui/kartu", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "UI Design", "url": "https://ruang-kode-nine.vercel.app/belajar/ui"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "UI Design", "item": "https://ruang-kode-nine.vercel.app/belajar/ui"}, {"@type": "ListItem", "position": 3, "name": "Kartu", "item": "https://ruang-kode-nine.vercel.app/belajar/ui/kartu"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/ui">UI Design</a> / Modul 4</nav>
+<div class="eyebrow">UI Design · Modul 4 · Praktik langsung</div><h1>Kartu</h1><a class="cta" href="/#ui-4-3">Buka versi interaktif</a>
+<p><b>Kartu</b> mengelompokkan informasi tentang <b>satu hal</b>: satu produk, satu artikel, satu kelas. Anatominya: <b>media</b> (gambar), <b>header</b> (judul, subjudul), <b>isi</b> singkat, dan <b>aksi</b>. Tidak semua bagian wajib, tetapi urutannya sebaiknya konsisten di seluruh produk.</p>
+<p>Gambar di kartu harus punya <b>rasio tetap</b> (16:9, 4:3, atau 1:1), agar grid kartu rapi walau foto aslinya berbeda ukuran. Di CSS: <code>aspect-ratio: 16 / 9</code> dengan <code>object-fit: cover</code>. Di Figma: frame dengan rasio tetap dan gambar mode Fill.</p>
+<p>Jika seluruh kartu bisa diklik, jangan taruh terlalu banyak tombol di dalamnya, karena target klik bertumpuk membingungkan. Pilih: kartu yang bisa diklik dengan satu tujuan, atau kartu statis dengan tombol aksi yang jelas.</p>
+<p>Area media di kartu pratinjau belum punya rasio, sehingga tingginya nol.</p>
+<div class="lbl">HTML</div><pre><code>&lt;article class=&quot;kartu&quot;&gt;
+  &lt;div class=&quot;media&quot; role=&quot;img&quot; aria-label=&quot;Ilustrasi kelas Flutter&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;isi&quot;&gt;
+    &lt;p class=&quot;label&quot;&gt;Mobile · Pemula&lt;/p&gt;
+    &lt;h3&gt;Flutter dari Nol&lt;/h3&gt;
+    &lt;p&gt;Bangun aplikasi Android dan iOS pertamamu dalam 4 minggu.&lt;/p&gt;
+    &lt;a href=&quot;#&quot; class=&quot;aksi&quot;&gt;Lihat kelas&lt;/a&gt;
+  &lt;/div&gt;
+&lt;/article&gt;</code></pre>
+<div class="lbl">CSS</div><pre><code>body { font-family: system-ui, sans-serif; margin: 0; padding: 16px; background: #F4F5F7; }
+.kartu { max-width: 320px; background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 1px 3px rgb(0 0 0 / .12); }
+.media { width: 100%; background: linear-gradient(135deg, #0D5DB8, #63D9B5); }
+.isi { padding: 16px 24px 24px; }
+.isi &gt; * { margin: 0 0 8px; }
+.label { font-size: 12px; color: #52606D; text-transform: uppercase; letter-spacing: .06em; }
+.aksi { color: #0D5DB8; font-weight: 600; }</code></pre>
+<h2>Tantangan</h2><ol><li>Beri <code>.media</code> rasio <code>aspect-ratio: 16 / 9</code>.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Buat grid kartu 1 sampai 4 kolom otomatis dengan gambar 4:3 yang tidak gepeng.</p><details><summary>Petunjuk</summary><p>auto-fill minmax dan object-fit.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CSS</div><pre><code>.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+.kartu img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; }</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Satu kartu, satu hal.</li><li>Media dengan rasio tetap dan object-fit: cover.</li><li>Pilih: seluruh kartu bisa diklik, atau tombol aksi yang jelas.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa gambar kartu diberi aspect-ratio tetap?</summary><p class="ok">Jawaban: Agar grid rapi walau ukuran foto asli berbeda</p><p>Tinggi kartu menjadi seragam.</p></details><details><summary>Kartu yang seluruhnya bisa diklik berisi 4 tombol berbeda. Masalahnya?</summary><p class="ok">Jawaban: Target klik bertumpuk dan membingungkan</p><p>Pilih satu pola interaksi.</p></details>
+<a class="cta" href="/#ui-4-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/ui/state-dan-hierarki-tombol">State dan hierarki tombol</a></p><p>Berikutnya: <a href="/belajar/ui/modal-sheet-dan-popover">Modal, sheet, dan popover</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

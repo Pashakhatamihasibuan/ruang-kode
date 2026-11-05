@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tabel harga dengan paket unggulan · Slicing Website · Ruang Kode</title>
+<meta name="description" content="Section harga berisi 2 sampai 4 kartu paket: nama, harga, periode, daftar fitur, dan tombol. Satu paket biasanya ditonjolkan (paling populer) dengan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/slw/tabel-harga-dengan-paket-unggulan">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Tabel harga dengan paket unggulan · Slicing Website · Ruang Kode"><meta property="og:description" content="Section harga berisi 2 sampai 4 kartu paket: nama, harga, periode, daftar fitur, dan tombol. Satu paket biasanya ditonjolkan (paling populer) dengan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/slw/tabel-harga-dengan-paket-unggulan"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Tabel harga dengan paket unggulan", "description": "Section harga berisi 2 sampai 4 kartu paket: nama, harga, periode, daftar fitur, dan tombol. Satu paket biasanya ditonjolkan (paling populer) dengan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/slw/tabel-harga-dengan-paket-unggulan", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "Slicing Website", "url": "https://ruang-kode-nine.vercel.app/belajar/slw"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Slicing Website", "item": "https://ruang-kode-nine.vercel.app/belajar/slw"}, {"@type": "ListItem", "position": 3, "name": "Tabel harga dengan paket unggulan", "item": "https://ruang-kode-nine.vercel.app/belajar/slw/tabel-harga-dengan-paket-unggulan"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/slw">Slicing Website</a> / Modul 3</nav>
+<div class="eyebrow">Slicing Website · Modul 3 · Praktik langsung</div><h1>Tabel harga dengan paket unggulan</h1><a class="cta" href="/#slw-3-3">Buka versi interaktif</a>
+<p>Section harga berisi 2 sampai 4 kartu paket: nama, harga, periode, daftar fitur, dan tombol. Satu paket biasanya <b>ditonjolkan</b> (paling populer) dengan border tebal warna merek, lencana, dan tombol primary, sementara paket lain memakai tombol secondary.</p>
+<p>Tulis harga dengan format lokal yang benar: <b>Rp49.000</b> per bulan (titik sebagai pemisah ribuan, tanpa spasi setelah Rp). Fitur ditulis sebagai daftar <code>&lt;ul&gt;</code> dengan tanda centang; fitur yang tidak termasuk jangan hanya diberi warna abu-abu, beri juga teks atau ikon silang.</p>
+<p>Agar tombol semua kartu sejajar di bawah walau daftar fiturnya beda panjang, jadikan kartu <code>display: flex; flex-direction: column</code> dan beri tombol <code>margin-top: auto</code>.</p>
+<p>Kartu Pro di pratinjau harus menjadi paket unggulan.</p>
+<div class="lbl">HTML</div><pre><code>&lt;section class=&quot;harga&quot;&gt;
+  &lt;article class=&quot;paket&quot;&gt;&lt;h3&gt;Gratis&lt;/h3&gt;&lt;p class=&quot;h&quot;&gt;Rp0&lt;/p&gt;&lt;ul&gt;&lt;li&gt;✓ 50 pelajaran&lt;/li&gt;&lt;/ul&gt;&lt;a href=&quot;#&quot; class=&quot;b&quot;&gt;Mulai&lt;/a&gt;&lt;/article&gt;
+  &lt;article class=&quot;paket pro&quot;&gt;&lt;h3&gt;Pro&lt;/h3&gt;&lt;p class=&quot;h&quot;&gt;Rp49.000&lt;small&gt;/bulan&lt;/small&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;✓ Semua pelajaran&lt;/li&gt;&lt;li&gt;✓ Sertifikat&lt;/li&gt;&lt;li&gt;✓ Proyek dinilai mentor&lt;/li&gt;&lt;/ul&gt;&lt;a href=&quot;#&quot; class=&quot;b&quot;&gt;Pilih Pro&lt;/a&gt;&lt;/article&gt;
+&lt;/section&gt;</code></pre>
+<div class="lbl">CSS</div><pre><code>body { font-family: system-ui, sans-serif; margin: 0; color: #1F2933; }
+.harga { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; padding: 16px; }
+.paket { display: flex; flex-direction: column; padding: 24px; border: 1px solid #D5D9E0; border-radius: 16px; }
+.paket h3 { margin: 0; }
+.h { font-size: 28px; font-weight: 700; margin: 8px 0 16px; }
+.h small { font-size: 14px; font-weight: 400; color: #52606D; }
+.paket ul { list-style: none; padding: 0; margin: 0 0 24px; display: grid; gap: 8px; }
+.b { margin-top: auto; text-align: center; padding: 12px; border-radius: 12px; border: 1px solid #1D5FA8; color: #1D5FA8; text-decoration: none; font-weight: 600; }</code></pre>
+<h2>Tantangan</h2><ol><li>Tonjolkan paket Pro: <code>.pro</code> diberi <code>border: 2px solid #1D5FA8</code>, dan tombolnya (<code>.pro .b</code>) berlatar <code>#1D5FA8</code> dengan teks putih.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Tambahkan lencana "Paling populer" di kartu Pro dan fitur yang tidak termasuk di kartu Gratis dengan ikon dan teks.</p><details><summary>Petunjuk</summary><p>Jangan hanya abu-abu; tulis "Tidak termasuk".</p></details><details><summary>Lihat jawaban</summary><div class="lbl">HTML</div><pre><code>&lt;article class=&quot;paket pro&quot;&gt;
+  &lt;span class=&quot;lencana&quot;&gt;Paling populer&lt;/span&gt;
+  ...
+&lt;/article&gt;
+&lt;article class=&quot;paket&quot;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;✓ 50 pelajaran&lt;/li&gt;
+    &lt;li class=&quot;tidak&quot;&gt;✕ Sertifikat &lt;span class=&quot;sr-only&quot;&gt;(tidak termasuk)&lt;/span&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/article&gt;</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Satu paket unggulan: border, lencana, tombol primary.</li><li>Format harga Rp49.000.</li><li>Tombol sejajar bawah: flex column + margin-top: auto.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Cara membuat tombol semua kartu sejajar di bawah?</summary><p class="ok">Jawaban: Kartu flex column, tombol margin-top: auto</p><p>Ruang kosong dipakai margin auto.</p></details>
+<a class="cta" href="/#slw-3-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/slw/testimoni-dengan-scroll-snap">Testimoni dengan scroll-snap</a></p><p>Berikutnya: <a href="/belajar/slw/footer-dan-form-newsletter">Footer dan form newsletter</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

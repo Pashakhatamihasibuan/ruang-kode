@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Auto layout dan batasan tata letak dinamis · UI Design · Ruang Kode</title>
+<meta name="description" content="Auto layout di Figma membuat frame menyusun anaknya otomatis, persis seperti flexbox di CSS: arah (horizontal atau vertikal), gap (jarak antar anak),…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/ui/auto-layout-dan-batasan-tata-letak-dinamis">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Auto layout dan batasan tata letak dinamis · UI Design · Ruang Kode"><meta property="og:description" content="Auto layout di Figma membuat frame menyusun anaknya otomatis, persis seperti flexbox di CSS: arah (horizontal atau vertikal), gap (jarak antar anak),…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/ui/auto-layout-dan-batasan-tata-letak-dinamis"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Auto layout dan batasan tata letak dinamis", "description": "Auto layout di Figma membuat frame menyusun anaknya otomatis, persis seperti flexbox di CSS: arah (horizontal atau vertikal), gap (jarak antar anak),…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/ui/auto-layout-dan-batasan-tata-letak-dinamis", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "UI Design", "url": "https://ruang-kode-nine.vercel.app/belajar/ui"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "UI Design", "item": "https://ruang-kode-nine.vercel.app/belajar/ui"}, {"@type": "ListItem", "position": 3, "name": "Auto layout dan batasan tata letak dinamis", "item": "https://ruang-kode-nine.vercel.app/belajar/ui/auto-layout-dan-batasan-tata-letak-dinamis"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/ui">UI Design</a> / Modul 4</nav>
+<div class="eyebrow">UI Design · Modul 4 · Praktik langsung</div><h1>Auto layout dan batasan tata letak dinamis</h1><a class="cta" href="/#ui-4-5">Buka versi interaktif</a>
+<p><b>Auto layout</b> di Figma membuat frame menyusun anaknya otomatis, persis seperti flexbox di CSS: arah (horizontal atau vertikal), <b>gap</b> (jarak antar anak), <b>padding</b>, dan perataan. Saat teks tombol berubah dari "Simpan" menjadi "Simpan perubahan", tombol ikut melebar sendiri.</p>
+<p>Setiap anak punya aturan ukuran: <b>Hug contents</b> (selebar isinya, sama dengan <code>width: auto</code>), <b>Fill container</b> (mengisi sisa ruang, sama dengan <code>flex: 1</code>), atau <b>Fixed</b> (ukuran tetap). Ditambah <b>min dan max width</b> agar tidak terlalu sempit atau lebar.</p>
+<p><b>Constraints</b> (batasan) mengatur perilaku elemen saat frame induk diubah ukurannya: menempel kiri, kanan, kiri-dan-kanan (melar), tengah, atau skala. Desain yang memakai auto layout dan constraints dengan benar sudah "responsif" sejak di Figma, dan developer tinggal menerjemahkannya ke flex dan grid.</p>
+<p>Baris notifikasi di pratinjau: teks harus Fill, tombol harus Hug di kanan.</p>
+<div class="lbl">HTML</div><pre><code>&lt;div class=&quot;notif&quot;&gt;
+  &lt;span class=&quot;ikon&quot;&gt;🔔&lt;/span&gt;
+  &lt;p class=&quot;isi&quot;&gt;Kelas Kotlin dimulai besok pukul 19.00 WIB.&lt;/p&gt;
+  &lt;button class=&quot;tutup&quot;&gt;Tutup&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+<div class="lbl">CSS</div><pre><code>body { font-family: system-ui, sans-serif; margin: 0; padding: 16px; }
+.notif { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: #FFF7E6; border-radius: 12px; max-width: 520px; }
+.isi { margin: 0; }
+.tutup { font: inherit; border: 0; background: none; color: #8A4B2A; font-weight: 600; padding: 8px; }</code></pre>
+<h2>Tantangan</h2><ol><li>Jadikan <code>.isi</code> Fill container (<code>flex: 1</code>) agar tombol Tutup terdorong ke kanan.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Terjemahkan pengaturan Figma ini ke CSS: frame auto layout horizontal, gap 12, padding 16 24, align center; anak 1 Fixed 40×40, anak 2 Fill, anak 3 Hug.</p><details><summary>Petunjuk</summary><p>flex, gap, padding, align-items, flex: none / 1.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>.baris { display: flex; align-items: center; gap: 12px; padding: 16px 24px; }
+.anak1 { width: 40px; height: 40px; flex: none; }
+.anak2 { flex: 1; min-width: 0; }
+.anak3 { flex: none; }</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Auto layout = flexbox: arah, gap, padding, perataan.</li><li>Hug = auto, Fill = flex: 1, Fixed = ukuran tetap.</li><li>Constraints mengatur perilaku saat induk diubah ukurannya.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Fill container di Figma setara dengan CSS?</summary><p class="ok">Jawaban: flex: 1</p><p>Mengisi sisa ruang.</p></details><details><summary>Tombol yang melebar sendiri saat teksnya bertambah memakai?</summary><p class="ok">Jawaban: Hug contents</p><p>Selebar isinya.</p></details>
+<a class="cta" href="/#ui-4-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/ui/modal-sheet-dan-popover">Modal, sheet, dan popover</a></p><p>Berikutnya: <a href="/belajar/ui/fondasi-design-token">Fondasi design token</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

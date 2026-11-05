@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Modal, sheet, dan popover · UI Design · Ruang Kode</title>
+<meta name="description" content="Ketiganya adalah lapisan di atas konten. Modal dialog menghentikan alur dan meminta keputusan (konfirmasi hapus, form singkat); latar di belakangnya…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/ui/modal-sheet-dan-popover">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Modal, sheet, dan popover · UI Design · Ruang Kode"><meta property="og:description" content="Ketiganya adalah lapisan di atas konten. Modal dialog menghentikan alur dan meminta keputusan (konfirmasi hapus, form singkat); latar di belakangnya…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/ui/modal-sheet-dan-popover"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Modal, sheet, dan popover", "description": "Ketiganya adalah lapisan di atas konten. Modal dialog menghentikan alur dan meminta keputusan (konfirmasi hapus, form singkat); latar di belakangnya…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/ui/modal-sheet-dan-popover", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "UI Design", "url": "https://ruang-kode-nine.vercel.app/belajar/ui"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "UI Design", "item": "https://ruang-kode-nine.vercel.app/belajar/ui"}, {"@type": "ListItem", "position": 3, "name": "Modal, sheet, dan popover", "item": "https://ruang-kode-nine.vercel.app/belajar/ui/modal-sheet-dan-popover"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/ui">UI Design</a> / Modul 4</nav>
+<div class="eyebrow">UI Design · Modul 4 · Praktik langsung</div><h1>Modal, sheet, dan popover</h1><a class="cta" href="/#ui-4-4">Buka versi interaktif</a>
+<p>Ketiganya adalah <b>lapisan</b> di atas konten. <b>Modal dialog</b> menghentikan alur dan meminta keputusan (konfirmasi hapus, form singkat); latar di belakangnya digelapkan (scrim) dan tidak bisa diklik. <b>Bottom sheet</b> muncul dari bawah layar ponsel, mudah dijangkau jempol, cocok untuk pilihan dan filter. <b>Popover</b> atau menu kecil menempel pada elemen pemicunya, tanpa menghentikan alur.</p>
+<p>Aturan pakai: modal hanya untuk hal yang <b>benar-benar butuh perhatian</b>, karena setiap modal memotong pekerjaan pengguna. Selalu sediakan cara keluar yang jelas (tombol tutup, tombol Batal, tombol Esc, tap di scrim). Di dalam modal, fokus keyboard harus terkunci (focus trap) dan kembali ke pemicu saat ditutup.</p>
+<p>Di HTML modern, pakai <code>&lt;dialog&gt;</code> dengan <code>showModal()</code> untuk modal, dan atribut <code>popover</code> untuk popover. Keduanya sudah menangani lapisan, Esc, dan aksesibilitas dasar.</p>
+<p>Sheet di pratinjau masih mengalir di dalam halaman. Tempelkan ke bawah layar.</p>
+<div class="lbl">HTML</div><pre><code>&lt;main class=&quot;hal&quot;&gt;&lt;h2&gt;Daftar kelas&lt;/h2&gt;&lt;p&gt;Ketuk Filter untuk menyaring kelas.&lt;/p&gt;&lt;/main&gt;
+&lt;div class=&quot;scrim&quot;&gt;&lt;/div&gt;
+&lt;section class=&quot;sheet&quot; aria-label=&quot;Filter&quot;&gt;
+  &lt;div class=&quot;pegangan&quot;&gt;&lt;/div&gt;
+  &lt;h3&gt;Filter kelas&lt;/h3&gt;
+  &lt;label&gt;&lt;input type=&quot;checkbox&quot; checked&gt; Gratis&lt;/label&gt;
+  &lt;label&gt;&lt;input type=&quot;checkbox&quot;&gt; Bersertifikat&lt;/label&gt;
+  &lt;button&gt;Terapkan&lt;/button&gt;
+&lt;/section&gt;</code></pre>
+<div class="lbl">CSS</div><pre><code>body { font-family: system-ui, sans-serif; margin: 0; min-height: 100vh; }
+.hal { padding: 16px; }
+.scrim { position: fixed; inset: 0; background: rgb(0 0 0 / .4); }
+.sheet { background: #fff; border-radius: 20px 20px 0 0; padding: 12px 24px 24px; display: grid; gap: 12px; z-index: 1; }
+.pegangan { width: 32px; height: 4px; border-radius: 2px; background: #9AA5B1; margin: 0 auto 8px; }
+.sheet h3 { margin: 0; }
+.sheet button { padding: 12px; border: 0; border-radius: 12px; background: #1D5FA8; color: #fff; font: inherit; font-weight: 600; }</code></pre>
+<h2>Tantangan</h2><ol><li>Jadikan <code>.sheet</code> bottom sheet: <code>position: fixed</code>, menempel di bawah (<code>left: 0; right: 0; bottom: 0</code>).</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Tulis modal konfirmasi hapus memakai elemen dialog, dengan tombol Batal dan Hapus.</p><details><summary>Petunjuk</summary><p>dialog + form method="dialog" menutup otomatis.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">HTML</div><pre><code>&lt;button onclick=&quot;konfirmasi.showModal()&quot;&gt;Hapus kelas&lt;/button&gt;
+&lt;dialog id=&quot;konfirmasi&quot; aria-labelledby=&quot;judul-hapus&quot;&gt;
+  &lt;h2 id=&quot;judul-hapus&quot;&gt;Hapus kelas ini?&lt;/h2&gt;
+  &lt;p&gt;Progres belajar di kelas ini akan hilang.&lt;/p&gt;
+  &lt;form method=&quot;dialog&quot;&gt;
+    &lt;button value=&quot;batal&quot;&gt;Batal&lt;/button&gt;
+    &lt;button value=&quot;hapus&quot; class=&quot;danger&quot;&gt;Hapus&lt;/button&gt;
+  &lt;/form&gt;
+&lt;/dialog&gt;</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Modal menghentikan alur, sheet dari bawah, popover menempel pada pemicu.</li><li>Selalu ada cara keluar: tutup, Batal, Esc, tap scrim.</li><li>Pakai dialog dan atribut popover.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Memilih urutan dan filter di ponsel paling nyaman dengan?</summary><p class="ok">Jawaban: Bottom sheet</p><p>Mudah dijangkau jempol.</p></details><details><summary>Apa itu scrim?</summary><p class="ok">Jawaban: Lapisan gelap di belakang modal</p><p>Menandakan konten di belakang tidak aktif.</p></details>
+<a class="cta" href="/#ui-4-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/ui/kartu">Kartu</a></p><p>Berikutnya: <a href="/belajar/ui/auto-layout-dan-batasan-tata-letak-dinamis">Auto layout dan batasan tata letak dinamis</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ikon dan gambar yang dioptimalkan · Slicing Website · Ruang Kode</title>
+<meta name="description" content="Ekspor dari Figma: ikon sebagai SVG (pilih ikon, Export, SVG), lalu sisipkan inline atau sebagai &lt;img&gt;. Foto sebagai WebP atau AVIF, dengan lebar 1× dan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/slw/ikon-dan-gambar-yang-dioptimalkan">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Ikon dan gambar yang dioptimalkan · Slicing Website · Ruang Kode"><meta property="og:description" content="Ekspor dari Figma: ikon sebagai SVG (pilih ikon, Export, SVG), lalu sisipkan inline atau sebagai &lt;img&gt;. Foto sebagai WebP atau AVIF, dengan lebar 1× dan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/slw/ikon-dan-gambar-yang-dioptimalkan"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Ikon dan gambar yang dioptimalkan", "description": "Ekspor dari Figma: ikon sebagai SVG (pilih ikon, Export, SVG), lalu sisipkan inline atau sebagai <img>. Foto sebagai WebP atau AVIF, dengan lebar 1× dan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/slw/ikon-dan-gambar-yang-dioptimalkan", "learningResourceType": "Praktik langsung", "isPartOf": {"@type": "Course", "name": "Slicing Website", "url": "https://ruang-kode-nine.vercel.app/belajar/slw"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Slicing Website", "item": "https://ruang-kode-nine.vercel.app/belajar/slw"}, {"@type": "ListItem", "position": 3, "name": "Ikon dan gambar yang dioptimalkan", "item": "https://ruang-kode-nine.vercel.app/belajar/slw/ikon-dan-gambar-yang-dioptimalkan"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/slw">Slicing Website</a> / Modul 2</nav>
+<div class="eyebrow">Slicing Website · Modul 2 · Praktik langsung</div><h1>Ikon dan gambar yang dioptimalkan</h1><a class="cta" href="/#slw-2-4">Buka versi interaktif</a>
+<p>Ekspor dari Figma: <b>ikon</b> sebagai SVG (pilih ikon, Export, SVG), lalu sisipkan inline atau sebagai <code>&lt;img&gt;</code>. <b>Foto</b> sebagai WebP atau AVIF, dengan lebar 1× dan 2× ukuran tampilannya. Foto 4000 px untuk kartu 300 px membuat halaman lambat terutama di koneksi seluler.</p>
+<p>Setiap <code>&lt;img&gt;</code> wajib: <code>alt</code> (deskripsi singkat, atau <code>alt=""</code> jika dekoratif), <code>width</code> dan <code>height</code> (agar browser menyiapkan ruang dan halaman tidak "melompat" saat gambar dimuat, yang diukur sebagai CLS), serta <code>loading="lazy"</code> untuk gambar di bawah layar pertama.</p>
+<p>Gambar hero di layar pertama justru <b>jangan</b> diberi lazy; beri <code>fetchpriority="high"</code> agar dimuat paling awal.</p>
+<p>Gambar di pratinjau belum punya atribut penting.</p>
+<div class="lbl">HTML</div><pre><code>&lt;section class=&quot;galeri&quot;&gt;
+  &lt;img src=&quot;data:image/svg+xml,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; viewBox=&#x27;0 0 4 3&#x27;%3E%3Crect width=&#x27;4&#x27; height=&#x27;3&#x27; fill=&#x27;%23D7B899&#x27;/%3E%3C/svg%3E&quot;&gt;
+&lt;/section&gt;</code></pre>
+<div class="lbl">CSS</div><pre><code>body { font-family: system-ui, sans-serif; margin: 0; color: #1F2933; }
+.galeri { padding: 16px; }
+.galeri img { max-width: 100%; height: auto; border-radius: 12px; display: block; }</code></pre>
+<h2>Tantangan</h2><ol><li>Beri gambar <code>alt="Biji kopi Gayo"</code>, <code>width="400"</code>, <code>height="300"</code>, dan <code>loading="lazy"</code>.</li></ol>
+<h2>Soal latihan</h2><ol><li><p>Tulis tag gambar hero yang dimuat paling awal, dan gambar galeri yang dimuat lambat.</p><details><summary>Petunjuk</summary><p>Hero: fetchpriority high tanpa lazy. Galeri: loading lazy.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">HTML</div><pre><code>&lt;img src=&quot;hero.webp&quot; alt=&quot;Barista menuang susu&quot; width=&quot;1200&quot; height=&quot;800&quot; fetchpriority=&quot;high&quot;&gt;
+&lt;img src=&quot;galeri-1.webp&quot; alt=&quot;Interior kedai&quot; width=&quot;600&quot; height=&quot;400&quot; loading=&quot;lazy&quot;&gt;</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Ikon SVG, foto WebP/AVIF 1× dan 2×.</li><li>alt, width, height, loading="lazy".</li><li>Gambar hero: tanpa lazy, fetchpriority="high".</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa img diberi width dan height?</summary><p class="ok">Jawaban: Agar halaman tidak melompat saat gambar dimuat</p><p>Browser menyiapkan ruang lebih dulu (mengurangi CLS).</p></details><details><summary>Gambar hero di bagian paling atas sebaiknya?</summary><p class="ok">Jawaban: Tanpa lazy, fetchpriority=&quot;high&quot;</p><p>Harus dimuat paling awal.</p></details>
+<a class="cta" href="/#slw-2-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/slw/tombol-dan-kartu-dari-komponen-figma">Tombol dan kartu dari komponen Figma</a></p><p>Berikutnya: <a href="/belajar/slw/section-fitur-dengan-grid">Section fitur dengan grid</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

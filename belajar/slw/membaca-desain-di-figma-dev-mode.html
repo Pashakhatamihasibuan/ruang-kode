@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Membaca desain di Figma Dev Mode · Slicing Website · Ruang Kode</title>
+<meta name="description" content="Dev Mode (ikon &lt;/&gt; atau Shift + D di Figma) adalah tampilan khusus developer. Klik elemen untuk melihat ukuran, jarak ke elemen lain (tahan Alt atau…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/slw/membaca-desain-di-figma-dev-mode">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Membaca desain di Figma Dev Mode · Slicing Website · Ruang Kode"><meta property="og:description" content="Dev Mode (ikon &lt;/&gt; atau Shift + D di Figma) adalah tampilan khusus developer. Klik elemen untuk melihat ukuran, jarak ke elemen lain (tahan Alt atau…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/slw/membaca-desain-di-figma-dev-mode"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Membaca desain di Figma Dev Mode", "description": "Dev Mode (ikon </> atau Shift + D di Figma) adalah tampilan khusus developer. Klik elemen untuk melihat ukuran, jarak ke elemen lain (tahan Alt atau…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/slw/membaca-desain-di-figma-dev-mode", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Slicing Website", "url": "https://ruang-kode-nine.vercel.app/belajar/slw"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Slicing Website", "item": "https://ruang-kode-nine.vercel.app/belajar/slw"}, {"@type": "ListItem", "position": 3, "name": "Membaca desain di Figma Dev Mode", "item": "https://ruang-kode-nine.vercel.app/belajar/slw/membaca-desain-di-figma-dev-mode"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/slw">Slicing Website</a> / Modul 1</nav>
+<div class="eyebrow">Slicing Website · Modul 1 · Konsep &amp; kode</div><h1>Membaca desain di Figma Dev Mode</h1><a class="cta" href="/#slw-1-2">Buka versi interaktif</a>
+<p><b>Dev Mode</b> (ikon &lt;/&gt; atau Shift + D di Figma) adalah tampilan khusus developer. Klik elemen untuk melihat <b>ukuran</b>, <b>jarak</b> ke elemen lain (tahan Alt atau Option sambil mengarahkan kursor), <b>warna</b> dan nama variabelnya, <b>tipografi</b>, serta potongan kode CSS. Developer tidak bisa mengubah desain secara tidak sengaja di mode ini.</p>
+<p>Cara membaca auto layout: frame dengan auto layout ditampilkan sebagai <code>display: flex</code>, lengkap dengan <code>gap</code>, <code>padding</code>, dan arah. Hug contents berarti lebar mengikuti isi, Fill container berarti <code>flex: 1</code> atau <code>width: 100%</code>. Jangan menyalin <code>position: absolute</code> dan <code>width</code> piksel tetap dari panel kode mentah-mentah; itu hanya cocok untuk ukuran frame itu saja.</p>
+<p>Kebiasaan baik: periksa nama <b>variabel</b> (misalnya <code>color/brand/600</code>) dan pakai nama itu di CSS, bukan kode hex. Periksa juga apakah frame ditandai <b>Ready for dev</b>; frame lain mungkin masih eksplorasi. Jika tidak punya akses Dev Mode (berbayar), mode Inspect di akun gratis tetap menampilkan ukuran dan warna.</p>
+<div class="tw"><table><caption>Figma ke CSS</caption><thead><tr><th>Di Figma</th><th>Di CSS</th></tr></thead><tbody><tr><td>Auto layout horizontal, gap 16</td><td>display: flex; gap: 16px</td></tr><tr><td>Auto layout vertical</td><td>display: flex; flex-direction: column</td></tr><tr><td>Padding 24 / 16</td><td>padding: 24px 16px</td></tr><tr><td>Hug contents</td><td>width: auto (atau fit-content)</td></tr><tr><td>Fill container</td><td>flex: 1 atau width: 100%</td></tr><tr><td>Corner radius 12</td><td>border-radius: 12px</td></tr><tr><td>Drop shadow 0 4 12 #0000001F</td><td>box-shadow: 0 4px 12px rgb(0 0 0 / .12)</td></tr><tr><td>Text Inter 16/24 Medium</td><td>font: 500 16px/24px Inter</td></tr><tr><td>Constraints Left &amp; Right</td><td>lebar melar mengikuti induk</td></tr><tr><td>Layer opacity 60%</td><td>opacity: .6</td></tr></tbody></table></div>
+<h2>Soal latihan</h2><ol><li><p>Dev Mode menampilkan: auto layout vertical, gap 12, padding 20/24, fill #F8FAFC, radius 16, stroke 1 #E2E8F0, shadow 0 2 8 #0F172A14. Tulis CSS-nya.</p><details><summary>Petunjuk</summary><p>Terjemahkan satu per satu, warna alpha 14 hex ≈ 8%.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CSS</div><pre><code>.kartu {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px 24px;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgb(15 23 42 / .08);
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Dev Mode: ukuran, jarak, variabel, kode.</li><li>Auto layout = flexbox; jangan salin posisi absolut mentah.</li><li>Pakai nama variabel, cek status Ready for dev.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Cara melihat jarak antara dua elemen di Figma?</summary><p class="ok">Jawaban: Pilih satu elemen, tahan Alt/Option, arahkan ke elemen lain</p><p>Figma menampilkan jarak merah.</p></details><details><summary>Panel kode Figma menulis position: absolute; left: 132px. Sebaiknya?</summary><p class="ok">Jawaban: Terjemahkan ke flex atau grid sesuai auto layout</p><p>Posisi absolut hanya pas di satu ukuran frame.</p></details>
+<a class="cta" href="/#slw-1-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/slw/apa-itu-slicing-dan-alurnya">Apa itu slicing dan alurnya</a></p><p>Berikutnya: <a href="/belajar/slw/token-desain-ke-css-variables">Token desain ke CSS variables</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

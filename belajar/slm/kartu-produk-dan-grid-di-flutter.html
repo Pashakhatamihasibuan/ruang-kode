@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kartu produk dan grid di Flutter · Slicing Mobile · Ruang Kode</title>
+<meta name="description" content="Desain katalog: grid 2 kolom, gap 12, padding layar 16. Kartu berisi foto rasio 1:1 dengan radius 12, nama produk (maksimal 2 baris), harga tebal…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/slm/kartu-produk-dan-grid-di-flutter">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Kartu produk dan grid di Flutter · Slicing Mobile · Ruang Kode"><meta property="og:description" content="Desain katalog: grid 2 kolom, gap 12, padding layar 16. Kartu berisi foto rasio 1:1 dengan radius 12, nama produk (maksimal 2 baris), harga tebal…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/slm/kartu-produk-dan-grid-di-flutter"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Kartu produk dan grid di Flutter", "description": "Desain katalog: grid 2 kolom, gap 12, padding layar 16. Kartu berisi foto rasio 1:1 dengan radius 12, nama produk (maksimal 2 baris), harga tebal…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/slm/kartu-produk-dan-grid-di-flutter", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Slicing Mobile", "url": "https://ruang-kode-nine.vercel.app/belajar/slm"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Slicing Mobile", "item": "https://ruang-kode-nine.vercel.app/belajar/slm"}, {"@type": "ListItem", "position": 3, "name": "Kartu produk dan grid di Flutter", "item": "https://ruang-kode-nine.vercel.app/belajar/slm/kartu-produk-dan-grid-di-flutter"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/slm">Slicing Mobile</a> / Modul 3</nav>
+<div class="eyebrow">Slicing Mobile · Modul 3 · Konsep &amp; kode</div><h1>Kartu produk dan grid di Flutter</h1><a class="cta" href="/#slm-3-1">Buka versi interaktif</a>
+<p>Desain katalog: grid 2 kolom, gap 12, padding layar 16. Kartu berisi foto rasio 1:1 dengan radius 12, nama produk (maksimal 2 baris), harga tebal berwarna primary, dan tombol tambah kecil.</p>
+<p>Pakai <code>GridView.builder</code> dengan <code>SliverGridDelegateWithFixedCrossAxisCount</code> (jumlah kolom tetap) atau <code>SliverGridDelegateWithMaxCrossAxisExtent</code> (lebar maksimum kartu, jumlah kolom menyesuaikan layar, mirip auto-fill di CSS). Atur <code>childAspectRatio</code> agar tinggi kartu cukup untuk foto dan teks, atau pakai <code>mainAxisExtent</code> untuk tinggi tetap.</p>
+<p>Teks panjang dibatasi dengan <code>maxLines: 2</code> dan <code>overflow: TextOverflow.ellipsis</code>. Format harga Rupiah dengan paket <code>intl</code>: <code>NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0)</code>.</p>
+<div class="lbl">KODE</div><pre><code>final rupiah = NumberFormat.currency(locale: &#x27;id&#x27;, symbol: &#x27;Rp&#x27;, decimalDigits: 0);
+
+GridView.builder(
+  padding: const EdgeInsets.all(16),
+  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+    maxCrossAxisExtent: 200,
+    mainAxisSpacing: 12,
+    crossAxisSpacing: 12,
+    mainAxisExtent: 260,
+  ),
+  itemCount: produk.length,
+  itemBuilder: (context, i) {
+    final p = produk[i];
+    final t = Theme.of(context);
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AspectRatio(aspectRatio: 1, child: Image.asset(p.foto, fit: BoxFit.cover)),
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 4,
+              children: [
+                Text(p.nama, maxLines: 2, overflow: TextOverflow.ellipsis, style: t.textTheme.titleSmall),
+                Text(rupiah.format(p.harga),
+                    style: t.textTheme.titleMedium?.copyWith(color: t.colorScheme.primary, fontWeight: FontWeight.w700)),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  },
+)</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Kopi Susu Aren
+Rp22.000</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tambahkan lencana "Baru" di pojok kiri atas foto kartu produk.</p><details><summary>Petunjuk</summary><p>Stack dengan Positioned.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>Stack(
+  children: [
+    AspectRatio(aspectRatio: 1, child: Image.asset(p.foto, fit: BoxFit.cover)),
+    Positioned(
+      top: 8, left: 8,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(99)),
+        child: const Text(&#x27;Baru&#x27;, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+      ),
+    ),
+  ],
+)</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>GridView.builder dengan MaxCrossAxisExtent mirip auto-fill.</li><li>AspectRatio 1 + BoxFit.cover untuk foto.</li><li>maxLines + ellipsis, format Rupiah dengan intl.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Delegate yang menyesuaikan jumlah kolom dengan lebar layar?</summary><p class="ok">Jawaban: SliverGridDelegateWithMaxCrossAxisExtent</p><p>Menentukan lebar maksimum, bukan jumlah kolom.</p></details>
+<a class="cta" href="/#slm-3-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/slm/layar-login-di-jetpack-compose">Layar login di Jetpack Compose</a></p><p>Berikutnya: <a href="/belajar/slm/kartu-produk-dan-lazyverticalgrid-di-compose">Kartu produk dan LazyVerticalGrid di Compose</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

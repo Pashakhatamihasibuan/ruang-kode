@@ -333,11 +333,11 @@ def write_static(root, url, tracks, data):
     org = {"@type": "Organization", "name": "Ruang Kode", "url": url + "/"}
 
     # katalog
-    body = "<h1>Semua materi Ruang Kode</h1><p>18 jalur belajar coding, data, desain, dan sistem informasi berbahasa Indonesia. Setiap pelajaran punya versi interaktif di aplikasi.</p>"
+    body = f"<h1>Semua materi Ruang Kode</h1><p>{len(tracks)} jalur belajar coding, data, desain, dan sistem informasi berbahasa Indonesia. Setiap pelajaran punya versi interaktif di aplikasi.</p>"
     for g, gn in GROUPS:
         body += f"<h2>{e(gn)}</h2><ul>" + "".join(
             f'<li><a href="/belajar/{t["k"]}">{e(t["name"])}</a>: {e(t["h"])}</li>' for t in tracks if t["g"] == g) + "</ul>"
-    (out / "index.html").write_text(page(url + "/belajar", "Semua materi · Ruang Kode", "18 jalur belajar coding, data, desain, dan sistem informasi berbahasa Indonesia.",
+    (out / "index.html").write_text(page(url + "/belajar", "Semua materi · Ruang Kode", f"{len(tracks)} jalur belajar coding, data, desain, dan sistem informasi berbahasa Indonesia.",
                                          [("Beranda", "/"), ("Materi", None)], body, {"@context": "https://schema.org", "@type": "CollectionPage", "name": "Semua materi", "publisher": org}))
 
     for t in tracks:
