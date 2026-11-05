@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pewarisan, interface, dan visibility · Kotlin · Ruang Kode</title>
+<meta name="description" content="Class Kotlin secara bawaan final (tidak bisa diwarisi). Tandai dengan open agar bisa diwarisi, dan method dengan open agar bisa di-override. abstract…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/kotlin/pewarisan-interface-dan-visibility">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Pewarisan, interface, dan visibility · Kotlin · Ruang Kode"><meta property="og:description" content="Class Kotlin secara bawaan final (tidak bisa diwarisi). Tandai dengan open agar bisa diwarisi, dan method dengan open agar bisa di-override. abstract…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/kotlin/pewarisan-interface-dan-visibility"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Pewarisan, interface, dan visibility", "description": "Class Kotlin secara bawaan final (tidak bisa diwarisi). Tandai dengan open agar bisa diwarisi, dan method dengan open agar bisa di-override. abstract…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/kotlin/pewarisan-interface-dan-visibility", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Kotlin", "url": "https://ruang-kode-nine.vercel.app/belajar/kotlin"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Kotlin", "item": "https://ruang-kode-nine.vercel.app/belajar/kotlin"}, {"@type": "ListItem", "position": 3, "name": "Pewarisan, interface, dan visibility", "item": "https://ruang-kode-nine.vercel.app/belajar/kotlin/pewarisan-interface-dan-visibility"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/kotlin">Kotlin</a> / Modul 6</nav>
+<div class="eyebrow">Kotlin · Modul 6 · Konsep &amp; kode</div><h1>Pewarisan, interface, dan visibility</h1><a class="cta" href="/#kotlin-6-1">Buka versi interaktif</a>
+<p>Class Kotlin secara bawaan <b>final</b> (tidak bisa diwarisi). Tandai dengan <code>open</code> agar bisa diwarisi, dan method dengan <code>open</code> agar bisa di-<code>override</code>. <code>abstract class</code> tidak bisa dibuat objeknya dan bisa berisi method tanpa isi.</p>
+<p><b>Interface</b> mendefinisikan kemampuan; satu class bisa mengimplementasikan banyak interface, dan interface boleh punya implementasi bawaan.</p>
+<p><b>Visibility</b>: <code>public</code> (bawaan), <code>private</code> (dalam class atau file), <code>protected</code> (class dan turunannya), <code>internal</code> (dalam satu modul Gradle).</p>
+<div class="tw"><table><caption>Visibility modifier</caption><thead><tr><th>Modifier</th><th>Terlihat dari</th></tr></thead><tbody><tr><td>public</td><td>Di mana saja (bawaan)</td></tr><tr><td>internal</td><td>Satu modul Gradle</td></tr><tr><td>protected</td><td>Class itu dan turunannya</td></tr><tr><td>private</td><td>Class itu (atau file itu untuk deklarasi tingkat atas)</td></tr></tbody></table></div>
+<div class="lbl">KODE</div><pre><code>interface BisaDiskon {
+    fun diskon(harga: Int): Int = harga
+}
+
+abstract class Pembayaran(val jumlah: Int) {
+    abstract fun proses(): String
+    protected fun rupiah(n: Int) = &quot;Rp&quot; + &quot;%,d&quot;.format(n).replace(&#x27;,&#x27;, &#x27;.&#x27;)
+}
+
+class Qris(jumlah: Int) : Pembayaran(jumlah), BisaDiskon {
+    override fun diskon(harga: Int) = harga - 2_000
+    override fun proses() = &quot;QRIS ${rupiah(diskon(jumlah))}&quot;
+}
+
+open class Transfer(jumlah: Int, private val bank: String) : Pembayaran(jumlah) {
+    override fun proses() = &quot;Transfer ${rupiah(jumlah)} ke $bank&quot;
+}
+
+fun main() {
+    val daftar: List&lt;Pembayaran&gt; = listOf(Qris(50_000), Transfer(120_000, &quot;BSI&quot;))
+    daftar.forEach { println(it.proses()) }
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>QRIS Rp48.000
+Transfer Rp120.000 ke BSI</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat interface <code>Bentuk</code> dengan fungsi <code>luas()</code>, implementasikan <code>Persegi(sisi)</code> dan <code>Segitiga(alas, tinggi)</code>, lalu cetak luas Persegi(4) dan Segitiga(6, 3).</p><details><summary>Petunjuk</summary><p>Pakai Double; luas segitiga = 0.5 × alas × tinggi.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>interface Bentuk { fun luas(): Double }
+class Persegi(val s: Double) : Bentuk { override fun luas() = s * s }
+class Segitiga(val a: Double, val t: Double) : Bentuk { override fun luas() = 0.5 * a * t }
+
+fun main() {
+    listOf(Persegi(4.0), Segitiga(6.0, 3.0)).forEach { println(it.luas()) }
+}</code></pre><div class="lbl">KELUARAN</div><pre><code>16.0
+9.0</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Class final secara bawaan; pakai open.</li><li>Satu class, banyak interface.</li><li>public, internal, protected, private.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa class Kotlin tidak bisa langsung diwarisi?</summary><p class="ok">Jawaban: Bawaannya final; perlu open</p><p>Desain yang disengaja.</p></details>
+<a class="cta" href="/#kotlin-6-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/kotlin/proyek-struk-kasir">Proyek: struk kasir</a></p><p>Berikutnya: <a href="/belajar/kotlin/delegation-by-lazy-observable-dan-class-delegation">Delegation: by lazy, observable, dan class delegation</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

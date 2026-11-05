@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Platform channel dan plugin · Flutter · Ruang Kode</title>
+<meta name="description" content="Flutter berkomunikasi dengan kode native (Kotlin di Android, Swift di iOS) lewat platform channel. MethodChannel untuk panggilan sekali (ambil level…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/flutter/platform-channel-dan-plugin">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Platform channel dan plugin · Flutter · Ruang Kode"><meta property="og:description" content="Flutter berkomunikasi dengan kode native (Kotlin di Android, Swift di iOS) lewat platform channel. MethodChannel untuk panggilan sekali (ambil level…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/flutter/platform-channel-dan-plugin"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Platform channel dan plugin", "description": "Flutter berkomunikasi dengan kode native (Kotlin di Android, Swift di iOS) lewat platform channel. MethodChannel untuk panggilan sekali (ambil level…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter/platform-channel-dan-plugin", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Flutter", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Flutter", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, {"@type": "ListItem", "position": 3, "name": "Platform channel dan plugin", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter/platform-channel-dan-plugin"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/flutter">Flutter</a> / Modul 8</nav>
+<div class="eyebrow">Flutter · Modul 8 · Konsep &amp; kode</div><h1>Platform channel dan plugin</h1><a class="cta" href="/#flutter-8-3">Buka versi interaktif</a>
+<p>Flutter berkomunikasi dengan kode native (Kotlin di Android, Swift di iOS) lewat <b>platform channel</b>. <code>MethodChannel</code> untuk panggilan sekali (ambil level baterai), <code>EventChannel</code> untuk aliran data dari native (sensor). Data dikirim sebagai tipe dasar: angka, string, list, map.</p>
+<p>Sebagian besar kebutuhan sudah tersedia sebagai <b>plugin</b> di pub.dev (kamera, lokasi, biometrik). Tulis channel sendiri hanya jika plugin belum ada, misalnya SDK printer kasir atau EDC bank tertentu.</p>
+<p>Alternatif yang lebih aman tipe: <b>Pigeon</b> membuat kode channel Dart, Kotlin, dan Swift dari satu definisi, sehingga tidak ada salah ketik nama metode.</p>
+<div class="lbl">KODE</div><pre><code>// Dart
+import &#x27;package:flutter/services.dart&#x27;;
+
+class Baterai {
+  static const _ch = MethodChannel(&#x27;id.tokoku/baterai&#x27;);
+  static Future&lt;int&gt; level() async {
+    final int? n = await _ch.invokeMethod&lt;int&gt;(&#x27;levelBaterai&#x27;);
+    return n ?? -1;
+  }
+}
+
+// Kotlin (android/app/src/main/kotlin/.../MainActivity.kt)
+class MainActivity : FlutterActivity() {
+  override fun configureFlutterEngine(engine: FlutterEngine) {
+    super.configureFlutterEngine(engine)
+    MethodChannel(engine.dartExecutor.binaryMessenger, &quot;id.tokoku/baterai&quot;)
+      .setMethodCallHandler { call, result -&gt;
+        if (call.method == &quot;levelBaterai&quot;) {
+          val bm = getSystemService(BATTERY_SERVICE) as BatteryManager
+          result.success(bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY))
+        } else result.notImplemented()
+      }
+  }
+}</code></pre>
+<h2>Poin penting</h2><ul><li>MethodChannel untuk panggilan, EventChannel untuk aliran.</li><li>Cari plugin di pub.dev dulu.</li><li>Pigeon untuk channel yang aman tipe.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Nama channel di Dart dan Kotlin harus?</summary><p class="ok">Jawaban: Sama persis</p><p>Itulah alamat pertemuannya.</p></details>
+<a class="cta" href="/#flutter-8-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/flutter/future-stream-dan-isolate">Future, Stream, dan isolate</a></p><p>Berikutnya: <a href="/belajar/flutter/devtools-dan-performa">DevTools dan performa</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

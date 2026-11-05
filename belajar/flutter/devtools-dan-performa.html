@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DevTools dan performa · Flutter · Ruang Kode</title>
+<meta name="description" content="Flutter DevTools menyediakan Widget Inspector (melihat pohon dan layout), Performance (frame yang lambat berwarna merah), CPU Profiler, Memory, dan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/flutter/devtools-dan-performa">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="DevTools dan performa · Flutter · Ruang Kode"><meta property="og:description" content="Flutter DevTools menyediakan Widget Inspector (melihat pohon dan layout), Performance (frame yang lambat berwarna merah), CPU Profiler, Memory, dan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/flutter/devtools-dan-performa"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "DevTools dan performa", "description": "Flutter DevTools menyediakan Widget Inspector (melihat pohon dan layout), Performance (frame yang lambat berwarna merah), CPU Profiler, Memory, dan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter/devtools-dan-performa", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Flutter", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Flutter", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, {"@type": "ListItem", "position": 3, "name": "DevTools dan performa", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter/devtools-dan-performa"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/flutter">Flutter</a> / Modul 9</nav>
+<div class="eyebrow">Flutter · Modul 9 · Konsep &amp; kode</div><h1>DevTools dan performa</h1><a class="cta" href="/#flutter-9-1">Buka versi interaktif</a>
+<p><b>Flutter DevTools</b> menyediakan Widget Inspector (melihat pohon dan layout), Performance (frame yang lambat berwarna merah), CPU Profiler, Memory, dan Network. Selalu ukur performa di mode <b>profile</b> pada perangkat nyata (<code>flutter run --profile</code>), bukan mode debug.</p>
+<p>Kebiasaan yang menjaga 60 fps: pakai konstruktor <code>const</code> agar widget tidak dibuat ulang, <code>ListView.builder</code> untuk daftar panjang, pecah widget besar menjadi widget kecil agar yang di-rebuild sedikit, hindari <code>Opacity</code> dan <code>ClipPath</code> pada animasi, dan ubah ukuran gambar sesuai tampilan (<code>cacheWidth</code>).</p>
+<p>Setiap frame punya jatah sekitar 16 ms (60 Hz) atau 8 ms (120 Hz). Jika build atau raster melewati jatah itu, terjadi jank.</p>
+<div class="lbl">KODE</div><pre><code>// buruk: seluruh layar di-rebuild setiap detik
+setState(() =&gt; detik++);
+
+// baik: hanya teks jam yang di-rebuild
+class Jam extends StatelessWidget {
+  const Jam({super.key, required this.detik});
+  final ValueListenable&lt;int&gt; detik;
+  @override
+  Widget build(BuildContext context) =&gt; ValueListenableBuilder(
+        valueListenable: detik,
+        builder: (_, d, __) =&gt; Text(&#x27;$d&#x27;),
+      );
+}
+
+// gambar besar diperkecil saat decode
+Image.network(url, cacheWidth: 400)</code></pre>
+<h2>Poin penting</h2><ul><li>Ukur di mode profile pada perangkat nyata.</li><li>const, builder, widget kecil, gambar seukuran tampilan.</li><li>Jatah frame 16 ms atau 8 ms.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Mode yang tepat untuk mengukur performa?</summary><p class="ok">Jawaban: Profile</p><p>Debug jauh lebih lambat dari rilis.</p></details>
+<a class="cta" href="/#flutter-9-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/flutter/platform-channel-dan-plugin">Platform channel dan plugin</a></p><p>Berikutnya: <a href="/belajar/flutter/notifikasi-push-analytics-dan-crashlytics">Notifikasi push, Analytics, dan Crashlytics</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

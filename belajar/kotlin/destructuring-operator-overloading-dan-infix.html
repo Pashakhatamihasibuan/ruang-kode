@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Destructuring, operator overloading, dan infix · Kotlin · Ruang Kode</title>
+<meta name="description" content="Destructuring memecah objek menjadi beberapa variabel: val (nama, harga) = produk. Data class otomatis mendukungnya lewat fungsi component1(),…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/kotlin/destructuring-operator-overloading-dan-infix">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Destructuring, operator overloading, dan infix · Kotlin · Ruang Kode"><meta property="og:description" content="Destructuring memecah objek menjadi beberapa variabel: val (nama, harga) = produk. Data class otomatis mendukungnya lewat fungsi component1(),…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/kotlin/destructuring-operator-overloading-dan-infix"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Destructuring, operator overloading, dan infix", "description": "Destructuring memecah objek menjadi beberapa variabel: val (nama, harga) = produk. Data class otomatis mendukungnya lewat fungsi component1(),…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/kotlin/destructuring-operator-overloading-dan-infix", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Kotlin", "url": "https://ruang-kode-nine.vercel.app/belajar/kotlin"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Kotlin", "item": "https://ruang-kode-nine.vercel.app/belajar/kotlin"}, {"@type": "ListItem", "position": 3, "name": "Destructuring, operator overloading, dan infix", "item": "https://ruang-kode-nine.vercel.app/belajar/kotlin/destructuring-operator-overloading-dan-infix"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/kotlin">Kotlin</a> / Modul 6</nav>
+<div class="eyebrow">Kotlin · Modul 6 · Konsep &amp; kode</div><h1>Destructuring, operator overloading, dan infix</h1><a class="cta" href="/#kotlin-6-3">Buka versi interaktif</a>
+<p><b>Destructuring</b> memecah objek menjadi beberapa variabel: <code>val (nama, harga) = produk</code>. Data class otomatis mendukungnya lewat fungsi <code>component1()</code>, <code>component2()</code>, dan seterusnya; begitu juga <code>Pair</code> dan entri Map.</p>
+<p><b>Operator overloading</b> membuat operator seperti <code>+</code>, <code>*</code>, <code>[]</code>, atau <code>in</code> bekerja untuk class sendiri dengan fungsi bertanda <code>operator</code> (<code>plus</code>, <code>times</code>, <code>get</code>, <code>contains</code>).</p>
+<p>Fungsi <code>infix</code> bisa dipanggil tanpa titik dan kurung, misalnya <code>1 to "satu"</code>. Pakai seperlunya agar kode tetap mudah dibaca.</p>
+<div class="lbl">KODE</div><pre><code>data class Uang(val rupiah: Long) {
+    operator fun plus(lain: Uang) = Uang(rupiah + lain.rupiah)
+    operator fun times(n: Int) = Uang(rupiah * n)
+    override fun toString() = &quot;Rp&quot; + &quot;%,d&quot;.format(rupiah).replace(&#x27;,&#x27;, &#x27;.&#x27;)
+}
+
+data class Item(val nama: String, val harga: Uang, val qty: Int)
+
+infix fun Int.kali(item: Item) = item.harga * this
+
+fun main() {
+    val kopi = Item(&quot;Kopi Gayo&quot;, Uang(85_000), 2)
+    val (nama, harga, qty) = kopi
+    println(&quot;$nama $harga x$qty&quot;)
+    val total = kopi.harga * kopi.qty + Uang(25_000)
+    println(&quot;Total $total&quot;)
+    println(3 kali kopi)
+    for ((k, v) in mapOf(&quot;Medan&quot; to 18_000, &quot;Binjai&quot; to 12_000)) println(&quot;$k: $v&quot;)
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Kopi Gayo Rp85.000 x2
+Total Rp195.000
+Rp255.000
+Medan: 18000
+Binjai: 12000</code></pre>
+<h2>Poin penting</h2><ul><li>Destructuring lewat componentN().</li><li>operator fun plus, times, get, contains.</li><li>infix untuk pemanggilan tanpa titik.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Fungsi yang harus ditulis agar a + b bekerja untuk class Uang?</summary><p class="ok">Jawaban: operator fun plus</p><p>Nama operatornya plus.</p></details>
+<a class="cta" href="/#kotlin-6-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/kotlin/delegation-by-lazy-observable-dan-class-delegation">Delegation: by lazy, observable, dan class delegation</a></p><p>Berikutnya: <a href="/belajar/kotlin/higher-order-function-inline-dan-reified">Higher-order function, inline, dan reified</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

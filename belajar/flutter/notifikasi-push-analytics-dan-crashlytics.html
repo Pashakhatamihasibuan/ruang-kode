@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Notifikasi push, Analytics, dan Crashlytics · Flutter · Ruang Kode</title>
+<meta name="description" content="Firebase Cloud Messaging (FCM) mengirim notifikasi push ke Android dan iOS gratis. Langkahnya: pasang firebase_messaging, minta izin (Android 13+ dan iOS…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/flutter/notifikasi-push-analytics-dan-crashlytics">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Notifikasi push, Analytics, dan Crashlytics · Flutter · Ruang Kode"><meta property="og:description" content="Firebase Cloud Messaging (FCM) mengirim notifikasi push ke Android dan iOS gratis. Langkahnya: pasang firebase_messaging, minta izin (Android 13+ dan iOS…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/flutter/notifikasi-push-analytics-dan-crashlytics"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Notifikasi push, Analytics, dan Crashlytics", "description": "Firebase Cloud Messaging (FCM) mengirim notifikasi push ke Android dan iOS gratis. Langkahnya: pasang firebase_messaging, minta izin (Android 13+ dan iOS…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter/notifikasi-push-analytics-dan-crashlytics", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Flutter", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Flutter", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, {"@type": "ListItem", "position": 3, "name": "Notifikasi push, Analytics, dan Crashlytics", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter/notifikasi-push-analytics-dan-crashlytics"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/flutter">Flutter</a> / Modul 9</nav>
+<div class="eyebrow">Flutter · Modul 9 · Konsep &amp; kode</div><h1>Notifikasi push, Analytics, dan Crashlytics</h1><a class="cta" href="/#flutter-9-2">Buka versi interaktif</a>
+<p><b>Firebase Cloud Messaging (FCM)</b> mengirim notifikasi push ke Android dan iOS gratis. Langkahnya: pasang <code>firebase_messaging</code>, minta izin (Android 13+ dan iOS wajib), ambil <b>token</b> perangkat, kirim token ke server, lalu tangani pesan saat aplikasi di depan, di belakang, dan tertutup.</p>
+<p><b>Firebase Analytics</b> mencatat event (<code>logEvent(name: 'tambah_keranjang')</code>) untuk memahami perilaku pengguna. <b>Crashlytics</b> melaporkan crash dan error lengkap dengan stack trace, versi aplikasi, dan perangkat. Ingat UU PDP: jelaskan di kebijakan privasi data apa yang dikumpulkan.</p>
+<p>Konfigurasi semua platform sekaligus dengan <code>flutterfire configure</code>.</p>
+<div class="lbl">KODE</div><pre><code>Future&lt;void&gt; main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Crashlytics menangkap error Flutter dan error asinkron
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  PlatformDispatcher.instance.onError = (e, s) {
+    FirebaseCrashlytics.instance.recordError(e, s, fatal: true);
+    return true;
+  };
+
+  final fcm = FirebaseMessaging.instance;
+  await fcm.requestPermission();
+  final token = await fcm.getToken();
+  await api.simpanToken(token);
+  FirebaseMessaging.onMessage.listen((m) =&gt; tampilkanBanner(m.notification?.title));
+
+  runApp(const AplikasiToko());
+}</code></pre>
+<h2>Poin penting</h2><ul><li>FCM: izin, token, tangani pesan di tiga keadaan.</li><li>Analytics untuk event, Crashlytics untuk crash.</li><li>Patuhi kebijakan privasi dan UU PDP.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Data yang perlu dikirim ke server agar bisa mengirim push ke satu pengguna?</summary><p class="ok">Jawaban: Token FCM perangkat</p><p>Token adalah alamat perangkat.</p></details>
+<a class="cta" href="/#flutter-9-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/flutter/devtools-dan-performa">DevTools dan performa</a></p><p>Berikutnya: <a href="/belajar/flutter/flavor-dan-ci-cd">Flavor dan CI/CD</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>WorkManager untuk tugas latar · Jetpack Compose · Ruang Kode</title>
+<meta name="description" content="Tugas yang harus pasti selesai walau aplikasi ditutup atau ponsel di-restart (sinkronisasi pesanan offline, unggah foto, backup) dijadwalkan dengan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/compose/workmanager-untuk-tugas-latar">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="WorkManager untuk tugas latar · Jetpack Compose · Ruang Kode"><meta property="og:description" content="Tugas yang harus pasti selesai walau aplikasi ditutup atau ponsel di-restart (sinkronisasi pesanan offline, unggah foto, backup) dijadwalkan dengan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/compose/workmanager-untuk-tugas-latar"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "WorkManager untuk tugas latar", "description": "Tugas yang harus pasti selesai walau aplikasi ditutup atau ponsel di-restart (sinkronisasi pesanan offline, unggah foto, backup) dijadwalkan dengan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/compose/workmanager-untuk-tugas-latar", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Jetpack Compose", "url": "https://ruang-kode-nine.vercel.app/belajar/compose"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Jetpack Compose", "item": "https://ruang-kode-nine.vercel.app/belajar/compose"}, {"@type": "ListItem", "position": 3, "name": "WorkManager untuk tugas latar", "item": "https://ruang-kode-nine.vercel.app/belajar/compose/workmanager-untuk-tugas-latar"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/compose">Jetpack Compose</a> / Modul 7</nav>
+<div class="eyebrow">Jetpack Compose · Modul 7 · Konsep &amp; kode</div><h1>WorkManager untuk tugas latar</h1><a class="cta" href="/#compose-7-3">Buka versi interaktif</a>
+<p>Tugas yang harus <b>pasti selesai</b> walau aplikasi ditutup atau ponsel di-restart (sinkronisasi pesanan offline, unggah foto, backup) dijadwalkan dengan <b>WorkManager</b>. Ia memilih cara terbaik sesuai versi Android dan menghormati penghemat baterai.</p>
+<p>Atur <b>constraint</b> (hanya saat ada internet, saat mengisi daya, baterai tidak rendah), <b>backoff</b> untuk mencoba ulang, dan <b>periodic work</b> minimal setiap 15 menit. Pantau statusnya sebagai Flow untuk ditampilkan di UI.</p>
+<p>Bukan untuk segala hal: pekerjaan singkat selama layar terbuka cukup dengan coroutine di ViewModel.</p>
+<div class="lbl">KODE</div><pre><code>class SinkronWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, params) {
+    override suspend fun doWork(): Result {
+        return try {
+            val terkirim = repo.kirimPesananTertunda()
+            Log.d(&quot;Sinkron&quot;, &quot;$terkirim pesanan terkirim&quot;)
+            Result.success()
+        } catch (e: IOException) {
+            Result.retry()
+        }
+    }
+}
+
+val kerja = OneTimeWorkRequestBuilder&lt;SinkronWorker&gt;()
+    .setConstraints(Constraints(requiredNetworkType = NetworkType.CONNECTED))
+    .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 30, TimeUnit.SECONDS)
+    .build()
+WorkManager.getInstance(context)
+    .enqueueUniqueWork(&quot;sinkron&quot;, ExistingWorkPolicy.KEEP, kerja)</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Jadwalkan SinkronWorker berkala setiap 1 jam yang hanya berjalan saat terhubung Wi-Fi (unmetered).</p><details><summary>Petunjuk</summary><p>PeriodicWorkRequestBuilder dan NetworkType.UNMETERED.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>val berkala = PeriodicWorkRequestBuilder&lt;SinkronWorker&gt;(1, TimeUnit.HOURS)
+    .setConstraints(Constraints(requiredNetworkType = NetworkType.UNMETERED))
+    .build()
+WorkManager.getInstance(context)
+    .enqueueUniquePeriodicWork(&quot;sinkron-jam&quot;, ExistingPeriodicWorkPolicy.KEEP, berkala)</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>WorkManager untuk tugas yang harus pasti selesai.</li><li>Constraint, backoff, periodic minimal 15 menit.</li><li>Tugas singkat di layar cukup coroutine.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Tugas yang cocok untuk WorkManager?</summary><p class="ok">Jawaban: Mengirim pesanan yang dibuat saat offline</p><p>Harus selesai walau aplikasi ditutup.</p></details>
+<a class="cta" href="/#compose-7-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/compose/intent-izin-runtime-dan-komponen-aplikasi">Intent, izin runtime, dan komponen aplikasi</a></p><p>Berikutnya: <a href="/belajar/compose/dependency-injection-dengan-hilt">Dependency injection dengan Hilt</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Retrofit, repository, dan offline-first · Jetpack Compose · Ruang Kode</title>
+<meta name="description" content="Retrofit mengubah API HTTP menjadi interface Kotlin dengan fungsi suspend. Dipadukan dengan kotlinx.serialization atau Moshi untuk JSON, dan OkHttp…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/compose/retrofit-repository-dan-offline-first">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Retrofit, repository, dan offline-first · Jetpack Compose · Ruang Kode"><meta property="og:description" content="Retrofit mengubah API HTTP menjadi interface Kotlin dengan fungsi suspend. Dipadukan dengan kotlinx.serialization atau Moshi untuk JSON, dan OkHttp…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/compose/retrofit-repository-dan-offline-first"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Retrofit, repository, dan offline-first", "description": "Retrofit mengubah API HTTP menjadi interface Kotlin dengan fungsi suspend. Dipadukan dengan kotlinx.serialization atau Moshi untuk JSON, dan OkHttp…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/compose/retrofit-repository-dan-offline-first", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Jetpack Compose", "url": "https://ruang-kode-nine.vercel.app/belajar/compose"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Jetpack Compose", "item": "https://ruang-kode-nine.vercel.app/belajar/compose"}, {"@type": "ListItem", "position": 3, "name": "Retrofit, repository, dan offline-first", "item": "https://ruang-kode-nine.vercel.app/belajar/compose/retrofit-repository-dan-offline-first"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/compose">Jetpack Compose</a> / Modul 8</nav>
+<div class="eyebrow">Jetpack Compose · Modul 8 · Konsep &amp; kode</div><h1>Retrofit, repository, dan offline-first</h1><a class="cta" href="/#compose-8-2">Buka versi interaktif</a>
+<p><b>Retrofit</b> mengubah API HTTP menjadi interface Kotlin dengan fungsi <code>suspend</code>. Dipadukan dengan kotlinx.serialization atau Moshi untuk JSON, dan OkHttp interceptor untuk header token dan logging.</p>
+<p><b>Repository</b> adalah satu-satunya pintu data bagi ViewModel. Pola <b>offline-first</b> yang direkomendasikan Google: UI selalu membaca dari <b>Room</b> (sumber kebenaran tunggal) sebagai Flow, sementara repository menyegarkan Room dari jaringan. Aplikasi tetap bisa dipakai saat sinyal hilang, hal yang sangat penting di daerah dengan koneksi tidak stabil.</p>
+<p>Tangani error jaringan dengan jelas: tampilkan data lama plus pesan "Gagal memperbarui, menampilkan data terakhir".</p>
+<div class="lbl">KODE</div><pre><code>interface ProdukApi {
+    @GET(&quot;produk&quot;)
+    suspend fun semua(@Query(&quot;halaman&quot;) halaman: Int = 1): List&lt;ProdukDto&gt;
+}
+
+class ProdukRepository @Inject constructor(
+    private val api: ProdukApi,
+    private val dao: ProdukDao,
+) {
+    fun aliranProduk(): Flow&lt;List&lt;Produk&gt;&gt; =
+        dao.semua().map { daftar -&gt; daftar.map { it.keDomain() } }
+
+    suspend fun segarkan(): Result&lt;Unit&gt; = runCatching {
+        val baru = api.semua()
+        dao.gantiSemua(baru.map { it.keEntity() })
+    }
+}</code></pre>
+<h2>Poin penting</h2><ul><li>Retrofit: API sebagai interface suspend.</li><li>Repository = satu pintu data.</li><li>Offline-first: UI membaca Room, jaringan menyegarkan Room.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Pada offline-first, UI membaca data dari mana?</summary><p class="ok">Jawaban: Database lokal (Room)</p><p>Sumber kebenaran tunggal.</p></details>
+<a class="cta" href="/#compose-8-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/compose/dependency-injection-dengan-hilt">Dependency injection dengan Hilt</a></p><p>Berikutnya: <a href="/belajar/compose/paging-3-untuk-daftar-panjang">Paging 3 untuk daftar panjang</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

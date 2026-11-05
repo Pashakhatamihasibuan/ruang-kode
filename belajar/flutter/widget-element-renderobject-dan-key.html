@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Widget, Element, RenderObject, dan Key · Flutter · Ruang Kode</title>
+<meta name="description" content="Flutter memakai tiga pohon. Widget adalah deskripsi ringan dan tidak bisa diubah (immutable); dibuat ulang setiap build. Element adalah wujud widget di…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/flutter/widget-element-renderobject-dan-key">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Widget, Element, RenderObject, dan Key · Flutter · Ruang Kode"><meta property="og:description" content="Flutter memakai tiga pohon. Widget adalah deskripsi ringan dan tidak bisa diubah (immutable); dibuat ulang setiap build. Element adalah wujud widget di…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/flutter/widget-element-renderobject-dan-key"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Widget, Element, RenderObject, dan Key", "description": "Flutter memakai tiga pohon. Widget adalah deskripsi ringan dan tidak bisa diubah (immutable); dibuat ulang setiap build. Element adalah wujud widget di…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter/widget-element-renderobject-dan-key", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Flutter", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Flutter", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, {"@type": "ListItem", "position": 3, "name": "Widget, Element, RenderObject, dan Key", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter/widget-element-renderobject-dan-key"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/flutter">Flutter</a> / Modul 8</nav>
+<div class="eyebrow">Flutter · Modul 8 · Konsep &amp; kode</div><h1>Widget, Element, RenderObject, dan Key</h1><a class="cta" href="/#flutter-8-1">Buka versi interaktif</a>
+<p>Flutter memakai <b>tiga pohon</b>. <b>Widget</b> adalah deskripsi ringan dan tidak bisa diubah (immutable); dibuat ulang setiap <code>build</code>. <b>Element</b> adalah wujud widget di layar yang bertahan lama dan menyimpan State. <b>RenderObject</b> mengurus ukuran, posisi, dan menggambar. Karena Element dan RenderObject dipakai ulang, membuat ulang widget itu murah.</p>
+<p><b>BuildContext</b> sebenarnya adalah Element milik widget itu, yaitu posisinya di pohon. Karena itu <code>Theme.of(context)</code> atau <code>Navigator.of(context)</code> mencari ke atas dari posisi tersebut. Kesalahan umum: memakai context dari atas <code>Scaffold</code> untuk mencari Scaffold.</p>
+<p><b>Key</b> membantu Flutter mencocokkan widget lama dan baru. Tanpa key, saat item daftar yang punya state diurutkan ulang atau dihapus, state bisa "pindah" ke item yang salah. Pakai <code>ValueKey(id)</code> untuk item daftar, <code>GlobalKey</code> hanya jika benar-benar perlu (misalnya FormState).</p>
+<div class="tw"><table><caption>Tiga pohon Flutter</caption><thead><tr><th>Pohon</th><th>Sifat</th><th>Tugas</th></tr></thead><tbody><tr><td>Widget</td><td>Ringan, immutable, dibuat ulang tiap build</td><td>Konfigurasi: apa yang ingin ditampilkan</td></tr><tr><td>Element</td><td>Bertahan, menyimpan State</td><td>Menghubungkan widget dengan render object</td></tr><tr><td>RenderObject</td><td>Berat, dipakai ulang</td><td>Layout, paint, hit test</td></tr></tbody></table></div>
+<div class="lbl">KODE</div><pre><code>class DaftarTugas extends StatefulWidget {
+  const DaftarTugas({super.key});
+  @override
+  State&lt;DaftarTugas&gt; createState() =&gt; _DaftarTugasState();
+}
+
+class _DaftarTugasState extends State&lt;DaftarTugas&gt; {
+  final tugas = [(id: 1, judul: &#x27;Belajar Dart&#x27;), (id: 2, judul: &#x27;Slicing login&#x27;)];
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: [
+        for (final t in tugas)
+          // tanpa key, centang bisa berpindah ke item lain saat daftar berubah
+          CheckboxTile(key: ValueKey(t.id), judul: t.judul),
+      ],
+    );
+  }
+}</code></pre>
+<h2>Poin penting</h2><ul><li>Widget murah dibuat ulang; Element dan RenderObject dipakai ulang.</li><li>BuildContext = posisi widget di pohon.</li><li>ValueKey untuk item daftar yang punya state.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Apa sebenarnya BuildContext?</summary><p class="ok">Jawaban: Element widget tersebut di pohon</p><p>Lokasi untuk mencari ke atas.</p></details><details><summary>Kapan Key diperlukan?</summary><p class="ok">Jawaban: Saat item stateful dalam daftar diurutkan ulang atau dihapus</p><p>Agar state tetap di item yang benar.</p></details>
+<a class="cta" href="/#flutter-8-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/flutter/proyek-aplikasi-daftar-tugas-todo">Proyek: aplikasi daftar tugas (Todo)</a></p><p>Berikutnya: <a href="/belajar/flutter/future-stream-dan-isolate">Future, Stream, dan isolate</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

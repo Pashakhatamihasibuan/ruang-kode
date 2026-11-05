@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Future, Stream, dan isolate · Flutter · Ruang Kode</title>
+<meta name="description" content="Future mewakili satu nilai yang datang nanti (hasil HTTP, baca file). Tunggu dengan await di fungsi async, atau tampilkan di UI dengan FutureBuilder.…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/flutter/future-stream-dan-isolate">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Future, Stream, dan isolate · Flutter · Ruang Kode"><meta property="og:description" content="Future mewakili satu nilai yang datang nanti (hasil HTTP, baca file). Tunggu dengan await di fungsi async, atau tampilkan di UI dengan FutureBuilder.…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/flutter/future-stream-dan-isolate"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Future, Stream, dan isolate", "description": "Future mewakili satu nilai yang datang nanti (hasil HTTP, baca file). Tunggu dengan await di fungsi async, atau tampilkan di UI dengan FutureBuilder.…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter/future-stream-dan-isolate", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Flutter", "url": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Flutter", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter"}, {"@type": "ListItem", "position": 3, "name": "Future, Stream, dan isolate", "item": "https://ruang-kode-nine.vercel.app/belajar/flutter/future-stream-dan-isolate"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/flutter">Flutter</a> / Modul 8</nav>
+<div class="eyebrow">Flutter · Modul 8 · Konsep &amp; kode</div><h1>Future, Stream, dan isolate</h1><a class="cta" href="/#flutter-8-2">Buka versi interaktif</a>
+<p><b>Future</b> mewakili satu nilai yang datang nanti (hasil HTTP, baca file). Tunggu dengan <code>await</code> di fungsi <code>async</code>, atau tampilkan di UI dengan <code>FutureBuilder</code>. <b>Stream</b> mewakili banyak nilai berturut-turut (lokasi GPS, pesan chat, perubahan Firestore); dengarkan dengan <code>await for</code>, <code>listen</code>, atau <code>StreamBuilder</code>.</p>
+<p>Dart berjalan di satu thread dengan <b>event loop</b>. <code>await</code> tidak memblokir; ia memberi giliran ke tugas lain. Tetapi komputasi berat (mengurai JSON 5 MB, memproses gambar) tetap membuat UI patah-patah (<b>jank</b>).</p>
+<p>Untuk komputasi berat, jalankan di <b>isolate</b> lain dengan <code>Isolate.run()</code> atau <code>compute()</code>. Isolate punya memori sendiri, berkomunikasi lewat pesan, sehingga UI tetap mulus 60 sampai 120 fps.</p>
+<div class="lbl">KODE</div><pre><code>import &#x27;dart:async&#x27;;
+import &#x27;dart:isolate&#x27;;
+
+Future&lt;String&gt; ambilNama() async {
+  await Future.delayed(const Duration(milliseconds: 100));
+  return &#x27;Rina&#x27;;
+}
+
+Stream&lt;int&gt; hitungMundur(int dari) async* {
+  for (var i = dari; i &gt; 0; i--) {
+    await Future.delayed(const Duration(milliseconds: 50));
+    yield i;
+  }
+}
+
+int jumlahBerat(int n) {
+  var s = 0;
+  for (var i = 1; i &lt;= n; i++) {
+    s += i;
+  }
+  return s;
+}
+
+void main() async {
+  print(&#x27;Mulai&#x27;);
+  final nama = await ambilNama();
+  print(&#x27;Halo, $nama&#x27;);
+  await for (final x in hitungMundur(3)) {
+    print(&#x27;Hitung $x&#x27;);
+  }
+  final hasil = await Isolate.run(() =&gt; jumlahBerat(1000000));
+  print(&#x27;Jumlah: $hasil&#x27;);
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Mulai
+Halo, Rina
+Hitung 3
+Hitung 2
+Hitung 1
+Jumlah: 500000500000</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat Stream <code>detik()</code> yang memancarkan 1, 2, 3 lalu selesai, dan cetak setiap nilainya dengan awalan "Detik ".</p><details><summary>Petunjuk</summary><p>Fungsi async* dengan loop dan yield.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>Stream&lt;int&gt; detik() async* {
+  for (var i = 1; i &lt;= 3; i++) {
+    yield i;
+  }
+}
+
+void main() async {
+  await for (final d in detik()) {
+    print(&#x27;Detik $d&#x27;);
+  }
+}</code></pre><div class="lbl">KELUARAN</div><pre><code>Detik 1
+Detik 2
+Detik 3</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Future satu nilai, Stream banyak nilai.</li><li>async* dan yield membuat Stream.</li><li>Isolate.run untuk komputasi berat.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Widget untuk menampilkan data dari Stream?</summary><p class="ok">Jawaban: StreamBuilder</p><p>Membangun ulang setiap data baru.</p></details>
+<a class="cta" href="/#flutter-8-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/flutter/widget-element-renderobject-dan-key">Widget, Element, RenderObject, dan Key</a></p><p>Berikutnya: <a href="/belajar/flutter/platform-channel-dan-plugin">Platform channel dan plugin</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

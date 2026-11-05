@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Type-safe builder (DSL) · Kotlin · Ruang Kode</title>
+<meta name="description" content="Kotlin memungkinkan membuat DSL (domain-specific language) yang terbaca seperti konfigurasi. Kuncinya: lambda dengan receiver (Builder.() -&gt; Unit),…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/kotlin/type-safe-builder-dsl">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Type-safe builder (DSL) · Kotlin · Ruang Kode"><meta property="og:description" content="Kotlin memungkinkan membuat DSL (domain-specific language) yang terbaca seperti konfigurasi. Kuncinya: lambda dengan receiver (Builder.() -&gt; Unit),…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/kotlin/type-safe-builder-dsl"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Type-safe builder (DSL)", "description": "Kotlin memungkinkan membuat DSL (domain-specific language) yang terbaca seperti konfigurasi. Kuncinya: lambda dengan receiver (Builder.() -> Unit),…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/kotlin/type-safe-builder-dsl", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Kotlin", "url": "https://ruang-kode-nine.vercel.app/belajar/kotlin"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Kotlin", "item": "https://ruang-kode-nine.vercel.app/belajar/kotlin"}, {"@type": "ListItem", "position": 3, "name": "Type-safe builder (DSL)", "item": "https://ruang-kode-nine.vercel.app/belajar/kotlin/type-safe-builder-dsl"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/kotlin">Kotlin</a> / Modul 7</nav>
+<div class="eyebrow">Kotlin · Modul 7 · Konsep &amp; kode</div><h1>Type-safe builder (DSL)</h1><a class="cta" href="/#kotlin-7-2">Buka versi interaktif</a>
+<p>Kotlin memungkinkan membuat <b>DSL</b> (domain-specific language) yang terbaca seperti konfigurasi. Kuncinya: <b>lambda dengan receiver</b> (<code>Builder.() -&gt; Unit</code>), sehingga di dalam kurung kurawal kita bisa memanggil fungsi builder tanpa awalan.</p>
+<p>Contoh DSL nyata: <code>build.gradle.kts</code>, routing Ktor, Jetpack Compose (<code>Column { Text() }</code>), dan kotlinx.html. Anotasi <code>@DslMarker</code> mencegah salah memanggil fungsi builder luar dari dalam blok yang bersarang.</p>
+<p>Buat DSL hanya jika struktur yang dibangun memang bertingkat dan sering dipakai; untuk kasus sederhana, data class dan argumen bernama sudah cukup.</p>
+<div class="lbl">KODE</div><pre><code>class Struk {
+    private val baris = mutableListOf&lt;Pair&lt;String, Int&gt;&gt;()
+    var toko = &quot;&quot;
+    fun item(nama: String, harga: Int, qty: Int = 1) { baris += nama to harga * qty }
+    fun cetak() {
+        println(&quot;== $toko ==&quot;)
+        baris.forEach { (n, h) -&gt; println(&quot;${n.padEnd(12)}${h.toString().padStart(8)}&quot;) }
+        println(&quot;TOTAL&quot;.padEnd(12) + baris.sumOf { it.second }.toString().padStart(8))
+    }
+}
+
+fun struk(isi: Struk.() -&gt; Unit) = Struk().apply(isi)
+
+fun main() {
+    struk {
+        toko = &quot;Kopi Kita&quot;
+        item(&quot;Kopi Gayo&quot;, 85000)
+        item(&quot;Gula Aren&quot;, 25000, qty = 2)
+    }.cetak()
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>== Kopi Kita ==
+Kopi Gayo      85000
+Gula Aren      50000
+TOTAL         135000</code></pre>
+<h2>Poin penting</h2><ul><li>Lambda dengan receiver: Builder.() -&gt; Unit.</li><li>Gradle KTS, Ktor, dan Compose adalah DSL.</li><li>@DslMarker untuk mencegah salah lingkup.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Tipe parameter yang membuat DSL bisa memanggil item() tanpa awalan?</summary><p class="ok">Jawaban: Struk.() -&gt; Unit</p><p>Lambda dengan receiver.</p></details>
+<a class="cta" href="/#kotlin-7-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/kotlin/higher-order-function-inline-dan-reified">Higher-order function, inline, dan reified</a></p><p>Berikutnya: <a href="/belajar/kotlin/pengujian-kotlin-junit-5-kotest-dan-mockk">Pengujian Kotlin: JUnit 5, kotest, dan MockK</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

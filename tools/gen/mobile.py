@@ -14,6 +14,7 @@ from mobile_dart_x import DART_SO, DART_QX, DART_MORE
 from mobile_flutter_x import FLUTTER_SO, FLUTTER_QX, FLUTTER_MORE
 from mobile_kotlin_x import KOTLIN_SO, KOTLIN_QX, KOTLIN_MORE, COMPOSE_SO, COMPOSE_QX, COMPOSE_MORE, KMP_SO, KMP_QX, KMP_MORE
 from cssfw_x import TW_SO, TW_QX, TW_MORE, BS_SO, BS_QX, BS_MORE
+from mobile_roadmap import FLUTTER_RM, COMPOSE_RM, KOTLIN_RM
 
 
 import re
@@ -51,9 +52,9 @@ def gabung(nama, mods, so, qx, more):
 J = lambda v: json.dumps(v, ensure_ascii=False)
 T = {
     'DART': gabung('dart', DART, DART_SO, DART_QX, DART_MORE),
-    'FLUTTER': gabung('flutter', FLUTTER, FLUTTER_SO, FLUTTER_QX, FLUTTER_MORE),
-    'KOTLIN': gabung('kotlin', KOTLIN, KOTLIN_SO, KOTLIN_QX, KOTLIN_MORE),
-    'COMPOSE': gabung('compose', COMPOSE, COMPOSE_SO, COMPOSE_QX, COMPOSE_MORE),
+    'FLUTTER': gabung('flutter', FLUTTER, FLUTTER_SO, FLUTTER_QX, FLUTTER_MORE + FLUTTER_RM),
+    'KOTLIN': gabung('kotlin', KOTLIN, KOTLIN_SO, KOTLIN_QX, KOTLIN_MORE + KOTLIN_RM),
+    'COMPOSE': gabung('compose', COMPOSE, COMPOSE_SO, COMPOSE_QX, COMPOSE_MORE + COMPOSE_RM),
     'KMP': gabung('kmp', KMP, KMP_SO, KMP_QX, KMP_MORE),
     'TW': gabung('tw', TW, TW_SO, TW_QX, TW_MORE),
     'BS': gabung('bs', BS, BS_SO, BS_QX, BS_MORE),

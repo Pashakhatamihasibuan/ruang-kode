@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Delegation: by lazy, observable, dan class delegation · Kotlin · Ruang Kode</title>
+<meta name="description" content="Kata kunci by menyerahkan pekerjaan ke objek lain. val x by lazy { } menghitung nilai sekali saat pertama dipakai, cocok untuk objek mahal.…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/kotlin/delegation-by-lazy-observable-dan-class-delegation">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Delegation: by lazy, observable, dan class delegation · Kotlin · Ruang Kode"><meta property="og:description" content="Kata kunci by menyerahkan pekerjaan ke objek lain. val x by lazy { } menghitung nilai sekali saat pertama dipakai, cocok untuk objek mahal.…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/kotlin/delegation-by-lazy-observable-dan-class-delegation"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Delegation: by lazy, observable, dan class delegation", "description": "Kata kunci by menyerahkan pekerjaan ke objek lain. val x by lazy { } menghitung nilai sekali saat pertama dipakai, cocok untuk objek mahal.…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/kotlin/delegation-by-lazy-observable-dan-class-delegation", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Kotlin", "url": "https://ruang-kode-nine.vercel.app/belajar/kotlin"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Kotlin", "item": "https://ruang-kode-nine.vercel.app/belajar/kotlin"}, {"@type": "ListItem", "position": 3, "name": "Delegation: by lazy, observable, dan class delegation", "item": "https://ruang-kode-nine.vercel.app/belajar/kotlin/delegation-by-lazy-observable-dan-class-delegation"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/kotlin">Kotlin</a> / Modul 6</nav>
+<div class="eyebrow">Kotlin · Modul 6 · Konsep &amp; kode</div><h1>Delegation: by lazy, observable, dan class delegation</h1><a class="cta" href="/#kotlin-6-2">Buka versi interaktif</a>
+<p>Kata kunci <code>by</code> menyerahkan pekerjaan ke objek lain. <code>val x by lazy { }</code> menghitung nilai <b>sekali</b> saat pertama dipakai, cocok untuk objek mahal. <code>Delegates.observable</code> menjalankan kode setiap nilai berubah.</p>
+<p><b>Class delegation</b> (<code>class A(b: B) : Antarmuka by b</code>) meneruskan semua fungsi interface ke objek lain, lalu kita hanya meng-override yang perlu diubah. Ini alternatif pewarisan yang lebih fleksibel ("composition over inheritance").</p>
+<p>Di Android, <code>by viewModels()</code> dan <code>by remember { mutableStateOf() }</code> adalah delegation juga.</p>
+<div class="lbl">KODE</div><pre><code>import kotlin.properties.Delegates
+
+class Toko {
+    val katalog: List&lt;String&gt; by lazy {
+        println(&quot;Memuat katalog...&quot;)
+        listOf(&quot;Kopi Gayo&quot;, &quot;Kopi Toraja&quot;)
+    }
+    var stok: Int by Delegates.observable(10) { _, lama, baru -&gt;
+        println(&quot;Stok berubah $lama -&gt; $baru&quot;)
+    }
+}
+
+interface Pencatat { fun catat(pesan: String) }
+class PencatatKonsol : Pencatat { override fun catat(pesan: String) = println(&quot;[LOG] $pesan&quot;) }
+class Kasir(log: Pencatat) : Pencatat by log
+
+fun main() {
+    val t = Toko()
+    println(&quot;Toko dibuat&quot;)
+    println(t.katalog.size)
+    println(t.katalog.first())
+    t.stok = 7
+    Kasir(PencatatKonsol()).catat(&quot;Transaksi 1&quot;)
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Toko dibuat
+Memuat katalog...
+2
+Kopi Gayo
+Stok berubah 10 -&gt; 7
+[LOG] Transaksi 1</code></pre>
+<h2>Poin penting</h2><ul><li>by lazy: dihitung sekali saat pertama dipakai.</li><li>observable: kode setiap nilai berubah.</li><li>Class delegation: composition over inheritance.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Berapa kali &quot;Memuat katalog...&quot; dicetak pada contoh?</summary><p class="ok">Jawaban: Sekali</p><p>lazy menyimpan hasil pertama.</p></details>
+<a class="cta" href="/#kotlin-6-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/kotlin/pewarisan-interface-dan-visibility">Pewarisan, interface, dan visibility</a></p><p>Berikutnya: <a href="/belajar/kotlin/destructuring-operator-overloading-dan-infix">Destructuring, operator overloading, dan infix</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

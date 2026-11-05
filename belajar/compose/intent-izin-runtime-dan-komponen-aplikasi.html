@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Intent, izin runtime, dan komponen aplikasi · Jetpack Compose · Ruang Kode</title>
+<meta name="description" content="Intent adalah pesan untuk memulai sesuatu. Explicit intent menyebut tujuan yang pasti; implicit intent menyebut aksi (buka URL, bagikan teks, telepon)…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/compose/intent-izin-runtime-dan-komponen-aplikasi">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Intent, izin runtime, dan komponen aplikasi · Jetpack Compose · Ruang Kode"><meta property="og:description" content="Intent adalah pesan untuk memulai sesuatu. Explicit intent menyebut tujuan yang pasti; implicit intent menyebut aksi (buka URL, bagikan teks, telepon)…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/compose/intent-izin-runtime-dan-komponen-aplikasi"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Intent, izin runtime, dan komponen aplikasi", "description": "Intent adalah pesan untuk memulai sesuatu. Explicit intent menyebut tujuan yang pasti; implicit intent menyebut aksi (buka URL, bagikan teks, telepon)…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/compose/intent-izin-runtime-dan-komponen-aplikasi", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Jetpack Compose", "url": "https://ruang-kode-nine.vercel.app/belajar/compose"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Jetpack Compose", "item": "https://ruang-kode-nine.vercel.app/belajar/compose"}, {"@type": "ListItem", "position": 3, "name": "Intent, izin runtime, dan komponen aplikasi", "item": "https://ruang-kode-nine.vercel.app/belajar/compose/intent-izin-runtime-dan-komponen-aplikasi"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/compose">Jetpack Compose</a> / Modul 7</nav>
+<div class="eyebrow">Jetpack Compose · Modul 7 · Konsep &amp; kode</div><h1>Intent, izin runtime, dan komponen aplikasi</h1><a class="cta" href="/#compose-7-2">Buka versi interaktif</a>
+<p><b>Intent</b> adalah pesan untuk memulai sesuatu. <b>Explicit intent</b> menyebut tujuan yang pasti; <b>implicit intent</b> menyebut aksi (buka URL, bagikan teks, telepon) dan sistem memilih aplikasi yang cocok.</p>
+<p>Izin berbahaya (kamera, lokasi, notifikasi di Android 13+) harus diminta <b>saat runtime</b>, tepat ketika fitur dipakai, dengan penjelasan alasan. Di Compose, pakai <code>rememberLauncherForActivityResult(RequestPermission())</code>.</p>
+<p>Komponen aplikasi lain: <b>Service</b> (pekerjaan tanpa UI; foreground service untuk musik atau navigasi, wajib menampilkan notifikasi), <b>BroadcastReceiver</b> (menerima kejadian sistem seperti boot selesai), dan <b>ContentProvider</b> (berbagi data antar aplikasi, misalnya kontak).</p>
+<div class="lbl">KODE</div><pre><code>@Composable
+fun TombolBagikan(produk: String) {
+    val context = LocalContext.current
+    Button(onClick = {
+        val kirim = Intent(Intent.ACTION_SEND).apply {
+            type = &quot;text/plain&quot;
+            putExtra(Intent.EXTRA_TEXT, &quot;Cek $produk di Tokoku: https://tokoku.id&quot;)
+        }
+        context.startActivity(Intent.createChooser(kirim, &quot;Bagikan lewat&quot;))
+    }) { Text(&quot;Bagikan&quot;) }
+}
+
+@Composable
+fun TombolKamera(bukaKamera: () -&gt; Unit) {
+    var ditolak by remember { mutableStateOf(false) }
+    val izin = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { ok -&gt;
+        if (ok) bukaKamera() else ditolak = true
+    }
+    Button(onClick = { izin.launch(Manifest.permission.CAMERA) }) { Text(&quot;Scan QR&quot;) }
+    if (ditolak) Text(&quot;Izin kamera dibutuhkan untuk memindai kode QR.&quot;)
+}</code></pre>
+<h2>Poin penting</h2><ul><li>Explicit vs implicit intent.</li><li>Minta izin berbahaya saat fitur dipakai.</li><li>Service, BroadcastReceiver, ContentProvider.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kapan sebaiknya meminta izin kamera?</summary><p class="ok">Jawaban: Saat pengguna menekan tombol Scan QR</p><p>Konteks membuat pengguna paham alasannya.</p></details>
+<a class="cta" href="/#compose-7-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/compose/activity-lifecycle-dan-manifest">Activity, lifecycle, dan manifest</a></p><p>Berikutnya: <a href="/belajar/compose/workmanager-untuk-tugas-latar">WorkManager untuk tugas latar</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>
