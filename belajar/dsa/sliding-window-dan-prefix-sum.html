@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sliding window dan prefix sum · Struktur Data &amp; Algoritma · Ruang Kode</title>
+<meta name="description" content="Sliding window menjaga &quot;jendela&quot; sepanjang k elemen yang bergeser. Daripada menjumlah ulang k elemen setiap geser (O(n·k)), tambahkan elemen yang masuk…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsa/sliding-window-dan-prefix-sum">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Sliding window dan prefix sum · Struktur Data &amp; Algoritma · Ruang Kode"><meta property="og:description" content="Sliding window menjaga &quot;jendela&quot; sepanjang k elemen yang bergeser. Daripada menjumlah ulang k elemen setiap geser (O(n·k)), tambahkan elemen yang masuk…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsa/sliding-window-dan-prefix-sum"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Sliding window dan prefix sum", "description": "Sliding window menjaga \"jendela\" sepanjang k elemen yang bergeser. Daripada menjumlah ulang k elemen setiap geser (O(n·k)), tambahkan elemen yang masuk…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsa/sliding-window-dan-prefix-sum", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Struktur Data & Algoritma", "url": "https://ruang-kode-nine.vercel.app/belajar/dsa"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Struktur Data & Algoritma", "item": "https://ruang-kode-nine.vercel.app/belajar/dsa"}, {"@type": "ListItem", "position": 3, "name": "Sliding window dan prefix sum", "item": "https://ruang-kode-nine.vercel.app/belajar/dsa/sliding-window-dan-prefix-sum"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsa">Struktur Data &amp; Algoritma</a> / Modul 2</nav>
+<div class="eyebrow">Struktur Data &amp; Algoritma · Modul 2 · Konsep &amp; kode</div><h1>Sliding window dan prefix sum</h1><a class="cta" href="/#dsa-2-3">Buka versi interaktif</a>
+<p><b>Sliding window</b> menjaga "jendela" sepanjang k elemen yang bergeser. Daripada menjumlah ulang k elemen setiap geser (O(n·k)), tambahkan elemen yang masuk dan kurangi elemen yang keluar (O(n)).</p>
+<p><b>Prefix sum</b> menyimpan jumlah kumulatif: <code>pre[i]</code> = jumlah elemen sebelum indeks i. Jumlah rentang <code>[a, b)</code> cukup dihitung <code>pre[b] - pre[a]</code> dalam O(1) setelah persiapan O(n).</p>
+<p>Contoh nyata: penjualan harian toko. Sliding window mencari 3 hari berturut-turut dengan omzet tertinggi; prefix sum menjawab cepat "berapa total omzet hari ke-2 sampai ke-5?"</p>
+<div class="lbl">PYTHON</div><pre><code>omzet = [120, 90, 150, 200, 80, 170, 60]
+k = 3
+jendela = sum(omzet[:k])
+terbaik, mulai = jendela, 0
+for i in range(k, len(omzet)):
+    jendela += omzet[i] - omzet[i - k]
+    if jendela &gt; terbaik:
+        terbaik, mulai = jendela, i - k + 1
+print(f&#x27;3 hari terbaik mulai hari ke-{mulai + 1}, total {terbaik}&#x27;)
+
+pre = [0]
+for x in omzet:
+    pre.append(pre[-1] + x)
+print(&#x27;Hari 2 sampai 5:&#x27;, pre[5] - pre[1])</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>3 hari terbaik mulai hari ke-4, total 450
+Hari 2 sampai 5: 520</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Cari panjang substring terpanjang tanpa huruf berulang di <code>"abcabcbb"</code>.</p><details><summary>Petunjuk</summary><p>Jendela dengan set; geser kiri saat huruf sudah ada.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>s = &#x27;abcabcbb&#x27;
+ada = set()
+kiri = terbaik = 0
+for kanan, ch in enumerate(s):
+    while ch in ada:
+        ada.remove(s[kiri])
+        kiri += 1
+    ada.add(ch)
+    terbaik = max(terbaik, kanan - kiri + 1)
+print(terbaik)</code></pre><div class="lbl">KELUARAN</div><pre><code>3</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Sliding window: tambah yang masuk, kurangi yang keluar.</li><li>Prefix sum: jumlah rentang dalam O(1).</li><li>Keduanya mengubah O(n·k) menjadi O(n).</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Dengan prefix sum, jumlah elemen indeks 2 sampai 4 (inklusif)?</summary><p class="ok">Jawaban: pre[5] - pre[2]</p><p>Rentang [2, 5).</p></details>
+<a class="cta" href="/#dsa-2-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsa/two-pointers">Two pointers</a></p><p>Berikutnya: <a href="/belajar/dsa/linked-list">Linked list</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

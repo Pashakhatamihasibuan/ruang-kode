@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Streaming dengan loading dan Suspense · Next.js · Ruang Kode</title>
+<meta name="description" content="Jika satu bagian halaman lambat (misalnya rekomendasi produk), jangan biarkan seluruh halaman menunggu. Bungkus bagian itu dengan &lt;Suspense…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/nextjs/streaming-dengan-loading-dan-suspense">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Streaming dengan loading dan Suspense · Next.js · Ruang Kode"><meta property="og:description" content="Jika satu bagian halaman lambat (misalnya rekomendasi produk), jangan biarkan seluruh halaman menunggu. Bungkus bagian itu dengan &lt;Suspense…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/nextjs/streaming-dengan-loading-dan-suspense"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Streaming dengan loading dan Suspense", "description": "Jika satu bagian halaman lambat (misalnya rekomendasi produk), jangan biarkan seluruh halaman menunggu. Bungkus bagian itu dengan <Suspense…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/nextjs/streaming-dengan-loading-dan-suspense", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Next.js", "url": "https://ruang-kode-nine.vercel.app/belajar/nextjs"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Next.js", "item": "https://ruang-kode-nine.vercel.app/belajar/nextjs"}, {"@type": "ListItem", "position": 3, "name": "Streaming dengan loading dan Suspense", "item": "https://ruang-kode-nine.vercel.app/belajar/nextjs/streaming-dengan-loading-dan-suspense"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/nextjs">Next.js</a> / Modul 3</nav>
+<div class="eyebrow">Next.js · Modul 3 · Konsep &amp; kode</div><h1>Streaming dengan loading dan Suspense</h1><a class="cta" href="/#nextjs-3-2">Buka versi interaktif</a>
+<p>Jika satu bagian halaman lambat (misalnya rekomendasi produk), jangan biarkan seluruh halaman menunggu. Bungkus bagian itu dengan <code>&lt;Suspense fallback={...}&gt;</code>: bagian cepat tampil dulu, bagian lambat <b>dialirkan (streaming)</b> begitu siap.</p>
+<p>File <code>loading.tsx</code> otomatis menjadi fallback Suspense untuk seluruh halaman di folder itu. Gunakan <b>skeleton</b> yang menyerupai bentuk konten agar tata letak tidak meloncat.</p>
+<p>Hasilnya waktu tampil pertama lebih cepat, sesuatu yang terasa jelas pada koneksi seluler yang lambat.</p>
+<div class="lbl">KODE</div><pre><code>// app/produk/[slug]/page.tsx
+import { Suspense } from &#x27;react&#x27;;
+
+export default async function Detail({ params }: { params: Promise&lt;{ slug: string }&gt; }) {
+  const { slug } = await params;
+  const p = await ambilProduk(slug);           // cepat
+  return (
+    &lt;main&gt;
+      &lt;h1&gt;{p.nama}&lt;/h1&gt;
+      &lt;Suspense fallback={&lt;div className=&quot;h-40 animate-pulse rounded bg-gray-200&quot; /&gt;}&gt;
+        &lt;Rekomendasi slug={slug} /&gt;            {/* lambat, dialirkan belakangan */}
+      &lt;/Suspense&gt;
+    &lt;/main&gt;
+  );
+}
+
+async function Rekomendasi({ slug }: { slug: string }) {
+  const daftar = await ambilRekomendasi(slug);  // 2 detik
+  return &lt;ul&gt;{daftar.map((r) =&gt; &lt;li key={r.id}&gt;{r.nama}&lt;/li&gt;)}&lt;/ul&gt;;
+}</code></pre>
+<h2>Poin penting</h2><ul><li>Suspense membuat bagian lambat tidak menahan halaman.</li><li>loading.tsx = fallback untuk satu folder.</li><li>Skeleton menjaga tata letak stabil.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Manfaat streaming?</summary><p class="ok">Jawaban: Konten cepat tampil lebih dulu</p><p>Tidak menunggu bagian paling lambat.</p></details>
+<a class="cta" href="/#nextjs-3-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/nextjs/mengambil-data-dan-revalidasi">Mengambil data dan revalidasi</a></p><p>Berikutnya: <a href="/belajar/nextjs/server-actions-dan-route-handlers">Server Actions dan Route Handlers</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

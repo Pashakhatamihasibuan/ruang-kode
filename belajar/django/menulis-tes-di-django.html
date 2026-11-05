@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Menulis tes di Django · Django · Ruang Kode</title>
+<meta name="description" content="Django menyediakan TestCase yang membuat database uji terpisah dan membungkus setiap tes dalam transaksi yang di-rollback. self.client mensimulasikan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/django/menulis-tes-di-django">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Menulis tes di Django · Django · Ruang Kode"><meta property="og:description" content="Django menyediakan TestCase yang membuat database uji terpisah dan membungkus setiap tes dalam transaksi yang di-rollback. self.client mensimulasikan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/django/menulis-tes-di-django"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Menulis tes di Django", "description": "Django menyediakan TestCase yang membuat database uji terpisah dan membungkus setiap tes dalam transaksi yang di-rollback. self.client mensimulasikan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/django/menulis-tes-di-django", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Django", "url": "https://ruang-kode-nine.vercel.app/belajar/django"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Django", "item": "https://ruang-kode-nine.vercel.app/belajar/django"}, {"@type": "ListItem", "position": 3, "name": "Menulis tes di Django", "item": "https://ruang-kode-nine.vercel.app/belajar/django/menulis-tes-di-django"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/django">Django</a> / Modul 5</nav>
+<div class="eyebrow">Django · Modul 5 · Konsep &amp; kode</div><h1>Menulis tes di Django</h1><a class="cta" href="/#django-5-1">Buka versi interaktif</a>
+<p>Django menyediakan <code>TestCase</code> yang membuat database uji terpisah dan membungkus setiap tes dalam transaksi yang di-rollback. <code>self.client</code> mensimulasikan browser untuk menguji view, URL, template, dan status code.</p>
+<p>Banyak tim memakai <b>pytest-django</b> karena sintaksnya lebih ringkas dan fixture-nya kuat, plus <b>factory_boy</b> untuk membuat data uji.</p>
+<p>Prioritaskan tes untuk logika bisnis (model dan service), izin akses (siapa boleh apa), dan API. Jalankan dengan <code>python manage.py test</code> atau <code>pytest</code>.</p>
+<div class="lbl">PYTHON</div><pre><code>from django.test import TestCase
+from django.urls import reverse
+
+class ProdukTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        kopi = Kategori.objects.create(nama=&#x27;Kopi&#x27;)
+        cls.p = Produk.objects.create(kategori=kopi, nama=&#x27;Kopi Gayo&#x27;, slug=&#x27;kopi-gayo&#x27;, harga=85000, stok=3)
+
+    def test_detail_tampil(self):
+        r = self.client.get(reverse(&#x27;katalog:detail&#x27;, args=[&#x27;kopi-gayo&#x27;]))
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, &#x27;Kopi Gayo&#x27;)
+
+    def test_produk_nonaktif_404(self):
+        self.p.aktif = False
+        self.p.save()
+        r = self.client.get(reverse(&#x27;katalog:detail&#x27;, args=[&#x27;kopi-gayo&#x27;]))
+        self.assertEqual(r.status_code, 404)
+
+    def test_pesanan_butuh_login(self):
+        r = self.client.get(&#x27;/pesanan/saya/&#x27;)
+        self.assertRedirects(r, &#x27;/akun/login/?next=/pesanan/saya/&#x27;)</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>$ python manage.py test katalog
+Creating test database for alias &#x27;default&#x27;...
+...
+----------------------------------------------------------------------
+Ran 3 tests in 0.087s
+
+OK
+Destroying test database for alias &#x27;default&#x27;...</code></pre>
+<h2>Poin penting</h2><ul><li>TestCase: database uji dan rollback otomatis.</li><li>self.client untuk menguji view.</li><li>Uji logika bisnis, izin, dan API.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa setUpTestData lebih cepat daripada setUp?</summary><p class="ok">Jawaban: Data dibuat sekali untuk seluruh kelas</p><p>setUp dijalankan sebelum setiap tes.</p></details>
+<a class="cta" href="/#django-5-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/django/keamanan-bawaan-django">Keamanan bawaan Django</a></p><p>Berikutnya: <a href="/belajar/django/caching-dan-tugas-latar-dengan-celery">Caching dan tugas latar dengan Celery</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

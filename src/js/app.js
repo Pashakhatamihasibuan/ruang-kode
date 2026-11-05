@@ -42,11 +42,17 @@ const TRACKS=[
   {k:'git',g:'tool',name:'Git & GitHub',lang:'bash',mods:GIT_MODULES,road:'git-github-beginner',mark:'git',h:'Version control dan kolaborasi',d:'Commit, branch, merge, remote, pull request, GitHub Pages, Actions, dan keamanan repositori.'},
   {k:'ui',g:'des',name:'UI Design',lang:'css',mods:UI_MODULES,road:'',mark:'UI',h:'Antarmuka yang jelas, konsisten, dan aksesibel',d:'Hierarki visual, Gestalt, grid 8 poin, sistem tipografi, warna dan kontras WCAG, dark mode, anatomi komponen, design token, layout responsif, redlining, dan handoff ke developer.'},
   {k:'slw',g:'web',name:'Slicing Website',lang:'css',mods:SLW_MODULES,road:'',mark:'SW',h:'Dari desain Figma ke HTML dan CSS yang presisi',d:'Membaca file desain dan redline, memecah layout jadi komponen, slicing navbar, hero, kartu, form, dan footer, responsif mobile-first, pixel-perfect, aset dan ikon, sampai serah terima proyek.'},
-  {k:'slm',g:'mob',name:'Slicing Mobile',lang:'dart',mods:SLM_MODULES,road:'',mark:'SM',h:'Dari desain Figma ke layar Flutter dan Compose',d:'Membaca spesifikasi layar mobile, dp dan sp, safe area, slicing layar login, daftar kartu, dan navigasi bawah di Flutter dan Jetpack Compose, layout adaptif, pixel-perfect, dan ekspor aset.'}];
+  {k:'slm',g:'mob',name:'Slicing Mobile',lang:'dart',mods:SLM_MODULES,road:'',mark:'SM',h:'Dari desain Figma ke layar Flutter dan Compose',d:'Membaca spesifikasi layar mobile, dp dan sp, safe area, slicing layar login, daftar kartu, dan navigasi bawah di Flutter dan Jetpack Compose, layout adaptif, pixel-perfect, dan ekspor aset.'},
+  {k:'dsa',g:'logika',name:'Struktur Data & Algoritma',lang:'python',mods:DSA_MODULES,road:'',mark:'DSA',h:'Big-O, struktur data, dan algoritma klasik',d:'Big-O, array, two pointers, sliding window, linked list, stack, queue, hash table, rekursi, binary search, sorting, tree, BST, heap, graph (BFS, DFS, Dijkstra, topological sort), dynamic programming, greedy, dan backtracking. Semua contoh Python bisa dijalankan.'},
+  {k:'pgdba',g:'data',name:'PostgreSQL DBA',lang:'sql',mods:PGDBA_MODULES,road:'',mark:'PG',h:'Mengelola PostgreSQL agar aman, cepat, dan tidak kehilangan data',d:'Arsitektur proses dan WAL, psql, schema dan tipe data, JSONB, role dan pg_hba.conf, Row-Level Security, transaksi dan MVCC, VACUUM, EXPLAIN ANALYZE, jenis indeks, tuning memori, backup, PITR, replikasi, dan pemantauan.'},
+  {k:'qa',g:'tool',name:'QA Engineer',lang:'python',mods:QA_MODULES,road:'',mark:'QA',h:'Menjamin kualitas perangkat lunak dari kebutuhan sampai rilis',d:'Dasar QA dan STLC, piramida testing, teknik desain test case (partisi, nilai batas, decision table, state transition), test case dan laporan bug, exploratory testing, pytest, mock, API testing, Playwright, tes flaky, k6, dan CI.'},
+  {k:'django',g:'prog',name:'Django',lang:'python',mods:DJANGO_MODULES,road:'',mark:'DJ',h:'Framework web Python lengkap untuk backend dan API',d:'Pola MTV, proyek dan aplikasi, settings, model dan ORM, migrasi, QuerySet, admin, view, URL, template, form, autentikasi, Django REST Framework, keamanan, pengujian, cache, Celery, dan deploy dengan Gunicorn dan Docker.'},
+  {k:'nextjs',g:'web',name:'Next.js',lang:'tsx',mods:NEXTJS_MODULES,road:'',mark:'NX',h:'Framework React untuk web cepat dan ramah SEO',d:'App Router, layout, route dinamis, Server dan Client Components, hydration, data fetching, caching dan revalidasi, streaming, Server Actions, Route Handlers, next/image, middleware, autentikasi, dan deploy ke Vercel.'},
+  {k:'vue',g:'web',name:'Vue.js',lang:'html',mods:VUE_MODULES,road:'',mark:'VU',h:'Framework JavaScript progresif yang mudah dipelajari',d:'Single File Component, template dan direktif, v-model, ref, computed, watch, props, emit, slot, composable, Vue Router, Pinia, Vitest, Nuxt untuk SSR, dan deploy.'}];
 const TK=Object.fromEntries(TRACKS.map(t=>[t.k,t]));
 const PATHS=[
-  {k:'pseudo',t:'Dasar Logika Pemrograman',d:'Melatih cara berpikir algoritma sebelum masuk ke bahasa pemrograman.',tr:['pseudo','flowg','python','java']},
-  {k:'fe',t:'Frontend Developer',d:'Membangun antarmuka web yang cepat dan mudah dipakai.',tr:['fe0','html','css','git','ts','react','fe']},
+  {k:'pseudo',t:'Dasar Logika Pemrograman',d:'Melatih cara berpikir algoritma sebelum masuk ke bahasa pemrograman.',tr:['pseudo','flowg','python','dsa','java']},
+  {k:'fe',t:'Frontend Developer',d:'Membangun antarmuka web yang cepat dan mudah dipakai.',tr:['fe0','html','css','git','ts','react','nextjs','fe']},
   {k:'da',t:'Data Analyst',d:'Menjawab pertanyaan bisnis dengan data.',tr:['sql','pda','da','bi']},
   {k:'de',t:'Data Engineer',d:'Membangun jalur data dari sumber ke dashboard.',tr:['python','sql','git','pda','de']},
   {k:'ux',t:'UI/UX Designer',d:'Merancang pengalaman dan sistem desain.',tr:['ux','ui','ds','html','css','slw','msi']},
@@ -54,6 +60,10 @@ const PATHS=[
   {k:'be',t:'Backend Java',d:'Membangun layanan dan API yang andal.',tr:['java','sql','git']},
   {k:'flutterdev',t:'Mobile Developer (Flutter)',d:'Membangun aplikasi Android dan iOS dari satu kode.',tr:['pseudo','dart','flutter','slm','git']},
   {k:'android',t:'Android Developer',d:'Membangun aplikasi Android native lalu berbagi kode ke iOS.',tr:['kotlin','compose','slm','kmp','git']},
+  {k:'pydev',t:'Backend Python (Django)',d:'Membangun aplikasi web dan API dengan Python.',tr:['python','sql','pgdba','django','git']},
+  {k:'vuedev',t:'Frontend Developer (Vue)',d:'Membangun antarmuka web dengan Vue dan Nuxt.',tr:['html','css','ts','vue','git']},
+  {k:'qae',t:'QA Engineer',d:'Menjamin kualitas aplikasi lewat pengujian manual dan otomatis.',tr:['pseudo','python','qa','git']},
+  {k:'dba',t:'Database Administrator',d:'Menjaga database tetap aman, cepat, dan bisa dipulihkan.',tr:['sql','pgdba','git']},
   {k:'webui',t:'Web UI dengan Framework CSS',d:'Membangun tampilan web cepat dengan Tailwind dan Bootstrap.',tr:['html','css','tw','bs','slw','git']}];
 const LVL4=['Pemula','Menengah','Lanjutan','Profesional'];
 const KIND={lab:'Konsep & lab',topic:'Topik 5 langkah',c:'Konsep & kode',s:'Praktik SQL',w:'Praktik langsung',proj:'Proyek akhir',mini:'Proyek mini'};

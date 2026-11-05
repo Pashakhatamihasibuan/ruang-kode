@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Stack (LIFO) · Struktur Data &amp; Algoritma · Ruang Kode</title>
+<meta name="description" content="Stack bekerja seperti tumpukan piring: yang terakhir ditaruh, pertama diambil (LIFO). Operasinya push (taruh), pop (ambil), dan peek (lihat atas),…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsa/stack-lifo">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Stack (LIFO) · Struktur Data &amp; Algoritma · Ruang Kode"><meta property="og:description" content="Stack bekerja seperti tumpukan piring: yang terakhir ditaruh, pertama diambil (LIFO). Operasinya push (taruh), pop (ambil), dan peek (lihat atas),…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsa/stack-lifo"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Stack (LIFO)", "description": "Stack bekerja seperti tumpukan piring: yang terakhir ditaruh, pertama diambil (LIFO). Operasinya push (taruh), pop (ambil), dan peek (lihat atas),…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsa/stack-lifo", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Struktur Data & Algoritma", "url": "https://ruang-kode-nine.vercel.app/belajar/dsa"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Struktur Data & Algoritma", "item": "https://ruang-kode-nine.vercel.app/belajar/dsa"}, {"@type": "ListItem", "position": 3, "name": "Stack (LIFO)", "item": "https://ruang-kode-nine.vercel.app/belajar/dsa/stack-lifo"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsa">Struktur Data &amp; Algoritma</a> / Modul 3</nav>
+<div class="eyebrow">Struktur Data &amp; Algoritma · Modul 3 · Konsep &amp; kode</div><h1>Stack (LIFO)</h1><a class="cta" href="/#dsa-3-2">Buka versi interaktif</a>
+<p><b>Stack</b> bekerja seperti tumpukan piring: yang terakhir ditaruh, pertama diambil (<b>LIFO</b>). Operasinya <code>push</code> (taruh), <code>pop</code> (ambil), dan <code>peek</code> (lihat atas), semuanya O(1). Di Python cukup pakai list dengan <code>append</code> dan <code>pop()</code>.</p>
+<p>Stack dipakai untuk Undo, tombol Back di browser, call stack fungsi, dan memeriksa kurung seimbang. Setiap kurung buka di-push; setiap kurung tutup harus cocok dengan kurung buka teratas.</p>
+<p>Variasi penting: <b>monotonic stack</b> menjaga isi tetap terurut dan menjawab soal seperti "hari berikutnya dengan suhu lebih tinggi" dalam O(n).</p>
+<div class="lbl">PYTHON</div><pre><code>def seimbang(teks):
+    pasangan = {&#x27;)&#x27;: &#x27;(&#x27;, &#x27;]&#x27;: &#x27;[&#x27;, &#x27;}&#x27;: &#x27;{&#x27;}
+    tumpukan = []
+    for ch in teks:
+        if ch in &#x27;([{&#x27;:
+            tumpukan.append(ch)
+        elif ch in pasangan:
+            if not tumpukan or tumpukan.pop() != pasangan[ch]:
+                return False
+    return not tumpukan
+
+for t in [&#x27;(a + b) * [c]&#x27;, &#x27;{[}]&#x27;, &#x27;((&#x27;]:
+    print(t, &#x27;-&gt;&#x27;, seimbang(t))</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>(a + b) * [c] -&gt; True
+{[}] -&gt; False
+(( -&gt; False</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Pakai stack untuk membalik kata <code>"algoritma"</code>.</p><details><summary>Petunjuk</summary><p>Push semua huruf, lalu pop satu per satu.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>tumpukan = list(&#x27;algoritma&#x27;)
+hasil = &#x27;&#x27;
+while tumpukan:
+    hasil += tumpukan.pop()
+print(hasil)</code></pre><div class="lbl">KELUARAN</div><pre><code>amtirogla</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>LIFO: terakhir masuk, pertama keluar.</li><li>push dan pop O(1) dengan list.</li><li>Kurung seimbang adalah soal stack klasik.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Setelah push 1, push 2, push 3, pop, nilai yang keluar?</summary><p class="ok">Jawaban: 3</p><p>Yang terakhir masuk.</p></details>
+<a class="cta" href="/#dsa-3-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsa/linked-list">Linked list</a></p><p>Berikutnya: <a href="/belajar/dsa/queue-fifo-dan-deque">Queue (FIFO) dan deque</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

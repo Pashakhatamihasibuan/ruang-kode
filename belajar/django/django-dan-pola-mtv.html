@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Django dan pola MTV · Django · Ruang Kode</title>
+<meta name="description" content="Django adalah framework web Python dengan prinsip &quot;batteries included&quot;: ORM, panel admin, autentikasi, form, migrasi database, dan perlindungan keamanan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/django/django-dan-pola-mtv">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Django dan pola MTV · Django · Ruang Kode"><meta property="og:description" content="Django adalah framework web Python dengan prinsip &quot;batteries included&quot;: ORM, panel admin, autentikasi, form, migrasi database, dan perlindungan keamanan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/django/django-dan-pola-mtv"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Django dan pola MTV", "description": "Django adalah framework web Python dengan prinsip \"batteries included\": ORM, panel admin, autentikasi, form, migrasi database, dan perlindungan keamanan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/django/django-dan-pola-mtv", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Django", "url": "https://ruang-kode-nine.vercel.app/belajar/django"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Django", "item": "https://ruang-kode-nine.vercel.app/belajar/django"}, {"@type": "ListItem", "position": 3, "name": "Django dan pola MTV", "item": "https://ruang-kode-nine.vercel.app/belajar/django/django-dan-pola-mtv"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/django">Django</a> / Modul 1</nav>
+<div class="eyebrow">Django · Modul 1 · Konsep &amp; kode</div><h1>Django dan pola MTV</h1><a class="cta" href="/#django-1-1">Buka versi interaktif</a>
+<p><b>Django</b> adalah framework web Python dengan prinsip "batteries included": ORM, panel admin, autentikasi, form, migrasi database, dan perlindungan keamanan sudah tersedia. Instagram, Pinterest, Disqus, dan banyak sistem informasi kampus serta pemerintahan dibangun dengan Django.</p>
+<p>Django memakai pola <b>MTV</b>: <b>Model</b> (struktur data dan akses database), <b>Template</b> (tampilan HTML), dan <b>View</b> (logika yang menerima request dan mengembalikan response). URLconf menghubungkan alamat URL ke view.</p>
+<p>Alur sebuah request: browser meminta <code>/produk/12/</code> → <b>middleware</b> → <b>urls.py</b> mencari pola yang cocok → <b>view</b> mengambil data lewat <b>model</b> → view me-render <b>template</b> → response HTML kembali ke browser.</p>
+<div class="tw"><table><caption>MTV dibanding MVC</caption><thead><tr><th>Django (MTV)</th><th>MVC umum</th><th>Tugas</th></tr></thead><tbody><tr><td>Model</td><td>Model</td><td>Data dan aturan bisnis</td></tr><tr><td>Template</td><td>View</td><td>Tampilan HTML</td></tr><tr><td>View</td><td>Controller</td><td>Menerima request, memilih data dan template</td></tr></tbody></table></div>
+<div class="lbl">CONTOH</div><pre><code>Browser  -&gt;  GET /produk/12/
+   |
+   v
+Middleware (sesi, CSRF, autentikasi)
+   |
+   v
+urls.py   path(&#x27;produk/&lt;int:pk&gt;/&#x27;, views.detail)
+   |
+   v
+views.detail(request, pk=12)
+   |-- Produk.objects.get(pk=12)   (Model -&gt; SQL -&gt; database)
+   |-- render(&#x27;produk/detail.html&#x27;, {...})   (Template)
+   v
+HttpResponse 200 (HTML)</code></pre>
+<h2>Poin penting</h2><ul><li>Django: batteries included.</li><li>Model, Template, View + URLconf.</li><li>Request lewat middleware, urls, view, lalu template.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Di Django, bagian yang menerima request dan mengembalikan response?</summary><p class="ok">Jawaban: View</p><p>View setara controller di MVC.</p></details>
+<a class="cta" href="/#django-1-1">Kerjakan latihannya di aplikasi</a><p>Berikutnya: <a href="/belajar/django/membuat-proyek-dan-aplikasi">Membuat proyek dan aplikasi</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Membuat proyek dan aplikasi · Django · Ruang Kode</title>
+<meta name="description" content="Selalu pakai virtual environment agar paket tiap proyek terpisah. Pasang Django, lalu buat proyek (konfigurasi keseluruhan) dengan django-admin…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/django/membuat-proyek-dan-aplikasi">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Membuat proyek dan aplikasi · Django · Ruang Kode"><meta property="og:description" content="Selalu pakai virtual environment agar paket tiap proyek terpisah. Pasang Django, lalu buat proyek (konfigurasi keseluruhan) dengan django-admin…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/django/membuat-proyek-dan-aplikasi"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Membuat proyek dan aplikasi", "description": "Selalu pakai virtual environment agar paket tiap proyek terpisah. Pasang Django, lalu buat proyek (konfigurasi keseluruhan) dengan django-admin…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/django/membuat-proyek-dan-aplikasi", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Django", "url": "https://ruang-kode-nine.vercel.app/belajar/django"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Django", "item": "https://ruang-kode-nine.vercel.app/belajar/django"}, {"@type": "ListItem", "position": 3, "name": "Membuat proyek dan aplikasi", "item": "https://ruang-kode-nine.vercel.app/belajar/django/membuat-proyek-dan-aplikasi"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/django">Django</a> / Modul 1</nav>
+<div class="eyebrow">Django · Modul 1 · Konsep &amp; kode</div><h1>Membuat proyek dan aplikasi</h1><a class="cta" href="/#django-1-2">Buka versi interaktif</a>
+<p>Selalu pakai <b>virtual environment</b> agar paket tiap proyek terpisah. Pasang Django, lalu buat <b>proyek</b> (konfigurasi keseluruhan) dengan <code>django-admin startproject</code>. Di dalam proyek, buat <b>aplikasi</b> (fitur yang berdiri sendiri, misalnya <code>katalog</code>, <code>pesanan</code>, <code>akun</code>) dengan <code>python manage.py startapp</code>.</p>
+<p>Daftarkan aplikasi di <code>INSTALLED_APPS</code> pada <code>settings.py</code>. File penting lain: <code>urls.py</code> (rute utama), <code>wsgi.py</code> dan <code>asgi.py</code> (titik masuk server), serta <code>manage.py</code> (perintah administrasi).</p>
+<p>Jalankan server pengembangan dengan <code>python manage.py runserver</code> lalu buka http://127.0.0.1:8000.</p>
+<div class="tw"><table><caption>Struktur proyek</caption><thead><tr><th>Berkas</th><th>Fungsi</th></tr></thead><tbody><tr><td>manage.py</td><td>Perintah: runserver, migrate, createsuperuser, test</td></tr><tr><td>tokoku/settings.py</td><td>Konfigurasi: database, aplikasi, bahasa, zona waktu</td></tr><tr><td>tokoku/urls.py</td><td>Rute URL utama</td></tr><tr><td>katalog/models.py</td><td>Model data</td></tr><tr><td>katalog/views.py</td><td>View</td></tr><tr><td>katalog/admin.py</td><td>Pendaftaran ke panel admin</td></tr><tr><td>katalog/migrations/</td><td>Riwayat perubahan skema</td></tr><tr><td>katalog/templates/katalog/</td><td>Template HTML aplikasi</td></tr></tbody></table></div>
+<div class="lbl">TERMINAL</div><pre><code>python -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+pip install &quot;django&gt;=5.2,&lt;6&quot;
+
+django-admin startproject tokoku .
+python manage.py startapp katalog
+python manage.py migrate
+python manage.py runserver</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, sessions
+Running migrations:
+  Applying contenttypes.0001_initial... OK
+  Applying auth.0001_initial... OK
+  ...
+Watching for file changes with StatReloader
+System check identified no issues (0 silenced).
+November 05, 2026 - 09:12:44
+Django version 5.2.7, using settings &#x27;tokoku.settings&#x27;
+Starting development server at http://127.0.0.1:8000/</code></pre>
+<h2>Poin penting</h2><ul><li>Proyek = konfigurasi, aplikasi = fitur.</li><li>Daftarkan aplikasi di INSTALLED_APPS.</li><li>runserver hanya untuk pengembangan.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Perintah membuat aplikasi baru bernama pesanan?</summary><p class="ok">Jawaban: python manage.py startapp pesanan</p><p>startapp di dalam proyek.</p></details>
+<a class="cta" href="/#django-1-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/django/django-dan-pola-mtv">Django dan pola MTV</a></p><p>Berikutnya: <a href="/belajar/django/settings-penting-dan-variabel-lingkungan">Settings penting dan variabel lingkungan</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

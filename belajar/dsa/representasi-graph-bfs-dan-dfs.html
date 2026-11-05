@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Representasi graph, BFS, dan DFS · Struktur Data &amp; Algoritma · Ruang Kode</title>
+<meta name="description" content="Graph terdiri dari simpul (vertex) dan sisi (edge). Sisi bisa berarah (follow di Instagram) atau tidak berarah (pertemanan di Facebook), dan bisa…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsa/representasi-graph-bfs-dan-dfs">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Representasi graph, BFS, dan DFS · Struktur Data &amp; Algoritma · Ruang Kode"><meta property="og:description" content="Graph terdiri dari simpul (vertex) dan sisi (edge). Sisi bisa berarah (follow di Instagram) atau tidak berarah (pertemanan di Facebook), dan bisa…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsa/representasi-graph-bfs-dan-dfs"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Representasi graph, BFS, dan DFS", "description": "Graph terdiri dari simpul (vertex) dan sisi (edge). Sisi bisa berarah (follow di Instagram) atau tidak berarah (pertemanan di Facebook), dan bisa…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsa/representasi-graph-bfs-dan-dfs", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Struktur Data & Algoritma", "url": "https://ruang-kode-nine.vercel.app/belajar/dsa"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Struktur Data & Algoritma", "item": "https://ruang-kode-nine.vercel.app/belajar/dsa"}, {"@type": "ListItem", "position": 3, "name": "Representasi graph, BFS, dan DFS", "item": "https://ruang-kode-nine.vercel.app/belajar/dsa/representasi-graph-bfs-dan-dfs"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsa">Struktur Data &amp; Algoritma</a> / Modul 7</nav>
+<div class="eyebrow">Struktur Data &amp; Algoritma · Modul 7 · Konsep &amp; kode</div><h1>Representasi graph, BFS, dan DFS</h1><a class="cta" href="/#dsa-7-1">Buka versi interaktif</a>
+<p><b>Graph</b> terdiri dari <b>simpul</b> (vertex) dan <b>sisi</b> (edge). Sisi bisa berarah (follow di Instagram) atau tidak berarah (pertemanan di Facebook), dan bisa berbobot (jarak antar kota). Cara menyimpan yang paling umum adalah <b>adjacency list</b>: dict dari simpul ke daftar tetangganya.</p>
+<p><b>BFS</b> (breadth-first search) menjelajah tingkat demi tingkat dengan queue. Pada graph tanpa bobot, BFS menemukan <b>jalur terpendek</b> dalam jumlah sisi. <b>DFS</b> (depth-first search) masuk sedalam mungkin dengan stack atau rekursi; cocok untuk mencari komponen terhubung, mendeteksi siklus, dan menjelajah labirin.</p>
+<p>Keduanya O(V + E): setiap simpul dan sisi dikunjungi sekali. Jangan lupa himpunan <code>dikunjungi</code> agar tidak berputar di siklus.</p>
+<div class="lbl">PYTHON</div><pre><code>from collections import deque
+
+kota = {
+    &#x27;Medan&#x27;: [&#x27;Pekanbaru&#x27;, &#x27;Padang&#x27;],
+    &#x27;Pekanbaru&#x27;: [&#x27;Medan&#x27;, &#x27;Padang&#x27;, &#x27;Jambi&#x27;],
+    &#x27;Padang&#x27;: [&#x27;Medan&#x27;, &#x27;Pekanbaru&#x27;, &#x27;Bengkulu&#x27;],
+    &#x27;Jambi&#x27;: [&#x27;Pekanbaru&#x27;, &#x27;Palembang&#x27;],
+    &#x27;Bengkulu&#x27;: [&#x27;Padang&#x27;, &#x27;Palembang&#x27;],
+    &#x27;Palembang&#x27;: [&#x27;Jambi&#x27;, &#x27;Bengkulu&#x27;],
+}
+
+def bfs_jalur(g, awal, tujuan):
+    q = deque([[awal]])
+    dikunjungi = {awal}
+    while q:
+        jalur = q.popleft()
+        if jalur[-1] == tujuan:
+            return jalur
+        for t in g[jalur[-1]]:
+            if t not in dikunjungi:
+                dikunjungi.add(t)
+                q.append(jalur + [t])
+
+def dfs(g, s, dikunjungi=None):
+    dikunjungi = dikunjungi or []
+    dikunjungi.append(s)
+    for t in g[s]:
+        if t not in dikunjungi:
+            dfs(g, t, dikunjungi)
+    return dikunjungi
+
+print(&#x27;BFS:&#x27;, bfs_jalur(kota, &#x27;Medan&#x27;, &#x27;Palembang&#x27;))
+print(&#x27;DFS:&#x27;, dfs(kota, &#x27;Medan&#x27;))</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>BFS: [&#x27;Medan&#x27;, &#x27;Pekanbaru&#x27;, &#x27;Jambi&#x27;, &#x27;Palembang&#x27;]
+DFS: [&#x27;Medan&#x27;, &#x27;Pekanbaru&#x27;, &#x27;Padang&#x27;, &#x27;Bengkulu&#x27;, &#x27;Palembang&#x27;, &#x27;Jambi&#x27;]</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Hitung jumlah pulau (kelompok angka 1 yang terhubung atas-bawah-kiri-kanan) di grid berikut memakai DFS.</p><details><summary>Petunjuk</summary><p>Untuk setiap 1 yang belum dikunjungi, jalankan DFS dan tambah penghitung.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>grid = [
+    [1, 1, 0, 0],
+    [1, 0, 0, 1],
+    [0, 0, 1, 1],
+    [1, 0, 0, 0],
+]
+R, K = len(grid), len(grid[0])
+dilihat = set()
+def dfs(r, c):
+    if r &lt; 0 or c &lt; 0 or r &gt;= R or c &gt;= K or grid[r][c] == 0 or (r, c) in dilihat:
+        return
+    dilihat.add((r, c))
+    for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+        dfs(r + dr, c + dc)
+pulau = 0
+for r in range(R):
+    for c in range(K):
+        if grid[r][c] == 1 and (r, c) not in dilihat:
+            dfs(r, c)
+            pulau += 1
+print(pulau)</code></pre><div class="lbl">KELUARAN</div><pre><code>3</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Adjacency list = dict simpul ke tetangga.</li><li>BFS (queue) = jalur terpendek tanpa bobot.</li><li>DFS (stack/rekursi) = menjelajah sedalam mungkin.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Struktur data pembantu BFS?</summary><p class="ok">Jawaban: Queue</p><p>Tingkat demi tingkat.</p></details><details><summary>Kompleksitas BFS dan DFS?</summary><p class="ok">Jawaban: O(V + E)</p><p>Setiap simpul dan sisi sekali.</p></details>
+<a class="cta" href="/#dsa-7-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsa/heap-dan-priority-queue">Heap dan priority queue</a></p><p>Berikutnya: <a href="/belajar/dsa/dijkstra-jalur-terpendek-berbobot">Dijkstra: jalur terpendek berbobot</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

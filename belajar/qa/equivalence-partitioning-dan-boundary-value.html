@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Equivalence partitioning dan boundary value · QA Engineer · Ruang Kode</title>
+<meta name="description" content="Kita tidak mungkin menguji semua input. Equivalence partitioning membagi input menjadi kelompok yang seharusnya diperlakukan sama, lalu cukup menguji…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/qa/equivalence-partitioning-dan-boundary-value">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Equivalence partitioning dan boundary value · QA Engineer · Ruang Kode"><meta property="og:description" content="Kita tidak mungkin menguji semua input. Equivalence partitioning membagi input menjadi kelompok yang seharusnya diperlakukan sama, lalu cukup menguji…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/qa/equivalence-partitioning-dan-boundary-value"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Equivalence partitioning dan boundary value", "description": "Kita tidak mungkin menguji semua input. Equivalence partitioning membagi input menjadi kelompok yang seharusnya diperlakukan sama, lalu cukup menguji…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/qa/equivalence-partitioning-dan-boundary-value", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "QA Engineer", "url": "https://ruang-kode-nine.vercel.app/belajar/qa"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "QA Engineer", "item": "https://ruang-kode-nine.vercel.app/belajar/qa"}, {"@type": "ListItem", "position": 3, "name": "Equivalence partitioning dan boundary value", "item": "https://ruang-kode-nine.vercel.app/belajar/qa/equivalence-partitioning-dan-boundary-value"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/qa">QA Engineer</a> / Modul 2</nav>
+<div class="eyebrow">QA Engineer · Modul 2 · Konsep &amp; kode</div><h1>Equivalence partitioning dan boundary value</h1><a class="cta" href="/#qa-2-1">Buka versi interaktif</a>
+<p>Kita tidak mungkin menguji semua input. <b>Equivalence partitioning</b> membagi input menjadi kelompok yang seharusnya diperlakukan sama, lalu cukup menguji satu wakil per kelompok. Contoh: umur pendaftar BPJS mandiri anak 0 sampai 17, dewasa 18 sampai 59, lansia 60 ke atas, dan kelompok tidak valid (negatif).</p>
+<p><b>Boundary value analysis</b> menguji tepat di batas karena bug sering muncul di sana (salah tulis <code>&lt;</code> dan <code>&lt;=</code>). Untuk batas 18, uji 17, 18, dan 19. Gabungan keduanya menghasilkan sedikit tes tetapi efektif.</p>
+<p>Di bawah ini fungsi kategori umur dengan bug yang disengaja. Jalankan tesnya dan lihat tes batas mana yang menangkap bug itu.</p>
+<div class="lbl">PYTHON</div><pre><code>
+def jalankan(*tes):
+    lulus = 0
+    for t in tes:
+        try:
+            t()
+            print(&#x27;LULUS&#x27;, t.__name__)
+            lulus += 1
+        except AssertionError as e:
+            print(&#x27;GAGAL&#x27;, t.__name__, &#x27;-&#x27;, e)
+    print(f&#x27;{lulus}/{len(tes)} tes lulus&#x27;)
+
+def kategori(umur):
+    if umur &lt; 0:
+        return &#x27;tidak valid&#x27;
+    if umur &lt; 18:
+        return &#x27;anak&#x27;
+    if umur &lt; 61:        # BUG: seharusnya &lt; 60
+        return &#x27;dewasa&#x27;
+    return &#x27;lansia&#x27;
+
+def tes_partisi():
+    assert kategori(10) == &#x27;anak&#x27;
+    assert kategori(30) == &#x27;dewasa&#x27;
+    assert kategori(75) == &#x27;lansia&#x27;
+    assert kategori(-1) == &#x27;tidak valid&#x27;
+
+def tes_batas_18():
+    assert [kategori(u) for u in (17, 18, 19)] == [&#x27;anak&#x27;, &#x27;dewasa&#x27;, &#x27;dewasa&#x27;]
+
+def tes_batas_60():
+    hasil = kategori(60)
+    assert hasil == &#x27;lansia&#x27;, f&#x27;umur 60 menjadi {hasil!r}&#x27;
+
+jalankan(tes_partisi, tes_batas_18, tes_batas_60)</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>LULUS tes_partisi
+LULUS tes_batas_18
+GAGAL tes_batas_60 - umur 60 menjadi &#x27;dewasa&#x27;
+2/3 tes lulus</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Kata sandi valid jika panjangnya 8 sampai 20 karakter. Tulis daftar panjang yang diuji dengan boundary value analysis dan cetak hasil validasinya.</p><details><summary>Petunjuk</summary><p>Uji 7, 8, 9, 19, 20, 21.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>def valid(pw):
+    return 8 &lt;= len(pw) &lt;= 20
+for n in [7, 8, 9, 19, 20, 21]:
+    print(n, valid(&#x27;a&#x27; * n))</code></pre><div class="lbl">KELUARAN</div><pre><code>7 False
+8 True
+9 True
+19 True
+20 True
+21 False</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Satu wakil per kelompok input.</li><li>Uji tepat di batas: batas - 1, batas, batas + 1.</li><li>Tes partisi saja tidak menangkap bug batas.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Untuk aturan &quot;diskon jika belanja minimal Rp100.000&quot;, nilai batas yang diuji?</summary><p class="ok">Jawaban: 99.999, 100.000, 100.001</p><p>Batas dan tetangganya.</p></details>
+<a class="cta" href="/#qa-2-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/qa/siklus-pengujian-stlc-dan-peran-qa-di-agile">Siklus pengujian (STLC) dan peran QA di Agile</a></p><p>Berikutnya: <a href="/belajar/qa/decision-table">Decision table</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

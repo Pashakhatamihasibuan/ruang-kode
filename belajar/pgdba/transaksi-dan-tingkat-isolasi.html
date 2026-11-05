@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Transaksi dan tingkat isolasi · PostgreSQL DBA · Ruang Kode</title>
+<meta name="description" content="Transaksi mengelompokkan beberapa perintah menjadi satu kesatuan: semua berhasil (COMMIT) atau semua dibatalkan (ROLLBACK). Contoh klasik: transfer saldo…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/pgdba/transaksi-dan-tingkat-isolasi">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Transaksi dan tingkat isolasi · PostgreSQL DBA · Ruang Kode"><meta property="og:description" content="Transaksi mengelompokkan beberapa perintah menjadi satu kesatuan: semua berhasil (COMMIT) atau semua dibatalkan (ROLLBACK). Contoh klasik: transfer saldo…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/pgdba/transaksi-dan-tingkat-isolasi"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Transaksi dan tingkat isolasi", "description": "Transaksi mengelompokkan beberapa perintah menjadi satu kesatuan: semua berhasil (COMMIT) atau semua dibatalkan (ROLLBACK). Contoh klasik: transfer saldo…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/pgdba/transaksi-dan-tingkat-isolasi", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "PostgreSQL DBA", "url": "https://ruang-kode-nine.vercel.app/belajar/pgdba"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "PostgreSQL DBA", "item": "https://ruang-kode-nine.vercel.app/belajar/pgdba"}, {"@type": "ListItem", "position": 3, "name": "Transaksi dan tingkat isolasi", "item": "https://ruang-kode-nine.vercel.app/belajar/pgdba/transaksi-dan-tingkat-isolasi"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/pgdba">PostgreSQL DBA</a> / Modul 4</nav>
+<div class="eyebrow">PostgreSQL DBA · Modul 4 · Konsep &amp; kode</div><h1>Transaksi dan tingkat isolasi</h1><a class="cta" href="/#pgdba-4-1">Buka versi interaktif</a>
+<p><b>Transaksi</b> mengelompokkan beberapa perintah menjadi satu kesatuan: semua berhasil (<code>COMMIT</code>) atau semua dibatalkan (<code>ROLLBACK</code>). Contoh klasik: transfer saldo harus mengurangi rekening A <b>dan</b> menambah rekening B.</p>
+<p><b>ACID</b>: Atomicity (semua atau tidak sama sekali), Consistency (constraint tetap terpenuhi), Isolation (transaksi bersamaan tidak saling mengacaukan), Durability (yang sudah COMMIT tidak hilang walau server mati).</p>
+<p>Tingkat isolasi PostgreSQL: <b>Read Committed</b> (bawaan, setiap perintah melihat data yang sudah di-commit saat itu), <b>Repeatable Read</b> (melihat snapshot yang sama sepanjang transaksi), dan <b>Serializable</b> (seolah transaksi berjalan bergantian; aplikasi harus siap mengulang jika muncul error serialisasi).</p>
+<div class="tw"><table><caption>Fenomena per tingkat isolasi di PostgreSQL</caption><thead><tr><th>Tingkat</th><th>Dirty read</th><th>Non-repeatable read</th><th>Phantom</th><th>Anomali serialisasi</th></tr></thead><tbody><tr><td>Read Committed</td><td>Tidak</td><td>Mungkin</td><td>Mungkin</td><td>Mungkin</td></tr><tr><td>Repeatable Read</td><td>Tidak</td><td>Tidak</td><td>Tidak</td><td>Mungkin</td></tr><tr><td>Serializable</td><td>Tidak</td><td>Tidak</td><td>Tidak</td><td>Tidak</td></tr></tbody></table></div>
+<div class="lbl">SQL</div><pre><code>CREATE TABLE rekening (no text PRIMARY KEY, saldo numeric(14,2) CHECK (saldo &gt;= 0));
+INSERT INTO rekening VALUES (&#x27;A&#x27;, 500000), (&#x27;B&#x27;, 100000);
+
+BEGIN;
+UPDATE rekening SET saldo = saldo - 700000 WHERE no = &#x27;A&#x27;;
+-- gagal: saldo menjadi negatif
+ROLLBACK;
+
+BEGIN;
+UPDATE rekening SET saldo = saldo - 200000 WHERE no = &#x27;A&#x27;;
+UPDATE rekening SET saldo = saldo + 200000 WHERE no = &#x27;B&#x27;;
+COMMIT;
+SELECT * FROM rekening;</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>ERROR:  new row for relation &quot;rekening&quot; violates check constraint &quot;rekening_saldo_check&quot;
+ROLLBACK
+BEGIN
+UPDATE 1
+UPDATE 1
+COMMIT
+ no |   saldo
+----+-----------
+ A  | 300000.00
+ B  | 300000.00</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis transaksi yang memindahkan stok 5 unit dari gudang Medan ke gudang Binjai di tabel <code>stok(gudang, jumlah)</code>.</p><details><summary>Petunjuk</summary><p>Dua UPDATE di dalam BEGIN ... COMMIT.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">SQL</div><pre><code>BEGIN;
+UPDATE stok SET jumlah = jumlah - 5 WHERE gudang = &#x27;Medan&#x27;;
+UPDATE stok SET jumlah = jumlah + 5 WHERE gudang = &#x27;Binjai&#x27;;
+COMMIT;</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>BEGIN, COMMIT, ROLLBACK.</li><li>ACID menjamin data tetap benar.</li><li>Read Committed bawaan; Serializable paling ketat.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Huruf D pada ACID menjamin apa?</summary><p class="ok">Jawaban: Data yang sudah COMMIT tidak hilang</p><p>Durability, berkat WAL.</p></details>
+<a class="cta" href="/#pgdba-4-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pgdba/row-level-security">Row-Level Security</a></p><p>Berikutnya: <a href="/belajar/pgdba/mvcc-lock-dan-deadlock">MVCC, lock, dan deadlock</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

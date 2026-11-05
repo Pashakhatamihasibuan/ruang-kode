@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Settings penting dan variabel lingkungan · Django · Ruang Kode</title>
+<meta name="description" content="Ubah LANGUAGE_CODE = &#x27;id&#x27; dan TIME_ZONE = &#x27;Asia/Jakarta&#x27; agar pesan bawaan dan admin berbahasa Indonesia. Biarkan USE_TZ = True agar waktu disimpan dalam…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/django/settings-penting-dan-variabel-lingkungan">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Settings penting dan variabel lingkungan · Django · Ruang Kode"><meta property="og:description" content="Ubah LANGUAGE_CODE = &#x27;id&#x27; dan TIME_ZONE = &#x27;Asia/Jakarta&#x27; agar pesan bawaan dan admin berbahasa Indonesia. Biarkan USE_TZ = True agar waktu disimpan dalam…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/django/settings-penting-dan-variabel-lingkungan"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Settings penting dan variabel lingkungan", "description": "Ubah LANGUAGE_CODE = 'id' dan TIME_ZONE = 'Asia/Jakarta' agar pesan bawaan dan admin berbahasa Indonesia. Biarkan USE_TZ = True agar waktu disimpan dalam…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/django/settings-penting-dan-variabel-lingkungan", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Django", "url": "https://ruang-kode-nine.vercel.app/belajar/django"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Django", "item": "https://ruang-kode-nine.vercel.app/belajar/django"}, {"@type": "ListItem", "position": 3, "name": "Settings penting dan variabel lingkungan", "item": "https://ruang-kode-nine.vercel.app/belajar/django/settings-penting-dan-variabel-lingkungan"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/django">Django</a> / Modul 1</nav>
+<div class="eyebrow">Django · Modul 1 · Konsep &amp; kode</div><h1>Settings penting dan variabel lingkungan</h1><a class="cta" href="/#django-1-3">Buka versi interaktif</a>
+<p>Ubah <code>LANGUAGE_CODE = 'id'</code> dan <code>TIME_ZONE = 'Asia/Jakarta'</code> agar pesan bawaan dan admin berbahasa Indonesia. Biarkan <code>USE_TZ = True</code> agar waktu disimpan dalam UTC dan ditampilkan sesuai zona waktu.</p>
+<p>Jangan menulis rahasia (SECRET_KEY, kata sandi database) langsung di settings. Baca dari <b>variabel lingkungan</b>, misalnya dengan paket <code>django-environ</code>, dan simpan file <code>.env</code> di luar Git.</p>
+<p>Di produksi: <code>DEBUG = False</code> (jika True, halaman error membocorkan konfigurasi), isi <code>ALLOWED_HOSTS</code>, dan pakai PostgreSQL alih-alih SQLite. Jalankan <code>python manage.py check --deploy</code> untuk daftar pemeriksaan keamanan.</p>
+<div class="lbl">PYTHON</div><pre><code># tokoku/settings.py
+import environ
+env = environ.Env()
+environ.Env.read_env(BASE_DIR / &#x27;.env&#x27;)
+
+SECRET_KEY = env(&#x27;SECRET_KEY&#x27;)
+DEBUG = env.bool(&#x27;DEBUG&#x27;, default=False)
+ALLOWED_HOSTS = env.list(&#x27;ALLOWED_HOSTS&#x27;, default=[&#x27;localhost&#x27;])
+
+DATABASES = {&#x27;default&#x27;: env.db(&#x27;DATABASE_URL&#x27;)}
+
+LANGUAGE_CODE = &#x27;id&#x27;
+TIME_ZONE = &#x27;Asia/Jakarta&#x27;
+USE_TZ = True
+
+INSTALLED_APPS = [
+    &#x27;django.contrib.admin&#x27;, &#x27;django.contrib.auth&#x27;, &#x27;django.contrib.contenttypes&#x27;,
+    &#x27;django.contrib.sessions&#x27;, &#x27;django.contrib.messages&#x27;, &#x27;django.contrib.staticfiles&#x27;,
+    &#x27;katalog&#x27;,
+]</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis isi file .env untuk pengembangan lokal dengan PostgreSQL.</p><details><summary>Petunjuk</summary><p>SECRET_KEY, DEBUG, ALLOWED_HOSTS, DATABASE_URL.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">TERMINAL</div><pre><code>SECRET_KEY=ganti-dengan-string-acak-panjang
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+DATABASE_URL=postgres://toko:rahasia@localhost:5432/tokodb</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Bahasa id dan zona Asia/Jakarta.</li><li>Rahasia dari variabel lingkungan.</li><li>DEBUG = False dan ALLOWED_HOSTS di produksi.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa DEBUG = True berbahaya di produksi?</summary><p class="ok">Jawaban: Halaman error menampilkan konfigurasi dan kode</p><p>Kebocoran informasi.</p></details>
+<a class="cta" href="/#django-1-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/django/membuat-proyek-dan-aplikasi">Membuat proyek dan aplikasi</a></p><p>Berikutnya: <a href="/belajar/django/model-field-dan-relasi">Model, field, dan relasi</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

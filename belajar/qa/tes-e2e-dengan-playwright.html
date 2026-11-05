@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tes E2E dengan Playwright · QA Engineer · Ruang Kode</title>
+<meta name="description" content="Playwright (Microsoft) menjalankan Chromium, Firefox, dan WebKit dengan satu API, menunggu elemen siap secara otomatis, dan menyediakan trace viewer…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/qa/tes-e2e-dengan-playwright">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Tes E2E dengan Playwright · QA Engineer · Ruang Kode"><meta property="og:description" content="Playwright (Microsoft) menjalankan Chromium, Firefox, dan WebKit dengan satu API, menunggu elemen siap secara otomatis, dan menyediakan trace viewer…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/qa/tes-e2e-dengan-playwright"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Tes E2E dengan Playwright", "description": "Playwright (Microsoft) menjalankan Chromium, Firefox, dan WebKit dengan satu API, menunggu elemen siap secara otomatis, dan menyediakan trace viewer…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/qa/tes-e2e-dengan-playwright", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "QA Engineer", "url": "https://ruang-kode-nine.vercel.app/belajar/qa"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "QA Engineer", "item": "https://ruang-kode-nine.vercel.app/belajar/qa"}, {"@type": "ListItem", "position": 3, "name": "Tes E2E dengan Playwright", "item": "https://ruang-kode-nine.vercel.app/belajar/qa/tes-e2e-dengan-playwright"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/qa">QA Engineer</a> / Modul 5</nav>
+<div class="eyebrow">QA Engineer · Modul 5 · Konsep &amp; kode</div><h1>Tes E2E dengan Playwright</h1><a class="cta" href="/#qa-5-1">Buka versi interaktif</a>
+<p><b>Playwright</b> (Microsoft) menjalankan Chromium, Firefox, dan WebKit dengan satu API, menunggu elemen siap secara otomatis, dan menyediakan trace viewer untuk melihat ulang setiap langkah tes yang gagal. Alternatifnya Cypress dan Selenium.</p>
+<p>Pilih <b>locator</b> yang tahan perubahan: berdasarkan peran dan teks yang dilihat pengguna (<code>get_by_role</code>, <code>get_by_label</code>), atau <code>data-testid</code>. Hindari selector CSS panjang seperti <code>div &gt; div:nth-child(3) &gt; span</code> yang patah saat desain berubah.</p>
+<p><b>Page Object Model</b> membungkus satu halaman menjadi kelas berisi locator dan aksi. Jika tombol berubah, cukup ubah di satu tempat.</p>
+<div class="lbl">PYTHON</div><pre><code>from playwright.sync_api import Page, expect
+
+class HalamanMasuk:
+    def __init__(self, page: Page):
+        self.page = page
+        self.email = page.get_by_label(&#x27;Email&#x27;)
+        self.sandi = page.get_by_label(&#x27;Kata sandi&#x27;)
+        self.tombol = page.get_by_role(&#x27;button&#x27;, name=&#x27;Masuk&#x27;)
+
+    def buka(self):
+        self.page.goto(&#x27;https://staging.toko.id/masuk&#x27;)
+
+    def masuk(self, email, sandi):
+        self.email.fill(email)
+        self.sandi.fill(sandi)
+        self.tombol.click()
+
+def test_masuk_berhasil(page: Page):
+    h = HalamanMasuk(page)
+    h.buka()
+    h.masuk(&#x27;rina@contoh.id&#x27;, &#x27;RahasiaKuat!9&#x27;)
+    expect(page.get_by_text(&#x27;Halo, Rina&#x27;)).to_be_visible()
+
+def test_sandi_salah(page: Page):
+    h = HalamanMasuk(page)
+    h.buka()
+    h.masuk(&#x27;rina@contoh.id&#x27;, &#x27;salah&#x27;)
+    expect(page.get_by_role(&#x27;alert&#x27;)).to_have_text(&#x27;Email atau kata sandi salah&#x27;)</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>$ pytest tests/e2e --browser chromium --browser webkit
+........                                                       [100%]
+4 passed in 6.21s</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis langkah Playwright untuk menambah produk "Kopi Gayo" ke keranjang dan memastikan lencana keranjang menunjukkan 1.</p><details><summary>Petunjuk</summary><p>get_by_role untuk tombol, expect(...).to_have_text.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>page.goto(&#x27;https://staging.toko.id/produk/kopi-gayo&#x27;)
+page.get_by_role(&#x27;button&#x27;, name=&#x27;Tambah ke keranjang&#x27;).click()
+expect(page.get_by_test_id(&#x27;jumlah-keranjang&#x27;)).to_have_text(&#x27;1&#x27;)</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Locator berdasarkan peran, label, atau data-testid.</li><li>Page Object Model: satu kelas per halaman.</li><li>Playwright menunggu otomatis dan punya trace viewer.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Locator yang paling tahan perubahan desain?</summary><p class="ok">Jawaban: get_by_role(&#x27;button&#x27;, name=&#x27;Masuk&#x27;)</p><p>Berdasarkan apa yang dilihat pengguna.</p></details>
+<a class="cta" href="/#qa-5-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/qa/pengujian-api-rest">Pengujian API REST</a></p><p>Berikutnya: <a href="/belajar/qa/tes-flaky-dan-strategi-data-uji">Tes flaky dan strategi data uji</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

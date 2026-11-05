@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Migrasi dan QuerySet · Django · Ruang Kode</title>
+<meta name="description" content="Setiap perubahan model dicatat sebagai migrasi: makemigrations membuat file migrasi, migrate menerapkannya ke database. Simpan file migrasi di Git agar…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/django/migrasi-dan-queryset">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Migrasi dan QuerySet · Django · Ruang Kode"><meta property="og:description" content="Setiap perubahan model dicatat sebagai migrasi: makemigrations membuat file migrasi, migrate menerapkannya ke database. Simpan file migrasi di Git agar…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/django/migrasi-dan-queryset"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Migrasi dan QuerySet", "description": "Setiap perubahan model dicatat sebagai migrasi: makemigrations membuat file migrasi, migrate menerapkannya ke database. Simpan file migrasi di Git agar…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/django/migrasi-dan-queryset", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Django", "url": "https://ruang-kode-nine.vercel.app/belajar/django"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Django", "item": "https://ruang-kode-nine.vercel.app/belajar/django"}, {"@type": "ListItem", "position": 3, "name": "Migrasi dan QuerySet", "item": "https://ruang-kode-nine.vercel.app/belajar/django/migrasi-dan-queryset"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/django">Django</a> / Modul 2</nav>
+<div class="eyebrow">Django · Modul 2 · Konsep &amp; kode</div><h1>Migrasi dan QuerySet</h1><a class="cta" href="/#django-2-2">Buka versi interaktif</a>
+<p>Setiap perubahan model dicatat sebagai <b>migrasi</b>: <code>makemigrations</code> membuat file migrasi, <code>migrate</code> menerapkannya ke database. Simpan file migrasi di Git agar semua anggota tim dan server punya skema yang sama.</p>
+<p><b>QuerySet</b> adalah query yang <b>malas</b> (lazy): belum menyentuh database sampai hasilnya dipakai. Metode utama: <code>all()</code>, <code>filter()</code>, <code>exclude()</code>, <code>get()</code>, <code>order_by()</code>, <code>values()</code>, <code>annotate()</code>, <code>aggregate()</code>. Lookup memakai dua garis bawah: <code>harga__lte</code>, <code>nama__icontains</code>, <code>kategori__nama</code>.</p>
+<p>Coba di <code>python manage.py shell</code>. Untuk melihat SQL yang dihasilkan, cetak <code>str(qs.query)</code>.</p>
+<div class="tw"><table><caption>Lookup QuerySet yang sering dipakai</caption><thead><tr><th>Lookup</th><th>SQL</th><th>Contoh</th></tr></thead><tbody><tr><td>exact</td><td>=</td><td>filter(slug=&#x27;kopi-gayo&#x27;)</td></tr><tr><td>icontains</td><td>ILIKE %x%</td><td>filter(nama__icontains=&#x27;kopi&#x27;)</td></tr><tr><td>gt, gte, lt, lte</td><td>&amp;gt;, &amp;gt;=, &amp;lt;, &amp;lt;=</td><td>filter(harga__lte=90000)</td></tr><tr><td>in</td><td>IN (...)</td><td>filter(id__in=[1, 2, 3])</td></tr><tr><td>range</td><td>BETWEEN</td><td>filter(harga__range=(50000, 100000))</td></tr><tr><td>isnull</td><td>IS NULL</td><td>filter(kategori__isnull=True)</td></tr><tr><td>relasi__field</td><td>JOIN</td><td>filter(kategori__nama=&#x27;Kopi&#x27;)</td></tr></tbody></table></div>
+<div class="lbl">PYTHON</div><pre><code>&gt;&gt;&gt; from katalog.models import Produk, Kategori
+&gt;&gt;&gt; from django.db.models import Count, Avg
+&gt;&gt;&gt; kopi = Kategori.objects.create(nama=&#x27;Kopi&#x27;)
+&gt;&gt;&gt; Produk.objects.create(kategori=kopi, nama=&#x27;Kopi Gayo&#x27;, slug=&#x27;kopi-gayo&#x27;, harga=85000, stok=20)
+&gt;&gt;&gt; Produk.objects.create(kategori=kopi, nama=&#x27;Kopi Toraja&#x27;, slug=&#x27;kopi-toraja&#x27;, harga=95000, stok=0)
+&gt;&gt;&gt; Produk.objects.filter(harga__lte=90000, stok__gt=0)
+&gt;&gt;&gt; Produk.objects.filter(kategori__nama=&#x27;Kopi&#x27;).aggregate(Avg(&#x27;harga&#x27;))
+&gt;&gt;&gt; Kategori.objects.annotate(jumlah=Count(&#x27;produk&#x27;)).values(&#x27;nama&#x27;, &#x27;jumlah&#x27;)</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>&lt;Kategori: Kopi&gt;
+&lt;Produk: Kopi Gayo (Rp85,000)&gt;
+&lt;Produk: Kopi Toraja (Rp95,000)&gt;
+&lt;QuerySet [&lt;Produk: Kopi Gayo (Rp85,000)&gt;]&gt;
+{&#x27;harga__avg&#x27;: Decimal(&#x27;90000.000000&#x27;)}
+&lt;QuerySet [{&#x27;nama&#x27;: &#x27;Kopi&#x27;, &#x27;jumlah&#x27;: 2}]&gt;</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Ambil 5 produk aktif termahal yang stoknya lebih dari 0.</p><details><summary>Petunjuk</summary><p>filter, order_by dengan tanda minus, slicing.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>Produk.objects.filter(aktif=True, stok__gt=0).order_by(&#x27;-harga&#x27;)[:5]</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>makemigrations lalu migrate.</li><li>QuerySet malas, baru dijalankan saat dipakai.</li><li>Lookup dengan dua garis bawah.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kode yang mengambil produk dengan nama mengandung &quot;kopi&quot; tanpa peduli huruf besar kecil?</summary><p class="ok">Jawaban: filter(nama__icontains=&#x27;kopi&#x27;)</p><p>i = insensitive.</p></details>
+<a class="cta" href="/#django-2-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/django/model-field-dan-relasi">Model, field, dan relasi</a></p><p>Berikutnya: <a href="/belajar/django/panel-admin-dan-masalah-n-1">Panel admin dan masalah N+1</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

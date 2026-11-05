@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>API dengan Django REST Framework · Django · Ruang Kode</title>
+<meta name="description" content="Django REST Framework (DRF) adalah paket standar untuk membangun API JSON. Tiga komponen utama: serializer (mengubah model ke JSON dan memvalidasi…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/django/api-dengan-django-rest-framework">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="API dengan Django REST Framework · Django · Ruang Kode"><meta property="og:description" content="Django REST Framework (DRF) adalah paket standar untuk membangun API JSON. Tiga komponen utama: serializer (mengubah model ke JSON dan memvalidasi…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/django/api-dengan-django-rest-framework"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "API dengan Django REST Framework", "description": "Django REST Framework (DRF) adalah paket standar untuk membangun API JSON. Tiga komponen utama: serializer (mengubah model ke JSON dan memvalidasi…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/django/api-dengan-django-rest-framework", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Django", "url": "https://ruang-kode-nine.vercel.app/belajar/django"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Django", "item": "https://ruang-kode-nine.vercel.app/belajar/django"}, {"@type": "ListItem", "position": 3, "name": "API dengan Django REST Framework", "item": "https://ruang-kode-nine.vercel.app/belajar/django/api-dengan-django-rest-framework"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/django">Django</a> / Modul 4</nav>
+<div class="eyebrow">Django · Modul 4 · Konsep &amp; kode</div><h1>API dengan Django REST Framework</h1><a class="cta" href="/#django-4-2">Buka versi interaktif</a>
+<p><b>Django REST Framework (DRF)</b> adalah paket standar untuk membangun API JSON. Tiga komponen utama: <b>serializer</b> (mengubah model ke JSON dan memvalidasi input), <b>viewset</b> (kumpulan aksi list, retrieve, create, update, destroy), dan <b>router</b> (membuat URL otomatis).</p>
+<p>DRF menyediakan halaman API yang bisa dijelajahi di browser, pagination, filter, throttling, serta kelas izin seperti <code>IsAuthenticated</code> dan <code>IsAuthenticatedOrReadOnly</code>.</p>
+<p>Untuk aplikasi mobile atau frontend terpisah (React, Next.js, Flutter), pakai autentikasi token: <b>JWT</b> dengan paket <code>djangorestframework-simplejwt</code>.</p>
+<div class="tw"><table><caption>URL yang dibuat router</caption><thead><tr><th>Method</th><th>URL</th><th>Aksi</th></tr></thead><tbody><tr><td>GET</td><td>/api/produk/</td><td>list</td></tr><tr><td>POST</td><td>/api/produk/</td><td>create</td></tr><tr><td>GET</td><td>/api/produk/{slug}/</td><td>retrieve</td></tr><tr><td>PUT / PATCH</td><td>/api/produk/{slug}/</td><td>update / partial_update</td></tr><tr><td>DELETE</td><td>/api/produk/{slug}/</td><td>destroy</td></tr></tbody></table></div>
+<div class="lbl">PYTHON</div><pre><code># katalog/serializers.py
+from rest_framework import serializers
+class ProdukSerializer(serializers.ModelSerializer):
+    kategori = serializers.StringRelatedField()
+    class Meta:
+        model = Produk
+        fields = [&#x27;id&#x27;, &#x27;nama&#x27;, &#x27;slug&#x27;, &#x27;harga&#x27;, &#x27;stok&#x27;, &#x27;kategori&#x27;]
+
+# katalog/api.py
+from rest_framework import viewsets, permissions
+class ProdukViewSet(viewsets.ModelViewSet):
+    queryset = Produk.objects.filter(aktif=True).select_related(&#x27;kategori&#x27;)
+    serializer_class = ProdukSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    lookup_field = &#x27;slug&#x27;
+
+# tokoku/urls.py
+from rest_framework.routers import DefaultRouter
+router = DefaultRouter()
+router.register(&#x27;produk&#x27;, ProdukViewSet)
+urlpatterns += [path(&#x27;api/&#x27;, include(router.urls))]</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>$ curl -s http://127.0.0.1:8000/api/produk/kopi-gayo/
+{&quot;id&quot;:1,&quot;nama&quot;:&quot;Kopi Gayo&quot;,&quot;slug&quot;:&quot;kopi-gayo&quot;,&quot;harga&quot;:&quot;85000.00&quot;,&quot;stok&quot;:20,&quot;kategori&quot;:&quot;Kopi&quot;}
+
+$ curl -s -X DELETE http://127.0.0.1:8000/api/produk/kopi-gayo/
+{&quot;detail&quot;:&quot;Authentication credentials were not provided.&quot;}</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat serializer untuk model Ulasan yang menolak komentar berisi kata "spam".</p><details><summary>Petunjuk</summary><p>Metode validate_komentar di ModelSerializer.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>class UlasanSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ulasan
+        fields = [&#x27;id&#x27;, &#x27;pengulas&#x27;, &#x27;rating&#x27;, &#x27;komentar&#x27;]
+
+    def validate_komentar(self, nilai):
+        if &#x27;spam&#x27; in nilai.lower():
+            raise serializers.ValidationError(&#x27;Komentar terdeteksi sebagai spam.&#x27;)
+        return nilai</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Serializer, viewset, router.</li><li>Kelas izin seperti IsAuthenticatedOrReadOnly.</li><li>JWT untuk frontend dan mobile.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Komponen DRF yang memvalidasi input JSON?</summary><p class="ok">Jawaban: Serializer</p><p>Seperti form untuk API.</p></details>
+<a class="cta" href="/#django-4-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/django/autentikasi-dan-izin-akses">Autentikasi dan izin akses</a></p><p>Berikutnya: <a href="/belajar/django/keamanan-bawaan-django">Keamanan bawaan Django</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

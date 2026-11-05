@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Instalasi dengan Docker dan psql · PostgreSQL DBA · Ruang Kode</title>
+<meta name="description" content="Cara tercepat mencoba PostgreSQL adalah Docker. Di server produksi, pasang dari repositori resmi (apt.postgresql.org untuk Ubuntu) atau pakai layanan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/pgdba/instalasi-dengan-docker-dan-psql">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Instalasi dengan Docker dan psql · PostgreSQL DBA · Ruang Kode"><meta property="og:description" content="Cara tercepat mencoba PostgreSQL adalah Docker. Di server produksi, pasang dari repositori resmi (apt.postgresql.org untuk Ubuntu) atau pakai layanan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/pgdba/instalasi-dengan-docker-dan-psql"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Instalasi dengan Docker dan psql", "description": "Cara tercepat mencoba PostgreSQL adalah Docker. Di server produksi, pasang dari repositori resmi (apt.postgresql.org untuk Ubuntu) atau pakai layanan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/pgdba/instalasi-dengan-docker-dan-psql", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "PostgreSQL DBA", "url": "https://ruang-kode-nine.vercel.app/belajar/pgdba"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "PostgreSQL DBA", "item": "https://ruang-kode-nine.vercel.app/belajar/pgdba"}, {"@type": "ListItem", "position": 3, "name": "Instalasi dengan Docker dan psql", "item": "https://ruang-kode-nine.vercel.app/belajar/pgdba/instalasi-dengan-docker-dan-psql"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/pgdba">PostgreSQL DBA</a> / Modul 1</nav>
+<div class="eyebrow">PostgreSQL DBA · Modul 1 · Konsep &amp; kode</div><h1>Instalasi dengan Docker dan psql</h1><a class="cta" href="/#pgdba-1-3">Buka versi interaktif</a>
+<p>Cara tercepat mencoba PostgreSQL adalah <b>Docker</b>. Di server produksi, pasang dari repositori resmi (apt.postgresql.org untuk Ubuntu) atau pakai layanan terkelola seperti Amazon RDS, Google Cloud SQL, atau Supabase.</p>
+<p><b>psql</b> adalah klien baris perintah resmi. Perintah meta diawali garis miring terbalik: <code>\l</code> daftar database, <code>\c nama</code> pindah database, <code>\dt</code> daftar tabel, <code>\d tabel</code> struktur tabel, <code>\du</code> daftar role, <code>\x</code> tampilan vertikal, <code>\timing</code> menampilkan durasi query, dan <code>\q</code> keluar.</p>
+<p>Simpan data di <b>volume</b> agar tidak hilang saat container dihapus, dan jangan pernah memakai kata sandi contoh di produksi.</p>
+<div class="tw"><table><caption>Perintah meta psql</caption><thead><tr><th>Perintah</th><th>Fungsi</th></tr></thead><tbody><tr><td>\l</td><td>Daftar database</td></tr><tr><td>\c db</td><td>Pindah database</td></tr><tr><td>\dt</td><td>Daftar tabel</td></tr><tr><td>\d tabel</td><td>Kolom, indeks, constraint</td></tr><tr><td>\du</td><td>Daftar role</td></tr><tr><td>\dn</td><td>Daftar schema</td></tr><tr><td>\x</td><td>Tampilan vertikal</td></tr><tr><td>\timing</td><td>Tampilkan durasi query</td></tr><tr><td>\i file.sql</td><td>Jalankan file</td></tr><tr><td>\q</td><td>Keluar</td></tr></tbody></table></div>
+<div class="lbl">TERMINAL</div><pre><code>docker run -d --name pg17 \
+  -e POSTGRES_PASSWORD=rahasia_kuat \
+  -v pgdata:/var/lib/postgresql/data \
+  -p 5432:5432 postgres:17
+
+docker exec -it pg17 psql -U postgres
+
+postgres=# CREATE DATABASE tokodb;
+postgres=# \c tokodb
+tokodb=# \timing on
+tokodb=# \dt</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>CREATE DATABASE
+You are now connected to database &quot;tokodb&quot; as user &quot;postgres&quot;.
+Timing is on.
+Did not find any relations.</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis perintah psql untuk menghubungkan ke database <code>tokodb</code> di host 10.0.0.5 sebagai user <code>analis</code>.</p><details><summary>Petunjuk</summary><p>Opsi -h host, -U user, -d database.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">SQL</div><pre><code>psql -h 10.0.0.5 -U analis -d tokodb</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Docker untuk belajar, paket resmi atau layanan terkelola untuk produksi.</li><li>Simpan data di volume.</li><li>Hafalkan \l, \c, \dt, \d, \du.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Perintah psql untuk melihat struktur tabel produk?</summary><p class="ok">Jawaban: \d produk</p><p>\d menampilkan kolom, indeks, dan constraint.</p></details>
+<a class="cta" href="/#pgdba-1-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pgdba/arsitektur-proses-dan-penyimpanan">Arsitektur proses dan penyimpanan</a></p><p>Berikutnya: <a href="/belajar/pgdba/database-schema-dan-tabel">Database, schema, dan tabel</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

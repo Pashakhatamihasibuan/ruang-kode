@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Uji performa dengan k6 dan tes di CI · QA Engineer · Ruang Kode</title>
+<meta name="description" content="Uji performa menjawab: berapa pengguna yang sanggup dilayani, seberapa cepat, dan di mana batasnya. Jenisnya: load (beban normal sampai puncak), stress…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/qa/uji-performa-dengan-k6-dan-tes-di-ci">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Uji performa dengan k6 dan tes di CI · QA Engineer · Ruang Kode"><meta property="og:description" content="Uji performa menjawab: berapa pengguna yang sanggup dilayani, seberapa cepat, dan di mana batasnya. Jenisnya: load (beban normal sampai puncak), stress…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/qa/uji-performa-dengan-k6-dan-tes-di-ci"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Uji performa dengan k6 dan tes di CI", "description": "Uji performa menjawab: berapa pengguna yang sanggup dilayani, seberapa cepat, dan di mana batasnya. Jenisnya: load (beban normal sampai puncak), stress…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/qa/uji-performa-dengan-k6-dan-tes-di-ci", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "QA Engineer", "url": "https://ruang-kode-nine.vercel.app/belajar/qa"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "QA Engineer", "item": "https://ruang-kode-nine.vercel.app/belajar/qa"}, {"@type": "ListItem", "position": 3, "name": "Uji performa dengan k6 dan tes di CI", "item": "https://ruang-kode-nine.vercel.app/belajar/qa/uji-performa-dengan-k6-dan-tes-di-ci"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/qa">QA Engineer</a> / Modul 5</nav>
+<div class="eyebrow">QA Engineer · Modul 5 · Konsep &amp; kode</div><h1>Uji performa dengan k6 dan tes di CI</h1><a class="cta" href="/#qa-5-3">Buka versi interaktif</a>
+<p><b>Uji performa</b> menjawab: berapa pengguna yang sanggup dilayani, seberapa cepat, dan di mana batasnya. Jenisnya: <b>load</b> (beban normal sampai puncak), <b>stress</b> (melewati batas sampai gagal), <b>spike</b> (lonjakan tiba-tiba, misalnya flash sale 12.12), dan <b>soak</b> (beban sedang berjam-jam untuk mendeteksi kebocoran memori).</p>
+<p><b>k6</b> menulis skenario dengan JavaScript dan menetapkan <b>threshold</b> yang membuat tes gagal jika, misalnya, persentil 95 waktu respons di atas 500 ms. Ukur persentil (p95, p99), bukan rata-rata saja.</p>
+<p>Hubungkan semuanya ke <b>CI</b> (GitHub Actions, GitLab CI): unit dan API test di setiap pull request, E2E smoke di setiap merge, regresi penuh dan performa terjadwal setiap malam. Simpan laporan dan trace sebagai artefak agar kegagalan mudah diselidiki.</p>
+<div class="tw"><table><caption>Jenis uji performa</caption><thead><tr><th>Jenis</th><th>Pola beban</th><th>Pertanyaan</th></tr></thead><tbody><tr><td>Load</td><td>Naik ke target, bertahan</td><td>Apakah memenuhi target di beban normal?</td></tr><tr><td>Stress</td><td>Terus naik</td><td>Di mana titik patahnya?</td></tr><tr><td>Spike</td><td>Lonjakan tiba-tiba</td><td>Tahan flash sale?</td></tr><tr><td>Soak</td><td>Sedang, berjam-jam</td><td>Ada kebocoran memori?</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>// flash-sale.js
+import http from &#x27;k6/http&#x27;;
+import { check, sleep } from &#x27;k6&#x27;;
+
+export const options = {
+  stages: [
+    { duration: &#x27;1m&#x27;, target: 200 },
+    { duration: &#x27;3m&#x27;, target: 200 },
+    { duration: &#x27;30s&#x27;, target: 1000 },  // lonjakan
+    { duration: &#x27;1m&#x27;, target: 0 },
+  ],
+  thresholds: {
+    http_req_duration: [&#x27;p(95)&lt;500&#x27;],
+    http_req_failed: [&#x27;rate&lt;0.01&#x27;],
+  },
+};
+
+export default function () {
+  const r = http.get(&#x27;https://staging.toko.id/api/produk?promo=1212&#x27;);
+  check(r, { &#x27;status 200&#x27;: (x) =&gt; x.status === 200 });
+  sleep(1);
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>$ k6 run flash-sale.js
+     ✓ status 200
+     checks.........................: 99.62% ✓ 151204  ✗ 575
+   ✗ http_req_duration..............: avg=212ms p(90)=388ms p(95)=641ms
+   ✓ http_req_failed................: 0.37%
+     vus_max........................: 1000
+ERRO[0391] thresholds on metrics &#x27;http_req_duration&#x27; have been crossed</code></pre>
+<h2>Poin penting</h2><ul><li>Load, stress, spike, soak.</li><li>Pakai threshold p95, bukan rata-rata.</li><li>CI: unit dan API tiap PR, E2E smoke tiap merge, regresi tiap malam.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Hasil k6 di atas gagal karena?</summary><p class="ok">Jawaban: p95 waktu respons 641 ms melebihi batas 500 ms</p><p>Threshold http_req_duration terlewati.</p></details>
+<a class="cta" href="/#qa-5-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/qa/tes-flaky-dan-strategi-data-uji">Tes flaky dan strategi data uji</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

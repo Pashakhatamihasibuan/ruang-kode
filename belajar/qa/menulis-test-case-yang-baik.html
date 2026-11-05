@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Menulis test case yang baik · QA Engineer · Ruang Kode</title>
+<meta name="description" content="Test case yang baik bisa dijalankan orang lain tanpa bertanya. Isinya: ID, judul yang jelas, prakondisi, data uji, langkah bernomor, dan hasil yang…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/qa/menulis-test-case-yang-baik">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Menulis test case yang baik · QA Engineer · Ruang Kode"><meta property="og:description" content="Test case yang baik bisa dijalankan orang lain tanpa bertanya. Isinya: ID, judul yang jelas, prakondisi, data uji, langkah bernomor, dan hasil yang…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/qa/menulis-test-case-yang-baik"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Menulis test case yang baik", "description": "Test case yang baik bisa dijalankan orang lain tanpa bertanya. Isinya: ID, judul yang jelas, prakondisi, data uji, langkah bernomor, dan hasil yang…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/qa/menulis-test-case-yang-baik", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "QA Engineer", "url": "https://ruang-kode-nine.vercel.app/belajar/qa"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "QA Engineer", "item": "https://ruang-kode-nine.vercel.app/belajar/qa"}, {"@type": "ListItem", "position": 3, "name": "Menulis test case yang baik", "item": "https://ruang-kode-nine.vercel.app/belajar/qa/menulis-test-case-yang-baik"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/qa">QA Engineer</a> / Modul 3</nav>
+<div class="eyebrow">QA Engineer · Modul 3 · Konsep &amp; kode</div><h1>Menulis test case yang baik</h1><a class="cta" href="/#qa-3-1">Buka versi interaktif</a>
+<p>Test case yang baik bisa dijalankan orang lain tanpa bertanya. Isinya: <b>ID</b>, <b>judul</b> yang jelas, <b>prakondisi</b>, <b>data uji</b>, <b>langkah</b> bernomor, dan <b>hasil yang diharapkan</b> yang bisa diperiksa. Satu test case menguji satu hal.</p>
+<p>Hindari hasil harapan yang kabur seperti "berjalan dengan baik". Tulis "muncul pesan 'Pembayaran berhasil' dan status pesanan menjadi Dibayar".</p>
+<p>Kelompokkan test case dalam <b>suite</b> (misalnya Smoke, Regresi Checkout). <b>Smoke test</b> adalah beberapa tes paling penting yang dijalankan setiap build untuk memastikan aplikasi layak diuji lebih lanjut.</p>
+<div class="lbl">CONTOH</div><pre><code>ID           : TC-CHK-014
+Judul        : Bayar dengan QRIS berhasil
+Prakondisi   : Login sebagai rina@contoh.id, keranjang berisi 1 Kopi Gayo (Rp85.000)
+Data uji     : Alamat: Jl. Gatot Subroto 12, Medan
+Langkah      :
+  1. Buka Keranjang, tekan &#x27;Checkout&#x27;
+  2. Pilih alamat, pilih kurir &#x27;Reguler&#x27;
+  3. Pilih metode &#x27;QRIS&#x27;, tekan &#x27;Bayar&#x27;
+  4. Simulasikan pembayaran berhasil di sandbox
+Hasil harapan:
+  - Muncul halaman &#x27;Pembayaran berhasil&#x27;
+  - Status pesanan &#x27;Dibayar&#x27; di menu Pesanan Saya
+  - Stok Kopi Gayo berkurang 1</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis satu test case untuk fitur "Lupa kata sandi" dengan format ID, judul, prakondisi, langkah, hasil harapan.</p><details><summary>Petunjuk</summary><p>Sertakan email yang terdaftar dan isi pesan yang muncul.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">CONTOH</div><pre><code>ID: TC-AUTH-021
+Judul: Kirim tautan reset ke email terdaftar
+Prakondisi: Akun rina@contoh.id terdaftar
+Langkah:
+  1. Buka halaman Masuk, tekan &#x27;Lupa kata sandi&#x27;
+  2. Isi rina@contoh.id, tekan &#x27;Kirim&#x27;
+Hasil harapan:
+  - Muncul pesan &#x27;Jika email terdaftar, tautan reset sudah dikirim&#x27;
+  - Email reset masuk dalam 1 menit, tautan berlaku 30 menit</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>ID, judul, prakondisi, data, langkah, hasil harapan.</li><li>Hasil harapan harus bisa diperiksa.</li><li>Smoke test = tes paling penting setiap build.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Hasil harapan yang paling baik?</summary><p class="ok">Jawaban: Status pesanan menjadi &#x27;Dibayar&#x27;</p><p>Spesifik dan bisa diperiksa.</p></details>
+<a class="cta" href="/#qa-3-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/qa/state-transition-testing">State transition testing</a></p><p>Berikutnya: <a href="/belajar/qa/laporan-bug-severity-dan-priority">Laporan bug, severity, dan priority</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

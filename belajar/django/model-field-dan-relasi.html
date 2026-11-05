@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Model, field, dan relasi · Django · Ruang Kode</title>
+<meta name="description" content="Model adalah kelas Python yang mewakili tabel. Setiap atribut adalah field (kolom): CharField, TextField, IntegerField, DecimalField untuk uang,…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/django/model-field-dan-relasi">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Model, field, dan relasi · Django · Ruang Kode"><meta property="og:description" content="Model adalah kelas Python yang mewakili tabel. Setiap atribut adalah field (kolom): CharField, TextField, IntegerField, DecimalField untuk uang,…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/django/model-field-dan-relasi"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Model, field, dan relasi", "description": "Model adalah kelas Python yang mewakili tabel. Setiap atribut adalah field (kolom): CharField, TextField, IntegerField, DecimalField untuk uang,…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/django/model-field-dan-relasi", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Django", "url": "https://ruang-kode-nine.vercel.app/belajar/django"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Django", "item": "https://ruang-kode-nine.vercel.app/belajar/django"}, {"@type": "ListItem", "position": 3, "name": "Model, field, dan relasi", "item": "https://ruang-kode-nine.vercel.app/belajar/django/model-field-dan-relasi"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/django">Django</a> / Modul 2</nav>
+<div class="eyebrow">Django · Modul 2 · Konsep &amp; kode</div><h1>Model, field, dan relasi</h1><a class="cta" href="/#django-2-1">Buka versi interaktif</a>
+<p><b>Model</b> adalah kelas Python yang mewakili tabel. Setiap atribut adalah <b>field</b> (kolom): <code>CharField</code>, <code>TextField</code>, <code>IntegerField</code>, <code>DecimalField</code> untuk uang, <code>BooleanField</code>, <code>DateTimeField</code>, <code>SlugField</code>, <code>ImageField</code>.</p>
+<p>Relasi: <code>ForeignKey</code> (banyak ke satu: banyak produk dalam satu kategori), <code>ManyToManyField</code> (produk punya banyak tag), dan <code>OneToOneField</code> (satu profil untuk satu user). Parameter <code>on_delete</code> wajib: <code>CASCADE</code>, <code>PROTECT</code>, atau <code>SET_NULL</code>.</p>
+<p>Tambahkan <code>__str__</code> agar objek tampil rapi di admin, dan kelas <code>Meta</code> untuk urutan bawaan, nama tampilan, serta indeks.</p>
+<div class="lbl">PYTHON</div><pre><code>from django.db import models
+
+class Kategori(models.Model):
+    nama = models.CharField(max_length=60, unique=True)
+    def __str__(self):
+        return self.nama
+
+class Produk(models.Model):
+    kategori = models.ForeignKey(Kategori, on_delete=models.PROTECT, related_name=&#x27;produk&#x27;)
+    nama = models.CharField(max_length=120)
+    slug = models.SlugField(unique=True)
+    harga = models.DecimalField(max_digits=12, decimal_places=2)
+    stok = models.PositiveIntegerField(default=0)
+    aktif = models.BooleanField(default=True)
+    dibuat = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = [&#x27;-dibuat&#x27;]
+        verbose_name_plural = &#x27;produk&#x27;
+
+    def __str__(self):
+        return f&#x27;{self.nama} (Rp{self.harga:,.0f})&#x27;</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat model <code>Ulasan</code> yang terhubung ke Produk, berisi nama pengulas, rating 1 sampai 5, komentar, dan waktu dibuat.</p><details><summary>Petunjuk</summary><p>ForeignKey ke Produk, PositiveSmallIntegerField dengan validator.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>from django.core.validators import MinValueValidator, MaxValueValidator
+
+class Ulasan(models.Model):
+    produk = models.ForeignKey(Produk, on_delete=models.CASCADE, related_name=&#x27;ulasan&#x27;)
+    pengulas = models.CharField(max_length=80)
+    rating = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    komentar = models.TextField(blank=True)
+    dibuat = models.DateTimeField(auto_now_add=True)</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Model = tabel, field = kolom.</li><li>ForeignKey, ManyToMany, OneToOne dengan on_delete.</li><li>Uang pakai DecimalField.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>on_delete yang mencegah kategori dihapus selama masih punya produk?</summary><p class="ok">Jawaban: PROTECT</p><p>PROTECT melempar ProtectedError.</p></details>
+<a class="cta" href="/#django-2-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/django/settings-penting-dan-variabel-lingkungan">Settings penting dan variabel lingkungan</a></p><p>Berikutnya: <a href="/belajar/django/migrasi-dan-queryset">Migrasi dan QuerySet</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

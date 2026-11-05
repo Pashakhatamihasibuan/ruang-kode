@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Array dan list dinamis · Struktur Data &amp; Algoritma · Ruang Kode</title>
+<meta name="description" content="Array menyimpan elemen berurutan di memori yang bersebelahan, jadi akses berdasarkan indeks itu O(1). List Python adalah array dinamis: ukurannya…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsa/array-dan-list-dinamis">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Array dan list dinamis · Struktur Data &amp; Algoritma · Ruang Kode"><meta property="og:description" content="Array menyimpan elemen berurutan di memori yang bersebelahan, jadi akses berdasarkan indeks itu O(1). List Python adalah array dinamis: ukurannya…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsa/array-dan-list-dinamis"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Array dan list dinamis", "description": "Array menyimpan elemen berurutan di memori yang bersebelahan, jadi akses berdasarkan indeks itu O(1). List Python adalah array dinamis: ukurannya…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsa/array-dan-list-dinamis", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Struktur Data & Algoritma", "url": "https://ruang-kode-nine.vercel.app/belajar/dsa"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Struktur Data & Algoritma", "item": "https://ruang-kode-nine.vercel.app/belajar/dsa"}, {"@type": "ListItem", "position": 3, "name": "Array dan list dinamis", "item": "https://ruang-kode-nine.vercel.app/belajar/dsa/array-dan-list-dinamis"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsa">Struktur Data &amp; Algoritma</a> / Modul 2</nav>
+<div class="eyebrow">Struktur Data &amp; Algoritma · Modul 2 · Konsep &amp; kode</div><h1>Array dan list dinamis</h1><a class="cta" href="/#dsa-2-1">Buka versi interaktif</a>
+<p><b>Array</b> menyimpan elemen berurutan di memori yang bersebelahan, jadi akses berdasarkan indeks itu O(1). <b>List</b> Python adalah array dinamis: ukurannya otomatis membesar saat penuh dengan menyalin isinya ke tempat yang lebih besar.</p>
+<p>Biaya operasi: <code>append</code> di akhir rata-rata O(1); <code>insert(0, x)</code> atau <code>pop(0)</code> di awal O(n) karena semua elemen harus digeser; mencari nilai dengan <code>in</code> O(n).</p>
+<p>Matriks (array 2 dimensi) adalah list berisi list. Hati-hati membuat matriks dengan <code>[[0]*3]*3</code>: ketiga baris menunjuk list yang sama. Pakai list comprehension <code>[[0]*3 for _ in range(3)]</code>.</p>
+<div class="lbl">PYTHON</div><pre><code>nilai = [80, 75, 92]
+nilai.append(88)        # O(1)
+nilai.insert(0, 60)     # O(n): semua bergeser
+print(nilai, nilai[2])
+
+salah = [[0] * 3] * 3
+salah[0][0] = 9
+print(salah)
+
+benar = [[0] * 3 for _ in range(3)]
+benar[0][0] = 9
+print(benar)</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>[60, 80, 75, 92, 88] 75
+[[9, 0, 0], [9, 0, 0], [9, 0, 0]]
+[[9, 0, 0], [0, 0, 0], [0, 0, 0]]</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Putar list <code>[1, 2, 3, 4, 5]</code> ke kanan 2 langkah sehingga menjadi <code>[4, 5, 1, 2, 3]</code>.</p><details><summary>Petunjuk</summary><p>Pakai slicing: k elemen terakhir di depan.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>data = [1, 2, 3, 4, 5]
+k = 2
+print(data[-k:] + data[:-k])</code></pre><div class="lbl">KELUARAN</div><pre><code>[4, 5, 1, 2, 3]</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Akses indeks O(1), sisip atau hapus di awal O(n).</li><li>append rata-rata O(1).</li><li>Buat matriks dengan list comprehension.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Operasi list mana yang O(n)?</summary><p class="ok">Jawaban: pop(0)</p><p>Semua elemen setelahnya digeser.</p></details>
+<a class="cta" href="/#dsa-2-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsa/kompleksitas-waktu-dan-ruang">Kompleksitas waktu dan ruang</a></p><p>Berikutnya: <a href="/belajar/dsa/two-pointers">Two pointers</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

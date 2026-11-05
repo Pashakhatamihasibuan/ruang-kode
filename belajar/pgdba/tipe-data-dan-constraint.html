@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tipe data dan constraint · PostgreSQL DBA · Ruang Kode</title>
+<meta name="description" content="Pilih tipe yang tepat: integer atau bigint untuk angka bulat, numeric(12,2) untuk uang (jangan float, karena tidak presisi), text untuk teks (sama…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/pgdba/tipe-data-dan-constraint">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Tipe data dan constraint · PostgreSQL DBA · Ruang Kode"><meta property="og:description" content="Pilih tipe yang tepat: integer atau bigint untuk angka bulat, numeric(12,2) untuk uang (jangan float, karena tidak presisi), text untuk teks (sama…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/pgdba/tipe-data-dan-constraint"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Tipe data dan constraint", "description": "Pilih tipe yang tepat: integer atau bigint untuk angka bulat, numeric(12,2) untuk uang (jangan float, karena tidak presisi), text untuk teks (sama…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/pgdba/tipe-data-dan-constraint", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "PostgreSQL DBA", "url": "https://ruang-kode-nine.vercel.app/belajar/pgdba"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "PostgreSQL DBA", "item": "https://ruang-kode-nine.vercel.app/belajar/pgdba"}, {"@type": "ListItem", "position": 3, "name": "Tipe data dan constraint", "item": "https://ruang-kode-nine.vercel.app/belajar/pgdba/tipe-data-dan-constraint"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/pgdba">PostgreSQL DBA</a> / Modul 2</nav>
+<div class="eyebrow">PostgreSQL DBA · Modul 2 · Konsep &amp; kode</div><h1>Tipe data dan constraint</h1><a class="cta" href="/#pgdba-2-2">Buka versi interaktif</a>
+<p>Pilih tipe yang tepat: <code>integer</code> atau <code>bigint</code> untuk angka bulat, <code>numeric(12,2)</code> untuk uang (jangan <code>float</code>, karena tidak presisi), <code>text</code> untuk teks (sama cepatnya dengan varchar), <code>timestamptz</code> untuk waktu (selalu simpan zona waktu), <code>boolean</code>, <code>uuid</code>, <code>jsonb</code>, dan array seperti <code>text[]</code>.</p>
+<p><b>Constraint</b> menjaga data tetap benar di level database: <code>NOT NULL</code>, <code>UNIQUE</code>, <code>PRIMARY KEY</code>, <code>FOREIGN KEY</code> (dengan <code>ON DELETE CASCADE</code> atau <code>RESTRICT</code>), <code>CHECK</code> (misalnya harga harus positif), dan <code>EXCLUDE</code> (misalnya jadwal ruangan tidak boleh tumpang tindih).</p>
+<p>Aturan bisnis di aplikasi bisa dilewati oleh skrip atau integrasi lain; constraint di database tidak bisa. Itu sebabnya DBA menyukai constraint.</p>
+<div class="tw"><table><caption>Pilihan tipe data</caption><thead><tr><th>Kebutuhan</th><th>Tipe</th><th>Hindari</th></tr></thead><tbody><tr><td>Uang</td><td>numeric(12,2)</td><td>float, real, money</td></tr><tr><td>Waktu kejadian</td><td>timestamptz</td><td>timestamp tanpa zona</td></tr><tr><td>Teks</td><td>text</td><td>char(n)</td></tr><tr><td>ID publik</td><td>uuid</td><td>angka berurutan yang mudah ditebak</td></tr><tr><td>Data semi-terstruktur</td><td>jsonb</td><td>json (lebih lambat di-query)</td></tr></tbody></table></div>
+<div class="lbl">SQL</div><pre><code>CREATE TABLE produk (
+  id     bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  nama   text NOT NULL,
+  harga  numeric(12,2) NOT NULL CHECK (harga &gt; 0),
+  tag    text[] DEFAULT &#x27;{}&#x27;
+);
+
+CREATE TABLE pesanan (
+  id         bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  produk_id  bigint NOT NULL REFERENCES produk(id) ON DELETE RESTRICT,
+  jumlah     integer NOT NULL CHECK (jumlah BETWEEN 1 AND 100)
+);
+
+INSERT INTO produk (nama, harga) VALUES (&#x27;Kopi Gayo&#x27;, -5000);</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>CREATE TABLE
+CREATE TABLE
+ERROR:  new row for relation &quot;produk&quot; violates check constraint &quot;produk_harga_check&quot;
+DETAIL:  Failing row contains (1, Kopi Gayo, -5000.00, {}).</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tambahkan constraint agar email pelanggan wajib mengandung tanda @.</p><details><summary>Petunjuk</summary><p>ALTER TABLE ... ADD CONSTRAINT ... CHECK (email LIKE ...).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">SQL</div><pre><code>ALTER TABLE penjualan.pelanggan
+  ADD CONSTRAINT email_valid CHECK (email LIKE &#x27;%@%&#x27;);</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Uang pakai numeric, waktu pakai timestamptz.</li><li>Constraint menjaga data di level paling bawah.</li><li>CHECK, FOREIGN KEY, UNIQUE, EXCLUDE.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Tipe yang tepat untuk harga Rp15.500,50?</summary><p class="ok">Jawaban: numeric(12,2)</p><p>Presisi desimal tepat.</p></details><details><summary>Apa yang terjadi jika menghapus produk yang masih punya pesanan dengan ON DELETE RESTRICT?</summary><p class="ok">Jawaban: Penghapusan ditolak</p><p>RESTRICT mencegah data yatim.</p></details>
+<a class="cta" href="/#pgdba-2-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/pgdba/database-schema-dan-tabel">Database, schema, dan tabel</a></p><p>Berikutnya: <a href="/belajar/pgdba/jsonb-dan-tipe-lanjutan">JSONB dan tipe lanjutan</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

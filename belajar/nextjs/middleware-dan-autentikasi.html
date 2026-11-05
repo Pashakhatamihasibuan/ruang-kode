@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Middleware dan autentikasi · Next.js · Ruang Kode</title>
+<meta name="description" content="Middleware (middleware.ts di akar proyek) berjalan sebelum request mencapai halaman. Cocok untuk mengalihkan pengguna yang belum login, mengatur bahasa,…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/nextjs/middleware-dan-autentikasi">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Middleware dan autentikasi · Next.js · Ruang Kode"><meta property="og:description" content="Middleware (middleware.ts di akar proyek) berjalan sebelum request mencapai halaman. Cocok untuk mengalihkan pengguna yang belum login, mengatur bahasa,…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/nextjs/middleware-dan-autentikasi"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Middleware dan autentikasi", "description": "Middleware (middleware.ts di akar proyek) berjalan sebelum request mencapai halaman. Cocok untuk mengalihkan pengguna yang belum login, mengatur bahasa,…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/nextjs/middleware-dan-autentikasi", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Next.js", "url": "https://ruang-kode-nine.vercel.app/belajar/nextjs"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Next.js", "item": "https://ruang-kode-nine.vercel.app/belajar/nextjs"}, {"@type": "ListItem", "position": 3, "name": "Middleware dan autentikasi", "item": "https://ruang-kode-nine.vercel.app/belajar/nextjs/middleware-dan-autentikasi"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/nextjs">Next.js</a> / Modul 4</nav>
+<div class="eyebrow">Next.js · Modul 4 · Konsep &amp; kode</div><h1>Middleware dan autentikasi</h1><a class="cta" href="/#nextjs-4-2">Buka versi interaktif</a>
+<p><b>Middleware</b> (<code>middleware.ts</code> di akar proyek) berjalan sebelum request mencapai halaman. Cocok untuk mengalihkan pengguna yang belum login, mengatur bahasa, atau A/B test. Batasi dengan <code>matcher</code> agar tidak berjalan di setiap file statis.</p>
+<p>Untuk login, pustaka populer adalah <b>Auth.js</b> (NextAuth) dengan penyedia Google, GitHub, atau email, serta layanan seperti Clerk dan Supabase Auth. Sesi disimpan di cookie yang aman (httpOnly).</p>
+<p>Middleware hanya lapisan pertama. Tetap periksa sesi di Server Component, Server Action, dan Route Handler yang mengakses data pribadi.</p>
+<div class="lbl">TYPESCRIPT</div><pre><code>// middleware.ts
+import { NextResponse, type NextRequest } from &#x27;next/server&#x27;;
+
+export function middleware(req: NextRequest) {
+  const sesi = req.cookies.get(&#x27;sesi&#x27;);
+  if (!sesi) {
+    const url = new URL(&#x27;/masuk&#x27;, req.url);
+    url.searchParams.set(&#x27;kembali&#x27;, req.nextUrl.pathname);
+    return NextResponse.redirect(url);
+  }
+  return NextResponse.next();
+}
+
+export const config = { matcher: [&#x27;/akun/:path*&#x27;, &#x27;/pesanan/:path*&#x27;] };
+
+// app/pesanan/page.tsx
+import { auth } from &#x27;@/auth&#x27;;
+export default async function Pesanan() {
+  const sesi = await auth();
+  if (!sesi) redirect(&#x27;/masuk&#x27;);
+  const daftar = await db.pesanan.findMany({ where: { userId: sesi.user.id } });
+  // ...
+}</code></pre>
+<h2>Poin penting</h2><ul><li>Middleware berjalan sebelum halaman.</li><li>matcher membatasi rute.</li><li>Tetap cek sesi di server untuk data pribadi.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Cukupkah melindungi data hanya dengan middleware?</summary><p class="ok">Jawaban: Tidak, periksa juga di Server Component dan Action</p><p>Pertahanan berlapis.</p></details>
+<a class="cta" href="/#nextjs-4-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/nextjs/optimasi-gambar-dan-font">Optimasi gambar dan font</a></p><p>Berikutnya: <a href="/belajar/nextjs/variabel-lingkungan-dan-deployment">Variabel lingkungan dan deployment</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vue Router · Vue.js · Ruang Kode</title>
+<meta name="description" content="Vue Router adalah router resmi untuk aplikasi satu halaman (SPA). Daftarkan rute berisi path dan komponen, lalu tampilkan halaman aktif dengan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/vue/vue-router">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Vue Router · Vue.js · Ruang Kode"><meta property="og:description" content="Vue Router adalah router resmi untuk aplikasi satu halaman (SPA). Daftarkan rute berisi path dan komponen, lalu tampilkan halaman aktif dengan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/vue/vue-router"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Vue Router", "description": "Vue Router adalah router resmi untuk aplikasi satu halaman (SPA). Daftarkan rute berisi path dan komponen, lalu tampilkan halaman aktif dengan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/vue/vue-router", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Vue.js", "url": "https://ruang-kode-nine.vercel.app/belajar/vue"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Vue.js", "item": "https://ruang-kode-nine.vercel.app/belajar/vue"}, {"@type": "ListItem", "position": 3, "name": "Vue Router", "item": "https://ruang-kode-nine.vercel.app/belajar/vue/vue-router"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/vue">Vue.js</a> / Modul 3</nav>
+<div class="eyebrow">Vue.js · Modul 3 · Konsep &amp; kode</div><h1>Vue Router</h1><a class="cta" href="/#vue-3-1">Buka versi interaktif</a>
+<p><b>Vue Router</b> adalah router resmi untuk aplikasi satu halaman (SPA). Daftarkan rute berisi <code>path</code> dan komponen, lalu tampilkan halaman aktif dengan <code>&lt;RouterView /&gt;</code> dan pindah halaman dengan <code>&lt;RouterLink to="/produk"&gt;</code>.</p>
+<p>Route dinamis memakai titik dua: <code>/produk/:slug</code>. Baca parameternya dengan <code>useRoute().params.slug</code>; navigasi lewat kode dengan <code>useRouter().push()</code>. Muat halaman secara malas dengan <code>component: () =&gt; import('./views/Detail.vue')</code> agar bundel awal kecil.</p>
+<p><b>Navigation guard</b> seperti <code>router.beforeEach</code> memeriksa sebelum pindah halaman, misalnya mengalihkan ke halaman masuk jika rute butuh login (<code>meta: { butuhLogin: true }</code>).</p>
+<div class="lbl">TYPESCRIPT</div><pre><code>// src/router/index.ts
+import { createRouter, createWebHistory } from &#x27;vue-router&#x27;
+import Beranda from &#x27;@/views/Beranda.vue&#x27;
+import { useAuth } from &#x27;@/stores/auth&#x27;
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes: [
+    { path: &#x27;/&#x27;, component: Beranda },
+    { path: &#x27;/produk/:slug&#x27;, component: () =&gt; import(&#x27;@/views/DetailProduk.vue&#x27;) },
+    { path: &#x27;/pesanan&#x27;, component: () =&gt; import(&#x27;@/views/Pesanan.vue&#x27;), meta: { butuhLogin: true } },
+    { path: &#x27;/:pathMatch(.*)*&#x27;, component: () =&gt; import(&#x27;@/views/TidakDitemukan.vue&#x27;) },
+  ],
+})
+
+router.beforeEach((to) =&gt; {
+  const auth = useAuth()
+  if (to.meta.butuhLogin &amp;&amp; !auth.masuk) {
+    return { path: &#x27;/masuk&#x27;, query: { kembali: to.fullPath } }
+  }
+})
+
+export default router</code></pre>
+<h2>Poin penting</h2><ul><li>RouterView dan RouterLink.</li><li>:slug untuk rute dinamis, useRoute untuk membacanya.</li><li>beforeEach untuk melindungi rute.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Cara membaca slug di komponen DetailProduk?</summary><p class="ok">Jawaban: useRoute().params.slug</p><p>useRoute memberi rute aktif.</p></details>
+<a class="cta" href="/#vue-3-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/vue/lifecycle-hooks-dan-composable">Lifecycle hooks dan composable</a></p><p>Berikutnya: <a href="/belajar/vue/pinia-untuk-state-bersama">Pinia untuk state bersama</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

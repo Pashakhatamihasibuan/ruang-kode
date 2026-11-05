@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Algoritma, struktur data, dan kenapa penting · Struktur Data &amp; Algoritma · Ruang Kode</title>
+<meta name="description" content="Algoritma adalah langkah-langkah pasti untuk menyelesaikan masalah. Struktur data adalah cara menyimpan data agar langkah-langkah itu efisien. Keduanya…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsa/algoritma-struktur-data-dan-kenapa-penting">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Algoritma, struktur data, dan kenapa penting · Struktur Data &amp; Algoritma · Ruang Kode"><meta property="og:description" content="Algoritma adalah langkah-langkah pasti untuk menyelesaikan masalah. Struktur data adalah cara menyimpan data agar langkah-langkah itu efisien. Keduanya…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsa/algoritma-struktur-data-dan-kenapa-penting"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Algoritma, struktur data, dan kenapa penting", "description": "Algoritma adalah langkah-langkah pasti untuk menyelesaikan masalah. Struktur data adalah cara menyimpan data agar langkah-langkah itu efisien. Keduanya…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsa/algoritma-struktur-data-dan-kenapa-penting", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Struktur Data & Algoritma", "url": "https://ruang-kode-nine.vercel.app/belajar/dsa"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Struktur Data & Algoritma", "item": "https://ruang-kode-nine.vercel.app/belajar/dsa"}, {"@type": "ListItem", "position": 3, "name": "Algoritma, struktur data, dan kenapa penting", "item": "https://ruang-kode-nine.vercel.app/belajar/dsa/algoritma-struktur-data-dan-kenapa-penting"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsa">Struktur Data &amp; Algoritma</a> / Modul 1</nav>
+<div class="eyebrow">Struktur Data &amp; Algoritma · Modul 1 · Konsep &amp; kode</div><h1>Algoritma, struktur data, dan kenapa penting</h1><a class="cta" href="/#dsa-1-1">Buka versi interaktif</a>
+<p><b>Algoritma</b> adalah langkah-langkah pasti untuk menyelesaikan masalah. <b>Struktur data</b> adalah cara menyimpan data agar langkah-langkah itu efisien. Keduanya selalu berpasangan: algoritma pencarian cepat butuh data yang tersusun dengan cara tertentu.</p>
+<p>Contoh sehari-hari: mencari nama di daftar absen yang <b>acak</b> berarti memeriksa satu per satu. Jika daftar <b>terurut</b>, kamu bisa membuka bagian tengah lalu membuang separuh daftar setiap langkah. Data yang sama, struktur berbeda, kecepatan sangat berbeda.</p>
+<p>Di dunia kerja, struktur data muncul di mana-mana: antrean pesanan ojek online (queue), riwayat tombol Undo (stack), indeks database (tree), rute peta (graph), dan cache (hash table). Wawancara teknis di perusahaan teknologi juga hampir selalu menguji topik ini.</p>
+<div class="lbl">PYTHON</div><pre><code>absen = [&#x27;Rina&#x27;, &#x27;Budi&#x27;, &#x27;Sari&#x27;, &#x27;Andi&#x27;, &#x27;Dewi&#x27;, &#x27;Tono&#x27;]
+
+# cara 1: periksa satu per satu (linear search)
+langkah = 0
+for nama in absen:
+    langkah += 1
+    if nama == &#x27;Tono&#x27;:
+        break
+print(&#x27;Linear search:&#x27;, langkah, &#x27;langkah&#x27;)
+
+# cara 2: set (hash) langsung tahu ada atau tidak
+himpunan = set(absen)
+print(&#x27;Ada Tono?&#x27;, &#x27;Tono&#x27; in himpunan)</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Linear search: 6 langkah
+Ada Tono? True</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Hitung berapa langkah linear search untuk menemukan "Sari" di daftar absen di atas.</p><details><summary>Petunjuk</summary><p>Tambah penghitung setiap memeriksa satu nama, berhenti saat ketemu.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>absen = [&#x27;Rina&#x27;, &#x27;Budi&#x27;, &#x27;Sari&#x27;, &#x27;Andi&#x27;, &#x27;Dewi&#x27;, &#x27;Tono&#x27;]
+langkah = 0
+for nama in absen:
+    langkah += 1
+    if nama == &#x27;Sari&#x27;:
+        break
+print(langkah)</code></pre><div class="lbl">KELUARAN</div><pre><code>3</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Algoritma = langkah, struktur data = cara menyimpan.</li><li>Struktur yang tepat membuat algoritma jauh lebih cepat.</li><li>Stack, queue, tree, graph, dan hash table dipakai setiap hari di aplikasi nyata.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Fitur Undo di editor teks paling cocok memakai struktur apa?</summary><p class="ok">Jawaban: Stack</p><p>Aksi terakhir dibatalkan duluan: LIFO.</p></details><details><summary>Kenapa mencari di daftar terurut bisa lebih cepat?</summary><p class="ok">Jawaban: Kita bisa membuang separuh data tiap langkah</p><p>Itulah ide binary search.</p></details>
+<a class="cta" href="/#dsa-1-1">Kerjakan latihannya di aplikasi</a><p>Berikutnya: <a href="/belajar/dsa/notasi-big-o-o-1-o-n-o-n2-o-log-n">Notasi Big-O: O(1), O(n), O(n²), O(log n)</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

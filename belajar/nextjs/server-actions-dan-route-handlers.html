@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Server Actions dan Route Handlers · Next.js · Ruang Kode</title>
+<meta name="description" content="Server Action adalah fungsi async bertanda &#x27;use server&#x27; yang bisa dipanggil langsung dari form. Tidak perlu membuat endpoint API sendiri: form mengirim…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/nextjs/server-actions-dan-route-handlers">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Server Actions dan Route Handlers · Next.js · Ruang Kode"><meta property="og:description" content="Server Action adalah fungsi async bertanda &#x27;use server&#x27; yang bisa dipanggil langsung dari form. Tidak perlu membuat endpoint API sendiri: form mengirim…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/nextjs/server-actions-dan-route-handlers"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Server Actions dan Route Handlers", "description": "Server Action adalah fungsi async bertanda 'use server' yang bisa dipanggil langsung dari form. Tidak perlu membuat endpoint API sendiri: form mengirim…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/nextjs/server-actions-dan-route-handlers", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Next.js", "url": "https://ruang-kode-nine.vercel.app/belajar/nextjs"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Next.js", "item": "https://ruang-kode-nine.vercel.app/belajar/nextjs"}, {"@type": "ListItem", "position": 3, "name": "Server Actions dan Route Handlers", "item": "https://ruang-kode-nine.vercel.app/belajar/nextjs/server-actions-dan-route-handlers"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/nextjs">Next.js</a> / Modul 3</nav>
+<div class="eyebrow">Next.js · Modul 3 · Konsep &amp; kode</div><h1>Server Actions dan Route Handlers</h1><a class="cta" href="/#nextjs-3-3">Buka versi interaktif</a>
+<p><b>Server Action</b> adalah fungsi <code>async</code> bertanda <code>'use server'</code> yang bisa dipanggil langsung dari form. Tidak perlu membuat endpoint API sendiri: form mengirim data, fungsi berjalan di server, lalu panggil <code>revalidatePath</code> atau <code>redirect</code>. Form tetap bekerja walau JavaScript belum termuat.</p>
+<p>Server Action adalah endpoint publik: <b>selalu validasi input</b> (misalnya dengan Zod) dan <b>periksa izin</b> pengguna di dalamnya. Di sisi client, <code>useActionState</code> menampilkan pesan error dan status menunggu.</p>
+<p><b>Route Handler</b> (<code>app/api/.../route.ts</code>) dipakai jika butuh endpoint HTTP biasa: webhook payment gateway, API untuk aplikasi mobile, atau integrasi pihak ketiga.</p>
+<div class="lbl">TYPESCRIPT</div><pre><code>// app/ulasan/actions.ts
+&#x27;use server&#x27;;
+import { z } from &#x27;zod&#x27;;
+import { revalidatePath } from &#x27;next/cache&#x27;;
+
+const Skema = z.object({
+  slug: z.string(),
+  rating: z.coerce.number().int().min(1).max(5),
+  komentar: z.string().min(5, &#x27;Komentar minimal 5 karakter&#x27;),
+});
+
+export async function kirimUlasan(_: unknown, form: FormData) {
+  const hasil = Skema.safeParse(Object.fromEntries(form));
+  if (!hasil.success) return { error: hasil.error.issues[0].message };
+  await db.ulasan.create({ data: hasil.data });
+  revalidatePath(`/produk/${hasil.data.slug}`);
+  return { error: null };
+}
+
+// app/api/webhook/pembayaran/route.ts
+export async function POST(req: Request) {
+  const body = await req.json();
+  // verifikasi tanda tangan webhook dulu!
+  await tandaiLunas(body.order_id);
+  return Response.json({ ok: true });
+}</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat form di Client Component yang memakai <code>useActionState</code> dengan action <code>kirimUlasan</code> dan menampilkan pesan error.</p><details><summary>Petunjuk</summary><p>useActionState(action, stateAwal) mengembalikan [state, formAction, pending].</p></details><details><summary>Lihat jawaban</summary><div class="lbl">KODE</div><pre><code>&#x27;use client&#x27;;
+import { useActionState } from &#x27;react&#x27;;
+import { kirimUlasan } from &#x27;./actions&#x27;;
+
+export default function FormUlasan({ slug }: { slug: string }) {
+  const [state, action, pending] = useActionState(kirimUlasan, { error: null });
+  return (
+    &lt;form action={action}&gt;
+      &lt;input type=&quot;hidden&quot; name=&quot;slug&quot; value={slug} /&gt;
+      &lt;input name=&quot;rating&quot; type=&quot;number&quot; min={1} max={5} required /&gt;
+      &lt;textarea name=&quot;komentar&quot; /&gt;
+      {state.error &amp;&amp; &lt;p role=&quot;alert&quot;&gt;{state.error}&lt;/p&gt;}
+      &lt;button disabled={pending}&gt;{pending ? &#x27;Mengirim…&#x27; : &#x27;Kirim ulasan&#x27;}&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>'use server' untuk fungsi yang dipanggil dari form.</li><li>Validasi input dan cek izin di setiap Server Action.</li><li>Route Handler untuk webhook dan API publik.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa Server Action tetap harus memvalidasi input?</summary><p class="ok">Jawaban: Siapa pun bisa memanggilnya seperti endpoint publik</p><p>Jangan percaya data dari client.</p></details>
+<a class="cta" href="/#nextjs-3-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/nextjs/streaming-dengan-loading-dan-suspense">Streaming dengan loading dan Suspense</a></p><p>Berikutnya: <a href="/belajar/nextjs/optimasi-gambar-dan-font">Optimasi gambar dan font</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

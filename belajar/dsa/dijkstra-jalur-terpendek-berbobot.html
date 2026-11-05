@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dijkstra: jalur terpendek berbobot · Struktur Data &amp; Algoritma · Ruang Kode</title>
+<meta name="description" content="Jika sisi punya bobot (jarak, waktu, ongkos), BFS tidak cukup. Algoritma Dijkstra selalu memproses simpul dengan jarak sementara terkecil memakai…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsa/dijkstra-jalur-terpendek-berbobot">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Dijkstra: jalur terpendek berbobot · Struktur Data &amp; Algoritma · Ruang Kode"><meta property="og:description" content="Jika sisi punya bobot (jarak, waktu, ongkos), BFS tidak cukup. Algoritma Dijkstra selalu memproses simpul dengan jarak sementara terkecil memakai…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsa/dijkstra-jalur-terpendek-berbobot"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Dijkstra: jalur terpendek berbobot", "description": "Jika sisi punya bobot (jarak, waktu, ongkos), BFS tidak cukup. Algoritma Dijkstra selalu memproses simpul dengan jarak sementara terkecil memakai…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsa/dijkstra-jalur-terpendek-berbobot", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Struktur Data & Algoritma", "url": "https://ruang-kode-nine.vercel.app/belajar/dsa"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Struktur Data & Algoritma", "item": "https://ruang-kode-nine.vercel.app/belajar/dsa"}, {"@type": "ListItem", "position": 3, "name": "Dijkstra: jalur terpendek berbobot", "item": "https://ruang-kode-nine.vercel.app/belajar/dsa/dijkstra-jalur-terpendek-berbobot"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsa">Struktur Data &amp; Algoritma</a> / Modul 7</nav>
+<div class="eyebrow">Struktur Data &amp; Algoritma · Modul 7 · Konsep &amp; kode</div><h1>Dijkstra: jalur terpendek berbobot</h1><a class="cta" href="/#dsa-7-2">Buka versi interaktif</a>
+<p>Jika sisi punya bobot (jarak, waktu, ongkos), BFS tidak cukup. <b>Algoritma Dijkstra</b> selalu memproses simpul dengan jarak sementara terkecil memakai <b>priority queue</b>, lalu memperbarui jarak tetangganya jika lewat simpul itu lebih dekat (<b>relaksasi</b>).</p>
+<p>Kompleksitasnya O((V + E) log V) dengan heap. Syaratnya: tidak ada bobot negatif. Untuk bobot negatif pakai <b>Bellman-Ford</b>; untuk peta besar, aplikasi navigasi memakai <b>A*</b> yang menambahkan perkiraan jarak ke tujuan.</p>
+<p>Contoh di bawah menghitung waktu tempuh terpendek (menit) antar titik di sebuah kota.</p>
+<div class="lbl">PYTHON</div><pre><code>import heapq
+
+jalan = {
+    &#x27;Rumah&#x27;: {&#x27;Pasar&#x27;: 10, &#x27;Sekolah&#x27;: 25},
+    &#x27;Pasar&#x27;: {&#x27;Sekolah&#x27;: 8, &#x27;Kantor&#x27;: 30},
+    &#x27;Sekolah&#x27;: {&#x27;Kantor&#x27;: 12},
+    &#x27;Kantor&#x27;: {},
+}
+
+def dijkstra(g, awal):
+    jarak = {s: float(&#x27;inf&#x27;) for s in g}
+    jarak[awal] = 0
+    asal = {}
+    pq = [(0, awal)]
+    while pq:
+        d, s = heapq.heappop(pq)
+        if d &gt; jarak[s]:
+            continue
+        for t, w in g[s].items():
+            if d + w &lt; jarak[t]:
+                jarak[t] = d + w
+                asal[t] = s
+                heapq.heappush(pq, (jarak[t], t))
+    return jarak, asal
+
+jarak, asal = dijkstra(jalan, &#x27;Rumah&#x27;)
+print(jarak)
+rute, s = [], &#x27;Kantor&#x27;
+while s != &#x27;Rumah&#x27;:
+    rute.append(s)
+    s = asal[s]
+print(&#x27; -&gt; &#x27;.join([&#x27;Rumah&#x27;] + rute[::-1]))</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>{&#x27;Rumah&#x27;: 0, &#x27;Pasar&#x27;: 10, &#x27;Sekolah&#x27;: 18, &#x27;Kantor&#x27;: 30}
+Rumah -&gt; Pasar -&gt; Sekolah -&gt; Kantor</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Dengan graph <code>jalan</code> di atas, hitung jarak terpendek dari Pasar ke setiap titik.</p><details><summary>Petunjuk</summary><p>Jalankan dijkstra dengan awal Pasar.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import heapq
+jalan = {&#x27;Rumah&#x27;: {&#x27;Pasar&#x27;: 10, &#x27;Sekolah&#x27;: 25}, &#x27;Pasar&#x27;: {&#x27;Sekolah&#x27;: 8, &#x27;Kantor&#x27;: 30}, &#x27;Sekolah&#x27;: {&#x27;Kantor&#x27;: 12}, &#x27;Kantor&#x27;: {}}
+jarak = {s: float(&#x27;inf&#x27;) for s in jalan}
+jarak[&#x27;Pasar&#x27;] = 0
+pq = [(0, &#x27;Pasar&#x27;)]
+while pq:
+    d, s = heapq.heappop(pq)
+    if d &gt; jarak[s]:
+        continue
+    for t, w in jalan[s].items():
+        if d + w &lt; jarak[t]:
+            jarak[t] = d + w
+            heapq.heappush(pq, (jarak[t], t))
+print(jarak)</code></pre><div class="lbl">KELUARAN</div><pre><code>{&#x27;Rumah&#x27;: inf, &#x27;Pasar&#x27;: 0, &#x27;Sekolah&#x27;: 8, &#x27;Kantor&#x27;: 20}</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Proses simpul dengan jarak terkecil lebih dulu.</li><li>Relaksasi: perbarui jika lebih dekat.</li><li>Tidak boleh ada bobot negatif.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa Rumah ke Sekolah lewat Pasar (18) dipilih, bukan langsung (25)?</summary><p class="ok">Jawaban: Dijkstra mencari total bobot terkecil</p><p>10 + 8 &amp;lt; 25.</p></details>
+<a class="cta" href="/#dsa-7-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsa/representasi-graph-bfs-dan-dfs">Representasi graph, BFS, dan DFS</a></p><p>Berikutnya: <a href="/belajar/dsa/topological-sort">Topological sort</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

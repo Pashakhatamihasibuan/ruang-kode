@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Props, emit, dan slot · Vue.js · Ruang Kode</title>
+<meta name="description" content="Komponen menerima data dari induk lewat props (defineProps) dan mengirim pesan ke induk lewat event (defineEmits). Prinsipnya one-way data flow: anak…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/vue/props-emit-dan-slot">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Props, emit, dan slot · Vue.js · Ruang Kode"><meta property="og:description" content="Komponen menerima data dari induk lewat props (defineProps) dan mengirim pesan ke induk lewat event (defineEmits). Prinsipnya one-way data flow: anak…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/vue/props-emit-dan-slot"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Props, emit, dan slot", "description": "Komponen menerima data dari induk lewat props (defineProps) dan mengirim pesan ke induk lewat event (defineEmits). Prinsipnya one-way data flow: anak…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/vue/props-emit-dan-slot", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Vue.js", "url": "https://ruang-kode-nine.vercel.app/belajar/vue"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Vue.js", "item": "https://ruang-kode-nine.vercel.app/belajar/vue"}, {"@type": "ListItem", "position": 3, "name": "Props, emit, dan slot", "item": "https://ruang-kode-nine.vercel.app/belajar/vue/props-emit-dan-slot"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/vue">Vue.js</a> / Modul 2</nav>
+<div class="eyebrow">Vue.js · Modul 2 · Konsep &amp; kode</div><h1>Props, emit, dan slot</h1><a class="cta" href="/#vue-2-2">Buka versi interaktif</a>
+<p>Komponen menerima data dari induk lewat <b>props</b> (<code>defineProps</code>) dan mengirim pesan ke induk lewat <b>event</b> (<code>defineEmits</code>). Prinsipnya <b>one-way data flow</b>: anak tidak boleh mengubah props langsung, melainkan memancarkan event agar induk yang mengubah data.</p>
+<p><code>defineModel()</code> (Vue 3.4+) mempersingkat pola props + emit untuk <code>v-model</code> pada komponen sendiri.</p>
+<p><b>Slot</b> membiarkan induk mengisi bagian dalam komponen, misalnya kartu dengan isi bebas. Named slot (<code>&lt;slot name="aksi"&gt;</code>) untuk beberapa area.</p>
+<div class="lbl">HTML</div><pre><code>&lt;!-- components/KartuProduk.vue --&gt;
+&lt;script setup lang=&quot;ts&quot;&gt;
+const props = defineProps&lt;{ nama: string; harga: number; stok: number }&gt;()
+const emit = defineEmits&lt;{ beli: [nama: string] }&gt;()
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;article class=&quot;kartu&quot;&gt;
+    &lt;h3&gt;{{ props.nama }}&lt;/h3&gt;
+    &lt;p&gt;Rp{{ props.harga.toLocaleString(&#x27;id-ID&#x27;) }}&lt;/p&gt;
+    &lt;slot name=&quot;lencana&quot; /&gt;
+    &lt;button :disabled=&quot;props.stok === 0&quot; @click=&quot;emit(&#x27;beli&#x27;, props.nama)&quot;&gt;Beli&lt;/button&gt;
+  &lt;/article&gt;
+&lt;/template&gt;
+
+&lt;!-- App.vue --&gt;
+&lt;KartuProduk nama=&quot;Kopi Gayo&quot; :harga=&quot;85000&quot; :stok=&quot;12&quot; @beli=&quot;tambahKeKeranjang&quot;&gt;
+  &lt;template #lencana&gt;&lt;span class=&quot;lencana&quot;&gt;Terlaris&lt;/span&gt;&lt;/template&gt;
+&lt;/KartuProduk&gt;</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat komponen <code>Lencana.vue</code> dengan prop <code>warna</code> (default "hijau") dan slot bawaan untuk teksnya.</p><details><summary>Petunjuk</summary><p>withDefaults(defineProps...) dan &lt;slot /&gt;.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">HTML</div><pre><code>&lt;script setup lang=&quot;ts&quot;&gt;
+withDefaults(defineProps&lt;{ warna?: string }&gt;(), { warna: &#x27;hijau&#x27; })
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;span :class=&quot;[&#x27;lencana&#x27;, warna]&quot;&gt;&lt;slot /&gt;&lt;/span&gt;
+&lt;/template&gt;</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Props turun, event naik.</li><li>Anak tidak mengubah props langsung.</li><li>Slot dan named slot untuk isi fleksibel.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Anak ingin memberi tahu induk bahwa tombol Beli ditekan. Caranya?</summary><p class="ok">Jawaban: emit(&#x27;beli&#x27;, ...)</p><p>Komunikasi naik lewat event.</p></details>
+<a class="cta" href="/#vue-2-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/vue/ref-reactive-computed-dan-watch">ref, reactive, computed, dan watch</a></p><p>Berikutnya: <a href="/belajar/vue/lifecycle-hooks-dan-composable">Lifecycle hooks dan composable</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

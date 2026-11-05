@@ -33,7 +33,7 @@ ALL_JS = (["data.js", "lang-only.js", "util.js", "gl.js", "viz.js", "sqlengine.j
           + ["viz2.js", "viz3.js", "viz-msi.js", "viz-var.js", "viz-fc.js", "bs-css.js", "app.js", "app-pages.js", "app-lesson.js", "codeanim.js", "app-javapy.js",
              "app-extra.js", "practice.js", "tracer.js", "setup.js", "app-nav.js"])
 
-DESC = ("Akademi coding, data, dan desain berbahasa Indonesia: 30 jalur termasuk UI Design, Slicing Website, Slicing Mobile, Dart, Flutter, Kotlin, Jetpack Compose, Kotlin Multiplatform, Tailwind CSS, Bootstrap 5, Pseudocode, Flowgorithm, dan Sistem Informasi, "
+DESC = ("Akademi coding, data, dan desain berbahasa Indonesia: 36 jalur termasuk Struktur Data & Algoritma, PostgreSQL DBA, QA Engineer, Django, Next.js, Vue.js, UI Design, Slicing Website, Slicing Mobile, Dart, Flutter, Kotlin, Jetpack Compose, Kotlin Multiplatform, Tailwind CSS, Bootstrap 5, Pseudocode, Flowgorithm, dan Sistem Informasi, "
         "visual interaktif, editor langsung jalan, konsol SQL, ujian, dan proyek. "
         "Dikembangkan oleh Pasha Khatami Hasibuan.")
 FONTS = """<link rel="preconnect" href="https://fonts.googleapis.com">

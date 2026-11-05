@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pengujian API REST · QA Engineer · Ruang Kode</title>
+<meta name="description" content="Pengujian API memeriksa status code, isi respons (struktur dan nilai), header, waktu respons, serta perilaku untuk input salah (400), tanpa token (401),…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/qa/pengujian-api-rest">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Pengujian API REST · QA Engineer · Ruang Kode"><meta property="og:description" content="Pengujian API memeriksa status code, isi respons (struktur dan nilai), header, waktu respons, serta perilaku untuk input salah (400), tanpa token (401),…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/qa/pengujian-api-rest"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Pengujian API REST", "description": "Pengujian API memeriksa status code, isi respons (struktur dan nilai), header, waktu respons, serta perilaku untuk input salah (400), tanpa token (401),…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/qa/pengujian-api-rest", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "QA Engineer", "url": "https://ruang-kode-nine.vercel.app/belajar/qa"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "QA Engineer", "item": "https://ruang-kode-nine.vercel.app/belajar/qa"}, {"@type": "ListItem", "position": 3, "name": "Pengujian API REST", "item": "https://ruang-kode-nine.vercel.app/belajar/qa/pengujian-api-rest"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/qa">QA Engineer</a> / Modul 4</nav>
+<div class="eyebrow">QA Engineer · Modul 4 · Konsep &amp; kode</div><h1>Pengujian API REST</h1><a class="cta" href="/#qa-4-3">Buka versi interaktif</a>
+<p>Pengujian API memeriksa <b>status code</b>, <b>isi respons</b> (struktur dan nilai), <b>header</b>, <b>waktu respons</b>, serta perilaku untuk input salah (400), tanpa token (401), tanpa hak (403), dan data tidak ada (404). Tes API lebih cepat dan stabil daripada tes UI, jadi letakkan sebagian besar tes integrasi di sini.</p>
+<p>Alat populer: <b>Postman</b> (manual dan koleksi otomatis dengan Newman), <b>requests + pytest</b> di Python, <b>REST Assured</b> di Java, dan <b>Playwright APIRequestContext</b>. Validasi struktur respons bisa memakai JSON Schema.</p>
+<p>Selalu uji skenario negatif dan keamanan dasar: apakah pengguna A bisa membaca pesanan pengguna B dengan mengganti ID di URL? Ini celah <b>IDOR</b> yang sangat sering ditemukan.</p>
+<div class="tw"><table><caption>Status code yang wajib diuji</caption><thead><tr><th>Kode</th><th>Arti</th><th>Contoh skenario</th></tr></thead><tbody><tr><td>200 / 201</td><td>Berhasil / dibuat</td><td>GET produk, POST pesanan</td></tr><tr><td>400</td><td>Input salah</td><td>Jumlah = -1</td></tr><tr><td>401</td><td>Belum login</td><td>Tanpa token</td></tr><tr><td>403</td><td>Tidak berhak</td><td>Pelanggan membuka endpoint admin</td></tr><tr><td>404</td><td>Tidak ada</td><td>Produk id 999999</td></tr><tr><td>429</td><td>Terlalu banyak permintaan</td><td>Rate limit</td></tr><tr><td>500</td><td>Error server</td><td>Tidak boleh terjadi untuk input apa pun</td></tr></tbody></table></div>
+<div class="lbl">PYTHON</div><pre><code>import requests
+
+BASE = &#x27;https://staging.toko.id/api&#x27;
+
+def test_ambil_produk():
+    r = requests.get(f&#x27;{BASE}/produk/12&#x27;, timeout=5)
+    assert r.status_code == 200
+    data = r.json()
+    assert data[&#x27;id&#x27;] == 12
+    assert data[&#x27;harga&#x27;] &gt; 0
+    assert r.elapsed.total_seconds() &lt; 0.5
+
+def test_pesanan_orang_lain_ditolak(token_rina):
+    r = requests.get(f&#x27;{BASE}/pesanan/9001&#x27;,  # milik Budi
+                     headers={&#x27;Authorization&#x27;: f&#x27;Bearer {token_rina}&#x27;})
+    assert r.status_code in (403, 404)</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>$ pytest tests/api -v
+tests/api/test_produk.py::test_ambil_produk PASSED                [ 50%]
+tests/api/test_produk.py::test_pesanan_orang_lain_ditolak PASSED  [100%]
+
+============================== 2 passed in 0.84s ==============================</code></pre>
+<h2>Poin penting</h2><ul><li>Periksa status, isi, header, waktu.</li><li>Skenario negatif: 400, 401, 403, 404.</li><li>Uji IDOR dengan ID milik orang lain.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Pengguna biasa mengakses /admin/laporan. Status yang benar?</summary><p class="ok">Jawaban: 403</p><p>Sudah login tetapi tidak berhak.</p></details>
+<a class="cta" href="/#qa-4-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/qa/mock-dan-stub">Mock dan stub</a></p><p>Berikutnya: <a href="/belajar/qa/tes-e2e-dengan-playwright">Tes E2E dengan Playwright</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

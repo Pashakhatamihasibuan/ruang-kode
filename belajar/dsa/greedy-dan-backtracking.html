@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Greedy dan backtracking · Struktur Data &amp; Algoritma · Ruang Kode</title>
+<meta name="description" content="Algoritma greedy selalu mengambil pilihan terbaik saat ini tanpa melihat ke depan. Cepat dan sederhana, tetapi hanya benar untuk masalah tertentu. Contoh…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsa/greedy-dan-backtracking">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Greedy dan backtracking · Struktur Data &amp; Algoritma · Ruang Kode"><meta property="og:description" content="Algoritma greedy selalu mengambil pilihan terbaik saat ini tanpa melihat ke depan. Cepat dan sederhana, tetapi hanya benar untuk masalah tertentu. Contoh…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsa/greedy-dan-backtracking"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Greedy dan backtracking", "description": "Algoritma greedy selalu mengambil pilihan terbaik saat ini tanpa melihat ke depan. Cepat dan sederhana, tetapi hanya benar untuk masalah tertentu. Contoh…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsa/greedy-dan-backtracking", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Struktur Data & Algoritma", "url": "https://ruang-kode-nine.vercel.app/belajar/dsa"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Struktur Data & Algoritma", "item": "https://ruang-kode-nine.vercel.app/belajar/dsa"}, {"@type": "ListItem", "position": 3, "name": "Greedy dan backtracking", "item": "https://ruang-kode-nine.vercel.app/belajar/dsa/greedy-dan-backtracking"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsa">Struktur Data &amp; Algoritma</a> / Modul 8</nav>
+<div class="eyebrow">Struktur Data &amp; Algoritma · Modul 8 · Konsep &amp; kode</div><h1>Greedy dan backtracking</h1><a class="cta" href="/#dsa-8-3">Buka versi interaktif</a>
+<p>Algoritma <b>greedy</b> selalu mengambil pilihan terbaik saat ini tanpa melihat ke depan. Cepat dan sederhana, tetapi hanya benar untuk masalah tertentu. Contoh benar: menjadwalkan rapat sebanyak mungkin dengan memilih yang <b>selesai paling awal</b>.</p>
+<p>Contoh greedy yang salah: kembalian koin dengan pecahan 1, 3, 4 untuk total 6. Greedy mengambil 4 + 1 + 1 (3 koin), padahal 3 + 3 hanya 2 koin. Jika ragu, gunakan DP.</p>
+<p><b>Backtracking</b> mencoba semua kemungkinan secara sistematis dan <b>mundur</b> begitu jalur tidak mungkin berhasil. Dipakai untuk permutasi, sudoku, dan N-Queens.</p>
+<div class="lbl">PYTHON</div><pre><code>rapat = [(&#x27;A&#x27;, 9, 10), (&#x27;B&#x27;, 9, 12), (&#x27;C&#x27;, 10, 11), (&#x27;D&#x27;, 11, 13), (&#x27;E&#x27;, 12, 14)]
+terpilih, selesai = [], 0
+for nama, mulai, akhir in sorted(rapat, key=lambda r: r[2]):
+    if mulai &gt;= selesai:
+        terpilih.append(nama)
+        selesai = akhir
+print(&#x27;Rapat terpilih:&#x27;, terpilih)
+
+def greedy_koin(koin, total):
+    hasil = []
+    for k in sorted(koin, reverse=True):
+        while total &gt;= k:
+            total -= k
+            hasil.append(k)
+    return hasil
+print(&#x27;Greedy 1,3,4 untuk 6:&#x27;, greedy_koin([1, 3, 4], 6))
+
+def permutasi(sisa, jalur=&#x27;&#x27;):
+    if not sisa:
+        print(jalur, end=&#x27; &#x27;)
+        return
+    for i, ch in enumerate(sisa):
+        permutasi(sisa[:i] + sisa[i + 1:], jalur + ch)
+permutasi(&#x27;ABC&#x27;)
+print()</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Rapat terpilih: [&#x27;A&#x27;, &#x27;C&#x27;, &#x27;D&#x27;]
+Greedy 1,3,4 untuk 6: [4, 1, 1]
+ABC ACB BAC BCA CAB CBA </code></pre>
+<h2>Soal latihan</h2><ol><li><p>Cetak semua subset dari <code>[1, 2, 3]</code> memakai backtracking.</p><details><summary>Petunjuk</summary><p>Untuk setiap elemen: ambil atau tidak, lalu lanjut ke elemen berikutnya.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>data = [1, 2, 3]
+hasil = []
+def bt(i, jalur):
+    if i == len(data):
+        hasil.append(jalur[:])
+        return
+    jalur.append(data[i])
+    bt(i + 1, jalur)
+    jalur.pop()
+    bt(i + 1, jalur)
+bt(0, [])
+print(hasil)</code></pre><div class="lbl">KELUARAN</div><pre><code>[[1, 2, 3], [1, 2], [1, 3], [1], [2, 3], [2], [3], []]</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Greedy: ambil terbaik saat ini, harus dibuktikan benar.</li><li>Jadwal rapat: urutkan menurut waktu selesai.</li><li>Backtracking: coba, mundur jika gagal.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Untuk koin 1, 3, 4 dan total 6, greedy memberi 3 koin. Jawaban optimal?</summary><p class="ok">Jawaban: 2 koin (3 + 3)</p><p>Greedy tidak selalu optimal.</p></details>
+<a class="cta" href="/#dsa-8-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsa/knapsack-0-1-dan-lcs">Knapsack 0/1 dan LCS</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Linked list · Struktur Data &amp; Algoritma · Ruang Kode</title>
+<meta name="description" content="Linked list adalah rangkaian simpul (node); setiap simpul menyimpan data dan penunjuk ke simpul berikutnya. Berbeda dengan array, simpul tidak harus…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsa/linked-list">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Linked list · Struktur Data &amp; Algoritma · Ruang Kode"><meta property="og:description" content="Linked list adalah rangkaian simpul (node); setiap simpul menyimpan data dan penunjuk ke simpul berikutnya. Berbeda dengan array, simpul tidak harus…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsa/linked-list"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Linked list", "description": "Linked list adalah rangkaian simpul (node); setiap simpul menyimpan data dan penunjuk ke simpul berikutnya. Berbeda dengan array, simpul tidak harus…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsa/linked-list", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Struktur Data & Algoritma", "url": "https://ruang-kode-nine.vercel.app/belajar/dsa"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Struktur Data & Algoritma", "item": "https://ruang-kode-nine.vercel.app/belajar/dsa"}, {"@type": "ListItem", "position": 3, "name": "Linked list", "item": "https://ruang-kode-nine.vercel.app/belajar/dsa/linked-list"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsa">Struktur Data &amp; Algoritma</a> / Modul 3</nav>
+<div class="eyebrow">Struktur Data &amp; Algoritma · Modul 3 · Konsep &amp; kode</div><h1>Linked list</h1><a class="cta" href="/#dsa-3-1">Buka versi interaktif</a>
+<p><b>Linked list</b> adalah rangkaian <b>simpul (node)</b>; setiap simpul menyimpan data dan penunjuk ke simpul berikutnya. Berbeda dengan array, simpul tidak harus bersebelahan di memori.</p>
+<p>Kelebihan: menyisipkan atau menghapus di awal O(1), tanpa menggeser elemen. Kekurangan: mengakses elemen ke-i harus berjalan dari kepala, O(n). Variasinya: <b>doubly linked list</b> (punya penunjuk ke belakang juga) dan <b>circular</b> (simpul terakhir menunjuk ke kepala).</p>
+<p>Soal wawancara favorit: membalik linked list, mendeteksi siklus (pointer cepat dan lambat), dan mencari simpul tengah.</p>
+<div class="lbl">PYTHON</div><pre><code>class Node:
+    def __init__(self, data, berikut=None):
+        self.data = data
+        self.berikut = berikut
+
+def cetak(kepala):
+    hasil = []
+    while kepala:
+        hasil.append(str(kepala.data))
+        kepala = kepala.berikut
+    print(&#x27; -&gt; &#x27;.join(hasil))
+
+kepala = Node(1, Node(2, Node(3)))
+kepala = Node(0, kepala)   # sisip di awal, O(1)
+cetak(kepala)
+
+def balik(kepala):
+    sebelum = None
+    while kepala:
+        kepala.berikut, sebelum, kepala = sebelum, kepala, kepala.berikut
+    return sebelum
+
+cetak(balik(kepala))</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>0 -&gt; 1 -&gt; 2 -&gt; 3
+3 -&gt; 2 -&gt; 1 -&gt; 0</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Hitung panjang linked list 5 simpul (10, 20, 30, 40, 50) dan cetak simpul tengahnya dengan teknik pointer lambat dan cepat.</p><details><summary>Petunjuk</summary><p>Lambat maju 1, cepat maju 2; saat cepat habis, lambat di tengah.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>class Node:
+    def __init__(self, d, b=None):
+        self.data, self.berikut = d, b
+
+kepala = None
+for x in [50, 40, 30, 20, 10]:
+    kepala = Node(x, kepala)
+lambat = cepat = kepala
+while cepat and cepat.berikut:
+    lambat = lambat.berikut
+    cepat = cepat.berikut.berikut
+print(lambat.data)</code></pre><div class="lbl">KELUARAN</div><pre><code>30</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Simpul = data + penunjuk ke simpul berikutnya.</li><li>Sisip di awal O(1), akses ke-i O(n).</li><li>Membalik linked list: tiga penunjuk.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kelemahan utama linked list dibanding array?</summary><p class="ok">Jawaban: Akses indeks lambat O(n)</p><p>Harus berjalan dari kepala.</p></details>
+<a class="cta" href="/#dsa-3-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsa/sliding-window-dan-prefix-sum">Sliding window dan prefix sum</a></p><p>Berikutnya: <a href="/belajar/dsa/stack-lifo">Stack (LIFO)</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

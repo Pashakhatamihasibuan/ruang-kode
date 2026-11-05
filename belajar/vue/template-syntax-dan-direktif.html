@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Template syntax dan direktif · Vue.js · Ruang Kode</title>
+<meta name="description" content="Tampilkan nilai dengan interpolasi {{ nama }} (otomatis di-escape). Direktif adalah atribut khusus berawalan v-: v-bind:src atau singkatnya :src untuk…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/vue/template-syntax-dan-direktif">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Template syntax dan direktif · Vue.js · Ruang Kode"><meta property="og:description" content="Tampilkan nilai dengan interpolasi {{ nama }} (otomatis di-escape). Direktif adalah atribut khusus berawalan v-: v-bind:src atau singkatnya :src untuk…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/vue/template-syntax-dan-direktif"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Template syntax dan direktif", "description": "Tampilkan nilai dengan interpolasi {{ nama }} (otomatis di-escape). Direktif adalah atribut khusus berawalan v-: v-bind:src atau singkatnya :src untuk…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/vue/template-syntax-dan-direktif", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Vue.js", "url": "https://ruang-kode-nine.vercel.app/belajar/vue"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Vue.js", "item": "https://ruang-kode-nine.vercel.app/belajar/vue"}, {"@type": "ListItem", "position": 3, "name": "Template syntax dan direktif", "item": "https://ruang-kode-nine.vercel.app/belajar/vue/template-syntax-dan-direktif"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/vue">Vue.js</a> / Modul 1</nav>
+<div class="eyebrow">Vue.js · Modul 1 · Konsep &amp; kode</div><h1>Template syntax dan direktif</h1><a class="cta" href="/#vue-1-2">Buka versi interaktif</a>
+<p>Tampilkan nilai dengan <b>interpolasi</b> <code>{{ nama }}</code> (otomatis di-escape). <b>Direktif</b> adalah atribut khusus berawalan <code>v-</code>: <code>v-bind:src</code> atau singkatnya <code>:src</code> untuk mengikat atribut, <code>v-on:click</code> atau <code>@click</code> untuk event.</p>
+<p>Percabangan dengan <code>v-if</code>, <code>v-else-if</code>, <code>v-else</code> (elemen benar-benar dibuat atau dibuang) dan <code>v-show</code> (hanya disembunyikan dengan CSS, cocok untuk yang sering berganti). Perulangan dengan <code>v-for="p in produk" :key="p.id"</code>; <code>key</code> wajib dan harus unik.</p>
+<p>Jangan memakai <code>v-if</code> dan <code>v-for</code> pada elemen yang sama; saring data dulu dengan <code>computed</code>.</p>
+<div class="tw"><table><caption>Direktif utama</caption><thead><tr><th>Direktif</th><th>Singkatan</th><th>Fungsi</th></tr></thead><tbody><tr><td>v-bind:attr</td><td>:attr</td><td>Mengikat atribut ke data</td></tr><tr><td>v-on:event</td><td>@event</td><td>Menangani event</td></tr><tr><td>v-if / v-else</td><td></td><td>Render bersyarat</td></tr><tr><td>v-show</td><td></td><td>Tampil atau sembunyi dengan CSS</td></tr><tr><td>v-for</td><td></td><td>Perulangan, wajib :key</td></tr><tr><td>v-model</td><td></td><td>Ikatan dua arah untuk input</td></tr><tr><td>v-html</td><td></td><td>HTML mentah, rawan XSS</td></tr></tbody></table></div>
+<div class="lbl">HTML</div><pre><code>&lt;script setup lang=&quot;ts&quot;&gt;
+import { ref } from &#x27;vue&#x27;
+
+const produk = ref([
+  { id: 1, nama: &#x27;Kopi Gayo&#x27;, harga: 85000, stok: 12, foto: &#x27;/gayo.jpg&#x27; },
+  { id: 2, nama: &#x27;Kopi Toraja&#x27;, harga: 95000, stok: 0, foto: &#x27;/toraja.jpg&#x27; },
+])
+const rupiah = (n: number) =&gt; n.toLocaleString(&#x27;id-ID&#x27;)
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;ul&gt;
+    &lt;li v-for=&quot;p in produk&quot; :key=&quot;p.id&quot;&gt;
+      &lt;img :src=&quot;p.foto&quot; :alt=&quot;p.nama&quot; width=&quot;80&quot; /&gt;
+      &lt;strong&gt;{{ p.nama }}&lt;/strong&gt; Rp{{ rupiah(p.harga) }}
+      &lt;span v-if=&quot;p.stok === 0&quot; class=&quot;habis&quot;&gt;Stok habis&lt;/span&gt;
+      &lt;button v-else @click=&quot;p.stok--&quot;&gt;Beli ({{ p.stok }})&lt;/button&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/template&gt;
+
+&lt;style scoped&gt;
+.habis { color: #b91c1c; }
+&lt;/style&gt;</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tampilkan daftar nama kota dari array <code>kota</code> sebagai &lt;li&gt;, dan tampilkan "Belum ada kota" jika array kosong.</p><details><summary>Petunjuk</summary><p>v-if pada pesan kosong, v-else pada ul dengan v-for.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">HTML</div><pre><code>&lt;p v-if=&quot;kota.length === 0&quot;&gt;Belum ada kota&lt;/p&gt;
+&lt;ul v-else&gt;
+  &lt;li v-for=&quot;k in kota&quot; :key=&quot;k&quot;&gt;{{ k }}&lt;/li&gt;
+&lt;/ul&gt;</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>{{ }} untuk teks, :attr untuk atribut, @event untuk event.</li><li>v-if membuang elemen, v-show menyembunyikan.</li><li>v-for selalu dengan :key unik.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Singkatan dari v-on:click?</summary><p class="ok">Jawaban: @click</p><p>@ untuk event, : untuk bind.</p></details><details><summary>Untuk panel yang dibuka tutup sangat sering, lebih efisien?</summary><p class="ok">Jawaban: v-show</p><p>Tidak membuat ulang elemen.</p></details>
+<a class="cta" href="/#vue-1-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/vue/mengenal-vue-dan-membuat-proyek">Mengenal Vue dan membuat proyek</a></p><p>Berikutnya: <a href="/belajar/vue/form-dan-v-model">Form dan v-model</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

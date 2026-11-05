@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Deployment: Gunicorn, Nginx, dan Docker · Django · Ruang Kode</title>
+<meta name="description" content="runserver tidak untuk produksi. Pola umum: Gunicorn (server WSGI, beberapa worker) menjalankan Django, Nginx di depannya menangani HTTPS, file statis,…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/django/deployment-gunicorn-nginx-dan-docker">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Deployment: Gunicorn, Nginx, dan Docker · Django · Ruang Kode"><meta property="og:description" content="runserver tidak untuk produksi. Pola umum: Gunicorn (server WSGI, beberapa worker) menjalankan Django, Nginx di depannya menangani HTTPS, file statis,…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/django/deployment-gunicorn-nginx-dan-docker"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Deployment: Gunicorn, Nginx, dan Docker", "description": "runserver tidak untuk produksi. Pola umum: Gunicorn (server WSGI, beberapa worker) menjalankan Django, Nginx di depannya menangani HTTPS, file statis,…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/django/deployment-gunicorn-nginx-dan-docker", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Django", "url": "https://ruang-kode-nine.vercel.app/belajar/django"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Django", "item": "https://ruang-kode-nine.vercel.app/belajar/django"}, {"@type": "ListItem", "position": 3, "name": "Deployment: Gunicorn, Nginx, dan Docker", "item": "https://ruang-kode-nine.vercel.app/belajar/django/deployment-gunicorn-nginx-dan-docker"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/django">Django</a> / Modul 5</nav>
+<div class="eyebrow">Django · Modul 5 · Konsep &amp; kode</div><h1>Deployment: Gunicorn, Nginx, dan Docker</h1><a class="cta" href="/#django-5-3">Buka versi interaktif</a>
+<p><code>runserver</code> tidak untuk produksi. Pola umum: <b>Gunicorn</b> (server WSGI, beberapa worker) menjalankan Django, <b>Nginx</b> di depannya menangani HTTPS, file statis, dan meneruskan request. Untuk fitur asinkron atau WebSocket, pakai server ASGI seperti Uvicorn.</p>
+<p>File statis (CSS, JS) dikumpulkan dengan <code>collectstatic</code> lalu dilayani Nginx atau <b>WhiteNoise</b>. File unggahan pengguna (media) sebaiknya disimpan di object storage seperti S3 atau Cloudflare R2.</p>
+<p>Dengan <b>Docker</b>, aplikasi, Python, dan dependensi dikemas menjadi satu image yang berjalan sama di laptop dan server. Platform seperti Railway, Render, Fly.io, atau VPS dengan Docker Compose bisa dipakai.</p>
+<div class="tw"><table><caption>Checklist rilis Django</caption><thead><tr><th>Langkah</th><th>Perintah atau setelan</th></tr></thead><tbody><tr><td>Keamanan</td><td>DEBUG=False, ALLOWED_HOSTS, check --deploy</td></tr><tr><td>Database</td><td>PostgreSQL, migrate sebelum versi baru aktif</td></tr><tr><td>Statis</td><td>collectstatic + WhiteNoise atau Nginx</td></tr><tr><td>Media</td><td>Object storage (S3, R2)</td></tr><tr><td>Server</td><td>Gunicorn di belakang Nginx, HTTPS</td></tr><tr><td>Latar</td><td>Celery worker + Redis</td></tr><tr><td>Pantau</td><td>Sentry untuk error, log terpusat</td></tr></tbody></table></div>
+<div class="lbl">TERMINAL</div><pre><code># Dockerfile
+FROM python:3.12-slim
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+RUN python manage.py collectstatic --noinput
+CMD [&quot;gunicorn&quot;, &quot;tokoku.wsgi:application&quot;, &quot;--bind&quot;, &quot;0.0.0.0:8000&quot;, &quot;--workers&quot;, &quot;3&quot;]
+
+# langkah rilis
+docker build -t tokoku:1.4.0 .
+docker run --env-file .env.prod tokoku:1.4.0 python manage.py migrate
+docker run -d --env-file .env.prod -p 8000:8000 tokoku:1.4.0</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>[2026-11-05 10:02:11 +0000] [1] [INFO] Starting gunicorn 23.0.0
+[2026-11-05 10:02:11 +0000] [1] [INFO] Listening at: http://0.0.0.0:8000 (1)
+[2026-11-05 10:02:11 +0000] [1] [INFO] Using worker: sync
+[2026-11-05 10:02:11 +0000] [7] [INFO] Booting worker with pid: 7
+[2026-11-05 10:02:11 +0000] [8] [INFO] Booting worker with pid: 8
+[2026-11-05 10:02:11 +0000] [9] [INFO] Booting worker with pid: 9</code></pre>
+<h2>Poin penting</h2><ul><li>Gunicorn + Nginx, bukan runserver.</li><li>collectstatic untuk file statis, object storage untuk media.</li><li>Docker agar lingkungan sama di mana pun.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Jumlah worker Gunicorn yang umum disarankan?</summary><p class="ok">Jawaban: (2 × jumlah core) + 1</p><p>Aturan praktis dari dokumentasi Gunicorn.</p></details>
+<a class="cta" href="/#django-5-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/django/caching-dan-tugas-latar-dengan-celery">Caching dan tugas latar dengan Celery</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

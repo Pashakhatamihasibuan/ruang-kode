@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sorting dasar: bubble dan insertion sort · Struktur Data &amp; Algoritma · Ruang Kode</title>
+<meta name="description" content="Bubble sort membandingkan pasangan bersebelahan dan menukarnya jika urutannya salah; elemen terbesar &quot;menggelembung&quot; ke akhir setiap putaran. Insertion…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsa/sorting-dasar-bubble-dan-insertion-sort">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Sorting dasar: bubble dan insertion sort · Struktur Data &amp; Algoritma · Ruang Kode"><meta property="og:description" content="Bubble sort membandingkan pasangan bersebelahan dan menukarnya jika urutannya salah; elemen terbesar &quot;menggelembung&quot; ke akhir setiap putaran. Insertion…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsa/sorting-dasar-bubble-dan-insertion-sort"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Sorting dasar: bubble dan insertion sort", "description": "Bubble sort membandingkan pasangan bersebelahan dan menukarnya jika urutannya salah; elemen terbesar \"menggelembung\" ke akhir setiap putaran. Insertion…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsa/sorting-dasar-bubble-dan-insertion-sort", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Struktur Data & Algoritma", "url": "https://ruang-kode-nine.vercel.app/belajar/dsa"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Struktur Data & Algoritma", "item": "https://ruang-kode-nine.vercel.app/belajar/dsa"}, {"@type": "ListItem", "position": 3, "name": "Sorting dasar: bubble dan insertion sort", "item": "https://ruang-kode-nine.vercel.app/belajar/dsa/sorting-dasar-bubble-dan-insertion-sort"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsa">Struktur Data &amp; Algoritma</a> / Modul 5</nav>
+<div class="eyebrow">Struktur Data &amp; Algoritma · Modul 5 · Konsep &amp; kode</div><h1>Sorting dasar: bubble dan insertion sort</h1><a class="cta" href="/#dsa-5-3">Buka versi interaktif</a>
+<p><b>Bubble sort</b> membandingkan pasangan bersebelahan dan menukarnya jika urutannya salah; elemen terbesar "menggelembung" ke akhir setiap putaran. <b>Insertion sort</b> mengambil elemen satu per satu dan menyisipkannya ke posisi yang tepat di bagian yang sudah terurut, seperti merapikan kartu di tangan.</p>
+<p>Keduanya O(n²) pada kasus terburuk, tetapi insertion sort sangat cepat untuk data yang <b>hampir terurut</b> (mendekati O(n)). Karena itu Timsort (algoritma bawaan Python) memakai insertion sort untuk potongan kecil.</p>
+<p>Keduanya <b>stabil</b>: dua data dengan nilai sama tetap pada urutan aslinya. Stabilitas penting saat mengurutkan berdasarkan beberapa kolom.</p>
+<div class="lbl">PYTHON</div><pre><code>def bubble(data):
+    a = data[:]
+    tukar = 0
+    for i in range(len(a)):
+        for j in range(len(a) - 1 - i):
+            if a[j] &gt; a[j + 1]:
+                a[j], a[j + 1] = a[j + 1], a[j]
+                tukar += 1
+    return a, tukar
+
+def insertion(data):
+    a = data[:]
+    for i in range(1, len(a)):
+        kunci, j = a[i], i - 1
+        while j &gt;= 0 and a[j] &gt; kunci:
+            a[j + 1] = a[j]
+            j -= 1
+        a[j + 1] = kunci
+    return a
+
+print(bubble([5, 2, 9, 1, 6]))
+print(insertion([5, 2, 9, 1, 6]))</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>([1, 2, 5, 6, 9], 5)
+[1, 2, 5, 6, 9]</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis selection sort untuk <code>[29, 10, 14, 37, 13]</code>: cari yang terkecil di sisa list lalu tukar ke depan.</p><details><summary>Petunjuk</summary><p>Loop luar i, cari indeks minimum dari i ke akhir.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>a = [29, 10, 14, 37, 13]
+for i in range(len(a)):
+    m = i
+    for j in range(i + 1, len(a)):
+        if a[j] &lt; a[m]:
+            m = j
+    a[i], a[m] = a[m], a[i]
+print(a)</code></pre><div class="lbl">KELUARAN</div><pre><code>[10, 13, 14, 29, 37]</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Bubble: tukar pasangan bersebelahan.</li><li>Insertion: sisipkan ke bagian terurut.</li><li>O(n²), tetapi insertion cepat untuk data hampir terurut.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Algoritma mana yang paling cepat untuk data yang hampir terurut?</summary><p class="ok">Jawaban: Insertion sort</p><p>Hampir tidak ada yang digeser.</p></details>
+<a class="cta" href="/#dsa-5-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsa/binary-search">Binary search</a></p><p>Berikutnya: <a href="/belajar/dsa/merge-sort-dan-quick-sort">Merge sort dan quick sort</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Variabel lingkungan dan deployment · Next.js · Ruang Kode</title>
+<meta name="description" content="Simpan rahasia di .env.local (tidak masuk Git). Variabel biasa hanya terbaca di server. Variabel berawalan NEXT_PUBLIC_ ikut dikirim ke browser, jadi…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/nextjs/variabel-lingkungan-dan-deployment">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Variabel lingkungan dan deployment · Next.js · Ruang Kode"><meta property="og:description" content="Simpan rahasia di .env.local (tidak masuk Git). Variabel biasa hanya terbaca di server. Variabel berawalan NEXT_PUBLIC_ ikut dikirim ke browser, jadi…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/nextjs/variabel-lingkungan-dan-deployment"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Variabel lingkungan dan deployment", "description": "Simpan rahasia di .env.local (tidak masuk Git). Variabel biasa hanya terbaca di server. Variabel berawalan NEXT_PUBLIC_ ikut dikirim ke browser, jadi…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/nextjs/variabel-lingkungan-dan-deployment", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Next.js", "url": "https://ruang-kode-nine.vercel.app/belajar/nextjs"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Next.js", "item": "https://ruang-kode-nine.vercel.app/belajar/nextjs"}, {"@type": "ListItem", "position": 3, "name": "Variabel lingkungan dan deployment", "item": "https://ruang-kode-nine.vercel.app/belajar/nextjs/variabel-lingkungan-dan-deployment"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/nextjs">Next.js</a> / Modul 4</nav>
+<div class="eyebrow">Next.js · Modul 4 · Konsep &amp; kode</div><h1>Variabel lingkungan dan deployment</h1><a class="cta" href="/#nextjs-4-3">Buka versi interaktif</a>
+<p>Simpan rahasia di <code>.env.local</code> (tidak masuk Git). Variabel biasa hanya terbaca di server. Variabel berawalan <code>NEXT_PUBLIC_</code> ikut dikirim ke browser, jadi <b>jangan pernah</b> memberi awalan itu pada kunci rahasia.</p>
+<p>Deploy paling mudah ke <b>Vercel</b>: hubungkan repositori GitHub, setiap push ke main otomatis rilis, dan setiap pull request mendapat URL pratinjau. Alternatif: Netlify, Cloudflare, atau server sendiri dengan <code>output: 'standalone'</code> dan Docker.</p>
+<p>Sebelum rilis jalankan <code>npm run build</code> secara lokal untuk melihat ukuran setiap rute dan mana yang statis atau dinamis.</p>
+<div class="lbl">TERMINAL</div><pre><code># .env.local
+DATABASE_URL=postgres://...
+AUTH_SECRET=rahasia-panjang
+NEXT_PUBLIC_SITE_URL=https://tokoku.id
+
+$ npm run build</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>   ▲ Next.js 15.5.4
+
+ ✓ Compiled successfully in 6.2s
+ ✓ Generating static pages (14/14)
+
+Route (app)                        Size  First Load JS
+┌ ○ /                             1.9 kB         110 kB
+├ ○ /produk                        2.4 kB         111 kB
+├ ● /produk/[slug]                 1.1 kB         109 kB
+├   ├ /produk/kopi-gayo
+├   └ /produk/kopi-toraja
+├ ƒ /pesanan                        980 B         108 kB
+└ ƒ /api/webhook/pembayaran          0 B            0 B
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand</code></pre>
+<h2>Poin penting</h2><ul><li>NEXT_PUBLIC_ = terlihat di browser.</li><li>Vercel: push otomatis rilis, PR dapat pratinjau.</li><li>npm run build menunjukkan rute statis dan dinamis.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Variabel yang aman untuk kunci API payment gateway?</summary><p class="ok">Jawaban: PAYMENT_SECRET_KEY</p><p>Tanpa awalan NEXT_PUBLIC_.</p></details>
+<a class="cta" href="/#nextjs-4-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/nextjs/middleware-dan-autentikasi">Middleware dan autentikasi</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

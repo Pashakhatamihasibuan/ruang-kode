@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Binary search tree · Struktur Data &amp; Algoritma · Ruang Kode</title>
+<meta name="description" content="Binary search tree (BST) punya aturan: semua nilai di subtree kiri lebih kecil dari simpul, semua di kanan lebih besar. Mencari, menyisip, dan menghapus…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsa/binary-search-tree">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Binary search tree · Struktur Data &amp; Algoritma · Ruang Kode"><meta property="og:description" content="Binary search tree (BST) punya aturan: semua nilai di subtree kiri lebih kecil dari simpul, semua di kanan lebih besar. Mencari, menyisip, dan menghapus…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsa/binary-search-tree"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Binary search tree", "description": "Binary search tree (BST) punya aturan: semua nilai di subtree kiri lebih kecil dari simpul, semua di kanan lebih besar. Mencari, menyisip, dan menghapus…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsa/binary-search-tree", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Struktur Data & Algoritma", "url": "https://ruang-kode-nine.vercel.app/belajar/dsa"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Struktur Data & Algoritma", "item": "https://ruang-kode-nine.vercel.app/belajar/dsa"}, {"@type": "ListItem", "position": 3, "name": "Binary search tree", "item": "https://ruang-kode-nine.vercel.app/belajar/dsa/binary-search-tree"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsa">Struktur Data &amp; Algoritma</a> / Modul 6</nav>
+<div class="eyebrow">Struktur Data &amp; Algoritma · Modul 6 · Konsep &amp; kode</div><h1>Binary search tree</h1><a class="cta" href="/#dsa-6-2">Buka versi interaktif</a>
+<p><b>Binary search tree (BST)</b> punya aturan: semua nilai di subtree kiri lebih kecil dari simpul, semua di kanan lebih besar. Mencari, menyisip, dan menghapus O(tinggi): O(log n) jika seimbang, O(n) jika miring seperti linked list.</p>
+<p>Penelusuran <b>inorder</b> pada BST selalu menghasilkan data terurut. Ini cara cepat memeriksa apakah sebuah tree benar-benar BST.</p>
+<p>Agar tetap seimbang, ada BST yang menyeimbangkan diri sendiri: <b>AVL tree</b> dan <b>red-black tree</b>. Database memakai kerabatnya, <b>B-tree</b>, untuk indeks.</p>
+<div class="lbl">PYTHON</div><pre><code>class Simpul:
+    def __init__(self, v):
+        self.v, self.kiri, self.kanan = v, None, None
+
+def sisip(akar, v):
+    if akar is None:
+        return Simpul(v)
+    if v &lt; akar.v:
+        akar.kiri = sisip(akar.kiri, v)
+    else:
+        akar.kanan = sisip(akar.kanan, v)
+    return akar
+
+def cari(akar, v, langkah=1):
+    if akar is None:
+        return None
+    if v == akar.v:
+        return langkah
+    return cari(akar.kiri if v &lt; akar.v else akar.kanan, v, langkah + 1)
+
+def inorder(s):
+    return inorder(s.kiri) + [s.v] + inorder(s.kanan) if s else []
+
+akar = None
+for x in [50, 30, 70, 20, 40, 60, 80]:
+    akar = sisip(akar, x)
+print(inorder(akar))
+print(&#x27;60 ditemukan dalam&#x27;, cari(akar, 60), &#x27;langkah&#x27;)
+print(&#x27;65 ada?&#x27;, cari(akar, 65))</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>[20, 30, 40, 50, 60, 70, 80]
+60 ditemukan dalam 3 langkah
+65 ada? None</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Cari nilai minimum dan maksimum di BST [50, 30, 70, 20, 40, 60, 80].</p><details><summary>Petunjuk</summary><p>Minimum: terus ke kiri. Maksimum: terus ke kanan.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>class S:
+    def __init__(self, v):
+        self.v, self.kiri, self.kanan = v, None, None
+def sisip(a, v):
+    if not a:
+        return S(v)
+    if v &lt; a.v:
+        a.kiri = sisip(a.kiri, v)
+    else:
+        a.kanan = sisip(a.kanan, v)
+    return a
+akar = None
+for x in [50, 30, 70, 20, 40, 60, 80]:
+    akar = sisip(akar, x)
+mn = akar
+while mn.kiri:
+    mn = mn.kiri
+mx = akar
+while mx.kanan:
+    mx = mx.kanan
+print(mn.v, mx.v)</code></pre><div class="lbl">KELUARAN</div><pre><code>20 80</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Kiri lebih kecil, kanan lebih besar.</li><li>Inorder BST = data terurut.</li><li>Seimbang O(log n), miring O(n).</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Menyisipkan 1, 2, 3, 4, 5 berurutan ke BST kosong menghasilkan?</summary><p class="ok">Jawaban: Tree miring seperti linked list</p><p>Semua masuk ke kanan.</p></details>
+<a class="cta" href="/#dsa-6-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsa/binary-tree-dan-penelusuran">Binary tree dan penelusuran</a></p><p>Berikutnya: <a href="/belajar/dsa/heap-dan-priority-queue">Heap dan priority queue</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Build dan deploy · Vue.js · Ruang Kode</title>
+<meta name="description" content="npm run build menghasilkan folder dist/ berisi file statis yang sudah diperkecil dan dipecah per rute. SPA bisa dihosting di mana saja yang melayani file…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/vue/build-dan-deploy">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Build dan deploy · Vue.js · Ruang Kode"><meta property="og:description" content="npm run build menghasilkan folder dist/ berisi file statis yang sudah diperkecil dan dipecah per rute. SPA bisa dihosting di mana saja yang melayani file…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/vue/build-dan-deploy"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Build dan deploy", "description": "npm run build menghasilkan folder dist/ berisi file statis yang sudah diperkecil dan dipecah per rute. SPA bisa dihosting di mana saja yang melayani file…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/vue/build-dan-deploy", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Vue.js", "url": "https://ruang-kode-nine.vercel.app/belajar/vue"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Vue.js", "item": "https://ruang-kode-nine.vercel.app/belajar/vue"}, {"@type": "ListItem", "position": 3, "name": "Build dan deploy", "item": "https://ruang-kode-nine.vercel.app/belajar/vue/build-dan-deploy"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/vue">Vue.js</a> / Modul 4</nav>
+<div class="eyebrow">Vue.js · Modul 4 · Konsep &amp; kode</div><h1>Build dan deploy</h1><a class="cta" href="/#vue-4-3">Buka versi interaktif</a>
+<p><code>npm run build</code> menghasilkan folder <code>dist/</code> berisi file statis yang sudah diperkecil dan dipecah per rute. SPA bisa dihosting di mana saja yang melayani file statis: Netlify, Vercel, Cloudflare Pages, GitHub Pages, atau Nginx.</p>
+<p>Dengan <code>createWebHistory</code>, server harus mengarahkan semua rute yang tidak dikenal ke <code>index.html</code> (fallback SPA). Tanpa itu, membuka <code>/produk/kopi-gayo</code> langsung akan menghasilkan 404 dari server.</p>
+<p>Variabel lingkungan Vite harus berawalan <code>VITE_</code> agar terbaca di kode, dan semuanya terlihat oleh pengguna, jadi jangan simpan rahasia di sana.</p>
+<div class="lbl">TERMINAL</div><pre><code>$ npm run build
+
+# netlify.toml / _redirects (fallback SPA)
+/*    /index.html   200
+
+# nginx
+location / {
+  try_files $uri $uri/ /index.html;
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>vite v7.1.9 building for production...
+✓ 84 modules transformed.
+dist/index.html                         0.46 kB │ gzip:  0.30 kB
+dist/assets/index-B8tS2fQa.css          4.12 kB │ gzip:  1.38 kB
+dist/assets/DetailProduk-C1v9Hk2e.js    1.94 kB │ gzip:  0.98 kB
+dist/assets/index-DkQm3x7L.js          98.71 kB │ gzip: 38.20 kB
+✓ built in 1.32s</code></pre>
+<h2>Poin penting</h2><ul><li>npm run build menghasilkan dist/.</li><li>Atur fallback ke index.html untuk history mode.</li><li>VITE_ terlihat publik, jangan untuk rahasia.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa membuka /produk/kopi-gayo langsung bisa 404 setelah deploy SPA?</summary><p class="ok">Jawaban: Server tidak diarahkan ke index.html</p><p>Butuh fallback SPA.</p></details>
+<a class="cta" href="/#vue-4-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/vue/nuxt-untuk-ssr-dan-seo">Nuxt untuk SSR dan SEO</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

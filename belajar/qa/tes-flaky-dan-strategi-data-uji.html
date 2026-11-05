@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tes flaky dan strategi data uji · QA Engineer · Ruang Kode</title>
+<meta name="description" content="Tes flaky kadang lulus, kadang gagal tanpa perubahan kode. Penyebab umum: menunggu dengan sleep tetap, tes saling bergantung pada urutan, data uji…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/qa/tes-flaky-dan-strategi-data-uji">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Tes flaky dan strategi data uji · QA Engineer · Ruang Kode"><meta property="og:description" content="Tes flaky kadang lulus, kadang gagal tanpa perubahan kode. Penyebab umum: menunggu dengan sleep tetap, tes saling bergantung pada urutan, data uji…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/qa/tes-flaky-dan-strategi-data-uji"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Tes flaky dan strategi data uji", "description": "Tes flaky kadang lulus, kadang gagal tanpa perubahan kode. Penyebab umum: menunggu dengan sleep tetap, tes saling bergantung pada urutan, data uji…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/qa/tes-flaky-dan-strategi-data-uji", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "QA Engineer", "url": "https://ruang-kode-nine.vercel.app/belajar/qa"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "QA Engineer", "item": "https://ruang-kode-nine.vercel.app/belajar/qa"}, {"@type": "ListItem", "position": 3, "name": "Tes flaky dan strategi data uji", "item": "https://ruang-kode-nine.vercel.app/belajar/qa/tes-flaky-dan-strategi-data-uji"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/qa">QA Engineer</a> / Modul 5</nav>
+<div class="eyebrow">QA Engineer · Modul 5 · Konsep &amp; kode</div><h1>Tes flaky dan strategi data uji</h1><a class="cta" href="/#qa-5-2">Buka versi interaktif</a>
+<p><b>Tes flaky</b> kadang lulus, kadang gagal tanpa perubahan kode. Penyebab umum: menunggu dengan <code>sleep</code> tetap, tes saling bergantung pada urutan, data uji dipakai bersama, animasi, waktu dan zona waktu, serta layanan pihak ketiga.</p>
+<p>Solusi: pakai penantian berbasis kondisi (<code>expect(...).to_be_visible()</code>), buat data uji sendiri di setiap tes (lewat API, bukan lewat UI), bersihkan setelahnya, bekukan waktu, dan mock layanan luar di level jaringan (<code>page.route</code>).</p>
+<p>Jangan menyelesaikan flaky dengan "retry sampai lulus" saja. Retry boleh untuk sementara, tetapi catat, karantina, dan perbaiki akar masalahnya; tes yang tidak dipercaya akan diabaikan tim.</p>
+<div class="lbl">PYTHON</div><pre><code># buruk
+page.click(&#x27;text=Bayar&#x27;)
+time.sleep(5)
+assert page.inner_text(&#x27;#status&#x27;) == &#x27;Berhasil&#x27;
+
+# baik
+page.get_by_role(&#x27;button&#x27;, name=&#x27;Bayar&#x27;).click()
+expect(page.get_by_test_id(&#x27;status&#x27;)).to_have_text(&#x27;Berhasil&#x27;, timeout=10_000)
+
+# data uji dibuat lewat API, tiap tes punya pengguna sendiri
+@pytest.fixture
+def pengguna_baru(api):
+    u = api.post(&#x27;/test/pengguna&#x27;, data={&#x27;nama&#x27;: &#x27;QA Bot&#x27;}).json()
+    yield u
+    api.delete(f&quot;/test/pengguna/{u[&#x27;id&#x27;]}&quot;)</code></pre>
+<h2>Poin penting</h2><ul><li>Hindari sleep tetap; tunggu kondisi.</li><li>Setiap tes punya data sendiri.</li><li>Karantina dan perbaiki akar flaky, jangan hanya retry.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Penyebab flaky paling umum?</summary><p class="ok">Jawaban: sleep tetap dan data uji dipakai bersama</p><p>Waktu dan ketergantungan antar tes.</p></details>
+<a class="cta" href="/#qa-5-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/qa/tes-e2e-dengan-playwright">Tes E2E dengan Playwright</a></p><p>Berikutnya: <a href="/belajar/qa/uji-performa-dengan-k6-dan-tes-di-ci">Uji performa dengan k6 dan tes di CI</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

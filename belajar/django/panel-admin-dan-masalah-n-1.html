@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Panel admin dan masalah N+1 · Django · Ruang Kode</title>
+<meta name="description" content="Panel admin Django memberi antarmuka CRUD siap pakai. Buat akun dengan createsuperuser, daftarkan model di admin.py, lalu atur list_display, list_filter,…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/django/panel-admin-dan-masalah-n-1">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Panel admin dan masalah N+1 · Django · Ruang Kode"><meta property="og:description" content="Panel admin Django memberi antarmuka CRUD siap pakai. Buat akun dengan createsuperuser, daftarkan model di admin.py, lalu atur list_display, list_filter,…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/django/panel-admin-dan-masalah-n-1"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Panel admin dan masalah N+1", "description": "Panel admin Django memberi antarmuka CRUD siap pakai. Buat akun dengan createsuperuser, daftarkan model di admin.py, lalu atur list_display, list_filter,…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/django/panel-admin-dan-masalah-n-1", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Django", "url": "https://ruang-kode-nine.vercel.app/belajar/django"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Django", "item": "https://ruang-kode-nine.vercel.app/belajar/django"}, {"@type": "ListItem", "position": 3, "name": "Panel admin dan masalah N+1", "item": "https://ruang-kode-nine.vercel.app/belajar/django/panel-admin-dan-masalah-n-1"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/django">Django</a> / Modul 2</nav>
+<div class="eyebrow">Django · Modul 2 · Konsep &amp; kode</div><h1>Panel admin dan masalah N+1</h1><a class="cta" href="/#django-2-3">Buka versi interaktif</a>
+<p>Panel <b>admin</b> Django memberi antarmuka CRUD siap pakai. Buat akun dengan <code>createsuperuser</code>, daftarkan model di <code>admin.py</code>, lalu atur <code>list_display</code>, <code>list_filter</code>, <code>search_fields</code>, dan <code>prepopulated_fields</code>.</p>
+<p>Waspadai <b>masalah N+1</b>: menampilkan 50 produk beserta nama kategorinya bisa menghasilkan 1 + 50 query. Gunakan <code>select_related</code> untuk ForeignKey dan OneToOne (JOIN), serta <code>prefetch_related</code> untuk ManyToMany dan relasi balik (dua query lalu digabung di Python).</p>
+<p>Alat <b>django-debug-toolbar</b> menampilkan jumlah dan durasi query setiap halaman saat pengembangan.</p>
+<div class="lbl">PYTHON</div><pre><code># katalog/admin.py
+from django.contrib import admin
+from .models import Kategori, Produk
+
+@admin.register(Produk)
+class ProdukAdmin(admin.ModelAdmin):
+    list_display = [&#x27;nama&#x27;, &#x27;kategori&#x27;, &#x27;harga&#x27;, &#x27;stok&#x27;, &#x27;aktif&#x27;]
+    list_filter = [&#x27;aktif&#x27;, &#x27;kategori&#x27;]
+    search_fields = [&#x27;nama&#x27;]
+    list_editable = [&#x27;harga&#x27;, &#x27;stok&#x27;]
+    prepopulated_fields = {&#x27;slug&#x27;: [&#x27;nama&#x27;]}
+    list_select_related = [&#x27;kategori&#x27;]   # cegah N+1
+
+admin.site.register(Kategori)
+
+# di view: 1 query dengan JOIN, bukan 51 query
+produk = Produk.objects.select_related(&#x27;kategori&#x27;).all()[:50]</code></pre>
+<h2>Poin penting</h2><ul><li>admin.py: list_display, list_filter, search_fields.</li><li>select_related untuk FK, prefetch_related untuk M2M.</li><li>Pantau jumlah query dengan debug toolbar.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Relasi ManyToMany sebaiknya dioptimasi dengan?</summary><p class="ok">Jawaban: prefetch_related</p><p>select_related hanya untuk FK dan OneToOne.</p></details>
+<a class="cta" href="/#django-2-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/django/migrasi-dan-queryset">Migrasi dan QuerySet</a></p><p>Berikutnya: <a href="/belajar/django/view-dan-url">View dan URL</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

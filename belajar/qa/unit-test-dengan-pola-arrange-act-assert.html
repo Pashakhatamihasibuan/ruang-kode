@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Unit test dengan pola Arrange-Act-Assert · QA Engineer · Ruang Kode</title>
+<meta name="description" content="Unit test menguji satu unit kecil secara terisolasi dan berjalan dalam milidetik. Pola AAA: Arrange (siapkan data), Act (jalankan fungsi), Assert…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/qa/unit-test-dengan-pola-arrange-act-assert">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Unit test dengan pola Arrange-Act-Assert · QA Engineer · Ruang Kode"><meta property="og:description" content="Unit test menguji satu unit kecil secara terisolasi dan berjalan dalam milidetik. Pola AAA: Arrange (siapkan data), Act (jalankan fungsi), Assert…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/qa/unit-test-dengan-pola-arrange-act-assert"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Unit test dengan pola Arrange-Act-Assert", "description": "Unit test menguji satu unit kecil secara terisolasi dan berjalan dalam milidetik. Pola AAA: Arrange (siapkan data), Act (jalankan fungsi), Assert…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/qa/unit-test-dengan-pola-arrange-act-assert", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "QA Engineer", "url": "https://ruang-kode-nine.vercel.app/belajar/qa"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "QA Engineer", "item": "https://ruang-kode-nine.vercel.app/belajar/qa"}, {"@type": "ListItem", "position": 3, "name": "Unit test dengan pola Arrange-Act-Assert", "item": "https://ruang-kode-nine.vercel.app/belajar/qa/unit-test-dengan-pola-arrange-act-assert"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/qa">QA Engineer</a> / Modul 4</nav>
+<div class="eyebrow">QA Engineer · Modul 4 · Konsep &amp; kode</div><h1>Unit test dengan pola Arrange-Act-Assert</h1><a class="cta" href="/#qa-4-1">Buka versi interaktif</a>
+<p><b>Unit test</b> menguji satu unit kecil secara terisolasi dan berjalan dalam milidetik. Pola <b>AAA</b>: <b>Arrange</b> (siapkan data), <b>Act</b> (jalankan fungsi), <b>Assert</b> (periksa hasil). Nama tes sebaiknya menjelaskan perilaku, misalnya <code>tes_diskon_member_10_persen</code>.</p>
+<p>Di Python, standar industri adalah <b>pytest</b>: cukup tulis fungsi berawalan <code>test_</code> dan pakai <code>assert</code>. Fitur unggulannya: <code>@pytest.mark.parametrize</code> untuk banyak data sekaligus, <b>fixture</b> untuk persiapan bersama, dan laporan kegagalan yang jelas.</p>
+<p>Contoh di bawah memakai pelari tes mini agar bisa dijalankan di browser. Di proyek nyata, simpan di <code>tests/test_harga.py</code> lalu jalankan <code>pytest -v</code>.</p>
+<div class="lbl">PYTHON</div><pre><code>
+def jalankan(*tes):
+    lulus = 0
+    for t in tes:
+        try:
+            t()
+            print(&#x27;LULUS&#x27;, t.__name__)
+            lulus += 1
+        except AssertionError as e:
+            print(&#x27;GAGAL&#x27;, t.__name__, &#x27;-&#x27;, e)
+    print(f&#x27;{lulus}/{len(tes)} tes lulus&#x27;)
+
+def harga_akhir(harga, member=False, kupon=None):
+    if harga &lt; 0:
+        raise ValueError(&#x27;harga negatif&#x27;)
+    if member:
+        harga = harga * 90 // 100
+    if kupon == &#x27;HEMAT5K&#x27;:
+        harga = max(0, harga - 5000)
+    return harga
+
+def tes_member_diskon_10_persen():
+    # Arrange
+    harga = 100000
+    # Act
+    hasil = harga_akhir(harga, member=True)
+    # Assert
+    assert hasil == 90000
+
+def tes_kupon_tidak_membuat_negatif():
+    assert harga_akhir(3000, kupon=&#x27;HEMAT5K&#x27;) == 0
+
+def tes_harga_negatif_ditolak():
+    try:
+        harga_akhir(-1)
+        assert False, &#x27;harus error&#x27;
+    except ValueError:
+        pass
+
+def tes_parametrize():
+    for harga, member, kupon, harap in [(50000, False, None, 50000), (50000, True, &#x27;HEMAT5K&#x27;, 40000)]:
+        assert harga_akhir(harga, member, kupon) == harap
+
+jalankan(tes_member_diskon_10_persen, tes_kupon_tidak_membuat_negatif, tes_harga_negatif_ditolak, tes_parametrize)</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>LULUS tes_member_diskon_10_persen
+LULUS tes_kupon_tidak_membuat_negatif
+LULUS tes_harga_negatif_ditolak
+LULUS tes_parametrize
+4/4 tes lulus</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis tes untuk fungsi <code>slug(judul)</code> yang mengubah "Belajar Python Dasar" menjadi "belajar-python-dasar", lalu jalankan.</p><details><summary>Petunjuk</summary><p>lower() dan replace spasi dengan tanda hubung.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>def slug(judul):
+    return judul.strip().lower().replace(&#x27; &#x27;, &#x27;-&#x27;)
+
+def tes_slug():
+    assert slug(&#x27;Belajar Python Dasar&#x27;) == &#x27;belajar-python-dasar&#x27;
+    assert slug(&#x27;  Halo  &#x27;) == &#x27;halo&#x27;
+
+tes_slug()
+print(&#x27;tes_slug lulus&#x27;)</code></pre><div class="lbl">KELUARAN</div><pre><code>tes_slug lulus</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Arrange, Act, Assert.</li><li>Nama tes = perilaku yang diuji.</li><li>pytest: assert biasa, parametrize, fixture.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Bagian AAA yang memanggil fungsi yang diuji?</summary><p class="ok">Jawaban: Act</p><p>Arrange menyiapkan, Assert memeriksa.</p></details>
+<a class="cta" href="/#qa-4-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/qa/exploratory-testing">Exploratory testing</a></p><p>Berikutnya: <a href="/belajar/qa/mock-dan-stub">Mock dan stub</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>
