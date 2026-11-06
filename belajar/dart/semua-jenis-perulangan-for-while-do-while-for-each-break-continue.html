@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Semua jenis perulangan: for, while, do-while, for-each, break, continue · Dart · Ruang Kode</title>
+<meta name="description" content="Perulangan (loop) menyuruh komputer mengulang sekelompok perintah tanpa kita menulis ulang. Semua jenis loop punya tiga bagian yang sama: nilai awal,…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dart/semua-jenis-perulangan-for-while-do-while-for-each-break-continue">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Semua jenis perulangan: for, while, do-while, for-each, break, continue · Dart · Ruang Kode"><meta property="og:description" content="Perulangan (loop) menyuruh komputer mengulang sekelompok perintah tanpa kita menulis ulang. Semua jenis loop punya tiga bagian yang sama: nilai awal,…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dart/semua-jenis-perulangan-for-while-do-while-for-each-break-continue"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Semua jenis perulangan: for, while, do-while, for-each, break, continue", "description": "Perulangan (loop) menyuruh komputer mengulang sekelompok perintah tanpa kita menulis ulang. Semua jenis loop punya tiga bagian yang sama: nilai awal,…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dart/semua-jenis-perulangan-for-while-do-while-for-each-break-continue", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Dart", "url": "https://ruang-kode-nine.vercel.app/belajar/dart"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Dart", "item": "https://ruang-kode-nine.vercel.app/belajar/dart"}, {"@type": "ListItem", "position": 3, "name": "Semua jenis perulangan: for, while, do-while, for-each, break, continue", "item": "https://ruang-kode-nine.vercel.app/belajar/dart/semua-jenis-perulangan-for-while-do-while-for-each-break-continue"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dart">Dart</a> / Modul 2</nav>
+<div class="eyebrow">Dart · Modul 2 · Konsep &amp; kode</div><h1>Semua jenis perulangan: for, while, do-while, for-each, break, continue</h1><a class="cta" href="/#dart-2-4">Buka versi interaktif</a>
+<p>Perulangan (loop) menyuruh komputer <b>mengulang</b> sekelompok perintah tanpa kita menulis ulang. Semua jenis loop punya tiga bagian yang sama: <b>nilai awal</b>, <b>kondisi</b> kapan terus mengulang, dan <b>perubahan</b> di setiap putaran agar suatu saat berhenti. Bedanya ada pada <i>kapan</i> kondisi dicek dan <i>apa</i> yang diulang.</p>
+<p><b>for</b> dipakai ketika jumlah putaran sudah pasti, misalnya mencetak angka 1 sampai 3. Nilai awal, kondisi, dan perubahan ditulis dalam satu baris sehingga mudah dibaca.</p>
+<p><b>while</b> mengecek kondisi <b>sebelum</b> badan dijalankan. Jika kondisinya sudah salah sejak awal, badan tidak pernah dijalankan sama sekali (0 putaran). Cocok saat kita tidak tahu berapa kali harus mengulang.</p>
+<p><b>do-while</b> menjalankan badan <b>dulu</b>, baru mengecek kondisi di akhir. Akibatnya badan <b>pasti jalan minimal sekali</b>. Lihat contoh: x = 10 dan kondisinya x &lt; 5 sudah salah, tetapi barisnya tetap tercetak satu kali. Inilah perbedaan terpenting antara while dan do-while.</p>
+<p><b>for-each</b> menelusuri setiap isi koleksi (array atau list) satu per satu tanpa mengurus indeks, sehingga tidak mungkin salah indeks. Loop <b>bersarang</b> adalah loop di dalam loop: untuk setiap putaran loop luar, loop dalam berjalan sampai selesai, seperti baris dan kolom tabel perkalian.</p>
+<p><b>break</b> menghentikan loop saat itu juga, sedangkan <b>continue</b> hanya melewati sisa badan pada putaran ini lalu lanjut ke putaran berikutnya. Buka visual 3D di bawah, pilih jenis loop di panel Eksperimen, dan bandingkan sendiri jalannya.</p>
+<p>Catatan Dart: for-each ditulis <code>for (final b in buah)</code>. List juga punya <code>forEach()</code>, tetapi <code>break</code> dan <code>continue</code> hanya bisa dipakai di loop biasa.</p>
+<div class="tw"><table><caption>Perbandingan jenis perulangan</caption><thead><tr><th>Jenis</th><th>Kondisi dicek</th><th>Paling sedikit jalan</th><th>Cocok untuk</th></tr></thead><tbody><tr><td>for</td><td>sebelum tiap putaran</td><td>0 kali</td><td>jumlah putaran sudah diketahui (1 sampai 10, 12 bulan)</td></tr><tr><td>while</td><td>sebelum tiap putaran</td><td>0 kali</td><td>berhenti karena keadaan, jumlahnya belum tahu (sampai saldo habis)</td></tr><tr><td>do-while</td><td>sesudah tiap putaran</td><td>1 kali</td><td>badan harus jalan dulu (tampilkan menu, minta input lalu cek)</td></tr><tr><td>for-each</td><td>otomatis sampai elemen habis</td><td>0 kali (jika koleksi kosong)</td><td>membaca setiap isi array atau list tanpa indeks</td></tr><tr><td>bersarang</td><td>loop dalam selesai dulu tiap putaran loop luar</td><td>luar × dalam</td><td>tabel, baris dan kolom, membandingkan semua pasangan</td></tr><tr><td>break</td><td>saat ditemui</td><td>langsung keluar</td><td>berhenti begitu yang dicari ketemu</td></tr><tr><td>continue</td><td>saat ditemui</td><td>lompat ke putaran berikutnya</td><td>melewati data yang tidak perlu diproses</td></tr></tbody></table></div>
+<div class="lbl">KODE</div><pre><code>void main() {
+  // 1. for: jumlah putaran sudah pasti
+  for (var i = 1; i &lt;= 3; i++) {
+    print(&#x27;for: i = $i&#x27;);
+  }
+
+  // 2. while: kondisi dicek DULU, bisa 0 kali
+  var n = 3;
+  while (n &gt; 0) {
+    print(&#x27;while: n = $n&#x27;);
+    n--;
+  }
+
+  // 3. do-while: badan jalan DULU, kondisi dicek di akhir
+  var x = 10;
+  do {
+    print(&#x27;do-while: x = $x (tetap jalan sekali)&#x27;);
+    x++;
+  } while (x &lt; 5);
+
+  // 4. for-in: menelusuri isi list tanpa indeks
+  final buah = [&#x27;apel&#x27;, &#x27;jeruk&#x27;, &#x27;mangga&#x27;];
+  for (final b in buah) {
+    print(&#x27;for-each: $b&#x27;);
+  }
+
+  // 5. bersarang: loop di dalam loop
+  for (var baris = 1; baris &lt;= 2; baris++) {
+    final isi = &lt;int&gt;[];
+    for (var kolom = 1; kolom &lt;= 3; kolom++) {
+      isi.add(baris * kolom);
+    }
+    print(&#x27;nested: ${isi.join(&#x27; &#x27;)}&#x27;);
+  }
+
+  // 6. break: keluar dari loop lebih awal
+  var hasil = &lt;int&gt;[];
+  for (var i = 1; i &lt;= 10; i++) {
+    if (i == 4) break;
+    hasil.add(i);
+  }
+  print(&#x27;break: ${hasil.join(&#x27; &#x27;)}&#x27;);
+
+  // 7. continue: lewati sisa badan untuk putaran ini saja
+  hasil = [];
+  for (var i = 1; i &lt;= 6; i++) {
+    if (i % 2 == 0) continue;
+    hasil.add(i);
+  }
+  print(&#x27;continue: ${hasil.join(&#x27; &#x27;)}&#x27;);
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>for: i = 1
+for: i = 2
+for: i = 3
+while: n = 3
+while: n = 2
+while: n = 1
+do-while: x = 10 (tetap jalan sekali)
+for-each: apel
+for-each: jeruk
+for-each: mangga
+nested: 1 2 3
+nested: 2 4 6
+break: 1 2 3
+continue: 1 3 5</code></pre>
+<h2>Poin penting</h2><ul><li>for: jumlah putaran pasti; while: berhenti karena keadaan.</li><li>while mengecek kondisi di awal (bisa 0 kali), do-while di akhir (minimal 1 kali).</li><li>for-each membaca setiap isi koleksi tanpa indeks.</li><li>break keluar dari loop; continue melompat ke putaran berikutnya.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kondisi sudah salah sejak awal. Loop mana yang badannya tetap jalan satu kali?</summary><p class="ok">Jawaban: do-while</p><p>do-while mengecek kondisi di akhir, jadi badan jalan dulu.</p></details><details><summary>Ingin mencetak semua nama dalam list tanpa memakai indeks. Loop yang paling tepat?</summary><p class="ok">Jawaban: for-each</p><p>for-each menelusuri setiap isi koleksi langsung.</p></details><details><summary>Apa beda break dan continue?</summary><p class="ok">Jawaban: break keluar dari loop, continue melewati putaran ini saja</p><p>continue tetap melanjutkan putaran berikutnya.</p></details><details><summary>Loop luar 2 putaran, loop dalam 3 putaran. Berapa kali badan loop dalam dijalankan?</summary><p class="ok">Jawaban: 6</p><p>Setiap putaran luar menjalankan loop dalam sampai habis: 2 × 3.</p></details>
+<a class="cta" href="/#dart-2-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dart/fungsi-parameter-bernama-dan-arrow-function">Fungsi, parameter bernama, dan arrow function</a></p><p>Berikutnya: <a href="/belajar/dart/list-map-set-dan-operasi-koleksi">List, Map, Set dan operasi koleksi</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

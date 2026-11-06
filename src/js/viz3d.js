@@ -64,18 +64,62 @@ S.matrix={t:'Array dua dimensi: baris dan kolom',
      :{cap:`<code>m[${P.tr}][${P.tc}]</code> <b>di luar batas</b>. Baris yang sah 0–${R3-1} dan kolom 0–${C4-1}, jadi program akan error.`,it:[...grid(()=>0),G('err',0,2,0,'di luar batas!','bad')]}]}};
 
 /* ---------- perulangan ---------- */
-S.loop={t:'Perulangan sebagai tangga yang dinaiki satu per satu',
- p:[{k:'a',l:'Mulai (i = …)',t:'n',min:-3,max:10,v:0},{k:'z',l:'Batas (i < …)',t:'n',min:-3,max:20,v:4},{k:'s',l:'Langkah (i += …)',t:'n',min:1,max:5,v:1}],
- steps:P=>{const vals=[];for(let i=P.a;i<P.z&&vals.length<9;i+=P.s)vals.push(i);const N=vals.length,more=P.a+N*P.s<P.z;
-  const X=k=>(k-(N-1)/2)*1.3,tangga=n=>[lantai(Math.max(6,N*1.4+2),3),...vals.map((v,k)=>B('s'+k,X(k),k*.4-.3,0,{w:1.2,h:.4,d:1.6,c:k<n?'ok':'mute',t:'i='+v}))],
-    bola=(k,y)=>B('bola',N?X(k):0,y,0,{w:.5,h:.5,d:.5,c:'warn',ball:1});
-  const kode=`<code>for (i = ${P.a}; i &lt; ${P.z}; i += ${P.s})</code>`;
-  if(!N)return [{cap:`${kode}: kondisi awal <code>${P.a} &lt; ${P.z}</code> sudah <b>salah</b>, jadi badan perulangan <b>tidak pernah dijalankan</b> sama sekali (0 putaran).`,it:[lantai(6,3),bola(0,0),G('cek',0,1.3,0,`${P.a} < ${P.z} salah`,'bad')]}];
-  const st=[{cap:`${kode}: perulangan mengulang badan kode selama kondisi masih benar. Nilai i: ${vals.join(', ')}${more?', …':''}. Ada <b>${N}${more?'+':''} anak tangga</b>.`,it:[...tangga(0),bola(-1.2,0),G('cek',X(0)-1.2,1.4,0,'i = '+P.a,'warn')]}];
-  vals.forEach((v,k)=>st.push({cap:`Putaran ${k+1}: cek <code>i &lt; ${P.z}</code> → ${v} &lt; ${P.z} <b>benar</b>, badan dijalankan, lalu <code>i += ${P.s}</code> menjadi ${v+P.s}.`,it:[...tangga(k+1),bola(k,k*.4+.35),G('cek',X(k),k*.4+1.5,0,`i = ${v} → ${v+P.s}`,'warn')]}));
-  const end=P.a+N*P.s;
-  st.push(more?{cap:`(Tangga dipotong di 9 putaran agar muat di layar; perulangan sebenarnya masih berlanjut sampai i ≥ ${P.z}.)`,it:[...tangga(N),bola(N-1,(N-1)*.4+.35)]}
-   :{cap:`Cek lagi: <code>i &lt; ${P.z}</code> → ${end} &lt; ${P.z} <b>salah</b>. Perulangan berhenti. Total <b>${N} putaran</b>.`,it:[...tangga(N),bola(N,N*.4+.2),G('cek',X(N-1)+.6,N*.4+1.6,0,`${end} < ${P.z} salah → keluar`,'bad')]});
+S.loop={t:'Perulangan sebagai tangga: semua jenis loop',
+ p:[{k:'jenis',l:'Jenis perulangan',t:'o',o:[['for','for'],['while','while'],['do','do-while'],['each','for-each'],['nested','bersarang (nested)'],['break','break'],['continue','continue'],['banding','Bandingkan for, while, do-while']],v:'for'},
+   {k:'a',l:'Mulai (i = …)',t:'n',min:-3,max:10,v:0},{k:'z',l:'Batas (i < …)',t:'n',min:-3,max:20,v:4},{k:'s',l:'Langkah (i += …)',t:'n',min:1,max:5,v:1},
+   {k:'b',l:'break saat i = … (jenis break)',t:'n',min:-3,max:20,v:2}],
+ steps:P=>{const vals=[];for(let i=P.a;i<P.z&&vals.length<9;i+=P.s)vals.push(i);const N=vals.length,more=P.a+N*P.s<P.z,end=P.a+N*P.s;
+  const X=(k,n=N)=>(k-(Math.max(n,1)-1)/2)*1.3;
+  const tangga=(list,st,z=0,pre='s')=>list.map((v,k)=>B(pre+k,X(k,list.length),k*.4-.3,z,{w:1.2,h:.4,d:1.4,c:st(k,v),t:'i='+v}));
+  const bola=(id,k,y,z=0,c='warn',n=N)=>B(id,n?X(k,n):0,y,z,{w:.5,h:.5,d:.5,c,ball:1});
+  const lt=(n=N,d=3)=>lantai(Math.max(6,n*1.4+2),d);
+  const J=P.jenis;
+  /* ---- bandingkan tiga jenis berdampingan ---- */
+  if(J==='banding'){const nDo=Math.max(1,N),dv=N?vals:[P.a];const lanes=[['for',N,vals,-2.2],['while',N,vals,0],['do-while',nDo,dv,2.2]];
+    const pang=(fin)=>[lantai(Math.max(7,Math.max(nDo,1)*1.4+3),7.4),...lanes.flatMap(([nm,n,list,z])=>[G('ln'+nm,X(0,Math.max(nDo,1))-1.9,0,z,nm,'idx'),
+      ...list.map((v,k)=>B('s'+nm+k,X(k,Math.max(nDo,1)),k*.4-.3,z,{w:1.2,h:.4,d:1.4,c:fin&&k<n?'ok':'mute',t:'i='+v})),
+      B('b'+nm,fin?(n?X(n-1,Math.max(nDo,1)):X(0,Math.max(nDo,1))-1.2):X(0,Math.max(nDo,1))-1.2,fin&&n?(n-1)*.4+.35:0,z,{w:.5,h:.5,d:.5,c:n?'warn':'bad',ball:1}),
+      ...(fin?[G('n'+nm,X(Math.max(n,1)-1,Math.max(nDo,1))+.9,Math.max(n,1)*.4+.9,z,n+'×',n?'ok':'bad')]:[])])];
+    return [
+     {cap:`Tiga loop dengan aturan yang sama: mulai i = ${P.a}, ulang selama i &lt; ${P.z}, langkah ${P.s}. Bedanya hanya <b>kapan kondisi dicek</b>.`,it:pang(false)},
+     {cap:N?`Hasil: for dan while sama-sama jalan <b>${N} kali</b>${more?'+':''}, do-while juga ${nDo} kali. Selama kondisi awal benar, ketiganya setara. Sekarang coba ubah <b>Mulai</b> menjadi ≥ ${P.z}.`
+        :`Kondisi awal ${P.a} &lt; ${P.z} sudah <b>salah</b>. for dan while mengecek di awal, jadi <b>0 kali</b>. do-while menjalankan badan dulu baru mengecek, jadi tetap <b>1 kali</b>. Inilah beda utamanya.`,it:pang(true)},
+     {cap:'Ringkasnya: <b>for</b> untuk jumlah putaran yang pasti, <b>while</b> untuk berhenti karena keadaan, <b>do-while</b> jika badan harus jalan minimal sekali (misalnya menampilkan menu lalu bertanya "ulangi?").',it:pang(true)}]}
+  /* ---- for-each ---- */
+  if(J==='each'){const data=N?vals.map(v=>v*10):[];const kot=(hi)=>[lt(),...data.map((v,k)=>B('e'+k,X(k),0,0,{w:1,h:1,d:1,c:k<hi?'ok':k===hi?'warn':'mute',t:String(v)})),G('arr',X(0)-1.6,1.2,0,'data','idx')];
+    if(!N)return [{cap:'Koleksinya <b>kosong</b>, jadi for-each tidak menjalankan badannya sama sekali. Ubah Mulai dan Batas agar ada isinya.',it:[lt(),G('k',0,.5,0,'[ ] kosong','bad')]}];
+    return [{cap:`<code>for (x : data)</code> / <code>for x in data</code>: for-each mengambil <b>isi</b> koleksi satu per satu, tanpa indeks dan tanpa kondisi yang kita tulis. Data berisi ${N} elemen.`,it:kot(-1)},
+      ...data.map((v,k)=>({cap:`Putaran ${k+1}: x = <b>${v}</b>. Tidak ada <code>i++</code> yang bisa lupa ditulis, dan tidak mungkin salah indeks.`,it:[...kot(k),B('bola',X(k),.9,0,{w:.5,h:.5,d:.5,c:'warn',ball:1})]})),
+      {cap:`Elemen habis, loop berhenti otomatis setelah <b>${N} putaran</b>. Pakai for-each jika hanya perlu membaca setiap isi; pakai for biasa jika butuh nomor indeksnya.`,it:kot(N)}]}
+  /* ---- bersarang ---- */
+  if(J==='nested'){const R=Math.max(1,Math.min(4,N)),C=3,rows=(N?vals:[P.a]).slice(0,R);
+    const grid=(r)=>[lantai(C*1.3+3,R*1.3+2),...rows.flatMap((v,ri)=>[...Array(C)].map((_,c)=>B('g'+ri+'_'+c,(c-1)*1.3,ri<r?0:-.2,(ri-(R-1)/2)*1.3,{w:1,h:ri<r?.8:.3,d:1,c:ri<r?'ok':ri===r?'warn':'mute',t:ri<=r?String(v*(c+1)):''}))),
+      ...rows.map((v,ri)=>G('rl'+ri,-3.2,0,(ri-(R-1)/2)*1.3,'luar i='+v,'idx')),...[0,1,2].map(c=>G('cl'+c,(c-1)*1.3,-.4,(R/2)*1.3+.8,'dalam j='+(c+1),'idx'))];
+    if(!N)return [{cap:'Loop luar tidak pernah jalan (kondisi awal salah), jadi loop dalam juga tidak pernah jalan.',it:[lantai(6,3),G('k',0,.5,0,'0 × 3 = 0','bad')]}];
+    return [{cap:`Loop <b>bersarang</b>: loop luar (i) berjalan ${R} kali, dan di <b>setiap</b> putaran luar, loop dalam (j = 1..3) berjalan sampai habis.`,it:grid(-1)},
+      ...rows.map((v,ri)=>({cap:`Putaran luar i = ${v}: loop dalam jalan 3 kali → ${[1,2,3].map(j=>v*j).join(', ')} (i × j). Baru setelah itu i naik.`,it:grid(ri)})),
+      {cap:`Total badan loop dalam dijalankan ${R} × 3 = <b>${R*3} kali</b>. Hati-hati: loop bersarang cepat membengkak, 1000 × 1000 = sejuta putaran.`,it:grid(R)}]}
+  /* ---- for, while, do-while, break, continue (satu tangga) ---- */
+  const dv=J==='do'&&!N?[P.a]:vals,M=dv.length;
+  const kode={for:`<code>for (i = ${P.a}; i &lt; ${P.z}; i += ${P.s})</code>`,while:`<code>i = ${P.a}; while (i &lt; ${P.z}) { …; i += ${P.s} }</code>`,do:`<code>i = ${P.a}; do { …; i += ${P.s} } while (i &lt; ${P.z})</code>`,
+    break:`<code>for (i = ${P.a}; i &lt; ${P.z}; i += ${P.s}) { if (i == ${P.b}) break; … }</code>`,continue:`<code>for (i = ${P.a}; i &lt; ${P.z}; i += ${P.s}) { if (i % 2 == 0) continue; … }</code>`}[J]||'';
+  if(!M)return [{cap:`${kode}: kondisi awal <code>${P.a} &lt; ${P.z}</code> sudah <b>salah</b>, jadi badan <b>tidak pernah dijalankan</b> (0 putaran).${J==='while'||J==='for'?' Coba jenis do-while dengan angka yang sama: badannya tetap jalan sekali.':''}`,it:[lt(),bola('bola',0,0),G('cek',0,1.3,0,`${P.a} < ${P.z} salah`,'bad')]}];
+  const stopAt=J==='break'?dv.indexOf(P.b):-1;
+  const warna=(n,cur)=>(k,v)=>J==='continue'&&k<n&&v%2===0?'mute':J==='break'&&stopAt>=0&&k>=stopAt?(k<n?'bad':'mute'):k<n?'ok':'mute';
+  const st=[{cap:J==='do'?`${kode}: do-while langsung menjalankan badan <b>tanpa mengecek</b> dulu. Kondisi baru diperiksa di akhir setiap putaran.`
+     :`${kode}: ${J==='while'?'while mengecek kondisi <b>sebelum</b> setiap putaran.':J==='break'?`loop ini akan <b>berhenti paksa</b> saat i = ${P.b}.`:J==='continue'?'angka genap akan <b>dilewati</b>, tetapi loop tetap lanjut.':'for menulis nilai awal, kondisi, dan perubahan dalam satu baris.'} Nilai i: ${dv.join(', ')}${more?', …':''}.`,
+     it:[lt(M),...tangga(dv,warna(0)),bola('bola',-1.2,0,0,'warn',M),G('cek',X(0,M)-1.2,1.4,0,'i = '+P.a,'warn')]}];
+  for(let k=0;k<M;k++){const v=dv[k];
+    if(J==='break'&&v===P.b){st.push({cap:`i = ${v}: kondisi <code>i == ${P.b}</code> benar, jadi <b>break</b>. Loop langsung berhenti walaupun <code>i &lt; ${P.z}</code> masih benar. Sisa tangga tidak pernah dinaiki.`,it:[lt(M),...tangga(dv,warna(k+1)),bola('bola',k,k*.4+.35,0,'bad',M),G('cek',X(k,M),k*.4+1.5,0,'break! keluar','bad')]});return st}
+    const skip=J==='continue'&&v%2===0;
+    const ket=J==='do'&&k===0?`Putaran 1: badan dijalankan <b>dulu</b> (i = ${v}), baru dicek: <code>${v+P.s} &lt; ${P.z}</code> → <b>${v+P.s<P.z}</b>.${N?'':' Kondisinya salah, tetapi badan sudah terlanjur jalan sekali.'}`
+      :skip?`Putaran ${k+1}: i = ${v} genap, jadi <b>continue</b>: sisa badan dilewati, langsung ke putaran berikutnya.`
+      :`Putaran ${k+1}: cek <code>i &lt; ${P.z}</code> → ${v} &lt; ${P.z} <b>benar</b>, badan dijalankan, lalu <code>i += ${P.s}</code> menjadi ${v+P.s}.`;
+    st.push({cap:ket,it:[lt(M),...tangga(dv,warna(k+1)),bola('bola',k,k*.4+.35,0,skip?'mute':'warn',M),G('cek',X(k,M),k*.4+1.5,0,skip?`i = ${v} dilewati`:`i = ${v} → ${v+P.s}`,skip?'idx':'warn')]})}
+  const jalan=J==='continue'?dv.filter(v=>v%2!==0).length:M;
+  st.push(more?{cap:`(Tangga dipotong di 9 putaran agar muat di layar; perulangan sebenarnya masih berlanjut sampai i ≥ ${P.z}.)`,it:[lt(M),...tangga(dv,warna(M)),bola('bola',M-1,(M-1)*.4+.35,0,'warn',M)]}
+   :{cap:`Cek lagi: <code>i &lt; ${P.z}</code> → ${J==='do'&&!N?P.a+P.s:end} &lt; ${P.z} <b>salah</b>. Perulangan berhenti. ${J==='continue'?`Ada ${M} putaran, tetapi badan hanya benar-benar bekerja <b>${jalan} kali</b> (angka ganjil).`:`Total <b>${M} putaran</b>.`}${J==='break'?` Angka ${P.b} tidak pernah muncul, jadi break tidak terpicu.`:''}`,
+     it:[lt(M),...tangga(dv,warna(M)),bola('bola',M,M*.4+.2,0,'warn',M),G('cek',X(M-1,M)+.6,M*.4+1.6,0,'salah → keluar','bad')]});
   return st}};
 
 /* ---------- percabangan ---------- */
@@ -259,6 +303,15 @@ window.v3dOf=function(t,title){if(!t||!title)return null;
   const kode=KODE.has(t.lang)||LOGIKA.test(t.k);
   for(const [rx,s,any] of RULES)if(rx.test(title)&&(any||kode))return s;return null};
 window.V3DT=k=>S[k]&&S[k].t;
+/* jenis loop awal ditebak dari judul pelajaran, agar adegan langsung menampilkan jenis yang dibahas */
+window.v3dInit=function(k,title){if(k!=='loop')return null;const t=String(title||'');
+  if(/do-while|kapan for|repeat-until|simbol do\b|semua jenis/i.test(t))return {jenis:'banding'};
+  if(/bersarang|nested|loop di dalam loop/i.test(t))return {jenis:'nested'};
+  if(/\bbreak\b|penghentian/i.test(t))return {jenis:'break'};
+  if(/continue/i.test(t))return {jenis:'continue'};
+  if(/for\.\.\.of|for-each|foreach|enhanced/i.test(t))return {jenis:'each'};
+  if(/while|tak pasti/i.test(t))return {jenis:'while'};
+  return null};
 
 /* ---------- mesin panggung ---------- */
 const FACES=[['f',0,0],['b',0,180],['r',0,90],['l',0,-90],['t',90,0],['u',-90,0]];
@@ -268,10 +321,10 @@ function blockHTML(o,U){const w=o.w*U,h=o.h*U,d=o.d*U,ln=o.t?`<b>${o.t}</b>`:'',
     return `<div class="f3 f-${k}" style="width:${fw}px;height:${fh}px;transform:translate(-50%,-50%) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(${tz}px)">${k==='f'?ln+(o.flat?'':''):k==='t'?tt:''}</div>`}).join('')}
 function place(o,U){return `translate3d(${o.x*U}px,${-o.y*U}px,${o.z*U}px) rotateY(${o.ry||0}deg) rotateZ(${-(o.rz||0)}deg)`}
 
-window.V3D=function(host,key){const sc=S[key];if(!sc)return;
+window.V3D=function(host,key,init){const sc=S[key];if(!sc)return;
   const rm=RMq();let i=0,rx=-20,ry=-28,auto=null,U=40;const els=new Map();
   /* parameter eksperimen: nilai awal dari definisi adegan, langkah dihitung ulang setiap kali diubah */
-  const PD=sc.p||[],P={};PD.forEach(d=>P[d.k]=d.v);
+  const PD=(sc.p||[]).map(d=>init&&init[d.k]!=null?{...d,v:init[d.k]}:d),P={};PD.forEach(d=>P[d.k]=d.v);
   const hitung=()=>{try{return typeof sc.steps==='function'?sc.steps(P):sc.steps}catch(e){return [{cap:'Nilai ini belum bisa digambar. Coba angka lain.',it:[lantai()]}]}};
   let steps=hitung();
   const fld=d=>{const id=`v3-${key}-${d.k}-${Math.random().toString(36).slice(2,7)}`;

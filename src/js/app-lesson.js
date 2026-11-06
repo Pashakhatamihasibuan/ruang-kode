@@ -79,7 +79,7 @@ function mount3d(x,y){const k=typeof v3dOf==='function'&&v3dOf(y.t,x.title);if(!
   const sec=document.createElement('section');sec.className='viz v3-sec';sec.id='v3d';
   sec.innerHTML=`<div class="viz-head"><span class="eyebrow">Visual 3D</span><h3>${V3DT(k)}</h3><p>Seret panggung untuk melihat dari sudut lain, lalu tekan Berikutnya untuk menjalankan langkahnya.</p></div><div class="vizhost v3host"></div>`;
   const pr=lb.querySelector('.prose');if(pr&&pr.parentNode)pr.parentNode.insertBefore(sec,pr.nextSibling);else lb.prepend(sec);
-  V3D(sec.querySelector('.v3host'),k)}
+  V3D(sec.querySelector('.v3host'),k,y.l.v3p||(typeof v3dInit==='function'&&v3dInit(k,x.title)))}
 /* layar lebar: tombol menyembunyikan/menampilkan menu belajar (diingat); layar sempit: laci */
 const OLWIDE=()=>matchMedia('(min-width:1081px)').matches;
 function olOff(){try{return localStorage.getItem('rk-ol-off')==='1'}catch(e){return false}}
