@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Boolean logic: AND, OR, NOT, tabel kebenaran, dan De Morgan · Kotlin · Ruang Kode</title>
+<meta name="description" content="Boolean adalah tipe data yang hanya punya dua nilai: true (benar) dan false (salah). Namanya diambil dari George Boole, matematikawan yang merumuskan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/kotlin/boolean-logic-and-or-not-tabel-kebenaran-dan-de-morgan">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Boolean logic: AND, OR, NOT, tabel kebenaran, dan De Morgan · Kotlin · Ruang Kode"><meta property="og:description" content="Boolean adalah tipe data yang hanya punya dua nilai: true (benar) dan false (salah). Namanya diambil dari George Boole, matematikawan yang merumuskan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/kotlin/boolean-logic-and-or-not-tabel-kebenaran-dan-de-morgan"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Boolean logic: AND, OR, NOT, tabel kebenaran, dan De Morgan", "description": "Boolean adalah tipe data yang hanya punya dua nilai: true (benar) dan false (salah). Namanya diambil dari George Boole, matematikawan yang merumuskan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/kotlin/boolean-logic-and-or-not-tabel-kebenaran-dan-de-morgan", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Kotlin", "url": "https://ruang-kode-nine.vercel.app/belajar/kotlin"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Kotlin", "item": "https://ruang-kode-nine.vercel.app/belajar/kotlin"}, {"@type": "ListItem", "position": 3, "name": "Boolean logic: AND, OR, NOT, tabel kebenaran, dan De Morgan", "item": "https://ruang-kode-nine.vercel.app/belajar/kotlin/boolean-logic-and-or-not-tabel-kebenaran-dan-de-morgan"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/kotlin">Kotlin</a> / Modul 2</nav>
+<div class="eyebrow">Kotlin · Modul 2 · Konsep &amp; kode</div><h1>Boolean logic: AND, OR, NOT, tabel kebenaran, dan De Morgan</h1><a class="cta" href="/#kotlin-2-5">Buka versi interaktif</a>
+<p><b>Boolean</b> adalah tipe data yang hanya punya dua nilai: <b>true</b> (benar) dan <b>false</b> (salah). Namanya diambil dari George Boole, matematikawan yang merumuskan aljabar logika. Setiap kondisi di <code>if</code> dan <code>while</code> pada akhirnya menghasilkan satu nilai boolean.</p>
+<p>Operator perbandingan (<code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>) selalu menghasilkan boolean. Hasilnya bisa disimpan di variabel dengan nama yang jelas, misalnya <code>nilaiCukup</code> atau <code>sudahLogin</code>, sehingga kondisi panjang menjadi mudah dibaca.</p>
+<p><b>AND</b> bernilai true hanya jika <b>kedua</b> sisi true. <b>OR</b> bernilai true jika <b>minimal satu</b> sisi true. <b>NOT</b> membalik nilai. <b>XOR</b> bernilai true jika kedua sisi <b>berbeda</b>. Tabel kebenaran mendaftar semua kombinasi masukan: dua masukan berarti 2 × 2 = 4 baris.</p>
+<p>Urutan pengerjaan: <b>NOT</b> dulu, lalu <b>AND</b>, baru <b>OR</b>. Karena itu <code>true || false &amp;&amp; false</code> hasilnya true: bagian <code>false &amp;&amp; false</code> dikerjakan lebih dulu. Agar tidak salah baca, pakai tanda kurung.</p>
+<p><b>Hukum De Morgan</b>: membalik AND menjadi OR dari kebalikannya, dan sebaliknya. <code>!(a &amp;&amp; b)</code> sama dengan <code>!a || !b</code>, dan <code>!(a || b)</code> sama dengan <code>!a &amp;&amp; !b</code>. Contoh sehari-hari: "tidak (nilai cukup dan hadir cukup)" sama artinya dengan "nilai kurang atau hadir kurang".</p>
+<p><b>Short-circuit</b>: AND berhenti jika sisi kiri sudah false, dan OR berhenti jika sisi kiri sudah true, karena hasilnya sudah pasti. Ini dipakai sebagai pengaman, misalnya <code>pembagi != 0 &amp;&amp; 10 / pembagi &gt; 1</code> tidak pernah membagi dengan nol. Buka visual 3D di bawah, lalu ubah p, q, dan operatornya di panel Eksperimen.</p>
+<p>Catatan Kotlin: <code>&amp;&amp;</code> dan <code>||</code> memakai short-circuit, sedangkan fungsi infix <code>and</code>, <code>or</code>, dan <code>xor</code> selalu menghitung kedua sisi. Seperti Java, angka tidak bisa dipakai sebagai kondisi.</p>
+<div class="tw"><table><caption>Operator logika di tiap bahasa</caption><thead><tr><th>Operator</th><th>Java, JS, Dart, Kotlin</th><th>Python</th><th>Bernilai true jika</th><th>Contoh</th></tr></thead><tbody><tr><td>AND</td><td>&lt;code&gt;&amp;&amp;&lt;/code&gt;</td><td>&lt;code&gt;and&lt;/code&gt;</td><td>kedua sisi true</td><td>nilai ≥ 75 &lt;b&gt;dan&lt;/b&gt; hadir ≥ 80</td></tr><tr><td>OR</td><td>&lt;code&gt;||&lt;/code&gt;</td><td>&lt;code&gt;or&lt;/code&gt;</td><td>minimal satu sisi true</td><td>hari Sabtu &lt;b&gt;atau&lt;/b&gt; Minggu</td></tr><tr><td>NOT</td><td>&lt;code&gt;!&lt;/code&gt;</td><td>&lt;code&gt;not&lt;/code&gt;</td><td>nilainya false (dibalik)</td><td>&lt;b&gt;belum&lt;/b&gt; login</td></tr><tr><td>XOR</td><td>&lt;code&gt;^&lt;/code&gt; (Kotlin &lt;code&gt;xor&lt;/code&gt;, JS &lt;code&gt;!==&lt;/code&gt;)</td><td>&lt;code&gt;^&lt;/code&gt; atau &lt;code&gt;!=&lt;/code&gt;</td><td>kedua sisi berbeda</td><td>tepat satu lampu menyala</td></tr></tbody></table></div>
+<div class="tw"><table><caption>Tabel kebenaran (p dan q)</caption><thead><tr><th>p</th><th>q</th><th>p AND q</th><th>p OR q</th><th>NOT p</th><th>p XOR q</th></tr></thead><tbody><tr><td>true</td><td>true</td><td>true</td><td>true</td><td>false</td><td>false</td></tr><tr><td>true</td><td>false</td><td>false</td><td>true</td><td>false</td><td>true</td></tr><tr><td>false</td><td>true</td><td>false</td><td>true</td><td>true</td><td>true</td></tr><tr><td>false</td><td>false</td><td>false</td><td>false</td><td>true</td><td>false</td></tr></tbody></table></div>
+<div class="lbl">KODE</div><pre><code>fun main() {
+    // 1. Hasil perbandingan selalu boolean: true atau false
+    val nilai = 82
+    val hadir = 70
+    val nilaiCukup = nilai &gt;= 75
+    val hadirCukup = hadir &gt;= 80
+    println(&quot;nilaiCukup = $nilaiCukup&quot;)
+    println(&quot;hadirCukup = $hadirCukup&quot;)
+
+    // 2. AND (&amp;&amp;), OR (||), NOT (!)
+    println(&quot;AND: lulus = ${nilaiCukup &amp;&amp; hadirCukup}&quot;)
+    println(&quot;OR : remedial = ${!nilaiCukup || !hadirCukup}&quot;)
+    println(&quot;NOT: !hadirCukup = ${!hadirCukup}&quot;)
+
+    // 3. Tabel kebenaran semua kombinasi p dan q
+    val tf = listOf(true, false)
+    fun kol(v: Boolean) = v.toString().padEnd(6)
+    println(&quot;p     q     AND   OR    XOR&quot;)
+    for (p in tf) {
+        for (q in tf) {
+            println(kol(p) + kol(q) + kol(p &amp;&amp; q) + kol(p || q) + (p xor q))
+        }
+    }
+
+    // 4. Hukum De Morgan, dicek untuk semua kombinasi
+    var hukum1 = true
+    var hukum2 = true
+    for (p in tf) {
+        for (q in tf) {
+            if (!(p &amp;&amp; q) != (!p || !q)) hukum1 = false
+            if (!(p || q) != (!p &amp;&amp; !q)) hukum2 = false
+        }
+    }
+    println(&quot;De Morgan 1: !(p &amp;&amp; q) == !p || !q -&gt; $hukum1&quot;)
+    println(&quot;De Morgan 2: !(p || q) == !p &amp;&amp; !q -&gt; $hukum2&quot;)
+
+    // 5. Urutan: ! dulu, lalu &amp;&amp;, baru ||
+    println(&quot;true || false &amp;&amp; false = ${true || false &amp;&amp; false}&quot;)
+
+    // 6. Short-circuit: sisi kanan tidak dihitung jika hasil sudah pasti
+    var pembagi = 0
+    if (pembagi != 0 &amp;&amp; 10 / pembagi &gt; 1) {
+        println(&quot;hasil bagi besar&quot;)
+    } else {
+        println(&quot;short-circuit: 10 / 0 tidak pernah dihitung&quot;)
+    }
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>nilaiCukup = true
+hadirCukup = false
+AND: lulus = false
+OR : remedial = true
+NOT: !hadirCukup = true
+p     q     AND   OR    XOR
+true  true  true  true  false
+true  false false true  true
+false true  false true  true
+false false false false false
+De Morgan 1: !(p &amp;&amp; q) == !p || !q -&gt; true
+De Morgan 2: !(p || q) == !p &amp;&amp; !q -&gt; true
+true || false &amp;&amp; false = true
+short-circuit: 10 / 0 tidak pernah dihitung</code></pre>
+<h2>Poin penting</h2><ul><li>AND true jika keduanya true; OR true jika salah satu true; NOT membalik.</li><li>Urutan pengerjaan: NOT, lalu AND, lalu OR. Pakai kurung agar jelas.</li><li>De Morgan: !(a && b) sama dengan !a || !b.</li><li>Short-circuit melewati sisi kanan jika hasilnya sudah pasti.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>p = true dan q = false. Berapa nilai p &amp;&amp; q?</summary><p class="ok">Jawaban: false</p><p>AND butuh kedua sisi true.</p></details><details><summary>Hasil dari true || false &amp;&amp; false adalah…</summary><p class="ok">Jawaban: true</p><p>&amp;&amp; dikerjakan dulu: false &amp;&amp; false = false, lalu true || false = true.</p></details><details><summary>Menurut De Morgan, !(a &amp;&amp; b) sama dengan…</summary><p class="ok">Jawaban: !a || !b</p><p>AND yang dibalik menjadi OR dari kebalikan masing-masing.</p></details><details><summary>Mengapa x != 0 &amp;&amp; 10 / x &gt; 1 aman saat x = 0?</summary><p class="ok">Jawaban: Sisi kanan tidak dihitung karena sisi kiri sudah false</p><p>Short-circuit: hasil AND sudah pasti false.</p></details>
+<a class="cta" href="/#kotlin-2-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/kotlin/semua-jenis-perulangan-for-while-do-while-for-each-break-continue">Semua jenis perulangan: for, while, do-while, for-each, break, continue</a></p><p>Berikutnya: <a href="/belajar/kotlin/random-number-bilangan-acak-rentang-seed-dan-mengocok">Random number: bilangan acak, rentang, seed, dan mengocok</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

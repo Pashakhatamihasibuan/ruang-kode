@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Random number: bilangan acak, rentang, seed, dan mengocok · Kotlin · Ruang Kode</title>
+<meta name="description" content="Komputer tidak benar-benar melempar dadu. Ia memakai rumus yang menghasilkan deret angka yang terlihat acak, dimulai dari angka awal yang disebut seed.…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/kotlin/random-number-bilangan-acak-rentang-seed-dan-mengocok">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Random number: bilangan acak, rentang, seed, dan mengocok · Kotlin · Ruang Kode"><meta property="og:description" content="Komputer tidak benar-benar melempar dadu. Ia memakai rumus yang menghasilkan deret angka yang terlihat acak, dimulai dari angka awal yang disebut seed.…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/kotlin/random-number-bilangan-acak-rentang-seed-dan-mengocok"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Random number: bilangan acak, rentang, seed, dan mengocok", "description": "Komputer tidak benar-benar melempar dadu. Ia memakai rumus yang menghasilkan deret angka yang terlihat acak, dimulai dari angka awal yang disebut seed.…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/kotlin/random-number-bilangan-acak-rentang-seed-dan-mengocok", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Kotlin", "url": "https://ruang-kode-nine.vercel.app/belajar/kotlin"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Kotlin", "item": "https://ruang-kode-nine.vercel.app/belajar/kotlin"}, {"@type": "ListItem", "position": 3, "name": "Random number: bilangan acak, rentang, seed, dan mengocok", "item": "https://ruang-kode-nine.vercel.app/belajar/kotlin/random-number-bilangan-acak-rentang-seed-dan-mengocok"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/kotlin">Kotlin</a> / Modul 2</nav>
+<div class="eyebrow">Kotlin · Modul 2 · Konsep &amp; kode</div><h1>Random number: bilangan acak, rentang, seed, dan mengocok</h1><a class="cta" href="/#kotlin-2-6">Buka versi interaktif</a>
+<p>Komputer tidak benar-benar melempar dadu. Ia memakai <b>rumus</b> yang menghasilkan deret angka yang terlihat acak, dimulai dari angka awal yang disebut <b>seed</b>. Karena itu namanya <b>acak semu</b> (pseudo-random). Bilangan acak dipakai untuk game, simulasi, mengambil sampel data, dan mengocok urutan soal kuis.</p>
+<p>Hampir semua bahasa punya fungsi dasar yang menghasilkan <b>desimal dari 0 sampai kurang dari 1</b> (0 ≤ r &lt; 1). Angka 0 bisa keluar, tetapi angka 1 <b>tidak pernah</b> keluar.</p>
+<p>Rumus bilangan bulat dari <i>bawah</i> sampai <i>atas</i>: <code>floor(r × (atas − bawah + 1)) + bawah</code>. Contoh dadu: r × 6 memberi 0 sampai 5,99…, floor membulatkan ke bawah menjadi 0 sampai 5, lalu +1 menjadi 1 sampai 6. Jika "+1" pada lebar rentang lupa ditulis, angka 6 tidak akan pernah keluar. Ini kesalahan off-by-one yang paling sering.</p>
+<p>Setiap bahasa berbeda soal <b>batas atas ikut atau tidak</b>. <code>randint(1, 6)</code> di Python memasukkan 6, <code>nextInt(6)</code> di Java dan Dart memberi 0 sampai 5, sedangkan <code>Random.nextInt(1, 7)</code> di Kotlin tidak memasukkan 7. Selalu cek dokumentasinya.</p>
+<p>Dengan <b>seed yang sama</b>, urutan angka acak selalu sama. Ini berguna untuk pengujian, mencari bug, dan memutar ulang permainan. Tanpa seed, biasanya seed diambil dari jam komputer sehingga hasilnya berbeda setiap kali dijalankan.</p>
+<p>Memilih isi list secara acak sama dengan mengambil <b>indeks acak</b> dari 0 sampai panjang − 1. Mengocok list memakai algoritma <b>Fisher-Yates</b>. Untuk password, token, atau kode OTP, jangan memakai fungsi acak biasa; pakai generator kriptografis. <b>Keluaran di bawah adalah contoh satu kali jalan</b>, jadi angkamu akan berbeda. Coba juga visual 3D dan ubah rentang serta seed-nya.</p>
+<p>Catatan Kotlin: <code>(1..6).random()</code> memasukkan kedua batas, sedangkan <code>Random.nextInt(dari, sampai)</code> tidak memasukkan batas atas. <code>shuffled()</code> mengembalikan list baru, sedangkan <code>shuffle()</code> mengubah MutableList itu sendiri.</p>
+<div class="tw"><table><caption>Fungsi acak di tiap bahasa</caption><thead><tr><th>Bahasa</th><th>Desimal 0 sampai &amp;lt; 1</th><th>Bulat a sampai b (b ikut)</th><th>Pilih acak</th><th>Kocok</th><th>Untuk keamanan</th></tr></thead><tbody><tr><td>Java</td><td>&lt;code&gt;Math.random()&lt;/code&gt;</td><td>&lt;code&gt;r.nextInt(b - a + 1) + a&lt;/code&gt;</td><td>&lt;code&gt;xs[r.nextInt(xs.length)]&lt;/code&gt;</td><td>&lt;code&gt;Collections.shuffle(list)&lt;/code&gt;</td><td>&lt;code&gt;SecureRandom&lt;/code&gt;</td></tr><tr><td>Python</td><td>&lt;code&gt;random.random()&lt;/code&gt;</td><td>&lt;code&gt;random.randint(a, b)&lt;/code&gt;</td><td>&lt;code&gt;random.choice(xs)&lt;/code&gt;</td><td>&lt;code&gt;random.shuffle(xs)&lt;/code&gt;</td><td>modul &lt;code&gt;secrets&lt;/code&gt;</td></tr><tr><td>JavaScript</td><td>&lt;code&gt;Math.random()&lt;/code&gt;</td><td>&lt;code&gt;Math.floor(Math.random() * (b - a + 1)) + a&lt;/code&gt;</td><td>indeks acak 0..panjang−1</td><td>Fisher-Yates</td><td>&lt;code&gt;crypto.getRandomValues()&lt;/code&gt;</td></tr><tr><td>Dart</td><td>&lt;code&gt;Random().nextDouble()&lt;/code&gt;</td><td>&lt;code&gt;r.nextInt(b - a + 1) + a&lt;/code&gt;</td><td>&lt;code&gt;xs[r.nextInt(xs.length)]&lt;/code&gt;</td><td>&lt;code&gt;xs.shuffle()&lt;/code&gt;</td><td>&lt;code&gt;Random.secure()&lt;/code&gt;</td></tr><tr><td>Kotlin</td><td>&lt;code&gt;Random.nextDouble()&lt;/code&gt;</td><td>&lt;code&gt;(a..b).random()&lt;/code&gt;</td><td>&lt;code&gt;xs.random()&lt;/code&gt;</td><td>&lt;code&gt;xs.shuffled()&lt;/code&gt;</td><td>&lt;code&gt;SecureRandom&lt;/code&gt;</td></tr></tbody></table></div>
+<div class="lbl">KODE</div><pre><code>import kotlin.random.Random
+
+fun main() {
+    // 1. Desimal acak: 0.0 sampai KURANG DARI 1.0
+    val r = Random.nextDouble()
+    println(&quot;desimal: &quot; + &quot;%.4f&quot;.format(r))
+
+    // 2. Dadu 1..6: (1..6).random() memasukkan kedua batas
+    print(&quot;5 dadu :&quot;)
+    repeat(5) { print(&quot; &quot; + (1..6).random()) }
+    println()
+
+    // 3. Rentang bebas: nextInt(dari, sampai) TIDAK memasukkan batas atas
+    val bawah = 10
+    val atas = 20
+    println(&quot;10..20 : &quot; + Random.nextInt(bawah, atas + 1))
+
+    // 4. Lempar dadu sampai keluar angka 6
+    var lemparan = 0
+    var hasil = 0
+    while (hasil != 6) {
+        hasil = (1..6).random()
+        lemparan++
+    }
+    println(&quot;dapat 6 setelah $lemparan lemparan&quot;)
+
+    // 5. Memilih satu isi list dan mengocok list
+    val menu = listOf(&quot;soto&quot;, &quot;bakso&quot;, &quot;gado-gado&quot;, &quot;nasi goreng&quot;)
+    println(&quot;menu   : &quot; + menu.random())
+    val kartu = listOf(1, 2, 3, 4, 5).shuffled()
+    println(&quot;kocok  : $kartu&quot;)
+
+    // 6. Seed sama menghasilkan urutan yang sama (berguna untuk pengujian)
+    val a = Random(42)
+    val b = Random(42)
+    val sama = (1..5).all { a.nextInt(100) == b.nextInt(100) }
+    println(&quot;seed 42 dua kali, urutan sama: $sama&quot;)
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>desimal: 0.5455
+5 dadu : 6 6 6 1 3
+10..20 : 13
+dapat 6 setelah 2 lemparan
+menu   : bakso
+kocok  : [1, 5, 2, 4, 3]
+seed 42 dua kali, urutan sama: true</code></pre>
+<h2>Poin penting</h2><ul><li>Fungsi dasar memberi desimal 0 ≤ r < 1; angka 1 tidak pernah keluar.</li><li>Bulat bawah..atas: floor(r × (atas − bawah + 1)) + bawah.</li><li>Seed sama menghasilkan urutan sama; berguna untuk pengujian.</li><li>Untuk password dan token, pakai generator kriptografis.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Rumus bilangan bulat acak 1 sampai 6 dari r (0 ≤ r &lt; 1) adalah…</summary><p class="ok">Jawaban: floor(r × 6) + 1</p><p>r × 6 memberi 0..5,99, floor menjadi 0..5, lalu +1.</p></details><details><summary>Bisakah Math.random() atau random.random() menghasilkan tepat 1.0?</summary><p class="ok">Jawaban: Tidak, selalu kurang dari 1</p><p>Rentangnya 0 ≤ r &lt; 1.</p></details><details><summary>Apa gunanya seed?</summary><p class="ok">Jawaban: Agar urutan angka acak bisa diulang persis</p><p>Seed sama, urutan sama.</p></details><details><summary>Untuk membuat token reset password, sebaiknya memakai…</summary><p class="ok">Jawaban: Generator kriptografis seperti SecureRandom atau secrets</p><p>Fungsi acak biasa bisa ditebak.</p></details>
+<a class="cta" href="/#kotlin-2-6">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/kotlin/boolean-logic-and-or-not-tabel-kebenaran-dan-de-morgan">Boolean logic: AND, OR, NOT, tabel kebenaran, dan De Morgan</a></p><p>Berikutnya: <a href="/belajar/kotlin/class-data-class-dan-sealed-class">Class, data class, dan sealed class</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

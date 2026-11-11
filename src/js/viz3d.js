@@ -136,6 +136,56 @@ S.if={t:'Percabangan: jalan bercabang yang dipilih oleh kondisi',
         :{cap:'…maka program masuk ke cabang <b>else</b> dan mencetak "Remedial". Cabang if dilewati sama sekali.',it:[...jalan('n'),bola(3,0,1.7,'bad')]},
    {cap:`Coba ubah angkanya di panel Eksperimen. ${P.n===P.b?'Perhatikan: nilai <b>sama dengan</b> batas tetap lulus karena operatornya <code>&gt;=</code>. Dengan <code>&gt;</code> hasilnya akan berbeda.':'Uji juga nilai yang <b>persis sama</b> dengan batas, karena di situlah bug sering bersembunyi.'}`,it:[...jalan(lulus?'y':'n'),bola(3,0,lulus?-1.7:1.7,lulus?'ok':'bad')]}]}};
 
+/* ---------- logika boolean ---------- */
+S.bool={t:'Logika boolean: dua saklar masuk ke gerbang logika',
+ p:[{k:'p',l:'p',t:'o',o:[['1','true'],['0','false']],v:'1'},{k:'q',l:'q',t:'o',o:[['1','true'],['0','false']],v:'0'},
+   {k:'op',l:'Operator',t:'o',o:[['and','AND (&&)'],['or','OR (||)'],['not','NOT (!p)'],['xor','XOR (^)']],v:'and'}],
+ steps:P=>{const p=String(P.p)==='1',q=String(P.q)==='1',op=P.op;
+  const f=(a,b)=>op==='and'?a&&b:op==='or'?a||b:op==='not'?!a:a!==b;
+  const r=f(p,q),sym={and:'&&',or:'||',not:'!',xor:'^'}[op],nm={and:'AND',or:'OR',not:'NOT',xor:'XOR'}[op];
+  const pakaiQ=op!=='not',sc=(op==='and'&&!p)||(op==='or'&&p);
+  const ekspr=op==='not'?`!${p}`:`${p} ${sym} ${q}`;
+  const kol=v=>v?'ok':'bad';
+  const pang=(st)=>{const qOn=pakaiQ&&!(st>=1&&sc);return [lantai(9,4),
+    B('pin',-3.2,1.1,0,{w:1.5,h:.7,d:.9,c:st>=1?kol(p):'acc',t:'p = '+p}),
+    B('qin',-3.2,-.1,0,{w:1.5,h:.7,d:.9,c:!pakaiQ?'mute':st>=1&&sc?'mute':st>=1?kol(q):'acc',t:pakaiQ?(st>=1&&sc?'q dilewati':'q = '+q):'q (tak dipakai)'}),
+    R('rp',[-2.45,1.1,0],[-.75,.6,0],st>=1?kol(p):'mute'),R('rq',[-2.45,-.1,0],[-.75,.4,0],qOn&&st>=1?kol(q):'mute'),
+    B('gate',0,.5,0,{w:1.5,h:1.5,d:1.2,c:'glass',t:nm}),R('ro',[.75,.5,0],[2.35,.5,0],st>=2?kol(r):'mute'),
+    B('out',3.1,.5,0,{w:1.5,h:.8,d:.9,c:st>=2?kol(r):'mute',t:st>=2?String(r):'?'})]};
+  const rows=op==='not'?[[true],[false]]:[[true,true],[true,false],[false,true],[false,false]];
+  const tabel=()=>{const cols=op==='not'?['p','!p']:['p','q',nm],x0=-(cols.length-1)*.8;
+    return [lantai(7,3),...cols.map((c,j)=>G("h"+j,x0+j*1.6,2.65,0,c,"idx")),
+     ...rows.flatMap((row,i)=>{const hasil=f(row[0],row[1]),cur=row[0]===p&&(op==='not'||row[1]===q),vals=[...row,hasil];
+      return vals.map((v,j)=>B('t'+i+'_'+j,x0+j*1.6,1.9-i*.75,0,{w:1.4,h:.48,d:.3,c:cur?kol(v):'mute',t:String(v)}))})]};
+  const nTrue=rows.filter(rw=>f(rw[0],rw[1])).length;
+  return [
+   {cap:op==='not'?`<b>NOT</b> hanya butuh satu masukan: ia membalik nilai p.`:`Dua masukan boolean, <b>p</b> dan <b>q</b>, masuk ke gerbang <b>${nm}</b> (<code>${sym}</code>). Hasilnya juga boolean: true atau false.`,it:pang(0)},
+   {cap:op==='not'?`p = ${p}. q tidak dipakai sama sekali.`:sc?`p = ${p} sudah menentukan hasil ${nm}, jadi q <b>tidak dicek</b>. Inilah <b>short-circuit</b>: ${op==='and'?'AND langsung false jika sisi kiri false':'OR langsung true jika sisi kiri true'}.`
+      :`p = ${p} belum cukup untuk menentukan hasil, jadi q = ${q} ikut dicek.${op==='xor'?' XOR selalu butuh kedua sisi.':''}`,it:pang(1)},
+   {cap:`<code>${ekspr}</code> menghasilkan <b>${r}</b>. ${op==='and'?'AND hanya true jika kedua sisi true.':op==='or'?'OR true jika minimal satu sisi true.':op==='xor'?'XOR true jika kedua sisi berbeda.':'NOT membalik nilai.'}`,it:pang(2)},
+   {cap:`Tabel kebenaran ${nm}: hasil true di <b>${nTrue} dari ${rows.length}</b> baris. Baris berwarna adalah nilai p${op==='not'?'':' dan q'} yang sedang kamu pilih. Ubah nilainya di panel Eksperimen.`,it:tabel()}]}};
+
+/* ---------- bilangan acak ---------- */
+/* generator acak semu kecil (mulberry32): seed sama selalu memberi urutan yang sama */
+const prng=seed=>{let a=(seed>>>0)||1;return ()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)/4294967296}};
+S.acak={t:'Bilangan acak: dari desimal 0..1 menjadi angka dadu',
+ p:[{k:'a',l:'Batas bawah',t:'n',min:-5,max:20,v:1},{k:'b',l:'Batas atas (ikut)',t:'n',min:-5,max:30,v:6},
+   {k:'n',l:'Jumlah lemparan',t:'n',min:1,max:30,v:12},{k:'seed',l:'Seed',t:'n',min:0,max:9999,v:42}],
+ steps:P=>{let lo=Math.min(P.a,P.b),hi=Math.max(P.a,P.b),pot=false;if(hi-lo+1>10){hi=lo+9;pot=true}
+  const K=hi-lo+1,rnd=prng(P.seed),rs=Array.from({length:P.n},()=>rnd()),hs=rs.map(r=>Math.floor(r*K)+lo);
+  const X=k=>(k-(K-1)/2)*1.1,r0=rs[0],h0=hs[0],idx=h0-lo;
+  const garis=()=>[B('gr',0,1.9,0,{w:6,h:.12,d:.3,c:'mute'}),G('g0',-3,2.4,0,'0','idx'),G('g1',3,2.4,0,'1 (tak pernah)','idx')];
+  const kotak=(hl)=>Array.from({length:K},(_,k)=>B('k'+k,X(k),-.2,0,{w:1,h:.5,d:1,c:k===hl?'ok':'acc',t:String(lo+k)}));
+  const cnt=Array(K).fill(0);hs.forEach(h=>cnt[h-lo]++);const mx=Math.max(...cnt,1);
+  const tiang=()=>cnt.map((c,k)=>c?B("c"+k,X(k),.05+c/mx*1,0,{w:.8,h:c/mx*2,d:.8,c:'warn',t:String(c)}):null).filter(Boolean);
+  const daftar=hs.slice(0,15).join(', ')+(hs.length>15?', …':'');
+  const lt=()=>lantai(Math.max(7,K*1.1+2),3);
+  return [
+   {cap:`Fungsi acak dasar memberi desimal <b>0 ≤ r &lt; 1</b>. Kali ini r = <code>${r0.toFixed(4)}</code>. Angka 0 bisa keluar, tetapi 1 tidak pernah.`,it:[lt(),...garis(),B('bola',-3+r0*6,2.3,0,{w:.45,h:.45,d:.45,c:'warn',ball:1}),...kotak(-1)]},
+   {cap:`Rentang ${lo}..${hi} berisi ${K} angka. <code>floor(${r0.toFixed(4)} × ${K})</code> = ${idx}, lalu + ${lo} = <b>${h0}</b>.${pot?' (Visual dibatasi 10 kotak.)':''} Tanpa "+1" pada lebar rentang, angka ${hi} tidak akan pernah keluar.`,it:[lt(),...garis(),B('bola',X(idx),.45,0,{w:.45,h:.45,d:.45,c:'ok',ball:1}),...kotak(idx)]},
+   {cap:`${P.n} lemparan: ${daftar}. Tinggi tiang = berapa kali angka itu keluar. Makin banyak lemparan, tingginya makin rata.`,it:[lt(),...kotak(-1),...tiang()]},
+   {cap:`Seed ${P.seed} <b>selalu</b> memberi urutan yang sama ini. Ganti seed di panel Eksperimen dan urutannya berubah; kembalikan ke ${P.seed} dan urutannya sama lagi. Inilah cara program diuji ulang dengan hasil acak yang bisa diulang.`,it:[lt(),...kotak(-1),...tiang()]}]}};
+
 /* ---------- stack ---------- */
 S.stack={t:'Stack: tumpukan piring, yang terakhir masuk keluar pertama (LIFO)',
  p:[{k:'n',l:'Jumlah push',t:'n',min:1,max:6,v:3},{k:'k',l:'Jumlah pop',t:'n',min:0,max:6,v:1}],
@@ -296,7 +346,7 @@ S.git={t:'Git: commit sebagai titik, branch sebagai jalur',
 const RULES=[[/box model/i,'box',1],[/z-index|stacking context/i,'zindex',1],[/\bjoin\b/i,'join',1],[/\bbranch|\bmerge\b|\bcommit\b/i,'git',1],
  [/rekursi|recursion|call stack/i,'rekursi'],[/\bqueue|antrean|antrian|\bdeque/i,'queue'],[/(?<!tech |full ?)\bstack\b|tumpukan/i,'stack'],[/\bdom\b/i,'dom',1],
  [/\btree\b|pohon|\bbst\b|\bheap\b/i,'tree'],[/\b2d\b|dua dimensi|matriks|matrix|multidimensi/i,'matrix'],[/\barray|larik|\blist\b|arraylist|koleksi|collection/i,'array'],
- [/perulangan|\bloop|\bfor\b|while|iterasi/i,'loop'],[/percabangan|\bif\b|kondisi|\bwhen\b|switch|keputusan/i,'if'],
+ [/random number|bilangan acak|angka acak/i,'acak'],[/boolean logic|logika boolean|ekspresi boolean|operator logika/i,'bool'],[/perulangan|\bloop|\bfor\b|while|iterasi/i,'loop'],[/percabangan|\bif\b|kondisi|\bwhen\b|switch|keputusan/i,'if'],
  [/\bclass|kelas|\bobjek|\bobject|\boop\b|pewarisan|inheritance/i,'oop'],[/fungsi|function|\bmethod|metode|prosedur/i,'func'],[/variabel|variable|tipe data|val dan var/i,'var']];
 const KODE=new Set(['java','python','js','jsx','ts','tsx','dart','kotlin','tx']),LOGIKA=/^(pseudo|flowg|logika|dsa|algo)$/;
 window.v3dOf=function(t,title){if(!t||!title)return null;

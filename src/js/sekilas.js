@@ -6,6 +6,8 @@
 (function(){
 /* [pola judul, perumpamaan]. Urutan penting: pola yang lebih spesifik ditaruh di atas. */
 const ANALOGI=[
+ [/random number|bilangan acak|angka acak/i,'Bilangan acak itu seperti melempar dadu atau mengambil undian dari toples: hasilnya tidak bisa ditebak, tetapi selalu berada di dalam batas yang kita tentukan. Komputer membuatnya dengan rumus, jadi disebut acak semu.'],
+ [/boolean logic|logika boolean/i,'Logika boolean itu seperti saklar lampu yang hanya punya dua posisi: nyala (true) atau mati (false). AND menyala jika semua saklar nyala, OR menyala jika salah satu nyala, dan NOT membalik posisinya.'],
  [/token desain|design token|css variables|custom propert|design system/i,'Design token itu seperti daftar bumbu baku di dapur restoran: warna, jarak, dan ukuran huruf diberi nama, lalu dipakai di mana-mana agar rasa (tampilan) selalu konsisten.'],
  [/hello|program pertama|halo dunia|program kotlin pertama/i,'Program pertama itu seperti menyapa teman baru: kalimatnya pendek, tetapi membuktikan semua alat sudah siap dan komputer mau mendengarkan perintahmu.'],
  [/pseudocode/i,'Pseudocode itu seperti resep masakan yang ditulis dengan bahasa sehari-hari. Belum ada aturan ketat, yang penting langkahnya jelas dan urut sebelum benar-benar dimasak dalam bahasa pemrograman.'],
