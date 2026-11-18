@@ -117,3 +117,69 @@ section.cat-row{display:flex;flex-direction:column;gap:16px;margin-top:36px}
 .s3fld input:focus-visible,.s3fld select:focus-visible{outline:2px solid var(--acc,var(--brand));outline-offset:1px;border-color:transparent}
 .s3form .tlink{justify-self:start;min-height:40px;background:none;border:0;cursor:pointer;font-size:.85rem;padding:0}
 .s3tip{margin:0;padding:0 14px 12px;font-size:.8rem;color:var(--muted)}
+/* ===================== Panggung pelajaran interaktif =====================
+   Diagram 3D isometrik jadi pusat pelajaran: penunjuk nilai (HUD) di atas, garis waktu langkah di bawah,
+   dan panel panduan di kanan (atau di bawah pada layar sempit) berisi penjelasan langkah dan tombolnya. */
+body:has(#view.has-stage) :is(.shell,.gnav-in,.mega-in,.sfoot>div){max-width:1440px}
+#view.has-stage{max-width:1200px}
+#view.has-stage .l-head,#view.has-stage .l-body>:not(.v3-sec){width:100%;max-width:860px}
+.v3-sec{gap:16px}
+.v3host{container-type:inline-size;min-width:0}
+.stg{display:flex;flex-direction:column;gap:16px;min-width:0}
+.stg-main{display:flex;flex-direction:column;gap:12px;min-width:0}
+@container (min-width:860px){.stg{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:20px;align-items:start}}
+.stg .s3{perspective:1100px;height:clamp(300px,52vw,460px);border:1px solid var(--line);
+  background:radial-gradient(circle,color-mix(in srgb,var(--ink) 11%,transparent) 1px,transparent 1.4px) 0 0/20px 20px,linear-gradient(180deg,var(--surface),var(--sunk))}
+.s3view{position:absolute;left:10px;bottom:8px;font:600 .75rem var(--f-body);color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 10px;min-height:28px;cursor:pointer}
+.s3view:hover{color:var(--ink);border-color:color-mix(in srgb,var(--ink) 25%,var(--line))}
+/* HUD: nilai yang sedang dipakai adegan */
+.stg-hud{display:flex;flex-wrap:wrap;gap:8px}
+.hud-c{display:flex;flex-direction:column;gap:2px;min-width:0;max-width:100%;padding:7px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);box-shadow:var(--shadow-1)}
+.hud-c small{font:700 .64rem/1.2 var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hud-c b{font:600 .92rem/1.2 var(--f-mono);color:var(--ink);overflow-wrap:anywhere}
+/* progres dan garis waktu langkah */
+.stg-prog{height:4px;border-radius:4px;background:var(--line);overflow:hidden}
+.stg-prog i{display:block;height:100%;width:0;background:var(--ok);border-radius:4px;transition:width .45s cubic-bezier(.3,.8,.25,1)}
+.stg-tl{list-style:none;margin:0;padding:2px 0 4px;display:flex;overflow-x:auto;scrollbar-width:thin}
+.stg-tl li{flex:1 0 84px;position:relative;min-width:84px}
+.stg-tl li+li::before{content:"";position:absolute;top:19px;right:calc(50% + 15px);width:calc(100% - 30px);height:2px;background:var(--line)}
+.stg-tl li:has(.done,.now)+li::before{background:var(--ok)}
+.stg-tl li:has(+li .now)::after{content:none}
+.stg-tl button{display:flex;flex-direction:column;align-items:center;gap:6px;width:100%;min-height:44px;padding:4px 4px 2px;background:none;border:0;cursor:pointer;color:var(--muted);font:600 .74rem/1.25 var(--f-body)}
+.stg-tl .tn{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;border:2px solid var(--line);background:var(--surface);font:700 .78rem var(--f-mono);color:var(--muted);transition:background .25s,border-color .25s,color .25s}
+.stg-tl .tl-l{text-align:center;overflow-wrap:anywhere}
+.stg-tl .done .tn{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.stg-tl .now{color:var(--ink)}
+.stg-tl .now .tn{background:var(--ok);border-color:var(--ok);color:var(--surface);box-shadow:0 0 0 4px color-mix(in srgb,var(--ok) 22%,transparent)}
+.stg-tl button:hover .tn{border-color:var(--ok)}
+.stg-tl button:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:8px}
+/* panel panduan */
+.stg-rail{display:flex;flex-direction:column;gap:14px;min-width:0;padding:18px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);box-shadow:var(--shadow-1)}
+.rail-top{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.rail-n{font:700 .7rem/1 var(--f-body);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.rail-tag{font:700 .66rem/1 var(--f-body);letter-spacing:.12em;text-transform:uppercase;padding:5px 9px;border-radius:999px}
+.rail-tag.t-a{background:var(--gold-soft);color:var(--gold)}.rail-tag.t-b{background:var(--brand-soft);color:var(--brand)}.rail-tag.t-c{background:var(--ok-soft);color:var(--ok)}
+.rail-h{margin:0;font:500 1.4rem/1.2 var(--f-serif);letter-spacing:-.01em;color:var(--ink);text-wrap:balance}
+.stg-rail .s3cap{margin:0;min-height:5.4em;font-size:1rem;line-height:1.7;color:var(--ink)}
+.rail-nav{display:flex;gap:8px;flex-wrap:wrap}
+.rail-nav .btn{min-height:44px}.rail-nav .btn.primary{flex:1 1 160px}
+.rail-nav button:disabled{opacity:.45;cursor:not-allowed}
+.rail-play{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;padding-top:12px;border-top:1px solid var(--line)}
+.rp{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 .82rem var(--f-body);cursor:pointer}
+.rp:hover{border-color:color-mix(in srgb,var(--ink) 28%,var(--line))}.rp[aria-pressed="true"]{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.rail-kb{font-size:.76rem;color:var(--muted);display:inline-flex;gap:4px;align-items:center}
+kbd{font:600 .7rem/1 var(--f-mono);padding:3px 6px;border-radius:5px;border:1px solid var(--line);border-bottom-width:2px;background:var(--sunk);color:var(--muted)}
+.stg-rail .s3exp{margin-top:2px}
+.stg-rail .s3form{grid-template-columns:repeat(auto-fill,minmax(min(112px,100%),1fr))}
+@media (max-width:640px){.stg-rail{padding:14px}.rail-kb{display:none}.rail-h{font-size:1.2rem}}
+/* panggung mini di beranda: berputar otomatis, tanpa tombol */
+.stg.is-mini .stg-hud,.stg.is-mini .stg-tl,.stg.is-mini .rail-nav,.stg.is-mini .rail-play,.stg.is-mini .s3exp,.stg.is-mini .s3view,.stg.is-mini .s3hint{display:none}
+.stg.is-mini{gap:10px}.stg.is-mini .s3{height:clamp(240px,30vw,330px)}
+.stg.is-mini .stg-rail{padding:14px 16px;gap:8px;box-shadow:none}
+.stg.is-mini .rail-h{font-size:1.12rem}.stg.is-mini .s3cap{min-height:4.6em;font-size:.92rem;line-height:1.6}
+.h-stage{display:flex;flex-direction:column;gap:12px;min-width:0;padding:16px;border:1px solid var(--line);border-radius:20px;background:var(--surface);box-shadow:var(--shadow-2)}
+.hs-tabs{display:flex;flex-wrap:wrap;gap:6px}
+.hs-tabs button{min-height:36px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font:600 .8rem var(--f-body);cursor:pointer}
+.hs-tabs button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.hs-foot{margin:0;font-size:.82rem;color:var(--muted)}
+.stg-rail .s3cap code{white-space:normal;overflow-wrap:anywhere}

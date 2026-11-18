@@ -371,33 +371,68 @@ function blockHTML(o,U){const w=o.w*U,h=o.h*U,d=o.d*U,ln=o.t?`<b>${o.t}</b>`:'',
     return `<div class="f3 f-${k}" style="width:${fw}px;height:${fh}px;transform:translate(-50%,-50%) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(${tz}px)">${k==='f'?ln+(o.flat?'':''):k==='t'?tt:''}</div>`}).join('')}
 function place(o,U){return `translate3d(${o.x*U}px,${-o.y*U}px,${o.z*U}px) rotateY(${o.ry||0}deg) rotateZ(${-(o.rz||0)}deg)`}
 
-window.V3D=function(host,key,init){const sc=S[key];if(!sc)return;
-  const rm=RMq();let i=0,rx=-20,ry=-28,auto=null,U=40;const els=new Map();
+/* label pendek tiap langkah untuk garis waktu (dipakai bila jumlah langkah cocok) */
+const LB={var:['Rak memori','Isi umur','Isi nama','Ambil nilai','Ganti isi'],array:['Deretan kotak','Indeks 0','Akses langsung','Tambah','Panjang'],
+ matrix:['Ukuran','Satu baris','Satu kolom','Satu sel'],if:['Persimpangan','Cek kondisi','Pilih cabang','Uji batas'],bool:['Masukan','Cek p dulu','Hasil','Tabel kebenaran'],
+ acak:['Desimal 0..1','Ke rentang','Banyak lemparan','Seed'],stack:['Tumpukan','Push','Peek','Pop','Sisa'],queue:['Antrean','Enqueue','Dequeue','Maju'],
+ rekursi:['Panggil','Tumpuk','Kasus dasar','Kembali','Kembali lagi','Hasil'],dom:['Akar','Anak','Telusuri'],oop:['Cetak biru','Objek pertama','Banyak objek','Pewarisan'],
+ func:['Mesin','Masukan','Kembalikan','Pakai ulang'],box:['Kotak','Pisah lapisan','Padding','Border','Margin','Lebar total'],zindex:['Urutan HTML','Pakai z-index','Konteks tumpukan'],
+ join:['Dua tabel','Cocokkan','Hasil'],git:['Commit','Branch','Merge']};
+/* pintasan keyboard global untuk panggung yang sedang terlihat: ← → langkah, R ulang, Spasi putar/jeda */
+let AKTIF=null;
+document.addEventListener('keydown',e=>{const c=AKTIF;if(!c||!c.host.isConnected||e.altKey||e.ctrlKey||e.metaKey)return;
+  const t=e.target;if(t&&(/^(INPUT|SELECT|TEXTAREA|BUTTON)$/.test(t.tagName)&&e.key===' '||/^(INPUT|SELECT|TEXTAREA)$/.test(t.tagName)||t.isContentEditable))return;
+  if(t&&t.classList&&t.classList.contains('s3'))return;
+  const r=c.host.getBoundingClientRect();if(r.bottom<80||r.top>innerHeight-80)return;
+  const k=e.key;if(k==='ArrowRight'){c.go(1);e.preventDefault()}else if(k==='ArrowLeft'){c.go(-1);e.preventDefault()}
+  else if(k==='r'||k==='R'){c.replay();e.preventDefault()}else if(k===' '){c.toggle();e.preventDefault()}});
+
+window.V3D=function(host,key,init,opt){const sc=S[key];if(!sc)return;const mini=!!(opt&&opt.mini);
+  const rm=RMq(),RX0=-30,RY0=-38;let i=0,rx=RX0,ry=RY0,auto=null,U=40;const els=new Map();
   /* parameter eksperimen: nilai awal dari definisi adegan, langkah dihitung ulang setiap kali diubah */
   const PD=(sc.p||[]).map(d=>init&&init[d.k]!=null?{...d,v:init[d.k]}:d),P={};PD.forEach(d=>P[d.k]=d.v);
   const hitung=()=>{try{return typeof sc.steps==='function'?sc.steps(P):sc.steps}catch(e){return [{cap:'Nilai ini belum bisa digambar. Coba angka lain.',it:[lantai()]}]}};
   let steps=hitung();
+  const label=(k)=>{const s=steps[k],L=LB[key];if(s&&s.lb)return s.lb;if(L&&L.length===steps.length)return L[k];
+    if(k===0)return 'Mulai';if(k===steps.length-1)return 'Intinya';const c=String(s.cap).replace(/<[^>]+>/g,''),m=c.match(/^(Putaran \d+|Bandingkan)/);return m?m[0]:/ketemu/i.test(c)?'Ketemu':'Langkah '+(k+1)};
+  const tagOf=k=>k===0?['Mulai','t-a']:k===steps.length-1?['Intinya','t-c']:['Konsep','t-b'];
   const fld=d=>{const id=`v3-${key}-${d.k}-${Math.random().toString(36).slice(2,7)}`;
     const inp=d.t==='o'?`<select id="${id}" data-k="${d.k}">${d.o.map(([v,l])=>`<option value="${v}"${v===d.v?' selected':''}>${l}</option>`).join('')}</select>`
       :d.t==='n'?`<input id="${id}" data-k="${d.k}" type="number" inputmode="numeric" step="1" min="${d.min}" max="${d.max}" value="${d.v}">`
       :`<input id="${id}" data-k="${d.k}" type="text" value="${d.v}" maxlength="40" autocomplete="off" spellcheck="false">`;
     return `<label class="s3fld" for="${id}"><span>${d.l}${d.t==='n'?` <small>${d.min}…${d.max}</small>`:''}</span>${inp}</label>`};
-  const panel=PD.length?`<details class="s3exp" open><summary><span aria-hidden="true">🧪</span> Eksperimen: ubah angkanya, lihat apa yang terjadi</summary>
+  const panel=PD.length?`<details class="s3exp" open><summary><span aria-hidden="true">🧪</span> Eksperimen: ubah angkanya</summary>
     <div class="s3form">${PD.map(fld).join('')}<button class="tlink" type="button" data-a="reset">Kembalikan nilai awal</button></div>
-    <p class="s3tip">Perubahan langsung diterapkan pada langkah yang sedang dibuka. Tekan Sebelumnya atau Berikutnya untuk melihat langkah lain dengan nilai barumu.</p></details>`:'';
-  host.innerHTML=`<div class="s3wrap"><div class="s3" tabindex="0" role="img" aria-label="Adegan 3D: ${sc.t}. Seret atau tekan tombol panah untuk memutar."><div class="s3cam"><div class="w3"></div></div><div class="s3tags"></div>
-   <span class="s3hint" aria-hidden="true">⟲ seret untuk memutar</span></div>
-   <p class="s3cap" aria-live="polite"></p>
-   ${panel}<div class="s3ctl"><button class="btn" data-a="prev">◀ Sebelumnya</button><span class="s3n"></span><button class="btn primary" data-a="next">Berikutnya ▶</button>
-    <button class="btn" data-a="play" aria-pressed="false">▶ Putar otomatis</button><button class="tlink" data-a="view">Sudut awal</button></div></div>`;
-  const st=host.querySelector('.s3'),w=host.querySelector('.w3'),cap=host.querySelector('.s3cap'),tg=host.querySelector('.s3tags'),n=host.querySelector('.s3n');
+    <p class="s3tip">Perubahan langsung diterapkan pada langkah yang sedang dibuka.</p></details>`:'';
+  host.innerHTML=`<div class="stg${mini?' is-mini':''}">
+   <div class="stg-main">
+    ${PD.length?'<div class="stg-hud" aria-label="Nilai yang sedang dipakai"></div>':''}
+    <div class="s3" tabindex="0" role="img" aria-label="Adegan 3D: ${sc.t}. Seret atau tekan tombol panah untuk memutar."><div class="s3cam"><div class="w3"></div></div><div class="s3tags"></div>
+     <span class="s3hint" aria-hidden="true">⟲ seret untuk memutar</span><button class="s3view" type="button" data-a="view" title="Kembali ke sudut awal">Sudut awal</button></div>
+    <div class="stg-prog" aria-hidden="true"><i></i></div>
+    <ol class="stg-tl" aria-label="Langkah"></ol>
+   </div>
+   <aside class="stg-rail">
+    <div class="rail-top"><span class="rail-n"></span><span class="rail-tag"></span></div>
+    <h4 class="rail-h"></h4>
+    <p class="s3cap" aria-live="polite"></p>
+    <div class="rail-nav"><button class="btn" type="button" data-a="prev">← Kembali</button><button class="btn primary" type="button" data-a="next"></button></div>
+    <div class="rail-play"><button class="rp" type="button" data-a="replay">⟲ Ulangi <kbd>R</kbd></button><button class="rp" type="button" data-a="play" aria-pressed="false"></button><span class="rail-kb"><kbd>←</kbd><kbd>→</kbd> langkah</span></div>
+    ${panel}
+   </aside></div>`;
+  const st=host.querySelector('.s3'),w=host.querySelector('.w3'),cap=host.querySelector('.s3cap'),tg=host.querySelector('.s3tags'),tl=host.querySelector('.stg-tl'),
+    hud=host.querySelector('.stg-hud'),bar=host.querySelector('.stg-prog i'),bPlay=host.querySelector('[data-a=play]');
   /* label diproyeksikan ke 2D agar selalu terbaca dan tidak tertutup benda */
   const proj=(x,y,z)=>{const a=ry*Math.PI/180,b=rx*Math.PI/180,X=x*U,Y=-y*U,Z=z*U;
     const x1=X*Math.cos(a)+Z*Math.sin(a),z1=-X*Math.sin(a)+Z*Math.cos(a),y2=Y*Math.cos(b)-z1*Math.sin(b),z2=Y*Math.sin(b)+z1*Math.cos(b);
-    const W=st.clientWidth,H=st.clientHeight,ox=W/2,oy=H*.4,cx=W/2,cy=H*.54,k=900/(900-z2);return [ox+(cx+x1-ox)*k,oy+(cy+y2-oy)*k]};
+    const W=st.clientWidth,H=st.clientHeight,ox=W/2,oy=H*.4,cx=W/2,cy=H*.56,k=1100/(1100-z2);return [ox+(cx+x1-ox)*k,oy+(cy+y2-oy)*k]};
   const view=()=>{w.style.transform=`rotateX(${rx}deg) rotateY(${ry}deg)`;
     const W=st.clientWidth;els.forEach(e=>{if(e._tag){const [l,t]=proj(...e._p),h=e.offsetWidth/2+4;e.style.left=Math.max(h,Math.min(W-h,l))+'px';e.style.top=t+'px'}})};
-  function draw(){if(i>steps.length-1)i=steps.length-1;const s=steps[i];U=Math.max(26,Math.min(58,st.clientWidth/10.5));const seen=new Set();
+  const optLabel=d=>{const o=(d.o||[]).find(x=>String(x[0])===String(P[d.k]));return o?o[1]:P[d.k]};
+  function hudDraw(){if(!hud)return;hud.innerHTML=PD.map(d=>`<span class="hud-c"><small>${d.l}</small><b>${E(String(d.t==='o'?optLabel(d):P[d.k]).slice(0,28))}</b></span>`).join('')}
+  function tlDraw(){tl.innerHTML=steps.map((s,k)=>`<li><button type="button" data-go="${k}"${k===i?' aria-current="step"':''} class="${k<i?'done':k===i?'now':''}"><span class="tn">${k<i?'✓':k+1}</span><span class="tl-l">${label(k)}</span></button></li>`).join('')}
+  function draw(again){if(i>steps.length-1)i=steps.length-1;const s=steps[i];U=Math.max(26,Math.min(60,st.clientWidth/11));const seen=new Set();
+    if(again){els.forEach(e=>e.remove());els.clear()}
     s.it.forEach(o=>{seen.add(o.id);let e=els.get(o.id);const fresh=!e;
       if(fresh){e=document.createElement('div');els.set(o.id,e);(o.tag?tg:w).appendChild(e)}
       if(o.tag){e.className=`t3 ${o.c?'c-'+o.c:''}`;e.innerHTML=o.t;e._tag=1;e._p=[o.x,o.y,o.z]}
@@ -407,22 +442,31 @@ window.V3D=function(host,key,init){const sc=S[key];if(!sc)return;
     /* teks di sisi benda dikecilkan bila tidak muat (layar sempit) */
     w.querySelectorAll('.f3>b,.f3>i').forEach(t=>{const f=t.parentNode,cw=f.clientWidth-4,ch=f.clientHeight-2,sw=t.scrollWidth,sh=t.offsetHeight;
       const k=Math.min(1,cw/sw,ch/sh);t.style.transform=k<1?`scale(${Math.max(.35,k)})`:''});
-    view();cap.innerHTML=s.cap;n.textContent=`${i+1} / ${steps.length}`;
-    host.querySelector('[data-a=prev]').disabled=i===0;host.querySelector('[data-a=next]').disabled=i===steps.length-1}
-  const stop=()=>{clearInterval(auto);auto=null;const b=host.querySelector('[data-a=play]');b.setAttribute('aria-pressed','false');b.textContent='▶ Putar otomatis'};
-  host.querySelector('.s3ctl').addEventListener('click',e=>{const a=e.target.closest('[data-a]');if(!a)return;const k=a.dataset.a;
-    if(k==='next'&&i<steps.length-1){i++;draw()}
-    else if(k==='prev'&&i>0){i--;draw()}
-    else if(k==='view'){rx=-20;ry=-28;view()}
-    else if(k==='play'){if(auto)return stop();if(i===steps.length-1){i=0;draw()}a.setAttribute('aria-pressed','true');a.textContent='❚❚ Jeda';
-      auto=setInterval(()=>{if(!host.isConnected)return stop();if(i>=steps.length-1)return stop();i++;draw()},3200)}});
+    view();const N=steps.length,[tt,tc]=tagOf(i);
+    cap.innerHTML=s.cap;host.querySelector('.rail-h').textContent=label(i);host.querySelector('.rail-n').textContent=`Langkah ${i+1} / ${N}`;
+    const tgEl=host.querySelector('.rail-tag');tgEl.textContent=tt;tgEl.className='rail-tag '+tc;
+    bar.style.width=((i+1)/N*100)+'%';tlDraw();hudDraw();
+    host.querySelector('[data-a=prev]').disabled=i===0;
+    host.querySelector('[data-a=next]').innerHTML=i<N-1?`Lanjut: ${label(i+1)} →`:'↺ Mulai lagi dari awal'}
+  const setPlay=on=>{bPlay.setAttribute('aria-pressed',on?'true':'false');bPlay.innerHTML=on?'❚❚ Jeda <kbd>Spasi</kbd>':'▶ Putar <kbd>Spasi</kbd>'};
+  const stop=()=>{clearInterval(auto);auto=null;setPlay(false)};
+  const go=d=>{stop();const j=i+d;if(j<0)return;if(j>steps.length-1){if(d>0&&i===steps.length-1){i=0;draw()}return}i=j;draw()};
+  const toggle=()=>{if(auto)return stop();if(i===steps.length-1){i=0;draw()}setPlay(true);
+    auto=setInterval(()=>{if(!host.isConnected)return stop();if(i>=steps.length-1){stop();if(mini&&opt.onEnd)opt.onEnd();return}i++;draw()},mini?3000:3400)};
+  const replay=()=>{draw(true)};
+  const ctl={host,go,toggle,replay};if(!mini){AKTIF=ctl;
+  host.addEventListener('pointerdown',()=>{AKTIF=ctl});host.addEventListener('focusin',()=>{AKTIF=ctl})}
+  host.addEventListener('click',e=>{const g=e.target.closest('[data-go]');if(g){stop();i=+g.dataset.go;draw();return}
+    const a=e.target.closest('[data-a]');if(!a)return;const k=a.dataset.a;
+    if(k==='next')go(1);else if(k==='prev')go(-1);else if(k==='replay')replay();else if(k==='play')toggle();
+    else if(k==='view'){rx=RX0;ry=RY0;view()}});
   let drag=null;
-  st.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY,rx,ry};st.setPointerCapture(e.pointerId);st.classList.add('grab')});
+  st.addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;drag={x:e.clientX,y:e.clientY,rx,ry};st.setPointerCapture(e.pointerId);st.classList.add('grab')});
   st.addEventListener('pointermove',e=>{if(!drag)return;ry=drag.ry+(e.clientX-drag.x)*.45;rx=Math.max(-80,Math.min(25,drag.rx-(e.clientY-drag.y)*.35));view()});
   const up=()=>{drag=null;st.classList.remove('grab')};st.addEventListener('pointerup',up);st.addEventListener('pointercancel',up);
   st.addEventListener('keydown',e=>{const m={ArrowLeft:[0,-10],ArrowRight:[0,10],ArrowUp:[-8,0],ArrowDown:[8,0]}[e.key];if(!m)return;e.preventDefault();
     rx=Math.max(-80,Math.min(25,rx+m[0]));ry+=m[1];view()});
-  let rw;window.addEventListener('resize',()=>{clearTimeout(rw);rw=setTimeout(()=>{if(host.isConnected){els.forEach(e=>e.remove());els.clear();draw()}},200)});
+  let rw;window.addEventListener('resize',()=>{clearTimeout(rw);rw=setTimeout(()=>{if(host.isConnected)draw(true)},200)});
   if(PD.length){let tm;const form=host.querySelector('.s3form');
     const baca=el=>{const d=PD.find(x=>x.k===el.dataset.k);if(!d)return;
       if(d.t==='n'){let v=Math.round(Number(el.value));if(!Number.isFinite(v)||el.value==='')return;v=Math.max(d.min,Math.min(d.max,v));P[d.k]=v}
@@ -431,6 +475,6 @@ window.V3D=function(host,key,init){const sc=S[key];if(!sc)return;
     form.addEventListener('input',e=>{if(!e.target.dataset.k)return;baca(e.target);clearTimeout(tm);tm=setTimeout(terap,220)});
     form.addEventListener('change',e=>{const el=e.target,d=PD.find(x=>x.k===el.dataset.k);if(d&&d.t==='n'){el.value=P[d.k]}});
     form.querySelector('[data-a=reset]').addEventListener('click',()=>{PD.forEach(d=>{P[d.k]=d.v;const el=form.querySelector(`[data-k="${d.k}"]`);el.value=d.v});terap()});}
-  draw();
+  setPlay(false);draw();if(mini)toggle();
 };
 })();

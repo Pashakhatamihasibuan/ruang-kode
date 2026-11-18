@@ -63,6 +63,7 @@ function route(){
   let m;
   const want=old?['book']:x?needsOf(x.t.k):TK[h]?needsOf(h):(m=/^(\w+)-(tes|ujian-\d+|ringkasan-\d+)$/.exec(h))&&TK[m[1]]?needsOf(m[1])
     :/^kuis/.test(h)?['book','rt']:h==='glosarium'?['book']:[];
+  v.classList.remove('has-stage');
   if(!ready(want)){v.dataset.page='loading';v.innerHTML='<div class="loading" role="status"><span class="spin"></span>Memuat materi…</div>';
     need(want).then(()=>{if((location.hash||'#beranda').slice(1)===h)route()},()=>{v.innerHTML='<div class="loading err" role="alert"><p>Materi gagal dimuat. Periksa koneksi internet.</p><button class="btn primary" onclick="route()">Coba lagi</button></div>'});return}
   if(old){const y=labLesson(+old[1]);location.replace('#'+(y?y.id:'java'));return}

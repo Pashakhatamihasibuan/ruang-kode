@@ -7,6 +7,8 @@ function trackCard(t,o={}){const p=prog(t.k);
 const recent=()=>TRACKS.filter(t=>LMS.last[t.k]||prog(t.k).d).sort((a,b)=>(LMS.lastAt[b.k]||0)-(LMS.lastAt[a.k]||0));
 
 /* ---------- beranda ---------- */
+/* contoh panggung 3D di beranda: berganti otomatis setelah semua langkah selesai */
+const HSTAGE=[['loop','Perulangan'],['array','Array'],['stack','Stack'],['bool','Boolean'],['if','Percabangan']];
 const HERO=[
   ['python','Python',`nama = "Sinta"\nhobi = ["kopi", "buku"]\nprint(f"Halo, {nama}! Suka {hobi[0]}?")`,'Halo, Sinta! Suka kopi?'],
   ['sql','SQL',`SELECT nama, kota\nFROM pelanggan\nWHERE kota = 'Jakarta';`,null],
@@ -27,7 +29,8 @@ function renderHome(){
       <h1>Belajar <em>coding</em>, <em>data</em>, dan <em>desain</em> sambil melihat semuanya bekerja.</h1>
       <p class="lead">${TRACKS.length} jalur belajar dan ${nLessons} pelajaran, dari HTML pertamamu sampai pipeline data. Visual yang bergerak, editor yang langsung jalan, konsol SQL di browser, dan proyek akhir di setiap jalur.</p>
       <div class="cta"><button class="btn primary lg" data-to="#karier">Pilih tujuan karier ▼</button><a class="btn lg" href="#katalog">Lihat semua jalur</a></div></div>
-    <div class="h-demo" id="hDemo" aria-label="Contoh kode"><div class="h-tabs">${HERO.map((h,i)=>`<button data-h="${i}" class="${h[0]}" aria-pressed="${i===0}">${h[1]}</button>`).join('')}</div><div class="h-body"></div></div></section>`;
+    <div class="h-stage" id="hStage" aria-label="Contoh visual interaktif"><div class="hs-tabs" role="group" aria-label="Pilih konsep">${HSTAGE.map((h,i)=>`<button type="button" data-hs="${i}" aria-pressed="${i===0}">${h[1]}</button>`).join('')}</div><div class="hs-host vizhost v3host"></div>
+      <p class="hs-foot">Setiap konsep punya panggung seperti ini di dalam pelajarannya. Kamu bisa mengubah angkanya sendiri.</p></div></section>`;
   return `${hero}
   <section class="section" id="karier"><div class="sec-h"><div class="eyebrow">Jalur karier</div><h2>Mau jadi apa?</h2><p>Setiap jalur karier menyusun beberapa jalur belajar dalam urutan yang disarankan. Progresmu dihitung otomatis.</p></div>
    <div class="paths">${PATHS.map(pa=>{const ts=pa.tr.map(k=>TK[k]),dn=ts.reduce((a,t)=>a+prog(t.k).d,0),nn=ts.reduce((a,t)=>a+prog(t.k).n,0),nx=ts.find(t=>prog(t.k).p<1)||ts[0];
@@ -43,6 +46,10 @@ function renderHome(){
    <a class="mcard" href="#saya"><span class="eyebrow">Progres</span><b>Belajar saya</b><p>Target harian, hari beruntun, XP, nilai ujian, dan cadangan progres.</p></a></div></section>`;
 }
 function wireHome(){
+  const hs=$('#hStage');if(hs&&typeof V3D==='function'){let j=0;const host=$('.hs-host',hs);
+    const show=k=>{j=k;hs.querySelectorAll('[data-hs]').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.hs===k));host.innerHTML='<div></div>';
+      V3D(host.firstChild,HSTAGE[k][0],null,{mini:true,onEnd:()=>{if(host.isConnected)show((j+1)%HSTAGE.length)}})};
+    hs.addEventListener('click',e=>{const b=e.target.closest('[data-hs]');if(b)show(+b.dataset.hs)});show(0)}
   const box=$('#hDemo');if(!box)return;let i=0;
   const show=k=>{i=k;const [lang,,code,out]=HERO[k];box.querySelectorAll('[data-h]').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.h===k));
     let res=out?`<pre class="out">${esc(out)}</pre>`:'';

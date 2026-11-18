@@ -77,8 +77,11 @@ function wireLesson(x){
 /* visual 3D: disisipkan setelah penjelasan pertama bila judul pelajaran cocok dengan salah satu adegan */
 function mount3d(x,y){const k=typeof v3dOf==='function'&&v3dOf(y.t,x.title);if(!k)return;const lb=$('#view .l-body');if(!lb||lb.querySelector('.v3-sec'))return;
   const sec=document.createElement('section');sec.className='viz v3-sec';sec.id='v3d';
-  sec.innerHTML=`<div class="viz-head"><span class="eyebrow">Visual 3D</span><h3>${V3DT(k)}</h3><p>Seret panggung untuk melihat dari sudut lain, lalu tekan Berikutnya untuk menjalankan langkahnya.</p></div><div class="vizhost v3host"></div>`;
-  const pr=lb.querySelector('.prose');if(pr&&pr.parentNode)pr.parentNode.insertBefore(sec,pr.nextSibling);else lb.prepend(sec);
+  sec.innerHTML=`<div class="viz-head"><span class="eyebrow">Visual interaktif · 3D</span><h3>${V3DT(k)}</h3><p>Ikuti langkahnya satu per satu. Seret panggung untuk melihat dari sudut lain.</p></div><div class="vizhost v3host"></div>`;
+  /* panggung jadi pusat pelajaran: tepat setelah kotak Sekilas, sebelum penjelasan teks */
+  const sk=lb.querySelector('.sekilas'),pr=lb.querySelector('.prose');
+  if(sk)sk.after(sec);else if(pr)pr.before(sec);else lb.prepend(sec);
+  $('#view').classList.add('has-stage');
   V3D(sec.querySelector('.v3host'),k,y.l.v3p||(typeof v3dInit==='function'&&v3dInit(k,x.title)))}
 /* layar lebar: tombol menyembunyikan/menampilkan menu belajar (diingat); layar sempit: laci */
 const OLWIDE=()=>matchMedia('(min-width:1081px)').matches;

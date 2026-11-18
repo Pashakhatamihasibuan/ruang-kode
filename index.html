@@ -2087,6 +2087,72 @@ section.cat-row{display:flex;flex-direction:column;gap:16px;margin-top:36px}
 .s3fld input:focus-visible,.s3fld select:focus-visible{outline:2px solid var(--acc,var(--brand));outline-offset:1px;border-color:transparent}
 .s3form .tlink{justify-self:start;min-height:40px;background:none;border:0;cursor:pointer;font-size:.85rem;padding:0}
 .s3tip{margin:0;padding:0 14px 12px;font-size:.8rem;color:var(--muted)}
+/* ===================== Panggung pelajaran interaktif =====================
+   Diagram 3D isometrik jadi pusat pelajaran: penunjuk nilai (HUD) di atas, garis waktu langkah di bawah,
+   dan panel panduan di kanan (atau di bawah pada layar sempit) berisi penjelasan langkah dan tombolnya. */
+body:has(#view.has-stage) :is(.shell,.gnav-in,.mega-in,.sfoot>div){max-width:1440px}
+#view.has-stage{max-width:1200px}
+#view.has-stage .l-head,#view.has-stage .l-body>:not(.v3-sec){width:100%;max-width:860px}
+.v3-sec{gap:16px}
+.v3host{container-type:inline-size;min-width:0}
+.stg{display:flex;flex-direction:column;gap:16px;min-width:0}
+.stg-main{display:flex;flex-direction:column;gap:12px;min-width:0}
+@container (min-width:860px){.stg{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:20px;align-items:start}}
+.stg .s3{perspective:1100px;height:clamp(300px,52vw,460px);border:1px solid var(--line);
+  background:radial-gradient(circle,color-mix(in srgb,var(--ink) 11%,transparent) 1px,transparent 1.4px) 0 0/20px 20px,linear-gradient(180deg,var(--surface),var(--sunk))}
+.s3view{position:absolute;left:10px;bottom:8px;font:600 .75rem var(--f-body);color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 10px;min-height:28px;cursor:pointer}
+.s3view:hover{color:var(--ink);border-color:color-mix(in srgb,var(--ink) 25%,var(--line))}
+/* HUD: nilai yang sedang dipakai adegan */
+.stg-hud{display:flex;flex-wrap:wrap;gap:8px}
+.hud-c{display:flex;flex-direction:column;gap:2px;min-width:0;max-width:100%;padding:7px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);box-shadow:var(--shadow-1)}
+.hud-c small{font:700 .64rem/1.2 var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hud-c b{font:600 .92rem/1.2 var(--f-mono);color:var(--ink);overflow-wrap:anywhere}
+/* progres dan garis waktu langkah */
+.stg-prog{height:4px;border-radius:4px;background:var(--line);overflow:hidden}
+.stg-prog i{display:block;height:100%;width:0;background:var(--ok);border-radius:4px;transition:width .45s cubic-bezier(.3,.8,.25,1)}
+.stg-tl{list-style:none;margin:0;padding:2px 0 4px;display:flex;overflow-x:auto;scrollbar-width:thin}
+.stg-tl li{flex:1 0 84px;position:relative;min-width:84px}
+.stg-tl li+li::before{content:"";position:absolute;top:19px;right:calc(50% + 15px);width:calc(100% - 30px);height:2px;background:var(--line)}
+.stg-tl li:has(.done,.now)+li::before{background:var(--ok)}
+.stg-tl li:has(+li .now)::after{content:none}
+.stg-tl button{display:flex;flex-direction:column;align-items:center;gap:6px;width:100%;min-height:44px;padding:4px 4px 2px;background:none;border:0;cursor:pointer;color:var(--muted);font:600 .74rem/1.25 var(--f-body)}
+.stg-tl .tn{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;border:2px solid var(--line);background:var(--surface);font:700 .78rem var(--f-mono);color:var(--muted);transition:background .25s,border-color .25s,color .25s}
+.stg-tl .tl-l{text-align:center;overflow-wrap:anywhere}
+.stg-tl .done .tn{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.stg-tl .now{color:var(--ink)}
+.stg-tl .now .tn{background:var(--ok);border-color:var(--ok);color:var(--surface);box-shadow:0 0 0 4px color-mix(in srgb,var(--ok) 22%,transparent)}
+.stg-tl button:hover .tn{border-color:var(--ok)}
+.stg-tl button:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:8px}
+/* panel panduan */
+.stg-rail{display:flex;flex-direction:column;gap:14px;min-width:0;padding:18px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);box-shadow:var(--shadow-1)}
+.rail-top{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.rail-n{font:700 .7rem/1 var(--f-body);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.rail-tag{font:700 .66rem/1 var(--f-body);letter-spacing:.12em;text-transform:uppercase;padding:5px 9px;border-radius:999px}
+.rail-tag.t-a{background:var(--gold-soft);color:var(--gold)}.rail-tag.t-b{background:var(--brand-soft);color:var(--brand)}.rail-tag.t-c{background:var(--ok-soft);color:var(--ok)}
+.rail-h{margin:0;font:500 1.4rem/1.2 var(--f-serif);letter-spacing:-.01em;color:var(--ink);text-wrap:balance}
+.stg-rail .s3cap{margin:0;min-height:5.4em;font-size:1rem;line-height:1.7;color:var(--ink)}
+.rail-nav{display:flex;gap:8px;flex-wrap:wrap}
+.rail-nav .btn{min-height:44px}.rail-nav .btn.primary{flex:1 1 160px}
+.rail-nav button:disabled{opacity:.45;cursor:not-allowed}
+.rail-play{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;padding-top:12px;border-top:1px solid var(--line)}
+.rp{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 .82rem var(--f-body);cursor:pointer}
+.rp:hover{border-color:color-mix(in srgb,var(--ink) 28%,var(--line))}.rp[aria-pressed="true"]{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.rail-kb{font-size:.76rem;color:var(--muted);display:inline-flex;gap:4px;align-items:center}
+kbd{font:600 .7rem/1 var(--f-mono);padding:3px 6px;border-radius:5px;border:1px solid var(--line);border-bottom-width:2px;background:var(--sunk);color:var(--muted)}
+.stg-rail .s3exp{margin-top:2px}
+.stg-rail .s3form{grid-template-columns:repeat(auto-fill,minmax(min(112px,100%),1fr))}
+@media (max-width:640px){.stg-rail{padding:14px}.rail-kb{display:none}.rail-h{font-size:1.2rem}}
+/* panggung mini di beranda: berputar otomatis, tanpa tombol */
+.stg.is-mini .stg-hud,.stg.is-mini .stg-tl,.stg.is-mini .rail-nav,.stg.is-mini .rail-play,.stg.is-mini .s3exp,.stg.is-mini .s3view,.stg.is-mini .s3hint{display:none}
+.stg.is-mini{gap:10px}.stg.is-mini .s3{height:clamp(240px,30vw,330px)}
+.stg.is-mini .stg-rail{padding:14px 16px;gap:8px;box-shadow:none}
+.stg.is-mini .rail-h{font-size:1.12rem}.stg.is-mini .s3cap{min-height:4.6em;font-size:.92rem;line-height:1.6}
+.h-stage{display:flex;flex-direction:column;gap:12px;min-width:0;padding:16px;border:1px solid var(--line);border-radius:20px;background:var(--surface);box-shadow:var(--shadow-2)}
+.hs-tabs{display:flex;flex-wrap:wrap;gap:6px}
+.hs-tabs button{min-height:36px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font:600 .8rem var(--f-body);cursor:pointer}
+.hs-tabs button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.hs-foot{margin:0;font-size:.82rem;color:var(--muted)}
+.stg-rail .s3cap code{white-space:normal;overflow-wrap:anywhere}
 
 </style>
 </head>
@@ -2775,6 +2841,8 @@ function trackCard(t,o={}){const p=prog(t.k);
 const recent=()=>TRACKS.filter(t=>LMS.last[t.k]||prog(t.k).d).sort((a,b)=>(LMS.lastAt[b.k]||0)-(LMS.lastAt[a.k]||0));
 
 /* ---------- beranda ---------- */
+/* contoh panggung 3D di beranda: berganti otomatis setelah semua langkah selesai */
+const HSTAGE=[['loop','Perulangan'],['array','Array'],['stack','Stack'],['bool','Boolean'],['if','Percabangan']];
 const HERO=[
   ['python','Python',`nama = "Sinta"\nhobi = ["kopi", "buku"]\nprint(f"Halo, {nama}! Suka {hobi[0]}?")`,'Halo, Sinta! Suka kopi?'],
   ['sql','SQL',`SELECT nama, kota\nFROM pelanggan\nWHERE kota = 'Jakarta';`,null],
@@ -2795,7 +2863,8 @@ function renderHome(){
       <h1>Belajar <em>coding</em>, <em>data</em>, dan <em>desain</em> sambil melihat semuanya bekerja.</h1>
       <p class="lead">${TRACKS.length} jalur belajar dan ${nLessons} pelajaran, dari HTML pertamamu sampai pipeline data. Visual yang bergerak, editor yang langsung jalan, konsol SQL di browser, dan proyek akhir di setiap jalur.</p>
       <div class="cta"><button class="btn primary lg" data-to="#karier">Pilih tujuan karier ▼</button><a class="btn lg" href="#katalog">Lihat semua jalur</a></div></div>
-    <div class="h-demo" id="hDemo" aria-label="Contoh kode"><div class="h-tabs">${HERO.map((h,i)=>`<button data-h="${i}" class="${h[0]}" aria-pressed="${i===0}">${h[1]}</button>`).join('')}</div><div class="h-body"></div></div></section>`;
+    <div class="h-stage" id="hStage" aria-label="Contoh visual interaktif"><div class="hs-tabs" role="group" aria-label="Pilih konsep">${HSTAGE.map((h,i)=>`<button type="button" data-hs="${i}" aria-pressed="${i===0}">${h[1]}</button>`).join('')}</div><div class="hs-host vizhost v3host"></div>
+      <p class="hs-foot">Setiap konsep punya panggung seperti ini di dalam pelajarannya. Kamu bisa mengubah angkanya sendiri.</p></div></section>`;
   return `${hero}
   <section class="section" id="karier"><div class="sec-h"><div class="eyebrow">Jalur karier</div><h2>Mau jadi apa?</h2><p>Setiap jalur karier menyusun beberapa jalur belajar dalam urutan yang disarankan. Progresmu dihitung otomatis.</p></div>
    <div class="paths">${PATHS.map(pa=>{const ts=pa.tr.map(k=>TK[k]),dn=ts.reduce((a,t)=>a+prog(t.k).d,0),nn=ts.reduce((a,t)=>a+prog(t.k).n,0),nx=ts.find(t=>prog(t.k).p<1)||ts[0];
@@ -2811,6 +2880,10 @@ function renderHome(){
    <a class="mcard" href="#saya"><span class="eyebrow">Progres</span><b>Belajar saya</b><p>Target harian, hari beruntun, XP, nilai ujian, dan cadangan progres.</p></a></div></section>`;
 }
 function wireHome(){
+  const hs=$('#hStage');if(hs&&typeof V3D==='function'){let j=0;const host=$('.hs-host',hs);
+    const show=k=>{j=k;hs.querySelectorAll('[data-hs]').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.hs===k));host.innerHTML='<div></div>';
+      V3D(host.firstChild,HSTAGE[k][0],null,{mini:true,onEnd:()=>{if(host.isConnected)show((j+1)%HSTAGE.length)}})};
+    hs.addEventListener('click',e=>{const b=e.target.closest('[data-hs]');if(b)show(+b.dataset.hs)});show(0)}
   const box=$('#hDemo');if(!box)return;let i=0;
   const show=k=>{i=k;const [lang,,code,out]=HERO[k];box.querySelectorAll('[data-h]').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.h===k));
     let res=out?`<pre class="out">${esc(out)}</pre>`:'';
@@ -3078,8 +3151,11 @@ function wireLesson(x){
 /* visual 3D: disisipkan setelah penjelasan pertama bila judul pelajaran cocok dengan salah satu adegan */
 function mount3d(x,y){const k=typeof v3dOf==='function'&&v3dOf(y.t,x.title);if(!k)return;const lb=$('#view .l-body');if(!lb||lb.querySelector('.v3-sec'))return;
   const sec=document.createElement('section');sec.className='viz v3-sec';sec.id='v3d';
-  sec.innerHTML=`<div class="viz-head"><span class="eyebrow">Visual 3D</span><h3>${V3DT(k)}</h3><p>Seret panggung untuk melihat dari sudut lain, lalu tekan Berikutnya untuk menjalankan langkahnya.</p></div><div class="vizhost v3host"></div>`;
-  const pr=lb.querySelector('.prose');if(pr&&pr.parentNode)pr.parentNode.insertBefore(sec,pr.nextSibling);else lb.prepend(sec);
+  sec.innerHTML=`<div class="viz-head"><span class="eyebrow">Visual interaktif · 3D</span><h3>${V3DT(k)}</h3><p>Ikuti langkahnya satu per satu. Seret panggung untuk melihat dari sudut lain.</p></div><div class="vizhost v3host"></div>`;
+  /* panggung jadi pusat pelajaran: tepat setelah kotak Sekilas, sebelum penjelasan teks */
+  const sk=lb.querySelector('.sekilas'),pr=lb.querySelector('.prose');
+  if(sk)sk.after(sec);else if(pr)pr.before(sec);else lb.prepend(sec);
+  $('#view').classList.add('has-stage');
   V3D(sec.querySelector('.v3host'),k,y.l.v3p||(typeof v3dInit==='function'&&v3dInit(k,x.title)))}
 /* layar lebar: tombol menyembunyikan/menampilkan menu belajar (diingat); layar sempit: laci */
 const OLWIDE=()=>matchMedia('(min-width:1081px)').matches;
@@ -3867,33 +3943,68 @@ function blockHTML(o,U){const w=o.w*U,h=o.h*U,d=o.d*U,ln=o.t?`<b>${o.t}</b>`:'',
     return `<div class="f3 f-${k}" style="width:${fw}px;height:${fh}px;transform:translate(-50%,-50%) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(${tz}px)">${k==='f'?ln+(o.flat?'':''):k==='t'?tt:''}</div>`}).join('')}
 function place(o,U){return `translate3d(${o.x*U}px,${-o.y*U}px,${o.z*U}px) rotateY(${o.ry||0}deg) rotateZ(${-(o.rz||0)}deg)`}
 
-window.V3D=function(host,key,init){const sc=S[key];if(!sc)return;
-  const rm=RMq();let i=0,rx=-20,ry=-28,auto=null,U=40;const els=new Map();
+/* label pendek tiap langkah untuk garis waktu (dipakai bila jumlah langkah cocok) */
+const LB={var:['Rak memori','Isi umur','Isi nama','Ambil nilai','Ganti isi'],array:['Deretan kotak','Indeks 0','Akses langsung','Tambah','Panjang'],
+ matrix:['Ukuran','Satu baris','Satu kolom','Satu sel'],if:['Persimpangan','Cek kondisi','Pilih cabang','Uji batas'],bool:['Masukan','Cek p dulu','Hasil','Tabel kebenaran'],
+ acak:['Desimal 0..1','Ke rentang','Banyak lemparan','Seed'],stack:['Tumpukan','Push','Peek','Pop','Sisa'],queue:['Antrean','Enqueue','Dequeue','Maju'],
+ rekursi:['Panggil','Tumpuk','Kasus dasar','Kembali','Kembali lagi','Hasil'],dom:['Akar','Anak','Telusuri'],oop:['Cetak biru','Objek pertama','Banyak objek','Pewarisan'],
+ func:['Mesin','Masukan','Kembalikan','Pakai ulang'],box:['Kotak','Pisah lapisan','Padding','Border','Margin','Lebar total'],zindex:['Urutan HTML','Pakai z-index','Konteks tumpukan'],
+ join:['Dua tabel','Cocokkan','Hasil'],git:['Commit','Branch','Merge']};
+/* pintasan keyboard global untuk panggung yang sedang terlihat: ← → langkah, R ulang, Spasi putar/jeda */
+let AKTIF=null;
+document.addEventListener('keydown',e=>{const c=AKTIF;if(!c||!c.host.isConnected||e.altKey||e.ctrlKey||e.metaKey)return;
+  const t=e.target;if(t&&(/^(INPUT|SELECT|TEXTAREA|BUTTON)$/.test(t.tagName)&&e.key===' '||/^(INPUT|SELECT|TEXTAREA)$/.test(t.tagName)||t.isContentEditable))return;
+  if(t&&t.classList&&t.classList.contains('s3'))return;
+  const r=c.host.getBoundingClientRect();if(r.bottom<80||r.top>innerHeight-80)return;
+  const k=e.key;if(k==='ArrowRight'){c.go(1);e.preventDefault()}else if(k==='ArrowLeft'){c.go(-1);e.preventDefault()}
+  else if(k==='r'||k==='R'){c.replay();e.preventDefault()}else if(k===' '){c.toggle();e.preventDefault()}});
+
+window.V3D=function(host,key,init,opt){const sc=S[key];if(!sc)return;const mini=!!(opt&&opt.mini);
+  const rm=RMq(),RX0=-30,RY0=-38;let i=0,rx=RX0,ry=RY0,auto=null,U=40;const els=new Map();
   /* parameter eksperimen: nilai awal dari definisi adegan, langkah dihitung ulang setiap kali diubah */
   const PD=(sc.p||[]).map(d=>init&&init[d.k]!=null?{...d,v:init[d.k]}:d),P={};PD.forEach(d=>P[d.k]=d.v);
   const hitung=()=>{try{return typeof sc.steps==='function'?sc.steps(P):sc.steps}catch(e){return [{cap:'Nilai ini belum bisa digambar. Coba angka lain.',it:[lantai()]}]}};
   let steps=hitung();
+  const label=(k)=>{const s=steps[k],L=LB[key];if(s&&s.lb)return s.lb;if(L&&L.length===steps.length)return L[k];
+    if(k===0)return 'Mulai';if(k===steps.length-1)return 'Intinya';const c=String(s.cap).replace(/<[^>]+>/g,''),m=c.match(/^(Putaran \d+|Bandingkan)/);return m?m[0]:/ketemu/i.test(c)?'Ketemu':'Langkah '+(k+1)};
+  const tagOf=k=>k===0?['Mulai','t-a']:k===steps.length-1?['Intinya','t-c']:['Konsep','t-b'];
   const fld=d=>{const id=`v3-${key}-${d.k}-${Math.random().toString(36).slice(2,7)}`;
     const inp=d.t==='o'?`<select id="${id}" data-k="${d.k}">${d.o.map(([v,l])=>`<option value="${v}"${v===d.v?' selected':''}>${l}</option>`).join('')}</select>`
       :d.t==='n'?`<input id="${id}" data-k="${d.k}" type="number" inputmode="numeric" step="1" min="${d.min}" max="${d.max}" value="${d.v}">`
       :`<input id="${id}" data-k="${d.k}" type="text" value="${d.v}" maxlength="40" autocomplete="off" spellcheck="false">`;
     return `<label class="s3fld" for="${id}"><span>${d.l}${d.t==='n'?` <small>${d.min}…${d.max}</small>`:''}</span>${inp}</label>`};
-  const panel=PD.length?`<details class="s3exp" open><summary><span aria-hidden="true">🧪</span> Eksperimen: ubah angkanya, lihat apa yang terjadi</summary>
+  const panel=PD.length?`<details class="s3exp" open><summary><span aria-hidden="true">🧪</span> Eksperimen: ubah angkanya</summary>
     <div class="s3form">${PD.map(fld).join('')}<button class="tlink" type="button" data-a="reset">Kembalikan nilai awal</button></div>
-    <p class="s3tip">Perubahan langsung diterapkan pada langkah yang sedang dibuka. Tekan Sebelumnya atau Berikutnya untuk melihat langkah lain dengan nilai barumu.</p></details>`:'';
-  host.innerHTML=`<div class="s3wrap"><div class="s3" tabindex="0" role="img" aria-label="Adegan 3D: ${sc.t}. Seret atau tekan tombol panah untuk memutar."><div class="s3cam"><div class="w3"></div></div><div class="s3tags"></div>
-   <span class="s3hint" aria-hidden="true">⟲ seret untuk memutar</span></div>
-   <p class="s3cap" aria-live="polite"></p>
-   ${panel}<div class="s3ctl"><button class="btn" data-a="prev">◀ Sebelumnya</button><span class="s3n"></span><button class="btn primary" data-a="next">Berikutnya ▶</button>
-    <button class="btn" data-a="play" aria-pressed="false">▶ Putar otomatis</button><button class="tlink" data-a="view">Sudut awal</button></div></div>`;
-  const st=host.querySelector('.s3'),w=host.querySelector('.w3'),cap=host.querySelector('.s3cap'),tg=host.querySelector('.s3tags'),n=host.querySelector('.s3n');
+    <p class="s3tip">Perubahan langsung diterapkan pada langkah yang sedang dibuka.</p></details>`:'';
+  host.innerHTML=`<div class="stg${mini?' is-mini':''}">
+   <div class="stg-main">
+    ${PD.length?'<div class="stg-hud" aria-label="Nilai yang sedang dipakai"></div>':''}
+    <div class="s3" tabindex="0" role="img" aria-label="Adegan 3D: ${sc.t}. Seret atau tekan tombol panah untuk memutar."><div class="s3cam"><div class="w3"></div></div><div class="s3tags"></div>
+     <span class="s3hint" aria-hidden="true">⟲ seret untuk memutar</span><button class="s3view" type="button" data-a="view" title="Kembali ke sudut awal">Sudut awal</button></div>
+    <div class="stg-prog" aria-hidden="true"><i></i></div>
+    <ol class="stg-tl" aria-label="Langkah"></ol>
+   </div>
+   <aside class="stg-rail">
+    <div class="rail-top"><span class="rail-n"></span><span class="rail-tag"></span></div>
+    <h4 class="rail-h"></h4>
+    <p class="s3cap" aria-live="polite"></p>
+    <div class="rail-nav"><button class="btn" type="button" data-a="prev">← Kembali</button><button class="btn primary" type="button" data-a="next"></button></div>
+    <div class="rail-play"><button class="rp" type="button" data-a="replay">⟲ Ulangi <kbd>R</kbd></button><button class="rp" type="button" data-a="play" aria-pressed="false"></button><span class="rail-kb"><kbd>←</kbd><kbd>→</kbd> langkah</span></div>
+    ${panel}
+   </aside></div>`;
+  const st=host.querySelector('.s3'),w=host.querySelector('.w3'),cap=host.querySelector('.s3cap'),tg=host.querySelector('.s3tags'),tl=host.querySelector('.stg-tl'),
+    hud=host.querySelector('.stg-hud'),bar=host.querySelector('.stg-prog i'),bPlay=host.querySelector('[data-a=play]');
   /* label diproyeksikan ke 2D agar selalu terbaca dan tidak tertutup benda */
   const proj=(x,y,z)=>{const a=ry*Math.PI/180,b=rx*Math.PI/180,X=x*U,Y=-y*U,Z=z*U;
     const x1=X*Math.cos(a)+Z*Math.sin(a),z1=-X*Math.sin(a)+Z*Math.cos(a),y2=Y*Math.cos(b)-z1*Math.sin(b),z2=Y*Math.sin(b)+z1*Math.cos(b);
-    const W=st.clientWidth,H=st.clientHeight,ox=W/2,oy=H*.4,cx=W/2,cy=H*.54,k=900/(900-z2);return [ox+(cx+x1-ox)*k,oy+(cy+y2-oy)*k]};
+    const W=st.clientWidth,H=st.clientHeight,ox=W/2,oy=H*.4,cx=W/2,cy=H*.56,k=1100/(1100-z2);return [ox+(cx+x1-ox)*k,oy+(cy+y2-oy)*k]};
   const view=()=>{w.style.transform=`rotateX(${rx}deg) rotateY(${ry}deg)`;
     const W=st.clientWidth;els.forEach(e=>{if(e._tag){const [l,t]=proj(...e._p),h=e.offsetWidth/2+4;e.style.left=Math.max(h,Math.min(W-h,l))+'px';e.style.top=t+'px'}})};
-  function draw(){if(i>steps.length-1)i=steps.length-1;const s=steps[i];U=Math.max(26,Math.min(58,st.clientWidth/10.5));const seen=new Set();
+  const optLabel=d=>{const o=(d.o||[]).find(x=>String(x[0])===String(P[d.k]));return o?o[1]:P[d.k]};
+  function hudDraw(){if(!hud)return;hud.innerHTML=PD.map(d=>`<span class="hud-c"><small>${d.l}</small><b>${E(String(d.t==='o'?optLabel(d):P[d.k]).slice(0,28))}</b></span>`).join('')}
+  function tlDraw(){tl.innerHTML=steps.map((s,k)=>`<li><button type="button" data-go="${k}"${k===i?' aria-current="step"':''} class="${k<i?'done':k===i?'now':''}"><span class="tn">${k<i?'✓':k+1}</span><span class="tl-l">${label(k)}</span></button></li>`).join('')}
+  function draw(again){if(i>steps.length-1)i=steps.length-1;const s=steps[i];U=Math.max(26,Math.min(60,st.clientWidth/11));const seen=new Set();
+    if(again){els.forEach(e=>e.remove());els.clear()}
     s.it.forEach(o=>{seen.add(o.id);let e=els.get(o.id);const fresh=!e;
       if(fresh){e=document.createElement('div');els.set(o.id,e);(o.tag?tg:w).appendChild(e)}
       if(o.tag){e.className=`t3 ${o.c?'c-'+o.c:''}`;e.innerHTML=o.t;e._tag=1;e._p=[o.x,o.y,o.z]}
@@ -3903,22 +4014,31 @@ window.V3D=function(host,key,init){const sc=S[key];if(!sc)return;
     /* teks di sisi benda dikecilkan bila tidak muat (layar sempit) */
     w.querySelectorAll('.f3>b,.f3>i').forEach(t=>{const f=t.parentNode,cw=f.clientWidth-4,ch=f.clientHeight-2,sw=t.scrollWidth,sh=t.offsetHeight;
       const k=Math.min(1,cw/sw,ch/sh);t.style.transform=k<1?`scale(${Math.max(.35,k)})`:''});
-    view();cap.innerHTML=s.cap;n.textContent=`${i+1} / ${steps.length}`;
-    host.querySelector('[data-a=prev]').disabled=i===0;host.querySelector('[data-a=next]').disabled=i===steps.length-1}
-  const stop=()=>{clearInterval(auto);auto=null;const b=host.querySelector('[data-a=play]');b.setAttribute('aria-pressed','false');b.textContent='▶ Putar otomatis'};
-  host.querySelector('.s3ctl').addEventListener('click',e=>{const a=e.target.closest('[data-a]');if(!a)return;const k=a.dataset.a;
-    if(k==='next'&&i<steps.length-1){i++;draw()}
-    else if(k==='prev'&&i>0){i--;draw()}
-    else if(k==='view'){rx=-20;ry=-28;view()}
-    else if(k==='play'){if(auto)return stop();if(i===steps.length-1){i=0;draw()}a.setAttribute('aria-pressed','true');a.textContent='❚❚ Jeda';
-      auto=setInterval(()=>{if(!host.isConnected)return stop();if(i>=steps.length-1)return stop();i++;draw()},3200)}});
+    view();const N=steps.length,[tt,tc]=tagOf(i);
+    cap.innerHTML=s.cap;host.querySelector('.rail-h').textContent=label(i);host.querySelector('.rail-n').textContent=`Langkah ${i+1} / ${N}`;
+    const tgEl=host.querySelector('.rail-tag');tgEl.textContent=tt;tgEl.className='rail-tag '+tc;
+    bar.style.width=((i+1)/N*100)+'%';tlDraw();hudDraw();
+    host.querySelector('[data-a=prev]').disabled=i===0;
+    host.querySelector('[data-a=next]').innerHTML=i<N-1?`Lanjut: ${label(i+1)} →`:'↺ Mulai lagi dari awal'}
+  const setPlay=on=>{bPlay.setAttribute('aria-pressed',on?'true':'false');bPlay.innerHTML=on?'❚❚ Jeda <kbd>Spasi</kbd>':'▶ Putar <kbd>Spasi</kbd>'};
+  const stop=()=>{clearInterval(auto);auto=null;setPlay(false)};
+  const go=d=>{stop();const j=i+d;if(j<0)return;if(j>steps.length-1){if(d>0&&i===steps.length-1){i=0;draw()}return}i=j;draw()};
+  const toggle=()=>{if(auto)return stop();if(i===steps.length-1){i=0;draw()}setPlay(true);
+    auto=setInterval(()=>{if(!host.isConnected)return stop();if(i>=steps.length-1){stop();if(mini&&opt.onEnd)opt.onEnd();return}i++;draw()},mini?3000:3400)};
+  const replay=()=>{draw(true)};
+  const ctl={host,go,toggle,replay};if(!mini){AKTIF=ctl;
+  host.addEventListener('pointerdown',()=>{AKTIF=ctl});host.addEventListener('focusin',()=>{AKTIF=ctl})}
+  host.addEventListener('click',e=>{const g=e.target.closest('[data-go]');if(g){stop();i=+g.dataset.go;draw();return}
+    const a=e.target.closest('[data-a]');if(!a)return;const k=a.dataset.a;
+    if(k==='next')go(1);else if(k==='prev')go(-1);else if(k==='replay')replay();else if(k==='play')toggle();
+    else if(k==='view'){rx=RX0;ry=RY0;view()}});
   let drag=null;
-  st.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY,rx,ry};st.setPointerCapture(e.pointerId);st.classList.add('grab')});
+  st.addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;drag={x:e.clientX,y:e.clientY,rx,ry};st.setPointerCapture(e.pointerId);st.classList.add('grab')});
   st.addEventListener('pointermove',e=>{if(!drag)return;ry=drag.ry+(e.clientX-drag.x)*.45;rx=Math.max(-80,Math.min(25,drag.rx-(e.clientY-drag.y)*.35));view()});
   const up=()=>{drag=null;st.classList.remove('grab')};st.addEventListener('pointerup',up);st.addEventListener('pointercancel',up);
   st.addEventListener('keydown',e=>{const m={ArrowLeft:[0,-10],ArrowRight:[0,10],ArrowUp:[-8,0],ArrowDown:[8,0]}[e.key];if(!m)return;e.preventDefault();
     rx=Math.max(-80,Math.min(25,rx+m[0]));ry+=m[1];view()});
-  let rw;window.addEventListener('resize',()=>{clearTimeout(rw);rw=setTimeout(()=>{if(host.isConnected){els.forEach(e=>e.remove());els.clear();draw()}},200)});
+  let rw;window.addEventListener('resize',()=>{clearTimeout(rw);rw=setTimeout(()=>{if(host.isConnected)draw(true)},200)});
   if(PD.length){let tm;const form=host.querySelector('.s3form');
     const baca=el=>{const d=PD.find(x=>x.k===el.dataset.k);if(!d)return;
       if(d.t==='n'){let v=Math.round(Number(el.value));if(!Number.isFinite(v)||el.value==='')return;v=Math.max(d.min,Math.min(d.max,v));P[d.k]=v}
@@ -3927,7 +4047,7 @@ window.V3D=function(host,key,init){const sc=S[key];if(!sc)return;
     form.addEventListener('input',e=>{if(!e.target.dataset.k)return;baca(e.target);clearTimeout(tm);tm=setTimeout(terap,220)});
     form.addEventListener('change',e=>{const el=e.target,d=PD.find(x=>x.k===el.dataset.k);if(d&&d.t==='n'){el.value=P[d.k]}});
     form.querySelector('[data-a=reset]').addEventListener('click',()=>{PD.forEach(d=>{P[d.k]=d.v;const el=form.querySelector(`[data-k="${d.k}"]`);el.value=d.v});terap()});}
-  draw();
+  setPlay(false);draw();if(mini)toggle();
 };
 })();
 
@@ -4416,6 +4536,7 @@ function route(){
   let m;
   const want=old?['book']:x?needsOf(x.t.k):TK[h]?needsOf(h):(m=/^(\w+)-(tes|ujian-\d+|ringkasan-\d+)$/.exec(h))&&TK[m[1]]?needsOf(m[1])
     :/^kuis/.test(h)?['book','rt']:h==='glosarium'?['book']:[];
+  v.classList.remove('has-stage');
   if(!ready(want)){v.dataset.page='loading';v.innerHTML='<div class="loading" role="status"><span class="spin"></span>Memuat materi…</div>';
     need(want).then(()=>{if((location.hash||'#beranda').slice(1)===h)route()},()=>{v.innerHTML='<div class="loading err" role="alert"><p>Materi gagal dimuat. Periksa koneksi internet.</p><button class="btn primary" onclick="route()">Coba lagi</button></div>'});return}
   if(old){const y=labLesson(+old[1]);location.replace('#'+(y?y.id:'java'));return}
