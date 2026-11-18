@@ -186,6 +186,339 @@ S.acak={t:'Bilangan acak: dari desimal 0..1 menjadi angka dadu',
    {cap:`${P.n} lemparan: ${daftar}. Tinggi tiang = berapa kali angka itu keluar. Makin banyak lemparan, tingginya makin rata.`,it:[lt(),...kotak(-1),...tiang()]},
    {cap:`Seed ${P.seed} <b>selalu</b> memberi urutan yang sama ini. Ganti seed di panel Eksperimen dan urutannya berubah; kembalikan ke ${P.seed} dan urutannya sama lagi. Inilah cara program diuji ulang dengan hasil acak yang bisa diulang.`,it:[lt(),...kotak(-1),...tiang()]}]}};
 
+
+/* ===================== SQL & POSTGRESQL ===================== */
+const PROD=[[1,'Kopi',25,'Minuman'],[2,'Teh',15,'Minuman'],[3,'Roti',30,'Makanan'],[4,'Keju',60,'Makanan'],[5,'Susu',40,'Minuman'],[6,'Madu',85,'Lainnya']];
+S.query={t:'Urutan kerja query SQL: FROM, WHERE, SELECT, ORDER BY, LIMIT',
+ p:[{k:'min',l:'WHERE harga ≥ (ribu)',t:'n',min:0,max:100,v:30},{k:'ord',l:'ORDER BY harga',t:'o',o:[['desc','DESC (besar dulu)'],['asc','ASC (kecil dulu)']],v:'desc'},{k:'lim',l:'LIMIT',t:'n',min:1,max:6,v:3}],
+ steps:P=>{const CX=[-3.3,-1.3,.9,3.3],W=[.9,2,1.6,2.2],Z=k=>(k-2.5)*.82,cols=['id','nama','harga','kategori'];
+  const cell=(r,j,k,c,y=0)=>B('q'+r[0]+'_'+j,CX[j],y,Z(k),{w:W[j],h:.32,d:.68,c,t:String(r[j])});
+  const head=js=>js.map(j=>G('h'+j,CX[j],.75,Z(-1.1),cols[j],'idx'));
+  const lt=lantai(10.5,6.6);
+  const lolos=PROD.filter(r=>r[2]>=P.min),gagal=PROD.filter(r=>r[2]<P.min);
+  const urut=[...lolos].sort((a,b)=>P.ord==='asc'?a[2]-b[2]:b[2]-a[2]),hasil=urut.slice(0,P.lim);
+  const S2=[1,2];
+  return [
+   {cap:`<code>FROM produk</code> dikerjakan <b>pertama</b>: database mengambil seluruh tabel, ${PROD.length} baris dengan 4 kolom. Setiap baris satu produk, setiap kolom satu jenis data.`,
+    it:[lt,...head([0,1,2,3]),...PROD.flatMap((r,k)=>[0,1,2,3].map(j=>cell(r,j,k,'acc')))]},
+   {cap:`<code>WHERE harga &gt;= ${P.min}</code> memeriksa setiap baris. ${lolos.length} baris lolos (hijau), ${gagal.length} baris dibuang (merah). WHERE bekerja per baris, sebelum kolom dipilih.`,
+    it:[lt,...head([0,1,2,3]),...PROD.flatMap((r,k)=>{const ok=r[2]>=P.min;return [0,1,2,3].map(j=>cell(r,j,k,ok?'ok':'bad',ok?0:.7))})]},
+   {cap:`<code>SELECT nama, harga</code> baru dikerjakan sekarang: hanya kolom yang diminta yang dibawa. Kolom id dan kategori tidak ikut ke hasil.`,
+    it:[lt,...head(S2),...PROD.flatMap((r,k)=>r[2]>=P.min?S2.map(j=>cell(r,j,k,'acc')):[])]},
+   {cap:`<code>ORDER BY harga ${P.ord.toUpperCase()}</code> menyusun ulang baris yang tersisa: ${P.ord==='desc'?'harga terbesar di atas':'harga terkecil di atas'}. Perhatikan baris-barisnya berpindah tempat.`,
+    it:[lt,...head(S2),...urut.flatMap((r,k)=>S2.map(j=>cell(r,j,k,'warn')))]},
+   {cap:lolos.length?`<code>LIMIT ${P.lim}</code> hanya mengambil ${P.lim} baris teratas. Hasil akhir: ${hasil.map(r=>r[1]).join(', ')}.`:'Tidak ada baris yang lolos WHERE, jadi hasilnya kosong. Coba turunkan batas harga di panel Eksperimen.',
+    it:[lt,...head(S2),...hasil.flatMap((r,k)=>S2.map(j=>cell(r,j,k,'ok')))]},
+   {cap:'Urutan <b>menulis</b> query: SELECT, FROM, WHERE, ORDER BY, LIMIT. Urutan <b>dikerjakan</b>: FROM → WHERE → SELECT → ORDER BY → LIMIT. Karena itu alias di SELECT belum dikenal di WHERE.',
+    it:[lt,...head(S2),...hasil.flatMap((r,k)=>S2.map(j=>cell(r,j,k,'ok'))),G('urut',0,2.3,0,'FROM → WHERE → SELECT → ORDER BY → LIMIT','warn')]}]}};
+
+const JUAL=[['Minuman',12],['Makanan',30],['Minuman',8],['Lainnya',5],['Makanan',22],['Minuman',15],['Lainnya',9],['Makanan',18]];
+S.group={t:'GROUP BY: mengelompokkan baris lalu meringkas setiap kelompok',
+ p:[{k:'fn',l:'Fungsi agregat',t:'o',o:[['sum','SUM(jumlah)'],['count','COUNT(*)'],['avg','AVG(jumlah)'],['max','MAX(jumlah)']],v:'sum'},{k:'hv',l:'HAVING hasil ≥',t:'n',min:0,max:100,v:40}],
+ steps:P=>{const K=['Minuman','Makanan','Lainnya'],KC=['acc','warn','ok'],GX=k=>(k-1)*3.1,nm={sum:'SUM',count:'COUNT',avg:'AVG',max:'MAX'}[P.fn]||'SUM';
+  const agg=k=>{const v=JUAL.filter(r=>r[0]===K[k]).map(r=>r[1]);return P.fn==='count'?v.length:P.fn==='avg'?Math.round(v.reduce((a,b)=>a+b,0)/v.length*10)/10:P.fn==='max'?Math.max(...v):v.reduce((a,b)=>a+b,0)};
+  const A=K.map((_,k)=>agg(k)),mx=Math.max(...A,1),lt=lantai(10,6);
+  const lepas=()=>JUAL.map((r,i)=>B('r'+i,(i-3.5)*1.15,0,1.7,{w:.95,h:.5,d:.8,c:KC[K.indexOf(r[0])],t:String(r[1])}));
+  const tumpuk=()=>{const c=[0,0,0];return JUAL.map((r,i)=>{const k=K.indexOf(r[0]),h=c[k]++;return B('r'+i,GX(k),h*.56-.05,-.6,{w:.95,h:.5,d:.8,c:KC[k],t:String(r[1])})})};
+  const nama=()=>K.map((n,k)=>G('g'+k,GX(k),-.55,.4,n,'idx'));
+  const tiang=f=>K.map((n,k)=>{const h=Math.max(.3,A[k]/mx*2.6);return B('a'+k,GX(k),h/2-.3,-.6,{w:1.3,h,d:1.1,c:f(k),t:String(A[k])})});
+  const lolos=K.filter((_,k)=>A[k]>=P.hv);
+  return [
+   {cap:`Tabel penjualan berisi ${JUAL.length} baris. Warna menunjukkan kategori. Kita ingin tahu <b>${nm}</b> per kategori.`,it:[lt,...lepas()]},
+   {cap:'<code>GROUP BY kategori</code> mengumpulkan baris dengan kategori yang sama ke satu tumpukan. Perhatikan setiap kotak berpindah ke kelompoknya.',it:[lt,...tumpuk(),...nama()]},
+   {cap:`<code>${nm}(${P.fn==='count'?'*':'jumlah'})</code> meringkas setiap tumpukan menjadi <b>satu baris</b>: ${K.map((n,k)=>`${n} = ${A[k]}`).join(', ')}.`,it:[lt,...tiang(k=>KC[k]),...nama()]},
+   {cap:`<code>HAVING ${nm}(...) &gt;= ${P.hv}</code> menyaring <b>kelompok</b>, bukan baris. Yang lolos: ${lolos.length?lolos.join(', '):'tidak ada'}. WHERE menyaring sebelum dikelompokkan, HAVING sesudahnya.`,
+    it:[lt,...tiang(k=>A[k]>=P.hv?'ok':'bad'),...nama(),...K.map((n,k)=>A[k]<P.hv?G('x'+k,GX(k),2.9,-.6,'dibuang','bad'):null).filter(Boolean)]},
+   {cap:'Urutannya: FROM → WHERE → <b>GROUP BY</b> → <b>HAVING</b> → SELECT → ORDER BY. Setiap kolom di SELECT harus ikut di GROUP BY atau dibungkus fungsi agregat.',it:[lt,...tiang(k=>A[k]>=P.hv?'ok':'mute'),...nama()]}]}};
+
+S.index={t:'Index: lompat lewat pohon B-tree, bukan memeriksa baris satu per satu',
+ p:[{k:'n',l:'Jumlah baris di tabel',t:'n',min:16,max:100000000,v:1000000},{k:'cari',l:'Cari id ke- (1–16)',t:'n',min:1,max:16,v:11}],
+ steps:P=>{const V=16,c=Math.min(V,Math.max(1,P.cari)),n=Math.max(V,P.n),X=k=>(k-(V-1)/2)*.62,lv=Math.ceil(Math.log2(n)),fmt=v=>v.toLocaleString('id-ID');
+  const tabel=f=>Array.from({length:V},(_,k)=>B('t'+k,X(k),-.05,0,{w:.5,h:.5,d:1.1,c:f(k),t:String(k+1)}));
+  const L1=c<=8?0:1,L2=Math.floor((c-1)/4),nx1=i=>(i-.5)*5,nx2=i=>(i-1.5)*2.5,LX=X(c-1);
+  const nd=(id,x,y,col,t)=>B(id,x,y,0,{w:1.4,h:.48,d:.7,c:col,t});
+  const pohon=on=>[nd('n0',0,3.4,on>=1?'ok':'acc','1–16'),...[0,1].map(i=>nd('n1'+i,nx1(i),2.4,on>=1&&i===L1?'ok':'acc',i?'9–16':'1–8')),
+    ...[0,1,2,3].map(i=>nd('n2'+i,nx2(i),1.4,on>=1&&i===L2?'ok':'acc',`${i*4+1}–${i*4+4}`)),
+    ...[0,1].map(i=>R('e1'+i,[0,3.15,0],[nx1(i),2.65,0],on>=1&&i===L1?'ok':'mute')),...[0,1,2,3].map(i=>R('e2'+i,[nx1(i<2?0:1),2.15,0],[nx2(i),1.65,0],on>=1&&i===L2?'ok':'mute')),
+    ...(on>=2?[R('e3',[nx2(L2),1.15,0],[LX,.25,0],'ok')]:[])];
+  const lt=lantai(11.5,3.4);
+  return [
+   {cap:`Tabel ini berisi <b>${fmt(n)} baris</b> (digambar 16 saja). Kita mencari baris dengan id = ${c}.`,it:[lt,...tabel(()=>'acc')]},
+   {cap:`<b>Tanpa index</b>, database membaca baris satu per satu dari awal (<i>sequential scan</i>). Di sini ${c} baris diperiksa sebelum ketemu. Untuk ${fmt(n)} baris, terburuknya ${fmt(n)} kali periksa.`,
+    it:[lt,...tabel(k=>k<c-1?'mute':k===c-1?'ok':'acc'),B('bola',LX,.6,0,{w:.4,h:.4,d:.4,c:'warn',ball:1})]},
+   {cap:'<code>CREATE INDEX</code> membangun <b>pohon B-tree</b>: setiap simpul mencatat rentang id di bawahnya, seperti daftar isi buku.',it:[lt,...tabel(()=>'acc'),...pohon(0)]},
+   {cap:`Mencari id ${c}: mulai dari akar, pilih cabang yang rentangnya memuat ${c}, terus turun. Hanya satu jalur yang dilewati.`,it:[lt,...tabel(()=>'acc'),...pohon(1)]},
+   {cap:`Daun menunjuk langsung ke barisnya. Untuk ${fmt(n)} baris, cukup sekitar <b>${lv} langkah</b> (log₂ n), bukan ${fmt(n)}. Inilah <i>index scan</i> yang terlihat di EXPLAIN.`,it:[lt,...tabel(k=>k===c-1?'ok':'acc'),...pohon(2)]},
+   {cap:'Index tidak gratis: setiap INSERT dan UPDATE juga harus memperbarui pohonnya, dan index memakan ruang disk. Buat index untuk kolom yang sering dipakai di WHERE, JOIN, dan ORDER BY.',it:[lt,...tabel(k=>k===c-1?'ok':'acc'),...pohon(2),G('biaya',0,4.3,0,'baca cepat · tulis sedikit lebih lambat','warn')]}]}};
+
+S.fk={t:'Primary key dan foreign key: tabel yang saling menunjuk',
+ p:[{k:'id',l:'pelanggan_id pesanan baru',t:'n',min:1,max:9,v:4}],
+ steps:P=>{const PL=[[1,'Ani'],[2,'Budi'],[3,'Citra']],PS=[[101,1],[102,3],[103,1]],Y=k=>2.2-k*.75,LX=-3,RX=2.8;
+  const pel=f=>PL.map((r,k)=>B('p'+r[0],LX,Y(k),0,{w:2.4,h:.5,d:.8,c:f(r[0]),t:`${r[0]} · ${r[1]}`}));
+  const pes=f=>PS.map((r,k)=>B('o'+r[0],RX,Y(k),0,{w:2.4,h:.5,d:.8,c:f(r[0]),t:`${r[0]} → ${r[1]}`}));
+  const ruas=(on)=>PS.map((r,k)=>R('f'+r[0],[RX-1.2,Y(k),0],[LX+1.2,Y(PL.findIndex(p=>p[0]===r[1])),0],on?'ok':'mute'));
+  const kep=()=>[G('hp',LX,3,0,'pelanggan (PK: id)','idx'),G('ho',RX,3,0,'pesanan (FK: pelanggan_id)','idx')];
+  const ada=PL.some(r=>r[0]===P.id),lt=lantai(10,3);
+  const baru=(c,y)=>B('o104',RX,y,0,{w:2.4,h:.5,d:.8,c,t:`104 → ${P.id}`});
+  return [
+   {cap:'Dua tabel: <b>pelanggan</b> dan <b>pesanan</b>. Setiap pesanan menyimpan <code>pelanggan_id</code> untuk menunjuk pemiliknya.',it:[lt,...kep(),...pel(()=>'acc'),...pes(()=>'acc')]},
+   {cap:'<b>Primary key</b> (id) adalah identitas unik setiap baris: tidak boleh kembar dan tidak boleh NULL. Tidak ada dua pelanggan dengan id yang sama.',it:[lt,...kep(),...pel(()=>'warn'),...pes(()=>'mute')]},
+   {cap:'<b>Foreign key</b> <code>pelanggan_id REFERENCES pelanggan(id)</code> menghubungkan setiap pesanan ke satu pelanggan. Ani punya dua pesanan, Budi belum punya.',it:[lt,...kep(),...pel(()=>'acc'),...pes(()=>'ok'),...ruas(1)]},
+   ada?{cap:`<code>INSERT INTO pesanan VALUES (104, ${P.id})</code>: pelanggan ${P.id} ada, jadi baris baru <b>diterima</b> dan langsung terhubung.`,it:[lt,...kep(),...pel(id=>id===P.id?'ok':'acc'),...pes(()=>'ok'),...ruas(1),baru('ok',Y(3)),R('f104',[RX-1.2,Y(3),0],[LX+1.2,Y(P.id-1),0],'ok')]}
+      :{cap:`<code>INSERT INTO pesanan VALUES (104, ${P.id})</code> <b>ditolak</b>: pelanggan ${P.id} tidak ada. Pesan error: <i>violates foreign key constraint</i>. Database menjaga agar tidak ada pesanan "yatim".`,it:[lt,...kep(),...pel(()=>'acc'),...pes(()=>'ok'),...ruas(1),baru('bad',Y(3)+.4),G('err',RX,Y(3)-.5,0,'ditolak: pelanggan tidak ada','bad')]},
+   {cap:'Constraint lain menjaga data tetap benar: <code>NOT NULL</code> (wajib diisi), <code>UNIQUE</code> (tidak boleh kembar), <code>CHECK (harga &gt; 0)</code>. Ubah pelanggan_id di panel Eksperimen untuk mencoba.',it:[lt,...kep(),...pel(()=>'acc'),...pes(()=>'ok'),...ruas(1),...(ada?[baru('ok',Y(3)),R('f104',[RX-1.2,Y(3),0],[LX+1.2,Y(P.id-1),0],'ok')]:[])]}]}};
+
+S.tx={t:'Transaksi: semua langkah berhasil, atau tidak sama sekali',
+ p:[{k:'n',l:'Transfer dari A ke B (ribu)',t:'n',min:1,max:900,v:150},{k:'gagal',l:'Server mati di tengah?',t:'o',o:[['0','Tidak'],['1','Ya']],v:'0'}],
+ steps:P=>{const A0=500,B0=200,n=P.n,mati=String(P.gagal)==='1',kurang=n>A0;
+  const akun=(id,x,v,c)=>{const h=Math.max(.3,v/400*1.6);return B(id,x,h/2-.3,0,{w:1.8,h,d:1.4,c,t:`${id==='akA'?'A':'B'}: ${v}`})};
+  const uang=(x,y,c='warn')=>B('uang',x,y,0,{w:.55,h:.55,d:.55,c,ball:1,t:String(n)});
+  const lt=lantai(9,3.4),tot=v=>G('tot',0,3.3,0,'total = '+v,'idx');
+  const s=[{lb:'BEGIN',cap:`<code>BEGIN</code> membuka transaksi. Saldo A = ${A0}, B = ${B0}, total ${A0+B0}. Kita akan memindahkan ${n} dari A ke B.`,it:[lt,akun('akA',-2.6,A0,'acc'),akun('akB',2.6,B0,'acc'),tot(A0+B0)]}];
+  if(kurang){s.push({lb:'Kurangi A',cap:`<code>UPDATE akun SET saldo = saldo - ${n}</code> pada A melanggar <code>CHECK (saldo &gt;= 0)</code> karena saldo A hanya ${A0}. Database menolak perubahan ini.`,it:[lt,akun('akA',-2.6,A0,'bad'),akun('akB',2.6,B0,'acc'),tot(A0+B0),G('err',-2.6,2.6,0,'CHECK gagal','bad')]},
+    {lb:'ROLLBACK',cap:'<code>ROLLBACK</code>: transaksi dibatalkan. Tidak ada saldo yang berubah.',it:[lt,akun('akA',-2.6,A0,'acc'),akun('akB',2.6,B0,'acc'),tot(A0+B0)]})}
+  else{s.push({lb:'Kurangi A',cap:`<code>UPDATE ... saldo - ${n} WHERE id = 'A'</code>. Saldo A menjadi ${A0-n}, tetapi belum permanen: transaksi lain belum melihat perubahan ini.`,it:[lt,akun('akA',-2.6,A0-n,'warn'),akun('akB',2.6,B0,'acc'),uang(0,1.8),tot(`${A0+B0-n} (sementara)`)]});
+    if(mati)s.push({lb:'Gagal',cap:'Server tiba-tiba mati sebelum B ditambah. Kalau tidak ada transaksi, uang ini akan <b>hilang</b>.',it:[lt,akun('akA',-2.6,A0-n,'warn'),akun('akB',2.6,B0,'mute'),uang(0,1.8,'bad'),G('err',0,3.3,0,'⚡ server mati','bad')]},
+      {lb:'ROLLBACK',cap:`Saat hidup lagi, PostgreSQL membaca WAL dan membatalkan transaksi yang belum COMMIT. Saldo A kembali ${A0}. Total tetap ${A0+B0}: <b>atomicity</b>.`,it:[lt,akun('akA',-2.6,A0,'ok'),akun('akB',2.6,B0,'ok'),tot(A0+B0)]});
+    else s.push({lb:'Tambah B',cap:`<code>UPDATE ... saldo + ${n} WHERE id = 'B'</code>. Uang berpindah ke B.`,it:[lt,akun('akA',-2.6,A0-n,'warn'),akun('akB',2.6,B0+n,'warn'),uang(2.6,(B0+n)/400*1.6+.2),tot(A0+B0)]},
+      {lb:'COMMIT',cap:`<code>COMMIT</code>: kedua perubahan disimpan permanen <b>bersamaan</b>. A = ${A0-n}, B = ${B0+n}, total tetap ${A0+B0}.`,it:[lt,akun('akA',-2.6,A0-n,'ok'),akun('akB',2.6,B0+n,'ok'),tot(A0+B0)]})}
+  s.push({lb:'ACID',cap:'<b>ACID</b>: <b>A</b>tomicity (semua atau tidak sama sekali), <b>C</b>onsistency (aturan seperti CHECK selalu dijaga), <b>I</b>solation (transaksi lain tidak melihat keadaan setengah jadi), <b>D</b>urability (yang sudah COMMIT tidak hilang). Coba pilih "Server mati" di Eksperimen.',
+    it:[...s[s.length-1].it.filter(o=>o.id!=='uang'&&o.id!=='err')]});
+  return s}};
+
+const NIL=[['A','Ani',90],['B','Eka',95],['A','Budi',85],['B','Fajar',80],['A','Citra',85],['A','Dodi',70],['B','Gita',80]];
+S.window={t:'Window function: menghitung per kelompok tanpa meringkas baris',
+ p:[{k:'fn',l:'Fungsi',t:'o',o:[['rn','ROW_NUMBER()'],['rank','RANK()'],['dense','DENSE_RANK()'],['run','SUM(nilai) berjalan']],v:'rank'}],
+ steps:P=>{const CX=[-3.4,-1.6,.4,2.8],Wd=[1,2,1.4,2.2],nm={rn:'ROW_NUMBER()',rank:'RANK()',dense:'DENSE_RANK()',run:'SUM(nilai)'}[P.fn]||'RANK()';
+  const cell=(r,j,z,c,t)=>B('w'+r[1]+j,CX[j],0,z,{w:Wd[j],h:.32,d:.62,c,t:t??String(r[j])});
+  const PC=k=>k==='A'?'acc':'warn';
+  const part=[...NIL].sort((a,b)=>a[0]<b[0]?-1:a[0]>b[0]?1:0),urut=[...NIL].sort((a,b)=>a[0]<b[0]?-1:a[0]>b[0]?1:b[2]-a[2]);
+  const zz=(list)=>{let g=0,prev=null;return list.map((r,k)=>{if(prev&&prev!==r[0])g++;prev=r[0];return (k-3)*.72+g*.6-.3})};
+  const hit=r=>{const p=urut.filter(x=>x[0]===r[0]),i=p.indexOf(r);if(P.fn==='rn')return i+1;if(P.fn==='rank')return p.filter(x=>x[2]>r[2]).length+1;
+    if(P.fn==='dense')return new Set(p.filter(x=>x[2]>r[2]).map(x=>x[2])).size+1;return p.slice(0,i+1).reduce((a,x)=>a+x[2],0)};
+  const head=on=>['kelas','nama','nilai',on?nm:''].map((h,j)=>h?G('h'+j,CX[j],.75,-3.4,h,'idx'):null).filter(Boolean);
+  const lt=lantai(10,7.4);
+  const baris=(list,col,on)=>{const Z=zz(list);return list.flatMap((r,k)=>[...[0,1,2].map(j=>cell(r,j,Z[k],col(r))),...(on?[cell(r,3,Z[k],'ok',String(hit(r)))]:[])])};
+  const seri=urut.filter((r,k)=>urut.some(x=>x!==r&&x[0]===r[0]&&x[2]===r[2]));
+  return [
+   {cap:`Tabel nilai ${NIL.length} siswa dari kelas A dan B, urutannya acak.`,it:[lt,...head(0),...baris(NIL,()=>'mute',0)]},
+   {cap:'<code>PARTITION BY kelas</code> membagi baris menjadi jendela per kelas. Perhitungan nanti hanya melihat baris di jendelanya sendiri.',it:[lt,...head(0),...baris(part,r=>PC(r[0]),0)]},
+   {cap:'<code>ORDER BY nilai DESC</code> mengurutkan baris <b>di dalam</b> setiap jendela, dari nilai tertinggi.',it:[lt,...head(0),...baris(urut,r=>PC(r[0]),0)]},
+   {cap:`<code>${nm} OVER (PARTITION BY kelas ORDER BY nilai DESC)</code> menambah satu kolom baru. ${P.fn==='rn'?'ROW_NUMBER selalu 1, 2, 3, … meski nilainya sama.':P.fn==='rank'?'RANK memberi angka sama untuk nilai kembar, lalu melompat (1, 2, 2, 4).':P.fn==='dense'?'DENSE_RANK memberi angka sama untuk nilai kembar tanpa lompatan (1, 2, 2, 3).':'SUM berjalan menjumlahkan nilai dari atas sampai baris ini, dan mulai lagi di kelas berikutnya.'}${seri.length&&P.fn!=='run'?` Perhatikan ${seri.map(r=>r[1]).join(' dan ')}.`:''}`,
+    it:[lt,...head(1),...baris(urut,r=>PC(r[0]),1)]},
+   {cap:'Bedanya dengan GROUP BY: GROUP BY meringkas banyak baris menjadi satu, sedangkan window function <b>mempertahankan setiap baris</b> dan menambah kolom hasil. Ganti fungsinya di panel Eksperimen.',it:[lt,...head(1),...baris(urut,r=>PC(r[0]),1)]}]}};
+
+S.mvcc={t:'MVCC: setiap UPDATE membuat versi baris baru',
+ p:[{k:'u',l:'Jumlah UPDATE',t:'n',min:1,max:5,v:3},{k:'vac',l:'Jalankan VACUUM?',t:'o',o:[['1','Ya'],['0','Belum']],v:'1'}],
+ steps:P=>{const u=Math.max(1,Math.min(5,P.u)),X=k=>(k-u/2)*1.55,ver=(k,c,t)=>B('v'+k,X(k),0,0,{w:1.3,h:.7,d:1.1,c,t:t||`stok=${50-k*5}`});
+  const lt=lantai(Math.max(8,u*1.6+3),4),all=f=>Array.from({length:u+1},(_,k)=>ver(k,f(k)));
+  const xid=k=>G('x'+k,X(k),1,0,`xmin ${100+k}${k<u?` · xmax ${101+k}`:''}`,'idx');
+  const baca=on=>on?[B('rd',X(0),2.2,1.6,{w:.5,h:.5,d:.5,c:'warn',ball:1,t:'T1'}),R('rr',[X(0),1.95,0],[X(0),.4,0],'warn')]:[];
+  return [
+   {cap:'<code>INSERT</code> membuat versi pertama baris produk (stok = 50). Setiap versi mencatat <b>xmin</b>: nomor transaksi yang membuatnya.',it:[lt,ver(0,'ok'),xid(0)]},
+   {cap:'Transaksi <b>T1</b> mulai membaca dan melihat versi ini. Selama T1 berjalan, ia harus terus melihat data yang sama.',it:[lt,ver(0,'ok'),xid(0),...baca(1)]},
+   {cap:`${u}× <code>UPDATE</code>: PostgreSQL <b>tidak menimpa</b> baris lama. Ia membuat versi baru dan menandai versi lama dengan <b>xmax</b>. T1 tetap membaca versi lamanya tanpa dikunci: pembaca tidak menghalangi penulis.`,
+    it:[lt,...all(k=>k===u?'ok':'mute'),...Array.from({length:u+1},(_,k)=>xid(k)),...baca(1)]},
+   {cap:`T1 selesai. Sekarang ${u} versi lama tidak dipakai siapa pun: ini <b>dead tuple</b>. Mereka masih memakan ruang disk dan memperlambat scan. Inilah <b>bloat</b>.`,
+    it:[lt,...all(k=>k===u?'ok':'bad'),...Array.from({length:u},(_,k)=>G('d'+k,X(k),1,0,'mati','bad')),G('x'+u,X(u),1,0,`xmin ${100+u}`,'idx')]},
+   String(P.vac)==='1'?{cap:'<code>VACUUM</code> menyapu dead tuple sehingga ruangnya bisa dipakai ulang. Autovacuum menjalankannya otomatis di latar; pantau dengan <code>pg_stat_user_tables</code>.',it:[lt,ver(u,'ok'),G('x'+u,X(u),1,0,`xmin ${100+u}`,'idx'),...Array.from({length:u},(_,k)=>B('ks'+k,X(k),-.38,0,{w:1.3,h:.06,d:1.1,c:'glass',flat:1}))]}
+     :{cap:'Tanpa VACUUM, dead tuple terus menumpuk setiap kali ada UPDATE dan DELETE. Pilih "Ya" di Eksperimen untuk melihat VACUUM bekerja.',it:[lt,...all(k=>k===u?'ok':'bad'),...Array.from({length:u},(_,k)=>G('d'+k,X(k),1,0,'mati','bad'))]}]}};
+
+S.repl={t:'Replikasi: salinan database yang selalu mengikuti primary',
+ p:[{k:'r',l:'Jumlah replika',t:'n',min:1,max:3,v:2},{k:'mode',l:'Mode',t:'o',o:[['async','Asinkron'],['sync','Sinkron']],v:'async'},{k:'mati',l:'Primary mati?',t:'o',o:[['0','Tidak'],['1','Ya']],v:'1'}],
+ steps:P=>{const r=Math.max(1,Math.min(3,P.r)),RY=i=>(i-(r-1)/2)*1.5+.6,PX=-1,RX=3.2,CX=-4.6,sync=P.mode==='sync';
+  const prim=(c,t='primary')=>B('pri',PX,.6,0,{w:1.8,h:1.1,d:1.4,c,t});
+  const rep=(f,lab=i=>'replika '+(i+1))=>Array.from({length:r},(_,i)=>B('rep'+i,RX,RY(i),0,{w:1.8,h:.8,d:1.2,c:f(i),t:lab(i)}));
+  const wal=on=>Array.from({length:r},(_,i)=>R('w'+i,[PX+.9,.6,0],[RX-.9,RY(i),0],on?'ok':'mute'));
+  const cli=B('cli',CX,.6,0,{w:.9,h:.9,d:.9,c:'warn',t:'app'}),lt=lantai(11,4);
+  const s=[
+   {lb:'Tulis',cap:'Aplikasi menulis data (INSERT, UPDATE) hanya ke <b>primary</b>. Setiap perubahan dicatat dulu di <b>WAL</b> (write-ahead log).',it:[lt,cli,R('cw',[CX+.45,.6,0],[PX-.9,.6,0],'warn'),prim('acc'),...rep(()=>'mute'),...wal(0)]},
+   {lb:'Kirim WAL',cap:sync?'Mode <b>sinkron</b>: primary menunggu replika mengonfirmasi sudah menerima WAL sebelum COMMIT selesai. Data aman, tetapi setiap tulisan sedikit lebih lambat.':'Mode <b>asinkron</b>: primary langsung menjawab COMMIT, lalu WAL mengalir ke replika. Cepat, tetapi replika bisa tertinggal beberapa milidetik (<i>replication lag</i>).',
+    it:[lt,cli,prim('acc'),...rep(()=>'ok'),...wal(1),...(sync?[G('ack',(PX+RX)/2,RY(0)+1.1,0,'tunggu konfirmasi','warn')]:[])]},
+   {lb:'Baca',cap:'Replika bisa melayani query baca (SELECT), sehingga beban primary berkurang. Ini disebut <i>read scaling</i>.',it:[lt,cli,prim('acc'),...rep(()=>'ok',()=>'SELECT ✓'),...wal(1)]}];
+  if(String(P.mati)==='1')s.push(
+   {lb:'Primary mati',cap:'Primary tiba-tiba mati. Penulisan berhenti, tetapi replika masih punya salinan data.',it:[lt,cli,prim('bad','mati'),...rep(()=>'acc'),...wal(0)]},
+   {lb:'Failover',cap:`<b>Failover</b>: replika 1 dipromosikan menjadi primary baru (misalnya oleh Patroni). Aplikasi diarahkan ke sana.${sync?' Dengan mode sinkron, tidak ada transaksi yang hilang.':' Dengan mode asinkron, transaksi terakhir yang belum terkirim bisa hilang.'}`,
+    it:[lt,cli,prim('mute','mati'),...rep(i=>i===0?'ok':'acc',i=>i===0?'primary baru':'replika '+(i+1)),R('cw',[CX+.45,.6,0],[RX-.9,RY(0),0],'warn')]});
+  s.push({lb:'Intinya',cap:'Replikasi untuk ketersediaan tinggi dan membagi beban baca. Replikasi <b>bukan backup</b>: DELETE yang salah ikut tersalin ke replika. Tetap buat backup terjadwal.',it:s[s.length-1].it});
+  return s}};
+
+/* ===================== WEB, FRONTEND, DSA, DATA ===================== */
+/* graf umum di bidang xy: N = {k:[x,y,teks]}, warna simpul dan ruas ditentukan fungsi */
+function graf(N,Ed,col,ecol,w=1){const ys=Object.values(N).map(n=>n[1]),it=[lantai(10,3,Math.min(...ys)-1.4)];
+  Ed.forEach(([a,b])=>{const A=N[a],Bn=N[b];it.push(R('e'+a+'_'+b,[A[0],A[1],0],[Bn[0],Bn[1],0],ecol?ecol(a,b):'mute'))});
+  Object.entries(N).forEach(([k,[x,y,t]])=>it.push(B('n'+k,x,y,0,{w:t.length>4?Math.max(1.4,t.length*.17)*w:.9,h:.75,d:.75,c:col(k),t:E(t)})));return it}
+
+/* ---------- HTTP: perjalanan request ---------- */
+S.http={t:'Cara web bekerja: perjalanan satu request dari browser ke server dan kembali',
+ p:[{k:'cache',l:'Alamat IP sudah di-cache?',t:'o',o:[['0','Belum'],['1','Sudah']],v:'0'},{k:'st',l:'Jawaban server',t:'o',o:[['200','200 OK'],['404','404 Not Found'],['500','500 Server Error']],v:'200'}],
+ steps:P=>{const BX=-4.2,SX=1.4,DX=4.4,DNS=[-.9,2.7],st=String(P.st),c=String(P.cache)==='1';
+  const sc=st==='200'?'ok':st==='404'?'warn':'bad',lt=lantai(11,3.6);
+  const base=(b='acc',s='acc',d='acc',n='mute')=>[lt,B('br',BX,.3,0,{w:1.8,h:1.3,d:1.2,c:b,t:'browser'}),B('dns',DNS[0],DNS[1],0,{w:1.3,h:.6,d:.9,c:n,t:'DNS'}),
+    B('srv',SX,.3,0,{w:1.5,h:1.6,d:1.2,c:s,t:'server'}),B('db',DX,.1,0,{w:1.2,h:1.1,d:1.2,c:d,t:'DB'})];
+  const pk=(x,y,col,t)=>B('pk',x,y,0,{w:.5,h:.5,d:.5,c:col,ball:1,t});
+  const ln=(id,a,b,col)=>R(id,a,b,col);
+  return [
+   {cap:'Kamu mengetik <code>tokonusantara.id/produk</code> lalu menekan Enter. Browser hanya tahu <b>nama</b> situsnya, belum tahu alamat komputernya.',it:[...base('warn'),G('url',BX,1.6,0,'tokonusantara.id/produk','idx')]},
+   c?{cap:'Alamat IP situs ini sudah tersimpan di <b>cache</b> browser dari kunjungan sebelumnya, jadi tanya DNS dilewati. Hemat puluhan milidetik.',it:[...base('ok'),G('ip',BX,1.6,0,'IP dari cache: 103.10.2.7','ok')]}
+    :{cap:'Browser bertanya ke <b>DNS</b>, buku telepon internet: "berapa alamat IP tokonusantara.id?" DNS menjawab <code>103.10.2.7</code>.',it:[...base('acc','acc','acc','ok'),ln('ld',[BX+.9,.9,0],[DNS[0]-.6,DNS[1],0],'ok'),pk(DNS[0]-1.6,DNS[1]-.4,'warn','?'),G('ip',DNS[0],DNS[1]+.8,0,'103.10.2.7','ok')]},
+   {cap:'Browser mengirim <b>HTTP request</b> ke server: <code>GET /produk</code> beserta header seperti <code>Accept</code> dan cookie. Dengan HTTPS, isinya dienkripsi di perjalanan.',it:[...base('acc','warn'),ln('lr',[BX+.9,.3,0],[SX-.75,.3,0],'warn'),pk((BX+SX)/2,.75,'warn','GET'),G('req',(BX+SX)/2,1.6,0,'GET /produk','idx')]},
+   st==='404'?{cap:'Server mencari rute <code>/produk</code> tetapi tidak menemukannya. Tidak perlu bertanya ke database.',it:[...base('acc','warn'),G('err',SX,2,0,'rute tidak ada','warn')]}
+    :{cap:st==='500'?'Server menjalankan kode untuk rute itu dan bertanya ke database, tetapi query-nya gagal (misalnya tabel tidak ada). Ini kesalahan di sisi server.':'Server menjalankan kode untuk rute itu: bertanya ke database <code>SELECT * FROM produk</code>, lalu menyusun hasilnya menjadi HTML atau JSON.',
+      it:[...base('acc','warn',st==='500'?'bad':'ok'),ln('lq',[SX+.75,.3,0],[DX-.6,.3,0],st==='500'?'bad':'ok'),pk((SX+DX)/2,.75,st==='500'?'bad':'ok','SQL')]},
+   {cap:`Server mengirim <b>HTTP response</b> dengan kode status <code>${st}</code>${st==='200'?': berhasil, isinya data produk.':st==='404'?': halaman tidak ditemukan (kesalahan di alamat yang diminta).':': server error (kesalahan di sisi server).'} Kode 2xx berarti berhasil, 3xx dialihkan, 4xx salah di klien, 5xx salah di server.`,
+    it:[...base('acc',sc),ln('lr',[BX+.9,.3,0],[SX-.75,.3,0],sc),pk((BX+SX)/2,.75,sc,st)]},
+   {cap:st==='200'?'Browser membaca HTML, lalu meminta file lain yang dibutuhkan (CSS, JS, gambar) dengan cara yang sama, dan menggambar halamannya. Semua ini biasanya selesai dalam ratusan milidetik.':'Browser menampilkan halaman kesalahan. Buka DevTools → tab <b>Network</b> untuk melihat setiap request, kode status, dan waktunya.',
+    it:[...base(sc,'acc'),G('hasil',BX,1.6,0,st==='200'?'halaman tampil ✓':'halaman error '+st,sc)]}]}};
+
+/* ---------- Flexbox dan Grid ---------- */
+S.flex={t:'Flexbox dan Grid: menata kotak di sepanjang sumbu',
+ p:[{k:'dir',l:'flex-direction',t:'o',o:[['row','row (mendatar)'],['column','column (menurun)']],v:'row'},
+  {k:'jc',l:'justify-content',t:'o',o:[['flex-start','flex-start'],['center','center'],['space-between','space-between'],['space-around','space-around']],v:'space-between'},
+  {k:'n',l:'Jumlah item',t:'n',min:2,max:6,v:4}],
+ steps:P=>{const n=Math.max(2,Math.min(6,P.n)),row=P.dir!=='column',CW=8,CH=4,pad=.2,IW=CW-2*pad,IH=CH-2*pad;
+  const L=row?IW:IH,s=row?1.15:.55,KC=['acc','warn','ok','idx','acc','warn'];
+  const box=[lantai(10,3,-2.6),B('cont',0,0,-.35,{w:CW,h:CH,d:.15,c:'glass'})];
+  const it=(i,cx,cy,w,h,c)=>B('i'+i,cx,cy,0,{w,h,d:.5,c:c||KC[i],t:String(i+1)});
+  const tempat=(jc,sizes)=>{const tot=sizes.reduce((a,b)=>a+b,0),free=Math.max(0,L-tot);let start=0,gap=0;
+    if(jc==='center')start=free/2;else if(jc==='space-between')gap=n>1?free/(n-1):0;else if(jc==='space-around'){gap=free/n;start=gap/2}
+    const out=[];let p=start;sizes.forEach(z=>{out.push(p+z/2-L/2);p+=z+gap});return out};
+  const tata=(jc,align,grow)=>{const sizes=Array.from({length:n},(_,i)=>grow&&i===1?L-s*(n-1):s),pos=tempat(grow?'flex-start':jc,sizes);
+    return sizes.map((z,i)=>{const cross=align==='center'?(row?.9:1.6):(row?IH:IW);
+      return row?it(i,pos[i],0,z-.06,cross-.06):it(i,0,-pos[i],cross-.06,z-.06)})};
+  const sumbu=row?G('ax',0,CH/2+.45,0,'sumbu utama →','idx'):G('ax',-CW/2-.9,0,0,'sumbu utama ↓','idx');
+  const blok=Array.from({length:n},(_,i)=>it(i,0,IH/2-.3-i*.62,IW-.06,.56));
+  const cols=3,rows=Math.ceil(n/cols),gw=IW/cols,gh=IH/rows;
+  const grid=Array.from({length:n},(_,i)=>it(i,(i%cols+.5)*gw-IW/2,IH/2-(Math.floor(i/cols)+.5)*gh,gw-.2,gh-.2));
+  return [
+   {cap:'Tanpa aturan apa pun, setiap <code>div</code> adalah elemen <b>block</b>: mengambil lebar penuh dan turun ke baris berikutnya. Inilah alur normal.',it:[...box,...blok]},
+   {cap:`<code>display: flex</code> mengubah wadah menjadi flex container. Anak-anaknya berjajar di <b>sumbu utama</b> (${row?'mendatar, karena flex-direction: row':'menurun, karena flex-direction: column'}) dan secara bawaan meregang penuh di sumbu silang.`,it:[...box,...tata('flex-start','stretch'),sumbu]},
+   {cap:`<code>justify-content: ${P.jc}</code> mengatur sisa ruang di <b>sumbu utama</b>. ${P.jc==='space-between'?'Item pertama dan terakhir menempel ke tepi, sisanya dibagi rata.':P.jc==='center'?'Semua item berkumpul di tengah.':P.jc==='space-around'?'Setiap item mendapat ruang yang sama di kedua sisinya.':'Semua item menempel di awal sumbu.'}`,it:[...box,...tata(P.jc,'stretch'),sumbu]},
+   {cap:'<code>align-items: center</code> mengatur posisi di <b>sumbu silang</b>: item tidak lagi meregang, melainkan berada di tengah. Ingat: justify untuk sumbu utama, align untuk sumbu silang.',it:[...box,...tata(P.jc,'center'),sumbu]},
+   {cap:'<code>flex-grow: 1</code> pada item 2 membuatnya <b>menyerap semua sisa ruang</b>. Pola ini dipakai untuk kolom pencarian yang mengisi navbar.',it:[...box,...tata(P.jc,'center',1),sumbu]},
+   {cap:`<code>display: grid; grid-template-columns: repeat(3, 1fr)</code> menata dalam <b>dua dimensi</b> sekaligus: ${n} item mengisi ${rows} baris × 3 kolom. Pakai flexbox untuk satu baris atau kolom, grid untuk tata letak baris dan kolom.`,it:[...box,...grid]}]}};
+
+/* ---------- React: komponen, props, state ---------- */
+S.react={t:'React: pohon komponen, props turun, state memicu render ulang',
+ p:[{k:'klik',l:'Klik tombol "+ Keranjang"',t:'n',min:1,max:9,v:1},{k:'memo',l:'Kartu dibungkus React.memo?',t:'o',o:[['0','Tidak'],['1','Ya']],v:'0'}],
+ steps:P=>{const N={app:[0,2.4,'App'],hd:[-2.6,.9,'Header'],ls:[2,.9,'DaftarProduk'],k1:[.4,-.7,'Kartu'],k2:[2,-.7,'Kartu'],k3:[3.6,-.7,'Kartu']};
+  const Ed=[['app','hd'],['app','ls'],['ls','k1'],['ls','k2'],['ls','k3']],memo=String(P.memo)==='1',k=P.klik;
+  const g=(col,ecol,extra=[])=>[...graf(N,Ed,col,ecol,.85),...extra];
+  const isi=G('cnt',-2.6,1.6,0,'🛒 '+k,'ok');
+  return [
+   {cap:'Antarmuka React disusun dari <b>komponen</b>: fungsi yang mengembalikan JSX. <code>App</code> berisi <code>Header</code> dan <code>DaftarProduk</code>, yang berisi tiga <code>Kartu</code>.',it:g(()=>'acc')},
+   {cap:'<b>Props</b> mengalir <b>turun</b> dari induk ke anak, seperti argumen fungsi. <code>&lt;Kartu produk={p} /&gt;</code>: Kartu hanya membaca props, tidak boleh mengubahnya.',it:g(x=>x==='hd'?'mute':'acc',(a,b)=>a==='app'&&b==='hd'?'mute':'warn',[G('pp',3.4,.1,0,'props ↓','warn')])},
+   {cap:'<b>State</b> adalah data milik komponen yang bisa berubah: <code>const [jumlah, setJumlah] = useState(0)</code> di App. Kartu menerima fungsi <code>onTambah</code> lewat props dan memanggilnya saat tombol diklik.',it:g(x=>x==='app'?'warn':x==='k2'?'ok':'mute',(a,b)=>b==='k2'||(a==='app'&&b==='ls')?'ok':'mute',[G('ev',.7,1.9,0,'↑ onTambah()','ok')])},
+   {cap:`<code>setJumlah</code> dipanggil ${k}×. Setiap kali state App berubah, App dan <b>semua turunannya</b> dirender ulang.${memo?' Kecuali Kartu: dengan <code>React.memo</code>, React melewatinya karena props-nya tidak berubah.':' Kartu ikut dirender ulang walaupun datanya sama.'}`,
+    it:g(x=>x[0]==='k'&&memo?'mute':'warn',(a,b)=>b[0]==='k'&&memo?'mute':'warn',[isi])},
+   {cap:'React membandingkan hasil render baru dengan yang lama (<b>reconciliation</b>) dan hanya mengubah bagian DOM yang berbeda: angka di Header. Bagian lain di layar tidak disentuh.',it:g(x=>x==='hd'?'ok':'mute',()=>'mute',[isi])}]}};
+
+/* ---------- hash table ---------- */
+S.hash={t:'Hash table: fungsi hash menunjuk laci yang tepat',
+ p:[{k:'isi',l:'Kunci (pisahkan koma)',t:'s',v:'apel, jeruk, mangga, kiwi, salak, duku'},{k:'m',l:'Jumlah laci (bucket)',t:'n',min:3,max:7,v:5},{k:'cari',l:'Kunci yang dicari',t:'s',v:'kiwi'}],
+ steps:P=>{let K=[...new Set(nama(P.isi,7).map(s=>s.toLowerCase()))];if(!K.length)K=['apel'];const m=Math.max(3,Math.min(7,P.m));
+  const kode=s=>[...s].reduce((a,c)=>a+c.charCodeAt(0),0),h=s=>kode(s)%m,X=i=>(i-(m-1)/2)*1.45;
+  const cari=(String(P.cari).split(',')[0]||'').trim().toLowerCase().slice(0,8)||K[0],hc=h(cari);
+  const pos={},isi=Array.from({length:m},()=>[]);K.forEach(k=>{const b=h(k);pos[k]=[b,isi[b].length];isi[b].push(k)});
+  const laci=f=>Array.from({length:m},(_,i)=>B('b'+i,X(i),-.35,0,{w:1.25,h:.2,d:1.3,c:f?f(i):'glass',t:String(i)}));
+  const kunci=(k,c,on=true)=>{const [b,d]=pos[k];return B('k'+k,on?X(b):X(b),on?d*.55+.05:3,0,{w:1.2,h:.48,d:.9,c,t:E(k)})};
+  const lt=lantai(Math.max(8,m*1.5+1),3.4,-.6),tab=K.filter(k=>isi[pos[k][0]].length>1),k0=K[0];
+  const rantai=isi[hc],ada=rantai.includes(cari);
+  return [
+   {cap:`Hash table menyiapkan ${m} <b>laci</b> bernomor 0 sampai ${m-1}. Tujuannya: menyimpan dan menemukan data <b>tanpa memeriksa satu per satu</b>.`,it:[lt,...laci()]},
+   {cap:`<b>Fungsi hash</b> mengubah kunci menjadi nomor laci. Di sini: jumlahkan kode huruf "${E(k0)}" = ${kode(k0)}, lalu ${kode(k0)} mod ${m} = <b>${h(k0)}</b>. Kunci yang sama selalu menghasilkan nomor yang sama.`,
+    it:[lt,...laci(i=>i===h(k0)?'ok':'glass'),kunci(k0,'warn'),G('rumus',X(h(k0)),2.1,0,`${kode(k0)} mod ${m} = ${h(k0)}`,'warn')]},
+   {cap:`Semua kunci dimasukkan dengan cara yang sama: ${K.map(k=>`${E(k)}→${h(k)}`).join(', ')}.`,it:[lt,...laci(),...K.map(k=>kunci(k,'acc'))]},
+   tab.length?{cap:`<b>Tabrakan</b> (collision): ${tab.map(E).join(', ')} mendapat laci yang sama. Solusinya <i>chaining</i>: laci menyimpan daftar kecil, jadi kunci ditumpuk di laci itu.`,it:[lt,...laci(i=>isi[i].length>1?'bad':'glass'),...K.map(k=>kunci(k,tab.includes(k)?'warn':'mute'))]}
+    :{cap:'Kali ini tidak ada tabrakan: setiap kunci mendapat laci sendiri. Kalau dua kunci mendapat laci yang sama, laci itu menyimpan daftar kecil (<i>chaining</i>). Coba kurangi jumlah laci di Eksperimen.',it:[lt,...laci(),...K.map(k=>kunci(k,'acc'))]},
+   {cap:`Mencari "${E(cari)}": hitung hash-nya = <b>${hc}</b>, langsung buka laci ${hc}${rantai.length>1?`, lalu bandingkan ${rantai.length} kunci di dalamnya`:''}. ${ada?'<b>Ketemu.</b>':'Tidak ada di laci itu, jadi kunci ini <b>tidak tersimpan</b>.'} Laci lain tidak disentuh sama sekali.`,
+    it:[lt,...laci(i=>i===hc?(ada?'ok':'bad'):'glass'),...K.map(k=>kunci(k,k===cari?'ok':pos[k][0]===hc?'warn':'mute')),G('cari',X(hc),Math.max(1,rantai.length*.55+.6),0,'hash("'+E(cari)+'") = '+hc,ada?'ok':'bad')]},
+   {cap:`Rata-rata pencarian <b>O(1)</b>: berapa pun banyak datanya, langkahnya tetap. Load factor = ${K.length}/${m} = ${(K.length/m).toFixed(2)}. Kalau terlalu penuh, tabel diperbesar (rehash) agar tabrakan tetap jarang. <code>dict</code> Python dan <code>HashMap</code> Java bekerja seperti ini.`,it:[lt,...laci(),...K.map(k=>kunci(k,'acc'))]}]}};
+
+/* ---------- binary search ---------- */
+S.bsearch={t:'Binary search: buang separuh data setiap langkah',
+ p:[{k:'n',l:'Jumlah data (terurut)',t:'n',min:5,max:15,v:11},{k:'cari',l:'Angka yang dicari',t:'n',min:-99,max:999,v:56}],
+ steps:P=>{const n=Math.max(5,Math.min(15,P.n)),A=[2,5,8,12,16,23,38,45,56,72,81,88,91,95,99].slice(0,n),X=i=>(i-(n-1)/2)*.78,c=P.cari;
+  const lt=lantai(Math.max(8,n*.8+1.5),3);
+  const sel=(lo,hi,mid,found)=>A.map((v,i)=>{const inR=i>=lo&&i<=hi;return B('a'+i,X(i),inR?0:-.25,0,{w:.68,h:inR?.62:.3,d:.8,c:i===mid?(found?'ok':'warn'):inR?'acc':'mute',t:String(v)})});
+  const pin=(lo,hi,mid)=>[G('lo',X(lo),1.2,0,'lo','idx'),G('hi',X(hi),1.2,0,'hi','idx'),...(mid!=null?[G('mid',X(mid),1.8,0,'mid','warn')]:[])].filter((g,j,arr)=>!(g.id==='hi'&&lo===hi));
+  const st=[{lb:'Data terurut',cap:`Ada ${n} angka yang sudah <b>terurut</b>. Binary search hanya bekerja pada data terurut. Kita mencari <b>${c}</b>.`,it:[lt,...sel(0,n-1),...pin(0,n-1)]}];
+  let lo=0,hi=n-1,k=0,found=false;
+  while(lo<=hi){const mid=(lo+hi)>>1;k++;const v=A[mid];
+    if(v===c){found=true;st.push({lb:'Ketemu',cap:`mid = (${lo} + ${hi}) / 2 = ${mid}. A[${mid}] = ${v}: <b>ketemu</b> dalam ${k} langkah.`,it:[lt,...sel(lo,hi,mid,1),...pin(lo,hi,mid)]});break}
+    st.push({lb:'Langkah '+k,cap:`mid = (${lo} + ${hi}) / 2 = ${mid}. A[${mid}] = ${v} ${v<c?`lebih kecil dari ${c}, jadi buang separuh <b>kiri</b>: lo = ${mid+1}.`:`lebih besar dari ${c}, jadi buang separuh <b>kanan</b>: hi = ${mid-1}.`}`,it:[lt,...sel(lo,hi,mid),...pin(lo,hi,mid)]});
+    if(v<c)lo=mid+1;else hi=mid-1}
+  if(!found)st.push({lb:'Tidak ada',cap:`lo melewati hi, artinya rentang pencarian habis: <b>${c} tidak ada</b>. Hanya ${k} angka yang diperiksa.`,it:[lt,...sel(1,0),G('x',0,1.4,0,'rentang kosong','bad')]});
+  st.push({lb:'O(log n)',cap:`Binary search memeriksa ${k} angka; pencarian linear bisa memeriksa sampai ${n}. Untuk sejuta data cukup sekitar <b>20 langkah</b>, karena setiap langkah membuang separuh: O(log n).`,it:st[st.length-1].it});
+  return st}};
+
+/* ---------- graph: BFS dan DFS ---------- */
+S.graph={t:'Graph: menjelajah simpul dengan BFS atau DFS',
+ p:[{k:'mode',l:'Cara menjelajah',t:'o',o:[['bfs','BFS (melebar, pakai queue)'],['dfs','DFS (mendalam, pakai stack)']],v:'bfs'},{k:'s',l:'Mulai dari',t:'o',o:[['A','A'],['C','C'],['G','G']],v:'A'}],
+ steps:P=>{const N={A:[-3.6,1.2,'A'],B:[-1.6,2.4,'B'],C:[-1.6,0,'C'],D:[.6,2.4,'D'],E:[.6,0,'E'],F:[3,1.2,'F'],G:[2.8,-1.2,'G']};
+  const Ed=[['A','B'],['A','C'],['B','D'],['C','E'],['D','F'],['E','F'],['E','G'],['F','G']],adj={};
+  Object.keys(N).forEach(k=>adj[k]=[]);Ed.forEach(([a,b])=>{adj[a].push(b);adj[b].push(a)});Object.values(adj).forEach(v=>v.sort());
+  const bfs=P.mode!=='dfs',s=N[P.s]?P.s:'A',seen=new Set([s]),done=[],via={};let F=[[s,null]];const st=[];
+  const tagF=()=>G('fr',0,-2.5,0,(bfs?'antrean: ':'stack: ')+(F.length?F.map(f=>f[0]).join(' '):'kosong'),'idx');
+  const draw=(cur)=>graf(N,Ed,k=>k===cur?'warn':done.includes(k)?'ok':F.some(f=>f[0]===k)?'acc':'mute',(a,b)=>via[b]===a||via[a]===b?'ok':'mute');
+  st.push({lb:'Mulai',cap:`Graph berisi ${Object.keys(N).length} simpul dan ${Ed.length} ruas. Kita menjelajah dengan <b>${bfs?'BFS':'DFS'}</b> mulai dari ${s}. ${bfs?'BFS memakai antrean (queue): yang masuk duluan diproses duluan.':'DFS memakai stack: yang terakhir masuk diproses duluan, jadi terus masuk ke dalam.'}`,it:[...draw(null),tagF()]});
+  while(F.length){const [cur,par]=bfs?F.shift():F.pop();if(done.includes(cur))continue;done.push(cur);if(par)via[cur]=par;
+    const baru=adj[cur].filter(x=>bfs?!seen.has(x):!done.includes(x));
+    if(bfs)baru.forEach(x=>{seen.add(x);F.push([x,cur])});else [...baru].reverse().forEach(x=>F.push([x,cur]));
+    st.push({lb:'Kunjungi '+cur,cap:`Ambil <b>${cur}</b> dari ${bfs?'depan antrean':'atas stack'}. Tetangga yang belum dikunjungi: ${baru.length?baru.join(', '):'tidak ada'}${baru.length?`, ${bfs?'masuk ke belakang antrean':'ditumpuk ke stack'}`:''}. Urutan sejauh ini: ${done.join(' → ')}.`,it:[...draw(cur),tagF()]})}
+  st.push({lb:'Intinya',cap:`Urutan ${bfs?'BFS':'DFS'}: <b>${done.join(' → ')}</b>. ${bfs?'BFS menjelajah lapis demi lapis, sehingga menemukan jalur dengan ruas paling sedikit.':'DFS menelusuri satu cabang sampai mentok baru mundur; cocok untuk mendeteksi siklus dan topological sort.'} Ganti caranya di panel Eksperimen untuk membandingkan.`,it:[...draw(null)]});
+  return st}};
+
+/* ---------- pipeline data (ETL) ---------- */
+S.etl={t:'Pipeline data: Extract, Transform, Load',
+ p:[{k:'kotor',l:'Baris kotor (kosong/duplikat)',t:'n',min:0,max:3,v:2},{k:'mode',l:'Cara jalan',t:'o',o:[['batch','Batch (terjadwal)'],['stream','Streaming (terus-menerus)']],v:'batch'}],
+ steps:P=>{const kt=Math.max(0,Math.min(3,P.kotor)),R8=8,SC=['acc','warn','mute'],src=i=>i%3,dirty=i=>i<kt*3&&i%3===1;
+  const ST=[-3.9,-1.8,.2,2.2,4],lt=lantai(10.5,4);
+  const sumber=[B('s0',ST[0],1.8,0,{w:1.4,h:.5,d:1,c:'acc',t:'DB app'}),B('s1',ST[0],.6,0,{w:1.4,h:.5,d:1,c:'warn',t:'CSV'}),B('s2',ST[0],-.6,0,{w:1.4,h:.5,d:1,c:'mute',t:'API'})];
+  const tahap=on=>[G('tE',ST[1],2.9,0,'Extract',on==='E'?'warn':'idx'),G('tT',ST[2],2.9,0,'Transform',on==='T'?'warn':'idx'),G('tL',ST[3],2.9,0,'Load',on==='L'?'warn':'idx')];
+  const wh=B('wh',ST[4],.2,0,{w:1.5,h:1.8,d:1.4,c:'mute',t:'warehouse'});
+  const bersih=Array.from({length:R8},(_,i)=>i).filter(i=>!dirty(i));
+  const row=(i,x,y,c,z=0)=>B('r'+i,x,y,z,{w:.42,h:.42,d:.42,c,t:dirty(i)?'!':''});
+  const awal=i=>row(i,ST[0]+1.25,1.8-src(i)*1.2,SC[src(i)],(Math.floor(i/3)-1)*.45);
+  const pipa=[R('p1',[ST[0]+.8,.6,0],[ST[3]+.5,.6,0],'mute')];
+  return [
+   {cap:`Data tersebar di tiga <b>sumber</b> dengan format berbeda: database aplikasi, file CSV, dan API. ${kt?`Ada ${kt} baris kotor (tanda !).`:'Semua baris bersih.'}`,it:[lt,...sumber,...tahap(),wh,...Array.from({length:R8},(_,i)=>awal(i))]},
+   {cap:'<b>Extract</b>: pipeline menyalin data dari setiap sumber ke area sementara (staging) tanpa mengubah isinya.',it:[lt,...sumber,...tahap('E'),wh,...pipa,...Array.from({length:R8},(_,i)=>row(i,ST[1]+(i%2)*.5-.25,Math.floor(i/2)*.48-.2,SC[src(i)]))]},
+   {cap:`<b>Transform</b>: data dibersihkan dan diseragamkan: format tanggal dan mata uang disamakan${kt?`, ${kt} baris kotor dibuang`:''}. Semua baris kini berwarna sama karena formatnya seragam.`,
+    it:[lt,...sumber,...tahap('T'),wh,...pipa,...Array.from({length:R8},(_,i)=>dirty(i)?row(i,ST[2]+Math.floor(i/3)*.7-.7,-.35,'bad',1.4):row(i,ST[2]+(bersih.indexOf(i)%2)*.5-.25,Math.floor(bersih.indexOf(i)/2)*.48-.2,'ok'))]},
+   {cap:`<b>Load</b>: ${bersih.length} baris bersih dimuat ke <b>data warehouse</b>, gudang data yang dirancang untuk analisis. Kalau pipeline dijalankan ulang, hasilnya harus tetap sama (<i>idempoten</i>).`,
+    it:[lt,...sumber,...tahap('L'),B('wh',ST[4],.2,0,{w:1.5,h:1.8,d:1.4,c:'ok',t:'warehouse'}),...pipa,...bersih.map((i,j)=>row(i,ST[4]+(j%2)*.5-.25,Math.floor(j/2)*.48-.35,'ok',.95))]},
+   {cap:'Analis dan dashboard membaca dari warehouse, bukan dari database aplikasi, sehingga query berat tidak mengganggu pengguna aplikasi.',
+    it:[lt,...sumber,...tahap(),B('wh',ST[4],.2,0,{w:1.5,h:1.8,d:1.4,c:'ok',t:'warehouse'}),...[.8,1.4,1.1].map((h,j)=>B('bar'+j,ST[4]-.5+j*.5,1.6+h/2,0,{w:.38,h,d:.38,c:['acc','warn','ok'][j]})),G('dash',ST[4],3.4,0,'dashboard','idx')]},
+   P.mode==='stream'?{cap:'<b>Streaming</b>: setiap kejadian (pesanan, klik) mengalir saat itu juga lewat antrean pesan seperti <b>Kafka</b>. Data di dashboard hampir real-time, tetapi sistemnya lebih rumit.',
+      it:[lt,...sumber,...tahap(),B('wh',ST[4],.2,0,{w:1.5,h:1.8,d:1.4,c:'ok',t:'warehouse'}),R('p1',[ST[0]+.8,.6,0],[ST[3]+.5,.6,0],'ok'),...bersih.slice(0,5).map((i,j)=>row(i,ST[1]+j*1.1-.3,.6,'ok'))]}
+    :{cap:'<b>Batch</b>: pipeline berjalan terjadwal, misalnya setiap malam pukul 01.00, memproses semua data sehari sekaligus. Penjadwalnya biasanya <b>Airflow</b> dalam bentuk DAG. Sederhana dan murah, tetapi datanya tertinggal sampai jadwal berikutnya.',
+      it:[lt,...sumber,...tahap(),B('wh',ST[4],.2,0,{w:1.5,h:1.8,d:1.4,c:'ok',t:'warehouse'}),...pipa,G('jam',0,-1.6,0,'⏰ setiap hari 01.00','warn'),...Array.from({length:R8},(_,i)=>awal(i))]}]}};
+
+/* ---------- sorting dasar ---------- */
+S.sort={t:'Sorting dasar: bubble sort dan insertion sort langkah demi langkah',
+ p:[{k:'isi',l:'Angka (pisahkan koma)',t:'s',v:'5, 2, 8, 1, 9, 3'},{k:'algo',l:'Algoritma',t:'o',o:[['bubble','Bubble sort'],['insert','Insertion sort']],v:'bubble'}],
+ steps:P=>{let v=angka(P.isi,7).map(x=>Math.max(-99,Math.min(99,x)));if(v.length<2)v=[5,2,8,1];const n=v.length;
+  const mx=Math.max(...v.map(Math.abs),1),X=i=>(i-(n-1)/2)*1.05,lt=lantai(Math.max(8,n*1.1+1.5),3);
+  let a=v.map((x,i)=>({x,id:i}));const st=[];
+  const bar=(o,i,c,up=0)=>{const h=.25+Math.abs(o.x)/mx*2.4;return B('s'+o.id,X(i),h/2-.5+up,0,{w:.82,h,d:.82,c,t:String(o.x)})};
+  const snap=f=>a.map((o,i)=>bar(o,i,...f(i,o)));
+  st.push({lb:'Mulai',cap:`Data awal: ${v.join(', ')}. Tinggi balok sesuai nilainya. Kita urutkan dari kecil ke besar dengan <b>${P.algo==='insert'?'insertion sort':'bubble sort'}</b>.`,it:[lt,...snap(()=>['acc'])]});
+  let cmp=0,swp=0;
+  if(P.algo==='insert'){
+    for(let i=1;i<n;i++){const key=a[i];
+      st.push({lb:'Ambil '+key.x,cap:`Ambil ${key.x}. Bagian kiri (hijau) sudah terurut; ${key.x} akan disisipkan ke posisi yang tepat di sana.`,it:[lt,...snap((j,o)=>o===key?['warn',.9]:j<i?['ok']:['acc'])]});
+      let j=i-1;while(j>=0&&a[j].x>key.x){cmp++;a[j+1]=a[j];j--}if(j>=0)cmp++;a[j+1]=key;swp+=i-1-j;
+      st.push({lb:'Sisipkan '+key.x,cap:`${i-1-j?`${i-1-j} angka yang lebih besar digeser ke kanan, lalu ${key.x} masuk di posisi ${j+1}.`:`${key.x} sudah lebih besar dari tetangga kirinya, jadi tetap di tempat.`}`,it:[lt,...snap((q,o)=>o===key?['warn']:q<=i?['ok']:['acc'])]})}}
+  else{
+    for(let p=0;p<n-1;p++){let tukar=false;
+      for(let j=0;j<n-1-p;j++){cmp++;const t=a[j].x>a[j+1].x;if(t){[a[j],a[j+1]]=[a[j+1],a[j]];swp++;tukar=true}
+        st.push({lb:`Putaran ${p+1}`,cap:`Bandingkan dua tetangga: ${t?`${a[j+1].x} &gt; ${a[j].x}, jadi <b>ditukar</b>.`:`${a[j].x} ≤ ${a[j+1].x}, sudah urut, tidak ditukar.`}${j===n-2-p?` Akhir putaran ${p+1}: angka terbesar yang tersisa sudah "menggelembung" ke kanan.`:''}`,
+          it:[lt,...snap((q)=>q===j||q===j+1?[t?'bad':'warn']:q>=n-p?['ok']:['acc'])]})}
+      if(!tukar){st.push({lb:'Berhenti dini',cap:`Satu putaran penuh tanpa pertukaran: data sudah urut, jadi berhenti lebih awal.`,it:[lt,...snap(()=>['ok'])]});break}}}
+  st.push({lb:'Selesai',cap:`Terurut: ${a.map(o=>o.x).join(', ')}. Butuh ${cmp} perbandingan dan ${swp} ${P.algo==='insert'?'pergeseran':'pertukaran'}. Kedua algoritma ini O(n²): cukup untuk data kecil, tetapi untuk data besar pakai merge sort atau sort bawaan bahasa.`,it:[lt,...snap(()=>['ok'])]});
+  return st}};
+
 /* ---------- stack ---------- */
 S.stack={t:'Stack: tumpukan piring, yang terakhir masuk keluar pertama (LIFO)',
  p:[{k:'n',l:'Jumlah push',t:'n',min:1,max:6,v:3},{k:'k',l:'Jumlah pop',t:'n',min:0,max:6,v:1}],
@@ -204,7 +537,7 @@ S.stack={t:'Stack: tumpukan piring, yang terakhir masuk keluar pertama (LIFO)',
 
 /* ---------- queue ---------- */
 S.queue={t:'Queue: antrean kasir, yang pertama datang dilayani pertama (FIFO)',
- p:[{k:'q',l:'Yang datang (urut, pisahkan koma)',t:'s',v:'Ani, Budi, Citra'},{k:'k',l:'Jumlah dilayani',t:'n',min:0,max:5,v:1}],
+ p:[{k:'q',l:'Antrean (pisah koma)',t:'s',v:'Ani, Budi, Citra'},{k:'k',l:'Jumlah dilayani',t:'n',min:0,max:5,v:1}],
  steps:P=>{let Q=nama(P.q,5);if(!Q.length)Q=['Ani'];const k=Math.min(P.k,Q.length);
   const o=(id,i,c='acc')=>B('q-'+id,i*1.15-1.6,0,0,{w:.95,h:1.3,d:.9,c,t:E(id)});
   const kasir=[lantai(10,3),B('kasir',-3.6,0,0,{w:1,h:1.6,d:1.6,c:'glass',t:'kasir'}),G('dep',-2.4,1.8,0,'depan: keluar','idx'),G('bel',2.6,1.8,0,'belakang: masuk','idx')];
@@ -329,7 +662,7 @@ S.join={t:'JOIN: menggabungkan dua tabel lewat kolom yang sama',
 
 /* ---------- git ---------- */
 S.git={t:'Git: commit sebagai titik, branch sebagai jalur',
- p:[{k:'f',l:'Commit di branch fitur',t:'n',min:1,max:4,v:2},{k:'m',l:'Commit baru di main setelah bercabang',t:'n',min:0,max:3,v:0}],
+ p:[{k:'f',l:'Commit di branch fitur',t:'n',min:1,max:4,v:2},{k:'m',l:'Commit baru di main',t:'n',min:0,max:3,v:0}],
  steps:P=>{const c=(id,x,y,col='acc')=>B(id,x,y,0,{w:.75,h:.75,d:.75,c:col,t:id,ball:1}),line=(a,b,col)=>R('l'+a.join('_')+'-'+b.join('_'),a,b,col);
   const sp=1.25,x0=-4,base=[c('m1',x0,0),c('m2',x0+sp,0),c('m3',x0+2*sp,0),line([x0,0],[x0+2*sp,0],'mute')],bx=x0+2*sp;
   const fit=[...Array(P.f)].map((_,i)=>c('f'+(i+1),bx+(i+1)*sp,1.6,'ok')),fl=[line([bx,0],[bx+sp,1.6],'ok'),...(P.f>1?[line([bx+sp,1.6],[bx+P.f*sp,1.6],'ok')]:[])];
@@ -343,7 +676,20 @@ S.git={t:'Git: commit sebagai titik, branch sebagai jalur',
      :{cap:`<code>git merge fitur</code>: kedua jalur sama-sama maju, jadi Git membuat commit gabungan <b>M</b> yang berisi perubahan keduanya. Jika file yang sama diubah di kedua jalur, bisa terjadi <b>konflik</b>.`,it:[lantaiG,...base,...fit,...fl,...mm,...ml,line([bx+P.m*sp,0],[mx,0],'mute'),line([bx+P.f*sp,1.6],[mx,0],'ok'),c('M',mx,0,'warn'),...lab]}]}};
 
 /* ---------- pencocokan pelajaran -> adegan ---------- */
-const RULES=[[/box model/i,'box',1],[/z-index|stacking context/i,'zindex',1],[/\bjoin\b/i,'join',1],[/\bbranch|\bmerge\b|\bcommit\b/i,'git',1],
+const RULES=[
+ /* materi data, web, dan algoritma: judulnya spesifik, jadi berlaku di jalur mana pun (atau hanya jalur yang disebut) */
+ [/^(select & from|where: menyaring baris|order by, limit & distinct|urutan eksekusi query|basis data relasional: tabel, baris, kolom|sintaks & kata kunci sql)$|memilih & menyaring: loc|katalog toko nusantara/i,'query',1],[/^operator$/i,'query',1,['sql']],
+ [/fungsi agregat|^group ?by$|groupby|^having$|pivot_table|ringkasan stok/i,'group',1],[/^index:|jenis indeks|explain analyze|optimasi query|pg_stat_statements/i,'index',1],
+ [/primary key|unique, not null|^create table$|tipe data dan constraint|database, schema, dan tabel|^alter, drop|merancang tabel dan relasi|tabel fakta & dimensi|laporan pesanan pelanggan/i,'fk',1],
+ [/^acid|transaksi dan tingkat isolasi/i,'tx',1],[/mvcc|vacuum/i,'mvcc',1],[/replikasi|backup logis|dasar sistem terdistribusi|nosql, cap/i,'repl',1],
+ [/window function|lead, lag|running total|peringkat & tren/i,'window',1],
+ [/cara web bekerja|\bhttp|cors & csp|pengujian api rest|mengambil data: fetch|fetch di komponen|api dengan django rest|membuat rest api|^view dan url$|mengambil data api|route handlers|api & web scraping/i,'http',1],
+ [/^flexbox$|^grid$|flexbox dan grid|sistem grid 12|display & alur normal|^row, column|^column, row|auto layout|section fitur dengan grid/i,'flex',1],
+ [/komponen & jsx|^props$|state dengan usestate|useeffect|useref|usereducer|custom hook|input terkendali|memecah komponen|statelesswidget dan statefulwidget|state dengan remember|^props, emit|^ref, reactive|server component vs client/i,'react',1],
+ [/hash table|hashing & collision|pola dict dan set|dictionary lanjutan & operasi set|^map: menghitung kemunculan|^set: himpunan tanpa duplikat/i,'hash',1],
+ [/binary search(?! tree)|big-o|kompleksitas waktu/i,'bsearch',1],[/(?<!open )\bgraph\b|\bbfs\b|\bdfs\b|dijkstra|topological/i,'graph',1],
+ [/\betl\b|pipeline|airflow|batch, streaming|kafka|siklus hidup data|lineage|warehouse, lake/i,'etl',1],[/sorting dasar|bubble sort|insertion sort/i,'sort',1],
+ [/box model/i,'box',1],[/z-index|stacking context/i,'zindex',1],[/\bjoin\b/i,'join',1],[/\bbranch|\bmerge\b|\bcommit\b/i,'git',1],
  [/rekursi|recursion|call stack/i,'rekursi'],[/\bqueue|antrean|antrian|\bdeque/i,'queue'],[/(?<!tech |full ?)\bstack\b|tumpukan/i,'stack'],[/\bdom\b/i,'dom',1],
  [/\btree\b|pohon|\bbst\b|\bheap\b/i,'tree'],[/\b2d\b|dua dimensi|matriks|matrix|multidimensi/i,'matrix'],[/\barray|larik|\blist\b|arraylist|koleksi|collection/i,'array'],
  [/random number|bilangan acak|angka acak/i,'acak'],[/boolean logic|logika boolean|ekspresi boolean|operator logika/i,'bool'],[/perulangan|\bloop|\bfor\b|while|iterasi/i,'loop'],[/percabangan|\bif\b|kondisi|\bwhen\b|switch|keputusan/i,'if'],
@@ -351,10 +697,16 @@ const RULES=[[/box model/i,'box',1],[/z-index|stacking context/i,'zindex',1],[/\
 const KODE=new Set(['java','python','js','jsx','ts','tsx','dart','kotlin','tx']),LOGIKA=/^(pseudo|flowg|logika|dsa|algo)$/;
 window.v3dOf=function(t,title){if(!t||!title)return null;
   const kode=KODE.has(t.lang)||LOGIKA.test(t.k);
-  for(const [rx,s,any] of RULES)if(rx.test(title)&&(any||kode))return s;return null};
+  for(const [rx,s,any,langs] of RULES)if(rx.test(title)&&(langs?langs.includes(t.lang)||langs.includes(t.k):any||kode))return s;return null};
 window.V3DT=k=>S[k]&&S[k].t;
 /* jenis loop awal ditebak dari judul pelajaran, agar adegan langsung menampilkan jenis yang dibahas */
-window.v3dInit=function(k,title){if(k!=='loop')return null;const t=String(title||'');
+window.v3dInit=function(k,title){const t=String(title||'');
+  if(k==='sort')return /insertion/i.test(t)&&!/bubble/i.test(t)?{algo:'insert'}:null;
+  if(k==='graph')return /\bdfs\b|topological/i.test(t)&&!/\bbfs\b/i.test(t)?{mode:'dfs'}:null;
+  if(k==='flex')return /^grid$|grid 12/i.test(t)?{n:6}:null;
+  if(k==='window')return /lead, lag|running total|tren/i.test(t)?{fn:'run'}:null;
+  if(k==='group')return /having/i.test(t)?{hv:40}:null;
+  if(k!=='loop')return null;
   if(/do-while|kapan for|repeat-until|simbol do\b|semua jenis/i.test(t))return {jenis:'banding'};
   if(/bersarang|nested|loop di dalam loop/i.test(t))return {jenis:'nested'};
   if(/\bbreak\b|penghentian/i.test(t))return {jenis:'break'};
@@ -377,7 +729,11 @@ const LB={var:['Rak memori','Isi umur','Isi nama','Ambil nilai','Ganti isi'],arr
  acak:['Desimal 0..1','Ke rentang','Banyak lemparan','Seed'],stack:['Tumpukan','Push','Peek','Pop','Sisa'],queue:['Antrean','Enqueue','Dequeue','Maju'],
  rekursi:['Panggil','Tumpuk','Kasus dasar','Kembali','Kembali lagi','Hasil'],dom:['Akar','Anak','Telusuri'],oop:['Cetak biru','Objek pertama','Banyak objek','Pewarisan'],
  func:['Mesin','Masukan','Kembalikan','Pakai ulang'],box:['Kotak','Pisah lapisan','Padding','Border','Margin','Lebar total'],zindex:['Urutan HTML','Pakai z-index','Konteks tumpukan'],
- join:['Dua tabel','Cocokkan','Hasil'],git:['Commit','Branch','Merge']};
+ join:['Dua tabel','Cocokkan','Hasil'],git:['Commit','Branch','Merge'],
+ query:['FROM','WHERE','SELECT','ORDER BY','LIMIT','Urutan eksekusi'],group:['Data','GROUP BY','Agregat','HAVING','Intinya'],index:['Tabel','Full scan','B-tree','Telusuri','Langsung ke baris','Biaya'],
+ fk:['Dua tabel','Primary key','Foreign key','INSERT','Constraint'],window:['Data','PARTITION BY','ORDER BY','Fungsi','Beda GROUP BY'],mvcc:['INSERT','Transaksi baca','UPDATE','Dead tuple','VACUUM'],
+ http:['URL','DNS','Request','Server','Response','Tampil'],flex:['Alur normal','display:flex','justify-content','align-items','flex-grow','Grid 2D'],react:['Komponen','Props','State','Render ulang','Ubah DOM'],
+ hash:['Laci','Fungsi hash','Isi semua','Tabrakan','Cari','Rata-rata O(1)'],etl:['Sumber','Extract','Transform','Load','Analisis','Batch/stream']};
 window.V3D=function(host,key,init,opt){const sc=S[key];if(!sc)return;const mini=!!(opt&&opt.mini);
   const rm=RMq(),RX0=-30,RY0=-38;let i=0,rx=RX0,ry=RY0,auto=null,U=40;const els=new Map();
   /* parameter eksperimen: nilai awal dari definisi adegan, langkah dihitung ulang setiap kali diubah */
