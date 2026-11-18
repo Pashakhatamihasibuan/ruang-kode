@@ -3,9 +3,9 @@
    proj (proyek akhir), see (pinjam pelajaran jalur lain). */
 function renderOutline(x){
   const t=x.t,p=prog(t.k);
-  return `<div class="ol-head"><a class="ol-t ${tcls(t)}" href="#${t.k}"><span class="tmark">${t.mark}</span><span><b>${t.name}</b><small>${p.d} dari ${p.n} selesai</small></span></a><div class="bar"><i style="width:${p.p*100}%"></i></div></div>
-  <nav class="ol-nav" aria-label="Daftar materi ${t.name}">${t.mods.map((m,mi)=>{const mp=modProg(t.k,mi);return `<details ${mi===x.mi?'open':''}><summary><span class="ol-n">${mp.d===mp.n?'✓':mi+1}</span><span>${m.t}</span><small>${mp.d}/${mp.n}</small></summary>
-    <ol>${FLAT[t.k].filter(y=>y.mi===mi).map(y=>`<li><a href="#${y.id}" class="${isDone(y)?'done':isOpen(y)?'':'locked'}" ${y.id===x.id?'aria-current="page"':''}><span class="chk" aria-hidden="true"></span>${esc(y.title)}${isOpen(y)?'':'<span class="sr">(terkunci)</span>'}</a></li>`).join('')}</ol></details>`}).join('')}</nav>`;
+  return `<div class="ol-head"><span class="ol-k">Kursus</span><a class="ol-t ${tcls(t)}" href="#${t.k}"><span class="tmark">${t.mark}</span><span><b>${t.name}</b><small>${t.mods.length} modul · ${p.n} pelajaran</small></span></a></div>
+  <nav class="ol-nav" aria-label="Daftar materi ${t.name}">${t.mods.map((m,mi)=>{const mp=modProg(t.k,mi);return `<details ${mi===x.mi?'open':''} style="--mc:var(--mc${mi%6})"><summary><span class="ol-n">${mp.d===mp.n?'✓':String(mi+1).padStart(2,'0')}</span><span>${m.t}</span><small>${mp.d}/${mp.n}</small></summary>
+    <ol>${FLAT[t.k].filter(y=>y.mi===mi).map(y=>`<li><a href="#${y.id}" class="${isDone(y)?'done':isOpen(y)?'':'locked'}" ${y.id===x.id?'aria-current="page"':''}><span class="chk" aria-hidden="true"></span>${esc(y.title)}${isOpen(y)?'':'<span class="sr">(terkunci)</span>'}</a></li>`).join('')}</ol></details>`}).join('')}</nav><div class="ol-foot"><div class="ol-fh"><span>Progres kursus</span><b>${p.d} / ${p.n}</b></div><div class="bar"><i style="width:${p.p*100}%"></i></div></div>`;
 }
 /* halaman pengganti untuk pelajaran yang belum terbuka */
 function renderLocked(x){
@@ -38,7 +38,7 @@ function renderLesson(x){
   if(va)body=`<section class="viz va-sec" id="varAnim"><div class="viz-head"><span class="eyebrow">Animasi</span><h3>Bagaimana variabel dibuat dan diubah</h3><p>Tekan Berikutnya atau Putar otomatis. Kiri: kode dijalankan baris demi baris. Kanan: isi memori.</p></div><div id="varHost" class="vizhost"></div></section>`+body;
   return `<div class="l-top"><button class="btn ol-btn" id="olBtn" aria-controls="outline" aria-expanded="false"><span aria-hidden="true">☰</span> <span class="ol-lab">Daftar materi</span></button>
    <nav class="crumb" aria-label="Lokasi"><a href="#beranda">Beranda</a><span>/</span><a href="#${t.k}">${t.name}</a><span>/</span><span>Modul ${mi+1}</span></nav></div>
-  <header class="l-head ${tcls(t)}"><div class="eyebrow">Modul ${mi+1}: ${m.t} · Pelajaran ${li+1} dari ${m.lessons.length}</div>
+  <header class="l-head ${tcls(t)}"><div class="eyebrow l-path" style="--mc:var(--mc${mi%6})"><span class="l-mod">${String(mi+1).padStart(2,'0')}. ${m.t}</span><span aria-hidden="true">/</span><span>Pelajaran ${li+1} dari ${m.lessons.length}</span></div>
    <h1>${esc(x.title)}</h1>
    <div class="l-meta"><span class="kchip k-${l.k}">${KIND[kindOf(x)]}</span><span>±${minOf(x)} menit</span><span>${m.lvl}</span>${dn?'<span class="okc">✓ Selesai</span>':''}</div>
    ${x.src?`<p class="borrow ${tcls(y.t)}"><span class="tmark sm">${y.t.mark}</span>Pelajaran ini juga ada di jalur <a href="#${y.id}">${y.t.name}</a>. Progresnya tersimpan bersama, jadi cukup dikerjakan sekali.</p>`:''}

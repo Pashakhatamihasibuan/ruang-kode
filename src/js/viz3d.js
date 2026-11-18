@@ -378,15 +378,6 @@ const LB={var:['Rak memori','Isi umur','Isi nama','Ambil nilai','Ganti isi'],arr
  rekursi:['Panggil','Tumpuk','Kasus dasar','Kembali','Kembali lagi','Hasil'],dom:['Akar','Anak','Telusuri'],oop:['Cetak biru','Objek pertama','Banyak objek','Pewarisan'],
  func:['Mesin','Masukan','Kembalikan','Pakai ulang'],box:['Kotak','Pisah lapisan','Padding','Border','Margin','Lebar total'],zindex:['Urutan HTML','Pakai z-index','Konteks tumpukan'],
  join:['Dua tabel','Cocokkan','Hasil'],git:['Commit','Branch','Merge']};
-/* pintasan keyboard global untuk panggung yang sedang terlihat: ← → langkah, R ulang, Spasi putar/jeda */
-let AKTIF=null;
-document.addEventListener('keydown',e=>{const c=AKTIF;if(!c||!c.host.isConnected||e.altKey||e.ctrlKey||e.metaKey)return;
-  const t=e.target;if(t&&(/^(INPUT|SELECT|TEXTAREA|BUTTON)$/.test(t.tagName)&&e.key===' '||/^(INPUT|SELECT|TEXTAREA)$/.test(t.tagName)||t.isContentEditable))return;
-  if(t&&t.classList&&t.classList.contains('s3'))return;
-  const r=c.host.getBoundingClientRect();if(r.bottom<80||r.top>innerHeight-80)return;
-  const k=e.key;if(k==='ArrowRight'){c.go(1);e.preventDefault()}else if(k==='ArrowLeft'){c.go(-1);e.preventDefault()}
-  else if(k==='r'||k==='R'){c.replay();e.preventDefault()}else if(k===' '){c.toggle();e.preventDefault()}});
-
 window.V3D=function(host,key,init,opt){const sc=S[key];if(!sc)return;const mini=!!(opt&&opt.mini);
   const rm=RMq(),RX0=-30,RY0=-38;let i=0,rx=RX0,ry=RY0,auto=null,U=40;const els=new Map();
   /* parameter eksperimen: nilai awal dari definisi adegan, langkah dihitung ulang setiap kali diubah */
@@ -433,11 +424,18 @@ window.V3D=function(host,key,init,opt){const sc=S[key];if(!sc)return;const mini=
   function tlDraw(){tl.innerHTML=steps.map((s,k)=>`<li><button type="button" data-go="${k}"${k===i?' aria-current="step"':''} class="${k<i?'done':k===i?'now':''}"><span class="tn">${k<i?'✓':k+1}</span><span class="tl-l">${label(k)}</span></button></li>`).join('')}
   function draw(again){if(i>steps.length-1)i=steps.length-1;const s=steps[i];U=Math.max(26,Math.min(60,st.clientWidth/11));const seen=new Set();
     if(again){els.forEach(e=>e.remove());els.clear()}
-    s.it.forEach(o=>{seen.add(o.id);let e=els.get(o.id);const fresh=!e;
+    let nf=0;
+    s.it.forEach(o=>{seen.add(o.id);let e=els.get(o.id);const fresh=!e,prevC=e&&e._c,prevT=e&&e._t;
       if(fresh){e=document.createElement('div');els.set(o.id,e);(o.tag?tg:w).appendChild(e)}
-      if(o.tag){e.className=`t3 ${o.c?'c-'+o.c:''}`;e.innerHTML=o.t;e._tag=1;e._p=[o.x,o.y,o.z]}
-      else{e.className=`b3 c-${o.c}${o.ball?' ball':''}${o.rod?' rod':''}${o.flat?' flat':''}`;e.innerHTML=blockHTML(o,U);e.style.transform=place(o,U)}
-      if(fresh&&!rm){e.classList.add('in');requestAnimationFrame(()=>requestAnimationFrame(()=>e.classList.remove('in')))}});
+      if(o.tag){e.className=`t3 ${o.c?'c-'+o.c:''}`;e.innerHTML=o.t;e._tag=1;e._p=[o.x,o.y,o.z];
+        if(!rm&&(fresh||prevT!==o.t)){e.classList.add('pop')}e._t=o.t}
+      else{e.className=`b3 c-${o.c}${o.ball?' ball':''}${o.rod?' rod':''}${o.flat?' flat':''}`;e.innerHTML=blockHTML(o,U);e.style.transform=place(o,U);
+        /* berubah warna atau isi: kilau sebentar agar mata tertuju ke sana */
+        if(!fresh&&!rm&&(prevC!==o.c||prevT!==o.t)&&o.c!=='floor'){e.classList.add('pulse');setTimeout(()=>e.classList.remove('pulse'),950)}
+        e._c=o.c;e._t=o.t}
+      /* benda baru muncul bergiliran, bukan sekaligus */
+      if(fresh&&!rm){const d=Math.min(nf++,12)*70;e.style.transitionDelay=d+'ms';e.classList.add('in');
+        requestAnimationFrame(()=>requestAnimationFrame(()=>e.classList.remove('in')));setTimeout(()=>{e.style.transitionDelay=''},d+800)}});
     els.forEach((e,id)=>{if(seen.has(id))return;els.delete(id);if(rm)e.remove();else{e.classList.add('out');setTimeout(()=>e.remove(),450)}});
     /* teks di sisi benda dikecilkan bila tidak muat (layar sempit) */
     w.querySelectorAll('.f3>b,.f3>i').forEach(t=>{const f=t.parentNode,cw=f.clientWidth-4,ch=f.clientHeight-2,sw=t.scrollWidth,sh=t.offsetHeight;
@@ -454,8 +452,7 @@ window.V3D=function(host,key,init,opt){const sc=S[key];if(!sc)return;const mini=
   const toggle=()=>{if(auto)return stop();if(i===steps.length-1){i=0;draw()}setPlay(true);
     auto=setInterval(()=>{if(!host.isConnected)return stop();if(i>=steps.length-1){stop();if(mini&&opt.onEnd)opt.onEnd();return}i++;draw()},mini?3000:3400)};
   const replay=()=>{draw(true)};
-  const ctl={host,go,toggle,replay};if(!mini){AKTIF=ctl;
-  host.addEventListener('pointerdown',()=>{AKTIF=ctl});host.addEventListener('focusin',()=>{AKTIF=ctl})}
+  if(!mini&&typeof stepReg==='function')stepReg({host,go,toggle,replay});
   host.addEventListener('click',e=>{const g=e.target.closest('[data-go]');if(g){stop();i=+g.dataset.go;draw();return}
     const a=e.target.closest('[data-a]');if(!a)return;const k=a.dataset.a;
     if(k==='next')go(1);else if(k==='prev')go(-1);else if(k==='replay')replay();else if(k==='play')toggle();

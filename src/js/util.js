@@ -101,28 +101,47 @@ function hl(code,lang){
   return out;
 }
 
-/* player langkah demi langkah */
+/* ---------- pintasan keyboard untuk semua pemutar langkah (lab 2D dan panggung 3D) ----------
+   ← → pindah langkah, R ulangi, Spasi putar/jeda. Yang dikendalikan: pemutar terakhir yang disentuh,
+   atau pemutar yang paling banyak terlihat di layar. */
+const STEPS=[];let STEP_LAST=null;
+function stepReg(ctl){STEPS.push(ctl);const h=ctl.host;h.addEventListener('pointerdown',()=>{STEP_LAST=ctl});h.addEventListener('focusin',()=>{STEP_LAST=ctl});return ctl}
+function stepPick(){for(let k=STEPS.length-1;k>=0;k--)if(!STEPS[k].host.isConnected)STEPS.splice(k,1);
+  const vis=c=>{const r=c.host.getBoundingClientRect();return Math.max(0,Math.min(r.bottom,innerHeight)-Math.max(r.top,0))};
+  if(STEP_LAST&&STEP_LAST.host.isConnected&&vis(STEP_LAST)>120)return STEP_LAST;
+  let best=null,bv=120;STEPS.forEach(c=>{const v=vis(c);if(v>bv){bv=v;best=c}});return best}
+document.addEventListener('keydown',e=>{if(e.altKey||e.ctrlKey||e.metaKey||e.defaultPrevented)return;const t=e.target;
+  if(t&&(/^(INPUT|SELECT|TEXTAREA)$/.test(t.tagName)||t.isContentEditable||(t.classList&&t.classList.contains('s3'))))return;
+  if(e.key===' '&&t&&/^(BUTTON|A|SUMMARY)$/.test(t.tagName))return;
+  if(!/^(ArrowRight|ArrowLeft|r|R| )$/.test(e.key))return;const c=stepPick();if(!c)return;
+  const k=e.key;if(k==='ArrowRight')c.go(1);else if(k==='ArrowLeft')c.go(-1);else if(k===' ')c.toggle();else c.replay();e.preventDefault()});
+
+/* player langkah demi langkah: dipakai semua lab 2D. Tampilannya sama dengan panggung 3D:
+   bilah progres, titik langkah, kotak penjelasan berlabel, Kembali/Lanjut, Ulangi, Putar/Jeda. */
 function player(host,frames,draw,opts={}){
-  host.innerHTML=`<div class="stage"></div><p class="note" aria-live="polite"></p>
-  <div class="ctrl"><button class="btn" data-a="reset">Ulang</button><button class="btn" data-a="prev">◀ Sebelumnya</button><button class="btn primary" data-a="next">Berikutnya ▶</button><button class="btn" data-a="play">Putar otomatis</button><span class="cnt"></span></div>`;
-  const stage=$('.stage',host),note=$('.note',host),cnt=$('.cnt',host);
+  host.innerHTML=`<div class="stage"></div>
+  <div class="pl-steps"><div class="stg-prog" aria-hidden="true"><i></i></div><ol class="pl-dots" aria-label="Langkah"></ol></div>
+  <div class="pl-box"><div class="rail-top"><span class="rail-n cnt"></span><span class="rail-tag"></span></div><p class="note" aria-live="polite"></p></div>
+  <div class="ctrl"><button class="btn" data-a="prev">← Kembali</button><button class="btn primary" data-a="next">Lanjut →</button>
+   <button class="rp" data-a="reset">⟲ Ulangi <kbd>R</kbd></button><button class="rp" data-a="play" aria-pressed="false">▶ Putar <kbd>Spasi</kbd></button></div>`;
+  const stage=$('.stage',host),note=$('.note',host),cnt=$('.cnt',host),bar=$('.stg-prog i',host),dots=$('.pl-dots',host),tag=$('.rail-tag',host);
   const pb=$('[data-a=play]',host),nb=$('[data-a=next]',host),bb=$('[data-a=prev]',host);
   let i=0,t=null;
-  const stop=()=>{if(t){clearInterval(t);t=null}pb.textContent='Putar otomatis'};
-  function show(){draw(stage,frames[i],i);note.innerHTML=frames[i].note||'';cnt.textContent=`Langkah ${i+1} / ${frames.length}`;bb.disabled=i===0;nb.disabled=i===frames.length-1}
-  $('.ctrl',host).addEventListener('click',e=>{
-    const b=e.target.closest('button');if(!b)return;const a=b.dataset.a;
-    if(a==='next'&&i<frames.length-1)i++;
-    if(a==='prev'&&i>0)i--;
-    if(a==='reset'){stop();i=0}
-    if(a==='play'){
-      if(t){stop();return}
-      if(i===frames.length-1)i=0;
-      pb.textContent='Jeda';
-      t=setInterval(()=>{if(i<frames.length-1){i++;show()}else stop()},opts.speed||1100);TIMERS.push(t);
-    }
-    show();
-  });
+  const stop=()=>{if(t){clearInterval(t);t=null}pb.setAttribute('aria-pressed','false');pb.innerHTML='▶ Putar <kbd>Spasi</kbd>'};
+  function show(){const N=frames.length;draw(stage,frames[i],i);note.innerHTML=frames[i].note||'';cnt.textContent=`Langkah ${i+1} / ${N}`;
+    const [tt,tc]=i===0?['Mulai','t-a']:i===N-1?['Selesai','t-c']:['Proses','t-b'];tag.textContent=tt;tag.className='rail-tag '+tc;
+    bar.style.width=((i+1)/N*100)+'%';
+    dots.innerHTML=N<=24?frames.map((f,k)=>`<li><button type="button" data-go="${k}" class="${k<i?'done':k===i?'now':''}" aria-label="Langkah ${k+1}"${k===i?' aria-current="step"':''}></button></li>`).join(''):'';
+    bb.disabled=i===0;nb.disabled=false;nb.textContent=i<N-1?'Lanjut →':'↺ Dari awal';
+    stage.classList.remove('pl-flash');void stage.offsetWidth;stage.classList.add('pl-flash')}
+  const go=d=>{stop();if(d>0&&i===frames.length-1)i=0;else i=Math.max(0,Math.min(frames.length-1,i+d));show()};
+  const toggle=()=>{if(t){stop();return}if(i===frames.length-1)i=0;pb.setAttribute('aria-pressed','true');pb.innerHTML='❚❚ Jeda <kbd>Spasi</kbd>';show();
+    t=setInterval(()=>{if(!host.isConnected)return stop();if(i<frames.length-1){i++;show()}else stop()},opts.speed||1100);TIMERS.push(t)};
+  const replay=()=>{stop();i=0;show()};
+  stepReg({host,go,toggle,replay});
+  host.addEventListener('click',e=>{const g=e.target.closest('[data-go]');if(g&&host.contains(g)&&dots.contains(g)){stop();i=+g.dataset.go;show();return}
+    const b=e.target.closest('.ctrl button');if(!b||!host.contains(b))return;const a=b.dataset.a;
+    if(a==='next')go(1);else if(a==='prev')go(-1);else if(a==='reset')replay();else if(a==='play')toggle()});
   show();
   return {set(f){stop();frames=f;i=0;show()}};
 }

@@ -120,15 +120,17 @@ section.cat-row{display:flex;flex-direction:column;gap:16px;margin-top:36px}
 /* ===================== Panggung pelajaran interaktif =====================
    Diagram 3D isometrik jadi pusat pelajaran: penunjuk nilai (HUD) di atas, garis waktu langkah di bawah,
    dan panel panduan di kanan (atau di bawah pada layar sempit) berisi penjelasan langkah dan tombolnya. */
-body:has(#view.has-stage) :is(.shell,.gnav-in,.mega-in,.sfoot>div){max-width:1440px}
-#view.has-stage{max-width:1200px}
-#view.has-stage .l-head,#view.has-stage .l-body>:not(.v3-sec){width:100%;max-width:860px}
+/* halaman pelajaran memakai lebar penuh layar */
+body:has(#view[data-page="lesson"]) :is(.shell,.gnav-in,.mega-in,.sfoot>div){max-width:none}
+#view[data-page="lesson"]{max-width:none;padding-inline:clamp(16px,3vw,48px)}
+#view[data-page="lesson"] .sekilas{max-width:none}
+#view[data-page="lesson"] :is(.prose p,.prose li,.sekilas p,.l-head .lead){max-width:100ch}
 .v3-sec{gap:16px}
 .v3host{container-type:inline-size;min-width:0}
 .stg{display:flex;flex-direction:column;gap:16px;min-width:0}
 .stg-main{display:flex;flex-direction:column;gap:12px;min-width:0}
-@container (min-width:860px){.stg{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:20px;align-items:start}}
-.stg .s3{perspective:1100px;height:clamp(300px,52vw,460px);border:1px solid var(--line);
+@container (min-width:860px){.stg{display:grid;grid-template-columns:minmax(0,1fr) clamp(320px,24vw,380px);gap:20px;align-items:start}}
+.stg .s3{perspective:1100px;height:clamp(300px,38vw,580px);border:1px solid var(--line);
   background:radial-gradient(circle,color-mix(in srgb,var(--ink) 11%,transparent) 1px,transparent 1.4px) 0 0/20px 20px,linear-gradient(180deg,var(--surface),var(--sunk))}
 .s3view{position:absolute;left:10px;bottom:8px;font:600 .75rem var(--f-body);color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 10px;min-height:28px;cursor:pointer}
 .s3view:hover{color:var(--ink);border-color:color-mix(in srgb,var(--ink) 25%,var(--line))}
@@ -183,3 +185,62 @@ kbd{font:600 .7rem/1 var(--f-mono);padding:3px 6px;border-radius:5px;border:1px 
 .hs-tabs button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
 .hs-foot{margin:0;font-size:.82rem;color:var(--muted)}
 .stg-rail .s3cap code{white-space:normal;overflow-wrap:anywhere}
+
+/* ===================== Lab 2D: kontrol langkah seragam dengan panggung 3D ===================== */
+.pl-steps{display:flex;flex-direction:column;gap:8px}
+.pl-dots{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.pl-dots button{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);background:var(--surface);cursor:pointer;padding:0;position:relative}
+.pl-dots button::after{content:"";position:absolute;inset:-11px}
+.pl-dots .done{background:var(--ok-soft);border-color:var(--ok)}
+.pl-dots .now{background:var(--ok);border-color:var(--ok);box-shadow:0 0 0 4px color-mix(in srgb,var(--ok) 22%,transparent)}
+.pl-box{display:flex;flex-direction:column;gap:8px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.pl-box .note{margin:0;min-height:1.6em}
+.pl-box .cnt{margin-left:0}
+.vizhost .ctrl{gap:8px}.vizhost .ctrl .btn{min-height:44px}.vizhost .ctrl .btn.primary{min-width:140px}
+.vizhost .ctrl button:disabled{opacity:.45;cursor:not-allowed}
+.stage.pl-flash{animation:plFlash .5s ease-out}
+@keyframes plFlash{from{box-shadow:0 0 0 3px color-mix(in srgb,var(--ok) 35%,transparent)}to{box-shadow:0 0 0 0 transparent}}
+
+/* ===================== Animasi panggung 3D yang lebih hidup ===================== */
+/* partikel mengalir di sepanjang garis penghubung yang aktif (seperti paket data yang bergerak) */
+.s3 .rod:not(.c-mute) .f-f{overflow:visible}
+.s3 .rod:not(.c-mute) .f-f::before,.s3 .rod:not(.c-mute) .f-f::after{content:"";position:absolute;top:50%;left:0;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-radius:50%;
+  background:color-mix(in srgb,var(--fc) 55%,#fff);box-shadow:0 0 0 2px color-mix(in srgb,var(--fc) 40%,transparent),0 0 10px var(--fc);animation:s3flow 1.8s linear infinite}
+.s3 .rod:not(.c-mute) .f-f::after{animation-delay:-.9s}
+@keyframes s3flow{from{left:0;opacity:0}12%{opacity:1}88%{opacity:1}to{left:100%;opacity:0}}
+/* bola penanda melayang pelan */
+.s3 .b3.ball:not(.in):not(.out){animation:s3bob 2.4s ease-in-out infinite}
+@keyframes s3bob{50%{translate:0 -7px}}
+/* benda yang berubah warna di langkah ini berkilau sebentar */
+.s3 .b3.pulse .f3{animation:s3pulse .9s ease-out}
+@keyframes s3pulse{0%{filter:brightness(1.45) saturate(1.2)}100%{filter:none}}
+.s3 .t3.pop{animation:s3pop .5s cubic-bezier(.3,1.4,.5,1)}
+@keyframes s3pop{from{scale:.6;opacity:0}to{scale:1;opacity:1}}
+/* bayangan lembut di lantai agar benda terasa menapak */
+.s3 .b3:not(.rod):not(.c-floor) .f-u{box-shadow:0 0 18px 6px rgb(0 0 0/.12)}
+@media (prefers-reduced-motion:reduce){.s3 .rod .f-f::before,.s3 .rod .f-f::after{display:none}.s3 .b3.ball,.s3 .b3.pulse .f3,.s3 .t3.pop,.stage.pl-flash{animation:none}}
+/* gerakan benda sedikit lebih lambat agar perpindahannya mudah diikuti mata */
+.s3 .b3{transition:transform .95s cubic-bezier(.3,.8,.25,1),opacity .5s}
+.s3 .t3{transition:left .95s cubic-bezier(.3,.8,.25,1),top .95s cubic-bezier(.3,.8,.25,1),opacity .5s}
+.s3.grab .t3{transition:opacity .45s}
+
+/* ===================== Navigasi kursus ala referensi ===================== */
+:root{--mc0:#C2571A;--mc1:#2F6FD0;--mc2:#7A4FD0;--mc3:#0F7F72;--mc4:#C23A78;--mc5:#8A5A2B}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--mc0:#F0A06E;--mc1:#8DB3F2;--mc2:#B9A0F4;--mc3:#6FD0C1;--mc4:#F09AC0;--mc5:#D9AE83}}
+:root[data-theme="dark"]{--mc0:#F0A06E;--mc1:#8DB3F2;--mc2:#B9A0F4;--mc3:#6FD0C1;--mc4:#F09AC0;--mc5:#D9AE83}
+.ol-k{font:700 .66rem/1 var(--f-body);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);padding:0 2px}
+.ol-nav details>summary{grid-template-columns:30px minmax(0,1fr) auto;align-items:center}
+.ol-n{display:inline-grid;place-items:center;height:22px;border-radius:6px;font:700 .7rem var(--f-mono);color:var(--mc,var(--muted));background:color-mix(in srgb,var(--mc,var(--muted)) 12%,transparent)}
+.ol-nav details[open]>summary{color:var(--ink)}
+.ol-nav details[open]>summary>span:nth-child(2){font-weight:650}
+.ol-nav ol{border-left-color:color-mix(in srgb,var(--mc,var(--line)) 35%,var(--line))}
+.ol-nav ol a[aria-current="page"]{background:color-mix(in srgb,var(--mc,var(--acc)) 11%,var(--surface));box-shadow:inset 3px 0 0 var(--mc,var(--acc))}
+.ol-foot{position:sticky;bottom:-40px;margin:18px 2px 0;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);box-shadow:var(--shadow-1);display:flex;flex-direction:column;gap:8px}
+.ol-fh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:.8rem;color:var(--muted)}
+.ol-fh b{font:700 .9rem var(--f-mono);color:var(--ink)}
+.ol-foot .bar i{background:var(--ok)}
+/* judul pelajaran: "03. Nama modul / Pelajaran 5 dari 14" */
+.l-path{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;color:var(--muted)}
+.l-mod{color:var(--mc,var(--acc))}
+/* lab 2D: kotak penjelasan selebar lab */
+.pl-box,.pl-steps{align-self:stretch;width:100%;box-sizing:border-box}.pl-steps{margin-top:6px}

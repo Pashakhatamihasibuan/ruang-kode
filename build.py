@@ -66,9 +66,9 @@ BODY = """
   <div class="gnav-in">
     <a class="brand" href="#beranda"><span class="brand-mark">RK</span><span><b>Ruang Kode</b><small>coding · data · desain</small></span></a>
     <nav class="gmain" id="gmain" aria-label="Utama">
-      <button class="gbtn" id="catBtn" aria-expanded="false" aria-controls="mega">Katalog <span aria-hidden="true">▾</span></button>
-      <a href="#saya" data-r="saya">Belajar saya</a>
-      <a href="#ulang" data-r="ulang">Ulang <span class="badge wrongN" hidden></span></a>
+      <button class="gbtn" id="catBtn" aria-expanded="false" aria-controls="mega">Belajar <span aria-hidden="true">▾</span></button>
+      <a href="#saya" data-r="saya">Progres saya</a>
+      <a href="#ulang" data-r="ulang">Latihan <span class="badge wrongN" hidden></span></a>
       <a href="#kuis" data-r="kuis">Kuis</a>
       <a href="#glosarium" data-r="glosarium">Glosarium</a>
     </nav>
