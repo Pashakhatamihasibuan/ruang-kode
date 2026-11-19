@@ -12,6 +12,7 @@ from rb_pj_de import PJ_DE
 from rb_pj_uiux import PJ_UIUX
 from rb_pj_qa import PJ_QA
 from rb_pj_dba import PJ_DBA
+from rb_pj_si import PJ_SI
 
-PROJ = [STANDAR, FULLSTACK, PJ_FE, PJ_PY, PJ_DA, PJ_DS, PJ_JAVA, PJ_MOBILE, PJ_DE, PJ_UIUX, PJ_QA, PJ_DBA, MINI, BESAR, LAMAR]
+PROJ = [STANDAR, FULLSTACK, PJ_FE, PJ_PY, PJ_DA, PJ_DS, PJ_JAVA, PJ_MOBILE, PJ_DE, PJ_UIUX, PJ_QA, PJ_DBA, PJ_SI, MINI, BESAR, LAMAR]
 PROJ_SO = {}

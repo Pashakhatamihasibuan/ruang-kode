@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mini 3: Sistem informasi koperasi: dari ERD ke laporan manajemen · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Masalah. Koperasi karyawan pabrik masih mencatat simpanan dan pinjaman di buku besar. Pengurus tidak tahu siapa yang menunggak sampai rapat tahunan.…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/mini-3-sistem-informasi-koperasi-dari-erd-ke-laporan-manajemen">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Mini 3: Sistem informasi koperasi: dari ERD ke laporan manajemen · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Masalah. Koperasi karyawan pabrik masih mencatat simpanan dan pinjaman di buku besar. Pengurus tidak tahu siapa yang menunggak sampai rapat tahunan.…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/mini-3-sistem-informasi-koperasi-dari-erd-ke-laporan-manajemen"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Mini 3: Sistem informasi koperasi: dari ERD ke laporan manajemen", "description": "Masalah. Koperasi karyawan pabrik masih mencatat simpanan dan pinjaman di buku besar. Pengurus tidak tahu siapa yang menunggak sampai rapat tahunan.…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-3-sistem-informasi-koperasi-dari-erd-ke-laporan-manajemen", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Mini 3: Sistem informasi koperasi: dari ERD ke laporan manajemen", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-3-sistem-informasi-koperasi-dari-erd-ke-laporan-manajemen"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 13</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 13 · Konsep &amp; kode</div><h1>Mini 3: Sistem informasi koperasi: dari ERD ke laporan manajemen</h1><a class="cta" href="/#proj-13-3">Buka versi interaktif</a>
+<p><b>Masalah.</b> Koperasi karyawan pabrik masih mencatat simpanan dan pinjaman di buku besar. Pengurus tidak tahu siapa yang menunggak sampai rapat tahunan. Rancang database dan laporan yang menjawab kebutuhan pengurus.</p>
+<p><b>Fitur wajib:</b><br>1. ERD: anggota, simpanan (pokok/wajib/sukarela), pinjaman, angsuran<br>2. Constraint untuk jenis simpanan dan jumlah positif<br>3. Laporan simpanan per anggota<br>4. Exception report angsuran tertunggak dan rasio NPL</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. Turunkan tabel dari entitas dan relasinya; angsuran memakai kunci gabungan (pinjaman, ke).<br>2. Isi data contoh dan bangkitkan jadwal angsuran dari tanggal pinjaman dan tenor.<br>3. Gunakan SUM(CASE ...) untuk laporan pivot simpanan per jenis.<br>4. Filter angsuran yang jatuh tempo tetapi belum dibayar untuk exception report dan NPL.</p>
+<p><b>Kembangkan sendiri:</b> tambahkan perhitungan SHU per anggota dan cetak kartu anggota digital berisi saldo simpanan.</p>
+<div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>ERD: anggota, simpanan (pokok/wajib/sukarela), pinjaman, angsuran</td><td>Turunkan tabel dari entitas dan relasinya; angsuran memakai kunci gabungan (pinjaman, ke).</td></tr><tr><td>Constraint untuk jenis simpanan dan jumlah positif</td><td>Isi data contoh dan bangkitkan jadwal angsuran dari tanggal pinjaman dan tenor.</td></tr><tr><td>Laporan simpanan per anggota</td><td>Gunakan SUM(CASE ...) untuk laporan pivot simpanan per jenis.</td></tr><tr><td>Exception report angsuran tertunggak dan rasio NPL</td><td>Filter angsuran yang jatuh tempo tetapi belum dibayar untuk exception report dan NPL.</td></tr></tbody></table></div>
+<div class="lbl">PYTHON</div><pre><code>import sqlite3
+# Sistem informasi koperasi simpan pinjam: ERD -&gt; skema -&gt; transaksi -&gt; laporan manajemen
+db = sqlite3.connect(&quot;:memory:&quot;)
+db.executescript(&quot;&quot;&quot;
+CREATE TABLE anggota (id INTEGER PRIMARY KEY, nama TEXT NOT NULL, unit TEXT NOT NULL, bergabung TEXT NOT NULL);
+CREATE TABLE simpanan (id INTEGER PRIMARY KEY, anggota_id INT NOT NULL REFERENCES anggota, jenis TEXT
+                       CHECK (jenis IN (&#x27;pokok&#x27;,&#x27;wajib&#x27;,&#x27;sukarela&#x27;)), tgl TEXT, jumlah INT CHECK (jumlah &gt; 0));
+CREATE TABLE pinjaman (id INTEGER PRIMARY KEY, anggota_id INT NOT NULL REFERENCES anggota, tgl TEXT,
+                       pokok INT, tenor INT, bunga_bln REAL);
+CREATE TABLE angsuran (pinjaman_id INT REFERENCES pinjaman, ke INT, jatuh_tempo TEXT, dibayar TEXT,
+                       PRIMARY KEY (pinjaman_id, ke));
+INSERT INTO anggota VALUES (1,&#x27;Sri&#x27;,&#x27;Produksi&#x27;,&#x27;2023-02-01&#x27;),(2,&#x27;Budi&#x27;,&#x27;Gudang&#x27;,&#x27;2024-07-15&#x27;),
+                           (3,&#x27;Nur&#x27;,&#x27;Keuangan&#x27;,&#x27;2025-01-10&#x27;),(4,&#x27;Agus&#x27;,&#x27;Produksi&#x27;,&#x27;2025-09-01&#x27;);
+INSERT INTO simpanan (anggota_id, jenis, tgl, jumlah) VALUES
+ (1,&#x27;pokok&#x27;,&#x27;2023-02-01&#x27;,100000),(1,&#x27;wajib&#x27;,&#x27;2026-10-01&#x27;,50000),(1,&#x27;sukarela&#x27;,&#x27;2026-10-05&#x27;,2000000),
+ (2,&#x27;pokok&#x27;,&#x27;2024-07-15&#x27;,100000),(2,&#x27;wajib&#x27;,&#x27;2026-10-01&#x27;,50000),(3,&#x27;pokok&#x27;,&#x27;2025-01-10&#x27;,100000),
+ (3,&#x27;wajib&#x27;,&#x27;2026-10-01&#x27;,50000),(3,&#x27;sukarela&#x27;,&#x27;2026-10-20&#x27;,750000),(4,&#x27;pokok&#x27;,&#x27;2025-09-01&#x27;,100000);
+INSERT INTO pinjaman VALUES (1,2,&#x27;2026-06-01&#x27;,6000000,12,0.01),(2,4,&#x27;2026-08-01&#x27;,3000000,6,0.012),(3,1,&#x27;2026-09-01&#x27;,10000000,24,0.009);
+&quot;&quot;&quot;)
+# jadwal angsuran: bayar tepat waktu kecuali beberapa kasus
+import datetime as dt
+for pid, tgl, tenor in db.execute(&quot;SELECT id, tgl, tenor FROM pinjaman&quot;).fetchall():
+    d = dt.date.fromisoformat(tgl)
+    for k in range(1, tenor + 1):
+        jt = dt.date(d.year + (d.month + k - 1) // 12, (d.month + k - 1) % 12 + 1, 10)
+        if jt &gt; dt.date(2026, 11, 19): bayar = None
+        elif pid == 2 and k &gt;= 2: bayar = None                      # Agus menunggak
+        else: bayar = jt.isoformat()
+        db.execute(&quot;INSERT INTO angsuran VALUES (?,?,?,?)&quot;, (pid, k, jt.isoformat(), bayar))
+
+print(&quot;LAPORAN SIMPANAN PER ANGGOTA&quot;)
+for r in db.execute(&quot;&quot;&quot;SELECT a.nama, SUM(CASE WHEN jenis=&#x27;pokok&#x27; THEN jumlah END), SUM(CASE WHEN jenis=&#x27;wajib&#x27; THEN jumlah END),
+                              COALESCE(SUM(CASE WHEN jenis=&#x27;sukarela&#x27; THEN jumlah END),0), SUM(jumlah)
+                       FROM simpanan s JOIN anggota a ON a.id = s.anggota_id GROUP BY a.nama ORDER BY 5 DESC&quot;&quot;&quot;):
+    nama, *angka = r
+    rp = [f&quot;{x or 0:,}&quot;.replace(&quot;,&quot;, &quot;.&quot;) for x in angka]
+    print(f&quot;  {nama:&lt;5} pokok {rp[0]:&gt;7}  wajib {rp[1]:&gt;6}  sukarela {rp[2]:&gt;9}  total {rp[3]:&gt;9}&quot;)
+
+print(&quot;EXCEPTION REPORT: angsuran tertunggak per 19 Nov 2026&quot;)
+for r in db.execute(&quot;&quot;&quot;SELECT a.nama, p.id, COUNT(*), MIN(g.jatuh_tempo), p.pokok / p.tenor * COUNT(*)
+                       FROM angsuran g JOIN pinjaman p ON p.id = g.pinjaman_id JOIN anggota a ON a.id = p.anggota_id
+                       WHERE g.dibayar IS NULL AND g.jatuh_tempo &lt;= &#x27;2026-11-19&#x27; GROUP BY a.nama, p.id&quot;&quot;&quot;):
+    pokok = f&quot;{r[4]:,}&quot;.replace(&quot;,&quot;, &quot;.&quot;)
+    print(f&quot;  {r[0]} pinjaman #{r[1]}: {r[2]} angsuran sejak {r[3]}, pokok tertunggak Rp{pokok}&quot;)
+
+total_pinj = db.execute(&quot;SELECT SUM(pokok) FROM pinjaman&quot;).fetchone()[0]
+macet = db.execute(&quot;SELECT SUM(pokok) FROM pinjaman WHERE id IN (SELECT pinjaman_id FROM angsuran WHERE dibayar IS NULL AND jatuh_tempo &lt;= &#x27;2026-10-19&#x27;)&quot;).fetchone()[0] or 0
+print(f&quot;NPL (tunggakan &gt; 30 hari): {macet / total_pinj:.1%} dari portofolio pinjaman&quot;)
+</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>LAPORAN SIMPANAN PER ANGGOTA
+  Sri   pokok 100.000  wajib 50.000  sukarela 2.000.000  total 2.150.000
+  Nur   pokok 100.000  wajib 50.000  sukarela   750.000  total   900.000
+  Budi  pokok 100.000  wajib 50.000  sukarela         0  total   150.000
+  Agus  pokok 100.000  wajib      0  sukarela         0  total   100.000
+EXCEPTION REPORT: angsuran tertunggak per 19 Nov 2026
+  Agus pinjaman #2: 2 angsuran sejak 2026-10-10, pokok tertunggak Rp1.000.000
+NPL (tunggakan &gt; 30 hari): 15.8% dari portofolio pinjaman</code></pre>
+<h2>Poin penting</h2><ul><li>Proyek mini: Sistem informasi koperasi: dari ERD ke laporan manajemen.</li><li>ERD: anggota, simpanan (pokok/wajib/sukarela), pinjaman, angsuran</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa exception report lebih berguna bagi pengurus daripada daftar semua angsuran?</summary><p class="ok">Jawaban: Pengurus langsung melihat hal yang memerlukan tindakan (tunggakan) tanpa membaca ratusan baris normal</p><p>Manajemen berdasarkan pengecualian.</p></details>
+<a class="cta" href="/#proj-13-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-2-studi-kelayakan-investasi-dengan-analisis-sensitivitas">Mini 2: Studi kelayakan investasi dengan analisis sensitivitas</a></p><p>Berikutnya: <a href="/belajar/proj/mini-4-segmentasi-pelanggan-rfm-untuk-kampanye-pemasaran">Mini 4: Segmentasi pelanggan RFM untuk kampanye pemasaran</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

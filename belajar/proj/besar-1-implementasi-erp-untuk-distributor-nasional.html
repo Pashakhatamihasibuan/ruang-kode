@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Besar 1: Implementasi ERP untuk distributor nasional · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Masalah. Distributor barang konsumsi dengan 6 gudang dan 900 pelanggan toko memakai sistem akuntansi lama, Excel untuk stok, dan WhatsApp untuk order…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/besar-1-implementasi-erp-untuk-distributor-nasional">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Besar 1: Implementasi ERP untuk distributor nasional · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Masalah. Distributor barang konsumsi dengan 6 gudang dan 900 pelanggan toko memakai sistem akuntansi lama, Excel untuk stok, dan WhatsApp untuk order…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/besar-1-implementasi-erp-untuk-distributor-nasional"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Besar 1: Implementasi ERP untuk distributor nasional", "description": "Masalah. Distributor barang konsumsi dengan 6 gudang dan 900 pelanggan toko memakai sistem akuntansi lama, Excel untuk stok, dan WhatsApp untuk order…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/besar-1-implementasi-erp-untuk-distributor-nasional", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Besar 1: Implementasi ERP untuk distributor nasional", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/besar-1-implementasi-erp-untuk-distributor-nasional"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 13</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 13 · Konsep &amp; kode</div><h1>Besar 1: Implementasi ERP untuk distributor nasional</h1><a class="cta" href="/#proj-13-7">Buka versi interaktif</a>
+<p><b>Masalah.</b> Distributor barang konsumsi dengan 6 gudang dan 900 pelanggan toko memakai sistem akuntansi lama, Excel untuk stok, dan WhatsApp untuk order sales. Tutup buku butuh 18 hari, stok selisih 6%, dan piutang macet tidak terpantau. Direksi memutuskan mengimplementasikan ERP.</p>
+<p><b>Fitur wajib:</b><br>1. Fit-gap analysis proses O2C, P2P, persediaan multi-gudang, dan akuntansi (termasuk e-Faktur)<br>2. Desain proses to-be dengan prinsip adopsi standar dan kustomisasi minimal<br>3. Migrasi data bertahap: master (golden record), saldo awal, rekonsiliasi<br>4. UAT berbasis skenario bisnis dan pelatihan key user<br>5. Cut-over, hypercare 30 hari, dan pengukuran manfaat (tutup buku, selisih stok, DSO)</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. Petakan proses as-is dan lakukan fit-gap bersama key user.<br>2. Rancang to-be, putuskan setiap gap: ubah proses, konfigurasi, atau kustomisasi berbiaya jelas.<br>3. Bersihkan dan migrasikan data dalam beberapa putaran percobaan dengan rekonsiliasi.<br>4. Jalankan UAT, latih pengguna, siapkan runbook cut-over.<br>5. Go-live, hypercare, lalu ukur manfaat terhadap business case.</p>
+<p><b>Standar industri yang dinilai:</b> proses standar diadopsi sebanyak mungkin, data migrasi terekonsiliasi dan disetujui pemilik, UAT berbasis skenario nyata, manfaat diukur setelah go-live</p>
+<div class="tw"><table><caption>Arsitektur dan stack (Odoo 18 / SAP Business One / Microsoft Dynamics 365 BC, Python untuk migrasi data, BPMN (Camunda Modeler/Bizagi), Jira untuk tiket UAT, Power BI untuk laporan manajemen)</caption><thead><tr><th>Bagian</th><th>Isi</th></tr></thead><tbody><tr><td>Lingkup</td><td>Penjualan, pembelian, persediaan (lot &amp; kedaluwarsa), akuntansi, aplikasi sales mobile</td></tr><tr><td>Tim</td><td>sponsor CFO, PM, 2 BA, konsultan vendor, key user per departemen</td></tr><tr><td>Data</td><td>pembersihan &amp; dedup master, 3 kali migrasi percobaan, rekonsiliasi ditandatangani</td></tr><tr><td>Pengujian</td><td>120 skenario UAT end-to-end, 0 isu kritis sebagai syarat go-live</td></tr><tr><td>Perubahan</td><td>rencana komunikasi, pelatihan per peran, champion di tiap gudang</td></tr><tr><td>Ukuran sukses</td><td>tutup buku ≤ 5 hari, selisih stok &lt; 1%, DSO turun 10 hari dalam 6 bulan</td></tr></tbody></table></div>
+<div class="lbl">PYTHON</div><pre><code># migrasi/impor_master.py — migrasi data distributor ke Odoo 18 lewat XML-RPC (dijalankan setelah UAT data)
+import csv, xmlrpc.client
+URL, DB = &quot;https://erp.distributor-contoh.id&quot;, &quot;prod&quot;
+uid = xmlrpc.client.ServerProxy(f&quot;{URL}/xmlrpc/2/common&quot;).authenticate(DB, &quot;migrasi@contoh.id&quot;, API_KEY, {})
+odoo = xmlrpc.client.ServerProxy(f&quot;{URL}/xmlrpc/2/object&quot;)
+def panggil(model, metode, *args, **kw): return odoo.execute_kw(DB, uid, API_KEY, model, metode, list(args), kw)
+
+laporan = {&quot;dibuat&quot;: 0, &quot;diperbarui&quot;: 0, &quot;ditolak&quot;: []}
+for r in csv.DictReader(open(&quot;bersih/pelanggan_golden.csv&quot;)):          # hasil MDM: sudah dedup &amp; divalidasi
+    if not r[&quot;npwp&quot;] and r[&quot;tipe&quot;] == &quot;perusahaan&quot;:
+        laporan[&quot;ditolak&quot;].append((r[&quot;kode&quot;], &quot;NPWP wajib untuk faktur pajak&quot;)); continue
+    nilai = {&quot;name&quot;: r[&quot;nama&quot;], &quot;ref&quot;: r[&quot;kode&quot;], &quot;vat&quot;: r[&quot;npwp&quot;], &quot;phone&quot;: r[&quot;telepon&quot;], &quot;street&quot;: r[&quot;alamat&quot;],
+             &quot;property_payment_term_id&quot;: TERMIN[r[&quot;termin&quot;]], &quot;credit_limit&quot;: float(r[&quot;limit_kredit&quot;])}
+    ada = panggil(&quot;res.partner&quot;, &quot;search&quot;, [[&quot;ref&quot;, &quot;=&quot;, r[&quot;kode&quot;]]])
+    if ada: panggil(&quot;res.partner&quot;, &quot;write&quot;, ada, nilai); laporan[&quot;diperbarui&quot;] += 1
+    else:   panggil(&quot;res.partner&quot;, &quot;create&quot;, nilai);   laporan[&quot;dibuat&quot;] += 1
+print(laporan)
+
+# Rekonsiliasi wajib sebelum cut-over: saldo piutang per pelanggan di sistem lama == saldo awal di Odoo
+#   SELECT kode, SUM(sisa) FROM piutang_lama GROUP BY kode   vs   account.move.line (akun piutang, saldo awal)
+
+# Rencana cut-over (go-live 1 Jan, tutup buku 31 Des):
+#   H-14  freeze master data, migrasi percobaan ke-3, UAT ulang skenario O2C &amp; P2P
+#   H-2   stok opname semua gudang -&gt; saldo awal persediaan per lot
+#   H-0   impor saldo awal (persediaan, piutang, hutang, GL), rekonsiliasi, tanda tangan CFO
+#   H+1..H+30 hypercare: war room, tiket per modul, laporan harian ke steering committee</code></pre>
+<h2>Poin penting</h2><ul><li>Proyek besar: Implementasi ERP untuk distributor nasional.</li><li>Stack: Odoo 18 / SAP Business One / Microsoft Dynamics 365 BC, Python untuk migrasi data, BPMN (Camunda Modeler/Bizagi), Jira untuk tiket UAT, Power BI untuk laporan manajemen.</li><li>Berkas inti penyelesaian ada di bawah; sisanya mengikuti pola yang sama.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa prinsip &quot;adopsi proses standar, kustomisasi minimal&quot; penting dalam implementasi ERP?</summary><p class="ok">Jawaban: Kustomisasi menambah biaya, risiko, dan menyulitkan upgrade; proses standar ERP umumnya sudah mewakili praktik terbaik</p><p>Biaya jangka panjang kustomisasi.</p></details>
+<a class="cta" href="/#proj-13-7">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-6-gap-assessment-keamanan-informasi-dan-register-risiko">Mini 6: Gap assessment keamanan informasi dan register risiko</a></p><p>Berikutnya: <a href="/belajar/proj/besar-2-sistem-informasi-akademik-terpadu-universitas">Besar 2: Sistem informasi akademik terpadu universitas</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>
