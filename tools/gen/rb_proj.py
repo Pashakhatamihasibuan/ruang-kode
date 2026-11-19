@@ -11,6 +11,7 @@ from rb_pj_mobile import PJ_MOBILE
 from rb_pj_de import PJ_DE
 from rb_pj_uiux import PJ_UIUX
 from rb_pj_qa import PJ_QA
+from rb_pj_dba import PJ_DBA
 
-PROJ = [STANDAR, FULLSTACK, PJ_FE, PJ_PY, PJ_DA, PJ_DS, PJ_JAVA, PJ_MOBILE, PJ_DE, PJ_UIUX, PJ_QA, MINI, BESAR, LAMAR]
+PROJ = [STANDAR, FULLSTACK, PJ_FE, PJ_PY, PJ_DA, PJ_DS, PJ_JAVA, PJ_MOBILE, PJ_DE, PJ_UIUX, PJ_QA, PJ_DBA, MINI, BESAR, LAMAR]
 PROJ_SO = {}

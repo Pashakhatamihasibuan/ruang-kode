@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Besar 1: PostgreSQL high availability di Kubernetes dengan backup dan PITR · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Masalah. Marketplace menjalankan PostgreSQL di satu VM tanpa replika. Saat disk rusak, toko mati 6 jam dan data 4 jam terakhir hilang. Targetnya RPO 0…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/besar-1-postgresql-high-availability-di-kubernetes-dengan-backup-dan-p">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Besar 1: PostgreSQL high availability di Kubernetes dengan backup dan PITR · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Masalah. Marketplace menjalankan PostgreSQL di satu VM tanpa replika. Saat disk rusak, toko mati 6 jam dan data 4 jam terakhir hilang. Targetnya RPO 0…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/besar-1-postgresql-high-availability-di-kubernetes-dengan-backup-dan-p"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Besar 1: PostgreSQL high availability di Kubernetes dengan backup dan PITR", "description": "Masalah. Marketplace menjalankan PostgreSQL di satu VM tanpa replika. Saat disk rusak, toko mati 6 jam dan data 4 jam terakhir hilang. Targetnya RPO 0…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/besar-1-postgresql-high-availability-di-kubernetes-dengan-backup-dan-p", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Besar 1: PostgreSQL high availability di Kubernetes dengan backup dan PITR", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/besar-1-postgresql-high-availability-di-kubernetes-dengan-backup-dan-p"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 12</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 12 · Konsep &amp; kode</div><h1>Besar 1: PostgreSQL high availability di Kubernetes dengan backup dan PITR</h1><a class="cta" href="/#proj-12-7">Buka versi interaktif</a>
+<p><b>Masalah.</b> Marketplace menjalankan PostgreSQL di satu VM tanpa replika. Saat disk rusak, toko mati 6 jam dan data 4 jam terakhir hilang. Targetnya RPO 0 untuk transaksi, RTO &lt; 1 menit, dan restore yang teruji setiap bulan.</p>
+<p><b>Fitur wajib:</b><br>1. Cluster 3 instance di zona berbeda dengan failover otomatis<br>2. Replikasi sinkron minimal 1 standby (RPO 0)<br>3. Backup harian + arsip WAL terus-menerus ke object storage, retensi 30 hari<br>4. Connection pooler (PgBouncer) dan pemisahan endpoint baca/tulis<br>5. Restore drill bulanan dan uji failover kuartalan dengan hasil terukur</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. Ukur kebutuhan: ukuran data, laju WAL per jam, RPO/RTO yang disepakati bisnis.<br>2. Pasang operator dan cluster di staging; uji failover dengan mematikan pod primary.<br>3. Konfigurasikan backup + arsip WAL, lakukan PITR percobaan ke cluster baru.<br>4. Migrasikan data produksi (logical replication) dan pindahkan aplikasi lewat Pooler.<br>5. Jadwalkan drill, dokumentasikan runbook, dan pantau SLO.</p>
+<p><b>Standar industri yang dinilai:</b> RPO dan RTO tertulis dan terbukti lewat drill, backup diuji secara berkala, failover otomatis teruji, akses lewat pooler, pemantauan dan runbook tersedia</p>
+<div class="tw"><table><caption>Arsitektur dan stack (Kubernetes, CloudNativePG (atau Patroni di VM), PgBouncer, S3/GCS dengan IAM, Prometheus + Grafana, pgaudit)</caption><thead><tr><th>Bagian</th><th>Isi</th></tr></thead><tbody><tr><td>Topologi</td><td>1 primary + 2 standby anti-affinity per zona; WAL di volume terpisah</td></tr><tr><td>Durabilitas</td><td>synchronous standby 1, wal_compression zstd, arsip WAL ke object storage</td></tr><tr><td>Akses</td><td>Pooler rw (transaction mode) dan ro untuk laporan; aplikasi tidak tahu primary mana</td></tr><tr><td>Backup</td><td>base backup harian 01.00 WIB + WAL kontinu; PITR ke detik mana pun dalam 30 hari</td></tr><tr><td>Pemantauan</td><td>lag replikasi, umur backup terakhir, ruang disk, koneksi, query lambat; alert ke on-call</td></tr><tr><td>Uji</td><td>restore drill bulanan (catat durasi &amp; validasi data), failover kuartalan (target &lt; 30 s)</td></tr></tbody></table></div>
+<div class="lbl">YAML</div><pre><code># cluster.yaml — CloudNativePG: PostgreSQL 16 HA 3 instance di Kubernetes, backup ke object storage, PITR
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata: { name: toko-db, namespace: data }
+spec:
+  instances: 3                                   # 1 primary + 2 standby di zona berbeda
+  imageName: ghcr.io/cloudnative-pg/postgresql:16.6
+  minSyncReplicas: 1
+  maxSyncReplicas: 1                             # RPO 0 untuk transaksi
+  postgresql:
+    parameters:
+      shared_buffers: 4GB
+      effective_cache_size: 12GB
+      work_mem: 32MB
+      max_connections: &quot;300&quot;
+      wal_compression: zstd
+      idle_in_transaction_session_timeout: 5min
+      shared_preload_libraries: pg_stat_statements,pgaudit
+  affinity: { topologyKey: topology.kubernetes.io/zone, enablePodAntiAffinity: true }
+  storage: { size: 500Gi, storageClass: premium-rwo }
+  walStorage: { size: 100Gi, storageClass: premium-rwo }   # WAL di disk terpisah
+  backup:
+    retentionPolicy: &quot;30d&quot;
+    barmanObjectStore:
+      destinationPath: s3://backup-db-prod/toko
+      s3Credentials: { inheritFromIAMRole: true }
+      wal: { compression: zstd, maxParallel: 4 }
+  monitoring: { enablePodMonitor: true }         # metrik ke Prometheus
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata: { name: toko-db-harian, namespace: data }
+spec: { schedule: &quot;0 0 18 * * *&quot;, cluster: { name: toko-db }, backupOwnerReference: self }   # 01.00 WIB
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Pooler
+metadata: { name: toko-db-rw, namespace: data }
+spec: { cluster: { name: toko-db }, instances: 2, type: rw, pgbouncer: { poolMode: transaction, parameters: { max_client_conn: &quot;5000&quot;, default_pool_size: &quot;40&quot; } } }
+
+# Restore drill bulanan: buat cluster baru dari backup ke titik waktu tertentu, jalankan cek checksum &amp; jumlah baris
+#   bootstrap: { recovery: { source: toko-db, recoveryTarget: { targetTime: &quot;2026-11-19 14:32:00+07&quot; } } }
+# Uji failover kuartalan: kubectl cnpg promote toko-db toko-db-2   -&gt; ukur waktu sampai aplikasi pulih (target &lt; 30 s)</code></pre>
+<h2>Poin penting</h2><ul><li>Proyek besar: PostgreSQL high availability di Kubernetes dengan backup dan PITR.</li><li>Stack: Kubernetes, CloudNativePG (atau Patroni di VM), PgBouncer, S3/GCS dengan IAM, Prometheus + Grafana, pgaudit.</li><li>Berkas inti penyelesaian ada di bawah; sisanya mengikuti pola yang sama.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Apa yang membuat RPO menjadi 0 pada arsitektur ini?</summary><p class="ok">Jawaban: Replikasi sinkron: commit baru dianggap berhasil setelah minimal satu standby menerima WAL-nya</p><p>Synchronous replication.</p></details>
+<a class="cta" href="/#proj-12-7">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-6-migrasi-skema-tanpa-downtime">Mini 6: Migrasi skema tanpa downtime</a></p><p>Berikutnya: <a href="/belajar/proj/besar-2-upgrade-versi-besar-postgresql-dengan-downtime-minimal">Besar 2: Upgrade versi besar PostgreSQL dengan downtime minimal</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

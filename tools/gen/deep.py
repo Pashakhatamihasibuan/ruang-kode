@@ -4,13 +4,15 @@ Beberapa berkas boleh memakai K yang sama; isinya digabung.
   ist: [(istilah, arti), ...]
   cx : [dict(t=judul, b=penjelasan, code=..., lang='python'|'java'|'sql'|..., run=True|False, out=None, setup=None)]
 Contoh dengan run=True dijalankan agar keluarannya pasti cocok:
-  python -> exec; java -> `java Main.java` (JDK 21); sql -> SQLite di memori (setup dijalankan dulu, tidak ditampilkan).
+  python -> exec; java -> `java Main.java` (JDK 21); sql -> SQLite di memori (setup dijalankan dulu, tidak ditampilkan);
+  pg=True -> PostgreSQL 16 sungguhan lewat psql (hasil disimpan di pg.cache.json yang ikut di-commit).
 Keluaran disimpan di cache (tools/deep/.cache.json) berdasarkan hash kode. Hasil: src/js/deep.json."""
 import hashlib, importlib.util, json, pathlib, sqlite3, subprocess, sys, tempfile
 from concurrent.futures import ThreadPoolExecutor
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'tools/gen'))
 from rb_lib import jalan
+from pg_lib import pg
 
 CACHE_F = ROOT / 'tools/deep/.cache.json'
 CACHE = json.loads(CACHE_F.read_text()) if CACHE_F.exists() else {}
@@ -59,6 +61,8 @@ def jalan_sql(code, setup=''):
 
 
 def jalankan(c):
+    if c.get('pg'):
+        return pg(c['code'], c.get('setup', ''))
     lang = c.get('lang', 'python')
     key = hashlib.sha1((lang + '\0' + c.get('setup', '') + '\0' + c['code']).encode()).hexdigest()
     if key not in CACHE:
@@ -84,6 +88,8 @@ for f in sorted((ROOT / 'tools/deep').glob('*.py')):
             c = dict(c); lang = c.setdefault('lang', 'python')
             if c.pop('run', lang in ('python', 'java', 'sql')) and lang in ('python', 'java', 'sql'):
                 kerja.append(c)
+            elif c.get('pg'):
+                kerja.append(c)
             cx.append(c)
         if cx:
             e['cx'] = cx
@@ -102,7 +108,7 @@ with ThreadPoolExecutor(6) as ex:
 CACHE_F.write_text(json.dumps(CACHE, ensure_ascii=False))
 for jal in out.values():
     for e in jal.values():
-        e['cx'] = [{k: v for k, v in c.items() if v is not None and v != ''} for c in e.get('cx', [])] or None
+        e['cx'] = [{k: v for k, v in c.items() if v is not None and v != '' and k != 'pg'} for c in e.get('cx', [])] or None
         if e['cx'] is None:
             del e['cx']
 (ROOT / 'src/js/deep.json').write_text(json.dumps(out, ensure_ascii=False, separators=(',', ':')))
