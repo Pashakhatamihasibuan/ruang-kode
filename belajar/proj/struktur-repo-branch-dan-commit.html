@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Struktur repo, branch, dan commit · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Pisahkan kode berdasarkan tanggung jawab. Untuk proyek full-stack, pola monorepo sederhana sudah cukup: folder backend/, frontend/, dan berkas bersama di…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/struktur-repo-branch-dan-commit">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Struktur repo, branch, dan commit · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Pisahkan kode berdasarkan tanggung jawab. Untuk proyek full-stack, pola monorepo sederhana sudah cukup: folder backend/, frontend/, dan berkas bersama di…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/struktur-repo-branch-dan-commit"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Struktur repo, branch, dan commit", "description": "Pisahkan kode berdasarkan tanggung jawab. Untuk proyek full-stack, pola monorepo sederhana sudah cukup: folder backend/, frontend/, dan berkas bersama di…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/struktur-repo-branch-dan-commit", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Struktur repo, branch, dan commit", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/struktur-repo-branch-dan-commit"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 1</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 1 · Konsep &amp; kode</div><h1>Struktur repo, branch, dan commit</h1><a class="cta" href="/#proj-1-2">Buka versi interaktif</a>
+<p>Pisahkan kode berdasarkan tanggung jawab. Untuk proyek full-stack, pola <b>monorepo</b> sederhana sudah cukup: folder <code>backend/</code>, <code>frontend/</code>, dan berkas bersama di akar (README, docker-compose, workflow CI).</p>
+<p>Kerjakan setiap fitur di <b>branch</b> sendiri lalu gabungkan lewat <b>pull request</b>, walaupun kamu bekerja sendiri. Riwayat PR menunjukkan cara kamu memecah pekerjaan. Tulis pesan commit dengan format <b>Conventional Commits</b>: <code>feat:</code>, <code>fix:</code>, <code>docs:</code>, <code>test:</code>, <code>refactor:</code>, <code>chore:</code>.</p>
+<p>Simpan konfigurasi rahasia di <code>.env</code> yang masuk <code>.gitignore</code>, lalu sediakan <code>.env.example</code> berisi nama variabel tanpa nilai rahasia.</p>
+<div class="lbl">CONTOH</div><pre><code>kasirku/
+├── backend/               # Django + Django REST Framework
+│   ├── config/            # settings, urls
+│   ├── toko/              # app: models, serializers, views, tests
+│   ├── requirements.txt
+│   └── Dockerfile
+├── frontend/              # React + TypeScript (Vite)
+│   ├── src/
+│   │   ├── api/           # klien HTTP
+│   │   ├── components/
+│   │   ├── pages/
+│   │   └── main.tsx
+│   ├── package.json
+│   └── Dockerfile
+├── docs/                  # ERD, kontrak API, screenshot
+├── .github/workflows/ci.yml
+├── docker-compose.yml
+├── .env.example
+└── README.md
+
+# contoh riwayat commit yang baik
+feat(api): endpoint daftar produk dengan pagination
+feat(web): halaman produk dengan status loading dan error
+test(api): uji stok tidak boleh negatif
+fix(api): pesanan gagal jika stok kurang
+docs: tambah ERD dan cara menjalankan</code></pre>
+<h2>Poin penting</h2><ul><li>Monorepo: backend/, frontend/, docs/, CI di akar.</li><li>Satu fitur = satu branch = satu PR.</li><li>Conventional Commits; rahasia di .env, contoh di .env.example.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Berkas yang boleh masuk repo?</summary><p class="ok">Jawaban: .env.example berisi nama variabel</p><p>.env asli dan node_modules masuk .gitignore.</p></details>
+<a class="cta" href="/#proj-1-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/apa-yang-dinilai-dari-proyek-portofolio">Apa yang dinilai dari proyek portofolio</a></p><p>Berikutnya: <a href="/belajar/proj/readme-yang-menjual-proyekmu">README yang menjual proyekmu</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

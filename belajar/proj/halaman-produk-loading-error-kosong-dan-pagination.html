@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Halaman produk: loading, error, kosong, dan pagination · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Tampilan yang siap produksi menangani semua keadaan, bukan hanya saat data berhasil: memuat (skeleton), gagal (pesan dan tombol coba lagi), kosong…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/halaman-produk-loading-error-kosong-dan-pagination">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Halaman produk: loading, error, kosong, dan pagination · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Tampilan yang siap produksi menangani semua keadaan, bukan hanya saat data berhasil: memuat (skeleton), gagal (pesan dan tombol coba lagi), kosong…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/halaman-produk-loading-error-kosong-dan-pagination"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Halaman produk: loading, error, kosong, dan pagination", "description": "Tampilan yang siap produksi menangani semua keadaan, bukan hanya saat data berhasil: memuat (skeleton), gagal (pesan dan tombol coba lagi), kosong…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/halaman-produk-loading-error-kosong-dan-pagination", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Halaman produk: loading, error, kosong, dan pagination", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/halaman-produk-loading-error-kosong-dan-pagination"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 2</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 2 · Konsep &amp; kode</div><h1>Halaman produk: loading, error, kosong, dan pagination</h1><a class="cta" href="/#proj-2-11">Buka versi interaktif</a>
+<p>Tampilan yang siap produksi menangani <b>semua keadaan</b>, bukan hanya saat data berhasil: memuat (skeleton), gagal (pesan dan tombol coba lagi), kosong (ajakan bertindak), dan berhasil.</p>
+<p><code>useQuery</code> mengembalikan <code>isPending</code>, <code>isError</code>, dan <code>data</code>. Kunci query <code>['produk', cari, page]</code> membuat setiap kombinasi pencarian dan halaman disimpan di cache sendiri. Tunda pencarian beberapa ratus milidetik (<b>debounce</b>) agar tidak mengirim request di setiap ketikan.</p>
+<p>Pagination memakai <code>next</code> dan <code>previous</code> dari API. <code>placeholderData: keepPreviousData</code> mempertahankan daftar lama saat halaman berikutnya dimuat sehingga layar tidak berkedip.</p>
+<div class="lbl">KODE</div><pre><code>// src/pages/DaftarProduk.tsx
+import { useEffect, useState } from &#x27;react&#x27;;
+import { useQuery, keepPreviousData } from &#x27;@tanstack/react-query&#x27;;
+import { ambilProduk } from &#x27;../api/client&#x27;;
+
+const rupiah = (v: string) =&gt; Number(v).toLocaleString(&#x27;id-ID&#x27;, { style: &#x27;currency&#x27;, currency: &#x27;IDR&#x27;, maximumFractionDigits: 0 });
+
+export default function DaftarProduk() {
+  const [ketik, setKetik] = useState(&#x27;&#x27;);
+  const [cari, setCari] = useState(&#x27;&#x27;);
+  const [page, setPage] = useState(1);
+  useEffect(() =&gt; { const t = setTimeout(() =&gt; { setCari(ketik); setPage(1); }, 300); return () =&gt; clearTimeout(t); }, [ketik]);
+
+  const q = useQuery({ queryKey: [&#x27;produk&#x27;, cari, page], queryFn: () =&gt; ambilProduk(cari, page), placeholderData: keepPreviousData });
+
+  return (
+    &lt;main&gt;
+      &lt;label htmlFor=&quot;cari&quot;&gt;Cari produk&lt;/label&gt;
+      &lt;input id=&quot;cari&quot; value={ketik} onChange={(e) =&gt; setKetik(e.target.value)} /&gt;
+
+      {q.isPending &amp;&amp; &lt;p aria-busy=&quot;true&quot;&gt;Memuat produk...&lt;/p&gt;}
+      {q.isError &amp;&amp; (
+        &lt;div role=&quot;alert&quot;&gt;
+          Gagal memuat produk: {q.error.message}
+          &lt;button onClick={() =&gt; q.refetch()}&gt;Coba lagi&lt;/button&gt;
+        &lt;/div&gt;
+      )}
+      {q.data &amp;&amp; q.data.results.length === 0 &amp;&amp; &lt;p&gt;Tidak ada produk untuk &quot;{cari}&quot;.&lt;/p&gt;}
+      {q.data &amp;&amp; q.data.results.length &gt; 0 &amp;&amp; (
+        &lt;table&gt;
+          &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Produk&lt;/th&gt;&lt;th&gt;Kategori&lt;/th&gt;&lt;th&gt;Harga&lt;/th&gt;&lt;th&gt;Stok&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+          &lt;tbody&gt;
+            {q.data.results.map((p) =&gt; (
+              &lt;tr key={p.id}&gt;&lt;td&gt;{p.nama}&lt;/td&gt;&lt;td&gt;{p.kategori_nama}&lt;/td&gt;&lt;td&gt;{rupiah(p.harga)}&lt;/td&gt;
+                &lt;td className={p.stok &lt; 5 ? &#x27;stok-tipis&#x27; : &#x27;&#x27;}&gt;{p.stok}&lt;/td&gt;&lt;/tr&gt;
+            ))}
+          &lt;/tbody&gt;
+        &lt;/table&gt;
+      )}
+      &lt;nav aria-label=&quot;Halaman&quot;&gt;
+        &lt;button disabled={!q.data?.previous} onClick={() =&gt; setPage(page - 1)}&gt;Sebelumnya&lt;/button&gt;
+        &lt;span&gt;Halaman {page}&lt;/span&gt;
+        &lt;button disabled={!q.data?.next} onClick={() =&gt; setPage(page + 1)}&gt;Berikutnya&lt;/button&gt;
+      &lt;/nav&gt;
+    &lt;/main&gt;
+  );
+}</code></pre>
+<h2>Poin penting</h2><ul><li>Tangani loading, error, kosong, dan berhasil.</li><li>Query key memuat parameter; debounce pencarian.</li><li>Pagination dari next/previous API.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa pencarian di-debounce?</summary><p class="ok">Jawaban: Agar tidak mengirim request di setiap ketikan</p><p>Hemat request dan beban server.</p></details>
+<a class="cta" href="/#proj-2-11">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/frontend-proyek-react-dan-klien-api">Frontend: proyek React dan klien API</a></p><p>Berikutnya: <a href="/belajar/proj/form-dan-mutasi-menampilkan-error-dari-api">Form dan mutasi: menampilkan error dari API</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

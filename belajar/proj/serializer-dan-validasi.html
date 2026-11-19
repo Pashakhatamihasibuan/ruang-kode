@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Serializer dan validasi · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Serializer mengubah objek model menjadi JSON (untuk response) dan memvalidasi JSON masuk (untuk request). Satu serializer bisa menampilkan field tambahan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/serializer-dan-validasi">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Serializer dan validasi · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Serializer mengubah objek model menjadi JSON (untuk response) dan memvalidasi JSON masuk (untuk request). Satu serializer bisa menampilkan field tambahan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/serializer-dan-validasi"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Serializer dan validasi", "description": "Serializer mengubah objek model menjadi JSON (untuk response) dan memvalidasi JSON masuk (untuk request). Satu serializer bisa menampilkan field tambahan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/serializer-dan-validasi", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Serializer dan validasi", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/serializer-dan-validasi"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 2</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 2 · Konsep &amp; kode</div><h1>Serializer dan validasi</h1><a class="cta" href="/#proj-2-6">Buka versi interaktif</a>
+<p><b>Serializer</b> mengubah objek model menjadi JSON (untuk response) dan memvalidasi JSON masuk (untuk request). Satu serializer bisa menampilkan field tambahan yang hanya dibaca, misalnya nama kategori.</p>
+<p>Validasi bertingkat: tipe dan panjang otomatis dari model, <code>validate_&lt;field&gt;</code> untuk satu field, dan <code>validate()</code> untuk aturan antar field. Error dikembalikan sebagai <b>400</b> dengan pesan per field, yang nanti ditampilkan frontend di bawah input yang salah.</p>
+<p>Untuk pesanan, frontend hanya mengirim id produk dan jumlah. <b>Harga dan total dihitung server</b>; jangan pernah percaya harga dari browser.</p>
+<div class="lbl">PYTHON</div><pre><code># toko/serializers.py
+from rest_framework import serializers
+from .models import Produk, Pesanan, ItemPesanan
+
+class ProdukSerializer(serializers.ModelSerializer):
+    kategori_nama = serializers.CharField(source=&#x27;kategori.nama&#x27;, read_only=True)
+
+    class Meta:
+        model = Produk
+        fields = [&#x27;id&#x27;, &#x27;nama&#x27;, &#x27;harga&#x27;, &#x27;stok&#x27;, &#x27;aktif&#x27;, &#x27;kategori&#x27;, &#x27;kategori_nama&#x27;]
+
+    def validate_nama(self, v):
+        if len(v.strip()) &lt; 3:
+            raise serializers.ValidationError(&#x27;Nama minimal 3 huruf.&#x27;)
+        return v.strip()
+
+class ItemMasukSerializer(serializers.Serializer):
+    produk = serializers.PrimaryKeyRelatedField(queryset=Produk.objects.filter(aktif=True))
+    jumlah = serializers.IntegerField(min_value=1, max_value=99)
+
+class PesananSerializer(serializers.ModelSerializer):
+    item = ItemMasukSerializer(many=True, write_only=True)
+
+    class Meta:
+        model = Pesanan
+        fields = [&#x27;id&#x27;, &#x27;item&#x27;, &#x27;total&#x27;, &#x27;dibuat&#x27;]
+        read_only_fields = [&#x27;total&#x27;, &#x27;dibuat&#x27;]
+
+    def validate_item(self, item):
+        if not item:
+            raise serializers.ValidationError(&#x27;Pesanan minimal berisi 1 produk.&#x27;)
+        return item
+
+    def create(self, validated_data):
+        validated_data.pop(&#x27;item&#x27;)          # item disimpan di view, setelah stok dicek
+        return Pesanan.objects.create(**validated_data)</code></pre>
+<div class="lbl">KELUARAN</div><pre><code># contoh response 400 jika nama terlalu pendek
+HTTP 400 Bad Request
+{
+  &quot;nama&quot;: [&quot;Nama minimal 3 huruf.&quot;],
+  &quot;harga&quot;: [&quot;Pastikan nilai ini lebih besar dari 0.&quot;]
+}</code></pre>
+<h2>Poin penting</h2><ul><li>Serializer: objek ↔ JSON + validasi.</li><li>Error 400 per field untuk ditampilkan di form.</li><li>Harga dan total selalu dihitung server.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa total pesanan tidak diterima dari frontend?</summary><p class="ok">Jawaban: Pengguna bisa mengubah request dan membayar lebih murah</p><p>Data dari browser tidak bisa dipercaya.</p></details>
+<a class="cta" href="/#proj-2-6">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/model-migrasi-dan-admin">Model, migrasi, dan admin</a></p><p>Berikutnya: <a href="/belajar/proj/viewset-router-pencarian-dan-pagination">ViewSet, router, pencarian, dan pagination</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

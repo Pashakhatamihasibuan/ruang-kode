@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Form dan mutasi: menampilkan error dari API · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Untuk mengubah data, pakai useMutation. Setelah berhasil, panggil invalidateQueries([&#x27;produk&#x27;]) agar daftar produk otomatis dimuat ulang dengan data…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/form-dan-mutasi-menampilkan-error-dari-api">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Form dan mutasi: menampilkan error dari API · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Untuk mengubah data, pakai useMutation. Setelah berhasil, panggil invalidateQueries([&#x27;produk&#x27;]) agar daftar produk otomatis dimuat ulang dengan data…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/form-dan-mutasi-menampilkan-error-dari-api"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Form dan mutasi: menampilkan error dari API", "description": "Untuk mengubah data, pakai useMutation. Setelah berhasil, panggil invalidateQueries(['produk']) agar daftar produk otomatis dimuat ulang dengan data…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/form-dan-mutasi-menampilkan-error-dari-api", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Form dan mutasi: menampilkan error dari API", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/form-dan-mutasi-menampilkan-error-dari-api"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 2</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 2 · Konsep &amp; kode</div><h1>Form dan mutasi: menampilkan error dari API</h1><a class="cta" href="/#proj-2-12">Buka versi interaktif</a>
+<p>Untuk mengubah data, pakai <code>useMutation</code>. Setelah berhasil, panggil <code>invalidateQueries(['produk'])</code> agar daftar produk otomatis dimuat ulang dengan data terbaru.</p>
+<p>Validasi dua kali: di browser untuk umpan balik cepat (wajib diisi, angka positif), dan <b>di server sebagai sumber kebenaran</b>. Error 400 dari DRF berbentuk <code>{"nama": ["..."]}</code>, jadi bisa langsung ditampilkan di bawah input yang tepat.</p>
+<p>Nonaktifkan tombol saat menyimpan agar tidak terkirim dua kali, hubungkan pesan error dengan input lewat <code>aria-describedby</code>, dan beri tahu pengguna saat berhasil.</p>
+<div class="lbl">KODE</div><pre><code>// src/pages/FormProduk.tsx
+import { useState } from &#x27;react&#x27;;
+import { useMutation, useQueryClient } from &#x27;@tanstack/react-query&#x27;;
+import { api, ApiError, type Produk } from &#x27;../api/client&#x27;;
+
+type Masukan = { nama: string; harga: string; stok: number; kategori: number };
+
+export default function FormProduk() {
+  const qc = useQueryClient();
+  const [f, setF] = useState&lt;Masukan&gt;({ nama: &#x27;&#x27;, harga: &#x27;&#x27;, stok: 0, kategori: 1 });
+  const simpan = useMutation({
+    mutationFn: (data: Masukan) =&gt; api&lt;Produk&gt;(&#x27;/produk/&#x27;, { method: &#x27;POST&#x27;, body: JSON.stringify(data) }),
+    onSuccess: () =&gt; { qc.invalidateQueries({ queryKey: [&#x27;produk&#x27;] }); setF({ nama: &#x27;&#x27;, harga: &#x27;&#x27;, stok: 0, kategori: 1 }); },
+  });
+  const err = simpan.error instanceof ApiError ? (simpan.error.data as Record&lt;string, string[]&gt;) : {};
+
+  return (
+    &lt;form onSubmit={(e) =&gt; { e.preventDefault(); simpan.mutate(f); }} noValidate&gt;
+      &lt;label htmlFor=&quot;nama&quot;&gt;Nama produk&lt;/label&gt;
+      &lt;input id=&quot;nama&quot; value={f.nama} required aria-invalid={!!err.nama} aria-describedby=&quot;nama-err&quot;
+             onChange={(e) =&gt; setF({ ...f, nama: e.target.value })} /&gt;
+      {err.nama &amp;&amp; &lt;p id=&quot;nama-err&quot; role=&quot;alert&quot;&gt;{err.nama[0]}&lt;/p&gt;}
+
+      &lt;label htmlFor=&quot;harga&quot;&gt;Harga (Rp)&lt;/label&gt;
+      &lt;input id=&quot;harga&quot; inputMode=&quot;numeric&quot; value={f.harga} aria-describedby=&quot;harga-err&quot;
+             onChange={(e) =&gt; setF({ ...f, harga: e.target.value.replace(/\D/g, &#x27;&#x27;) })} /&gt;
+      {err.harga &amp;&amp; &lt;p id=&quot;harga-err&quot; role=&quot;alert&quot;&gt;{err.harga[0]}&lt;/p&gt;}
+
+      {simpan.error instanceof ApiError &amp;&amp; simpan.error.status === 403 &amp;&amp; &lt;p role=&quot;alert&quot;&gt;Hanya admin yang boleh menambah produk.&lt;/p&gt;}
+      &lt;button disabled={simpan.isPending}&gt;{simpan.isPending ? &#x27;Menyimpan...&#x27; : &#x27;Simpan produk&#x27;}&lt;/button&gt;
+      {simpan.isSuccess &amp;&amp; &lt;p role=&quot;status&quot;&gt;Produk tersimpan.&lt;/p&gt;}
+    &lt;/form&gt;
+  );
+}</code></pre>
+<h2>Poin penting</h2><ul><li>useMutation + invalidateQueries untuk menyegarkan data.</li><li>Server adalah sumber kebenaran validasi; tampilkan error per field.</li><li>Tombol nonaktif saat menyimpan; error terhubung ke input.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Setelah menambah produk, cara memperbarui daftar produk?</summary><p class="ok">Jawaban: invalidateQueries dengan key produk</p><p>TanStack Query memuat ulang otomatis.</p></details>
+<a class="cta" href="/#proj-2-12">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/halaman-produk-loading-error-kosong-dan-pagination">Halaman produk: loading, error, kosong, dan pagination</a></p><p>Berikutnya: <a href="/belajar/proj/login-menyimpan-token-dan-rute-terlindungi">Login, menyimpan token, dan rute terlindungi</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

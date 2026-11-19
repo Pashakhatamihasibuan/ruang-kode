@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kebutuhan, user story, dan kontrak API · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Sebelum menulis kode, tulis user story: &quot;Sebagai [peran], saya ingin [aksi], agar [manfaat]&quot;, lengkap dengan kriteria penerimaan yang bisa diuji. Ini…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/kebutuhan-user-story-dan-kontrak-api">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Kebutuhan, user story, dan kontrak API · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Sebelum menulis kode, tulis user story: &quot;Sebagai [peran], saya ingin [aksi], agar [manfaat]&quot;, lengkap dengan kriteria penerimaan yang bisa diuji. Ini…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/kebutuhan-user-story-dan-kontrak-api"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Kebutuhan, user story, dan kontrak API", "description": "Sebelum menulis kode, tulis user story: \"Sebagai [peran], saya ingin [aksi], agar [manfaat]\", lengkap dengan kriteria penerimaan yang bisa diuji. Ini…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/kebutuhan-user-story-dan-kontrak-api", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Kebutuhan, user story, dan kontrak API", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/kebutuhan-user-story-dan-kontrak-api"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 2</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 2 · Konsep &amp; kode</div><h1>Kebutuhan, user story, dan kontrak API</h1><a class="cta" href="/#proj-2-2">Buka versi interaktif</a>
+<p>Sebelum menulis kode, tulis <b>user story</b>: "Sebagai [peran], saya ingin [aksi], agar [manfaat]", lengkap dengan <b>kriteria penerimaan</b> yang bisa diuji. Ini juga yang dilakukan tim produk sungguhan.</p>
+<p>Dari user story, turunkan <b>kontrak API</b>: daftar endpoint, method, siapa yang boleh, dan bentuk request/response. Kontrak ini membuat frontend dan backend bisa dikerjakan paralel. Ikuti konvensi REST: kata benda jamak untuk URL, method untuk aksi, status code yang tepat.</p>
+<p>Simpan kontrak di <code>docs/api.md</code> atau biarkan DRF membuat dokumentasi OpenAPI otomatis dengan <b>drf-spectacular</b> di <code>/api/docs/</code>.</p>
+<div class="tw"><table><caption>Kontrak API KasirKu</caption><thead><tr><th>Method</th><th>URL</th><th>Siapa</th><th>Hasil</th></tr></thead><tbody><tr><td>POST</td><td>/api/auth/token/</td><td>Semua</td><td>200 {access, refresh}</td></tr><tr><td>GET</td><td>/api/produk/?search=kopi&amp;page=1</td><td>Kasir, admin</td><td>200 {count, next, results[]}</td></tr><tr><td>POST</td><td>/api/produk/</td><td>Admin</td><td>201 produk baru / 400 error validasi</td></tr><tr><td>PATCH</td><td>/api/produk/{id}/</td><td>Admin</td><td>200 / 403 untuk kasir / 404</td></tr><tr><td>POST</td><td>/api/pesanan/</td><td>Kasir, admin</td><td>201 {id, total} / 400 stok kurang</td></tr><tr><td>GET</td><td>/api/laporan/harian/?tanggal=2026-11-19</td><td>Admin</td><td>200 {jumlah_pesanan, omzet}</td></tr></tbody></table></div>
+<div class="lbl">CONTOH</div><pre><code>User story
+1. Sebagai kasir, saya ingin mencari produk berdasarkan nama,
+   agar bisa melayani pembeli dengan cepat.
+   Kriteria: hasil muncul &lt; 1 detik, menampilkan harga dan stok.
+2. Sebagai kasir, saya ingin mencatat pesanan beberapa produk,
+   agar stok berkurang otomatis.
+   Kriteria: pesanan ditolak jika stok kurang; total dihitung server.
+3. Sebagai admin, saya ingin menambah dan mengubah produk.
+   Kriteria: kasir tidak boleh mengubah produk (403).
+4. Sebagai pemilik, saya ingin melihat penjualan per hari.</code></pre>
+<h2>Poin penting</h2><ul><li>User story + kriteria penerimaan yang bisa diuji.</li><li>Kontrak API: method, URL, peran, response.</li><li>Status code: 200, 201, 400, 401, 403, 404.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Status code untuk kasir yang mencoba mengubah produk?</summary><p class="ok">Jawaban: 403 Forbidden</p><p>Sudah login, tetapi tidak berhak.</p></details>
+<a class="cta" href="/#proj-2-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/peta-besar-perjalanan-satu-request">Peta besar: perjalanan satu request</a></p><p>Berikutnya: <a href="/belajar/proj/merancang-database-postgresql">Merancang database PostgreSQL</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

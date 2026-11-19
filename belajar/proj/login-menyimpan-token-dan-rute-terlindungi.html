@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Login, menyimpan token, dan rute terlindungi · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Halaman login mengirim username dan password ke /api/auth/token/, lalu menyimpan access token. Untuk portofolio, localStorage sudah umum dipakai; di…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/login-menyimpan-token-dan-rute-terlindungi">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Login, menyimpan token, dan rute terlindungi · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Halaman login mengirim username dan password ke /api/auth/token/, lalu menyimpan access token. Untuk portofolio, localStorage sudah umum dipakai; di…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/login-menyimpan-token-dan-rute-terlindungi"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Login, menyimpan token, dan rute terlindungi", "description": "Halaman login mengirim username dan password ke /api/auth/token/, lalu menyimpan access token. Untuk portofolio, localStorage sudah umum dipakai; di…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/login-menyimpan-token-dan-rute-terlindungi", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Login, menyimpan token, dan rute terlindungi", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/login-menyimpan-token-dan-rute-terlindungi"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 2</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 2 · Konsep &amp; kode</div><h1>Login, menyimpan token, dan rute terlindungi</h1><a class="cta" href="/#proj-2-13">Buka versi interaktif</a>
+<p>Halaman login mengirim username dan password ke <code>/api/auth/token/</code>, lalu menyimpan access token. Untuk portofolio, <code>localStorage</code> sudah umum dipakai; di produksi yang lebih ketat, refresh token disimpan di <b>cookie httpOnly</b> agar tidak bisa dibaca skrip jahat (XSS).</p>
+<p>Buat komponen <b>RuteTerlindungi</b>: jika tidak ada token, arahkan ke <code>/login</code>. Jika API membalas 401 (token kedaluwarsa), coba perbarui dengan refresh token; jika gagal, keluarkan pengguna.</p>
+<p>Ingat: menyembunyikan tombol di frontend <b>bukan</b> pengamanan. Itu hanya kenyamanan. Pengamanan sebenarnya adalah permission di API yang sudah kita buat.</p>
+<div class="lbl">KODE</div><pre><code>// src/auth.tsx
+import { Navigate, Outlet } from &#x27;react-router-dom&#x27;;
+import { api } from &#x27;./api/client&#x27;;
+
+export async function masuk(username: string, password: string) {
+  const t = await api&lt;{ access: string; refresh: string }&gt;(&#x27;/auth/token/&#x27;, {
+    method: &#x27;POST&#x27;, body: JSON.stringify({ username, password }),
+  });
+  localStorage.setItem(&#x27;access&#x27;, t.access);
+  localStorage.setItem(&#x27;refresh&#x27;, t.refresh);
+}
+
+export function keluar() {
+  localStorage.removeItem(&#x27;access&#x27;);
+  localStorage.removeItem(&#x27;refresh&#x27;);
+  window.location.assign(&#x27;/login&#x27;);
+}
+
+export function RuteTerlindungi() {
+  return localStorage.getItem(&#x27;access&#x27;) ? &lt;Outlet /&gt; : &lt;Navigate to=&quot;/login&quot; replace /&gt;;
+}
+
+// src/main.tsx (potongan)
+// &lt;Route path=&quot;/login&quot; element={&lt;Login /&gt;} /&gt;
+// &lt;Route element={&lt;RuteTerlindungi /&gt;}&gt;
+//   &lt;Route path=&quot;/&quot; element={&lt;DaftarProduk /&gt;} /&gt;
+//   &lt;Route path=&quot;/kasir&quot; element={&lt;Kasir /&gt;} /&gt;
+// &lt;/Route&gt;</code></pre>
+<h2>Poin penting</h2><ul><li>Login menyimpan token; rute terlindungi mengarahkan ke /login.</li><li>Tangani 401 dengan refresh atau keluar.</li><li>Keamanan sebenarnya ada di API, bukan menyembunyikan tombol.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Menyembunyikan tombol &quot;Hapus&quot; untuk kasir di frontend sudah cukup aman?</summary><p class="ok">Jawaban: Tidak, API tetap harus menolak dengan 403</p><p>Request bisa dikirim langsung tanpa tombol.</p></details>
+<a class="cta" href="/#proj-2-13">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/form-dan-mutasi-menampilkan-error-dari-api">Form dan mutasi: menampilkan error dari API</a></p><p>Berikutnya: <a href="/belajar/proj/testing-tiga-lapis-api-komponen-dan-end-to-end">Testing tiga lapis: API, komponen, dan end-to-end</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

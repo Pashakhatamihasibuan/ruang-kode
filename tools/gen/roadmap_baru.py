@@ -6,6 +6,7 @@ from rb_django import DJ, DJ_SO
 from rb_next import NX, NX_SO
 from rb_vue import VUE, VUE_SO
 from rb_dsci import DSCI, DSCI_SO
+from rb_proj import PROJ, PROJ_SO
 
 BARU = [('DSA', DSA, DSA_SO), ('PGDBA', PG, PG_SO), ('QA', QA, QA_SO),
-        ('DJANGO', DJ, DJ_SO), ('NEXTJS', NX, NX_SO), ('VUE', VUE, VUE_SO), ('DSCI', DSCI, DSCI_SO)]
+        ('DJANGO', DJ, DJ_SO), ('NEXTJS', NX, NX_SO), ('VUE', VUE, VUE_SO), ('DSCI', DSCI, DSCI_SO), ('PROJ', PROJ, PROJ_SO)]

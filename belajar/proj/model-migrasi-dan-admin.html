@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Model, migrasi, dan admin · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Tulis model sesuai rancangan tabel. DecimalField untuk uang, PositiveIntegerField untuk stok, dan Meta.constraints untuk CHECK sehingga aturan juga ada…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/model-migrasi-dan-admin">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Model, migrasi, dan admin · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Tulis model sesuai rancangan tabel. DecimalField untuk uang, PositiveIntegerField untuk stok, dan Meta.constraints untuk CHECK sehingga aturan juga ada…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/model-migrasi-dan-admin"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Model, migrasi, dan admin", "description": "Tulis model sesuai rancangan tabel. DecimalField untuk uang, PositiveIntegerField untuk stok, dan Meta.constraints untuk CHECK sehingga aturan juga ada…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/model-migrasi-dan-admin", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Model, migrasi, dan admin", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/model-migrasi-dan-admin"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 2</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 2 · Konsep &amp; kode</div><h1>Model, migrasi, dan admin</h1><a class="cta" href="/#proj-2-5">Buka versi interaktif</a>
+<p>Tulis model sesuai rancangan tabel. <code>DecimalField</code> untuk uang, <code>PositiveIntegerField</code> untuk stok, dan <code>Meta.constraints</code> untuk <code>CHECK</code> sehingga aturan juga ada di database.</p>
+<p><code>makemigrations</code> membuat berkas migrasi dari perubahan model, <code>migrate</code> menjalankannya ke database. Berkas migrasi ikut di-commit.</p>
+<p>Daftarkan model ke <b>Django admin</b>: kamu langsung punya panel untuk mengisi data demo tanpa menulis frontend apa pun.</p>
+<div class="lbl">PYTHON</div><pre><code># toko/models.py
+from django.conf import settings
+from django.db import models
+
+class Kategori(models.Model):
+    nama = models.CharField(max_length=60, unique=True)
+    def __str__(self): return self.nama
+
+class Produk(models.Model):
+    kategori = models.ForeignKey(Kategori, on_delete=models.PROTECT, related_name=&#x27;produk&#x27;)
+    nama = models.CharField(max_length=120)
+    harga = models.DecimalField(max_digits=12, decimal_places=2)
+    stok = models.PositiveIntegerField(default=0)
+    aktif = models.BooleanField(default=True)
+    dibuat = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = [&#x27;nama&#x27;]
+        constraints = [models.CheckConstraint(condition=models.Q(harga__gt=0), name=&#x27;harga_positif&#x27;)]
+
+class Pesanan(models.Model):
+    kasir = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    total = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    dibuat = models.DateTimeField(auto_now_add=True, db_index=True)
+
+class ItemPesanan(models.Model):
+    pesanan = models.ForeignKey(Pesanan, on_delete=models.CASCADE, related_name=&#x27;item&#x27;)
+    produk = models.ForeignKey(Produk, on_delete=models.PROTECT)
+    jumlah = models.PositiveIntegerField()
+    harga_saat = models.DecimalField(max_digits=12, decimal_places=2)
+
+# terminal
+# python manage.py makemigrations toko
+# python manage.py migrate</code></pre>
+<h2>Poin penting</h2><ul><li>Model = tabel; DecimalField untuk uang.</li><li>Constraint juga dideklarasikan di model.</li><li>makemigrations + migrate, migrasi di-commit.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>on_delete=PROTECT pada produk di item pesanan berarti?</summary><p class="ok">Jawaban: Produk yang pernah dijual tidak bisa dihapus</p><p>Melindungi riwayat transaksi; nonaktifkan produk sebagai gantinya.</p></details>
+<a class="cta" href="/#proj-2-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/menyiapkan-backend-django-rest-framework">Menyiapkan backend Django REST Framework</a></p><p>Berikutnya: <a href="/belajar/proj/serializer-dan-validasi">Serializer dan validasi</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Deploy, data demo, dan pemantauan dasar · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Proyek yang hanya jalan di laptop sulit dinilai. Pilihan deploy gratis atau murah: Vercel/Netlify untuk frontend, Render/Railway/Fly.io untuk API, dan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/deploy-data-demo-dan-pemantauan-dasar">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Deploy, data demo, dan pemantauan dasar · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Proyek yang hanya jalan di laptop sulit dinilai. Pilihan deploy gratis atau murah: Vercel/Netlify untuk frontend, Render/Railway/Fly.io untuk API, dan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/deploy-data-demo-dan-pemantauan-dasar"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Deploy, data demo, dan pemantauan dasar", "description": "Proyek yang hanya jalan di laptop sulit dinilai. Pilihan deploy gratis atau murah: Vercel/Netlify untuk frontend, Render/Railway/Fly.io untuk API, dan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/deploy-data-demo-dan-pemantauan-dasar", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Deploy, data demo, dan pemantauan dasar", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/deploy-data-demo-dan-pemantauan-dasar"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 1</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 1 · Konsep &amp; kode</div><h1>Deploy, data demo, dan pemantauan dasar</h1><a class="cta" href="/#proj-1-5">Buka versi interaktif</a>
+<p>Proyek yang hanya jalan di laptop sulit dinilai. Pilihan deploy gratis atau murah: <b>Vercel/Netlify</b> untuk frontend, <b>Render/Railway/Fly.io</b> untuk API, dan <b>Neon/Supabase</b> untuk PostgreSQL terkelola.</p>
+<p>Siapkan perintah <b>seed</b> yang mengisi data contoh agar demo langsung terlihat hidup. Atur variabel lingkungan di dashboard penyedia, bukan di kode: <code>DATABASE_URL</code>, <code>SECRET_KEY</code>, <code>ALLOWED_HOSTS</code>, <code>CORS_ALLOWED_ORIGINS</code>, <code>VITE_API_URL</code>.</p>
+<p>Tambahkan endpoint <code>/api/health</code> yang mengecek koneksi database, dan catat error dengan logging (atau Sentry versi gratis). Saat wawancara, cerita "saya menemukan bug di produksi dari log lalu memperbaikinya" sangat bernilai.</p>
+<div class="tw"><table><caption>Pilihan hosting untuk portofolio</caption><thead><tr><th>Bagian</th><th>Pilihan</th><th>Catatan</th></tr></thead><tbody><tr><td>Frontend statis/SPA</td><td>Vercel, Netlify, GitHub Pages</td><td>Gratis, deploy otomatis dari GitHub</td></tr><tr><td>API (Python/Node/Java)</td><td>Render, Railway, Fly.io</td><td>Paket gratis bisa &quot;tidur&quot; saat sepi</td></tr><tr><td>PostgreSQL</td><td>Neon, Supabase</td><td>Paket gratis cukup untuk demo</td></tr><tr><td>Dashboard data</td><td>Streamlit Community, Looker Studio, Tableau Public</td><td>Untuk proyek analis data</td></tr></tbody></table></div>
+<div class="lbl">TERMINAL</div><pre><code># backend: perintah seed data demo
+python manage.py migrate
+python manage.py loaddata demo_produk.json
+python manage.py createsuperuser --noinput   # DJANGO_SUPERUSER_* dari env
+
+# variabel lingkungan produksi (diisi di dashboard Render/Vercel)
+DATABASE_URL=postgres://...neon.tech/kasirku
+SECRET_KEY=&lt;acak 50 karakter&gt;
+DEBUG=False
+ALLOWED_HOSTS=kasirku-api.onrender.com
+CORS_ALLOWED_ORIGINS=https://kasirku.vercel.app
+VITE_API_URL=https://kasirku-api.onrender.com/api</code></pre>
+<h2>Poin penting</h2><ul><li>Frontend, API, dan database bisa di-host gratis.</li><li>Seed data demo dan akun demo.</li><li>Konfigurasi lewat environment variable; ada health check.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Di mana SECRET_KEY produksi disimpan?</summary><p class="ok">Jawaban: Variabel lingkungan di dashboard hosting</p><p>Jangan pernah di kode atau repo.</p></details>
+<a class="cta" href="/#proj-1-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/kualitas-kode-lint-test-dan-ci">Kualitas kode: lint, test, dan CI</a></p><p>Berikutnya: <a href="/belajar/proj/peta-besar-perjalanan-satu-request">Peta besar: perjalanan satu request</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rilis: deploy dan checklist akhir · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Urutan deploy: database terkelola (Neon/Supabase) → API (Render/Railway) dengan DATABASE_URL dari langkah pertama → frontend (Vercel) dengan VITE_API_URL…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/rilis-deploy-dan-checklist-akhir">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Rilis: deploy dan checklist akhir · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Urutan deploy: database terkelola (Neon/Supabase) → API (Render/Railway) dengan DATABASE_URL dari langkah pertama → frontend (Vercel) dengan VITE_API_URL…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/rilis-deploy-dan-checklist-akhir"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Rilis: deploy dan checklist akhir", "description": "Urutan deploy: database terkelola (Neon/Supabase) → API (Render/Railway) dengan DATABASE_URL dari langkah pertama → frontend (Vercel) dengan VITE_API_URL…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/rilis-deploy-dan-checklist-akhir", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Rilis: deploy dan checklist akhir", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/rilis-deploy-dan-checklist-akhir"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 2</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 2 · Konsep &amp; kode</div><h1>Rilis: deploy dan checklist akhir</h1><a class="cta" href="/#proj-2-16">Buka versi interaktif</a>
+<p>Urutan deploy: database terkelola (Neon/Supabase) → API (Render/Railway) dengan <code>DATABASE_URL</code> dari langkah pertama → frontend (Vercel) dengan <code>VITE_API_URL</code> menunjuk ke API. Terakhir, tambahkan domain frontend ke <code>CORS_ALLOWED_ORIGINS</code>.</p>
+<p>Sebelum membagikan link, jalankan checklist di bawah. Lalu rekam video demo 1–2 menit: masalah yang diselesaikan, alur utama, dan satu keputusan teknis yang kamu banggakan.</p>
+<p>Selamat: kamu sekarang punya proyek yang mencakup seluruh perjalanan data, dari tombol di layar sampai baris di database. Gunakan pola yang sama untuk proyek besar di modul berikutnya.</p>
+<div class="lbl">CONTOH</div><pre><code>Checklist rilis KasirKu
+
+Database
+[ ] Migrasi jalan di produksi, data demo ter-seed
+[ ] Backup otomatis aktif (bawaan Neon/Supabase)
+
+API
+[ ] DEBUG=False, SECRET_KEY dari env, ALLOWED_HOSTS benar
+[ ] CORS hanya mengizinkan domain frontend
+[ ] /api/health mengembalikan 200
+[ ] Test dan lint hijau di CI
+
+Frontend
+[ ] VITE_API_URL menunjuk ke API produksi
+[ ] Semua keadaan: loading, error, kosong sudah dicoba
+[ ] Bisa dipakai di layar HP dan dengan keyboard
+
+Dokumentasi
+[ ] README: demo, akun demo, screenshot, cara menjalankan, keputusan teknis
+[ ] Video demo 1-2 menit
+[ ] Link repo dan demo di CV dan LinkedIn</code></pre>
+<h2>Poin penting</h2><ul><li>Deploy berurutan: database, API, frontend, lalu CORS.</li><li>Checklist keamanan dan kualitas sebelum dibagikan.</li><li>Video demo singkat memperkuat portofolio.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Setelah frontend punya domain produksi, apa yang harus diubah di API?</summary><p class="ok">Jawaban: Tambahkan domainnya ke CORS_ALLOWED_ORIGINS</p><p>Agar browser mengizinkan request dari domain itu.</p></details>
+<a class="cta" href="/#proj-2-16">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/docker-compose-satu-perintah-untuk-semuanya">Docker Compose: satu perintah untuk semuanya</a></p><p>Berikutnya: <a href="/belajar/proj/proyek-mini-logika-python-dasar">Proyek mini: Logika &amp; Python dasar</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

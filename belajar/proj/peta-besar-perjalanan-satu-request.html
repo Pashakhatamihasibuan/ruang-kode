@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Peta besar: perjalanan satu request · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Aplikasi web modern dibagi tiga lapis. Frontend (React di browser) menampilkan data dan menerima input. API (Django REST Framework di server) memeriksa…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/peta-besar-perjalanan-satu-request">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Peta besar: perjalanan satu request · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Aplikasi web modern dibagi tiga lapis. Frontend (React di browser) menampilkan data dan menerima input. API (Django REST Framework di server) memeriksa…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/peta-besar-perjalanan-satu-request"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Peta besar: perjalanan satu request", "description": "Aplikasi web modern dibagi tiga lapis. Frontend (React di browser) menampilkan data dan menerima input. API (Django REST Framework di server) memeriksa…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/peta-besar-perjalanan-satu-request", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Peta besar: perjalanan satu request", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/peta-besar-perjalanan-satu-request"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 2</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 2 · Konsep &amp; kode</div><h1>Peta besar: perjalanan satu request</h1><a class="cta" href="/#proj-2-1">Buka versi interaktif</a>
+<p>Aplikasi web modern dibagi tiga lapis. <b>Frontend</b> (React di browser) menampilkan data dan menerima input. <b>API</b> (Django REST Framework di server) memeriksa siapa pengguna, memvalidasi data, menjalankan aturan bisnis, lalu berbicara dengan <b>database</b> (PostgreSQL) yang menyimpan data secara permanen.</p>
+<p>Ketiganya berkomunikasi lewat kontrak yang jelas: frontend mengirim <b>HTTP request</b> (method, URL, header, body JSON) dan API membalas dengan <b>status code</b> dan JSON. API menerjemahkan request menjadi query SQL lewat <b>ORM</b>.</p>
+<p>Di proyek ini kita membangun <b>KasirKu</b>, aplikasi kasir dan stok untuk kedai kopi. Urutan pengerjaan yang disarankan justru dari bawah: rancang tabel → buat API dan uji dengan curl → baru bangun tampilan. Dengan begitu frontend dibangun di atas fondasi yang sudah pasti.</p>
+<div class="tw"><table><caption>Tanggung jawab tiap lapis</caption><thead><tr><th>Lapis</th><th>Tugas</th><th>Teknologi di proyek ini</th></tr></thead><tbody><tr><td>Frontend</td><td>Tampilan, input, status loading/error, simpan token</td><td>React, TypeScript, Vite, TanStack Query</td></tr><tr><td>API</td><td>Auth, validasi, aturan bisnis, format JSON</td><td>Django, Django REST Framework, SimpleJWT</td></tr><tr><td>Database</td><td>Simpan data, constraint, transaksi, index</td><td>PostgreSQL 16</td></tr><tr><td>Infrastruktur</td><td>Menjalankan semuanya dengan cara yang sama</td><td>Docker Compose, GitHub Actions</td></tr></tbody></table></div>
+<div class="lbl">CONTOH</div><pre><code>Pengguna klik &quot;Simpan pesanan&quot;
+        │
+        ▼
+[Frontend React]  POST /api/pesanan/   Authorization: Bearer &lt;token&gt;
+        │          body: {&quot;item&quot;: [{&quot;produk&quot;: 3, &quot;jumlah&quot;: 2}]}
+        ▼
+[API Django REST]  1. cek token  -&gt; siapa pengguna?
+                   2. validasi    -&gt; produk ada? jumlah &gt; 0?
+                   3. aturan bisnis -&gt; stok cukup? hitung total
+                   4. ORM -&gt; SQL
+        │
+        ▼
+[PostgreSQL]   BEGIN;
+               SELECT ... FROM produk WHERE id=3 FOR UPDATE;
+               UPDATE produk SET stok = stok - 2 WHERE id=3;
+               INSERT INTO pesanan ...; INSERT INTO item_pesanan ...;
+               COMMIT;
+        │
+        ▼
+[API]  201 Created  {&quot;id&quot;: 41, &quot;total&quot;: &quot;56000.00&quot;}
+        │
+        ▼
+[Frontend]  tampilkan &quot;Pesanan #41 tersimpan&quot;, segarkan daftar stok</code></pre>
+<h2>Poin penting</h2><ul><li>Frontend → HTTP/JSON → API → ORM/SQL → database.</li><li>API adalah satu-satunya pintu ke database.</li><li>Bangun dari bawah: database, API, lalu frontend.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa frontend tidak langsung terhubung ke database?</summary><p class="ok">Jawaban: Kredensial database akan bocor ke browser dan aturan bisnis bisa dilewati</p><p>API menjaga keamanan dan aturan.</p></details>
+<a class="cta" href="/#proj-2-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/deploy-data-demo-dan-pemantauan-dasar">Deploy, data demo, dan pemantauan dasar</a></p><p>Berikutnya: <a href="/belajar/proj/kebutuhan-user-story-dan-kontrak-api">Kebutuhan, user story, dan kontrak API</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

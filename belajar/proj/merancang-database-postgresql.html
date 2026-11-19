@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Merancang database PostgreSQL · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Turunkan tabel dari kata benda di user story: kategori, produk, pesanan, dan item_pesanan (tabel penghubung karena satu pesanan berisi banyak produk).…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/merancang-database-postgresql">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Merancang database PostgreSQL · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Turunkan tabel dari kata benda di user story: kategori, produk, pesanan, dan item_pesanan (tabel penghubung karena satu pesanan berisi banyak produk).…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/merancang-database-postgresql"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Merancang database PostgreSQL", "description": "Turunkan tabel dari kata benda di user story: kategori, produk, pesanan, dan item_pesanan (tabel penghubung karena satu pesanan berisi banyak produk).…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/merancang-database-postgresql", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Merancang database PostgreSQL", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/merancang-database-postgresql"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 2</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 2 · Konsep &amp; kode</div><h1>Merancang database PostgreSQL</h1><a class="cta" href="/#proj-2-3">Buka versi interaktif</a>
+<p>Turunkan tabel dari kata benda di user story: <b>kategori</b>, <b>produk</b>, <b>pesanan</b>, dan <b>item_pesanan</b> (tabel penghubung karena satu pesanan berisi banyak produk). Tabel pengguna disediakan Django.</p>
+<p>Pasang aturan di database, bukan hanya di kode: <code>NOT NULL</code>, <code>UNIQUE</code>, <code>CHECK (stok &gt;= 0)</code>, dan <code>FOREIGN KEY</code>. Jika suatu hari ada bug di API, database tetap menolak data yang salah. Simpan uang dengan <code>NUMERIC(12,2)</code>, bukan float.</p>
+<p>Salin <b>harga saat transaksi</b> ke item_pesanan. Jika harga produk naik besok, laporan penjualan kemarin tidak ikut berubah. Tambahkan index untuk kolom yang sering dicari atau di-join.</p>
+<div class="tw"><table><caption>Relasi</caption><thead><tr><th>Relasi</th><th>Jenis</th><th>Diwujudkan dengan</th></tr></thead><tbody><tr><td>kategori → produk</td><td>Satu ke banyak</td><td>produk.kategori_id</td></tr><tr><td>pesanan → item_pesanan</td><td>Satu ke banyak</td><td>item_pesanan.pesanan_id</td></tr><tr><td>pesanan ↔ produk</td><td>Banyak ke banyak</td><td>Tabel penghubung item_pesanan</td></tr><tr><td>pengguna → pesanan</td><td>Satu ke banyak</td><td>pesanan.kasir_id</td></tr></tbody></table></div>
+<div class="lbl">SQL</div><pre><code>CREATE TABLE kategori (
+  id    SERIAL PRIMARY KEY,
+  nama  VARCHAR(60) NOT NULL UNIQUE
+);
+
+CREATE TABLE produk (
+  id           SERIAL PRIMARY KEY,
+  kategori_id  INT NOT NULL REFERENCES kategori(id),
+  nama         VARCHAR(120) NOT NULL,
+  harga        NUMERIC(12,2) NOT NULL CHECK (harga &gt; 0),
+  stok         INT NOT NULL DEFAULT 0 CHECK (stok &gt;= 0),
+  aktif        BOOLEAN NOT NULL DEFAULT TRUE,
+  dibuat       TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX idx_produk_nama ON produk (lower(nama));
+
+CREATE TABLE pesanan (
+  id       SERIAL PRIMARY KEY,
+  kasir_id INT NOT NULL REFERENCES auth_user(id),
+  total    NUMERIC(12,2) NOT NULL,
+  dibuat   TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX idx_pesanan_dibuat ON pesanan (dibuat);
+
+CREATE TABLE item_pesanan (
+  id          SERIAL PRIMARY KEY,
+  pesanan_id  INT NOT NULL REFERENCES pesanan(id) ON DELETE CASCADE,
+  produk_id   INT NOT NULL REFERENCES produk(id),
+  jumlah      INT NOT NULL CHECK (jumlah &gt; 0),
+  harga_saat  NUMERIC(12,2) NOT NULL      -- harga ketika dijual
+);</code></pre>
+<h2>Poin penting</h2><ul><li>Tabel dari kata benda; banyak-ke-banyak lewat tabel penghubung.</li><li>Constraint di database: CHECK, FK, UNIQUE, NOT NULL.</li><li>Uang = NUMERIC; simpan harga saat transaksi.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa harga disalin ke item_pesanan?</summary><p class="ok">Jawaban: Agar laporan lama tidak berubah saat harga produk diubah</p><p>Data historis harus tetap.</p></details>
+<a class="cta" href="/#proj-2-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/kebutuhan-user-story-dan-kontrak-api">Kebutuhan, user story, dan kontrak API</a></p><p>Berikutnya: <a href="/belajar/proj/menyiapkan-backend-django-rest-framework">Menyiapkan backend Django REST Framework</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>
