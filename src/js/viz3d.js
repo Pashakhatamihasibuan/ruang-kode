@@ -128,7 +128,7 @@ S.if={t:'Percabangan: jalan bercabang yang dipilih oleh kondisi',
  steps:P=>{const lulus=P.n>=P.b;
   const jalan=(on)=>[lantai(9,5),B('j0',-2.6,-.45,0,{w:3,h:.1,d:1,c:'mute'}),B('jy',1.9,-.45,-1.3,{w:3.2,h:.1,d:.9,c:on==='y'?'ok':'mute',ry:-20}),B('jn',1.9,-.45,1.3,{w:3.2,h:.1,d:.9,c:on==='n'?'bad':'mute',ry:20}),
     B('gerbang',-.6,.3,0,{w:.9,h:1.5,d:1.4,c:'glass',t:'≥ '+P.b+'?'}),G('ya',2.6,.5,-2,'ya: "Lulus"','ok'),G('tidak',2.6,.5,2,'tidak: "Remedial"','bad')];
-  const bola=(x,y,z,c)=>B('bola',x,y,z,{w:.55,h:.55,d:.55,c,ball:1,t:String(P.n)});
+  const bola=(x,y,z,c)=>B('bola',x,y-.05,z,{w:.7,h:1.3,d:.5,c,s:'orang',t:String(P.n)});
   return [
    {cap:`<code>if (nilai &gt;= ${P.b})</code> seperti persimpangan. Program tiba di gerbang kondisi lalu memilih <b>satu</b> jalan saja.`,it:[...jalan(),bola(-3.8,0,0,'warn')]},
    {cap:`nilai = ${P.n}. Kondisi <code>${P.n} &gt;= ${P.b}</code> bernilai <b>${lulus}</b>…`,it:[...jalan(),bola(-.6,1.4,0,'warn')]},
@@ -327,10 +327,10 @@ S.mvcc={t:'MVCC: setiap UPDATE membuat versi baris baru',
 S.repl={t:'Replikasi: salinan database yang selalu mengikuti primary',
  p:[{k:'r',l:'Jumlah replika',t:'n',min:1,max:3,v:2},{k:'mode',l:'Mode',t:'o',o:[['async','Asinkron'],['sync','Sinkron']],v:'async'},{k:'mati',l:'Primary mati?',t:'o',o:[['0','Tidak'],['1','Ya']],v:'1'}],
  steps:P=>{const r=Math.max(1,Math.min(3,P.r)),RY=i=>(i-(r-1)/2)*1.5+.6,PX=-1,RX=3.2,CX=-4.6,sync=P.mode==='sync';
-  const prim=(c,t='primary')=>B('pri',PX,.6,0,{w:1.8,h:1.1,d:1.4,c,t});
-  const rep=(f,lab=i=>'replika '+(i+1))=>Array.from({length:r},(_,i)=>B('rep'+i,RX,RY(i),0,{w:1.8,h:.8,d:1.2,c:f(i),t:lab(i)}));
+  const prim=(c,t='primary')=>B('pri',PX,.6,0,{w:1.3,h:1.4,d:1.3,c,t,s:'db'});
+  const rep=(f,lab=i=>'replika '+(i+1))=>Array.from({length:r},(_,i)=>B('rep'+i,RX,RY(i),0,{w:1,h:1.05,d:1,c:f(i),t:lab(i),s:'db'}));
   const wal=on=>Array.from({length:r},(_,i)=>R('w'+i,[PX+.9,.6,0],[RX-.9,RY(i),0],on?'ok':'mute'));
-  const cli=B('cli',CX,.6,0,{w:.9,h:.9,d:.9,c:'warn',t:'app'}),lt=lantai(11,4);
+  const cli=B('cli',CX,.6,0,{w:1.2,h:1.1,d:.8,c:'warn',t:'app',s:'layar'}),lt=lantai(11,4);
   const s=[
    {lb:'Tulis',cap:'Aplikasi menulis data (INSERT, UPDATE) hanya ke <b>primary</b>. Setiap perubahan dicatat dulu di <b>WAL</b> (write-ahead log).',it:[lt,cli,R('cw',[CX+.45,.6,0],[PX-.9,.6,0],'warn'),prim('acc'),...rep(()=>'mute'),...wal(0)]},
    {lb:'Kirim WAL',cap:sync?'Mode <b>sinkron</b>: primary menunggu replika mengonfirmasi sudah menerima WAL sebelum COMMIT selesai. Data aman, tetapi setiap tulisan sedikit lebih lambat.':'Mode <b>asinkron</b>: primary langsung menjawab COMMIT, lalu WAL mengalir ke replika. Cepat, tetapi replika bisa tertinggal beberapa milidetik (<i>replication lag</i>).',
@@ -345,17 +345,17 @@ S.repl={t:'Replikasi: salinan database yang selalu mengikuti primary',
 
 /* ===================== WEB, FRONTEND, DSA, DATA ===================== */
 /* graf umum di bidang xy: N = {k:[x,y,teks]}, warna simpul dan ruas ditentukan fungsi */
-function graf(N,Ed,col,ecol,w=1){const ys=Object.values(N).map(n=>n[1]),it=[lantai(10,3,Math.min(...ys)-1.4)];
+function graf(N,Ed,col,ecol,w=1,sh){const ys=Object.values(N).map(n=>n[1]),it=[lantai(10,3,Math.min(...ys)-1.4)];
   Ed.forEach(([a,b])=>{const A=N[a],Bn=N[b];it.push(R('e'+a+'_'+b,[A[0],A[1],0],[Bn[0],Bn[1],0],ecol?ecol(a,b):'mute'))});
-  Object.entries(N).forEach(([k,[x,y,t]])=>it.push(B('n'+k,x,y,0,{w:t.length>4?Math.max(1.4,t.length*.17)*w:.9,h:.75,d:.75,c:col(k),t:E(t)})));return it}
+  Object.entries(N).forEach(([k,[x,y,t]])=>it.push(B('n'+k,x,y,0,sh?{w:.8,h:1.1,d:.8,c:col(k),t:E(t),s:sh}:{w:t.length>4?Math.max(1.4,t.length*.17)*w:.9,h:.75,d:.75,c:col(k),t:E(t)})));return it}
 
 /* ---------- HTTP: perjalanan request ---------- */
 S.http={t:'Cara web bekerja: perjalanan satu request dari browser ke server dan kembali',
  p:[{k:'cache',l:'Alamat IP sudah di-cache?',t:'o',o:[['0','Belum'],['1','Sudah']],v:'0'},{k:'st',l:'Jawaban server',t:'o',o:[['200','200 OK'],['404','404 Not Found'],['500','500 Server Error']],v:'200'}],
  steps:P=>{const BX=-4.2,SX=1.4,DX=4.4,DNS=[-.9,2.7],st=String(P.st),c=String(P.cache)==='1';
   const sc=st==='200'?'ok':st==='404'?'warn':'bad',lt=lantai(11,3.6);
-  const base=(b='acc',s='acc',d='acc',n='mute')=>[lt,B('br',BX,.3,0,{w:1.8,h:1.3,d:1.2,c:b,t:'browser'}),B('dns',DNS[0],DNS[1],0,{w:1.3,h:.6,d:.9,c:n,t:'DNS'}),
-    B('srv',SX,.3,0,{w:1.5,h:1.6,d:1.2,c:s,t:'server'}),B('db',DX,.1,0,{w:1.2,h:1.1,d:1.2,c:d,t:'DB'})];
+  const base=(b='acc',s='acc',d='acc',n='mute')=>[lt,B('br',BX,.3,0,{w:1.9,h:1.5,d:1,c:b,t:'browser',s:'layar'}),B('dns',DNS[0],DNS[1],0,{w:1,h:1.2,d:.35,c:n,t:'DNS',s:'buku'}),
+    B('srv',SX,.3,0,{w:1.4,h:1.7,d:1.2,c:s,t:'server',s:'server'}),B('db',DX,.1,0,{w:1.2,h:1.2,d:1.2,c:d,t:'DB',s:'db'})];
   const pk=(x,y,col,t)=>B('pk',x,y,0,{w:.5,h:.5,d:.5,c:col,ball:1,t});
   const ln=(id,a,b,col)=>R(id,a,b,col);
   return [
@@ -460,7 +460,7 @@ S.graph={t:'Graph: menjelajah simpul dengan BFS atau DFS',
   Object.keys(N).forEach(k=>adj[k]=[]);Ed.forEach(([a,b])=>{adj[a].push(b);adj[b].push(a)});Object.values(adj).forEach(v=>v.sort());
   const bfs=P.mode!=='dfs',s=N[P.s]?P.s:'A',seen=new Set([s]),done=[],via={};let F=[[s,null]];const st=[];
   const tagF=()=>G('fr',0,-2.5,0,(bfs?'antrean: ':'stack: ')+(F.length?F.map(f=>f[0]).join(' '):'kosong'),'idx');
-  const draw=(cur)=>graf(N,Ed,k=>k===cur?'warn':done.includes(k)?'ok':F.some(f=>f[0]===k)?'acc':'mute',(a,b)=>via[b]===a||via[a]===b?'ok':'mute');
+  const draw=(cur)=>graf(N,Ed,k=>k===cur?'warn':done.includes(k)?'ok':F.some(f=>f[0]===k)?'acc':'mute',(a,b)=>via[b]===a||via[a]===b?'ok':'mute',1,'gedung');
   st.push({lb:'Mulai',cap:`Graph berisi ${Object.keys(N).length} simpul dan ${Ed.length} ruas. Kita menjelajah dengan <b>${bfs?'BFS':'DFS'}</b> mulai dari ${s}. ${bfs?'BFS memakai antrean (queue): yang masuk duluan diproses duluan.':'DFS memakai stack: yang terakhir masuk diproses duluan, jadi terus masuk ke dalam.'}`,it:[...draw(null),tagF()]});
   while(F.length){const [cur,par]=bfs?F.shift():F.pop();if(done.includes(cur))continue;done.push(cur);if(par)via[cur]=par;
     const baru=adj[cur].filter(x=>bfs?!seen.has(x):!done.includes(x));
@@ -474,9 +474,9 @@ S.etl={t:'Pipeline data: Extract, Transform, Load',
  p:[{k:'kotor',l:'Baris kotor (kosong/duplikat)',t:'n',min:0,max:3,v:2},{k:'mode',l:'Cara jalan',t:'o',o:[['batch','Batch (terjadwal)'],['stream','Streaming (terus-menerus)']],v:'batch'}],
  steps:P=>{const kt=Math.max(0,Math.min(3,P.kotor)),R8=8,SC=['acc','warn','mute'],src=i=>i%3,dirty=i=>i<kt*3&&i%3===1;
   const ST=[-3.9,-1.8,.2,2.2,4],lt=lantai(10.5,4);
-  const sumber=[B('s0',ST[0],1.8,0,{w:1.4,h:.5,d:1,c:'acc',t:'DB app'}),B('s1',ST[0],.6,0,{w:1.4,h:.5,d:1,c:'warn',t:'CSV'}),B('s2',ST[0],-.6,0,{w:1.4,h:.5,d:1,c:'mute',t:'API'})];
+  const sumber=[B('s0',ST[0],1.75,0,{w:.9,h:.8,d:.9,c:'acc',t:'DB app',s:'db'}),B('s1',ST[0],.6,0,{w:.8,h:1,d:.1,c:'warn',t:'CSV',s:'dok'}),B('s2',ST[0],-.45,0,{w:1,h:.8,d:.9,c:'mute',t:'API',s:'server'})];
   const tahap=on=>[G('tE',ST[1],2.9,0,'Extract',on==='E'?'warn':'idx'),G('tT',ST[2],2.9,0,'Transform',on==='T'?'warn':'idx'),G('tL',ST[3],2.9,0,'Load',on==='L'?'warn':'idx')];
-  const wh=B('wh',ST[4],.2,0,{w:1.5,h:1.8,d:1.4,c:'mute',t:'warehouse'});
+  const wh=B('wh',ST[4],.2,0,{w:1.7,h:1.6,d:1.5,c:'mute',t:'warehouse',s:'gudang'});
   const bersih=Array.from({length:R8},(_,i)=>i).filter(i=>!dirty(i));
   const row=(i,x,y,c,z=0)=>B('r'+i,x,y,z,{w:.42,h:.42,d:.42,c,t:dirty(i)?'!':''});
   const awal=i=>row(i,ST[0]+1.25,1.8-src(i)*1.2,SC[src(i)],(Math.floor(i/3)-1)*.45);
@@ -487,13 +487,13 @@ S.etl={t:'Pipeline data: Extract, Transform, Load',
    {cap:`<b>Transform</b>: data dibersihkan dan diseragamkan: format tanggal dan mata uang disamakan${kt?`, ${kt} baris kotor dibuang`:''}. Semua baris kini berwarna sama karena formatnya seragam.`,
     it:[lt,...sumber,...tahap('T'),wh,...pipa,...Array.from({length:R8},(_,i)=>dirty(i)?row(i,ST[2]+Math.floor(i/3)*.7-.7,-.35,'bad',1.4):row(i,ST[2]+(bersih.indexOf(i)%2)*.5-.25,Math.floor(bersih.indexOf(i)/2)*.48-.2,'ok'))]},
    {cap:`<b>Load</b>: ${bersih.length} baris bersih dimuat ke <b>data warehouse</b>, gudang data yang dirancang untuk analisis. Kalau pipeline dijalankan ulang, hasilnya harus tetap sama (<i>idempoten</i>).`,
-    it:[lt,...sumber,...tahap('L'),B('wh',ST[4],.2,0,{w:1.5,h:1.8,d:1.4,c:'ok',t:'warehouse'}),...pipa,...bersih.map((i,j)=>row(i,ST[4]+(j%2)*.5-.25,Math.floor(j/2)*.48-.35,'ok',.95))]},
+    it:[lt,...sumber,...tahap('L'),B('wh',ST[4],.2,0,{w:1.7,h:1.6,d:1.5,c:'ok',t:'warehouse',s:'gudang'}),...pipa,...bersih.map((i,j)=>row(i,ST[4]+(j%2)*.5-.25,Math.floor(j/2)*.48-.35,'ok',.95))]},
    {cap:'Analis dan dashboard membaca dari warehouse, bukan dari database aplikasi, sehingga query berat tidak mengganggu pengguna aplikasi.',
-    it:[lt,...sumber,...tahap(),B('wh',ST[4],.2,0,{w:1.5,h:1.8,d:1.4,c:'ok',t:'warehouse'}),...[.8,1.4,1.1].map((h,j)=>B('bar'+j,ST[4]-.5+j*.5,1.6+h/2,0,{w:.38,h,d:.38,c:['acc','warn','ok'][j]})),G('dash',ST[4],3.4,0,'dashboard','idx')]},
+    it:[lt,...sumber,...tahap(),B('wh',ST[4],.2,0,{w:1.7,h:1.6,d:1.5,c:'ok',t:'warehouse',s:'gudang'}),...[.8,1.4,1.1].map((h,j)=>B('bar'+j,ST[4]-.5+j*.5,1.6+h/2,0,{w:.38,h,d:.38,c:['acc','warn','ok'][j]})),G('dash',ST[4],3.4,0,'dashboard','idx')]},
    P.mode==='stream'?{cap:'<b>Streaming</b>: setiap kejadian (pesanan, klik) mengalir saat itu juga lewat antrean pesan seperti <b>Kafka</b>. Data di dashboard hampir real-time, tetapi sistemnya lebih rumit.',
-      it:[lt,...sumber,...tahap(),B('wh',ST[4],.2,0,{w:1.5,h:1.8,d:1.4,c:'ok',t:'warehouse'}),R('p1',[ST[0]+.8,.6,0],[ST[3]+.5,.6,0],'ok'),...bersih.slice(0,5).map((i,j)=>row(i,ST[1]+j*1.1-.3,.6,'ok'))]}
+      it:[lt,...sumber,...tahap(),B('wh',ST[4],.2,0,{w:1.7,h:1.6,d:1.5,c:'ok',t:'warehouse',s:'gudang'}),R('p1',[ST[0]+.8,.6,0],[ST[3]+.5,.6,0],'ok'),...bersih.slice(0,5).map((i,j)=>row(i,ST[1]+j*1.1-.3,.6,'ok'))]}
     :{cap:'<b>Batch</b>: pipeline berjalan terjadwal, misalnya setiap malam pukul 01.00, memproses semua data sehari sekaligus. Penjadwalnya biasanya <b>Airflow</b> dalam bentuk DAG. Sederhana dan murah, tetapi datanya tertinggal sampai jadwal berikutnya.',
-      it:[lt,...sumber,...tahap(),B('wh',ST[4],.2,0,{w:1.5,h:1.8,d:1.4,c:'ok',t:'warehouse'}),...pipa,G('jam',0,-1.6,0,'⏰ setiap hari 01.00','warn'),...Array.from({length:R8},(_,i)=>awal(i))]}]}};
+      it:[lt,...sumber,...tahap(),B('wh',ST[4],.2,0,{w:1.7,h:1.6,d:1.5,c:'ok',t:'warehouse',s:'gudang'}),...pipa,G('jam',0,-1.6,0,'⏰ setiap hari 01.00','warn'),...Array.from({length:R8},(_,i)=>awal(i))]}]}};
 
 /* ---------- sorting dasar ---------- */
 S.sort={t:'Sorting dasar: bubble sort dan insertion sort langkah demi langkah',
@@ -523,7 +523,7 @@ S.sort={t:'Sorting dasar: bubble sort dan insertion sort langkah demi langkah',
 S.stack={t:'Stack: tumpukan piring, yang terakhir masuk keluar pertama (LIFO)',
  p:[{k:'n',l:'Jumlah push',t:'n',min:1,max:6,v:3},{k:'k',l:'Jumlah pop',t:'n',min:0,max:6,v:1}],
  steps:P=>{const L='ABCDEF'.slice(0,P.n).split(''),k=Math.min(P.k,P.n);
-  const p=(id,i,c='acc',x=0,y)=>B(id,x,y??i*.55-.2,0,{w:2.4,h:.45,d:2.4,c,t:id});
+  const p=(id,i,c='acc',x=0,y)=>B(id,x,y??i*.55-.3,0,{w:2.4,h:.26,d:2.4,c,t:id,s:'piring'});
   const base=[lantai(7,4),G('top',-3,2.4,0,'↓ push · ↑ pop di atas','idx')];
   const keluar=L.slice(L.length-k).reverse();
   return [
@@ -539,12 +539,12 @@ S.stack={t:'Stack: tumpukan piring, yang terakhir masuk keluar pertama (LIFO)',
 S.queue={t:'Queue: antrean kasir, yang pertama datang dilayani pertama (FIFO)',
  p:[{k:'q',l:'Antrean (pisah koma)',t:'s',v:'Ani, Budi, Citra'},{k:'k',l:'Jumlah dilayani',t:'n',min:0,max:5,v:1}],
  steps:P=>{let Q=nama(P.q,5);if(!Q.length)Q=['Ani'];const k=Math.min(P.k,Q.length);
-  const o=(id,i,c='acc')=>B('q-'+id,i*1.15-1.6,0,0,{w:.95,h:1.3,d:.9,c,t:E(id)});
+  const o=(id,i,c='acc')=>B('q-'+id,i*1.15-1.6,.05,0,{w:.8,h:1.4,d:.55,c,t:E(id),s:'orang'});
   const kasir=[lantai(10,3),B('kasir',-3.6,0,0,{w:1,h:1.6,d:1.6,c:'glass',t:'kasir'}),G('dep',-2.4,1.8,0,'depan: keluar','idx'),G('bel',2.6,1.8,0,'belakang: masuk','idx')];
   return [
    {cap:`Queue seperti antrean kasir: orang baru masuk dari <b>belakang</b>, yang dilayani selalu yang paling <b>depan</b>. ${E(Q[0])} datang pertama.`,it:[...kasir,o(Q[0],0)]},
    {cap:`${Q.slice(1).map(x=>`<code>enqueue(${E(x)})</code>`).join(' ')||'Tidak ada yang datang lagi.'} Setiap orang baru berdiri di belakang.`,it:[...kasir,...Q.map((x,i)=>o(x,i,i?'ok':'acc'))]},
-   k?{cap:`${k}× <code>dequeue()</code> melayani ${Q.slice(0,k).map(E).join(', ')}: yang datang <b>pertama</b> dilayani pertama (FIFO).${P.k>Q.length?' Dequeue berikutnya error karena antrean kosong.':''}`,it:[...kasir,...Q.map((x,i)=>i<k?B('q-'+x,-3.6,1.9+i*.2,0,{w:.95,h:1.3,d:.9,c:'warn',t:E(x)}):o(x,i))]}
+   k?{cap:`${k}× <code>dequeue()</code> melayani ${Q.slice(0,k).map(E).join(', ')}: yang datang <b>pertama</b> dilayani pertama (FIFO).${P.k>Q.length?' Dequeue berikutnya error karena antrean kosong.':''}`,it:[...kasir,...Q.map((x,i)=>i<k?B('q-'+x,-3.6+i*.25,1.9,i*.3,{w:.8,h:1.4,d:.55,c:'warn',t:E(x),s:'orang'}):o(x,i))]}
     :{cap:'Belum ada yang dilayani; antrean tetap utuh.',it:[...kasir,...Q.map((x,i)=>o(x,i))]},
    {cap:`Antrean maju: ${Q.length-k?E(Q[k])+' sekarang di depan':'antrean kosong'}. Queue dipakai untuk antrean cetak, pesan masuk, dan BFS pada graf.`,it:[...kasir,...Q.slice(k).map((x,i)=>o(x,i))]}]}};
 
@@ -717,10 +717,43 @@ window.v3dInit=function(k,title){const t=String(title||'');
 
 /* ---------- mesin panggung ---------- */
 const FACES=[['f',0,0],['b',0,180],['r',0,90],['l',0,-90],['t',90,0],['u',-90,0]];
-function blockHTML(o,U){const w=o.w*U,h=o.h*U,d=o.d*U,ln=o.t?`<b>${o.t}</b>`:'',tt=o.tt?`<i>${o.tt}</i>`:'';
+function blockHTML(o,U){if(o.s&&SHAPE[o.s])return SHAPE[o.s](o,U);const w=o.w*U,h=o.h*U,d=o.d*U,ln=o.t?`<b>${o.t}</b>`:'',tt=o.tt?`<i>${o.tt}</i>`:'';
   return FACES.map(([k,rx,ry])=>{const fw=k==='r'||k==='l'?d:w,fh=k==='t'||k==='u'?d:h,tz=k==='r'||k==='l'?w/2:k==='t'||k==='u'?h/2:d/2;
     if(o.flat&&k!=='f'&&k!=='b')return '';
     return `<div class="f3 f-${k}" style="width:${fw}px;height:${fh}px;transform:translate(-50%,-50%) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(${tz}px)">${k==='f'?ln+(o.flat?'':''):k==='t'?tt:''}</div>`}).join('')}
+/* ---------- bentuk khusus: benda dirakit dari beberapa balok kecil agar mirip aslinya ----------
+   o.s = 'orang' | 'gedung' | 'gudang' | 'server' | 'db' | 'layar' | 'dok' | 'buku' | 'piring'.
+   Ukuran w,h,d tetap menjadi kotak pembatasnya; teks ditaruh di papan nama atau layar. */
+function cub(x,y,z,w,h,d,U,cls='',txt={},rx=0){const fc=typeof cls==='function'?cls:()=>cls;
+  return `<div class="pt" style="transform:translate3d(${x*U}px,${-y*U}px,${z*U}px)${rx?` rotateX(${rx}deg)`:''}">`+FACES.map(([k,a,b])=>{
+    const fw=(k==='r'||k==='l'?d:w)*U,fh=(k==='t'||k==='u'?d:h)*U,tz=(k==='r'||k==='l'?w/2:k==='t'||k==='u'?h/2:d/2)*U;
+    return `<div class="f3 f-${k} ${fc(k)}" style="width:${fw}px;height:${fh}px;transform:translate(-50%,-50%) rotateX(${a}deg) rotateY(${b}deg) translateZ(${tz}px)">${txt[k]||''}</div>`}).join('')+'</div>'}
+function cyl(x,y,z,r,h,U,cls='',n=14){const sw=2*r*Math.tan(Math.PI/n)*U+1;let o=`<div class="pt" style="transform:translate3d(${x*U}px,${-y*U}px,${z*U}px)">`;
+  for(let i=0;i<n;i++)o+=`<div class="f3 cyl ${i%2?'f-r':'f-f'} ${cls}" style="width:${sw}px;height:${h*U}px;transform:translate(-50%,-50%) rotateY(${i*360/n}deg) translateZ(${r*U*Math.cos(Math.PI/n)}px)"></div>`;
+  for(const [k,a] of [['t',90],['u',-90]])o+=`<div class="f3 cap f-${k} ${cls}" style="width:${2*r*U}px;height:${2*r*U}px;transform:translate(-50%,-50%) rotateX(${a}deg) translateZ(${h/2*U}px)"></div>`;
+  return o+'</div>'}
+const papan=(o,U,y,z,mw)=>o.t?cub(0,y,z,Math.min(mw,Math.max(.7,String(o.t).replace(/<[^>]*>/g,'').length*.14)),.3,.04,U,k=>k==='f'?'sign':'sign dark',{f:`<b>${o.t}</b>`}):'';
+const SHAPE={
+ orang(o,U){const {w,h,d}=o,hs=Math.min(w*.46,h*.26),lg=h*.36,ts=h*.33,y0=-h/2;
+  return cub(-w*.13,y0+lg/2,0,w*.2,lg,d*.45,U,'dark')+cub(w*.13,y0+lg/2,0,w*.2,lg,d*.45,U,'dark')
+   +cub(0,y0+lg+ts/2,0,w*.6,ts,d*.55,U)+cub(-w*.4,y0+lg+ts*.55,0,w*.16,ts*.9,d*.4,U)+cub(w*.4,y0+lg+ts*.55,0,w*.16,ts*.9,d*.4,U)
+   +cub(0,y0+lg+ts+hs/2+h*.02,0,hs,hs,hs,U,k=>k==='t'?'hair':k==='b'?'hair':'sk')+papan(o,U,y0+.18,d*.42,w*1.6)},
+ gedung(o,U){const {w,h,d}=o,rf=Math.min(.14,h*.06);
+  return cub(0,-rf/2,0,w,h-rf,d,U,k=>k==='t'||k==='u'?'':'win')+cub(0,h/2-rf/2,0,w*1.08,rf,d*1.08,U,'dark')
+   +cub(0,-h/2+Math.min(.5,h*.18)/2,d/2+.01,Math.min(.4,w*.3),Math.min(.5,h*.18),.02,U,'door')+papan(o,U,-h/2+Math.min(.5,h*.18)+.25,d/2+.04,w*1.1)},
+ gudang(o,U){const {w,h,d}=o,rf=Math.min(.16,h*.08);
+  return cub(0,-rf/2,0,w,h-rf,d,U,k=>k==='f'?'roll':'')+cub(0,h/2-rf/2,0,w*1.06,rf,d*1.08,U,'dark')+papan(o,U,h*.18,d/2+.04,w*1.1)},
+ server(o,U){const {w,h,d}=o,n=h>1.2?3:2,g=.06,uh=(h-g*(n-1))/n;let s='';
+  for(let i=0;i<n;i++)s+=cub(0,-h/2+uh/2+i*(uh+g),0,w,uh,d,U,k=>k==='f'?'led':k==='t'||k==='u'?'':'dark');
+  return s+papan(o,U,-h/2+uh/2,d/2+.04,w*1.05)},
+ db(o,U){const {w,h,d}=o,r=Math.min(w,d)/2,n=3,g=.05,uh=(h-g*(n-1))/n;let s='';
+  for(let i=0;i<n;i++)s+=cyl(0,-h/2+uh/2+i*(uh+g),0,r,uh,U);
+  return s+papan(o,U,-h/2+uh/2,r+.04,w*1.1)},
+ layar(o,U){const {w,h,d}=o,sh=h*.72,ft=h*.06,nk=h-sh-ft;
+  return cub(0,h/2-sh/2,0,w,sh,d*.22,U,k=>k==='f'?'scr':'dark',{f:o.t?`<b>${o.t}</b>`:''})+cub(0,-h/2+ft+nk/2,0,w*.12,nk,d*.12,U,'dark')+cub(0,-h/2+ft/2,0,w*.5,ft,d*.6,U,'dark')},
+ dok(o,U){const {w,h,d}=o;return cub(0,0,0,w,h,Math.min(d,.18),U,k=>k==='f'||k==='b'?'doc':'doc',{f:o.t?`<b>${o.t}</b>`:''})},
+ buku(o,U){const {w,h,d}=o;return cub(0,0,0,w,h,d,U,k=>k==='r'||k==='t'||k==='u'?'doc':'',{f:o.t?`<b>${o.t}</b>`:''})},
+ piring(o,U){const {w,h,d}=o,r=Math.min(w,d)/2;return cyl(0,0,0,r,h,U,'',18)+papan(o,U,0,r+.02,w)}};
 function place(o,U){return `translate3d(${o.x*U}px,${-o.y*U}px,${o.z*U}px) rotateY(${o.ry||0}deg) rotateZ(${-(o.rz||0)}deg)`}
 
 /* label pendek tiap langkah untuk garis waktu (dipakai bila jumlah langkah cocok) */
@@ -785,7 +818,7 @@ window.V3D=function(host,key,init,opt){const sc=S[key];if(!sc)return;const mini=
       if(fresh){e=document.createElement('div');els.set(o.id,e);(o.tag?tg:w).appendChild(e)}
       if(o.tag){e.className=`t3 ${o.c?'c-'+o.c:''}`;e.innerHTML=o.t;e._tag=1;e._p=[o.x,o.y,o.z];
         if(!rm&&(fresh||prevT!==o.t)){e.classList.add('pop')}e._t=o.t}
-      else{e.className=`b3 c-${o.c}${o.ball?' ball':''}${o.rod?' rod':''}${o.flat?' flat':''}`;e.innerHTML=blockHTML(o,U);e.style.transform=place(o,U);
+      else{e.className=`b3 c-${o.c}${o.s?' s-'+o.s:''}${o.ball?' ball':''}${o.rod?' rod':''}${o.flat?' flat':''}`;e.innerHTML=blockHTML(o,U);e.style.transform=place(o,U);
         /* berubah warna atau isi: kilau sebentar agar mata tertuju ke sana */
         if(!fresh&&!rm&&(prevC!==o.c||prevT!==o.t)&&o.c!=='floor'){e.classList.add('pulse');setTimeout(()=>e.classList.remove('pulse'),950)}
         e._c=o.c;e._t=o.t}
