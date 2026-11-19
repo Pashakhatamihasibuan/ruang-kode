@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Besar 2: Aplikasi e-commerce Android native dengan Compose dan arsitektur modular · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Masalah. Brand fesyen lokal dengan 200 ribu pengguna aktif ingin aplikasi Android yang cepat di HP entry-level, tetap bisa menjelajah katalog saat…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/besar-2-aplikasi-e-commerce-android-native-dengan-compose-dan-arsitekt">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Besar 2: Aplikasi e-commerce Android native dengan Compose dan arsitektur modular · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Masalah. Brand fesyen lokal dengan 200 ribu pengguna aktif ingin aplikasi Android yang cepat di HP entry-level, tetap bisa menjelajah katalog saat…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/besar-2-aplikasi-e-commerce-android-native-dengan-compose-dan-arsitekt"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Besar 2: Aplikasi e-commerce Android native dengan Compose dan arsitektur modular", "description": "Masalah. Brand fesyen lokal dengan 200 ribu pengguna aktif ingin aplikasi Android yang cepat di HP entry-level, tetap bisa menjelajah katalog saat…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/besar-2-aplikasi-e-commerce-android-native-dengan-compose-dan-arsitekt", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Besar 2: Aplikasi e-commerce Android native dengan Compose dan arsitektur modular", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/besar-2-aplikasi-e-commerce-android-native-dengan-compose-dan-arsitekt"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 8</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 8 · Konsep &amp; kode</div><h1>Besar 2: Aplikasi e-commerce Android native dengan Compose dan arsitektur modular</h1><a class="cta" href="/#proj-8-8">Buka versi interaktif</a>
+<p><b>Masalah.</b> Brand fesyen lokal dengan 200 ribu pengguna aktif ingin aplikasi Android yang cepat di HP entry-level, tetap bisa menjelajah katalog saat offline, dan checkout aman dengan payment gateway Indonesia.</p>
+<p><b>Fitur wajib:</b><br>1. Modularisasi per fitur dan core (build lebih cepat, tim paralel)<br>2. Katalog offline-first: Paging 3 + RemoteMediator + Room<br>3. Checkout dengan idempotency key dan status final dari webhook server, bukan dari klien<br>4. Hilt untuk DI, Compose + Material 3, navigasi type-safe<br>5. Performa: Baseline Profiles, R8, pengukuran dengan Macrobenchmark</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. Buat modul core dan design system (warna, tipografi, komponen) lebih dulu.<br>2. Implementasikan katalog dengan <code>RemoteMediator</code>; uji mode pesawat.<br>3. Bangun keranjang (Room) dan checkout dengan <code>idempotencyKey</code> per sesi.<br>4. Integrasi payment gateway; tampilkan "menunggu konfirmasi" sampai server menerima webhook.<br>5. Buat Baseline Profile dan ukur startup sebelum/sesudah dengan Macrobenchmark.</p>
+<p><b>Standar industri yang dinilai:</b> offline-first, modular, checkout idempoten dan tidak memercayai status dari klien, startup diukur dan dioptimasi, ANR rate &lt; 0,47% dan crash rate &lt; 1,09% (ambang Android vitals)</p>
+<div class="tw"><table><caption>Arsitektur dan stack (Kotlin 2.x, Jetpack Compose, Material 3, Hilt, Room, Paging 3, Retrofit/OkHttp + kotlinx.serialization, Navigation Compose, Coil, Midtrans/Xendit SDK, Firebase, Macrobenchmark)</caption><thead><tr><th>Bagian</th><th>Isi</th></tr></thead><tbody><tr><td>Modul</td><td>:app, :core:{model,network,database,designsystem}, :feature:{katalog,keranjang,checkout,akun}</td></tr><tr><td>Data</td><td>Room sebagai single source of truth; jaringan hanya mengisi DB</td></tr><tr><td>Pembayaran</td><td>Server membuat transaksi gateway; aplikasi membuka Snap/SDK; status lunas dari webhook</td></tr><tr><td>Keamanan</td><td>Play Integrity, token di EncryptedSharedPreferences/DataStore + Keystore, R8 obfuscation</td></tr><tr><td>Kualitas</td><td>Unit test ViewModel (Turbine), Compose UI test, screenshot test (Roborazzi), Macrobenchmark startup</td></tr><tr><td>Rilis</td><td>App Bundle, Play internal → closed → produksi bertahap; Android vitals dipantau</td></tr></tbody></table></div>
+<div class="lbl">KODE</div><pre><code>// settings.gradle.kts — modularisasi
+include(&quot;:app&quot;, &quot;:core:model&quot;, &quot;:core:network&quot;, &quot;:core:database&quot;, &quot;:core:designsystem&quot;,
+        &quot;:feature:katalog&quot;, &quot;:feature:keranjang&quot;, &quot;:feature:checkout&quot;, &quot;:feature:akun&quot;)
+
+// core/database/ProdukRemoteMediator.kt  (Paging 3: offline-first, Room sebagai sumber kebenaran)
+@OptIn(ExperimentalPagingApi::class)
+class ProdukRemoteMediator(
+    private val query: String, private val api: TokoApi, private val db: TokoDatabase,
+) : RemoteMediator&lt;Int, ProdukEntity&gt;() {
+    override suspend fun load(loadType: LoadType, state: PagingState&lt;Int, ProdukEntity&gt;): MediatorResult {
+        val halaman = when (loadType) {
+            LoadType.REFRESH -&gt; 1
+            LoadType.PREPEND -&gt; return MediatorResult.Success(endOfPaginationReached = true)
+            LoadType.APPEND -&gt; db.kunciDao().untuk(query)?.berikutnya ?: return MediatorResult.Success(true)
+        }
+        return try {
+            val res = api.produk(query, halaman, state.config.pageSize)
+            db.withTransaction {
+                if (loadType == LoadType.REFRESH) { db.produkDao().hapusQuery(query); db.kunciDao().hapus(query) }
+                db.kunciDao().simpan(KunciHalaman(query, if (res.hasNext) halaman + 1 else null))
+                db.produkDao().simpanSemua(res.items.map { it.keEntity(query) })
+            }
+            MediatorResult.Success(endOfPaginationReached = !res.hasNext)
+        } catch (e: IOException) { MediatorResult.Error(e) } catch (e: HttpException) { MediatorResult.Error(e) }
+    }
+}
+
+// feature/checkout/CheckoutViewModel.kt  (Hilt + UDF)
+@HiltViewModel
+class CheckoutViewModel @Inject constructor(
+    private val keranjang: KeranjangRepository,
+    private val bayar: PembayaranRepository,
+    private val analitik: Analitik,
+) : ViewModel() {
+    private val _ui = MutableStateFlow&lt;CheckoutUi&gt;(CheckoutUi.Memuat)
+    val ui = _ui.asStateFlow()
+    private val idempotencyKey = UUID.randomUUID().toString()     // satu kunci per sesi checkout
+
+    fun bayar(metode: MetodeBayar) = viewModelScope.launch {
+        _ui.value = CheckoutUi.Memproses
+        analitik.catat(&quot;checkout_bayar&quot;, mapOf(&quot;metode&quot; to metode.kode))
+        bayar.buatTransaksi(keranjang.snapshot(), metode, idempotencyKey)
+            .onSuccess { _ui.value = CheckoutUi.LanjutBayar(it.snapToken) }       // buka Snap/SDK gateway
+            .onFailure { _ui.value = CheckoutUi.Gagal(it.pesanUntukPengguna()) }
+    }
+
+    fun hasilGateway(status: StatusGateway) {
+        // Status final TIDAK dipercaya dari klien: aplikasi menunggu webhook server lewat endpoint status pesanan.
+        viewModelScope.launch { _ui.value = CheckoutUi.MenungguKonfirmasi(bayar.pantauStatus(status.orderId)) }
+    }
+}
+
+// feature/katalog/KatalogScreen.kt
+@Composable
+fun KatalogScreen(vm: KatalogViewModel = hiltViewModel(), onProduk: (String) -&gt; Unit) {
+    val produk = vm.produk.collectAsLazyPagingItems()
+    LazyVerticalGrid(columns = GridCells.Adaptive(160.dp), contentPadding = PaddingValues(16.dp)) {
+        items(produk.itemCount, key = produk.itemKey { it.id }) { i -&gt;
+            produk[i]?.let { KartuProduk(it, onClick = { onProduk(it.id) }) } ?: KartuProdukPlaceholder()
+        }
+        if (produk.loadState.append is LoadState.Error)
+            item(span = { GridItemSpan(maxLineSpan) }) { TombolCobaLagi(onClick = produk::retry) }
+    }
+}
+
+// app/build.gradle.kts (potongan kualitas rilis)
+// android { buildTypes { release { isMinifyEnabled = true; isShrinkResources = true } } }
+// dependencies { baselineProfile(project(&quot;:baselineprofile&quot;)); implementation(libs.androidx.profileinstaller) }
+// Play Integrity API diperiksa di server sebelum promo/voucher besar diberikan</code></pre>
+<h2>Poin penting</h2><ul><li>Proyek besar: Aplikasi e-commerce Android native dengan Compose dan arsitektur modular.</li><li>Stack: Kotlin 2.x, Jetpack Compose, Material 3, Hilt, Room, Paging 3, Retrofit/OkHttp + kotlinx.serialization, Navigation Compose, Coil, Midtrans/Xendit SDK, Firebase, Macrobenchmark.</li><li>Berkas inti penyelesaian ada di bawah; sisanya mengikuti pola yang sama.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa status pembayaran lunas tidak diambil dari callback SDK di aplikasi?</summary><p class="ok">Jawaban: Callback di klien bisa dimanipulasi atau hilang; sumber kebenaran adalah webhook gateway ke server</p><p>Jangan percaya klien untuk uang.</p></details>
+<a class="cta" href="/#proj-8-8">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/besar-1-aplikasi-ojek-dan-pesan-antar-dengan-pelacakan-real-time-flutt">Besar 1: Aplikasi ojek dan pesan antar dengan pelacakan real-time (Flutter)</a></p><p>Berikutnya: <a href="/belajar/proj/besar-3-reservasi-klinik-android-dan-ios-dengan-compose-multiplatform">Besar 3: Reservasi klinik Android dan iOS dengan Compose Multiplatform</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

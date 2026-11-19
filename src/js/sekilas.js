@@ -54,7 +54,7 @@ const ANALOGI=[
  [/responsif|responsive|media query|breakpoint|mobile-first/i,'Desain responsif itu seperti air yang mengikuti bentuk wadahnya: tampilan yang sama menyesuaikan diri di layar ponsel, tablet, dan laptop.'],
  [/selector|selektor|specificity|spesifisitas|cascade/i,'Selector CSS itu seperti alamat surat: menentukan elemen mana yang akan diberi gaya. Spesifisitas menentukan surat mana yang menang jika ada dua alamat untuk elemen yang sama.'],
  [/css|warna|tipografi|font|style|gaya/i,'CSS itu seperti cat, wallpaper, dan perabot rumah: HTML membangun ruangannya, CSS membuatnya enak dipandang.'],
- [/dom|event|klik|interaksi|addeventlistener/i,'DOM dan event itu seperti saklar dan lampu: ketika pengguna menekan sesuatu (event), JavaScript menyalakan perubahan di halaman (DOM).'],
+ [/\bdom\b|\bevent\b|\bklik|interaksi|addeventlistener/i,'DOM dan event itu seperti saklar dan lampu: ketika pengguna menekan sesuatu (event), JavaScript menyalakan perubahan di halaman (DOM).'],
  [/javascript|\bjs\b/i,'JavaScript itu seperti listrik di dalam rumah: membuat halaman yang tadinya diam bisa bereaksi, menghitung, dan berubah.'],
  [/state|usestate|reaktif|reactive|ref\(|signal/i,'State itu seperti papan skor pertandingan: ketika angkanya berubah, tampilan ikut diperbarui otomatis tanpa kita menggambar ulang semuanya.'],
  [/props|komponen|component|widget|composable/i,'Komponen itu seperti balok LEGO: potongan tampilan kecil yang dirakit menjadi halaman utuh, dan bisa dipakai ulang di banyak tempat.'],
@@ -100,7 +100,7 @@ const ANALOGI=[
 const strip=s=>String(s||'').replace(/<[^>]+>/g,'').trim();
 const kecil=s=>s?s.charAt(0).toLowerCase()+s.slice(1):s;
 const titik=s=>/[.!?]$/.test(s)?s:s+'.';
-function analogi(title,mod){for(const [rx,t] of ANALOGI)if(rx.test(title))return t;for(const [rx,t] of ANALOGI)if(rx.test(mod))return t;return ''}
+function analogi(title,mod){if(/^(Mini|Besar) \d+:/.test(title))return '';for(const [rx,t] of ANALOGI)if(rx.test(title))return t;for(const [rx,t] of ANALOGI)if(rx.test(mod))return t;return ''}
 window.sekilasHTML=function(x,y,points){const l=y.l,m=y.m||x.m;if(!m)return '';
   const t=strip(x.title),md=strip(m.d),an=analogi(t,strip(m.t));
   const pos=x.li===0?'Pelajaran ini membuka modul':'Pelajaran ini bagian dari modul';

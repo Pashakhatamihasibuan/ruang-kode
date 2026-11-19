@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mini 5: Aplikasi resep dengan navigasi, deep link, dan favorit · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Masalah. Blog resep populer ingin punya aplikasi. Tautan resep yang dibagikan di WhatsApp harus langsung membuka halaman resep di aplikasi, dan pengguna…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/mini-5-aplikasi-resep-dengan-navigasi-deep-link-dan-favorit">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Mini 5: Aplikasi resep dengan navigasi, deep link, dan favorit · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Masalah. Blog resep populer ingin punya aplikasi. Tautan resep yang dibagikan di WhatsApp harus langsung membuka halaman resep di aplikasi, dan pengguna…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/mini-5-aplikasi-resep-dengan-navigasi-deep-link-dan-favorit"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Mini 5: Aplikasi resep dengan navigasi, deep link, dan favorit", "description": "Masalah. Blog resep populer ingin punya aplikasi. Tautan resep yang dibagikan di WhatsApp harus langsung membuka halaman resep di aplikasi, dan pengguna…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-5-aplikasi-resep-dengan-navigasi-deep-link-dan-favorit", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Mini 5: Aplikasi resep dengan navigasi, deep link, dan favorit", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-5-aplikasi-resep-dengan-navigasi-deep-link-dan-favorit"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 8</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 8 · Konsep &amp; kode</div><h1>Mini 5: Aplikasi resep dengan navigasi, deep link, dan favorit</h1><a class="cta" href="/#proj-8-5">Buka versi interaktif</a>
+<p><b>Masalah.</b> Blog resep populer ingin punya aplikasi. Tautan resep yang dibagikan di WhatsApp harus langsung membuka halaman resep di aplikasi, dan pengguna bisa menyimpan favorit tanpa login.</p>
+<p><b>Fitur wajib:</b><br>1. Navigasi bawah dua tab yang mempertahankan posisi scroll (StatefulShellRoute)<br>2. Deep link https://resepku.id/resep/{slug} untuk Android App Links dan iOS Universal Links<br>3. Favorit tersimpan lokal dan langsung memperbarui UI<br>4. Halaman detail dengan SliverAppBar, Hero image, dan tombol bagikan<br>5. Halaman 404 untuk tautan yang tidak dikenal</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. <code>StatefulShellRoute.indexedStack</code> dengan dua <code>StatefulShellBranch</code>.<br>2. <code>GoRoute(path: 'resep/:slug')</code> + intent-filter <code>autoVerify</code> + Associated Domains.<br>3. <code>FavoritStore extends ChangeNotifier</code>; <code>notifyListeners()</code> sebelum menulis ke disk.<br>4. <code>CustomScrollView</code> + <code>SliverAppBar.large</code>; <code>CachedNetworkImage</code> untuk hemat kuota.<br>5. <code>errorBuilder</code> di GoRouter.</p>
+<p><b>Kembangkan sendiri:</b> tambahkan mode memasak (layar tidak mati, langkah besar satu per satu), pengatur porsi yang menghitung ulang bahan, dan pencarian berdasarkan bahan di kulkas.</p>
+<div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Navigasi bawah dua tab yang mempertahankan posisi scroll (StatefulShellRoute)</td><td>StatefulShellRoute.indexedStack dengan dua StatefulShellBranch.</td></tr><tr><td>Deep link https://resepku.id/resep/{slug} untuk Android App Links dan iOS Universal Links</td><td>GoRoute(path: &#x27;resep/:slug&#x27;) + intent-filter autoVerify + Associated Domains.</td></tr><tr><td>Favorit tersimpan lokal dan langsung memperbarui UI</td><td>FavoritStore extends ChangeNotifier; notifyListeners() sebelum menulis ke disk.</td></tr><tr><td>Halaman detail dengan SliverAppBar, Hero image, dan tombol bagikan</td><td>CustomScrollView + SliverAppBar.large; CachedNetworkImage untuk hemat kuota.</td></tr><tr><td>Halaman 404 untuk tautan yang tidak dikenal</td><td>errorBuilder di GoRouter.</td></tr></tbody></table></div>
+<div class="lbl">KODE</div><pre><code>// lib/router.dart  (go_router + deep link: https://resepku.id/resep/rendang)
+final router = GoRouter(
+  initialLocation: &#x27;/&#x27;,
+  routes: [
+    StatefulShellRoute.indexedStack(
+      builder: (context, state, shell) =&gt; KerangkaNavigasi(shell: shell),   // NavigationBar bawah
+      branches: [
+        StatefulShellBranch(routes: [
+          GoRoute(path: &#x27;/&#x27;, builder: (_, __) =&gt; const BerandaResep(), routes: [
+            GoRoute(path: &#x27;resep/:slug&#x27;, builder: (_, s) =&gt; DetailResep(slug: s.pathParameters[&#x27;slug&#x27;]!)),
+          ]),
+        ]),
+        StatefulShellBranch(routes: [
+          GoRoute(path: &#x27;/favorit&#x27;, builder: (_, __) =&gt; const HalamanFavorit()),
+        ]),
+      ],
+    ),
+  ],
+  errorBuilder: (_, s) =&gt; HalamanTidakDitemukan(path: s.uri.toString()),
+);
+
+// lib/data/favorit_store.dart  (shared_preferences; cukup untuk daftar id)
+class FavoritStore extends ChangeNotifier {
+  FavoritStore(this._prefs) : _ids = (_prefs.getStringList(_kunci) ?? []).toSet();
+  static const _kunci = &#x27;favorit_v1&#x27;;
+  final SharedPreferences _prefs;
+  final Set&lt;String&gt; _ids;
+
+  bool ada(String slug) =&gt; _ids.contains(slug);
+  Set&lt;String&gt; get semua =&gt; Set.unmodifiable(_ids);
+
+  Future&lt;void&gt; toggle(String slug) async {
+    _ids.contains(slug) ? _ids.remove(slug) : _ids.add(slug);
+    notifyListeners();                                   // UI langsung berubah
+    await _prefs.setStringList(_kunci, _ids.toList());
+  }
+}
+
+// lib/ui/detail_resep.dart
+class DetailResep extends StatelessWidget {
+  const DetailResep({super.key, required this.slug});
+  final String slug;
+
+  @override
+  Widget build(BuildContext context) {
+    final fav = context.watch&lt;FavoritStore&gt;();
+    return FutureBuilder&lt;Resep&gt;(
+      future: context.read&lt;ResepRepo&gt;().ambil(slug),
+      builder: (context, snap) {
+        if (snap.hasError) return const PesanError(pesan: &#x27;Resep tidak bisa dimuat.&#x27;);
+        if (!snap.hasData) return const Center(child: CircularProgressIndicator());
+        final r = snap.data!;
+        return Scaffold(
+          body: CustomScrollView(slivers: [
+            SliverAppBar.large(
+              title: Text(r.judul),
+              actions: [
+                IconButton(
+                  tooltip: fav.ada(slug) ? &#x27;Hapus dari favorit&#x27; : &#x27;Simpan ke favorit&#x27;,
+                  icon: Icon(fav.ada(slug) ? Icons.favorite : Icons.favorite_border),
+                  onPressed: () =&gt; fav.toggle(slug),
+                ),
+                IconButton(tooltip: &#x27;Bagikan&#x27;, icon: const Icon(Icons.share),
+                    onPressed: () =&gt; SharePlus.instance.share(ShareParams(uri: Uri.parse(&#x27;https://resepku.id/resep/$slug&#x27;)))),
+              ],
+            ),
+            SliverToBoxAdapter(child: Hero(tag: &#x27;foto-$slug&#x27;, child: CachedNetworkImage(imageUrl: r.foto, height: 220, fit: BoxFit.cover))),
+            SliverPadding(padding: const EdgeInsets.all(16), sliver: SliverList.list(children: [
+              Text(&#x27;${r.porsi} porsi · ${r.menit} menit&#x27;, style: Theme.of(context).textTheme.labelLarge),
+              const SizedBox(height: 12),
+              Text(&#x27;Bahan&#x27;, style: Theme.of(context).textTheme.titleMedium),
+              for (final b in r.bahan) CheckboxListTile(value: false, onChanged: (_) {}, title: Text(b)),
+              Text(&#x27;Langkah&#x27;, style: Theme.of(context).textTheme.titleMedium),
+              for (final (i, l) in r.langkah.indexed) ListTile(leading: CircleAvatar(child: Text(&#x27;${i + 1}&#x27;)), title: Text(l)),
+            ])),
+          ]),
+        );
+      },
+    );
+  }
+}
+
+// android/app/src/main/AndroidManifest.xml (App Links)
+// &lt;intent-filter android:autoVerify=&quot;true&quot;&gt;
+//   &lt;action android:name=&quot;android.intent.action.VIEW&quot;/&gt;
+//   &lt;category android:name=&quot;android.intent.category.DEFAULT&quot;/&gt;&lt;category android:name=&quot;android.intent.category.BROWSABLE&quot;/&gt;
+//   &lt;data android:scheme=&quot;https&quot; android:host=&quot;resepku.id&quot; android:pathPrefix=&quot;/resep&quot;/&gt;
+// &lt;/intent-filter&gt;
+// iOS: Associated Domains &quot;applinks:resepku.id&quot; + apple-app-site-association di server</code></pre>
+<h2>Poin penting</h2><ul><li>Proyek mini: Aplikasi resep dengan navigasi, deep link, dan favorit.</li><li>Navigasi bawah dua tab yang mempertahankan posisi scroll (StatefulShellRoute)</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Apa fungsi android:autoVerify=&quot;true&quot; pada intent-filter App Links?</summary><p class="ok">Jawaban: Android memverifikasi domain lewat assetlinks.json sehingga tautan langsung membuka aplikasi tanpa dialog pilihan</p><p>Verifikasi kepemilikan domain.</p></details>
+<a class="cta" href="/#proj-8-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-4-formulir-pendaftaran-multi-langkah-dengan-validasi-dan-draf-oto">Mini 4: Formulir pendaftaran multi-langkah dengan validasi dan draf otomatis</a></p><p>Berikutnya: <a href="/belajar/proj/mini-6-konverter-kurs-lintas-platform-dengan-kotlin-multiplatform">Mini 6: Konverter kurs lintas platform dengan Kotlin Multiplatform</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

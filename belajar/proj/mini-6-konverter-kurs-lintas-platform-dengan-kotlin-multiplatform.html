@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mini 6: Konverter kurs lintas platform dengan Kotlin Multiplatform · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Masalah. Agen perjalanan umrah dan wisata butuh konverter kurs untuk Android dan iOS yang tetap jalan di pesawat (offline), memakai API gratis dengan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/mini-6-konverter-kurs-lintas-platform-dengan-kotlin-multiplatform">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Mini 6: Konverter kurs lintas platform dengan Kotlin Multiplatform · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Masalah. Agen perjalanan umrah dan wisata butuh konverter kurs untuk Android dan iOS yang tetap jalan di pesawat (offline), memakai API gratis dengan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/mini-6-konverter-kurs-lintas-platform-dengan-kotlin-multiplatform"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Mini 6: Konverter kurs lintas platform dengan Kotlin Multiplatform", "description": "Masalah. Agen perjalanan umrah dan wisata butuh konverter kurs untuk Android dan iOS yang tetap jalan di pesawat (offline), memakai API gratis dengan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-6-konverter-kurs-lintas-platform-dengan-kotlin-multiplatform", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Mini 6: Konverter kurs lintas platform dengan Kotlin Multiplatform", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-6-konverter-kurs-lintas-platform-dengan-kotlin-multiplatform"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 8</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 8 · Konsep &amp; kode</div><h1>Mini 6: Konverter kurs lintas platform dengan Kotlin Multiplatform</h1><a class="cta" href="/#proj-8-6">Buka versi interaktif</a>
+<p><b>Masalah.</b> Agen perjalanan umrah dan wisata butuh konverter kurs untuk Android dan iOS yang tetap jalan di pesawat (offline), memakai API gratis dengan kuota terbatas, dan logika yang sama persis di kedua platform.</p>
+<p><b>Fitur wajib:</b><br>1. Logika konversi dan format rupiah di <code>commonMain</code><br>2. Cache-first: tampilkan kurs tersimpan (SQLDelight), segarkan maksimal 1x per jam<br>3. Status offline yang jelas kepada pengguna<br>4. ViewModel bersama untuk Android (Compose) dan iOS (SwiftUI)<br>5. Tes di <code>commonTest</code> yang berjalan di semua target</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. <code>Konverter</code> menyimpan peta 1 IDR = x mata uang; error jelas untuk kode tak dikenal.<br>2. <code>pantau()</code> mengalirkan data DB; <code>segarkan()</code> mengecek umur cache sebelum memanggil API.<br>3. Gagal jaringan → <code>offline = true</code> dan pesan "menampilkan kurs tersimpan".<br>4. <code>combine(repo.pantau(), status)</code> menjadi satu <code>StateFlow&lt;KursUi&gt;</code>.<br>5. Jam disuntikkan sebagai fungsi agar tes cache tidak bergantung waktu nyata.</p>
+<p><b>Kembangkan sendiri:</b> tambahkan widget layar utama Android (Glance) dan iOS (WidgetKit) yang menampilkan 3 kurs favorit.</p>
+<div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Logika konversi dan format rupiah di commonMain</td><td>Konverter menyimpan peta 1 IDR = x mata uang; error jelas untuk kode tak dikenal.</td></tr><tr><td>Cache-first: tampilkan kurs tersimpan (SQLDelight), segarkan maksimal 1x per jam</td><td>pantau() mengalirkan data DB; segarkan() mengecek umur cache sebelum memanggil API.</td></tr><tr><td>Status offline yang jelas kepada pengguna</td><td>Gagal jaringan → offline = true dan pesan &quot;menampilkan kurs tersimpan&quot;.</td></tr><tr><td>ViewModel bersama untuk Android (Compose) dan iOS (SwiftUI)</td><td>combine(repo.pantau(), status) menjadi satu StateFlow&lt;KursUi&gt;.</td></tr><tr><td>Tes di commonTest yang berjalan di semua target</td><td>Jam disuntikkan sebagai fungsi agar tes cache tidak bergantung waktu nyata.</td></tr></tbody></table></div>
+<div class="lbl">KODE</div><pre><code>// shared/src/commonMain/kotlin/Konverter.kt
+class Konverter(private val perIdr: Map&lt;String, Double&gt;) {          // 1 IDR = x mata uang asing
+    fun dariRupiah(rupiah: Long, kode: String): Double =
+        rupiah * (perIdr[kode] ?: error(&quot;Kurs $kode tidak tersedia&quot;))
+    fun keRupiah(nilai: Double, kode: String): Double =
+        nilai / (perIdr[kode] ?: error(&quot;Kurs $kode tidak tersedia&quot;))
+}
+
+fun formatRupiah(n: Long): String {
+    val s = kotlin.math.abs(n).toString().reversed().chunked(3).joinToString(&quot;.&quot;).reversed()
+    return (if (n &lt; 0) &quot;-Rp&quot; else &quot;Rp&quot;) + s
+}
+
+// shared/src/commonMain/kotlin/KursRepository.kt  (cache-first: tampil dulu dari DB, lalu segarkan)
+class KursRepository(
+    private val api: KursApi,
+    private val db: KursDatabase,
+    private val jam: () -&gt; Long = { Clock.System.now().toEpochMilliseconds() },
+) {
+    private val umurMaks = 60 * 60 * 1000L                         // API gratis: hemat kuota, maks 1x per jam
+
+    fun pantau(): Flow&lt;List&lt;Kurs&gt;&gt; = db.kursQueries.semua().asFlow().mapToList(Dispatchers.Default)
+        .map { rows -&gt; rows.map { Kurs(it.kode, it.nilai, it.diperbarui) } }
+
+    suspend fun segarkan(paksa: Boolean = false): Result&lt;Unit&gt; = runCatching {
+        val terakhir = db.kursQueries.terakhirDiperbarui().executeAsOneOrNull()?.max ?: 0L
+        if (!paksa &amp;&amp; jam() - terakhir &lt; umurMaks) return@runCatching
+        val res = api.kurs(&quot;IDR&quot;)
+        db.transaction { res.rates.forEach { (k, v) -&gt; db.kursQueries.simpan(k, v, jam()) } }
+    }
+}
+
+// shared/src/commonMain/kotlin/KursViewModel.kt  (dipakai Android &amp; iOS)
+data class KursUi(val daftar: List&lt;Kurs&gt; = emptyList(), val memuat: Boolean = false, val pesan: String? = null, val offline: Boolean = false)
+
+class KursViewModel(private val repo: KursRepository) : ViewModel() {
+    private val status = MutableStateFlow(KursUi())
+    val state: StateFlow&lt;KursUi&gt; = combine(repo.pantau(), status) { d, s -&gt; s.copy(daftar = d) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), KursUi())
+
+    init { segarkan() }
+
+    fun segarkan(paksa: Boolean = false) = viewModelScope.launch {
+        status.update { it.copy(memuat = true, pesan = null) }
+        repo.segarkan(paksa)
+            .onSuccess { status.update { it.copy(memuat = false, offline = false) } }
+            .onFailure { status.update { it.copy(memuat = false, offline = true, pesan = &quot;Offline: menampilkan kurs tersimpan&quot;) } }
+    }
+}
+
+// shared/src/commonTest/kotlin/KonverterTest.kt  (jalan di JVM, Android, dan iOS simulator)
+class KonverterTest {
+    private val k = Konverter(mapOf(&quot;USD&quot; to 0.0000625, &quot;SGD&quot; to 0.0000842))
+    @Test fun dariRupiah() = assertEquals(62.5, k.dariRupiah(1_000_000, &quot;USD&quot;), 0.0001)
+    @Test fun keRupiah() = assertEquals(1_000_000.0, k.keRupiah(62.5, &quot;USD&quot;), 0.5)
+    @Test fun formatNegatif() = assertEquals(&quot;-Rp1.250.000&quot;, formatRupiah(-1_250_000))
+    @Test fun kodeTakDikenal() { assertFailsWith&lt;IllegalStateException&gt; { k.dariRupiah(1, &quot;XYZ&quot;) } }
+    @Test fun cacheMasihSegar() = runTest {
+        val api = ApiPalsu(); val repo = KursRepository(api, dbMemori(), jam = { 10_000L })
+        repo.segarkan(); repo.segarkan()
+        assertEquals(1, api.jumlahPanggilan)                       // panggilan kedua memakai cache
+    }
+}</code></pre>
+<h2>Poin penting</h2><ul><li>Proyek mini: Konverter kurs lintas platform dengan Kotlin Multiplatform.</li><li>Logika konversi dan format rupiah di commonMain</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa repository memeriksa umur cache sebelum memanggil API?</summary><p class="ok">Jawaban: Menghemat kuota API gratis dan data pengguna; kurs tidak berubah tiap detik</p><p>Cache-first dan rate limit API.</p></details>
+<a class="cta" href="/#proj-8-6">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-5-aplikasi-resep-dengan-navigasi-deep-link-dan-favorit">Mini 5: Aplikasi resep dengan navigasi, deep link, dan favorit</a></p><p>Berikutnya: <a href="/belajar/proj/besar-1-aplikasi-ojek-dan-pesan-antar-dengan-pelacakan-real-time-flutt">Besar 1: Aplikasi ojek dan pesan antar dengan pelacakan real-time (Flutter)</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

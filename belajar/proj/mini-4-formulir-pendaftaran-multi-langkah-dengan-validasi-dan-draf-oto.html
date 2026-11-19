@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mini 4: Formulir pendaftaran multi-langkah dengan validasi dan draf otomatis · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Masalah. Aplikasi koperasi simpan pinjam kehilangan banyak calon anggota di formulir pendaftaran: pesan error membingungkan, dan isian hilang saat…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/mini-4-formulir-pendaftaran-multi-langkah-dengan-validasi-dan-draf-oto">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Mini 4: Formulir pendaftaran multi-langkah dengan validasi dan draf otomatis · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Masalah. Aplikasi koperasi simpan pinjam kehilangan banyak calon anggota di formulir pendaftaran: pesan error membingungkan, dan isian hilang saat…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/mini-4-formulir-pendaftaran-multi-langkah-dengan-validasi-dan-draf-oto"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Mini 4: Formulir pendaftaran multi-langkah dengan validasi dan draf otomatis", "description": "Masalah. Aplikasi koperasi simpan pinjam kehilangan banyak calon anggota di formulir pendaftaran: pesan error membingungkan, dan isian hilang saat…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-4-formulir-pendaftaran-multi-langkah-dengan-validasi-dan-draf-oto", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Mini 4: Formulir pendaftaran multi-langkah dengan validasi dan draf otomatis", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-4-formulir-pendaftaran-multi-langkah-dengan-validasi-dan-draf-oto"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 8</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 8 · Konsep &amp; kode</div><h1>Mini 4: Formulir pendaftaran multi-langkah dengan validasi dan draf otomatis</h1><a class="cta" href="/#proj-8-4">Buka versi interaktif</a>
+<p><b>Masalah.</b> Aplikasi koperasi simpan pinjam kehilangan banyak calon anggota di formulir pendaftaran: pesan error membingungkan, dan isian hilang saat pengguna berpindah aplikasi untuk mencari data.</p>
+<p><b>Fitur wajib:</b><br>1. Tiga langkah: data diri, alamat, konfirmasi dengan indikator progres<br>2. Validasi per langkah dengan pesan spesifik yang menempel di field<br>3. Format lokal: nomor HP 08/+628, alamat sampai RT/RW<br>4. Draf tersimpan otomatis ke DataStore (debounce 500 ms)<br>5. Persetujuan data pribadi terpisah dari S&K, tidak tercentang otomatis (UU PDP)</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. <code>data class FormDaftar</code> sebagai satu sumber kebenaran; UI hanya mengirim perubahan.<br>2. <code>Validasi.langkah()</code> mengembalikan peta field → pesan; tampil lewat <code>supportingText</code>.<br>3. Regex <code>^(\+62|0)8\d{8,11}$</code> setelah spasi dan tanda hubung dibuang.<br>4. <code>distinctUntilChanged().debounce(500)</code> lalu <code>DataStore.edit</code>; hapus draf setelah sukses.<br>5. Dua <code>Checkbox</code> terpisah; hanya S&K yang wajib untuk lanjut, persetujuan pemasaran opsional.</p>
+<p><b>Kembangkan sendiri:</b> tambahkan pilihan provinsi/kota bertingkat dari API wilayah, unggah foto KTP dengan kompresi, dan uji UI dengan Compose testing.</p>
+<div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Tiga langkah: data diri, alamat, konfirmasi dengan indikator progres</td><td>data class FormDaftar sebagai satu sumber kebenaran; UI hanya mengirim perubahan.</td></tr><tr><td>Validasi per langkah dengan pesan spesifik yang menempel di field</td><td>Validasi.langkah() mengembalikan peta field → pesan; tampil lewat supportingText.</td></tr><tr><td>Format lokal: nomor HP 08/+628, alamat sampai RT/RW</td><td>Regex ^(\+62|0)8\d{8,11}$ setelah spasi dan tanda hubung dibuang.</td></tr><tr><td>Draf tersimpan otomatis ke DataStore (debounce 500 ms)</td><td>distinctUntilChanged().debounce(500) lalu DataStore.edit; hapus draf setelah sukses.</td></tr><tr><td>Persetujuan data pribadi terpisah dari S&amp;K, tidak tercentang otomatis (UU PDP)</td><td>Dua Checkbox terpisah; hanya S&amp;K yang wajib untuk lanjut, persetujuan pemasaran opsional.</td></tr></tbody></table></div>
+<div class="lbl">KODE</div><pre><code>// FormDaftarState.kt  (state tunggal yang tidak bisa diubah langsung oleh UI)
+data class FormDaftar(
+    val langkah: Int = 0,                         // 0 data diri, 1 alamat, 2 konfirmasi
+    val nama: String = &quot;&quot;, val hp: String = &quot;&quot;, val email: String = &quot;&quot;,
+    val provinsi: String = &quot;&quot;, val kota: String = &quot;&quot;, val alamat: String = &quot;&quot;,
+    val setujuData: Boolean = false,              // UU PDP: terpisah dari setuju S&amp;K
+    val setujuSk: Boolean = false,
+    val galat: Map&lt;String, String&gt; = emptyMap(),
+    val mengirim: Boolean = false,
+)
+
+object Validasi {
+    private val polaHp = Regex(&quot;^(\\+62|0)8\\d{8,11}$&quot;)
+    private val polaEmail = Regex(&quot;^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$&quot;)
+
+    fun langkah(f: FormDaftar): Map&lt;String, String&gt; = buildMap {
+        when (f.langkah) {
+            0 -&gt; {
+                if (f.nama.trim().length &lt; 3) put(&quot;nama&quot;, &quot;Nama minimal 3 huruf&quot;)
+                if (!polaHp.matches(f.hp.replace(&quot; &quot;, &quot;&quot;).replace(&quot;-&quot;, &quot;&quot;))) put(&quot;hp&quot;, &quot;Nomor HP diawali 08 atau +628, 10-13 digit&quot;)
+                if (!polaEmail.matches(f.email.trim())) put(&quot;email&quot;, &quot;Format email belum benar, contoh: nama@domain.com&quot;)
+            }
+            1 -&gt; {
+                if (f.provinsi.isBlank()) put(&quot;provinsi&quot;, &quot;Pilih provinsi&quot;)
+                if (f.kota.isBlank()) put(&quot;kota&quot;, &quot;Pilih kabupaten/kota&quot;)
+                if (f.alamat.trim().length &lt; 10) put(&quot;alamat&quot;, &quot;Tulis alamat lengkap (jalan, nomor, RT/RW)&quot;)
+            }
+            2 -&gt; if (!f.setujuSk) put(&quot;setujuSk&quot;, &quot;Setujui syarat dan ketentuan untuk melanjutkan&quot;)
+        }
+    }
+}
+
+// FormDaftarViewModel.kt  (draf otomatis tersimpan di DataStore agar tidak hilang saat app ditutup)
+class FormDaftarViewModel(private val draf: DataStore&lt;Preferences&gt;, private val api: AkunApi) : ViewModel() {
+    private val _state = MutableStateFlow(FormDaftar())
+    val state = _state.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            val p = draf.data.first()
+            _state.update { it.copy(nama = p[K_NAMA].orEmpty(), hp = p[K_HP].orEmpty(), email = p[K_EMAIL].orEmpty()) }
+        }
+        viewModelScope.launch {
+            _state.map { Triple(it.nama, it.hp, it.email) }.distinctUntilChanged().debounce(500)
+                .collect { (n, h, e) -&gt; draf.edit { it[K_NAMA] = n; it[K_HP] = h; it[K_EMAIL] = e } }
+        }
+    }
+
+    fun ubah(transform: FormDaftar.() -&gt; FormDaftar) = _state.update { it.transform().copy(galat = emptyMap()) }
+
+    fun lanjut() {
+        val g = Validasi.langkah(_state.value)
+        if (g.isNotEmpty()) { _state.update { it.copy(galat = g) }; return }
+        if (_state.value.langkah &lt; 2) _state.update { it.copy(langkah = it.langkah + 1) } else kirim()
+    }
+
+    fun kembali() = _state.update { it.copy(langkah = (it.langkah - 1).coerceAtLeast(0), galat = emptyMap()) }
+
+    private fun kirim() = viewModelScope.launch {
+        _state.update { it.copy(mengirim = true) }
+        runCatching { api.daftar(_state.value) }
+            .onSuccess { draf.edit { it.clear() } }
+            .onFailure { e -&gt; _state.update { it.copy(galat = mapOf(&quot;umum&quot; to &quot;Gagal mengirim: ${e.message}&quot;)) } }
+        _state.update { it.copy(mengirim = false) }
+    }
+
+    companion object {
+        val K_NAMA = stringPreferencesKey(&quot;nama&quot;); val K_HP = stringPreferencesKey(&quot;hp&quot;); val K_EMAIL = stringPreferencesKey(&quot;email&quot;)
+    }
+}
+
+// LangkahDataDiri.kt  (state hoisting: composable hanya menerima nilai dan callback)
+@Composable
+fun LangkahDataDiri(f: FormDaftar, onUbah: (FormDaftar.() -&gt; FormDaftar) -&gt; Unit) {
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Isian(&quot;Nama lengkap&quot;, f.nama, f.galat[&quot;nama&quot;]) { v -&gt; onUbah { copy(nama = v) } }
+        Isian(&quot;Nomor HP&quot;, f.hp, f.galat[&quot;hp&quot;], KeyboardType.Phone) { v -&gt; onUbah { copy(hp = v) } }
+        Isian(&quot;Email&quot;, f.email, f.galat[&quot;email&quot;], KeyboardType.Email) { v -&gt; onUbah { copy(email = v) } }
+    }
+}
+
+@Composable
+fun Isian(label: String, nilai: String, galat: String?, tipe: KeyboardType = KeyboardType.Text, onUbah: (String) -&gt; Unit) {
+    OutlinedTextField(
+        value = nilai, onValueChange = onUbah, label = { Text(label) },
+        isError = galat != null,
+        supportingText = { galat?.let { Text(it) } },        // pesan error menempel di field-nya
+        keyboardOptions = KeyboardOptions(keyboardType = tipe, imeAction = ImeAction.Next),
+        singleLine = true, modifier = Modifier.fillMaxWidth(),
+    )
+}
+
+// ValidasiTest.kt
+class ValidasiTest {
+    @Test fun nomorHpIndonesia() {
+        val f = FormDaftar(nama = &quot;Rina&quot;, email = &quot;rina@mail.id&quot;)
+        assertTrue(Validasi.langkah(f.copy(hp = &quot;0812-3456-7890&quot;)).isEmpty())
+        assertTrue(Validasi.langkah(f.copy(hp = &quot;+6281234567890&quot;)).isEmpty())
+        assertEquals(&quot;Nomor HP diawali 08 atau +628, 10-13 digit&quot;, Validasi.langkah(f.copy(hp = &quot;021555777&quot;))[&quot;hp&quot;])
+    }
+}</code></pre>
+<h2>Poin penting</h2><ul><li>Proyek mini: Formulir pendaftaran multi-langkah dengan validasi dan draf otomatis.</li><li>Tiga langkah: data diri, alamat, konfirmasi dengan indikator progres</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Di mana sebaiknya pesan error validasi ditampilkan?</summary><p class="ok">Jawaban: Menempel di field yang bermasalah, menjelaskan cara memperbaikinya</p><p>Error spesifik dan dekat dengan sumbernya.</p></details>
+<a class="cta" href="/#proj-8-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-3-pengingat-minum-obat-dengan-room-dan-workmanager">Mini 3: Pengingat minum obat dengan Room dan WorkManager</a></p><p>Berikutnya: <a href="/belajar/proj/mini-5-aplikasi-resep-dengan-navigasi-deep-link-dan-favorit">Mini 5: Aplikasi resep dengan navigasi, deep link, dan favorit</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>
