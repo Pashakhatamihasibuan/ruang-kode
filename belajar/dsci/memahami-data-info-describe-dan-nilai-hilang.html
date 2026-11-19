@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Memahami data: info, describe, dan nilai hilang · Data Science &amp; AI · Ruang Kode</title>
+<meta name="description" content="EDA (exploratory data analysis) adalah tahap &quot;berkenalan&quot; dengan data sebelum membangun model. Tiga pertanyaan pertama: apa saja kolomnya dan tipenya,…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsci/memahami-data-info-describe-dan-nilai-hilang">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Memahami data: info, describe, dan nilai hilang · Data Science &amp; AI · Ruang Kode"><meta property="og:description" content="EDA (exploratory data analysis) adalah tahap &quot;berkenalan&quot; dengan data sebelum membangun model. Tiga pertanyaan pertama: apa saja kolomnya dan tipenya,…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsci/memahami-data-info-describe-dan-nilai-hilang"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Memahami data: info, describe, dan nilai hilang", "description": "EDA (exploratory data analysis) adalah tahap \"berkenalan\" dengan data sebelum membangun model. Tiga pertanyaan pertama: apa saja kolomnya dan tipenya,…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci/memahami-data-info-describe-dan-nilai-hilang", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Science & AI", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Science & AI", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, {"@type": "ListItem", "position": 3, "name": "Memahami data: info, describe, dan nilai hilang", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci/memahami-data-info-describe-dan-nilai-hilang"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsci">Data Science &amp; AI</a> / Modul 5</nav>
+<div class="eyebrow">Data Science &amp; AI · Modul 5 · Konsep &amp; kode</div><h1>Memahami data: info, describe, dan nilai hilang</h1><a class="cta" href="/#dsci-5-1">Buka versi interaktif</a>
+<p><b>EDA</b> (exploratory data analysis) adalah tahap "berkenalan" dengan data sebelum membangun model. Tiga pertanyaan pertama: apa saja kolomnya dan tipenya, apakah ada nilai hilang atau aneh, dan bagaimana sebaran tiap kolom.</p>
+<p><code>df.info()</code> menampilkan tipe dan jumlah nilai tidak kosong, <code>df.describe()</code> merangkum angka, <code>df.isna().sum()</code> menghitung nilai hilang per kolom, dan <code>value_counts()</code> menghitung kategori.</p>
+<p>Keputusan menangani nilai hilang harus masuk akal secara bisnis: hapus baris jika sedikit dan acak, isi median untuk angka yang miring, isi kategori "Tidak diketahui", atau buat kolom penanda <code>is_missing</code> karena "data kosong" kadang justru informatif.</p>
+<div class="lbl">PYTHON</div><pre><code>import numpy as np
+import pandas as pd
+
+rng = np.random.default_rng(7)
+n = 300
+df = pd.DataFrame({
+    &#x27;umur&#x27;: rng.integers(18, 60, n),
+    &#x27;lama_bulan&#x27;: rng.integers(1, 48, n),
+    &#x27;belanja_bln&#x27;: rng.normal(350, 120, n).round(0).clip(50),
+    &#x27;keluhan&#x27;: rng.poisson(1.2, n),
+    &#x27;kota&#x27;: rng.choice([&#x27;Jakarta&#x27;, &#x27;Bandung&#x27;, &#x27;Surabaya&#x27;, &#x27;Medan&#x27;], n),
+})
+skor = -1.2 + 0.9 * df[&#x27;keluhan&#x27;] - 0.06 * df[&#x27;lama_bulan&#x27;] - 0.003 * (df[&#x27;belanja_bln&#x27;] - 350)
+df[&#x27;churn&#x27;] = (rng.random(n) &lt; 1 / (1 + np.exp(-skor))).astype(int)
+df.loc[[3, 17, 42, 99], &#x27;belanja_bln&#x27;] = np.nan   # anggap ada yang kosong
+
+print(df.describe().round(1))
+print(df.isna().sum())
+print(df[&#x27;kota&#x27;].value_counts())
+med = df[&#x27;belanja_bln&#x27;].median()
+df[&#x27;belanja_bln&#x27;] = df[&#x27;belanja_bln&#x27;].fillna(med)
+print(&#x27;Diisi median:&#x27;, med, &#x27;| sisa kosong:&#x27;, df[&#x27;belanja_bln&#x27;].isna().sum())</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>        umur  lama_bulan  belanja_bln  keluhan  churn
+count  300.0       300.0        296.0    300.0  300.0
+mean    39.5        24.3        333.5      1.1    0.2
+std     12.3        13.4        110.4      1.0    0.4
+min     18.0         1.0         50.0      0.0    0.0
+25%     29.0        12.0        256.0      0.0    0.0
+50%     39.0        26.0        333.5      1.0    0.0
+75%     51.0        36.0        402.8      2.0    0.2
+max     59.0        47.0        654.0      6.0    1.0
+umur           0
+lama_bulan     0
+belanja_bln    4
+keluhan        0
+kota           0
+churn          0
+dtype: int64
+kota
+Bandung     92
+Surabaya    74
+Jakarta     70
+Medan       64
+Name: count, dtype: int64
+Diisi median: 333.5 | sisa kosong: 0</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Dari data pelanggan, hitung persentase churn per kota (dibulatkan 1 desimal).</p><details><summary>Petunjuk</summary><p>groupby('kota')['churn'].mean() lalu kali 100.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import numpy as np
+import pandas as pd
+
+rng = np.random.default_rng(7)
+n = 300
+df = pd.DataFrame({
+    &#x27;umur&#x27;: rng.integers(18, 60, n),
+    &#x27;lama_bulan&#x27;: rng.integers(1, 48, n),
+    &#x27;belanja_bln&#x27;: rng.normal(350, 120, n).round(0).clip(50),
+    &#x27;keluhan&#x27;: rng.poisson(1.2, n),
+    &#x27;kota&#x27;: rng.choice([&#x27;Jakarta&#x27;, &#x27;Bandung&#x27;, &#x27;Surabaya&#x27;, &#x27;Medan&#x27;], n),
+})
+skor = -1.2 + 0.9 * df[&#x27;keluhan&#x27;] - 0.06 * df[&#x27;lama_bulan&#x27;] - 0.003 * (df[&#x27;belanja_bln&#x27;] - 350)
+df[&#x27;churn&#x27;] = (rng.random(n) &lt; 1 / (1 + np.exp(-skor))).astype(int)
+print((df.groupby(&#x27;kota&#x27;)[&#x27;churn&#x27;].mean() * 100).round(1))</code></pre><div class="lbl">KELUARAN</div><pre><code>kota
+Bandung     29.3
+Jakarta     18.6
+Medan       21.9
+Surabaya    28.4
+Name: churn, dtype: float64</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>EDA: kolom dan tipe, nilai hilang, sebaran.</li><li>info, describe, isna().sum(), value_counts.</li><li>Tangani nilai hilang dengan alasan bisnis.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Mengisi nilai hilang pada kolom pendapatan yang sangat miring sebaiknya dengan?</summary><p class="ok">Jawaban: Median</p><p>Median tidak tertarik nilai ekstrem.</p></details>
+<a class="cta" href="/#dsci-5-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsci/mencocokkan-distribusi-pada-data">Mencocokkan distribusi pada data</a></p><p>Berikutnya: <a href="/belajar/dsci/matplotlib-grafik-garis-batang-dan-histogram">Matplotlib: grafik garis, batang, dan histogram</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

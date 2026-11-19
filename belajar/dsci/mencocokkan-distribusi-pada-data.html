@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mencocokkan distribusi pada data · Data Science &amp; AI · Ruang Kode</title>
+<meta name="description" content="Banyak keputusan membutuhkan model peluang: berapa stok aman, berapa lama pelanggan menunggu, berapa peluang klaim asuransi di atas Rp10 juta. Caranya:…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsci/mencocokkan-distribusi-pada-data">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Mencocokkan distribusi pada data · Data Science &amp; AI · Ruang Kode"><meta property="og:description" content="Banyak keputusan membutuhkan model peluang: berapa stok aman, berapa lama pelanggan menunggu, berapa peluang klaim asuransi di atas Rp10 juta. Caranya:…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsci/mencocokkan-distribusi-pada-data"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Mencocokkan distribusi pada data", "description": "Banyak keputusan membutuhkan model peluang: berapa stok aman, berapa lama pelanggan menunggu, berapa peluang klaim asuransi di atas Rp10 juta. Caranya:…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci/mencocokkan-distribusi-pada-data", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Science & AI", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Science & AI", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, {"@type": "ListItem", "position": 3, "name": "Mencocokkan distribusi pada data", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci/mencocokkan-distribusi-pada-data"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsci">Data Science &amp; AI</a> / Modul 4</nav>
+<div class="eyebrow">Data Science &amp; AI · Modul 4 · Konsep &amp; kode</div><h1>Mencocokkan distribusi pada data</h1><a class="cta" href="/#dsci-4-3">Buka versi interaktif</a>
+<p>Banyak keputusan membutuhkan model peluang: berapa stok aman, berapa lama pelanggan menunggu, berapa peluang klaim asuransi di atas Rp10 juta. Caranya: pilih distribusi yang masuk akal, lalu <b>cocokkan (fit)</b> parameternya ke data.</p>
+<p><code>scipy.stats</code> menyediakan <code>.fit()</code> untuk puluhan distribusi. Setelah itu kita bisa menghitung peluang dan kuantil, misalnya "95% hari permintaan tidak lebih dari X".</p>
+<p>Periksa kecocokan dengan membandingkan kuantil data dan model, atau uji <b>Kolmogorov-Smirnov</b>. Pilih distribusi berdasarkan sifat data: bilangan cacah → Poisson, waktu tunggu → eksponensial atau gamma, jumlah yang selalu positif dan miring → lognormal.</p>
+<div class="lbl">PYTHON</div><pre><code>import numpy as np
+from scipy import stats
+
+rng = np.random.default_rng(4)
+permintaan = rng.gamma(shape=6, scale=8, size=365).round()   # unit per hari
+
+bentuk, loc, skala = stats.gamma.fit(permintaan, floc=0)
+print(f&#x27;gamma: shape={bentuk:.2f}, scale={skala:.2f}&#x27;)
+stok = stats.gamma.ppf(0.95, bentuk, loc, skala)
+print(f&#x27;Stok agar 95% hari tidak kehabisan: {stok:.0f} unit&#x27;)
+print(f&#x27;Data nyata di atas angka itu: {(permintaan &gt; stok).mean():.1%} hari&#x27;)
+
+ks = stats.kstest(permintaan, &#x27;gamma&#x27;, args=(bentuk, loc, skala))
+print(f&#x27;KS p-value = {ks.pvalue:.3f}&#x27;)</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>gamma: shape=5.30, scale=9.08
+Stok agar 95% hari tidak kehabisan: 87 unit
+Data nyata di atas angka itu: 4.9% hari
+KS p-value = 0.461</code></pre>
+<h2>Poin penting</h2><ul><li>Pilih distribusi sesuai sifat data, lalu fit parameternya.</li><li>Kuantil menjawab pertanyaan stok dan risiko.</li><li>Cek kecocokan dengan kuantil atau uji KS.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Distribusi yang cocok untuk jumlah keluhan per hari?</summary><p class="ok">Jawaban: Poisson</p><p>Bilangan cacah per satuan waktu.</p></details>
+<a class="cta" href="/#dsci-4-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsci/deret-waktu-tren-musiman-dan-rolling">Deret waktu: tren, musiman, dan rolling</a></p><p>Berikutnya: <a href="/belajar/dsci/memahami-data-info-describe-dan-nilai-hilang">Memahami data: info, describe, dan nilai hilang</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

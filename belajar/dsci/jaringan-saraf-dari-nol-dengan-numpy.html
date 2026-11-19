@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jaringan saraf dari nol dengan NumPy · Data Science &amp; AI · Ruang Kode</title>
+<meta name="description" content="Satu neuron menghitung jumlah berbobot masukannya, lalu melewatkannya ke fungsi aktivasi (sigmoid, ReLU) agar bisa menangkap pola yang tidak lurus.…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsci/jaringan-saraf-dari-nol-dengan-numpy">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Jaringan saraf dari nol dengan NumPy · Data Science &amp; AI · Ruang Kode"><meta property="og:description" content="Satu neuron menghitung jumlah berbobot masukannya, lalu melewatkannya ke fungsi aktivasi (sigmoid, ReLU) agar bisa menangkap pola yang tidak lurus.…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsci/jaringan-saraf-dari-nol-dengan-numpy"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Jaringan saraf dari nol dengan NumPy", "description": "Satu neuron menghitung jumlah berbobot masukannya, lalu melewatkannya ke fungsi aktivasi (sigmoid, ReLU) agar bisa menangkap pola yang tidak lurus.…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci/jaringan-saraf-dari-nol-dengan-numpy", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Science & AI", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Science & AI", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, {"@type": "ListItem", "position": 3, "name": "Jaringan saraf dari nol dengan NumPy", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci/jaringan-saraf-dari-nol-dengan-numpy"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsci">Data Science &amp; AI</a> / Modul 8</nav>
+<div class="eyebrow">Data Science &amp; AI · Modul 8 · Konsep &amp; kode</div><h1>Jaringan saraf dari nol dengan NumPy</h1><a class="cta" href="/#dsci-8-1">Buka versi interaktif</a>
+<p>Satu <b>neuron</b> menghitung jumlah berbobot masukannya, lalu melewatkannya ke <b>fungsi aktivasi</b> (sigmoid, ReLU) agar bisa menangkap pola yang tidak lurus. Banyak neuron disusun berlapis menjadi <b>jaringan saraf</b> (fully connected network).</p>
+<p>Belajarnya sama dengan gradient descent: hitung prediksi (<b>forward</b>), hitung loss, hitung turunan loss terhadap setiap bobot dari belakang ke depan (<b>backpropagation</b>), lalu geser bobot. PyTorch dan TensorFlow menghitung turunan ini otomatis.</p>
+<p>Contoh klasik: XOR. Satu garis lurus tidak bisa memisahkannya, tetapi jaringan dengan satu lapisan tersembunyi bisa. Inilah alasan deep learning mampu mengenali wajah, suara, dan teks.</p>
+<div class="lbl">PYTHON</div><pre><code>import numpy as np
+import matplotlib.pyplot as plt
+
+X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]], dtype=float)
+y = np.array([[0], [1], [1], [0]], dtype=float)          # XOR
+rng = np.random.default_rng(1)
+W1, b1 = rng.normal(0, 1, (2, 4)), np.zeros(4)
+W2, b2 = rng.normal(0, 1, (4, 1)), np.zeros(1)
+sig = lambda z: 1 / (1 + np.exp(-z))
+
+riwayat = []
+for ep in range(3000):
+    h = np.tanh(X @ W1 + b1)            # forward
+    p = sig(h @ W2 + b2)
+    loss = np.mean((p - y) ** 2)
+    riwayat.append(loss)
+    g2 = 2 * (p - y) / 4 * p * (1 - p)  # backpropagation
+    gW2, gb2 = h.T @ g2, g2.sum(0)
+    g1 = (g2 @ W2.T) * (1 - h ** 2)
+    gW1, gb1 = X.T @ g1, g1.sum(0)
+    for w, g in [(W1, gW1), (b1, gb1), (W2, gW2), (b2, gb2)]:
+        w -= 2.0 * g
+print(&#x27;loss akhir:&#x27;, round(loss, 5))
+print(&#x27;prediksi XOR:&#x27;, p.round(2).ravel())
+
+plt.figure(figsize=(5.6, 3))
+plt.plot(riwayat); plt.yscale(&#x27;log&#x27;)
+plt.xlabel(&#x27;epoch&#x27;); plt.ylabel(&#x27;loss&#x27;); plt.title(&#x27;Loss turun saat jaringan belajar XOR&#x27;)</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>loss akhir: 0.00011
+prediksi XOR: [0.   0.99 0.99 0.01]</code></pre>
+<h2>Poin penting</h2><ul><li>Neuron = jumlah berbobot + aktivasi.</li><li>Forward, loss, backpropagation, update bobot.</li><li>Lapisan tersembunyi memungkinkan pola tidak linear seperti XOR.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Fungsi aktivasi dibutuhkan karena?</summary><p class="ok">Jawaban: Tanpanya tumpukan lapisan tetap hanya fungsi linear</p><p>Komposisi fungsi linear tetap linear.</p></details>
+<a class="cta" href="/#dsci-8-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsci/pca-meringkas-banyak-fitur">PCA: meringkas banyak fitur</a></p><p>Berikutnya: <a href="/belajar/dsci/cnn-rnn-dan-transformer">CNN, RNN, dan Transformer</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

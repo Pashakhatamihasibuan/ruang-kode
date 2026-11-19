@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>A/B test: ukuran sampel, sensitivitas, dan metrik rasio · Data Science &amp; AI · Ruang Kode</title>
+<meta name="description" content="A/B test membagi pengguna secara acak ke versi A (kontrol) dan B (perubahan), lalu membandingkan metrik. Tentukan sebelum mulai: metrik utama, efek…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsci/a-b-test-ukuran-sampel-sensitivitas-dan-metrik-rasio">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="A/B test: ukuran sampel, sensitivitas, dan metrik rasio · Data Science &amp; AI · Ruang Kode"><meta property="og:description" content="A/B test membagi pengguna secara acak ke versi A (kontrol) dan B (perubahan), lalu membandingkan metrik. Tentukan sebelum mulai: metrik utama, efek…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsci/a-b-test-ukuran-sampel-sensitivitas-dan-metrik-rasio"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "A/B test: ukuran sampel, sensitivitas, dan metrik rasio", "description": "A/B test membagi pengguna secara acak ke versi A (kontrol) dan B (perubahan), lalu membandingkan metrik. Tentukan sebelum mulai: metrik utama, efek…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci/a-b-test-ukuran-sampel-sensitivitas-dan-metrik-rasio", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Science & AI", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Science & AI", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, {"@type": "ListItem", "position": 3, "name": "A/B test: ukuran sampel, sensitivitas, dan metrik rasio", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci/a-b-test-ukuran-sampel-sensitivitas-dan-metrik-rasio"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsci">Data Science &amp; AI</a> / Modul 3</nav>
+<div class="eyebrow">Data Science &amp; AI · Modul 3 · Konsep &amp; kode</div><h1>A/B test: ukuran sampel, sensitivitas, dan metrik rasio</h1><a class="cta" href="/#dsci-3-4">Buka versi interaktif</a>
+<p><b>A/B test</b> membagi pengguna secara acak ke versi A (kontrol) dan B (perubahan), lalu membandingkan metrik. Tentukan sebelum mulai: <b>metrik utama</b>, <b>efek minimum yang berarti</b>, dan <b>ukuran sampel</b>. Jangan mengintip lalu berhenti saat hasil "kebetulan" signifikan.</p>
+<p>Menaikkan <b>sensitivitas</b> tanpa menambah pengguna: pakai metrik dengan varians lebih kecil, buang outlier ekstrem, atau <b>CUPED</b> (mengurangi variasi memakai data sebelum eksperimen).</p>
+<p><b>Metrik rasio</b> seperti "pendapatan per sesi" punya jebakan: unit acak (pengguna) berbeda dengan unit metrik (sesi), jadi variansnya perlu dihitung dengan <b>delta method</b> atau bootstrap per pengguna, bukan rumus biasa.</p>
+<div class="lbl">PYTHON</div><pre><code>import numpy as np
+from scipy import stats
+
+def n_per_grup(p0, naik, alpha=0.05, power=0.8):
+    p1 = p0 + naik
+    za, zb = stats.norm.ppf(1 - alpha / 2), stats.norm.ppf(power)
+    pb = (p0 + p1) / 2
+    return int(np.ceil((za * np.sqrt(2 * pb * (1 - pb)) + zb * np.sqrt(p0 * (1 - p0) + p1 * (1 - p1))) ** 2 / naik ** 2))
+
+print(&#x27;Konversi 5% -&gt; 6% butuh&#x27;, n_per_grup(0.05, 0.01), &#x27;pengguna per grup&#x27;)
+print(&#x27;Konversi 5% -&gt; 5.5% butuh&#x27;, n_per_grup(0.05, 0.005), &#x27;pengguna per grup&#x27;)
+
+# hasil eksperimen
+konv = np.array([480, 552]); n = np.array([9000, 9000])
+p = konv / n
+pool = konv.sum() / n.sum()
+z = (p[1] - p[0]) / np.sqrt(pool * (1 - pool) * (2 / 9000))
+print(f&#x27;A {p[0]:.2%}, B {p[1]:.2%}, z = {z:.2f}, p = {2 * (1 - stats.norm.cdf(abs(z))):.4f}&#x27;)</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Konversi 5% -&gt; 6% butuh 8158 pengguna per grup
+Konversi 5% -&gt; 5.5% butuh 31234 pengguna per grup
+A 5.33%, B 6.13%, z = 2.31, p = 0.0210</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Pakai fungsi <code>n_per_grup</code> di atas: berapa pengguna per grup untuk mendeteksi kenaikan konversi 10% → 12%?</p><details><summary>Petunjuk</summary><p>Panggil n_per_grup(0.10, 0.02).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import numpy as np
+from scipy import stats
+def n_per_grup(p0, naik, alpha=0.05, power=0.8):
+    p1 = p0 + naik
+    za, zb = stats.norm.ppf(1 - alpha / 2), stats.norm.ppf(power)
+    pb = (p0 + p1) / 2
+    return int(np.ceil((za * np.sqrt(2 * pb * (1 - pb)) + zb * np.sqrt(p0 * (1 - p0) + p1 * (1 - p1))) ** 2 / naik ** 2))
+print(n_per_grup(0.10, 0.02))</code></pre><div class="lbl">KELUARAN</div><pre><code>3841</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Tentukan metrik, efek minimum, dan ukuran sampel di awal.</li><li>Efek kecil butuh sampel jauh lebih besar.</li><li>Metrik rasio butuh delta method atau bootstrap.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Efek minimum yang ingin dideteksi dibuat setengahnya. Sampel yang dibutuhkan kira-kira?</summary><p class="ok">Jawaban: 4 kali lipat</p><p>n sebanding dengan 1/efek².</p></details>
+<a class="cta" href="/#dsci-3-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsci/uji-hipotesis-dan-p-value">Uji hipotesis dan p-value</a></p><p>Berikutnya: <a href="/belajar/dsci/regresi-linear-menarik-garis-terbaik">Regresi linear: menarik garis terbaik</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

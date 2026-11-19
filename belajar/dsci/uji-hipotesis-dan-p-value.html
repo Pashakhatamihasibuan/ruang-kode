@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Uji hipotesis dan p-value · Data Science &amp; AI · Ruang Kode</title>
+<meta name="description" content="Uji hipotesis menjawab: &quot;apakah perbedaan ini nyata atau hanya kebetulan sampling?&quot; Kita mulai dari H0 (tidak ada beda) lalu menghitung p-value: peluang…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsci/uji-hipotesis-dan-p-value">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Uji hipotesis dan p-value · Data Science &amp; AI · Ruang Kode"><meta property="og:description" content="Uji hipotesis menjawab: &quot;apakah perbedaan ini nyata atau hanya kebetulan sampling?&quot; Kita mulai dari H0 (tidak ada beda) lalu menghitung p-value: peluang…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsci/uji-hipotesis-dan-p-value"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Uji hipotesis dan p-value", "description": "Uji hipotesis menjawab: \"apakah perbedaan ini nyata atau hanya kebetulan sampling?\" Kita mulai dari H0 (tidak ada beda) lalu menghitung p-value: peluang…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci/uji-hipotesis-dan-p-value", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Science & AI", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Science & AI", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, {"@type": "ListItem", "position": 3, "name": "Uji hipotesis dan p-value", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci/uji-hipotesis-dan-p-value"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsci">Data Science &amp; AI</a> / Modul 3</nav>
+<div class="eyebrow">Data Science &amp; AI · Modul 3 · Konsep &amp; kode</div><h1>Uji hipotesis dan p-value</h1><a class="cta" href="/#dsci-3-3">Buka versi interaktif</a>
+<p>Uji hipotesis menjawab: "apakah perbedaan ini nyata atau hanya kebetulan sampling?" Kita mulai dari <b>H0</b> (tidak ada beda) lalu menghitung <b>p-value</b>: peluang melihat perbedaan sebesar ini <b>jika H0 benar</b>.</p>
+<p>Jika p-value lebih kecil dari ambang <b>α</b> (biasanya 0,05), kita menolak H0. p-value <b>bukan</b> peluang H0 benar, dan "tidak signifikan" bukan berarti "tidak ada beda": bisa jadi sampelnya terlalu kecil.</p>
+<p>Uji yang sering dipakai: <b>t-test</b> (membandingkan dua rata-rata), <b>uji proporsi / chi-square</b> (membandingkan persentase, misalnya tingkat konversi), dan <b>Mann-Whitney</b> untuk data yang jauh dari normal. Selalu laporkan juga <b>besar efeknya</b>, bukan hanya p-value.</p>
+<div class="lbl">PYTHON</div><pre><code>import numpy as np
+from scipy import stats
+
+rng = np.random.default_rng(10)
+lama = rng.normal(52, 12, 80)   # menit belajar per hari, tampilan lama
+baru = rng.normal(57, 12, 80)   # tampilan baru
+
+t, p = stats.ttest_ind(baru, lama)
+print(f&#x27;rata-rata lama {lama.mean():.1f}, baru {baru.mean():.1f}&#x27;)
+print(f&#x27;t = {t:.2f}, p-value = {p:.4f}&#x27;)
+print(&#x27;Tolak H0 (ada beda nyata)&#x27; if p &lt; 0.05 else &#x27;Belum cukup bukti&#x27;)
+
+d = (baru.mean() - lama.mean()) / np.sqrt((baru.var(ddof=1) + lama.var(ddof=1)) / 2)
+print(f&quot;besar efek (Cohen&#x27;s d) = {d:.2f}&quot;)</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>rata-rata lama 48.7, baru 55.7
+t = 4.09, p-value = 0.0001
+Tolak H0 (ada beda nyata)
+besar efek (Cohen&#x27;s d) = 0.65</code></pre>
+<h2>Poin penting</h2><ul><li>H0: tidak ada beda. p-value: peluang data sekstrem ini jika H0 benar.</li><li>p &lt; α → tolak H0.</li><li>Laporkan besar efek, bukan hanya p-value.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>p-value = 0,03 artinya?</summary><p class="ok">Jawaban: Jika tidak ada beda, data sekstrem ini muncul 3% kali</p><p>Definisi p-value bersyarat pada H0.</p></details>
+<a class="cta" href="/#dsci-3-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsci/probabilitas-sampling-dan-teorema-limit-pusat">Probabilitas, sampling, dan teorema limit pusat</a></p><p>Berikutnya: <a href="/belajar/dsci/a-b-test-ukuran-sampel-sensitivitas-dan-metrik-rasio">A/B test: ukuran sampel, sensitivitas, dan metrik rasio</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

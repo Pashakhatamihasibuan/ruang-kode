@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Alur ML: fitur, target, dan train/test split · Data Science &amp; AI · Ruang Kode</title>
+<meta name="description" content="Machine learning terawasi (supervised) belajar dari contoh berlabel: fitur X (umur, lama berlangganan, belanja, keluhan) dan target y (churn atau tidak).…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsci/alur-ml-fitur-target-dan-train-test-split">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Alur ML: fitur, target, dan train/test split · Data Science &amp; AI · Ruang Kode"><meta property="og:description" content="Machine learning terawasi (supervised) belajar dari contoh berlabel: fitur X (umur, lama berlangganan, belanja, keluhan) dan target y (churn atau tidak).…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsci/alur-ml-fitur-target-dan-train-test-split"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Alur ML: fitur, target, dan train/test split", "description": "Machine learning terawasi (supervised) belajar dari contoh berlabel: fitur X (umur, lama berlangganan, belanja, keluhan) dan target y (churn atau tidak).…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci/alur-ml-fitur-target-dan-train-test-split", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Science & AI", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Science & AI", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, {"@type": "ListItem", "position": 3, "name": "Alur ML: fitur, target, dan train/test split", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci/alur-ml-fitur-target-dan-train-test-split"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsci">Data Science &amp; AI</a> / Modul 6</nav>
+<div class="eyebrow">Data Science &amp; AI · Modul 6 · Konsep &amp; kode</div><h1>Alur ML: fitur, target, dan train/test split</h1><a class="cta" href="/#dsci-6-1">Buka versi interaktif</a>
+<p><b>Machine learning terawasi</b> (supervised) belajar dari contoh berlabel: fitur <code>X</code> (umur, lama berlangganan, belanja, keluhan) dan target <code>y</code> (churn atau tidak). Jika targetnya angka disebut <b>regresi</b>; jika kategori disebut <b>klasifikasi</b>.</p>
+<p>Model harus dinilai pada data yang <b>tidak pernah dilihat</b> saat belajar. Karena itu data dibagi: <b>train</b> (biasanya 70–80%) untuk melatih dan <b>test</b> untuk menguji. <code>stratify=y</code> menjaga proporsi kelas sama di keduanya.</p>
+<p>Semua model scikit-learn punya pola yang sama: <code>model.fit(X_train, y_train)</code> untuk belajar, <code>model.predict(X_test)</code> untuk menebak, lalu bandingkan dengan jawaban aslinya. Selalu bandingkan dengan <b>patokan</b> paling bodoh, misalnya selalu menebak "tidak churn". Lihat hasilnya: akurasi model sama dengan patokan karena 75% pelanggan memang tidak churn, tetapi <b>AUC</b> (kemampuan mengurutkan siapa yang paling berisiko) jauh lebih tinggi. Karena itu akurasi saja tidak cukup; metrik yang tepat dibahas dua pelajaran lagi.</p>
+<div class="lbl">PYTHON</div><pre><code>import numpy as np
+import pandas as pd
+
+rng = np.random.default_rng(7)
+n = 300
+df = pd.DataFrame({
+    &#x27;umur&#x27;: rng.integers(18, 60, n),
+    &#x27;lama_bulan&#x27;: rng.integers(1, 48, n),
+    &#x27;belanja_bln&#x27;: rng.normal(350, 120, n).round(0).clip(50),
+    &#x27;keluhan&#x27;: rng.poisson(1.2, n),
+    &#x27;kota&#x27;: rng.choice([&#x27;Jakarta&#x27;, &#x27;Bandung&#x27;, &#x27;Surabaya&#x27;, &#x27;Medan&#x27;], n),
+})
+skor = -1.2 + 0.9 * df[&#x27;keluhan&#x27;] - 0.06 * df[&#x27;lama_bulan&#x27;] - 0.003 * (df[&#x27;belanja_bln&#x27;] - 350)
+df[&#x27;churn&#x27;] = (rng.random(n) &lt; 1 / (1 + np.exp(-skor))).astype(int)
+from sklearn.model_selection import train_test_split
+from sklearn.dummy import DummyClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import roc_auc_score
+
+X = df[[&#x27;umur&#x27;, &#x27;lama_bulan&#x27;, &#x27;belanja_bln&#x27;, &#x27;keluhan&#x27;]]
+y = df[&#x27;churn&#x27;]
+X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.25, random_state=0, stratify=y)
+print(&#x27;train:&#x27;, X_tr.shape, &#x27; test:&#x27;, X_te.shape)
+print(&#x27;proporsi churn train/test:&#x27;, round(y_tr.mean(), 3), round(y_te.mean(), 3))
+
+patokan = DummyClassifier(strategy=&#x27;most_frequent&#x27;).fit(X_tr, y_tr)
+model = LogisticRegression(max_iter=1000).fit(X_tr, y_tr)
+print(&#x27;akurasi patokan:&#x27;, round(patokan.score(X_te, y_te), 3), &#x27; AUC:&#x27;, round(roc_auc_score(y_te, patokan.predict_proba(X_te)[:, 1]), 3))
+print(&#x27;akurasi model  :&#x27;, round(model.score(X_te, y_te), 3), &#x27; AUC:&#x27;, round(roc_auc_score(y_te, model.predict_proba(X_te)[:, 1]), 3))</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>train: (225, 4)  test: (75, 4)
+proporsi churn train/test: 0.249 0.253
+akurasi patokan: 0.747  AUC: 0.5
+akurasi model  : 0.747  AUC: 0.792</code></pre>
+<h2>Poin penting</h2><ul><li>X = fitur, y = target; regresi vs klasifikasi.</li><li>Nilai model di data test yang tidak pernah dilihat.</li><li>Pola sklearn: fit, predict, score; bandingkan dengan patokan.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa model tidak boleh dinilai di data latihnya sendiri?</summary><p class="ok">Jawaban: Model bisa menghafal sehingga nilainya terlalu bagus</p><p>Itu namanya overfitting tidak terdeteksi.</p></details>
+<a class="cta" href="/#dsci-6-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsci/korelasi-dan-heatmap">Korelasi dan heatmap</a></p><p>Berikutnya: <a href="/belajar/dsci/regresi-dan-metriknya-mae-rmse-r2">Regresi dan metriknya: MAE, RMSE, R²</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

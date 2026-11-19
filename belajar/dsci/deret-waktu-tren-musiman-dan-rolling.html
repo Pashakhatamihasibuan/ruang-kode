@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Deret waktu: tren, musiman, dan rolling · Data Science &amp; AI · Ruang Kode</title>
+<meta name="description" content="Deret waktu adalah data yang diukur berurutan menurut waktu: penjualan harian, suhu per jam, jumlah pengguna per minggu. Biasanya terdiri dari tren…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsci/deret-waktu-tren-musiman-dan-rolling">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Deret waktu: tren, musiman, dan rolling · Data Science &amp; AI · Ruang Kode"><meta property="og:description" content="Deret waktu adalah data yang diukur berurutan menurut waktu: penjualan harian, suhu per jam, jumlah pengguna per minggu. Biasanya terdiri dari tren…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsci/deret-waktu-tren-musiman-dan-rolling"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Deret waktu: tren, musiman, dan rolling", "description": "Deret waktu adalah data yang diukur berurutan menurut waktu: penjualan harian, suhu per jam, jumlah pengguna per minggu. Biasanya terdiri dari tren…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci/deret-waktu-tren-musiman-dan-rolling", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Science & AI", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Science & AI", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, {"@type": "ListItem", "position": 3, "name": "Deret waktu: tren, musiman, dan rolling", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci/deret-waktu-tren-musiman-dan-rolling"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsci">Data Science &amp; AI</a> / Modul 4</nav>
+<div class="eyebrow">Data Science &amp; AI · Modul 4 · Konsep &amp; kode</div><h1>Deret waktu: tren, musiman, dan rolling</h1><a class="cta" href="/#dsci-4-2">Buka versi interaktif</a>
+<p><b>Deret waktu</b> adalah data yang diukur berurutan menurut waktu: penjualan harian, suhu per jam, jumlah pengguna per minggu. Biasanya terdiri dari <b>tren</b> (naik/turun jangka panjang), <b>musiman</b> (pola berulang, misalnya ramai di akhir pekan), dan <b>sisa</b> acak.</p>
+<p>Di pandas, jadikan tanggal sebagai indeks (<code>DatetimeIndex</code>), lalu <code>resample("W")</code> untuk merangkum per minggu dan <code>rolling(7).mean()</code> untuk rata-rata bergerak yang meredam naik-turun harian.</p>
+<p>Peramalan sederhana yang sering jadi patokan: <b>naive</b> (besok = hari ini), <b>rata-rata musiman</b>, dan rata-rata bergerak. Model canggih seperti ARIMA atau Prophet harus bisa mengalahkan patokan ini, kalau tidak, pakai yang sederhana.</p>
+<div class="lbl">PYTHON</div><pre><code>import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(2)
+tgl = pd.date_range(&#x27;2026-01-01&#x27;, periods=120, freq=&#x27;D&#x27;)
+tren = np.linspace(100, 160, 120)
+musim = np.where(tgl.dayofweek &gt;= 5, 35, 0)       # Sabtu-Minggu ramai
+jual = pd.Series(tren + musim + rng.normal(0, 8, 120), index=tgl).round()
+
+print(jual.resample(&#x27;ME&#x27;).sum().astype(int))
+print(&#x27;Rata-rata per hari:&#x27;)
+print(jual.groupby(jual.index.day_name()).mean().round(1).sort_values())
+
+plt.figure(figsize=(7, 3.2))
+plt.plot(jual, color=&#x27;lightgray&#x27;, label=&#x27;harian&#x27;)
+plt.plot(jual.rolling(7).mean(), color=&#x27;tab:blue&#x27;, label=&#x27;rata-rata 7 hari&#x27;)
+plt.title(&#x27;Penjualan harian: tren naik + ramai akhir pekan&#x27;); plt.legend()</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>2026-01-31    3639
+2026-02-28    3762
+2026-03-31    4539
+2026-04-30    4871
+Freq: ME, dtype: int64
+Rata-rata per hari:
+Friday       127.4
+Monday       130.6
+Wednesday    130.9
+Thursday     133.1
+Tuesday      134.1
+Saturday     161.9
+Sunday       163.1
+dtype: float64</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Dari deret <code>[10, 12, 9, 15, 14, 18, 20]</code>, cetak rata-rata bergerak 3 titik dengan pandas.</p><details><summary>Petunjuk</summary><p>pd.Series(...).rolling(3).mean().</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import pandas as pd
+print(pd.Series([10, 12, 9, 15, 14, 18, 20]).rolling(3).mean().tolist())</code></pre><div class="lbl">KELUARAN</div><pre><code>[nan, nan, 10.333333333333334, 12.0, 12.666666666666666, 15.666666666666666, 17.333333333333332]</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Deret waktu = tren + musiman + sisa.</li><li>resample merangkum, rolling meratakan.</li><li>Model rumit harus mengalahkan patokan sederhana.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>&lt;code&gt;rolling(7).mean()&lt;/code&gt; berguna untuk?</summary><p class="ok">Jawaban: Meratakan naik-turun harian agar tren terlihat</p><p>Rata-rata bergerak 7 hari.</p></details>
+<a class="cta" href="/#dsci-4-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsci/regresi-linear-menarik-garis-terbaik">Regresi linear: menarik garis terbaik</a></p><p>Berikutnya: <a href="/belajar/dsci/mencocokkan-distribusi-pada-data">Mencocokkan distribusi pada data</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

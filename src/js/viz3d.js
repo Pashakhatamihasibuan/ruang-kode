@@ -519,6 +519,57 @@ S.sort={t:'Sorting dasar: bubble sort dan insertion sort langkah demi langkah',
   st.push({lb:'Selesai',cap:`Terurut: ${a.map(o=>o.x).join(', ')}. Butuh ${cmp} perbandingan dan ${swp} ${P.algo==='insert'?'pergeseran':'pertukaran'}. Kedua algoritma ini O(n²): cukup untuk data kecil, tetapi untuk data besar pakai merge sort atau sort bawaan bahasa.`,it:[lt,...snap(()=>['ok'])]});
   return st}};
 
+/* ===================== DATA SCIENCE ===================== */
+/* ---------- K-Means ---------- */
+S.kmeans={t:'K-Means: titik berkumpul ke pusat kelompok terdekat',
+ p:[{k:'k',l:'Jumlah kelompok (k)',t:'n',min:2,max:4,v:3}],
+ steps:P=>{const k=Math.max(2,Math.min(4,P.k)),rnd=prng(11),KC=['acc','warn','ok','bad'];
+  const pusat=[[-2.6,-1],[2.4,-1.2],[0,1.4],[2.6,1.5]],pts=[];
+  for(let i=0;i<21;i++){const c=pusat[i%3];pts.push([c[0]+(rnd()-.5)*2.2,c[1]+(rnd()-.5)*1.6])}
+  let C=pts.slice(0,k).map(p=>[p[0]+.3,p[1]-.2]);const lt=lantai(8.5,5.4,-.35);
+  const dot=(i,c)=>B('p'+i,pts[i][0],-.05,pts[i][1],{w:.36,h:.36,d:.36,c,ball:1});
+  const cen=(j,on=1)=>B('c'+j,C[j][0],.5,C[j][1],{w:.42,h:1.1,d:.42,c:KC[j],t:'',s:'orang'});
+  const lab=()=>pts.map(p=>{let b=0,bd=1e9;C.forEach((c,j)=>{const d=(p[0]-c[0])**2+(p[1]-c[1])**2;if(d<bd){bd=d;b=j}});return b});
+  const st=[{lb:'Data',cap:`Ada ${pts.length} pelanggan tanpa label. Kita ingin membaginya menjadi <b>${k} kelompok</b> yang mirip. Posisi titik = dua fitur, misalnya frekuensi beli dan nilai belanja.`,it:[lt,...pts.map((_,i)=>dot(i,'mute'))]},
+   {lb:'Pusat awal',cap:`K-Means memilih ${k} <b>pusat</b> awal (di sini: titik-titik pertama). Pusatnya digambarkan sebagai "ketua kelompok".`,it:[lt,...pts.map((_,i)=>dot(i,'mute')),...C.map((_,j)=>cen(j))]}];
+  for(let it=1;it<=3;it++){const L=lab();
+   st.push({lb:'Putaran '+it+': pilih',cap:`Setiap titik bergabung ke pusat <b>terdekat</b> dan ikut warnanya.${it>1?' Beberapa titik pindah kelompok karena pusatnya sudah bergeser.':''}`,it:[lt,...pts.map((_,i)=>dot(i,KC[L[i]])),...C.map((_,j)=>cen(j))]});
+   const N=C.map((c,j)=>{const m=pts.filter((_,i)=>L[i]===j);return m.length?[m.reduce((a,p)=>a+p[0],0)/m.length,m.reduce((a,p)=>a+p[1],0)/m.length]:c});
+   const geser=Math.max(...N.map((n,j)=>Math.hypot(n[0]-C[j][0],n[1]-C[j][1])));C=N;
+   st.push({lb:'Putaran '+it+': geser',cap:`Setiap pusat pindah ke <b>rata-rata</b> anggotanya (pergeseran terbesar ${geser.toFixed(2)}). ${geser<.05?'Pusat hampir tidak bergerak lagi: algoritma <b>konvergen</b>.':'Ulangi: pilih pusat terdekat, lalu geser lagi.'}`,it:[lt,...pts.map((_,i)=>dot(i,KC[L[i]])),...C.map((_,j)=>cen(j))]});
+   if(geser<.05)break}
+  st.push({lb:'Intinya',cap:'K-Means mengulang dua langkah: <b>tetapkan</b> ke pusat terdekat, lalu <b>geser</b> pusat ke rata-rata. Fitur harus distandardisasi dulu, dan k dipilih dengan metode siku serta akal sehat bisnis. Ganti k di panel Eksperimen.',it:st[st.length-1].it});
+  return st}};
+
+/* ---------- gradient descent ---------- */
+S.gd={t:'Gradient descent: bola menuruni lembah loss',
+ p:[{k:'lr',l:'Learning rate',t:'o',o:[['0.1','0.1 (pelan)'],['0.3','0.3 (pas)'],['0.9','0.9 (memantul)'],['1.05','1.05 (meledak)']],v:'0.3'}],
+ steps:P=>{const lr=+P.lr||.3,L=w=>(w-3)**2,X=w=>(w-3)*.75,Y=w=>Math.min(L(w),16)*.16-.2;
+  const kurva=[];for(let i=0;i<24;i++){const a=-1+i*(8/23),b=-1+(i+1)*(8/23);kurva.push(R('k'+i,[X(a),Y(a),0],[X(b),Y(b),0],'mute'))}
+  const lt=lantai(8,2.4,-.5),base=[lt,...kurva,G('min',X(3),-.9,0,'minimum: w = 3','ok')];
+  const bola=(w,c)=>B('bola',X(Math.max(-1,Math.min(7,w))),Y(Math.max(-1,Math.min(7,w)))+.28,0,{w:.5,h:.5,d:.5,c,ball:1,t:''});
+  let w=-1;const st=[{lb:'Mulai',cap:`Loss <code>L(w) = (w − 3)²</code> berbentuk lembah, paling rendah di w = 3. Bola mulai di w = ${w}. Learning rate = <b>${lr}</b>.`,it:[...base,bola(w,'warn')]}];
+  for(let i=1;i<=6;i++){const g=2*(w-3),w2=w-lr*g;
+   st.push({lb:'Langkah '+i,cap:`Turunan di w = ${w.toFixed(2)} adalah ${g.toFixed(2)}. Langkah: w = ${w.toFixed(2)} − ${lr} × ${g.toFixed(2)} = <b>${w2.toFixed(2)}</b>. Loss ${L(w).toFixed(2)} → ${L(w2).toFixed(2)}.`,it:[...base,bola(w2,Math.abs(w2-3)<Math.abs(w-3)?'ok':'bad'),G('tr',X(Math.max(-1,Math.min(7,w2))),Y(Math.max(-1,Math.min(7,w2)))+1,0,'w = '+w2.toFixed(2),'idx')]});w=w2}
+  st.push({lb:'Intinya',cap:Math.abs(w-3)<.1?`Bola sampai di dasar lembah (w ≈ ${w.toFixed(2)}). Inilah cara model belajar: ulangi <code>w = w − lr × turunan</code>.`:lr>1?'Learning rate terlalu besar: setiap langkah melompati dasar lembah dan makin menjauh. Model <b>gagal konvergen</b>.':lr>.5?'Bola memantul ke kiri-kanan dasar lembah sebelum tenang. Bisa sampai, tetapi boros langkah.':'Bola bergerak terlalu pelan; butuh lebih banyak langkah untuk sampai.',it:[...base,bola(w,Math.abs(w-3)<.1?'ok':'warn')]});
+  return st}};
+
+/* ---------- train/test split ---------- */
+S.split={t:'Train/test split: model diuji dengan data yang belum pernah dilihat',
+ p:[{k:'u',l:'Porsi data uji (%)',t:'o',o:[['20','20%'],['25','25%'],['30','30%']],v:'25'}],
+ steps:P=>{const n=20,u=Math.round(n*(+P.u||25)/100),rnd=prng(5),ord=[...Array(n).keys()].sort(()=>rnd()-.5);
+  const X=i=>(i-(n-1)/2)*.42,lt=lantai(10,4.4,-.45),uji=new Set(ord.slice(0,u)),benar=new Set(ord.slice(0,u).filter((_,j)=>j%4!==3));
+  const row=(i,x,z,c)=>B('r'+i,x,0,z,{w:.38,h:.5,d:.7,c,t:String(i+1)});
+  const model=B('model',-.6,1.6,-1.4,{w:1.2,h:1.1,d:1,c:'glass',t:'model',s:'server'});
+  const trainPos=i=>{const k=ord.indexOf(i)-u;return [-4+(k%8)*.45,-1.2+Math.floor(k/8)*.9]},testPos=i=>{const k=ord.indexOf(i);return [2.6+(k%4)*.45,-1.2+Math.floor(k/4)*.9]};
+  return [
+   {lb:'Data',cap:`Ada ${n} baris data berlabel (misalnya pelanggan dan apakah ia churn).`,it:[lt,...[...Array(n).keys()].map(i=>row(i,X(i),0,'acc'))]},
+   {lb:'Acak',cap:'Data <b>diacak</b> dulu (lihat nomor barisnya berpindah) agar data latih dan uji sama-sama mewakili. Dengan <code>stratify=y</code>, proporsi kelas juga dijaga sama.',it:[lt,...[...Array(n).keys()].map(i=>row(i,X(ord.indexOf(i)),0,'acc'))]},
+   {lb:'Bagi',cap:`<code>train_test_split(test_size=${(u/n).toFixed(2)})</code>: ${n-u} baris untuk <b>latih</b>, ${u} baris <b>disembunyikan</b> untuk uji (kuning).`,it:[lt,...[...Array(n).keys()].map(i=>{const t=uji.has(i),[x,z]=t?testPos(i):trainPos(i);return row(i,x,z,t?'warn':'acc')}),G('gl',-2.4,1.2,-.75,'data latih','idx'),G('gu',3.3,1.2,-.75,'data uji','warn')]},
+   {lb:'Latih',cap:'<code>model.fit(X_train, y_train)</code>: model hanya belajar dari data latih. Data uji tetap tersembunyi.',it:[lt,model,...[...Array(n).keys()].map(i=>{const t=uji.has(i),[x,z]=t?testPos(i):trainPos(i);return row(i,x,z,t?'mute':'acc')}),R('fl',[-2.4,.4,-1.4],[-1.2,1.4,-1.4],'acc')]},
+   {lb:'Uji',cap:`<code>model.score(X_test, y_test)</code>: model menebak data yang belum pernah dilihat. Benar ${benar.size} dari ${u} (${Math.round(benar.size/u*100)}%). Inilah perkiraan jujur kinerjanya di dunia nyata.`,it:[lt,model,...[...Array(n).keys()].map(i=>{const t=uji.has(i),[x,z]=t?testPos(i):trainPos(i);return row(i,x,z,t?(benar.has(i)?'ok':'bad'):'mute')}),R('fu',[0,1.4,-1.4],[2.6,.4,-1.4],'warn')]},
+   {lb:'Intinya',cap:'Menilai model di data latihnya sendiri seperti ujian dengan soal yang sudah dibocorkan: nilainya tinggi tetapi menipu. Untuk penilaian yang lebih stabil, pakai <b>cross-validation</b>.',it:[lt,model,...[...Array(n).keys()].map(i=>{const t=uji.has(i),[x,z]=t?testPos(i):trainPos(i);return row(i,x,z,t?(benar.has(i)?'ok':'bad'):'acc')})]}]}};
+
 /* ---------- stack ---------- */
 S.stack={t:'Stack: tumpukan piring, yang terakhir masuk keluar pertama (LIFO)',
  p:[{k:'n',l:'Jumlah push',t:'n',min:1,max:6,v:3},{k:'k',l:'Jumlah pop',t:'n',min:0,max:6,v:1}],
@@ -677,6 +728,9 @@ S.git={t:'Git: commit sebagai titik, branch sebagai jalur',
 
 /* ---------- pencocokan pelajaran -> adegan ---------- */
 const RULES=[
+ /* judul yang mirip tetapi maknanya lain: jangan dipasangi adegan */
+ [/decision tree|confusion matrix|feature engineering|random forest/i,null,1],
+ [/k-means|clustering/i,'kmeans',1],[/gradient descent|turunan dan/i,'gd',1],[/train\/test split|validasi silang|cross.validation/i,'split',1],
  /* materi data, web, dan algoritma: judulnya spesifik, jadi berlaku di jalur mana pun (atau hanya jalur yang disebut) */
  [/^(select & from|where: menyaring baris|order by, limit & distinct|urutan eksekusi query|basis data relasional: tabel, baris, kolom|sintaks & kata kunci sql)$|memilih & menyaring: loc|katalog toko nusantara/i,'query',1],[/^operator$/i,'query',1,['sql']],
  [/fungsi agregat|^group ?by$|groupby|^having$|pivot_table|ringkasan stok/i,'group',1],[/^index:|jenis indeks|explain analyze|optimasi query|pg_stat_statements/i,'index',1],

@@ -122,6 +122,8 @@ function wireEditor(box,onRun,onInput){
 const PYOK=['python'];
 /* tabel ringkas pelajaran: tb:[{c:judul,h:[kolom],r:[[sel]]}] */
 const tbHTML=l=>l.tb&&l.tb.length?`<section class="section lt-sec"><h2>Tabel ringkas</h2>${l.tb.map(x=>`<div class="lt-wrap" tabindex="0" role="region" aria-label="${esc(x.c)}"><table class="lt"><caption>${esc(x.c)}</caption><thead><tr>${x.h.map(h=>`<th scope="col">${esc(h)}</th>`).join('')}</tr></thead><tbody>${x.r.map(r=>`<tr>${r.map((c,i)=>i===0?`<th scope="row">${esc(c)}</th>`:`<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`).join('')}</section>`:'';
+/* grafik keluaran Matplotlib (SVG) ditampilkan sebagai gambar agar terisolasi dari halaman */
+const figHTML=f=>f&&f.length?`<div class="figs">${f.map((s,i)=>`<figure class="mplfig"><img alt="Grafik keluaran kode${f.length>1?' '+(i+1):''}" loading="lazy" src="data:image/svg+xml;charset=utf-8,${encodeURIComponent(s)}"></figure>`).join('')}</div>`:'';
 function conceptHTML(l,t){
   const lang=l.lang||t.lang,live=l.code&&l.out!=null&&l.run!==false,py=live&&lang==='python';
   return `<section class="prose">${l.b.map(p=>`<p>${p}</p>`).join('')}</section>
@@ -129,14 +131,14 @@ function conceptHTML(l,t){
   ${vizHTML(l,'Coba kontrolnya atau tekan Berikutnya, lalu perhatikan apa yang berubah.')}
   ${l.code?`<section class="section" id="prog"><h2>${lang==='text'?'Contoh':'Contoh kode'}</h2>
    ${py?`<div class="pane python"><div class="pane-h"><span>PYTHON · bisa diedit</span><button class="copy" data-copyed>Salin</button></div>${editorHTML('pyEd',l.code,'Editor Python','python')}</div>`:pane(lang,l.code)}
-   ${l.out!=null?(l.run===false?`<div><div class="eyebrow">Contoh keluaran</div><div class="console">${esc(l.out)}</div></div>`
+   ${l.out!=null?(l.run===false?`<div><div class="eyebrow">Contoh keluaran</div><div class="console">${esc(l.out)}</div>${figHTML(l.fig)}</div>`
      :`<details class="guess" id="guess"><summary>🤔 Tebak keluarannya dulu sebelum menjalankan</summary><textarea class="bk" id="gIn" placeholder="Tulis keluaran yang kamu perkirakan, satu baris per baris"></textarea><div class="sl-act"><button class="btn" id="gChk">Periksa tebakan</button></div><div id="gFb" aria-live="polite"></div></details>
-      <div class="runbox"><button class="btn primary" id="runBtn">▶ Jalankan</button>${trBtn(l)}${py?'<button class="btn" id="pyReset">Kembalikan kode</button>':''}<span class="rb-hint">${py?'Ubah kodenya lalu jalankan. Kode asli menampilkan keluaran yang sudah diuji; kode yang diubah dijalankan dengan Python di browser (Pyodide).':`Keluaran kode ini sudah diuji dengan ${({java:'Java 21',ts:'Node 22 (TypeScript)',js:'Node 22',sql:'mesin SQL Ruang Kode',bash:'Bash'})[lang]||'Python 3.13'}.`}</span></div><div class="console run" id="runOut" hidden></div>${tracerHTML(l,lang)}`):''}</section>`:''}
+      <div class="runbox"><button class="btn primary" id="runBtn">▶ Jalankan</button>${trBtn(l)}${py?'<button class="btn" id="pyReset">Kembalikan kode</button>':''}<span class="rb-hint">${py?'Ubah kodenya lalu jalankan. Kode asli menampilkan keluaran yang sudah diuji; kode yang diubah dijalankan dengan Python di browser (Pyodide).':`Keluaran kode ini sudah diuji dengan ${({java:'Java 21',ts:'Node 22 (TypeScript)',js:'Node 22',sql:'mesin SQL Ruang Kode',bash:'Bash'})[lang]||'Python 3.13'}.`}</span></div><div class="console run" id="runOut" hidden></div><div class="figs" id="figOut" hidden></div>${tracerHTML(l,lang)}`):''}</section>`:''}
   ${soHTML(l,lang)}${practiceHTML(l,lang)}${ptsHTML(l)}${qHTML(l)}`;
 }
 /* soal latihan: so:[{q,h,a,out}] — jawaban tersembunyi sampai dibuka */
 const soHTML=(l,lang)=>l.so&&l.so.length?`<section class="section so-sec" id="soal"><h2>Soal latihan</h2><p class="muted">Kerjakan dulu di editor atau kertasmu sendiri. Buka petunjuk jika buntu, dan buka jawaban hanya untuk mencocokkan.</p><ol class="so-list">${l.so.map(s=>`<li><p class="so-q">${s.q}</p><details class="so-d"><summary>Petunjuk</summary><p>${s.h}</p></details>${s.a?`<details class="so-d"><summary>Lihat jawaban</summary>${pane(s.lang||lang,s.a)}${s.out!=null?`<div class="eyebrow">Keluaran</div><div class="console">${esc(s.out)}</div>`:''}</details>`:''}</li>`).join('')}</ol></section>`:'';
-let PY=null,PYFAIL=false;
+let PY=null,PYFAIL=false,FIGS=[];
 function loadPy(){
   if(PY)return PY;
   PY=new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js';
@@ -150,10 +152,12 @@ async function runPy(code,onOut){
   const bad=[];await py.loadPackagesFromImports(code,{messageCallback:m=>{if(/^Loading /.test(m)&&!out)onOut('Memuat paket '+m.slice(8)+'…')},errorCallback:m=>bad.push(m)});
   if(bad.length){const n=[...new Set(bad.join(' ').match(/[a-z_]+(?=-\d)/g)||[])].join(', ');push(`Paket ${n||"yang dibutuhkan kode ini"} gagal diunduh. Periksa koneksi internet lalu jalankan lagi.`);return out}
   out='';onOut('');
-  const g=py.globals.get('dict')();
+  const g=py.globals.get('dict')();FIGS=[];
+  if(/matplotlib|pyplot/.test(code))py.runPython("import os\nos.environ['MPLBACKEND']='Agg'");
   try{await py.runPythonAsync(code,{globals:g})}catch(e){const m=String(e.message||e).trim().split('\n'),i=m.findIndex(s=>/^\s*File "<exec>"/.test(s));
     push(i>=0?['Traceback (most recent call last):',...m.slice(i)].join('\n'):m.slice(-2).join('\n'));const fh=pyFriendly(m.join('\n'));if(fh)push('\n💡 '+fh)}
   finally{g.destroy&&g.destroy()}
+  if(/matplotlib|pyplot/.test(code)){try{const r=py.runPython("import sys,io\n_rk=[]\nif 'matplotlib.pyplot' in sys.modules:\n  import matplotlib.pyplot as _p\n  _p.rcParams['svg.fonttype']='none'\n  for _n in _p.get_fignums():\n    _b=io.StringIO();_p.figure(_n).savefig(_b,format='svg',bbox_inches='tight');_rk.append(_b.getvalue())\n  _p.close('all')\n_rk");FIGS=r.toJs();r.destroy&&r.destroy()}catch(e){FIGS=[]}}
   return out;
 }
 const normOut=s=>s.replace(/\r/g,'').split('\n').map(x=>x.replace(/\s+$/,'')).join('\n').trim();
@@ -163,13 +167,14 @@ function wireConcept(l,t,x){
   const typeOut=(txt,done)=>{box.hidden=false;box.classList.remove('err');box.textContent='';const lines=txt.split('\n');let k=0;
     const step=()=>{box.textContent+=(k?'\n':'')+lines[k];k++;if(k<lines.length)TIMERS.push(setTimeout(step,RM()?0:90));else done&&done()};TIMERS.push(setTimeout(step,RM()?0:200))};
   if(rb)rb.onclick=async()=>{const code=ed?ed.get():l.code;rb.disabled=true;rb.textContent='Berjalan…';const fin=()=>{rb.disabled=false;rb.textContent='↻ Jalankan lagi'};
-    if(!ed||code.trim()===l.code.trim()){typeOut(l.out,fin);return}
+    const fo=$('#figOut'),showF=f=>{if(!fo)return;fo.innerHTML=figHTML(f);fo.hidden=!(f&&f.length)};showF(null);
+    if(!ed||code.trim()===l.code.trim()){typeOut(l.out,()=>{showF(l.fig);fin()});return}
     if(PYFAIL){box.hidden=false;box.classList.add('err');box.textContent='Python di browser (Pyodide) tidak bisa dimuat di halaman ini, misalnya karena koneksi atau pembatasan keamanan. Buka versi web Ruang Kode untuk menjalankan kode yang diubah, atau tekan "Kembalikan kode" untuk melihat keluaran aslinya.';fin();return}
     box.hidden=false;box.classList.remove('err');box.textContent='Memuat Python di browser (sekali saja, ±10 MB)…';
-    try{const o=await runPy(code,s=>{box.textContent=s});if(!o)box.textContent='(program selesai tanpa keluaran)'}
+    try{const o=await runPy(code,s=>{box.textContent=s});if(!o)box.textContent=FIGS.length?'(grafik di bawah)':'(program selesai tanpa keluaran)';showF(FIGS)}
     catch(e){box.classList.add('err');box.textContent=`Python di browser gagal dimuat (${e.message}). Coba lagi nanti, atau tekan "Kembalikan kode" untuk melihat keluaran asli.`}
     fin()};
-  const pr=$('#pyReset');if(pr)pr.onclick=()=>{ed.set(l.code);box.hidden=true};
+  const pr=$('#pyReset');if(pr)pr.onclick=()=>{ed.set(l.code);box.hidden=true;const fo=$('#figOut');if(fo)fo.hidden=true};
   const ce=$('[data-copyed]');if(ce)ce.onclick=e=>{e.stopPropagation();copyText(ed.get(),ce)};
   const gc=$('#gChk');if(gc)gc.onclick=()=>{const g=normOut($('#gIn').value),a=normOut(l.out),fb=$('#gFb');
     if(!g){fb.innerHTML='<p class="muted">Tulis dulu tebakanmu.</p>';return}

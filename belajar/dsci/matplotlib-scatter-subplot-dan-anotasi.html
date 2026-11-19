@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Matplotlib: scatter, subplot, dan anotasi · Data Science &amp; AI · Ruang Kode</title>
+<meta name="description" content="Scatter plot menunjukkan hubungan dua variabel angka. Warna atau ukuran titik bisa menambah variabel ketiga, misalnya churn (ya/tidak).">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsci/matplotlib-scatter-subplot-dan-anotasi">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Matplotlib: scatter, subplot, dan anotasi · Data Science &amp; AI · Ruang Kode"><meta property="og:description" content="Scatter plot menunjukkan hubungan dua variabel angka. Warna atau ukuran titik bisa menambah variabel ketiga, misalnya churn (ya/tidak).">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsci/matplotlib-scatter-subplot-dan-anotasi"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Matplotlib: scatter, subplot, dan anotasi", "description": "Scatter plot menunjukkan hubungan dua variabel angka. Warna atau ukuran titik bisa menambah variabel ketiga, misalnya churn (ya/tidak).", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci/matplotlib-scatter-subplot-dan-anotasi", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Science & AI", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Science & AI", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, {"@type": "ListItem", "position": 3, "name": "Matplotlib: scatter, subplot, dan anotasi", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci/matplotlib-scatter-subplot-dan-anotasi"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsci">Data Science &amp; AI</a> / Modul 5</nav>
+<div class="eyebrow">Data Science &amp; AI · Modul 5 · Konsep &amp; kode</div><h1>Matplotlib: scatter, subplot, dan anotasi</h1><a class="cta" href="/#dsci-5-3">Buka versi interaktif</a>
+<p><b>Scatter plot</b> menunjukkan hubungan dua variabel angka. Warna atau ukuran titik bisa menambah variabel ketiga, misalnya churn (ya/tidak).</p>
+<p><b>Subplot</b> menata beberapa grafik dalam satu gambar agar mudah dibandingkan; <code>sharey=True</code> menyamakan skala sumbu y. <b>Anotasi</b> (<code>ax.annotate</code>, <code>ax.axhline</code>) menunjuk bagian penting supaya pembaca tidak perlu menebak.</p>
+<p>Untuk eksplorasi cepat, <code>df.plot(kind=...)</code> dari pandas sudah cukup. Untuk laporan, atur ukuran, label, dan warna dengan Matplotlib agar rapi. Seaborn mempermudah grafik statistik (boxplot, violin, pairplot), dan Plotly membuat grafik interaktif untuk dashboard.</p>
+<div class="lbl">PYTHON</div><pre><code>import numpy as np
+import pandas as pd
+
+rng = np.random.default_rng(7)
+n = 300
+df = pd.DataFrame({
+    &#x27;umur&#x27;: rng.integers(18, 60, n),
+    &#x27;lama_bulan&#x27;: rng.integers(1, 48, n),
+    &#x27;belanja_bln&#x27;: rng.normal(350, 120, n).round(0).clip(50),
+    &#x27;keluhan&#x27;: rng.poisson(1.2, n),
+    &#x27;kota&#x27;: rng.choice([&#x27;Jakarta&#x27;, &#x27;Bandung&#x27;, &#x27;Surabaya&#x27;, &#x27;Medan&#x27;], n),
+})
+skor = -1.2 + 0.9 * df[&#x27;keluhan&#x27;] - 0.06 * df[&#x27;lama_bulan&#x27;] - 0.003 * (df[&#x27;belanja_bln&#x27;] - 350)
+df[&#x27;churn&#x27;] = (rng.random(n) &lt; 1 / (1 + np.exp(-skor))).astype(int)
+import matplotlib.pyplot as plt
+
+fig, ax = plt.subplots(1, 2, figsize=(9, 3.4), sharey=True)
+for nilai, warna, nama in [(0, &#x27;tab:blue&#x27;, &#x27;bertahan&#x27;), (1, &#x27;tab:red&#x27;, &#x27;churn&#x27;)]:
+    d = df[df[&#x27;churn&#x27;] == nilai]
+    ax[0].scatter(d[&#x27;lama_bulan&#x27;], d[&#x27;belanja_bln&#x27;], s=12, alpha=0.6, color=warna, label=nama)
+ax[0].set_xlabel(&#x27;lama berlangganan (bulan)&#x27;); ax[0].set_ylabel(&#x27;belanja/bln&#x27;)
+ax[0].legend(); ax[0].set_title(&#x27;Churn menumpuk di pelanggan baru&#x27;)
+
+rata = df.groupby(&#x27;keluhan&#x27;)[&#x27;belanja_bln&#x27;].mean()
+ax[1].plot(rata.index, rata.values, &#x27;o-&#x27;)
+ax[1].axhline(df[&#x27;belanja_bln&#x27;].mean(), color=&#x27;gray&#x27;, linestyle=&#x27;--&#x27;)
+ax[1].annotate(&#x27;rata-rata semua&#x27;, (rata.index.max(), df[&#x27;belanja_bln&#x27;].mean()), ha=&#x27;right&#x27;, va=&#x27;bottom&#x27;)
+ax[1].set_xlabel(&#x27;jumlah keluhan&#x27;); ax[1].set_title(&#x27;Belanja vs keluhan&#x27;)
+fig.tight_layout()
+print(&#x27;Rata-rata lama berlangganan: churn&#x27;, round(df[df.churn == 1].lama_bulan.mean(), 1),
+      &#x27;vs bertahan&#x27;, round(df[df.churn == 0].lama_bulan.mean(), 1))</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Rata-rata lama berlangganan: churn 16.9 vs bertahan 26.8</code></pre>
+<h2>Poin penting</h2><ul><li>Scatter untuk hubungan dua angka; warna untuk variabel ketiga.</li><li>Subplot untuk membandingkan; anotasi untuk menunjuk.</li><li>pandas .plot untuk cepat, Seaborn/Plotly untuk statistik dan interaktif.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Parameter subplot agar sumbu y semua grafik sama?</summary><p class="ok">Jawaban: sharey=True</p><p>sharey menyamakan sumbu y.</p></details>
+<a class="cta" href="/#dsci-5-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsci/matplotlib-grafik-garis-batang-dan-histogram">Matplotlib: grafik garis, batang, dan histogram</a></p><p>Berikutnya: <a href="/belajar/dsci/korelasi-dan-heatmap">Korelasi dan heatmap</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>
