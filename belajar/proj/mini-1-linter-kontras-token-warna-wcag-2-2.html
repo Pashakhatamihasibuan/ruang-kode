@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mini 1: Linter kontras token warna (WCAG 2.2) · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Masalah. Tim desain punya palet tema terang dan gelap, tetapi developer sering menemukan teks abu-abu yang sulit dibaca setelah build. Kamu diminta…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/mini-1-linter-kontras-token-warna-wcag-2-2">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Mini 1: Linter kontras token warna (WCAG 2.2) · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Masalah. Tim desain punya palet tema terang dan gelap, tetapi developer sering menemukan teks abu-abu yang sulit dibaca setelah build. Kamu diminta…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/mini-1-linter-kontras-token-warna-wcag-2-2"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Mini 1: Linter kontras token warna (WCAG 2.2)", "description": "Masalah. Tim desain punya palet tema terang dan gelap, tetapi developer sering menemukan teks abu-abu yang sulit dibaca setelah build. Kamu diminta…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-1-linter-kontras-token-warna-wcag-2-2", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Mini 1: Linter kontras token warna (WCAG 2.2)", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-1-linter-kontras-token-warna-wcag-2-2"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 10</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 10 · Konsep &amp; kode</div><h1>Mini 1: Linter kontras token warna (WCAG 2.2)</h1><a class="cta" href="/#proj-10-1">Buka versi interaktif</a>
+<p><b>Masalah.</b> Tim desain punya palet tema terang dan gelap, tetapi developer sering menemukan teks abu-abu yang sulit dibaca setelah build. Kamu diminta membuat pemeriksa otomatis untuk semua pasangan warna token sebelum handoff.</p>
+<p><b>Fitur wajib:</b><br>1. Hitung luminans relatif dan rasio kontras sesuai rumus WCAG<br>2. Periksa setiap pasangan token teks/latar di kedua tema<br>3. Ambang berbeda: teks 4,5:1, komponen UI dan teks besar 3:1<br>4. Laporan LULUS/GAGAL dan jumlah pasangan yang harus diperbaiki</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. Ubah hex ke RGB 0-1, linierkan (gamma sRGB), lalu bobot 0,2126/0,7152/0,0722.<br>2. Rasio = (L terang + 0,05) / (L gelap + 0,05).<br>3. Simpan pasangan sebagai data (fg, bg, jenis) agar mudah ditambah.<br>4. Cetak tabel per tema dan ringkasan akhir untuk dipakai di CI.</p>
+<p><b>Kembangkan sendiri:</b> baca token dari file JSON Figma Variables, sarankan warna pengganti terdekat yang lulus, dan jalankan di GitHub Actions setiap kali token berubah.</p>
+<div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Hitung luminans relatif dan rasio kontras sesuai rumus WCAG</td><td>Ubah hex ke RGB 0-1, linierkan (gamma sRGB), lalu bobot 0,2126/0,7152/0,0722.</td></tr><tr><td>Periksa setiap pasangan token teks/latar di kedua tema</td><td>Rasio = (L terang + 0,05) / (L gelap + 0,05).</td></tr><tr><td>Ambang berbeda: teks 4,5:1, komponen UI dan teks besar 3:1</td><td>Simpan pasangan sebagai data (fg, bg, jenis) agar mudah ditambah.</td></tr><tr><td>Laporan LULUS/GAGAL dan jumlah pasangan yang harus diperbaiki</td><td>Cetak tabel per tema dan ringkasan akhir untuk dipakai di CI.</td></tr></tbody></table></div>
+<div class="lbl">PYTHON</div><pre><code># Linter kontras WCAG 2.2 untuk token warna tema terang &amp; gelap
+def lum(hexwarna):
+    h = hexwarna.lstrip(&quot;#&quot;)
+    r, g, b = (int(h[i:i + 2], 16) / 255 for i in (0, 2, 4))
+    f = lambda c: c / 12.92 if c &lt;= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
+    return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b)
+
+def rasio(a, b):
+    la, lb = sorted([lum(a), lum(b)], reverse=True)
+    return (la + 0.05) / (lb + 0.05)
+
+TEMA = {
+    &quot;terang&quot;: {&quot;bg&quot;: &quot;#FFFFFF&quot;, &quot;surface&quot;: &quot;#F4F6F8&quot;, &quot;text&quot;: &quot;#1B1F24&quot;, &quot;muted&quot;: &quot;#8A94A0&quot;,
+               &quot;primary&quot;: &quot;#0B6BCB&quot;, &quot;on-primary&quot;: &quot;#FFFFFF&quot;, &quot;danger&quot;: &quot;#E5484D&quot;, &quot;border&quot;: &quot;#D0D7DE&quot;},
+    &quot;gelap&quot;:  {&quot;bg&quot;: &quot;#0E1116&quot;, &quot;surface&quot;: &quot;#161B22&quot;, &quot;text&quot;: &quot;#E6EDF3&quot;, &quot;muted&quot;: &quot;#7D8590&quot;,
+               &quot;primary&quot;: &quot;#4493F8&quot;, &quot;on-primary&quot;: &quot;#0E1116&quot;, &quot;danger&quot;: &quot;#F85149&quot;, &quot;border&quot;: &quot;#30363D&quot;},
+}
+# (teks/komponen, latar, jenis) -&gt; jenis menentukan ambang: teks 4.5, besar/UI 3.0
+PASANGAN = [(&quot;text&quot;, &quot;bg&quot;, &quot;teks&quot;), (&quot;text&quot;, &quot;surface&quot;, &quot;teks&quot;), (&quot;muted&quot;, &quot;bg&quot;, &quot;teks&quot;),
+            (&quot;on-primary&quot;, &quot;primary&quot;, &quot;teks&quot;), (&quot;primary&quot;, &quot;bg&quot;, &quot;teks&quot;), (&quot;danger&quot;, &quot;bg&quot;, &quot;teks&quot;),
+            (&quot;border&quot;, &quot;bg&quot;, &quot;ui&quot;)]
+AMBANG = {&quot;teks&quot;: 4.5, &quot;ui&quot;: 3.0}
+
+gagal = 0
+for nama, t in TEMA.items():
+    print(f&quot;TEMA {nama}&quot;)
+    for fg, bg, jenis in PASANGAN:
+        r = rasio(t[fg], t[bg])
+        ok = r &gt;= AMBANG[jenis]
+        gagal += not ok
+        print(f&quot;  {&#x27;LULUS&#x27; if ok else &#x27;GAGAL&#x27;}  {fg:&lt;10} di {bg:&lt;8} {r:5.2f}:1  (min {AMBANG[jenis]})&quot;)
+print(f&quot;{gagal} pasangan gagal -&gt; perbaiki token sebelum handoff&quot; if gagal else &quot;semua lulus&quot;)
+</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>TEMA terang
+  LULUS  text       di bg       16.56:1  (min 4.5)
+  LULUS  text       di surface  15.29:1  (min 4.5)
+  GAGAL  muted      di bg        3.08:1  (min 4.5)
+  LULUS  on-primary di primary   5.28:1  (min 4.5)
+  LULUS  primary    di bg        5.28:1  (min 4.5)
+  GAGAL  danger     di bg        3.91:1  (min 4.5)
+  GAGAL  border     di bg        1.45:1  (min 3.0)
+TEMA gelap
+  LULUS  text       di bg       16.00:1  (min 4.5)
+  LULUS  text       di surface  14.64:1  (min 4.5)
+  LULUS  muted      di bg        5.07:1  (min 4.5)
+  LULUS  on-primary di primary   6.10:1  (min 4.5)
+  LULUS  primary    di bg        6.10:1  (min 4.5)
+  LULUS  danger     di bg        5.64:1  (min 4.5)
+  GAGAL  border     di bg        1.55:1  (min 3.0)
+4 pasangan gagal -&gt; perbaiki token sebelum handoff</code></pre>
+<h2>Poin penting</h2><ul><li>Proyek mini: Linter kontras token warna (WCAG 2.2).</li><li>Hitung luminans relatif dan rasio kontras sesuai rumus WCAG</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Berapa rasio kontras minimum WCAG 2.2 AA untuk teks berukuran normal?</summary><p class="ok">Jawaban: 4,5:1</p><p>3:1 untuk teks besar dan komponen UI; 7:1 untuk AAA.</p></details>
+<a class="cta" href="/#proj-10-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/besar-4-pipeline-data-untuk-aplikasi-ai-dari-dokumen-ke-indeks-vektor">Besar 4: Pipeline data untuk aplikasi AI: dari dokumen ke indeks vektor</a></p><p>Berikutnya: <a href="/belajar/proj/mini-2-generator-design-token-dtcg-ke-css-terang-gelap">Mini 2: Generator design token DTCG ke CSS (terang &amp; gelap)</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

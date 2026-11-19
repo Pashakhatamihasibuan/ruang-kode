@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mini 2: Generator design token DTCG ke CSS (terang &amp; gelap) · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Masalah. Design system startup masih menyalin warna hex manual dari Figma ke kode. Buat pipeline kecil yang mengubah token format DTCG tiga lapis…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/mini-2-generator-design-token-dtcg-ke-css-terang-gelap">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Mini 2: Generator design token DTCG ke CSS (terang &amp; gelap) · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Masalah. Design system startup masih menyalin warna hex manual dari Figma ke kode. Buat pipeline kecil yang mengubah token format DTCG tiga lapis…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/mini-2-generator-design-token-dtcg-ke-css-terang-gelap"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Mini 2: Generator design token DTCG ke CSS (terang & gelap)", "description": "Masalah. Design system startup masih menyalin warna hex manual dari Figma ke kode. Buat pipeline kecil yang mengubah token format DTCG tiga lapis…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-2-generator-design-token-dtcg-ke-css-terang-gelap", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Mini 2: Generator design token DTCG ke CSS (terang & gelap)", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-2-generator-design-token-dtcg-ke-css-terang-gelap"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 10</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 10 · Konsep &amp; kode</div><h1>Mini 2: Generator design token DTCG ke CSS (terang &amp; gelap)</h1><a class="cta" href="/#proj-10-2">Buka versi interaktif</a>
+<p><b>Masalah.</b> Design system startup masih menyalin warna hex manual dari Figma ke kode. Buat pipeline kecil yang mengubah token format DTCG tiga lapis (primitive, semantic, component) menjadi CSS variables untuk dua tema.</p>
+<p><b>Fitur wajib:</b><br>1. Membaca token DTCG dengan $type dan $value<br>2. Menyelesaikan alias berantai seperti {semantic.color.action}<br>3. Mode terang/gelap dari satu sumber<br>4. Menolak komponen yang merujuk warna primitive langsung</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. Simpan token sebagai JSON; lapisan semantic menyimpan nilai per mode.<br>2. Tulis fungsi ambil(jalur) dan selesaikan(nilai, mode) yang mengikuti alias sampai nilai akhir.<br>3. Ratakan pohon token menjadi nama variabel --lapis-nama.<br>4. Cetak :root dan [data-theme="dark"], lalu jalankan aturan arsitektur.</p>
+<p><b>Kembangkan sendiri:</b> ganti dengan Style Dictionary v4 atau Terrazzo, tambahkan keluaran Android XML dan Swift, dan publikasikan paket npm @perusahaan/tokens dengan changelog.</p>
+<div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Membaca token DTCG dengan $type dan $value</td><td>Simpan token sebagai JSON; lapisan semantic menyimpan nilai per mode.</td></tr><tr><td>Menyelesaikan alias berantai seperti {semantic.color.action}</td><td>Tulis fungsi ambil(jalur) dan selesaikan(nilai, mode) yang mengikuti alias sampai nilai akhir.</td></tr><tr><td>Mode terang/gelap dari satu sumber</td><td>Ratakan pohon token menjadi nama variabel --lapis-nama.</td></tr><tr><td>Menolak komponen yang merujuk warna primitive langsung</td><td>Cetak :root dan [data-theme=&quot;dark&quot;], lalu jalankan aturan arsitektur.</td></tr></tbody></table></div>
+<div class="lbl">PYTHON</div><pre><code>import json
+
+# Token format DTCG (Design Tokens Community Group 2025.10): primitive -&gt; semantic -&gt; component
+SUMBER = json.loads(&quot;&quot;&quot;{
+  &quot;primitive&quot;: {
+    &quot;blue&quot;:  {&quot;500&quot;: {&quot;$type&quot;: &quot;color&quot;, &quot;$value&quot;: &quot;#0B6BCB&quot;}, &quot;300&quot;: {&quot;$type&quot;: &quot;color&quot;, &quot;$value&quot;: &quot;#4493F8&quot;}},
+    &quot;gray&quot;:  {&quot;0&quot;:   {&quot;$type&quot;: &quot;color&quot;, &quot;$value&quot;: &quot;#FFFFFF&quot;}, &quot;950&quot;: {&quot;$type&quot;: &quot;color&quot;, &quot;$value&quot;: &quot;#0E1116&quot;},
+              &quot;900&quot;: {&quot;$type&quot;: &quot;color&quot;, &quot;$value&quot;: &quot;#1B1F24&quot;}, &quot;100&quot;: {&quot;$type&quot;: &quot;color&quot;, &quot;$value&quot;: &quot;#E6EDF3&quot;}},
+    &quot;space&quot;: {&quot;2&quot;: {&quot;$type&quot;: &quot;dimension&quot;, &quot;$value&quot;: &quot;8px&quot;}, &quot;4&quot;: {&quot;$type&quot;: &quot;dimension&quot;, &quot;$value&quot;: &quot;16px&quot;}},
+    &quot;radius&quot;:{&quot;md&quot;: {&quot;$type&quot;: &quot;dimension&quot;, &quot;$value&quot;: &quot;8px&quot;}}
+  },
+  &quot;semantic&quot;: {
+    &quot;color&quot;: {
+      &quot;bg&quot;:      {&quot;$value&quot;: {&quot;light&quot;: &quot;{primitive.gray.0}&quot;,   &quot;dark&quot;: &quot;{primitive.gray.950}&quot;}},
+      &quot;text&quot;:    {&quot;$value&quot;: {&quot;light&quot;: &quot;{primitive.gray.900}&quot;, &quot;dark&quot;: &quot;{primitive.gray.100}&quot;}},
+      &quot;action&quot;:  {&quot;$value&quot;: {&quot;light&quot;: &quot;{primitive.blue.500}&quot;, &quot;dark&quot;: &quot;{primitive.blue.300}&quot;}}
+    }
+  },
+  &quot;component&quot;: {
+    &quot;button&quot;: {
+      &quot;primary-bg&quot;: {&quot;$value&quot;: &quot;{semantic.color.action}&quot;},
+      &quot;padding-x&quot;:  {&quot;$value&quot;: &quot;{primitive.space.4}&quot;},
+      &quot;radius&quot;:     {&quot;$value&quot;: &quot;{primitive.radius.md}&quot;}
+    }
+  }
+}&quot;&quot;&quot;)
+
+def ambil(jalur):
+    node = SUMBER
+    for k in jalur.split(&quot;.&quot;):
+        node = node[k]
+    return node[&quot;$value&quot;]
+
+def selesaikan(nilai, mode):
+    if isinstance(nilai, dict):
+        nilai = nilai[mode]
+    while isinstance(nilai, str) and nilai.startswith(&quot;{&quot;):
+        nilai = ambil(nilai[1:-1])
+        if isinstance(nilai, dict):
+            nilai = nilai[mode]
+    return nilai
+
+def ratakan(node, awal=&quot;&quot;):
+    for k, v in node.items():
+        if k.startswith(&quot;$&quot;):
+            continue
+        jalur = f&quot;{awal}.{k}&quot; if awal else k
+        if &quot;$value&quot; in v:
+            yield jalur, v[&quot;$value&quot;]
+        else:
+            yield from ratakan(v, jalur)
+
+def css(mode):
+    baris = []
+    for lapis in (&quot;semantic&quot;, &quot;component&quot;):
+        for jalur, nilai in ratakan(SUMBER[lapis], lapis):
+            nama = &quot;--&quot; + jalur.split(&quot;.&quot;, 1)[1].replace(&quot;.&quot;, &quot;-&quot;)
+            baris.append(f&quot;  {nama}: {selesaikan(nilai, mode)};&quot;)
+    return baris
+
+# Aturan arsitektur: komponen tidak boleh merujuk primitive warna langsung
+WARNA_PRIMITIVE = (&quot;{primitive.blue&quot;, &quot;{primitive.gray&quot;)
+pelanggaran = [j for j, v in ratakan(SUMBER[&quot;component&quot;], &quot;component&quot;)
+               if isinstance(v, str) and v.startswith(WARNA_PRIMITIVE)]
+print(&quot;:root {&quot;); print(&quot;\n&quot;.join(css(&quot;light&quot;))); print(&quot;}&quot;)
+print(&#x27;[data-theme=&quot;dark&quot;] {&#x27;); print(&quot;\n&quot;.join(l for l in css(&quot;dark&quot;) if &quot;color&quot; in l or &quot;primary-bg&quot; in l)); print(&quot;}&quot;)
+print(&quot;pelanggaran lapisan:&quot;, pelanggaran or &quot;tidak ada&quot;)
+</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>:root {
+  --color-bg: #FFFFFF;
+  --color-text: #1B1F24;
+  --color-action: #0B6BCB;
+  --button-primary-bg: #0B6BCB;
+  --button-padding-x: 16px;
+  --button-radius: 8px;
+}
+[data-theme=&quot;dark&quot;] {
+  --color-bg: #0E1116;
+  --color-text: #E6EDF3;
+  --color-action: #4493F8;
+  --button-primary-bg: #4493F8;
+}
+pelanggaran lapisan: tidak ada</code></pre>
+<h2>Poin penting</h2><ul><li>Proyek mini: Generator design token DTCG ke CSS (terang & gelap).</li><li>Membaca token DTCG dengan $type dan $value</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa komponen sebaiknya merujuk token semantic, bukan primitive?</summary><p class="ok">Jawaban: Agar ganti tema atau brand cukup mengubah pemetaan semantic tanpa menyentuh komponen</p><p>Lapisan semantic memberi makna peran.</p></details>
+<a class="cta" href="/#proj-10-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-1-linter-kontras-token-warna-wcag-2-2">Mini 1: Linter kontras token warna (WCAG 2.2)</a></p><p>Berikutnya: <a href="/belajar/proj/mini-3-type-scale-modular-dan-aturan-panjang-baris">Mini 3: Type scale modular dan aturan panjang baris</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

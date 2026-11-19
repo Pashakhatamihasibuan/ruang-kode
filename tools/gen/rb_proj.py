@@ -9,6 +9,7 @@ from rb_pj_ds import PJ_DS
 from rb_pj_java import PJ_JAVA
 from rb_pj_mobile import PJ_MOBILE
 from rb_pj_de import PJ_DE
+from rb_pj_uiux import PJ_UIUX
 
-PROJ = [STANDAR, FULLSTACK, PJ_FE, PJ_PY, PJ_DA, PJ_DS, PJ_JAVA, PJ_MOBILE, PJ_DE, MINI, BESAR, LAMAR]
+PROJ = [STANDAR, FULLSTACK, PJ_FE, PJ_PY, PJ_DA, PJ_DS, PJ_JAVA, PJ_MOBILE, PJ_DE, PJ_UIUX, MINI, BESAR, LAMAR]
 PROJ_SO = {}
