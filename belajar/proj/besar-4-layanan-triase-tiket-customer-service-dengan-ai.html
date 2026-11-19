@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Besar 4: Layanan triase tiket customer service dengan AI · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Masalah. Tim CS menerima ratusan pesan per hari. Mereka butuh sistem yang otomatis meringkas, memberi kategori dan prioritas, serta menyarankan balasan,…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/besar-4-layanan-triase-tiket-customer-service-dengan-ai">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Besar 4: Layanan triase tiket customer service dengan AI · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Masalah. Tim CS menerima ratusan pesan per hari. Mereka butuh sistem yang otomatis meringkas, memberi kategori dan prioritas, serta menyarankan balasan,…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/besar-4-layanan-triase-tiket-customer-service-dengan-ai"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Besar 4: Layanan triase tiket customer service dengan AI", "description": "Masalah. Tim CS menerima ratusan pesan per hari. Mereka butuh sistem yang otomatis meringkas, memberi kategori dan prioritas, serta menyarankan balasan,…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/besar-4-layanan-triase-tiket-customer-service-dengan-ai", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Besar 4: Layanan triase tiket customer service dengan AI", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/besar-4-layanan-triase-tiket-customer-service-dengan-ai"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 4</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 4 · Konsep &amp; kode</div><h1>Besar 4: Layanan triase tiket customer service dengan AI</h1><a class="cta" href="/#proj-4-10">Buka versi interaktif</a>
+<p><b>Masalah.</b> Tim CS menerima ratusan pesan per hari. Mereka butuh sistem yang otomatis meringkas, memberi kategori dan prioritas, serta menyarankan balasan, dengan manusia tetap memutuskan.</p>
+<p><b>Fitur wajib:</b><br>1. Terima tiket dari email/form/WhatsApp ke satu antrean<br>2. LLM menghasilkan ringkasan, kategori, prioritas, dan draf balasan dalam JSON terstruktur<br>3. Agen CS menyetujui, mengedit, atau menolak saran (human-in-the-loop)<br>4. Data pribadi (nomor HP, NIK) disamarkan sebelum dikirim ke model<br>5. Evaluasi: akurasi kategori dibanding label manusia, biaya per tiket, waktu respons</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. Definisikan kategori yang tetap (Pembayaran, Pengiriman, Akun, Produk, Lainnya) dan aturan prioritas.<br>2. Saring data pribadi dulu, lalu panggil model dengan instruksi jelas dan skema keluaran; validasi dengan Pydantic, ulangi sekali jika tidak valid.<br>3. Jalankan di Celery dengan retry dan batas waktu; jika model gagal, tiket tetap masuk antrean tanpa saran.<br>4. Simpan saran terpisah dari keputusan agen; catat apakah agen menyetujui atau mengedit.<br>5. Buat perintah <code>manage.py evaluasi_triase</code> untuk menghitung akurasi pada set berlabel.</p>
+<p><b>Standar industri yang dinilai:</b> keluaran AI terstruktur dan divalidasi, manusia tetap memutuskan, data pribadi disamarkan, kualitas diukur dengan set evaluasi</p>
+<div class="tw"><table><caption>Arsitektur dan stack (Django 5, DRF, Celery, PostgreSQL, Claude API (structured output via tool use), pytest, Langfuse/log sendiri untuk evaluasi)</caption><thead><tr><th>Bagian</th><th>Isi</th></tr></thead><tbody><tr><td>Alur</td><td>Tiket masuk → Celery triase → simpan saran → agen meninjau → balasan dikirim</td></tr><tr><td>Keluaran model</td><td>Skema tetap {ringkasan, kategori, prioritas, draf_balasan, yakin} divalidasi Pydantic</td></tr><tr><td>Privasi</td><td>Regex menyamarkan nomor HP, email, NIK sebelum dikirim; teks asli tetap di database</td></tr><tr><td>Evaluasi</td><td>Set 200 tiket berlabel; laporan akurasi per kategori setiap ganti prompt/model</td></tr></tbody></table></div>
+<div class="lbl">PYTHON</div><pre><code># triase/llm.py
+import json, re
+import anthropic
+from pydantic import BaseModel, Field, ValidationError
+from typing import Literal
+
+class Saran(BaseModel):
+    ringkasan: str = Field(max_length=300)
+    kategori: Literal[&#x27;Pembayaran&#x27;, &#x27;Pengiriman&#x27;, &#x27;Akun&#x27;, &#x27;Produk&#x27;, &#x27;Lainnya&#x27;]
+    prioritas: Literal[&#x27;tinggi&#x27;, &#x27;sedang&#x27;, &#x27;rendah&#x27;]
+    draf_balasan: str
+    yakin: float = Field(ge=0, le=1)
+
+POLA = [(re.compile(r&#x27;(\+62|0)8\d{8,11}&#x27;), &#x27;[NOMOR_HP]&#x27;), (re.compile(r&#x27;\b\d{16}\b&#x27;), &#x27;[NIK]&#x27;),
+        (re.compile(r&#x27;[\w.+-]+@[\w-]+\.[\w.]+&#x27;), &#x27;[EMAIL]&#x27;)]
+
+def samarkan(teks: str) -&gt; str:
+    for pola, ganti in POLA:
+        teks = pola.sub(ganti, teks)
+    return teks
+
+klien = anthropic.Anthropic()
+INSTRUKSI = (&#x27;Kamu membantu tim CS toko online Indonesia. Baca tiket, lalu panggil tool simpan_saran. &#x27;
+             &#x27;Prioritas tinggi jika uang pelanggan tertahan atau akun diretas. Balasan sopan, bahasa Indonesia, &#x27;
+             &#x27;jangan menjanjikan pengembalian dana.&#x27;)
+
+def triase(teks_tiket: str) -&gt; Saran:
+    for percobaan in range(2):
+        r = klien.messages.create(
+            model=&#x27;claude-sonnet-4-5&#x27;, max_tokens=800, system=INSTRUKSI,
+            tools=[{&#x27;name&#x27;: &#x27;simpan_saran&#x27;, &#x27;description&#x27;: &#x27;Simpan hasil triase&#x27;, &#x27;input_schema&#x27;: Saran.model_json_schema()}],
+            tool_choice={&#x27;type&#x27;: &#x27;tool&#x27;, &#x27;name&#x27;: &#x27;simpan_saran&#x27;},
+            messages=[{&#x27;role&#x27;: &#x27;user&#x27;, &#x27;content&#x27;: samarkan(teks_tiket)}])
+        try:
+            return Saran.model_validate(r.content[0].input)
+        except ValidationError:
+            continue
+    raise ValueError(&#x27;Keluaran model tidak valid&#x27;)
+
+# triase/tasks.py
+@shared_task(autoretry_for=(anthropic.APIConnectionError, anthropic.RateLimitError), retry_backoff=True, max_retries=4, time_limit=60)
+def proses_tiket(tiket_id):
+    t = Tiket.objects.get(pk=tiket_id)
+    try:
+        s = triase(t.isi)
+    except ValueError:
+        t.status = &#x27;PERLU_MANUAL&#x27;; t.save(); return
+    SaranAI.objects.update_or_create(tiket=t, defaults=s.model_dump())
+    t.status = &#x27;MENUNGGU_TINJAUAN&#x27;; t.save()
+
+# triase/management/commands/evaluasi_triase.py
+class Command(BaseCommand):
+    def handle(self, *a, **kw):
+        data = Tiket.objects.filter(label_manual__isnull=False)[:200]
+        benar = sum(triase(t.isi).kategori == t.label_manual for t in data)
+        self.stdout.write(f&#x27;Akurasi kategori: {benar}/{len(data)} = {benar / len(data):.0%}&#x27;)</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>samarkan(&#x27;Saya 081234567890, email andi@mail.com, NIK 1271010101010001&#x27;)
+-&gt; &#x27;Saya [NOMOR_HP], email [EMAIL], NIK [NIK]&#x27;
+
+$ python manage.py evaluasi_triase
+Akurasi kategori: 176/200 = 88%</code></pre>
+<h2>Poin penting</h2><ul><li>Proyek besar: Layanan triase tiket customer service dengan AI.</li><li>Stack: Django 5, DRF, Celery, PostgreSQL, Claude API (structured output via tool use), pytest, Langfuse/log sendiri untuk evaluasi.</li><li>Berkas inti penyelesaian ada di bawah; sisanya mengikuti pola yang sama.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa saran AI tidak langsung dikirim ke pelanggan?</summary><p class="ok">Jawaban: Model bisa keliru; agen CS meninjau dulu (human-in-the-loop)</p><p>Manusia tetap bertanggung jawab atas balasan.</p></details>
+<a class="cta" href="/#proj-4-10">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/besar-3-saas-kasir-multi-toko-multi-tenant">Besar 3: SaaS kasir multi-toko (multi-tenant)</a></p><p>Berikutnya: <a href="/belajar/proj/mini-1-menjawab-pertanyaan-bisnis-dengan-sql">Mini 1: Menjawab pertanyaan bisnis dengan SQL</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

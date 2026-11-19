@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mini 5: Form pendaftaran multi-langkah dengan Zod · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Masalah. Pendaftaran kursus online sering ditinggalkan karena formnya panjang dan pesan errornya membingungkan.">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/mini-5-form-pendaftaran-multi-langkah-dengan-zod">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Mini 5: Form pendaftaran multi-langkah dengan Zod · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Masalah. Pendaftaran kursus online sering ditinggalkan karena formnya panjang dan pesan errornya membingungkan.">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/mini-5-form-pendaftaran-multi-langkah-dengan-zod"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Mini 5: Form pendaftaran multi-langkah dengan Zod", "description": "Masalah. Pendaftaran kursus online sering ditinggalkan karena formnya panjang dan pesan errornya membingungkan.", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-5-form-pendaftaran-multi-langkah-dengan-zod", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Mini 5: Form pendaftaran multi-langkah dengan Zod", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-5-form-pendaftaran-multi-langkah-dengan-zod"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 3</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 3 · Konsep &amp; kode</div><h1>Mini 5: Form pendaftaran multi-langkah dengan Zod</h1><a class="cta" href="/#proj-3-5">Buka versi interaktif</a>
+<p><b>Masalah.</b> Pendaftaran kursus online sering ditinggalkan karena formnya panjang dan pesan errornya membingungkan.</p>
+<p><b>Fitur wajib:</b><br>1. Tiga langkah: data diri, pilihan kelas, konfirmasi<br>2. Validasi per langkah dengan pesan yang jelas (format nomor HP Indonesia, email)<br>3. Tidak bisa lanjut sebelum langkah valid; bisa kembali tanpa kehilangan isian<br>4. Indikator langkah yang terbaca pembaca layar</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. Definisikan skema Zod per langkah; satu skema = satu sumber kebenaran untuk validasi dan tipe TypeScript.<br>2. Pakai react-hook-form dengan <code>zodResolver</code>; panggil <code>trigger(fields)</code> sebelum pindah langkah.<br>3. Normalisasi nomor HP (08… menjadi +628…) di skema dengan <code>transform</code>.<br>4. Tandai langkah aktif dengan <code>aria-current="step"</code>.</p>
+<p><b>Kembangkan sendiri:</b> simpan draf ke <code>sessionStorage</code> agar tidak hilang saat tab tertutup, dan uji skema Zod dengan Vitest.</p>
+<div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Tiga langkah: data diri, pilihan kelas, konfirmasi</td><td>Definisikan skema Zod per langkah; satu skema = satu sumber kebenaran untuk validasi dan tipe TypeScript.</td></tr><tr><td>Validasi per langkah dengan pesan yang jelas (format nomor HP Indonesia, email)</td><td>Pakai react-hook-form dengan zodResolver; panggil trigger(fields) sebelum pindah langkah.</td></tr><tr><td>Tidak bisa lanjut sebelum langkah valid; bisa kembali tanpa kehilangan isian</td><td>Normalisasi nomor HP (08… menjadi +628…) di skema dengan transform.</td></tr><tr><td>Indikator langkah yang terbaca pembaca layar</td><td>Tandai langkah aktif dengan aria-current=&quot;step&quot;.</td></tr></tbody></table></div>
+<div class="lbl">KODE</div><pre><code>import { useState } from &#x27;react&#x27;;
+import { useForm } from &#x27;react-hook-form&#x27;;
+import { z } from &#x27;zod&#x27;;
+import { zodResolver } from &#x27;@hookform/resolvers/zod&#x27;;
+
+const skema = z.object({
+  nama: z.string().trim().min(3, &#x27;Nama minimal 3 huruf&#x27;),
+  email: z.string().email(&#x27;Format email belum benar&#x27;),
+  hp: z.string().regex(/^(\+62|62|0)8\d{8,11}$/, &#x27;Nomor HP Indonesia, contoh 0812xxxxxxx&#x27;)
+        .transform(v =&gt; v.replace(/^(0|62)/, &#x27;+62&#x27;)),
+  kelas: z.enum([&#x27;frontend&#x27;, &#x27;data&#x27;, &#x27;mobile&#x27;], { message: &#x27;Pilih satu kelas&#x27; }),
+  setuju: z.literal(true, { message: &#x27;Centang persetujuan untuk melanjutkan&#x27; }),
+});
+type Data = z.infer&lt;typeof skema&gt;;
+const LANGKAH = [
+  { judul: &#x27;Data diri&#x27;, field: [&#x27;nama&#x27;, &#x27;email&#x27;, &#x27;hp&#x27;] as const },
+  { judul: &#x27;Kelas&#x27;, field: [&#x27;kelas&#x27;] as const },
+  { judul: &#x27;Konfirmasi&#x27;, field: [&#x27;setuju&#x27;] as const },
+];
+
+export default function Daftar() {
+  const [i, setI] = useState(0);
+  const { register, handleSubmit, trigger, getValues, formState: { errors, isSubmitting } } =
+    useForm&lt;Data&gt;({ resolver: zodResolver(skema), mode: &#x27;onTouched&#x27; });
+  const lanjut = async () =&gt; { if (await trigger([...LANGKAH[i].field])) setI(i + 1); };
+  const kirim = async (d: Data) =&gt; { await fetch(&#x27;/api/daftar&#x27;, { method: &#x27;POST&#x27;, body: JSON.stringify(d) }); };
+  const Err = ({ n }: { n: keyof Data }) =&gt; errors[n] ? &lt;p role=&quot;alert&quot;&gt;{String(errors[n]?.message)}&lt;/p&gt; : null;
+
+  return (
+    &lt;form onSubmit={handleSubmit(kirim)} noValidate&gt;
+      &lt;ol&gt;{LANGKAH.map((l, j) =&gt; &lt;li key={l.judul} aria-current={j === i ? &#x27;step&#x27; : undefined}&gt;{l.judul}&lt;/li&gt;)}&lt;/ol&gt;
+      {i === 0 &amp;&amp; &lt;&gt;
+        &lt;label&gt;Nama &lt;input {...register(&#x27;nama&#x27;)} /&gt;&lt;/label&gt;&lt;Err n=&quot;nama&quot; /&gt;
+        &lt;label&gt;Email &lt;input type=&quot;email&quot; {...register(&#x27;email&#x27;)} /&gt;&lt;/label&gt;&lt;Err n=&quot;email&quot; /&gt;
+        &lt;label&gt;Nomor HP &lt;input inputMode=&quot;tel&quot; {...register(&#x27;hp&#x27;)} /&gt;&lt;/label&gt;&lt;Err n=&quot;hp&quot; /&gt;
+      &lt;/&gt;}
+      {i === 1 &amp;&amp; &lt;fieldset&gt;&lt;legend&gt;Pilih kelas&lt;/legend&gt;
+        {[&#x27;frontend&#x27;, &#x27;data&#x27;, &#x27;mobile&#x27;].map(k =&gt; &lt;label key={k}&gt;&lt;input type=&quot;radio&quot; value={k} {...register(&#x27;kelas&#x27;)} /&gt; {k}&lt;/label&gt;)}
+        &lt;Err n=&quot;kelas&quot; /&gt;&lt;/fieldset&gt;}
+      {i === 2 &amp;&amp; &lt;&gt;
+        &lt;p&gt;{getValues(&#x27;nama&#x27;)} · {getValues(&#x27;email&#x27;)} · kelas {getValues(&#x27;kelas&#x27;)}&lt;/p&gt;
+        &lt;label&gt;&lt;input type=&quot;checkbox&quot; {...register(&#x27;setuju&#x27;)} /&gt; Data saya benar dan saya setuju dihubungi.&lt;/label&gt;&lt;Err n=&quot;setuju&quot; /&gt;
+      &lt;/&gt;}
+      {i &gt; 0 &amp;&amp; &lt;button type=&quot;button&quot; onClick={() =&gt; setI(i - 1)}&gt;Kembali&lt;/button&gt;}
+      {i &lt; 2 ? &lt;button type=&quot;button&quot; onClick={lanjut}&gt;Lanjut&lt;/button&gt;
+             : &lt;button disabled={isSubmitting}&gt;{isSubmitting ? &#x27;Mengirim…&#x27; : &#x27;Daftar&#x27;}&lt;/button&gt;}
+    &lt;/form&gt;
+  );
+}</code></pre>
+<h2>Poin penting</h2><ul><li>Proyek mini: Form pendaftaran multi-langkah dengan Zod.</li><li>Tiga langkah: data diri, pilihan kelas, konfirmasi</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Keuntungan memakai skema Zod?</summary><p class="ok">Jawaban: Validasi dan tipe TypeScript berasal dari satu sumber</p><p>Server tetap wajib memvalidasi.</p></details>
+<a class="cta" href="/#proj-3-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-4-kanban-board-react-yang-bisa-dipakai-dengan-keyboard">Mini 4: Kanban board React yang bisa dipakai dengan keyboard</a></p><p>Berikutnya: <a href="/belajar/proj/mini-6-pencarian-instan-dengan-debounce-dan-sorot-hasil">Mini 6: Pencarian instan dengan debounce dan sorot hasil</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

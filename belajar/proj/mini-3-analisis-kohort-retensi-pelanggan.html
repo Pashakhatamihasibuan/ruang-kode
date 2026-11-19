@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mini 3: Analisis kohort retensi pelanggan · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Masalah. Tim marketing ingin tahu: dari pelanggan yang pertama kali belanja di Januari, berapa persen yang kembali di bulan-bulan berikutnya, dan apakah…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/mini-3-analisis-kohort-retensi-pelanggan">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Mini 3: Analisis kohort retensi pelanggan · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Masalah. Tim marketing ingin tahu: dari pelanggan yang pertama kali belanja di Januari, berapa persen yang kembali di bulan-bulan berikutnya, dan apakah…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/mini-3-analisis-kohort-retensi-pelanggan"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Mini 3: Analisis kohort retensi pelanggan", "description": "Masalah. Tim marketing ingin tahu: dari pelanggan yang pertama kali belanja di Januari, berapa persen yang kembali di bulan-bulan berikutnya, dan apakah…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-3-analisis-kohort-retensi-pelanggan", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Mini 3: Analisis kohort retensi pelanggan", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-3-analisis-kohort-retensi-pelanggan"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 5</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 5 · Konsep &amp; kode</div><h1>Mini 3: Analisis kohort retensi pelanggan</h1><a class="cta" href="/#proj-5-3">Buka versi interaktif</a>
+<p><b>Masalah.</b> Tim marketing ingin tahu: dari pelanggan yang pertama kali belanja di Januari, berapa persen yang kembali di bulan-bulan berikutnya, dan apakah kohort baru lebih setia?</p>
+<p><b>Fitur wajib:</b><br>1. Tentukan bulan kohort = bulan pembelian pertama tiap pelanggan<br>2. Hitung indeks bulan (0 = bulan pertama, 1 = bulan berikutnya, ...)<br>3. Tabel retensi dalam persen per kohort<br>4. Satu kesimpulan yang bisa ditindaklanjuti</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. <code>groupby('pelanggan')['tanggal'].transform('min')</code> untuk bulan pertama.<br>2. Indeks bulan = selisih (tahun × 12 + bulan) antara transaksi dan kohort.<br>3. <code>pivot_table</code> jumlah pelanggan unik, lalu bagi dengan kolom bulan 0.<br>4. Bandingkan retensi bulan ke-1 antar kohort.</p>
+<p><b>Kembangkan sendiri:</b> heatmap retensi dengan Matplotlib dan kohort per kanal akuisisi (iklan vs organik).</p>
+<div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Tentukan bulan kohort = bulan pembelian pertama tiap pelanggan</td><td>groupby(&#x27;pelanggan&#x27;)[&#x27;tanggal&#x27;].transform(&#x27;min&#x27;) untuk bulan pertama.</td></tr><tr><td>Hitung indeks bulan (0 = bulan pertama, 1 = bulan berikutnya, ...)</td><td>Indeks bulan = selisih (tahun × 12 + bulan) antara transaksi dan kohort.</td></tr><tr><td>Tabel retensi dalam persen per kohort</td><td>pivot_table jumlah pelanggan unik, lalu bagi dengan kolom bulan 0.</td></tr><tr><td>Satu kesimpulan yang bisa ditindaklanjuti</td><td>Bandingkan retensi bulan ke-1 antar kohort.</td></tr></tbody></table></div>
+<div class="lbl">PYTHON</div><pre><code>import sqlite3, numpy as np, pandas as pd
+rng = np.random.default_rng(11)
+n = 1200
+df = pd.DataFrame({
+    &#x27;id_pesanan&#x27;: range(1, n + 1),
+    &#x27;tanggal&#x27;: pd.to_datetime(&#x27;2026-01-01&#x27;) + pd.to_timedelta(rng.integers(0, 181, n), unit=&#x27;D&#x27;),
+    &#x27;pelanggan&#x27;: rng.integers(1, 301, n),
+    &#x27;kota&#x27;: rng.choice([&#x27;Jakarta&#x27;, &#x27;Bandung&#x27;, &#x27;Surabaya&#x27;, &#x27;Medan&#x27;, &#x27;Makassar&#x27;], n, p=[.35, .2, .2, .15, .1]),
+    &#x27;kategori&#x27;: rng.choice([&#x27;Kopi&#x27;, &#x27;Teh&#x27;, &#x27;Camilan&#x27;, &#x27;Alat Seduh&#x27;], n, p=[.45, .2, .25, .1]),
+})
+harga = {&#x27;Kopi&#x27;: 65000, &#x27;Teh&#x27;: 40000, &#x27;Camilan&#x27;: 25000, &#x27;Alat Seduh&#x27;: 210000}
+df[&#x27;jumlah&#x27;] = rng.integers(1, 4, n)
+df[&#x27;nilai&#x27;] = df[&#x27;kategori&#x27;].map(harga) * df[&#x27;jumlah&#x27;]
+df[&#x27;bulan&#x27;] = df[&#x27;tanggal&#x27;].dt.to_period(&#x27;M&#x27;)
+df[&#x27;kohort&#x27;] = df.groupby(&#x27;pelanggan&#x27;)[&#x27;bulan&#x27;].transform(&#x27;min&#x27;)
+df[&#x27;indeks&#x27;] = (df[&#x27;bulan&#x27;] - df[&#x27;kohort&#x27;]).apply(lambda x: x.n)
+
+tabel = df.pivot_table(index=&#x27;kohort&#x27;, columns=&#x27;indeks&#x27;, values=&#x27;pelanggan&#x27;, aggfunc=&#x27;nunique&#x27;)
+retensi = (tabel.div(tabel[0], axis=0) * 100).round(0)
+print(&#x27;Ukuran kohort:&#x27;, {str(k): int(v) for k, v in tabel[0].items()})
+print(retensi.iloc[:, :4].fillna(&#x27;-&#x27;))
+b1 = retensi[1].dropna()
+print(f&#x27;Retensi bulan ke-1 rata-rata {b1.mean():.0f}%, terbaik kohort {b1.idxmax()} ({b1.max():.0f}%)&#x27;)</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Ukuran kohort: {&#x27;2026-01&#x27;: 166, &#x27;2026-02&#x27;: 56, &#x27;2026-03&#x27;: 35, &#x27;2026-04&#x27;: 23, &#x27;2026-05&#x27;: 14, &#x27;2026-06&#x27;: 5}
+indeks       0     1     2     3
+kohort                          
+2026-01  100.0  51.0  49.0  49.0
+2026-02  100.0  39.0  41.0  50.0
+2026-03  100.0  51.0  20.0  63.0
+2026-04  100.0  70.0  43.0     -
+2026-05  100.0  57.0     -     -
+2026-06  100.0     -     -     -
+Retensi bulan ke-1 rata-rata 54%, terbaik kohort 2026-04 (70%)</code></pre>
+<h2>Poin penting</h2><ul><li>Proyek mini: Analisis kohort retensi pelanggan.</li><li>Tentukan bulan kohort = bulan pembelian pertama tiap pelanggan</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kolom indeks 0 pada tabel kohort berarti?</summary><p class="ok">Jawaban: Bulan pertama pelanggan berbelanja (selalu 100%)</p><p>Dasar pembagi retensi.</p></details>
+<a class="cta" href="/#proj-5-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-2-membersihkan-data-harga-pangan">Mini 2: Membersihkan data harga pangan</a></p><p>Berikutnya: <a href="/belajar/proj/mini-4-membaca-hasil-a-b-test-halaman-checkout">Mini 4: Membaca hasil A/B test halaman checkout</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

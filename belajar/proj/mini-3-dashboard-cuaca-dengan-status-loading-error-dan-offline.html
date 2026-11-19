@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mini 3: Dashboard cuaca dengan status loading, error, dan offline · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Masalah. Petani dan pengemudi ojol ingin cek prakiraan hujan beberapa jam ke depan dengan cepat, dan aplikasi tidak boleh &quot;diam&quot; saat sinyal jelek.">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/mini-3-dashboard-cuaca-dengan-status-loading-error-dan-offline">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Mini 3: Dashboard cuaca dengan status loading, error, dan offline · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Masalah. Petani dan pengemudi ojol ingin cek prakiraan hujan beberapa jam ke depan dengan cepat, dan aplikasi tidak boleh &quot;diam&quot; saat sinyal jelek.">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/mini-3-dashboard-cuaca-dengan-status-loading-error-dan-offline"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Mini 3: Dashboard cuaca dengan status loading, error, dan offline", "description": "Masalah. Petani dan pengemudi ojol ingin cek prakiraan hujan beberapa jam ke depan dengan cepat, dan aplikasi tidak boleh \"diam\" saat sinyal jelek.", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-3-dashboard-cuaca-dengan-status-loading-error-dan-offline", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Mini 3: Dashboard cuaca dengan status loading, error, dan offline", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-3-dashboard-cuaca-dengan-status-loading-error-dan-offline"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 3</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 3 · Konsep &amp; kode</div><h1>Mini 3: Dashboard cuaca dengan status loading, error, dan offline</h1><a class="cta" href="/#proj-3-3">Buka versi interaktif</a>
+<p><b>Masalah.</b> Petani dan pengemudi ojol ingin cek prakiraan hujan beberapa jam ke depan dengan cepat, dan aplikasi tidak boleh "diam" saat sinyal jelek.</p>
+<p><b>Fitur wajib:</b><br>1. Cari kota lalu tampilkan suhu dan peluang hujan 24 jam<br>2. Status memuat, gagal (dengan tombol coba lagi), dan offline<br>3. Batalkan request lama saat pengguna mengetik kota baru<br>4. Simpan kota terakhir</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. Pakai API gratis Open-Meteo: geocoding untuk koordinat, forecast untuk data per jam.<br>2. Satu fungsi <code>tampilkan(state)</code> menggambar layar dari objek status: <code>{tahap: "muat"|"galat"|"siap", data, pesan}</code>.<br>3. Gunakan <code>AbortController</code>: setiap pencarian baru membatalkan request sebelumnya agar hasil lama tidak menimpa yang baru.<br>4. Dengarkan event <code>online/offline</code>, simpan kota di <code>localStorage</code>.</p>
+<p><b>Kembangkan sendiri:</b> simpan respons terakhir ke cache agar tetap tampil saat offline, dan grafik peluang hujan dengan <code>&lt;canvas&gt;</code>.</p>
+<div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Cari kota lalu tampilkan suhu dan peluang hujan 24 jam</td><td>Pakai API gratis Open-Meteo: geocoding untuk koordinat, forecast untuk data per jam.</td></tr><tr><td>Status memuat, gagal (dengan tombol coba lagi), dan offline</td><td>Satu fungsi tampilkan(state) menggambar layar dari objek status: {tahap: &quot;muat&quot;|&quot;galat&quot;|&quot;siap&quot;, data, pesan}.</td></tr><tr><td>Batalkan request lama saat pengguna mengetik kota baru</td><td>Gunakan AbortController: setiap pencarian baru membatalkan request sebelumnya agar hasil lama tidak menimpa yang baru.</td></tr><tr><td>Simpan kota terakhir</td><td>Dengarkan event online/offline, simpan kota di localStorage.</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>const el = id =&gt; document.getElementById(id);
+let pengendali;
+
+async function cari(kota) {
+  pengendali?.abort();                       // batalkan request lama
+  pengendali = new AbortController();
+  const { signal } = pengendali;
+  tampilkan({ tahap: &#x27;muat&#x27; });
+  try {
+    const g = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(kota)}&amp;count=1&amp;language=id`, { signal }).then(cekOk);
+    if (!g.results?.length) return tampilkan({ tahap: &#x27;galat&#x27;, pesan: `Kota &quot;${kota}&quot; tidak ditemukan.` });
+    const { latitude, longitude, name } = g.results[0];
+    const f = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&amp;longitude=${longitude}` +
+      &#x27;&amp;hourly=temperature_2m,precipitation_probability&amp;forecast_hours=24&amp;timezone=auto&#x27;, { signal }).then(cekOk);
+    localStorage.setItem(&#x27;kota&#x27;, kota);
+    tampilkan({ tahap: &#x27;siap&#x27;, data: { name, jam: f.hourly.time, suhu: f.hourly.temperature_2m, hujan: f.hourly.precipitation_probability } });
+  } catch (e) {
+    if (e.name === &#x27;AbortError&#x27;) return;       // dibatalkan sengaja, abaikan
+    tampilkan({ tahap: &#x27;galat&#x27;, pesan: navigator.onLine ? &#x27;Server cuaca sedang bermasalah.&#x27; : &#x27;Kamu sedang offline.&#x27; });
+  }
+}
+
+function cekOk(r) { if (!r.ok) throw new Error(&#x27;HTTP &#x27; + r.status); return r.json(); }
+
+function tampilkan(s) {
+  el(&#x27;status&#x27;).textContent = s.tahap === &#x27;muat&#x27; ? &#x27;Memuat prakiraan…&#x27; : s.tahap === &#x27;galat&#x27; ? s.pesan : &#x27;&#x27;;
+  el(&#x27;ulang&#x27;).hidden = s.tahap !== &#x27;galat&#x27;;
+  el(&#x27;hasil&#x27;).innerHTML = s.tahap !== &#x27;siap&#x27; ? &#x27;&#x27; :
+    `&lt;h2&gt;${s.data.name}&lt;/h2&gt;&lt;ol&gt;` + s.data.jam.map((t, i) =&gt;
+      `&lt;li&gt;${t.slice(11, 16)} · ${Math.round(s.data.suhu[i])}°C · hujan ${s.data.hujan[i]}%${s.data.hujan[i] &gt;= 60 ? &#x27; ☔&#x27; : &#x27;&#x27;}&lt;/li&gt;`).join(&#x27;&#x27;) + &#x27;&lt;/ol&gt;&#x27;;
+}
+
+let tunda;
+el(&#x27;kota&#x27;).addEventListener(&#x27;input&#x27;, e =&gt; { clearTimeout(tunda); tunda = setTimeout(() =&gt; cari(e.target.value.trim()), 400); });
+el(&#x27;ulang&#x27;).addEventListener(&#x27;click&#x27;, () =&gt; cari(el(&#x27;kota&#x27;).value.trim()));
+addEventListener(&#x27;offline&#x27;, () =&gt; el(&#x27;status&#x27;).textContent = &#x27;Kamu offline. Data terakhir tetap ditampilkan.&#x27;);
+const awal = localStorage.getItem(&#x27;kota&#x27;) || &#x27;Medan&#x27;;
+el(&#x27;kota&#x27;).value = awal; cari(awal);</code></pre>
+<h2>Poin penting</h2><ul><li>Proyek mini: Dashboard cuaca dengan status loading, error, dan offline.</li><li>Cari kota lalu tampilkan suhu dan peluang hujan 24 jam</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Masalah apa yang dicegah AbortController di sini?</summary><p class="ok">Jawaban: Hasil pencarian lama menimpa hasil pencarian baru</p><p>Request lama dibatalkan.</p></details>
+<a class="cta" href="/#proj-3-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-2-kalkulator-patungan-split-bill-dengan-pajak-dan-servis">Mini 2: Kalkulator patungan (split bill) dengan pajak dan servis</a></p><p>Berikutnya: <a href="/belajar/proj/mini-4-kanban-board-react-yang-bisa-dipakai-dengan-keyboard">Mini 4: Kanban board React yang bisa dipakai dengan keyboard</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

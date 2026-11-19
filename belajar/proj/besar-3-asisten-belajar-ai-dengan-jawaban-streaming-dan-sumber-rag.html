@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Besar 3: Asisten belajar AI dengan jawaban streaming dan sumber (RAG) · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Masalah. Mahasiswa ingin bertanya tentang materi kuliah (PDF modul) dan mendapat jawaban yang menyebut halaman sumbernya, bukan jawaban AI yang mengarang.">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/besar-3-asisten-belajar-ai-dengan-jawaban-streaming-dan-sumber-rag">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Besar 3: Asisten belajar AI dengan jawaban streaming dan sumber (RAG) · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Masalah. Mahasiswa ingin bertanya tentang materi kuliah (PDF modul) dan mendapat jawaban yang menyebut halaman sumbernya, bukan jawaban AI yang mengarang.">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/besar-3-asisten-belajar-ai-dengan-jawaban-streaming-dan-sumber-rag"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Besar 3: Asisten belajar AI dengan jawaban streaming dan sumber (RAG)", "description": "Masalah. Mahasiswa ingin bertanya tentang materi kuliah (PDF modul) dan mendapat jawaban yang menyebut halaman sumbernya, bukan jawaban AI yang mengarang.", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/besar-3-asisten-belajar-ai-dengan-jawaban-streaming-dan-sumber-rag", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Besar 3: Asisten belajar AI dengan jawaban streaming dan sumber (RAG)", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/besar-3-asisten-belajar-ai-dengan-jawaban-streaming-dan-sumber-rag"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 3</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 3 · Konsep &amp; kode</div><h1>Besar 3: Asisten belajar AI dengan jawaban streaming dan sumber (RAG)</h1><a class="cta" href="/#proj-3-9">Buka versi interaktif</a>
+<p><b>Masalah.</b> Mahasiswa ingin bertanya tentang materi kuliah (PDF modul) dan mendapat jawaban yang menyebut halaman sumbernya, bukan jawaban AI yang mengarang.</p>
+<p><b>Fitur wajib:</b><br>1. Unggah PDF materi; teks dipotong (chunk) dan disimpan sebagai embedding<br>2. Chat dengan jawaban yang mengalir kata demi kata (streaming)<br>3. Setiap jawaban menampilkan potongan sumber dan nomor halaman<br>4. Tombol hentikan, salin, dan coba lagi; riwayat percakapan<br>5. Batas penggunaan per pengguna dan penanganan error API</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. Buat tabel <code>potongan(id, dokumen_id, halaman, isi, embedding vector(1024))</code> dengan index HNSW pgvector.<br>2. Saat unggah: ekstrak teks per halaman, potong dengan tumpang tindih kecil agar kalimat tidak terputus, simpan embedding.<br>3. Saat bertanya: cari 5 potongan paling mirip, susun prompt "jawab hanya dari konteks, sebut halaman, katakan tidak tahu jika tidak ada".<br>4. Kirim jawaban sebagai stream dengan AI SDK; kirim juga metadata sumber agar UI menampilkannya.<br>5. Di UI, tampilkan status mengetik, tombol hentikan, dan kartu sumber yang bisa diklik.<br>6. Uji dengan 20 pertanyaan yang jawabannya diketahui; catat ketepatan dan kasus "tidak tahu".</p>
+<p><b>Standar industri yang dinilai:</b> jawaban bersumber dan bisa diverifikasi, kunci API tidak pernah di browser, rate limit dan error ditangani, evaluasi ketepatan dengan set pertanyaan uji</p>
+<div class="tw"><table><caption>Arsitektur dan stack (Next.js 15, TypeScript, Vercel AI SDK, Claude API (Anthropic), PostgreSQL + pgvector, Drizzle ORM, Vercel)</caption><thead><tr><th>Bagian</th><th>Isi</th></tr></thead><tbody><tr><td>Ingest</td><td>Route Handler /api/dokumen: ekstrak teks PDF → chunk ±800 karakter → embedding → simpan ke tabel potongan(vector)</td></tr><tr><td>Tanya</td><td>/api/chat: embedding pertanyaan → ambil 5 potongan terdekat (cosine) → kirim ke model sebagai konteks → stream jawaban</td></tr><tr><td>UI</td><td>useChat dari AI SDK: pesan, status streaming, stop(), reload()</td></tr><tr><td>Keamanan</td><td>Kunci API hanya di server; rate limit per pengguna; instruksi model dibatasi ke konteks</td></tr></tbody></table></div>
+<div class="lbl">KODE</div><pre><code>// app/api/chat/route.ts
+import { anthropic } from &#x27;@ai-sdk/anthropic&#x27;;
+import { streamText, embed } from &#x27;ai&#x27;;
+import { sql } from &#x27;drizzle-orm&#x27;;
+import { db } from &#x27;@/lib/db&#x27;;
+import { modelEmbedding } from &#x27;@/lib/embedding&#x27;;
+import { batasiPengguna } from &#x27;@/lib/ratelimit&#x27;;
+
+export async function POST(req: Request) {
+  const { messages, userId } = await req.json();
+  if (!(await batasiPengguna(userId))) return new Response(&#x27;Batas pertanyaan hari ini tercapai.&#x27;, { status: 429 });
+
+  const tanya = messages.at(-1).content as string;
+  const { embedding } = await embed({ model: modelEmbedding, value: tanya });
+  const vektor = JSON.stringify(embedding);
+  const sumber = await db.execute(sql`
+    SELECT halaman, isi, 1 - (embedding &lt;=&gt; ${vektor}::vector) AS skor
+    FROM potongan ORDER BY embedding &lt;=&gt; ${vektor}::vector LIMIT 5`);
+
+  const konteks = sumber.rows.map((s: any) =&gt; `[hal. ${s.halaman}] ${s.isi}`).join(&#x27;\n---\n&#x27;);
+  const hasil = streamText({
+    model: anthropic(&#x27;claude-sonnet-4-5&#x27;),
+    system: &#x27;Kamu asisten belajar. Jawab dalam bahasa Indonesia HANYA berdasarkan KONTEKS. &#x27; +
+            &#x27;Sebut nomor halaman seperti (hal. 12). Jika jawabannya tidak ada di konteks, katakan belum ada di materi.\n\nKONTEKS:\n&#x27; + konteks,
+    messages,
+    maxOutputTokens: 800,
+  });
+  return hasil.toUIMessageStreamResponse({ messageMetadata: () =&gt; ({ sumber: sumber.rows.map((s: any) =&gt; ({ halaman: s.halaman, cuplikan: s.isi.slice(0, 160) })) }) });
+}
+
+// app/chat/page.tsx
+&#x27;use client&#x27;;
+import { useChat } from &#x27;@ai-sdk/react&#x27;;
+import { useState } from &#x27;react&#x27;;
+
+export default function Chat() {
+  const { messages, sendMessage, status, stop, regenerate, error } = useChat();
+  const [teks, setTeks] = useState(&#x27;&#x27;);
+  return (
+    &lt;main&gt;
+      &lt;ol aria-live=&quot;polite&quot;&gt;
+        {messages.map(m =&gt; (
+          &lt;li key={m.id} className={m.role}&gt;
+            {m.parts.map((p, i) =&gt; p.type === &#x27;text&#x27; ? &lt;p key={i}&gt;{p.text}&lt;/p&gt; : null)}
+            {m.role === &#x27;assistant&#x27; &amp;&amp; (m.metadata as any)?.sumber?.map((s: any) =&gt;
+              &lt;details key={s.halaman}&gt;&lt;summary&gt;Sumber: hal. {s.halaman}&lt;/summary&gt;{s.cuplikan}…&lt;/details&gt;)}
+          &lt;/li&gt;
+        ))}
+      &lt;/ol&gt;
+      {error &amp;&amp; &lt;p role=&quot;alert&quot;&gt;Gagal menjawab. &lt;button onClick={() =&gt; regenerate()}&gt;Coba lagi&lt;/button&gt;&lt;/p&gt;}
+      &lt;form onSubmit={e =&gt; { e.preventDefault(); if (teks.trim()) { sendMessage({ text: teks }); setTeks(&#x27;&#x27;); } }}&gt;
+        &lt;label htmlFor=&quot;t&quot;&gt;Tanya materi&lt;/label&gt;
+        &lt;textarea id=&quot;t&quot; value={teks} onChange={e =&gt; setTeks(e.target.value)} /&gt;
+        {status === &#x27;streaming&#x27; ? &lt;button type=&quot;button&quot; onClick={stop}&gt;Hentikan&lt;/button&gt; : &lt;button disabled={status === &#x27;submitted&#x27;}&gt;Kirim&lt;/button&gt;}
+      &lt;/form&gt;
+    &lt;/main&gt;
+  );
+}</code></pre>
+<h2>Poin penting</h2><ul><li>Proyek besar: Asisten belajar AI dengan jawaban streaming dan sumber (RAG).</li><li>Stack: Next.js 15, TypeScript, Vercel AI SDK, Claude API (Anthropic), PostgreSQL + pgvector, Drizzle ORM, Vercel.</li><li>Berkas inti penyelesaian ada di bawah; sisanya mengikuti pola yang sama.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Tujuan utama RAG pada proyek ini?</summary><p class="ok">Jawaban: Model menjawab dari materi yang diunggah dan menyebut sumbernya</p><p>Retrieval-augmented generation mengurangi jawaban mengarang.</p></details>
+<a class="cta" href="/#proj-3-9">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/besar-2-dashboard-operasional-real-time">Besar 2: Dashboard operasional real-time</a></p><p>Berikutnya: <a href="/belajar/proj/besar-4-pwa-offline-first-untuk-kas-koperasi-desa">Besar 4: PWA offline-first untuk kas koperasi desa</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

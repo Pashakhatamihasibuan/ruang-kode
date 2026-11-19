@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Besar 3: SaaS kasir multi-toko (multi-tenant) · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Masalah. Satu aplikasi kasir dipakai ratusan toko. Data toko A tidak boleh pernah terlihat oleh toko B, dan setiap toko bisa mengundang karyawannya…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/besar-3-saas-kasir-multi-toko-multi-tenant">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Besar 3: SaaS kasir multi-toko (multi-tenant) · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Masalah. Satu aplikasi kasir dipakai ratusan toko. Data toko A tidak boleh pernah terlihat oleh toko B, dan setiap toko bisa mengundang karyawannya…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/besar-3-saas-kasir-multi-toko-multi-tenant"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Besar 3: SaaS kasir multi-toko (multi-tenant)", "description": "Masalah. Satu aplikasi kasir dipakai ratusan toko. Data toko A tidak boleh pernah terlihat oleh toko B, dan setiap toko bisa mengundang karyawannya…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/besar-3-saas-kasir-multi-toko-multi-tenant", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Besar 3: SaaS kasir multi-toko (multi-tenant)", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/besar-3-saas-kasir-multi-toko-multi-tenant"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 4</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 4 · Konsep &amp; kode</div><h1>Besar 3: SaaS kasir multi-toko (multi-tenant)</h1><a class="cta" href="/#proj-4-9">Buka versi interaktif</a>
+<p><b>Masalah.</b> Satu aplikasi kasir dipakai ratusan toko. Data toko A tidak boleh pernah terlihat oleh toko B, dan setiap toko bisa mengundang karyawannya sendiri.</p>
+<p><b>Fitur wajib:</b><br>1. Pendaftaran toko (tenant) dan undangan karyawan dengan peran pemilik/kasir<br>2. Semua data (produk, pesanan) otomatis terikat ke tenant<br>3. Isolasi dijamin dua lapis: aplikasi dan Row-Level Security PostgreSQL<br>4. Paket langganan dengan batas (misal 2 kasir di paket gratis)<br>5. Log audit: siapa mengubah apa</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. Tambahkan <code>toko_id</code> ke setiap tabel bisnis dan index komposit <code>(toko_id, ...)</code>.<br>2. Middleware memvalidasi keanggotaan pengguna di toko yang diminta, lalu menjalankan <code>SET LOCAL app.toko_id</code> di awal transaksi.<br>3. Aktifkan RLS di PostgreSQL sebagai jaring pengaman: query yang lupa filter tetap tidak bisa membaca toko lain.<br>4. Batas paket diperiksa di service layer (bukan di view) dan diuji.<br>5. Test isolasi: buat dua toko, pastikan semua endpoint tidak membocorkan data silang.</p>
+<p><b>Standar industri yang dinilai:</b> isolasi tenant dua lapis (aplikasi + RLS) dengan test untuk setiap endpoint, aturan paket di service layer, log audit</p>
+<div class="tw"><table><caption>Arsitektur dan stack (Django 5, DRF, PostgreSQL RLS, SimpleJWT, Stripe/Midtrans subscription sandbox, pytest, Docker)</caption><thead><tr><th>Bagian</th><th>Isi</th></tr></thead><tbody><tr><td>Tenant</td><td>Model Toko; Keanggotaan(user, toko, peran); header X-Toko atau subdomain menentukan toko aktif</td></tr><tr><td>Isolasi app</td><td>Middleware menyimpan toko aktif; manager TenantQuerySet memfilter otomatis</td></tr><tr><td>Isolasi DB</td><td>RLS: USING (toko_id = current_setting(&#x27;app.toko_id&#x27;)::int)</td></tr><tr><td>Audit</td><td>Sinyal post_save/post_delete menulis ke tabel AuditLog</td></tr></tbody></table></div>
+<div class="lbl">PYTHON</div><pre><code># tenant/middleware.py
+from django.db import connection
+from django.http import JsonResponse
+
+class TokoAktifMiddleware:
+    def __init__(self, get_response): self.get_response = get_response
+
+    def __call__(self, req):
+        kode = req.headers.get(&#x27;X-Toko&#x27;)
+        if kode and req.user.is_authenticated:
+            anggota = Keanggotaan.objects.select_related(&#x27;toko&#x27;).filter(user=req.user, toko__kode=kode).first()
+            if not anggota:
+                return JsonResponse({&#x27;detail&#x27;: &#x27;Kamu bukan anggota toko ini.&#x27;}, status=403)
+            req.toko, req.peran = anggota.toko, anggota.peran
+            with connection.cursor() as c:
+                c.execute(&quot;SELECT set_config(&#x27;app.toko_id&#x27;, %s, false)&quot;, [str(anggota.toko_id)])
+        return self.get_response(req)
+
+# tenant/models.py
+class TenantQuerySet(models.QuerySet):
+    def milik(self, toko): return self.filter(toko=toko)
+
+class TenantModel(models.Model):
+    toko = models.ForeignKey(&#x27;Toko&#x27;, on_delete=models.CASCADE, db_index=True)
+    objects = TenantQuerySet.as_manager()
+    class Meta: abstract = True
+
+class Produk(TenantModel):
+    nama = models.CharField(max_length=120)
+    harga = models.DecimalField(max_digits=12, decimal_places=2)
+
+# migrasi: jaring pengaman Row-Level Security
+RLS = &#x27;&#x27;&#x27;
+ALTER TABLE toko_produk ENABLE ROW LEVEL SECURITY;
+ALTER TABLE toko_produk FORCE ROW LEVEL SECURITY;
+CREATE POLICY isolasi_toko ON toko_produk
+  USING (toko_id = current_setting(&#x27;app.toko_id&#x27;, true)::int);
+&#x27;&#x27;&#x27;
+# operations = [migrations.RunSQL(RLS)]
+
+# tenant/services.py — aturan paket di satu tempat
+def undang_kasir(toko, email):
+    if toko.paket == &#x27;GRATIS&#x27; and toko.keanggotaan.filter(peran=&#x27;KASIR&#x27;).count() &gt;= 2:
+        raise BatasPaket(&#x27;Paket gratis maksimal 2 kasir. Upgrade untuk menambah.&#x27;)
+    return Undangan.objects.create(toko=toko, email=email, token=secrets.token_urlsafe(24))
+
+# tests/test_isolasi.py
+@pytest.mark.parametrize(&#x27;url&#x27;, [&#x27;/api/produk/&#x27;, &#x27;/api/pesanan/&#x27;, &#x27;/api/laporan/harian/&#x27;])
+def test_toko_b_tidak_melihat_data_toko_a(url, api_toko_b, data_toko_a):
+    r = api_toko_b.get(url)
+    assert all(item[&#x27;toko&#x27;] != data_toko_a.id for item in r.data.get(&#x27;results&#x27;, []))</code></pre>
+<h2>Poin penting</h2><ul><li>Proyek besar: SaaS kasir multi-toko (multi-tenant).</li><li>Stack: Django 5, DRF, PostgreSQL RLS, SimpleJWT, Stripe/Midtrans subscription sandbox, pytest, Docker.</li><li>Berkas inti penyelesaian ada di bawah; sisanya mengikuti pola yang sama.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Fungsi Row-Level Security pada proyek ini?</summary><p class="ok">Jawaban: Jaring pengaman: query yang lupa filter tetap tidak bisa membaca data toko lain</p><p>Pertahanan berlapis.</p></details>
+<a class="cta" href="/#proj-4-9">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/besar-2-booking-layanan-tanpa-jadwal-bentrok-barbershop-klinik">Besar 2: Booking layanan tanpa jadwal bentrok (barbershop/klinik)</a></p><p>Berikutnya: <a href="/belajar/proj/besar-4-layanan-triase-tiket-customer-service-dengan-ai">Besar 4: Layanan triase tiket customer service dengan AI</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

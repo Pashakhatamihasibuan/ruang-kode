@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Besar 1: Storefront UMKM dengan Next.js dan pembayaran QRIS · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Masalah. UMKM ingin berjualan langsung di websitenya sendiri tanpa potongan marketplace, dengan pembayaran QRIS yang sudah umum dipakai pembeli.">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/besar-1-storefront-umkm-dengan-next-js-dan-pembayaran-qris">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Besar 1: Storefront UMKM dengan Next.js dan pembayaran QRIS · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Masalah. UMKM ingin berjualan langsung di websitenya sendiri tanpa potongan marketplace, dengan pembayaran QRIS yang sudah umum dipakai pembeli.">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/besar-1-storefront-umkm-dengan-next-js-dan-pembayaran-qris"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Besar 1: Storefront UMKM dengan Next.js dan pembayaran QRIS", "description": "Masalah. UMKM ingin berjualan langsung di websitenya sendiri tanpa potongan marketplace, dengan pembayaran QRIS yang sudah umum dipakai pembeli.", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/besar-1-storefront-umkm-dengan-next-js-dan-pembayaran-qris", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Besar 1: Storefront UMKM dengan Next.js dan pembayaran QRIS", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/besar-1-storefront-umkm-dengan-next-js-dan-pembayaran-qris"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 3</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 3 · Konsep &amp; kode</div><h1>Besar 1: Storefront UMKM dengan Next.js dan pembayaran QRIS</h1><a class="cta" href="/#proj-3-7">Buka versi interaktif</a>
+<p><b>Masalah.</b> UMKM ingin berjualan langsung di websitenya sendiri tanpa potongan marketplace, dengan pembayaran QRIS yang sudah umum dipakai pembeli.</p>
+<p><b>Fitur wajib:</b><br>1. Katalog dengan filter kategori, pencarian, dan pagination yang ramah SEO (dirender di server)<br>2. Halaman produk dengan metadata, Open Graph, dan data terstruktur Product<br>3. Keranjang yang bertahan saat halaman dimuat ulang<br>4. Checkout membuat transaksi QRIS di Midtrans sandbox; status diperbarui lewat webhook<br>5. Core Web Vitals hijau (LCP &lt; 2,5 s, CLS &lt; 0,1)</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. Rancang tabel Produk, Pesanan, ItemPesanan dengan Prisma; seed 30 produk.<br>2. Katalog sebagai Server Component dengan <code>searchParams</code> untuk filter dan halaman, sehingga URL bisa dibagikan dan diindeks.<br>3. Keranjang disimpan di cookie lewat Server Action agar bekerja tanpa JavaScript tambahan.<br>4. Checkout: hitung total di server dari harga database (jangan dari klien), buat pesanan status MENUNGGU, lalu minta QRIS ke Midtrans.<br>5. Webhook: verifikasi <code>signature_key = SHA512(order_id + status_code + gross_amount + server_key)</code>, proses secara idempoten, ubah status ke DIBAYAR.<br>6. Optimasi gambar dengan <code>next/image</code>, uji E2E, deploy ke Vercel dengan database Neon.</p>
+<p><b>Standar industri yang dinilai:</b> harga dihitung di server, webhook diverifikasi dan idempoten, halaman katalog terindeks mesin pencari, Core Web Vitals dicantumkan di README</p>
+<div class="tw"><table><caption>Arsitektur dan stack (Next.js 15 App Router, TypeScript, Tailwind, Prisma + PostgreSQL, Midtrans Snap/Core API sandbox, Playwright, Vercel)</caption><thead><tr><th>Bagian</th><th>Isi</th></tr></thead><tbody><tr><td>Halaman</td><td>app/(toko)/page.tsx katalog, produk/[slug], keranjang, checkout, pesanan/[id]</td></tr><tr><td>Data</td><td>Server Component membaca Prisma langsung; Server Action untuk keranjang dan checkout</td></tr><tr><td>Pembayaran</td><td>Route Handler /api/midtrans/webhook memverifikasi signature_key lalu mengubah status pesanan</td></tr><tr><td>Kualitas</td><td>Playwright: cari → keranjang → checkout; Lighthouse CI di GitHub Actions</td></tr></tbody></table></div>
+<div class="lbl">KODE</div><pre><code>// app/(toko)/page.tsx — katalog dirender di server, ramah SEO
+import Link from &#x27;next/link&#x27;;
+import { prisma } from &#x27;@/lib/db&#x27;;
+
+export default async function Katalog({ searchParams }: { searchParams: Promise&lt;{ q?: string; kat?: string; hal?: string }&gt; }) {
+  const { q = &#x27;&#x27;, kat, hal = &#x27;1&#x27; } = await searchParams;
+  const where = { aktif: true, nama: { contains: q, mode: &#x27;insensitive&#x27; as const }, ...(kat ? { kategori: { slug: kat } } : {}) };
+  const [produk, jumlah] = await Promise.all([
+    prisma.produk.findMany({ where, orderBy: { nama: &#x27;asc&#x27; }, take: 12, skip: (Number(hal) - 1) * 12 }),
+    prisma.produk.count({ where }),
+  ]);
+  return (
+    &lt;main&gt;
+      &lt;form&gt;&lt;input name=&quot;q&quot; defaultValue={q} aria-label=&quot;Cari produk&quot; /&gt;&lt;button&gt;Cari&lt;/button&gt;&lt;/form&gt;
+      {produk.length === 0 &amp;&amp; &lt;p&gt;Produk &quot;{q}&quot; belum ada.&lt;/p&gt;}
+      &lt;ul className=&quot;grid grid-cols-2 gap-4 md:grid-cols-4&quot;&gt;
+        {produk.map(p =&gt; &lt;li key={p.id}&gt;&lt;Link href={`/produk/${p.slug}`}&gt;{p.nama} · Rp{p.harga.toLocaleString(&#x27;id-ID&#x27;)}&lt;/Link&gt;&lt;/li&gt;)}
+      &lt;/ul&gt;
+      &lt;nav aria-label=&quot;Halaman&quot;&gt;Halaman {hal} dari {Math.ceil(jumlah / 12)}&lt;/nav&gt;
+    &lt;/main&gt;
+  );
+}
+
+// app/checkout/actions.ts — total dihitung di server
+&#x27;use server&#x27;;
+import { cookies } from &#x27;next/headers&#x27;;
+import { redirect } from &#x27;next/navigation&#x27;;
+export async function checkout() {
+  const isi: { id: number; qty: number }[] = JSON.parse((await cookies()).get(&#x27;keranjang&#x27;)?.value ?? &#x27;[]&#x27;);
+  const produk = await prisma.produk.findMany({ where: { id: { in: isi.map(i =&gt; i.id) } } });
+  const total = isi.reduce((s, i) =&gt; s + produk.find(p =&gt; p.id === i.id)!.harga * i.qty, 0);
+  const pesanan = await prisma.pesanan.create({ data: { total, status: &#x27;MENUNGGU&#x27;,
+    item: { create: isi.map(i =&gt; ({ produkId: i.id, qty: i.qty, harga: produk.find(p =&gt; p.id === i.id)!.harga })) } } });
+  const r = await fetch(&#x27;https://api.sandbox.midtrans.com/v2/charge&#x27;, { method: &#x27;POST&#x27;,
+    headers: { &#x27;Content-Type&#x27;: &#x27;application/json&#x27;, Authorization: &#x27;Basic &#x27; + btoa(process.env.MIDTRANS_SERVER_KEY + &#x27;:&#x27;) },
+    body: JSON.stringify({ payment_type: &#x27;qris&#x27;, transaction_details: { order_id: `PSN-${pesanan.id}`, gross_amount: total } }) });
+  const qris = await r.json();
+  await prisma.pesanan.update({ where: { id: pesanan.id }, data: { qrUrl: qris.actions?.[0]?.url } });
+  redirect(`/pesanan/${pesanan.id}`);
+}
+
+// app/api/midtrans/webhook/route.ts — verifikasi tanda tangan, idempoten
+import { createHash } from &#x27;crypto&#x27;;
+export async function POST(req: Request) {
+  const n = await req.json();
+  const sig = createHash(&#x27;sha512&#x27;).update(n.order_id + n.status_code + n.gross_amount + process.env.MIDTRANS_SERVER_KEY).digest(&#x27;hex&#x27;);
+  if (sig !== n.signature_key) return new Response(&#x27;signature salah&#x27;, { status: 403 });
+  const id = Number(n.order_id.replace(&#x27;PSN-&#x27;, &#x27;&#x27;));
+  if (n.transaction_status === &#x27;settlement&#x27;)
+    await prisma.pesanan.updateMany({ where: { id, status: &#x27;MENUNGGU&#x27; }, data: { status: &#x27;DIBAYAR&#x27; } });  // idempoten
+  return Response.json({ ok: true });
+}</code></pre>
+<h2>Poin penting</h2><ul><li>Proyek besar: Storefront UMKM dengan Next.js dan pembayaran QRIS.</li><li>Stack: Next.js 15 App Router, TypeScript, Tailwind, Prisma + PostgreSQL, Midtrans Snap/Core API sandbox, Playwright, Vercel.</li><li>Berkas inti penyelesaian ada di bawah; sisanya mengikuti pola yang sama.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa update status memakai where status MENUNGGU?</summary><p class="ok">Jawaban: Agar webhook yang terkirim dua kali tidak memproses ulang pesanan</p><p>Idempotensi: hasilnya sama walau dipanggil berkali-kali.</p></details>
+<a class="cta" href="/#proj-3-7">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-6-pencarian-instan-dengan-debounce-dan-sorot-hasil">Mini 6: Pencarian instan dengan debounce dan sorot hasil</a></p><p>Berikutnya: <a href="/belajar/proj/besar-2-dashboard-operasional-real-time">Besar 2: Dashboard operasional real-time</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>
