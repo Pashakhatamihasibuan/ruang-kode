@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Besar 4: Asisten layanan pelanggan berbasis AI dengan Spring AI · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Masalah. Perusahaan logistik menerima ribuan chat per hari berisi pertanyaan status paket, ongkir, dan klaim. Mereka ingin asisten AI yang menjawab dari…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/besar-4-asisten-layanan-pelanggan-berbasis-ai-dengan-spring-ai">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Besar 4: Asisten layanan pelanggan berbasis AI dengan Spring AI · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Masalah. Perusahaan logistik menerima ribuan chat per hari berisi pertanyaan status paket, ongkir, dan klaim. Mereka ingin asisten AI yang menjawab dari…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/besar-4-asisten-layanan-pelanggan-berbasis-ai-dengan-spring-ai"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Besar 4: Asisten layanan pelanggan berbasis AI dengan Spring AI", "description": "Masalah. Perusahaan logistik menerima ribuan chat per hari berisi pertanyaan status paket, ongkir, dan klaim. Mereka ingin asisten AI yang menjawab dari…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/besar-4-asisten-layanan-pelanggan-berbasis-ai-dengan-spring-ai", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Besar 4: Asisten layanan pelanggan berbasis AI dengan Spring AI", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/besar-4-asisten-layanan-pelanggan-berbasis-ai-dengan-spring-ai"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 7</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 7 · Konsep &amp; kode</div><h1>Besar 4: Asisten layanan pelanggan berbasis AI dengan Spring AI</h1><a class="cta" href="/#proj-7-10">Buka versi interaktif</a>
+<p><b>Masalah.</b> Perusahaan logistik menerima ribuan chat per hari berisi pertanyaan status paket, ongkir, dan klaim. Mereka ingin asisten AI yang menjawab dari data nyata (bukan mengarang), bisa memanggil sistem internal, dan menyerahkan ke agen manusia bila perlu.</p>
+<p><b>Fitur wajib:</b><br>1. Tool calling: cek status resi dan hitung ongkir dari API internal<br>2. RAG dari dokumen SOP dan syarat klaim (pgvector)<br>3. Guardrail: tidak pernah mengubah data tanpa konfirmasi, masking data pribadi, batas biaya per percakapan<br>4. Eskalasi ke agen manusia dengan ringkasan percakapan<br>5. Evaluasi otomatis 100 skenario sebelum rilis dan pemantauan kualitas</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. Kumpulkan 100 contoh percakapan nyata (dianonimkan) dan jawaban yang diharapkan sebagai golden set.<br>2. Bungkus API internal sebagai tool dengan deskripsi dan validasi parameter yang jelas.<br>3. Indeks dokumen SOP ke pgvector dan uji ketepatan pencarian dulu.<br>4. Rangkai ChatClient dengan system prompt, memori percakapan, RAG, dan tool.<br>5. Tambahkan guardrail: masking PII, konfirmasi untuk aksi yang mengubah data, eskalasi ke manusia.<br>6. Jalankan evaluasi di CI; rilis bertahap ke 10% pengguna dan pantau CSAT serta tingkat eskalasi.</p>
+<p><b>Standar industri yang dinilai:</b> jawaban berdasar data dan sumber, tool tervalidasi, PII dimasking, eskalasi ke manusia, evaluasi otomatis sebelum rilis, biaya dan latensi terpantau</p>
+<div class="tw"><table><caption>Arsitektur dan stack (Java 21, Spring Boot 3, Spring AI, Claude API, PostgreSQL + pgvector, Redis (memori percakapan), OpenTelemetry)</caption><thead><tr><th>Bagian</th><th>Isi</th></tr></thead><tbody><tr><td>Model</td><td>Claude melalui Spring AI ChatClient; model kecil untuk klasifikasi niat, model besar untuk jawaban</td></tr><tr><td>Tools</td><td>@Tool cekResi(nomor), hitungOngkir(asal, tujuan, berat), buatTiketKlaim (perlu konfirmasi)</td></tr><tr><td>Pengetahuan</td><td>SOP &amp; syarat klaim → chunk → embedding → pgvector; QuestionAnswerAdvisor</td></tr><tr><td>Keamanan</td><td>masking NIK/nomor HP sebelum dikirim ke model; log tanpa PII; rate limit per pengguna</td></tr><tr><td>Evaluasi</td><td>golden set 100 percakapan: ketepatan tool, jawaban berdasar sumber, eskalasi tepat</td></tr><tr><td>Operasional</td><td>trace tiap panggilan model: token, biaya, latensi, tool yang dipanggil</td></tr></tbody></table></div>
+<div class="lbl">JAVA</div><pre><code>@Component
+class AlatLogistik {
+    private final ResiClient resi; private final OngkirClient ongkir;
+    AlatLogistik(ResiClient resi, OngkirClient ongkir) { this.resi = resi; this.ongkir = ongkir; }
+
+    @Tool(description = &quot;Cek status dan riwayat perjalanan paket berdasarkan nomor resi 12 digit&quot;)
+    StatusResi cekResi(@ToolParam(description = &quot;nomor resi, contoh 004512345678&quot;) String nomor) {
+        if (!nomor.matches(&quot;\\d{12}&quot;)) throw new IllegalArgumentException(&quot;Format resi harus 12 digit&quot;);
+        return resi.status(nomor);
+    }
+
+    @Tool(description = &quot;Hitung ongkos kirim reguler dan kilat antar kota di Indonesia&quot;)
+    List&lt;Tarif&gt; hitungOngkir(String kotaAsal, String kotaTujuan, @ToolParam(description = &quot;berat dalam gram&quot;) int beratGram) {
+        return ongkir.tarif(kotaAsal, kotaTujuan, beratGram);
+    }
+}
+
+@Configuration
+class KonfigurasiAsisten {
+    @Bean
+    ChatClient asisten(ChatClient.Builder b, VectorStore sop, ChatMemory memori, AlatLogistik alat) {
+        return b.defaultSystem(&quot;&quot;&quot;
+                Kamu asisten layanan pelanggan Kirim Cepat. Jawab dalam bahasa Indonesia yang ramah dan singkat.
+                Gunakan tool untuk status resi dan ongkir; jangan pernah menebak data paket.
+                Untuk aturan klaim, jawab hanya dari dokumen SOP yang diberikan dan sebutkan nomor pasalnya.
+                Jika pelanggan marah, meminta manusia, atau kasus di luar SOP, balas dengan token [ESKALASI].
+                &quot;&quot;&quot;)
+            .defaultTools(alat)
+            .defaultAdvisors(MessageChatMemoryAdvisor.builder(memori).build(),
+                             QuestionAnswerAdvisor.builder(sop).searchRequest(SearchRequest.builder().topK(4).build()).build())
+            .build();
+    }
+}
+
+@RestController
+@RequiredArgsConstructor
+class ChatController {
+    private final ChatClient asisten; private final Masker masker; private final Eskalasi eskalasi;
+
+    @PostMapping(&quot;/api/v1/chat/{percakapanId}&quot;)
+    Balasan chat(@PathVariable String percakapanId, @RequestBody @Valid Pesan pesan) {
+        String aman = masker.sembunyikanPii(pesan.teks());          // NIK, nomor HP, email
+        String jawaban = asisten.prompt().user(aman)
+            .advisors(a -&gt; a.param(ChatMemory.CONVERSATION_ID, percakapanId))
+            .call().content();
+        if (jawaban.contains(&quot;[ESKALASI]&quot;)) return eskalasi.keAgen(percakapanId);   // ringkasan ikut dikirim
+        return new Balasan(jawaban);
+    }
+}</code></pre>
+<h2>Poin penting</h2><ul><li>Proyek besar: Asisten layanan pelanggan berbasis AI dengan Spring AI.</li><li>Stack: Java 21, Spring Boot 3, Spring AI, Claude API, PostgreSQL + pgvector, Redis (memori percakapan), OpenTelemetry.</li><li>Berkas inti penyelesaian ada di bawah; sisanya mengikuti pola yang sama.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa status paket diambil lewat tool, bukan dibiarkan dijawab model?</summary><p class="ok">Jawaban: Model tidak tahu data terbaru dan bisa mengarang; tool mengambil data nyata dari sistem</p><p>Grounding pada sistem sumber.</p></details>
+<a class="cta" href="/#proj-7-10">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/besar-3-sistem-reservasi-klinik-berkapasitas-tinggi">Besar 3: Sistem reservasi klinik berkapasitas tinggi</a></p><p>Berikutnya: <a href="/belajar/proj/proyek-mini-logika-python-dasar">Proyek mini: Logika &amp; Python dasar</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

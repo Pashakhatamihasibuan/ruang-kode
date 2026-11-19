@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mini 5: Penjualan tiket konser tanpa overselling · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Masalah. Saat war tiket, 5.000 orang menekan tombol beli hampir bersamaan untuk 1.000 kursi. Sebagian menekan dua kali. Sistem tidak boleh menjual lebih…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/mini-5-penjualan-tiket-konser-tanpa-overselling">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Mini 5: Penjualan tiket konser tanpa overselling · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Masalah. Saat war tiket, 5.000 orang menekan tombol beli hampir bersamaan untuk 1.000 kursi. Sebagian menekan dua kali. Sistem tidak boleh menjual lebih…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/mini-5-penjualan-tiket-konser-tanpa-overselling"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Mini 5: Penjualan tiket konser tanpa overselling", "description": "Masalah. Saat war tiket, 5.000 orang menekan tombol beli hampir bersamaan untuk 1.000 kursi. Sebagian menekan dua kali. Sistem tidak boleh menjual lebih…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-5-penjualan-tiket-konser-tanpa-overselling", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Mini 5: Penjualan tiket konser tanpa overselling", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-5-penjualan-tiket-konser-tanpa-overselling"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 7</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 7 · Konsep &amp; kode</div><h1>Mini 5: Penjualan tiket konser tanpa overselling</h1><a class="cta" href="/#proj-7-5">Buka versi interaktif</a>
+<p><b>Masalah.</b> Saat war tiket, 5.000 orang menekan tombol beli hampir bersamaan untuk 1.000 kursi. Sebagian menekan dua kali. Sistem tidak boleh menjual lebih dari kuota dan tidak boleh mencatat pesanan ganda.</p>
+<p><b>Fitur wajib:</b><br>1. Simulasi 5.000 request bersamaan dengan virtual thread<br>2. Pengurangan stok atomik (compare-and-set)<br>3. Idempotency key: request yang dikirim ulang tidak diproses dua kali<br>4. Laporan: terjual, sisa, request ganda, dan bukti tidak ada overselling</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. <code>Executors.newVirtualThreadPerTaskExecutor()</code> untuk ribuan tugas ringan.<br>2. Loop <code>compareAndSet</code> pada <code>AtomicInteger</code>: kurangi hanya jika nilai belum berubah.<br>3. <code>ConcurrentHashMap.newKeySet()</code>; <code>add</code> mengembalikan false untuk ID yang sudah ada.<br>4. Di database nyata, gunakan <code>UPDATE ... WHERE sisa &gt;= 1</code> atau <code>SELECT ... FOR UPDATE</code>.</p>
+<p><b>Kembangkan sendiri:</b> ganti stok di memori dengan PostgreSQL dan uji dengan 2 instance aplikasi; bandingkan penguncian optimistik dan pesimistik.</p>
+<div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Simulasi 5.000 request bersamaan dengan virtual thread</td><td>Executors.newVirtualThreadPerTaskExecutor() untuk ribuan tugas ringan.</td></tr><tr><td>Pengurangan stok atomik (compare-and-set)</td><td>Loop compareAndSet pada AtomicInteger: kurangi hanya jika nilai belum berubah.</td></tr><tr><td>Idempotency key: request yang dikirim ulang tidak diproses dua kali</td><td>ConcurrentHashMap.newKeySet(); add mengembalikan false untuk ID yang sudah ada.</td></tr><tr><td>Laporan: terjual, sisa, request ganda, dan bukti tidak ada overselling</td><td>Di database nyata, gunakan UPDATE ... WHERE sisa &gt;= 1 atau SELECT ... FOR UPDATE.</td></tr></tbody></table></div>
+<div class="lbl">JAVA</div><pre><code>import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.*;
+
+public class Main {
+    /** Stok tiket tanpa overselling: compare-and-set atomik, bukan &quot;cek lalu kurangi&quot;. */
+    static class StokTiket {
+        private final AtomicInteger sisa;
+        StokTiket(int awal) { sisa = new AtomicInteger(awal); }
+        boolean pesan(int jumlah) {
+            while (true) {
+                int s = sisa.get();
+                if (s &lt; jumlah) return false;
+                if (sisa.compareAndSet(s, s - jumlah)) return true;
+            }
+        }
+        int sisa() { return sisa.get(); }
+    }
+
+    /** Versi salah untuk perbandingan: cek dan kurangi tidak atomik. */
+    static class StokNaif {
+        int sisa;
+        StokNaif(int awal) { sisa = awal; }
+        boolean pesan(int jumlah) {
+            if (sisa &gt;= jumlah) { Thread.yield(); sisa -= jumlah; return true; }
+            return false;
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        int kuota = 1_000, pembeli = 5_000;
+        StokTiket stok = new StokTiket(kuota);
+        Set&lt;Integer&gt; idempoten = ConcurrentHashMap.newKeySet();
+        AtomicInteger berhasil = new AtomicInteger(), duplikat = new AtomicInteger();
+        try (ExecutorService ex = Executors.newVirtualThreadPerTaskExecutor()) {
+            for (int i = 0; i &lt; pembeli; i++) {
+                int idRequest = i % 4_500; // 500 request dikirim ulang (klik dua kali / retry)
+                ex.submit(() -&gt; {
+                    if (!idempoten.add(idRequest)) { duplikat.incrementAndGet(); return; }
+                    if (stok.pesan(1)) berhasil.incrementAndGet();
+                });
+            }
+        }
+        System.out.println(&quot;Tiket terjual : &quot; + berhasil.get() + &quot; dari kuota &quot; + kuota);
+        System.out.println(&quot;Sisa stok     : &quot; + stok.sisa());
+        System.out.println(&quot;Request ganda : &quot; + duplikat.get() + &quot; diabaikan (idempotency key)&quot;);
+        System.out.println(&quot;Overselling   : &quot; + (berhasil.get() &gt; kuota ? &quot;YA&quot; : &quot;tidak&quot;));
+    }
+}
+</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Tiket terjual : 1000 dari kuota 1000
+Sisa stok     : 0
+Request ganda : 500 diabaikan (idempotency key)
+Overselling   : tidak</code></pre>
+<h2>Poin penting</h2><ul><li>Proyek mini: Penjualan tiket konser tanpa overselling.</li><li>Simulasi 5.000 request bersamaan dengan virtual thread</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa pola &quot;if (sisa &gt;= 1) sisa--&quot; tidak aman di banyak thread?</summary><p class="ok">Jawaban: Dua thread bisa sama-sama lolos pengecekan sebelum salah satunya mengurangi stok</p><p>Check-then-act harus atomik.</p></details>
+<a class="cta" href="/#proj-7-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-4-rate-limiter-dan-cache-untuk-api-publik">Mini 4: Rate limiter dan cache untuk API publik</a></p><p>Berikutnya: <a href="/belajar/proj/mini-6-rute-tercepat-kurir-antar-kecamatan">Mini 6: Rute tercepat kurir antar kecamatan</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

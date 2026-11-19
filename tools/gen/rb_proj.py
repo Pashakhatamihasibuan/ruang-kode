@@ -6,6 +6,7 @@ from rb_pj_fe import PJ_FE
 from rb_pj_py import PJ_PY
 from rb_pj_da import PJ_DA
 from rb_pj_ds import PJ_DS
+from rb_pj_java import PJ_JAVA
 
-PROJ = [STANDAR, FULLSTACK, PJ_FE, PJ_PY, PJ_DA, PJ_DS, MINI, BESAR, LAMAR]
+PROJ = [STANDAR, FULLSTACK, PJ_FE, PJ_PY, PJ_DA, PJ_DS, PJ_JAVA, MINI, BESAR, LAMAR]
 PROJ_SO = {}

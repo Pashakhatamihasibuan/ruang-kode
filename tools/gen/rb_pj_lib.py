@@ -1,12 +1,22 @@
 """Pembantu proyek berpenyelesaian: setiap jalur karier punya 6 proyek mini dan 4 proyek besar.
 Setiap proyek: masalah, fitur wajib, langkah penyelesaian, dan kode penyelesaian lengkap."""
-import html, re
+import html, pathlib, re, subprocess, tempfile
 from rb_lib import C, M, q, jalan
 
 
 def polos(t):
     """Tabel ditampilkan sebagai teks biasa: buang tag HTML dan kembalikan entitas."""
     return html.unescape(re.sub(r'<[^>]+>', '', t))
+
+
+def jalan_java(code):
+    """Menjalankan program Java satu berkas (kelas publik Main) dengan JDK lokal; keluarannya dipakai apa adanya."""
+    with tempfile.TemporaryDirectory() as d:
+        (pathlib.Path(d) / 'Main.java').write_text(code)
+        r = subprocess.run(['java', 'Main.java'], cwd=d, capture_output=True, text=True, timeout=120)
+        if r.returncode != 0:
+            raise RuntimeError('Java gagal:\n' + r.stderr)
+        return r.stdout.rstrip('\n')
 
 
 def _body(masalah, wajib, langkah, extra=None):
