@@ -2344,6 +2344,8 @@ kbd{border:2px solid var(--line);box-shadow:2px 2px 0 var(--nb-sh);background:va
 /* ---------- beranda: kata kunci judul diberi stiker warna ---------- */
 .h-hero h1 em{font-style:normal;font-weight:700;color:#111!important;padding:0 .14em;border:var(--nb-bw) solid #111;border-radius:8px;box-shadow:4px 4px 0 var(--nb-sh);display:inline-block;line-height:1.05;margin:.06em 0}
 .h-hero h1 em:nth-of-type(1){background:var(--nb-c);transform:rotate(-2deg)}.h-hero h1 em:nth-of-type(2){background:var(--nb-y);transform:rotate(1.5deg)}.h-hero h1 em:nth-of-type(3){background:var(--nb-p);transform:rotate(-1.5deg)}
+/* label bentuk khusus (orang, gedung, server, database, piring): stiker putih kecil di atas benda */
+.t3.c-lbl{background:var(--surface);color:var(--ink);border:2px solid var(--line);box-shadow:2px 2px 0 var(--nb-sh);padding:3px 7px;font-size:11.5px}
 
 </style>
 </head>
@@ -4515,27 +4517,28 @@ function cyl(x,y,z,r,h,U,cls='',n=14){const sw=2*r*Math.tan(Math.PI/n)*U+1;let o
   for(const [k,a] of [['t',90],['u',-90]])o+=`<div class="f3 cap f-${k} ${cls}" style="width:${2*r*U}px;height:${2*r*U}px;transform:translate(-50%,-50%) rotateX(${a}deg) translateZ(${h/2*U}px)"></div>`;
   return o+'</div>'}
 const papan=(o,U,y,z,mw)=>o.t?cub(0,y,z,Math.min(mw,Math.max(.7,String(o.t).replace(/<[^>]*>/g,'').length*.14)),.3,.04,U,k=>k==='f'?'sign':'sign dark',{f:`<b>${o.t}</b>`}):'';
+const TAGSHAPE={orang:1,gedung:1,gudang:1,server:1,db:1,piring:1};
 const SHAPE={
  orang(o,U){const {w,h,d}=o,hs=Math.min(w*.46,h*.26),lg=h*.36,ts=h*.33,y0=-h/2;
   return cub(-w*.13,y0+lg/2,0,w*.2,lg,d*.45,U,'dark')+cub(w*.13,y0+lg/2,0,w*.2,lg,d*.45,U,'dark')
    +cub(0,y0+lg+ts/2,0,w*.6,ts,d*.55,U)+cub(-w*.4,y0+lg+ts*.55,0,w*.16,ts*.9,d*.4,U)+cub(w*.4,y0+lg+ts*.55,0,w*.16,ts*.9,d*.4,U)
-   +cub(0,y0+lg+ts+hs/2+h*.02,0,hs,hs,hs,U,k=>k==='t'?'hair':k==='b'?'hair':'sk')+papan(o,U,y0+.18,d*.42,w*1.6)},
+   +cub(0,y0+lg+ts+hs/2+h*.02,0,hs,hs,hs,U,k=>k==='t'?'hair':k==='b'?'hair':'sk')},
  gedung(o,U){const {w,h,d}=o,rf=Math.min(.14,h*.06);
   return cub(0,-rf/2,0,w,h-rf,d,U,k=>k==='t'||k==='u'?'':'win')+cub(0,h/2-rf/2,0,w*1.08,rf,d*1.08,U,'dark')
-   +cub(0,-h/2+Math.min(.5,h*.18)/2,d/2+.01,Math.min(.4,w*.3),Math.min(.5,h*.18),.02,U,'door')+papan(o,U,-h/2+Math.min(.5,h*.18)+.25,d/2+.04,w*1.1)},
+   +cub(0,-h/2+Math.min(.5,h*.18)/2,d/2+.01,Math.min(.4,w*.3),Math.min(.5,h*.18),.02,U,'door')},
  gudang(o,U){const {w,h,d}=o,rf=Math.min(.16,h*.08);
-  return cub(0,-rf/2,0,w,h-rf,d,U,k=>k==='f'?'roll':'')+cub(0,h/2-rf/2,0,w*1.06,rf,d*1.08,U,'dark')+papan(o,U,h*.18,d/2+.04,w*1.1)},
+  return cub(0,-rf/2,0,w,h-rf,d,U,k=>k==='f'?'roll':'')+cub(0,h/2-rf/2,0,w*1.06,rf,d*1.08,U,'dark')},
  server(o,U){const {w,h,d}=o,n=h>1.2?3:2,g=.06,uh=(h-g*(n-1))/n;let s='';
   for(let i=0;i<n;i++)s+=cub(0,-h/2+uh/2+i*(uh+g),0,w,uh,d,U,k=>k==='f'?'led':k==='t'||k==='u'?'':'dark');
-  return s+papan(o,U,-h/2+uh/2,d/2+.04,w*1.05)},
+  return s},
  db(o,U){const {w,h,d}=o,r=Math.min(w,d)/2,n=3,g=.05,uh=(h-g*(n-1))/n;let s='';
   for(let i=0;i<n;i++)s+=cyl(0,-h/2+uh/2+i*(uh+g),0,r,uh,U);
-  return s+papan(o,U,-h/2+uh/2,r+.04,w*1.1)},
+  return s},
  layar(o,U){const {w,h,d}=o,sh=h*.72,ft=h*.06,nk=h-sh-ft;
   return cub(0,h/2-sh/2,0,w,sh,d*.22,U,k=>k==='f'?'scr':'dark',{f:o.t?`<b>${o.t}</b>`:''})+cub(0,-h/2+ft+nk/2,0,w*.12,nk,d*.12,U,'dark')+cub(0,-h/2+ft/2,0,w*.5,ft,d*.6,U,'dark')},
  dok(o,U){const {w,h,d}=o;return cub(0,0,0,w,h,Math.min(d,.18),U,k=>k==='f'||k==='b'?'doc':'doc',{f:o.t?`<b>${o.t}</b>`:''})},
  buku(o,U){const {w,h,d}=o;return cub(0,0,0,w,h,d,U,k=>k==='r'||k==='t'||k==='u'?'doc':'',{f:o.t?`<b>${o.t}</b>`:''})},
- piring(o,U){const {w,h,d}=o,r=Math.min(w,d)/2;return cyl(0,0,0,r,h,U,'',18)+papan(o,U,0,r+.02,w)}};
+ piring(o,U){const {w,h,d}=o,r=Math.min(w,d)/2;return cyl(0,0,0,r,h,U,'',18)}};
 function place(o,U){return `translate3d(${o.x*U}px,${-o.y*U}px,${o.z*U}px) rotateY(${o.ry||0}deg) rotateZ(${-(o.rz||0)}deg)`}
 
 /* label pendek tiap langkah untuk garis waktu (dipakai bila jumlah langkah cocok) */
@@ -4596,7 +4599,9 @@ window.V3D=function(host,key,init,opt){const sc=S[key];if(!sc)return;const mini=
   function draw(again){if(i>steps.length-1)i=steps.length-1;const s=steps[i];U=Math.max(26,Math.min(60,st.clientWidth/11));const seen=new Set();
     if(again){els.forEach(e=>e.remove());els.clear()}
     let nf=0;
-    s.it.forEach(o=>{seen.add(o.id);let e=els.get(o.id);const fresh=!e,prevC=e&&e._c,prevT=e&&e._t;
+    /* label bentuk khusus jadi tag melayang di atasnya (piring: di sampingnya) agar tidak tertutup benda lain */
+    const items=s.it.flatMap(o=>o&&o.s&&o.t&&TAGSHAPE[o.s]?[o,o.s==='piring'?G(o.id+'~t',o.x+o.w/2+.45,o.y,o.z,o.t,'lbl'):G(o.id+'~t',o.x,o.y+o.h/2+.38,o.z,o.t,'lbl')]:[o]);
+    items.forEach(o=>{seen.add(o.id);let e=els.get(o.id);const fresh=!e,prevC=e&&e._c,prevT=e&&e._t;
       if(fresh){e=document.createElement('div');els.set(o.id,e);(o.tag?tg:w).appendChild(e)}
       if(o.tag){e.className=`t3 ${o.c?'c-'+o.c:''}`;e.innerHTML=o.t;e._tag=1;e._p=[o.x,o.y,o.z];
         if(!rm&&(fresh||prevT!==o.t)){e.classList.add('pop')}e._t=o.t}
