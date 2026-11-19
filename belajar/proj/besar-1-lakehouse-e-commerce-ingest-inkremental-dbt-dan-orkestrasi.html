@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Besar 1: Lakehouse e-commerce: ingest inkremental, dbt, dan orkestrasi · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Masalah. Brand ritel omnichannel punya data di marketplace, toko online, POS 60 gerai, dan iklan digital. Setiap tim punya angka omzet berbeda. Mereka…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/besar-1-lakehouse-e-commerce-ingest-inkremental-dbt-dan-orkestrasi">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Besar 1: Lakehouse e-commerce: ingest inkremental, dbt, dan orkestrasi · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Masalah. Brand ritel omnichannel punya data di marketplace, toko online, POS 60 gerai, dan iklan digital. Setiap tim punya angka omzet berbeda. Mereka…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/besar-1-lakehouse-e-commerce-ingest-inkremental-dbt-dan-orkestrasi"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Besar 1: Lakehouse e-commerce: ingest inkremental, dbt, dan orkestrasi", "description": "Masalah. Brand ritel omnichannel punya data di marketplace, toko online, POS 60 gerai, dan iklan digital. Setiap tim punya angka omzet berbeda. Mereka…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/besar-1-lakehouse-e-commerce-ingest-inkremental-dbt-dan-orkestrasi", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Besar 1: Lakehouse e-commerce: ingest inkremental, dbt, dan orkestrasi", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/besar-1-lakehouse-e-commerce-ingest-inkremental-dbt-dan-orkestrasi"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 9</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 9 · Konsep &amp; kode</div><h1>Besar 1: Lakehouse e-commerce: ingest inkremental, dbt, dan orkestrasi</h1><a class="cta" href="/#proj-9-7">Buka versi interaktif</a>
+<p><b>Masalah.</b> Brand ritel omnichannel punya data di marketplace, toko online, POS 60 gerai, dan iklan digital. Setiap tim punya angka omzet berbeda. Mereka butuh satu platform data dengan definisi metrik tunggal yang diperbarui setiap pagi.</p>
+<p><b>Fitur wajib:</b><br>1. Ingest inkremental dari API dan database ke lapisan bronze (Parquet/Iceberg di object storage)<br>2. Transformasi dbt berlapis: staging → intermediate → marts, dengan model contract<br>3. Tes data otomatis (unique, not_null, relationships, accepted_values, freshness)<br>4. Orkestrasi Airflow dengan dbt per model sebagai task, retry, dan SLA jam 07.00<br>5. Dokumentasi dan lineage otomatis; semantic layer untuk metrik omzet, AOV, repeat rate</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. Inventarisasi sumber dan definisikan metrik bersama bisnis (tulis di dokumen definisi metrik).<br>2. Bangun ingest inkremental satu sumber dulu sampai stabil, lalu tambah sumber lain.<br>3. Tulis model dbt staging dengan contract dan tes, kemudian marts fakta/dimensi.<br>4. Hubungkan Airflow + Cosmos; tambah SLA, retry, dan alert.<br>5. Publikasikan dokumentasi, lineage, dan semantic layer; matikan spreadsheet lama.</p>
+<p><b>Standar industri yang dinilai:</b> satu definisi metrik, pipeline idempoten dan inkremental, tes data di setiap model, SLA terpantau, biaya per query terkendali, dokumentasi dan lineage tersedia</p>
+<div class="tw"><table><caption>Arsitektur dan stack (dlt / Airbyte, Google Cloud Storage atau S3, Apache Iceberg, BigQuery / Snowflake / Trino, dbt Core, Airflow + Astronomer Cosmos, OpenLineage, Looker / Metabase)</caption><thead><tr><th>Bagian</th><th>Isi</th></tr></thead><tbody><tr><td>Lapisan</td><td>bronze (mentah, append) → silver (bersih, dedup, tipe benar) → gold (fakta &amp; dimensi, metrik)</td></tr><tr><td>Ingestion</td><td>merge berdasarkan primary key + cursor updated_at; state disimpan dlt</td></tr><tr><td>Transformasi</td><td>dbt incremental merge, partisi per tanggal WIB, cluster per toko</td></tr><tr><td>Kualitas</td><td>dbt tests + source freshness; gagal → DAG berhenti dan alert Slack</td></tr><tr><td>Tata kelola</td><td>pemilik per model, tag PII, akses per dataset, lineage di katalog</td></tr><tr><td>Biaya</td><td>partisi + clustering, batas byte per query, model gold materialized table, staging view</td></tr></tbody></table></div>
+<div class="lbl">PYTHON</div><pre><code># ingest/sumber_order.py  (dlt: ekstrak inkremental dari API marketplace ke lake)
+import dlt
+from dlt.sources.helpers import requests
+
+@dlt.resource(name=&quot;order&quot;, write_disposition=&quot;merge&quot;, primary_key=&quot;order_id&quot;)
+def order(updated_at=dlt.sources.incremental(&quot;updated_at&quot;, initial_value=&quot;2026-01-01T00:00:00Z&quot;)):
+    url = &quot;https://api.toko-contoh.id/v2/orders&quot;
+    params = {&quot;updated_since&quot;: updated_at.last_value, &quot;limit&quot;: 500}
+    while url:
+        r = requests.get(url, params=params, timeout=30); r.raise_for_status()
+        body = r.json(); yield body[&quot;data&quot;]
+        url, params = body.get(&quot;next&quot;), None
+
+pipeline = dlt.pipeline(&quot;marketplace&quot;, destination=&quot;filesystem&quot;, dataset_name=&quot;bronze&quot;)   # -&gt; Iceberg/Parquet di GCS/S3
+
+-- models/staging/stg_order.sql  (dbt)
+{{ config(materialized=&#x27;incremental&#x27;, unique_key=&#x27;order_id&#x27;, incremental_strategy=&#x27;merge&#x27;,
+          partition_by={&#x27;field&#x27;: &#x27;tanggal&#x27;, &#x27;data_type&#x27;: &#x27;date&#x27;}) }}
+select
+    cast(order_id as int64)                         as order_id,
+    date(timestamp(created_at), &#x27;Asia/Jakarta&#x27;)     as tanggal,
+    lower(trim(status))                             as status,
+    cast(total as numeric)                          as total,
+    toko_id, pelanggan_id, updated_at
+from {{ source(&#x27;bronze&#x27;, &#x27;order&#x27;) }}
+{% if is_incremental() %}
+where updated_at &gt; (select max(updated_at) from {{ this }})
+{% endif %}
+
+# models/staging/_stg.yml
+models:
+  - name: stg_order
+    config: { contract: { enforced: true } }
+    columns:
+      - name: order_id
+        data_type: int64
+        data_tests: [unique, not_null]
+      - name: tanggal
+        data_type: date
+      - name: status
+        data_type: string
+        data_tests:
+          - accepted_values: { values: [dibuat, dibayar, dikirim, selesai, batal] }
+      - name: toko_id
+        data_type: int64
+        data_tests:
+          - relationships: { to: ref(&#x27;dim_toko&#x27;), field: toko_id }
+
+# dags/marketplace_harian.py  (Airflow + Cosmos menjalankan dbt per model sebagai task)
+with DAG(&quot;marketplace_harian&quot;, schedule=&quot;0 2 * * *&quot;, start_date=datetime(2026, 1, 1), catchup=False) as dag:
+    ingest = PythonOperator(task_id=&quot;dlt_ingest&quot;, python_callable=lambda: pipeline.run(order()))
+    dbt = DbtTaskGroup(group_id=&quot;dbt&quot;, project_config=ProjectConfig(&quot;/opt/dbt/marketplace&quot;),
+                       render_config=RenderConfig(test_behavior=TestBehavior.AFTER_EACH))
+    ingest &gt;&gt; dbt</code></pre>
+<h2>Poin penting</h2><ul><li>Proyek besar: Lakehouse e-commerce: ingest inkremental, dbt, dan orkestrasi.</li><li>Stack: dlt / Airbyte, Google Cloud Storage atau S3, Apache Iceberg, BigQuery / Snowflake / Trino, dbt Core, Airflow + Astronomer Cosmos, OpenLineage, Looker / Metabase.</li><li>Berkas inti penyelesaian ada di bawah; sisanya mengikuti pola yang sama.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Apa manfaat model contract (contract: enforced) di dbt?</summary><p class="ok">Jawaban: Model gagal dibangun jika nama atau tipe kolom berubah dari yang disepakati, sehingga konsumen hilir tidak rusak diam-diam</p><p>Kontrak data di lapisan transformasi.</p></details>
+<a class="cta" href="/#proj-9-7">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-6-star-schema-dan-data-mart-penjualan">Mini 6: Star schema dan data mart penjualan</a></p><p>Berikutnya: <a href="/belajar/proj/besar-2-pipeline-streaming-deteksi-fraud-dengan-cdc-kafka-dan-flink">Besar 2: Pipeline streaming deteksi fraud dengan CDC, Kafka, dan Flink</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

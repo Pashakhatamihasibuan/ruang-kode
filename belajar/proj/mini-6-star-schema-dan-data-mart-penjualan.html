@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mini 6: Star schema dan data mart penjualan · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Masalah. Analis menulis query panjang langsung ke tabel order mentah dan hasilnya berbeda-beda antar orang. Manajer ingin satu data mart dengan definisi…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/mini-6-star-schema-dan-data-mart-penjualan">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Mini 6: Star schema dan data mart penjualan · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Masalah. Analis menulis query panjang langsung ke tabel order mentah dan hasilnya berbeda-beda antar orang. Manajer ingin satu data mart dengan definisi…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/mini-6-star-schema-dan-data-mart-penjualan"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Mini 6: Star schema dan data mart penjualan", "description": "Masalah. Analis menulis query panjang langsung ke tabel order mentah dan hasilnya berbeda-beda antar orang. Manajer ingin satu data mart dengan definisi…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-6-star-schema-dan-data-mart-penjualan", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Mini 6: Star schema dan data mart penjualan", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-6-star-schema-dan-data-mart-penjualan"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 9</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 9 · Konsep &amp; kode</div><h1>Mini 6: Star schema dan data mart penjualan</h1><a class="cta" href="/#proj-9-6">Buka versi interaktif</a>
+<p><b>Masalah.</b> Analis menulis query panjang langsung ke tabel order mentah dan hasilnya berbeda-beda antar orang. Manajer ingin satu data mart dengan definisi yang sama untuk semua laporan.</p>
+<p><b>Fitur wajib:</b><br>1. Dimensi tanggal (hari, akhir pekan), produk, dan pelanggan dengan surrogate key<br>2. Tabel fakta berisi kunci dimensi dan ukuran (qty, total)<br>3. Rekonsiliasi: jumlah baris dan omzet fakta sama dengan sumber<br>4. Query bisnis: kategori akhir pekan vs hari kerja<br>5. Top 3 pelanggan per kota dengan window function</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. <code>dim_tanggal</code> dibuat sekali per hari kalender, kunci YYYYMMDD.<br>2. <code>INSERT ... SELECT</code> dengan JOIN ke dimensi untuk mendapat surrogate key.<br>3. Bandingkan COUNT dan SUM sumber vs fakta sebelum mart dipublikasikan.<br>4. <code>SUM(CASE WHEN akhir_pekan = 1 ...)</code>.<br>5. <code>ROW_NUMBER() OVER (PARTITION BY kota ORDER BY omzet DESC)</code>.</p>
+<p><b>Kembangkan sendiri:</b> tulis ulang sebagai proyek dbt (staging → intermediate → marts) dengan tes unique/not_null/relationships dan dokumentasi otomatis.</p>
+<div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Dimensi tanggal (hari, akhir pekan), produk, dan pelanggan dengan surrogate key</td><td>dim_tanggal dibuat sekali per hari kalender, kunci YYYYMMDD.</td></tr><tr><td>Tabel fakta berisi kunci dimensi dan ukuran (qty, total)</td><td>INSERT ... SELECT dengan JOIN ke dimensi untuk mendapat surrogate key.</td></tr><tr><td>Rekonsiliasi: jumlah baris dan omzet fakta sama dengan sumber</td><td>Bandingkan COUNT dan SUM sumber vs fakta sebelum mart dipublikasikan.</td></tr><tr><td>Query bisnis: kategori akhir pekan vs hari kerja</td><td>SUM(CASE WHEN akhir_pekan = 1 ...).</td></tr><tr><td>Top 3 pelanggan per kota dengan window function</td><td>ROW_NUMBER() OVER (PARTITION BY kota ORDER BY omzet DESC).</td></tr></tbody></table></div>
+<div class="lbl">PYTHON</div><pre><code>import sqlite3, random
+random.seed(11)
+db = sqlite3.connect(&quot;:memory:&quot;)
+db.executescript(&quot;&quot;&quot;
+CREATE TABLE raw_order (order_id INT, tgl TEXT, pelanggan TEXT, kota TEXT, produk TEXT, kategori TEXT, qty INT, harga INT);
+CREATE TABLE dim_tanggal (tanggal_key INT PRIMARY KEY, tanggal TEXT, bulan TEXT, hari TEXT, akhir_pekan INT);
+CREATE TABLE dim_produk (produk_key INTEGER PRIMARY KEY, produk TEXT UNIQUE, kategori TEXT);
+CREATE TABLE dim_pelanggan (pelanggan_key INTEGER PRIMARY KEY, pelanggan TEXT UNIQUE, kota TEXT);
+CREATE TABLE fakta_penjualan (order_id INT, tanggal_key INT, produk_key INT, pelanggan_key INT, qty INT, total INT);
+&quot;&quot;&quot;)
+produk = [(&quot;Kopi 200g&quot;, &quot;Minuman&quot;, 31500), (&quot;Teh 25s&quot;, &quot;Minuman&quot;, 9000), (&quot;Beras 5kg&quot;, &quot;Sembako&quot;, 78500),
+          (&quot;Gula 1kg&quot;, &quot;Sembako&quot;, 17250), (&quot;Sabun 450ml&quot;, &quot;Kebersihan&quot;, 23900)]
+pelanggan = [(f&quot;P{i:03}&quot;, random.choice([&quot;Medan&quot;, &quot;Bandung&quot;, &quot;Surabaya&quot;])) for i in range(1, 41)]
+hari = [&quot;Senin&quot;, &quot;Selasa&quot;, &quot;Rabu&quot;, &quot;Kamis&quot;, &quot;Jumat&quot;, &quot;Sabtu&quot;, &quot;Minggu&quot;]
+for oid in range(1, 401):
+    d = random.randint(1, 30); p = random.choice(produk); c = random.choice(pelanggan)
+    db.execute(&quot;INSERT INTO raw_order VALUES (?,?,?,?,?,?,?,?)&quot;, (oid, f&quot;2026-09-{d:02}&quot;, c[0], c[1], p[0], p[1], random.randint(1, 4), p[2]))
+
+# 1 September 2026 = Selasa
+db.executemany(&quot;INSERT INTO dim_tanggal VALUES (?,?,?,?,?)&quot;,
+               [(20260900 + d, f&quot;2026-09-{d:02}&quot;, &quot;2026-09&quot;, hari[(d) % 7], int((d) % 7 &gt;= 5)) for d in range(1, 31)])
+db.executescript(&quot;&quot;&quot;
+INSERT INTO dim_produk (produk, kategori) SELECT DISTINCT produk, kategori FROM raw_order;
+INSERT INTO dim_pelanggan (pelanggan, kota) SELECT DISTINCT pelanggan, kota FROM raw_order;
+INSERT INTO fakta_penjualan
+SELECT r.order_id, CAST(REPLACE(r.tgl, &#x27;-&#x27;, &#x27;&#x27;) AS INT), p.produk_key, c.pelanggan_key, r.qty, r.qty * r.harga
+FROM raw_order r JOIN dim_produk p USING (produk) JOIN dim_pelanggan c USING (pelanggan);
+&quot;&quot;&quot;)
+cek = db.execute(&quot;SELECT (SELECT COUNT(*) FROM raw_order), (SELECT COUNT(*) FROM fakta_penjualan), (SELECT SUM(qty*harga) FROM raw_order), (SELECT SUM(total) FROM fakta_penjualan)&quot;).fetchone()
+rp = lambda n: f&quot;{n:,}&quot;.replace(&quot;,&quot;, &quot;.&quot;)
+print(f&quot;rekonsiliasi: baris {cek[0]} = {cek[1]}; omzet {rp(cek[2])} = {rp(cek[3])}&quot;)
+
+print(&quot;\n1) Omzet per kategori, akhir pekan vs hari kerja (juta)&quot;)
+for r in db.execute(&quot;&quot;&quot;SELECT p.kategori, ROUND(SUM(CASE WHEN t.akhir_pekan=1 THEN f.total END)/1e6,2),
+                              ROUND(SUM(CASE WHEN t.akhir_pekan=0 THEN f.total END)/1e6,2)
+                       FROM fakta_penjualan f JOIN dim_produk p USING (produk_key) JOIN dim_tanggal t USING (tanggal_key)
+                       GROUP BY 1 ORDER BY 1&quot;&quot;&quot;):
+    print(&quot;  &quot;, r)
+print(&quot;2) Top 3 pelanggan per kota (window function)&quot;)
+for r in db.execute(&quot;&quot;&quot;SELECT kota, pelanggan, omzet FROM (
+                         SELECT c.kota, c.pelanggan, SUM(f.total) omzet,
+                                ROW_NUMBER() OVER (PARTITION BY c.kota ORDER BY SUM(f.total) DESC) rk
+                         FROM fakta_penjualan f JOIN dim_pelanggan c USING (pelanggan_key) GROUP BY 1, 2)
+                       WHERE rk &lt;= 3 ORDER BY kota, omzet DESC&quot;&quot;&quot;):
+    print(f&quot;   {r[0]:9} {r[1]} Rp{r[2]:,}&quot;.replace(&quot;,&quot;, &quot;.&quot;))
+</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>rekonsiliasi: baris 400 = 400; omzet 30.079.050 = 30.079.050
+
+1) Omzet per kategori, akhir pekan vs hari kerja (juta)
+   (&#x27;Kebersihan&#x27;, 1.41, 3.9)
+   (&#x27;Minuman&#x27;, 2.23, 4.78)
+   (&#x27;Sembako&#x27;, 3.13, 14.62)
+2) Top 3 pelanggan per kota (window function)
+   Bandung   P024 Rp1.037.800
+   Bandung   P016 Rp961.800
+   Bandung   P001 Rp889.850
+   Medan     P036 Rp1.473.500
+   Medan     P013 Rp1.347.650
+   Medan     P032 Rp1.346.400
+   Surabaya  P009 Rp1.044.550
+   Surabaya  P002 Rp1.025.750
+   Surabaya  P020 Rp1.007.250</code></pre>
+<h2>Poin penting</h2><ul><li>Proyek mini: Star schema dan data mart penjualan.</li><li>Dimensi tanggal (hari, akhir pekan), produk, dan pelanggan dengan surrogate key</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa perlu rekonsiliasi jumlah baris dan omzet antara sumber dan tabel fakta?</summary><p class="ok">Jawaban: Untuk membuktikan tidak ada baris hilang atau berlipat akibat JOIN sebelum mart dipakai laporan</p><p>Kepercayaan pada angka.</p></details>
+<a class="cta" href="/#proj-9-6">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-5-orkestrator-mini-dag-retry-dan-backfill">Mini 5: Orkestrator mini: DAG, retry, dan backfill</a></p><p>Berikutnya: <a href="/belajar/proj/besar-1-lakehouse-e-commerce-ingest-inkremental-dbt-dan-orkestrasi">Besar 1: Lakehouse e-commerce: ingest inkremental, dbt, dan orkestrasi</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

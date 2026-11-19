@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mini 3: Penjaga kualitas data dengan kontrak dan laporan · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Masalah. Perusahaan payment gateway sering menerima data transaksi rusak dari tim aplikasi (nominal 0, metode pembayaran baru tanpa pemberitahuan).…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/mini-3-penjaga-kualitas-data-dengan-kontrak-dan-laporan">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Mini 3: Penjaga kualitas data dengan kontrak dan laporan · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Masalah. Perusahaan payment gateway sering menerima data transaksi rusak dari tim aplikasi (nominal 0, metode pembayaran baru tanpa pemberitahuan).…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/mini-3-penjaga-kualitas-data-dengan-kontrak-dan-laporan"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Mini 3: Penjaga kualitas data dengan kontrak dan laporan", "description": "Masalah. Perusahaan payment gateway sering menerima data transaksi rusak dari tim aplikasi (nominal 0, metode pembayaran baru tanpa pemberitahuan).…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-3-penjaga-kualitas-data-dengan-kontrak-dan-laporan", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Mini 3: Penjaga kualitas data dengan kontrak dan laporan", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-3-penjaga-kualitas-data-dengan-kontrak-dan-laporan"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 9</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 9 · Konsep &amp; kode</div><h1>Mini 3: Penjaga kualitas data dengan kontrak dan laporan</h1><a class="cta" href="/#proj-9-3">Buka versi interaktif</a>
+<p><b>Masalah.</b> Perusahaan payment gateway sering menerima data transaksi rusak dari tim aplikasi (nominal 0, metode pembayaran baru tanpa pemberitahuan). Dashboard keuangan sudah terlanjur salah sebelum ada yang sadar.</p>
+<p><b>Fitur wajib:</b><br>1. Kontrak data ditulis sebagai model Pydantic (pola ID, rentang nominal, nilai metode yang diizinkan)<br>2. Hitung pelanggaran per aturan, bukan berhenti di error pertama<br>3. Cek tingkat batch: persentase valid, freshness, keunikan, volume<br>4. Laporan JSON yang bisa dikirim ke Slack atau disimpan<br>5. Exit code 1 saat gagal agar orkestrator menghentikan pipeline</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. <code>Field(pattern=..., gt=0, le=...)</code> menerjemahkan kesepakatan menjadi kode.<br>2. <code>ValidationError.errors()</code> memberi lokasi dan jenis setiap pelanggaran.<br>3. Ambang dibuat eksplisit, misalnya ≥ 95% baris valid.<br>4. <code>json.dumps(laporan, indent=2)</code>.<br>5. <code>sys.exit(kode_keluar)</code> di skrip asli.</p>
+<p><b>Kembangkan sendiri:</b> pindahkan aturan ke dbt tests atau Great Expectations/Soda, simpan histori hasil cek, dan tampilkan tren kualitas di dashboard.</p>
+<div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Kontrak data ditulis sebagai model Pydantic (pola ID, rentang nominal, nilai metode yang diizinkan)</td><td>Field(pattern=..., gt=0, le=...) menerjemahkan kesepakatan menjadi kode.</td></tr><tr><td>Hitung pelanggaran per aturan, bukan berhenti di error pertama</td><td>ValidationError.errors() memberi lokasi dan jenis setiap pelanggaran.</td></tr><tr><td>Cek tingkat batch: persentase valid, freshness, keunikan, volume</td><td>Ambang dibuat eksplisit, misalnya ≥ 95% baris valid.</td></tr><tr><td>Laporan JSON yang bisa dikirim ke Slack atau disimpan</td><td>json.dumps(laporan, indent=2).</td></tr><tr><td>Exit code 1 saat gagal agar orkestrator menghentikan pipeline</td><td>sys.exit(kode_keluar) di skrip asli.</td></tr></tbody></table></div>
+<div class="lbl">PYTHON</div><pre><code>from datetime import date, datetime, timedelta
+from pydantic import BaseModel, Field, ValidationError
+import collections, json
+
+class Transaksi(BaseModel):                      # kontrak data v3 (disepakati tim aplikasi &amp; data)
+    trx_id: str = Field(pattern=r&quot;^TRX-\d{6}$&quot;)
+    merchant_id: int
+    nominal: int = Field(gt=0, le=50_000_000)
+    metode: str = Field(pattern=r&quot;^(QRIS|VA|EWALLET|KARTU)$&quot;)
+    waktu: datetime
+
+batch = [
+    {&quot;trx_id&quot;: &quot;TRX-000101&quot;, &quot;merchant_id&quot;: 7, &quot;nominal&quot;: 125000, &quot;metode&quot;: &quot;QRIS&quot;, &quot;waktu&quot;: &quot;2026-11-19T07:10:00&quot;},
+    {&quot;trx_id&quot;: &quot;TRX-000102&quot;, &quot;merchant_id&quot;: 7, &quot;nominal&quot;: 0, &quot;metode&quot;: &quot;QRIS&quot;, &quot;waktu&quot;: &quot;2026-11-19T07:11:00&quot;},
+    {&quot;trx_id&quot;: &quot;TRX-103&quot;, &quot;merchant_id&quot;: 9, &quot;nominal&quot;: 98000, &quot;metode&quot;: &quot;VA&quot;, &quot;waktu&quot;: &quot;2026-11-19T07:12:00&quot;},
+    {&quot;trx_id&quot;: &quot;TRX-000104&quot;, &quot;merchant_id&quot;: 9, &quot;nominal&quot;: 76000, &quot;metode&quot;: &quot;PAYLATER&quot;, &quot;waktu&quot;: &quot;2026-11-19T07:13:00&quot;},
+    {&quot;trx_id&quot;: &quot;TRX-000105&quot;, &quot;merchant_id&quot;: &quot;sembilan&quot;, &quot;nominal&quot;: 50000, &quot;metode&quot;: &quot;VA&quot;, &quot;waktu&quot;: &quot;2026-11-19T07:14:00&quot;},
+] + [{&quot;trx_id&quot;: f&quot;TRX-{200+i:06d}&quot;, &quot;merchant_id&quot;: 3, &quot;nominal&quot;: 10000 + i, &quot;metode&quot;: &quot;EWALLET&quot;, &quot;waktu&quot;: &quot;2026-11-19T07:20:00&quot;} for i in range(15)]
+
+lolos, gagal = [], collections.Counter()
+for r in batch:
+    try:
+        lolos.append(Transaksi(**r))
+    except ValidationError as e:
+        for err in e.errors():
+            gagal[f&quot;{err[&#x27;loc&#x27;][0]}:{err[&#x27;type&#x27;]}&quot;] += 1
+
+sekarang = datetime(2026, 11, 19, 8, 0)
+aturan = {
+    &quot;persentase baris valid &gt;= 95%&quot;: len(lolos) / len(batch) &gt;= 0.95,
+    &quot;freshness: data terbaru &lt;= 1 jam&quot;: sekarang - max(t.waktu for t in lolos) &lt;= timedelta(hours=1),
+    &quot;trx_id unik&quot;: len({t.trx_id for t in lolos}) == len(lolos),
+    &quot;volume &gt;= 10 baris&quot;: len(lolos) &gt;= 10,
+}
+laporan = {&quot;tanggal&quot;: str(date(2026, 11, 19)), &quot;total&quot;: len(batch), &quot;valid&quot;: len(lolos),
+           &quot;gagal_per_aturan&quot;: dict(gagal), &quot;cek&quot;: {k: (&quot;LULUS&quot; if v else &quot;GAGAL&quot;) for k, v in aturan.items()}}
+print(json.dumps(laporan, indent=2, ensure_ascii=False))
+kode_keluar = 0 if all(aturan.values()) else 1
+print(&quot;exit code:&quot;, kode_keluar, &quot;-&gt; orkestrator menandai task&quot;, &quot;sukses&quot; if kode_keluar == 0 else &quot;GAGAL dan mengirim alert ke #data-alerts&quot;)
+</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>{
+  &quot;tanggal&quot;: &quot;2026-11-19&quot;,
+  &quot;total&quot;: 20,
+  &quot;valid&quot;: 16,
+  &quot;gagal_per_aturan&quot;: {
+    &quot;nominal:greater_than&quot;: 1,
+    &quot;trx_id:string_pattern_mismatch&quot;: 1,
+    &quot;metode:string_pattern_mismatch&quot;: 1,
+    &quot;merchant_id:int_parsing&quot;: 1
+  },
+  &quot;cek&quot;: {
+    &quot;persentase baris valid &gt;= 95%&quot;: &quot;GAGAL&quot;,
+    &quot;freshness: data terbaru &lt;= 1 jam&quot;: &quot;LULUS&quot;,
+    &quot;trx_id unik&quot;: &quot;LULUS&quot;,
+    &quot;volume &gt;= 10 baris&quot;: &quot;LULUS&quot;
+  }
+}
+exit code: 1 -&gt; orkestrator menandai task GAGAL dan mengirim alert ke #data-alerts</code></pre>
+<h2>Poin penting</h2><ul><li>Proyek mini: Penjaga kualitas data dengan kontrak dan laporan.</li><li>Kontrak data ditulis sebagai model Pydantic (pola ID, rentang nominal, nilai metode yang diizinkan)</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa pipeline harus berhenti (exit code ≠ 0) saat cek kualitas gagal?</summary><p class="ok">Jawaban: Agar data rusak tidak menyebar ke tabel hilir dan dashboard sebelum diperiksa</p><p>Fail fast di batas pipeline.</p></details>
+<a class="cta" href="/#proj-9-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-2-incremental-load-dengan-watermark-dan-scd-tipe-2">Mini 2: Incremental load dengan watermark dan SCD tipe 2</a></p><p>Berikutnya: <a href="/belajar/proj/mini-4-deteksi-lonjakan-transaksi-real-time-dengan-sliding-window">Mini 4: Deteksi lonjakan transaksi real-time dengan sliding window</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>
