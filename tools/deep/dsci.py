@@ -59,10 +59,10 @@ D = {
            code="import numpy as np\nrng = np.random.default_rng(2)\nbelanja = rng.lognormal(mean=12, sigma=0.8, size=400)       # nilai belanja (rupiah)\nmed = [np.median(rng.choice(belanja, belanja.size)) for _ in range(2000)]\nlo, hi = np.percentile(med, [2.5, 97.5])\nprint(f'median belanja: Rp{np.median(belanja):,.0f}')\nprint(f'selang 95% (bootstrap): Rp{lo:,.0f} s.d. Rp{hi:,.0f}')")]),
 
 'Uji hipotesis dan p-value': dict(
-  ist=[('Statistically significant', 'Hasil yang kecil kemungkinannya terjadi jika tidak ada efek (biasanya p &lt; 0,05). Bukan berarti efeknya besar atau penting.'),
+  ist=[('Statistically significant', 'Hasil yang kecil kemungkinannya terjadi jika tidak ada efek (biasanya p < 0,05). Bukan berarti efeknya besar atau penting.'),
        ('Practical significance', 'Apakah efeknya cukup besar untuk berarti bagi bisnis. Selalu laporkan besar efek dan selang kepercayaan.'),
        ('False positive (Type I)', 'Menyimpulkan ada efek padahal tidak. Makin banyak uji, makin besar peluangnya.'),
-       ('p-hacking', 'Mencoba banyak analisis sampai menemukan p &lt; 0,05. Dilarang dalam praktik yang jujur; tetapkan rencana analisis di awal.')],
+       ('p-hacking', 'Mencoba banyak analisis sampai menemukan p < 0,05. Dilarang dalam praktik yang jujur; tetapkan rencana analisis di awal.')],
   cx=[dict(t='Bahaya menguji banyak metrik sekaligus', code="import numpy as np\nfrom scipy import stats\nrng = np.random.default_rng(0)\nsignifikan = 0\nfor metrik in range(20):                 # 20 metrik, padahal TIDAK ADA efek sungguhan\n    a, b = rng.normal(0, 1, 500), rng.normal(0, 1, 500)\n    signifikan += stats.ttest_ind(a, b).pvalue < 0.05\nprint(f'{signifikan} dari 20 metrik tampak signifikan hanya karena kebetulan')\nprint('Koreksi Bonferroni: ambang menjadi', 0.05 / 20)")]),
 
 'A/B test: ukuran sampel, sensitivitas, dan metrik rasio': dict(
@@ -310,7 +310,7 @@ D = {
 'Menyimpan model dan membuat API prediksi': dict(
   ist=[('Model registry', 'Tempat menyimpan versi model beserta metrik dan metadata (MLflow Model Registry).'),
        ('Inference / serving', 'Menjalankan model untuk prediksi di produksi, baik real-time (API) maupun batch.'),
-       ('Latency SLA', 'Janji waktu respons, misalnya p95 &lt; 200 ms.'),
+       ('Latency SLA', 'Janji waktu respons, misalnya p95 < 200 ms.'),
        ('Schema validation', 'Memastikan input API sesuai bentuk yang diharapkan (Pydantic) sebelum masuk model.')],
   cx=[dict(t='Menyimpan pipeline beserta metadata versinya', code="import json, joblib, tempfile, os, sklearn, hashlib\nfrom sklearn.datasets import load_iris\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.linear_model import LogisticRegression\nX, y = load_iris(return_X_y=True)\npipe = make_pipeline(StandardScaler(), LogisticRegression(max_iter=1000)).fit(X, y)\nfolder = tempfile.mkdtemp(); path = os.path.join(folder, 'model.joblib')\njoblib.dump(pipe, path)\nmeta = {'versi': '2026.11.19-1', 'sklearn': sklearn.__version__, 'fitur': ['sepal_l', 'sepal_w', 'petal_l', 'petal_w'],\n        'akurasi_latih': round(pipe.score(X, y), 3), 'sha256': hashlib.sha256(open(path, 'rb').read()).hexdigest()[:12]}\nprint(json.dumps({k: v for k, v in meta.items() if k != 'sklearn'}, indent=1))\nprint('model dimuat ulang memprediksi:', joblib.load(path).predict(X[:3]))")]),
 

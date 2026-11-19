@@ -5,6 +5,7 @@ Beberapa berkas boleh memakai K yang sama; isinya digabung.
   cx : [dict(t=judul, b=penjelasan, code=..., lang='python'|'java'|'sql'|..., run=True|False, out=None, setup=None)]
 Contoh dengan run=True dijalankan agar keluarannya pasti cocok:
   python -> exec; java -> `java Main.java` (JDK 21); sql -> SQLite di memori (setup dijalankan dulu, tidak ditampilkan);
+  js -> Node 22 (ESM); ts -> Node 22 --experimental-transform-types;
   pg=True -> PostgreSQL 16 sungguhan lewat psql (hasil disimpan di pg.cache.json yang ikut di-commit).
 Keluaran disimpan di cache (tools/deep/.cache.json) berdasarkan hash kode. Hasil: src/js/deep.json."""
 import hashlib, importlib.util, json, pathlib, sqlite3, subprocess, sys, tempfile
@@ -30,6 +31,18 @@ def jalan_java(code):
         if r.returncode != 0:  # contoh yang sengaja melempar exception: tampilkan baris pertamanya
             out = (out + '\n' if out else '') + err.splitlines()[0]
         return out
+
+
+def jalan_js(code, ts=False):
+    """JavaScript (ESM) atau TypeScript dijalankan dengan Node 22; TypeScript memakai --experimental-transform-types."""
+    with tempfile.TemporaryDirectory() as d:
+        p = pathlib.Path(d) / ('main.mts' if ts else 'main.mjs')
+        p.write_text(code)
+        cmd = ['node', '--no-warnings'] + (['--experimental-transform-types'] if ts else []) + [p.name]
+        r = subprocess.run(cmd, cwd=d, capture_output=True, text=True, timeout=60)
+        if r.returncode != 0:
+            raise RuntimeError(f'JS/TS gagal:\n{r.stderr}\n---\n{code}')
+        return r.stdout.rstrip('\n')
 
 
 def _tabel(cur):
@@ -72,9 +85,12 @@ def jalankan(c):
             CACHE[key] = jalan_java(c['code'])
         elif lang == 'sql':
             CACHE[key] = jalan_sql(c['code'], c.get('setup', ''))
+        elif lang in ('js', 'ts'):
+            CACHE[key] = jalan_js(c['code'], lang == 'ts')
     return CACHE[key]
 
 
+RUNNABLE = ('python', 'java', 'sql', 'js', 'ts')
 out, kerja = {}, []
 for f in sorted((ROOT / 'tools/deep').glob('*.py')):
     spec = importlib.util.spec_from_file_location(f.stem, f); m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
@@ -86,7 +102,7 @@ for f in sorted((ROOT / 'tools/deep').glob('*.py')):
         cx = []
         for c in d.get('cx', []):
             c = dict(c); lang = c.setdefault('lang', 'python')
-            if c.pop('run', lang in ('python', 'java', 'sql')) and lang in ('python', 'java', 'sql'):
+            if c.pop('run', lang in RUNNABLE) and lang in RUNNABLE:
                 kerja.append(c)
             elif c.get('pg'):
                 kerja.append(c)
@@ -99,10 +115,10 @@ for f in sorted((ROOT / 'tools/deep').glob('*.py')):
 
 # Python dijalankan berurutan (redirect_stdout tidak aman antar thread); Java paralel.
 for c in kerja:
-    if c['lang'] != 'java':
+    if c['lang'] not in ('java', 'js', 'ts'):
         c['out'] = jalankan(c)
 with ThreadPoolExecutor(6) as ex:
-    js = [c for c in kerja if c['lang'] == 'java']
+    js = [c for c in kerja if c['lang'] in ('java', 'js', 'ts')]
     for c, o in zip(js, ex.map(jalankan, js)):
         c['out'] = o
 CACHE_F.write_text(json.dumps(CACHE, ensure_ascii=False))
