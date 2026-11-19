@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Deteksi anomali: Isolation Forest · Data Science &amp; AI · Ruang Kode</title>
+<meta name="description" content="Anomali adalah data yang sangat berbeda dari kebanyakan: transaksi kartu kredit mencurigakan, sensor mesin yang tidak wajar, login dari pola aneh.…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsci/deteksi-anomali-isolation-forest">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Deteksi anomali: Isolation Forest · Data Science &amp; AI · Ruang Kode"><meta property="og:description" content="Anomali adalah data yang sangat berbeda dari kebanyakan: transaksi kartu kredit mencurigakan, sensor mesin yang tidak wajar, login dari pola aneh.…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsci/deteksi-anomali-isolation-forest"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Deteksi anomali: Isolation Forest", "description": "Anomali adalah data yang sangat berbeda dari kebanyakan: transaksi kartu kredit mencurigakan, sensor mesin yang tidak wajar, login dari pola aneh.…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci/deteksi-anomali-isolation-forest", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Science & AI", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Science & AI", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, {"@type": "ListItem", "position": 3, "name": "Deteksi anomali: Isolation Forest", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci/deteksi-anomali-isolation-forest"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsci">Data Science &amp; AI</a> / Modul 9</nav>
+<div class="eyebrow">Data Science &amp; AI · Modul 9 · Konsep &amp; kode</div><h1>Deteksi anomali: Isolation Forest</h1><a class="cta" href="/#dsci-9-5">Buka versi interaktif</a>
+<p><b>Anomali</b> adalah data yang sangat berbeda dari kebanyakan: transaksi kartu kredit mencurigakan, sensor mesin yang tidak wajar, login dari pola aneh. Biasanya labelnya hampir tidak ada, jadi dipakai pendekatan unsupervised.</p>
+<p><b>Isolation Forest</b> membuat pohon acak yang memotong data secara acak. Titik normal berada di kerumunan sehingga butuh banyak potongan untuk diisolasi; titik anomali terpencil sehingga terisolasi dalam sedikit potongan. Makin pendek jalurnya, makin anomali.</p>
+<p><code>contamination</code> adalah perkiraan proporsi anomali. Alternatif lain: skor-z sederhana, <b>Local Outlier Factor</b>, atau DBSCAN. Perhatikan hasilnya: transaksi 260 ribu pukul 3 pagi tidak tertangkap karena nominalnya wajar, dan ada satu transaksi normal yang ikut ditandai. Model anomali memberi <b>daftar untuk diperiksa</b>, bukan vonis.</p>
+<div class="lbl">PYTHON</div><pre><code>import numpy as np
+from sklearn.ensemble import IsolationForest
+
+rng = np.random.default_rng(8)
+normal = np.column_stack([rng.normal(250, 60, 500), rng.normal(14, 3, 500)])   # nominal (ribu), jam transaksi
+aneh = np.array([[4800, 3], [3900, 2], [5200, 4], [260, 3], [3100, 14]])
+X = np.vstack([normal, aneh])
+
+iso = IsolationForest(contamination=0.01, random_state=0).fit(X)
+label = iso.predict(X)            # -1 = anomali
+skor = iso.score_samples(X)        # makin kecil makin aneh
+print(&#x27;jumlah ditandai anomali:&#x27;, (label == -1).sum())
+for i in np.argsort(skor)[:6]:
+    print(f&#x27;nominal {X[i, 0]:6.0f} ribu, jam {X[i, 1]:4.1f} -&gt; skor {skor[i]:.3f}&#x27;, &#x27;(sisipan)&#x27; if i &gt;= 500 else &#x27;&#x27;)</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>jumlah ditandai anomali: 6
+nominal   5200 ribu, jam  4.0 -&gt; skor -0.832 (sisipan)
+nominal   4800 ribu, jam  3.0 -&gt; skor -0.829 (sisipan)
+nominal   3900 ribu, jam  2.0 -&gt; skor -0.818 (sisipan)
+nominal     61 ribu, jam 22.4 -&gt; skor -0.738 
+nominal   3100 ribu, jam 14.0 -&gt; skor -0.736 (sisipan)
+nominal    143 ribu, jam  5.6 -&gt; skor -0.641 </code></pre>
+<h2>Poin penting</h2><ul><li>Anomali = sangat berbeda dari mayoritas.</li><li>Isolation Forest: anomali cepat terisolasi.</li><li>contamination = perkiraan proporsi anomali.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa anomali cepat terisolasi oleh pohon acak?</summary><p class="ok">Jawaban: Karena letaknya terpencil dari kerumunan</p><p>Butuh sedikit potongan untuk memisahkannya.</p></details>
+<a class="cta" href="/#dsci-9-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsci/clustering-lanjutan-dbscan-dan-hierarki">Clustering lanjutan: DBSCAN dan hierarki</a></p><p>Berikutnya: <a href="/belajar/dsci/t-sne-peta-2d-untuk-data-berdimensi-tinggi">t-SNE: peta 2D untuk data berdimensi tinggi</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

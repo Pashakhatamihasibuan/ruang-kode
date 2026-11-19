@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Logistic regression dari nol · Data Science &amp; AI · Ruang Kode</title>
+<meta name="description" content="Untuk klasifikasi ya/tidak, garis lurus tidak cocok karena hasilnya bisa di luar 0–1. Logistic regression memasukkan hasil garis ke fungsi sigmoid σ(z) =…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsci/logistic-regression-dari-nol">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Logistic regression dari nol · Data Science &amp; AI · Ruang Kode"><meta property="og:description" content="Untuk klasifikasi ya/tidak, garis lurus tidak cocok karena hasilnya bisa di luar 0–1. Logistic regression memasukkan hasil garis ke fungsi sigmoid σ(z) =…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsci/logistic-regression-dari-nol"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Logistic regression dari nol", "description": "Untuk klasifikasi ya/tidak, garis lurus tidak cocok karena hasilnya bisa di luar 0–1. Logistic regression memasukkan hasil garis ke fungsi sigmoid σ(z) =…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci/logistic-regression-dari-nol", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Science & AI", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Science & AI", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, {"@type": "ListItem", "position": 3, "name": "Logistic regression dari nol", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci/logistic-regression-dari-nol"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsci">Data Science &amp; AI</a> / Modul 7</nav>
+<div class="eyebrow">Data Science &amp; AI · Modul 7 · Konsep &amp; kode</div><h1>Logistic regression dari nol</h1><a class="cta" href="/#dsci-7-3">Buka versi interaktif</a>
+<p>Untuk klasifikasi ya/tidak, garis lurus tidak cocok karena hasilnya bisa di luar 0–1. <b>Logistic regression</b> memasukkan hasil garis ke fungsi <b>sigmoid</b> <code>σ(z) = 1 / (1 + e⁻ᶻ)</code> sehingga keluarannya selalu peluang antara 0 dan 1.</p>
+<p>Yang diminimalkan bukan MSE, melainkan <b>log loss</b> (cross-entropy): hukuman besar jika model yakin tetapi salah. Turunannya ternyata sederhana, <code>(p − y)·x</code>, sehingga gradient descent mudah ditulis sendiri.</p>
+<p>Koefisien dibaca sebagai log-odds: koefisien positif menaikkan peluang kelas 1. Hasil buatan sendiri di bawah hampir sama dengan scikit-learn (sedikit beda karena scikit-learn memakai regularisasi bawaan).</p>
+<div class="lbl">PYTHON</div><pre><code>import numpy as np
+from sklearn.linear_model import LogisticRegression
+
+rng = np.random.default_rng(0)
+jam_belajar = rng.uniform(0, 10, 200)
+lulus = (rng.random(200) &lt; 1 / (1 + np.exp(-(jam_belajar - 5) * 1.2))).astype(int)
+
+sigmoid = lambda z: 1 / (1 + np.exp(-z))
+z = (jam_belajar - jam_belajar.mean()) / jam_belajar.std()
+w, b = 0.0, 0.0
+for i in range(2000):
+    p = sigmoid(w * z + b)
+    w -= 0.1 * ((p - lulus) * z).mean()
+    b -= 0.1 * (p - lulus).mean()
+    if i in (0, 100, 1999):
+        loss = -np.mean(lulus * np.log(p) + (1 - lulus) * np.log(1 - p))
+        print(f&#x27;iterasi {i:4}: log loss = {loss:.3f}&#x27;)
+
+w_asli = w / jam_belajar.std(); b_asli = b - w_asli * jam_belajar.mean()
+print(f&#x27;dari nol    : w={w_asli:.2f}  b={b_asli:.2f}&#x27;)
+m = LogisticRegression(C=1e6).fit(jam_belajar[:, None], lulus)
+print(f&#x27;scikit-learn: w={m.coef_[0][0]:.2f}  b={m.intercept_[0]:.2f}&#x27;)
+for j in [2, 5, 8]:
+    print(f&#x27;belajar {j} jam -&gt; peluang lulus {sigmoid(w_asli * j + b_asli):.2f}&#x27;)</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>iterasi    0: log loss = 0.693
+iterasi  100: log loss = 0.318
+iterasi 1999: log loss = 0.261
+dari nol    : w=1.18  b=-6.32
+scikit-learn: w=1.19  b=-6.36
+belajar 2 jam -&gt; peluang lulus 0.02
+belajar 5 jam -&gt; peluang lulus 0.40
+belajar 8 jam -&gt; peluang lulus 0.96</code></pre>
+<h2>Poin penting</h2><ul><li>Sigmoid mengubah skor menjadi peluang 0–1.</li><li>Log loss menghukum keyakinan yang salah.</li><li>Gradien: (p − y)·x.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Fungsi yang membuat keluaran logistic regression berada di 0–1?</summary><p class="ok">Jawaban: Sigmoid</p><p>σ(z) = 1/(1+e⁻ᶻ).</p></details>
+<a class="cta" href="/#dsci-7-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsci/regresi-polinomial-overfitting-ridge-dan-lasso">Regresi polinomial, overfitting, Ridge dan Lasso</a></p><p>Berikutnya: <a href="/belajar/dsci/k-nearest-neighbors-knn">K-Nearest Neighbors (KNN)</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

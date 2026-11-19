@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sistem rekomendasi: collaborative filtering · Data Science &amp; AI · Ruang Kode</title>
+<meta name="description" content="Collaborative filtering merekomendasikan berdasarkan pola rating banyak pengguna: &quot;pengguna yang mirip denganmu menyukai ini&quot;. Datanya berupa matriks…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsci/sistem-rekomendasi-collaborative-filtering">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Sistem rekomendasi: collaborative filtering · Data Science &amp; AI · Ruang Kode"><meta property="og:description" content="Collaborative filtering merekomendasikan berdasarkan pola rating banyak pengguna: &quot;pengguna yang mirip denganmu menyukai ini&quot;. Datanya berupa matriks…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsci/sistem-rekomendasi-collaborative-filtering"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Sistem rekomendasi: collaborative filtering", "description": "Collaborative filtering merekomendasikan berdasarkan pola rating banyak pengguna: \"pengguna yang mirip denganmu menyukai ini\". Datanya berupa matriks…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci/sistem-rekomendasi-collaborative-filtering", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Science & AI", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Science & AI", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, {"@type": "ListItem", "position": 3, "name": "Sistem rekomendasi: collaborative filtering", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci/sistem-rekomendasi-collaborative-filtering"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsci">Data Science &amp; AI</a> / Modul 9</nav>
+<div class="eyebrow">Data Science &amp; AI · Modul 9 · Konsep &amp; kode</div><h1>Sistem rekomendasi: collaborative filtering</h1><a class="cta" href="/#dsci-9-7">Buka versi interaktif</a>
+<p><b>Collaborative filtering</b> merekomendasikan berdasarkan pola rating banyak pengguna: "pengguna yang mirip denganmu menyukai ini". Datanya berupa matriks pengguna × item yang sebagian besar kosong.</p>
+<p><b>Matrix factorization</b> memecah matriks rating menjadi dua matriks kecil: vektor selera tiap pengguna dan vektor ciri tiap item. Hasil kali keduanya mengisi sel yang kosong, yaitu tebakan rating untuk film yang belum ditonton.</p>
+<p>Kode di bawah melatih faktorisasi dengan gradient descent hanya pada sel yang terisi, lalu merekomendasikan film dengan tebakan rating tertinggi. Pendekatan lain: <b>content-based</b> (berdasarkan ciri item) dan model hybrid.</p>
+<div class="lbl">PYTHON</div><pre><code>import numpy as np
+
+film = [&#x27;Aksi1&#x27;, &#x27;Aksi2&#x27;, &#x27;Aksi3&#x27;, &#x27;Drama1&#x27;, &#x27;Drama2&#x27;, &#x27;Drama3&#x27;]
+R = np.array([[5, 4, 0, 1, 0, 1],      # 0 = belum menonton
+              [4, 0, 5, 1, 2, 0],
+              [5, 5, 4, 0, 1, 1],
+              [1, 0, 1, 5, 4, 0],
+              [0, 1, 2, 4, 0, 5],
+              [1, 2, 0, 0, 5, 4]], dtype=float)
+ada = R &gt; 0
+
+rng = np.random.default_rng(0)
+k = 2                                   # 2 faktor selera
+U = rng.normal(0, 0.3, (6, k)); V = rng.normal(0, 0.3, (6, k))
+for ep in range(3000):
+    E = np.where(ada, R - U @ V.T, 0)
+    U += 0.01 * (E @ V - 0.02 * U)
+    V += 0.01 * (E.T @ U - 0.02 * V)
+print(&#x27;RMSE pada rating yang ada:&#x27;, round(np.sqrt((E[ada] ** 2).mean()), 3))
+
+tebak = U @ V.T
+for u in [1, 4]:
+    belum = [(film[j], round(tebak[u, j], 1)) for j in range(6) if not ada[u, j]]
+    print(f&#x27;pengguna {u}: tebakan rating film yang belum ditonton {belum}&#x27;)
+    print(f&#x27;   rekomendasi -&gt; {max(belum, key=lambda x: x[1])[0]}&#x27;)</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>RMSE pada rating yang ada: 0.388
+pengguna 1: tebakan rating film yang belum ditonton [(&#x27;Aksi2&#x27;, np.float64(4.4)), (&#x27;Drama3&#x27;, np.float64(1.6))]
+   rekomendasi -&gt; Aksi2
+pengguna 4: tebakan rating film yang belum ditonton [(&#x27;Aksi1&#x27;, np.float64(1.0)), (&#x27;Drama2&#x27;, np.float64(4.5))]
+   rekomendasi -&gt; Drama2</code></pre>
+<h2>Poin penting</h2><ul><li>Collaborative filtering: belajar dari pola rating banyak orang.</li><li>Matrix factorization: rating ≈ selera pengguna · ciri item.</li><li>Latih hanya pada sel yang terisi.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Pada matrix factorization, sel kosong diisi dengan?</summary><p class="ok">Jawaban: Hasil kali vektor pengguna dan vektor item</p><p>Itulah tebakan ratingnya.</p></details>
+<a class="cta" href="/#dsci-9-7">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsci/t-sne-peta-2d-untuk-data-berdimensi-tinggi">t-SNE: peta 2D untuk data berdimensi tinggi</a></p><p>Berikutnya: <a href="/belajar/dsci/peta-memilih-algoritma">Peta memilih algoritma</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

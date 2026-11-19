@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Linear regression dari nol · Data Science &amp; AI · Ruang Kode</title>
+<meta name="description" content="Linear regression mencari garis y = w·x + b yang paling dekat dengan semua titik. &quot;Paling dekat&quot; artinya jumlah kuadrat selisih (MSE) paling kecil. Ini…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsci/linear-regression-dari-nol">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Linear regression dari nol · Data Science &amp; AI · Ruang Kode"><meta property="og:description" content="Linear regression mencari garis y = w·x + b yang paling dekat dengan semua titik. &quot;Paling dekat&quot; artinya jumlah kuadrat selisih (MSE) paling kecil. Ini…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsci/linear-regression-dari-nol"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Linear regression dari nol", "description": "Linear regression mencari garis y = w·x + b yang paling dekat dengan semua titik. \"Paling dekat\" artinya jumlah kuadrat selisih (MSE) paling kecil. Ini…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci/linear-regression-dari-nol", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Science & AI", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Science & AI", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, {"@type": "ListItem", "position": 3, "name": "Linear regression dari nol", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci/linear-regression-dari-nol"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsci">Data Science &amp; AI</a> / Modul 7</nav>
+<div class="eyebrow">Data Science &amp; AI · Modul 7 · Konsep &amp; kode</div><h1>Linear regression dari nol</h1><a class="cta" href="/#dsci-7-1">Buka versi interaktif</a>
+<p><b>Linear regression</b> mencari garis <code>y = w·x + b</code> yang paling dekat dengan semua titik. "Paling dekat" artinya jumlah kuadrat selisih (<b>MSE</b>) paling kecil. Ini algoritma ML paling dasar, dan banyak algoritma lain adalah pengembangannya.</p>
+<p>Ada dua cara mencari w dan b. <b>Rumus tertutup</b> (normal equation) langsung menghitung jawabannya: <code>w = (XᵀX)⁻¹Xᵀy</code>. <b>Gradient descent</b> mulai dari tebakan acak lalu bergeser sedikit demi sedikit melawan arah turunan. Rumus tertutup cepat untuk data kecil; gradient descent dipakai saat data dan fitur sangat banyak.</p>
+<p>Lihat hasilnya: ketiga cara (rumus, gradient descent, dan scikit-learn) memberi koefisien yang sama. Koefisien <code>w</code> dibaca sebagai "setiap tambahan 1 m² menaikkan harga sekitar w juta".</p>
+<div class="lbl">PYTHON</div><pre><code>import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+
+rng = np.random.default_rng(3)
+luas = rng.uniform(30, 150, 40)                       # m²
+harga = 120 + 9.5 * luas + rng.normal(0, 90, 40)       # juta rupiah
+
+# 1) rumus tertutup: tambahkan kolom 1 untuk intersep b
+X = np.column_stack([np.ones_like(luas), luas])
+b, w = np.linalg.solve(X.T @ X, X.T @ harga)
+print(f&#x27;rumus tertutup  : w={w:.3f}  b={b:.1f}&#x27;)
+
+# 2) gradient descent (fitur distandardisasi agar stabil)
+z = (luas - luas.mean()) / luas.std()
+w2, b2, lr = 0.0, 0.0, 0.1
+for _ in range(500):
+    err = (w2 * z + b2) - harga
+    w2 -= lr * 2 * (err * z).mean()
+    b2 -= lr * 2 * err.mean()
+w_gd = w2 / luas.std(); b_gd = b2 - w_gd * luas.mean()
+print(f&#x27;gradient descent: w={w_gd:.3f}  b={b_gd:.1f}&#x27;)
+
+# 3) scikit-learn
+m = LinearRegression().fit(luas.reshape(-1, 1), harga)
+print(f&#x27;scikit-learn    : w={m.coef_[0]:.3f}  b={m.intercept_:.1f}&#x27;)
+print(&#x27;tebak harga rumah 100 m²:&#x27;, round(m.predict([[100]])[0]), &#x27;juta&#x27;)
+
+plt.figure(figsize=(5.6, 3.6))
+plt.scatter(luas, harga, s=16)
+xs = np.array([30, 150])
+plt.plot(xs, w * xs + b, color=&#x27;crimson&#x27;, lw=2, label=f&#x27;y = {w:.1f}x + {b:.0f}&#x27;)
+plt.xlabel(&#x27;luas (m²)&#x27;); plt.ylabel(&#x27;harga (juta)&#x27;); plt.legend()
+plt.title(&#x27;Garis linear regression terbaik&#x27;)</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>rumus tertutup  : w=9.598  b=98.1
+gradient descent: w=9.598  b=98.1
+scikit-learn    : w=9.598  b=98.1
+tebak harga rumah 100 m²: 1058 juta</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Dengan NumPy, cari w dan b untuk titik x = [1, 2, 3, 4] dan y = [3, 5, 7, 9] memakai <code>np.polyfit(x, y, 1)</code>.</p><details><summary>Petunjuk</summary><p>polyfit derajat 1 mengembalikan [w, b].</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import numpy as np
+w, b = np.polyfit([1, 2, 3, 4], [3, 5, 7, 9], 1)
+print(round(w, 2), round(b, 2))</code></pre><div class="lbl">KELUARAN</div><pre><code>2.0 1.0</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Linear regression meminimalkan MSE.</li><li>Rumus tertutup vs gradient descent: hasil sama.</li><li>Koefisien = perubahan y untuk setiap tambahan 1 x.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Apa yang diminimalkan linear regression biasa?</summary><p class="ok">Jawaban: Jumlah kuadrat selisih tebakan dan nilai asli</p><p>Least squares / MSE.</p></details>
+<a class="cta" href="/#dsci-7-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsci/validasi-silang-dan-mencegah-overfitting">Validasi silang dan mencegah overfitting</a></p><p>Berikutnya: <a href="/belajar/dsci/regresi-polinomial-overfitting-ridge-dan-lasso">Regresi polinomial, overfitting, Ridge dan Lasso</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

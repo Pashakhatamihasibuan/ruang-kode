@@ -306,3 +306,8 @@ M('MLOps: model sampai produksi', 'Profesional',
 ]
 
 DSCI_SO = {}
+
+# katalog algoritma: dasar setelah ML klasik, lanjutan setelah ML lanjutan
+from rb_dsci_algo import ALGO_DASAR, ALGO_LANJUT
+DSCI.insert(6, ALGO_DASAR)
+DSCI.insert(8, ALGO_LANJUT)

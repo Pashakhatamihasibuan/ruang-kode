@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Clustering lanjutan: DBSCAN dan hierarki · Data Science &amp; AI · Ruang Kode</title>
+<meta name="description" content="K-Means mengasumsikan kelompok berbentuk bulat dan butuh k di depan. DBSCAN mengelompokkan berdasarkan kepadatan: titik yang punya cukup tetangga…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsci/clustering-lanjutan-dbscan-dan-hierarki">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Clustering lanjutan: DBSCAN dan hierarki · Data Science &amp; AI · Ruang Kode"><meta property="og:description" content="K-Means mengasumsikan kelompok berbentuk bulat dan butuh k di depan. DBSCAN mengelompokkan berdasarkan kepadatan: titik yang punya cukup tetangga…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsci/clustering-lanjutan-dbscan-dan-hierarki"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Clustering lanjutan: DBSCAN dan hierarki", "description": "K-Means mengasumsikan kelompok berbentuk bulat dan butuh k di depan. DBSCAN mengelompokkan berdasarkan kepadatan: titik yang punya cukup tetangga…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci/clustering-lanjutan-dbscan-dan-hierarki", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Science & AI", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Science & AI", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, {"@type": "ListItem", "position": 3, "name": "Clustering lanjutan: DBSCAN dan hierarki", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci/clustering-lanjutan-dbscan-dan-hierarki"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsci">Data Science &amp; AI</a> / Modul 9</nav>
+<div class="eyebrow">Data Science &amp; AI · Modul 9 · Konsep &amp; kode</div><h1>Clustering lanjutan: DBSCAN dan hierarki</h1><a class="cta" href="/#dsci-9-4">Buka versi interaktif</a>
+<p>K-Means mengasumsikan kelompok berbentuk bulat dan butuh k di depan. <b>DBSCAN</b> mengelompokkan berdasarkan <b>kepadatan</b>: titik yang punya cukup tetangga (<code>min_samples</code>) dalam radius <code>eps</code> menjadi inti kelompok. Ia bisa menemukan kelompok berbentuk aneh dan menandai titik yang terisolasi sebagai <b>noise</b> (label −1).</p>
+<p><b>Clustering hierarki</b> (agglomerative) mulai dengan setiap titik sebagai kelompok sendiri, lalu terus menggabungkan dua kelompok terdekat. Hasilnya pohon (dendrogram) yang bisa dipotong di tingkat mana pun.</p>
+<p>Pada data berbentuk bulan sabit di bawah, K-Means gagal memisahkan dengan benar, sedangkan DBSCAN dan agglomerative (linkage single, dipotong pada jarak 0,3) berhasil. Agglomerative menaruh tiap pencilan sebagai kelompok kecil tersendiri, DBSCAN menandainya sebagai noise.</p>
+<div class="lbl">PYTHON</div><pre><code>import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import make_moons
+from sklearn.cluster import KMeans, DBSCAN, AgglomerativeClustering
+from sklearn.metrics import adjusted_rand_score
+
+X, y = make_moons(300, noise=0.06, random_state=2)
+X = np.vstack([X, [[-1.2, 1.3], [2.3, -0.8], [0.5, 1.6]]])     # 3 titik pencilan
+
+model = {&#x27;K-Means k=2&#x27;: KMeans(2, n_init=10, random_state=0),
+         &#x27;DBSCAN&#x27;: DBSCAN(eps=0.2, min_samples=5),
+         &#x27;Agglomerative&#x27;: AgglomerativeClustering(n_clusters=None, distance_threshold=0.3, linkage=&#x27;single&#x27;)}
+fig, ax = plt.subplots(1, 3, figsize=(9.6, 2.8))
+for a, (nama, m) in zip(ax, model.items()):
+    lab = m.fit_predict(X)
+    print(f&#x27;{nama:14}: kecocokan dengan bentuk asli={adjusted_rand_score(y, lab[:300]):.2f}  kelompok={len(set(lab) - {-1})}  noise={np.sum(lab == -1)}&#x27;)
+    a.scatter(X[:, 0], X[:, 1], c=lab, s=8, cmap=&#x27;viridis&#x27;)
+    a.scatter(X[lab == -1, 0], X[lab == -1, 1], marker=&#x27;x&#x27;, color=&#x27;red&#x27;, s=40)
+    a.set_title(nama, fontsize=10); a.set_xticks([]); a.set_yticks([])
+fig.tight_layout()</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>K-Means k=2   : kecocokan dengan bentuk asli=0.24  kelompok=2  noise=0
+DBSCAN        : kecocokan dengan bentuk asli=1.00  kelompok=2  noise=3
+Agglomerative : kecocokan dengan bentuk asli=1.00  kelompok=5  noise=0</code></pre>
+<h2>Poin penting</h2><ul><li>DBSCAN: berbasis kepadatan, tanpa k, menandai noise.</li><li>Agglomerative: gabungkan kelompok terdekat berulang.</li><li>K-Means hanya cocok untuk kelompok bulat.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Label −1 pada hasil DBSCAN berarti?</summary><p class="ok">Jawaban: Titik noise/pencilan</p><p>Titik yang tidak cukup padat.</p></details>
+<a class="cta" href="/#dsci-9-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsci/gradient-boosting-dari-nol">Gradient boosting dari nol</a></p><p>Berikutnya: <a href="/belajar/dsci/deteksi-anomali-isolation-forest">Deteksi anomali: Isolation Forest</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

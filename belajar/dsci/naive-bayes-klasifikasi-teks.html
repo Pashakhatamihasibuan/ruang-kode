@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Naive Bayes: klasifikasi teks · Data Science &amp; AI · Ruang Kode</title>
+<meta name="description" content="Naive Bayes memakai teorema Bayes: P(kelas | data) ∝ P(data | kelas) · P(kelas). Disebut &quot;naif&quot; karena menganggap setiap fitur (misalnya setiap kata)…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsci/naive-bayes-klasifikasi-teks">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Naive Bayes: klasifikasi teks · Data Science &amp; AI · Ruang Kode"><meta property="og:description" content="Naive Bayes memakai teorema Bayes: P(kelas | data) ∝ P(data | kelas) · P(kelas). Disebut &quot;naif&quot; karena menganggap setiap fitur (misalnya setiap kata)…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsci/naive-bayes-klasifikasi-teks"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Naive Bayes: klasifikasi teks", "description": "Naive Bayes memakai teorema Bayes: P(kelas | data) ∝ P(data | kelas) · P(kelas). Disebut \"naif\" karena menganggap setiap fitur (misalnya setiap kata)…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci/naive-bayes-klasifikasi-teks", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Science & AI", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Science & AI", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, {"@type": "ListItem", "position": 3, "name": "Naive Bayes: klasifikasi teks", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci/naive-bayes-klasifikasi-teks"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsci">Data Science &amp; AI</a> / Modul 7</nav>
+<div class="eyebrow">Data Science &amp; AI · Modul 7 · Konsep &amp; kode</div><h1>Naive Bayes: klasifikasi teks</h1><a class="cta" href="/#dsci-7-5">Buka versi interaktif</a>
+<p><b>Naive Bayes</b> memakai teorema Bayes: <code>P(kelas | data) ∝ P(data | kelas) · P(kelas)</code>. Disebut "naif" karena menganggap setiap fitur (misalnya setiap kata) saling bebas. Anggapan ini jarang benar, tetapi hasilnya sering tetap bagus.</p>
+<p>Untuk teks, <b>MultinomialNB</b> menghitung seberapa sering tiap kata muncul di setiap kelas. Kata "gratis" dan "hadiah" sering di spam, kata "rapat" sering di pesan biasa. Model ini sangat cepat dilatih dan menjadi patokan wajib untuk klasifikasi teks.</p>
+<p>Ada juga <b>GaussianNB</b> untuk fitur angka (menganggap tiap fitur berdistribusi normal per kelas). <code>CountVectorizer</code> mengubah kalimat menjadi tabel jumlah kata.</p>
+<div class="lbl">PYTHON</div><pre><code>from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+
+pesan = [&#x27;selamat anda menang hadiah gratis&#x27;, &#x27;klaim hadiah pulsa gratis sekarang&#x27;, &#x27;promo gratis klik link ini&#x27;,
+         &#x27;menang undian mobil klaim sekarang&#x27;, &#x27;besok rapat jam sembilan&#x27;, &#x27;tolong kirim laporan rapat&#x27;,
+         &#x27;nanti makan siang bareng&#x27;, &#x27;laporan keuangan sudah saya kirim&#x27;]
+label = [&#x27;spam&#x27;] * 4 + [&#x27;biasa&#x27;] * 4
+
+vec = CountVectorizer()
+X = vec.fit_transform(pesan)
+nb = MultinomialNB().fit(X, label)
+
+for kata in [&#x27;gratis&#x27;, &#x27;rapat&#x27;, &#x27;klaim&#x27;]:
+    j = vec.vocabulary_[kata]
+    peluang = {str(c): round(float(v), 2) for c, v in zip(nb.classes_, nb.feature_log_prob_[:, j])}
+    print(f&#x27;log P({kata} | kelas):&#x27;, peluang)
+
+uji = [&#x27;gratis hadiah untuk anda&#x27;, &#x27;kirim laporan sebelum rapat&#x27;, &#x27;klaim laporan gratis&#x27;]
+for teks, p in zip(uji, nb.predict_proba(vec.transform(uji))):
+    print(f&#x27;{teks:30} -&gt; &#x27; + &#x27;, &#x27;.join(f&#x27;{c}={v:.2f}&#x27; for c, v in zip(nb.classes_, p)))</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>log P(gratis | kelas): {&#x27;biasa&#x27;: -3.81, &#x27;spam&#x27;: -2.48}
+log P(rapat | kelas): {&#x27;biasa&#x27;: -2.71, &#x27;spam&#x27;: -3.87}
+log P(klaim | kelas): {&#x27;biasa&#x27;: -3.81, &#x27;spam&#x27;: -2.77}
+gratis hadiah untuk anda       -&gt; biasa=0.05, spam=0.95
+kirim laporan sebelum rapat    -&gt; biasa=0.97, spam=0.03
+klaim laporan gratis           -&gt; biasa=0.23, spam=0.77</code></pre>
+<h2>Poin penting</h2><ul><li>Bayes: peluang kelas dikali peluang data di kelas itu.</li><li>"Naif": fitur dianggap saling bebas.</li><li>MultinomialNB + CountVectorizer = patokan klasifikasi teks.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa disebut &quot;naif&quot;?</summary><p class="ok">Jawaban: Menganggap fitur saling bebas</p><p>Asumsi independensi.</p></details>
+<a class="cta" href="/#dsci-7-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsci/k-nearest-neighbors-knn">K-Nearest Neighbors (KNN)</a></p><p>Berikutnya: <a href="/belajar/dsci/decision-tree-dari-nol-gini-dan-pemisahan-terbaik">Decision tree dari nol: Gini dan pemisahan terbaik</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

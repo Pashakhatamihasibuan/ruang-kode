@@ -729,8 +729,8 @@ S.git={t:'Git: commit sebagai titik, branch sebagai jalur',
 /* ---------- pencocokan pelajaran -> adegan ---------- */
 const RULES=[
  /* judul yang mirip tetapi maknanya lain: jangan dipasangi adegan */
- [/decision tree|confusion matrix|feature engineering|random forest/i,null,1],
- [/k-means|clustering/i,'kmeans',1],[/gradient descent|turunan dan/i,'gd',1],[/train\/test split|validasi silang|cross.validation/i,'split',1],
+ [/decision tree|confusion matrix|feature engineering|random forest|t-sne/i,null,1],
+ [/k-means|clustering/i,'kmeans',1],[/gradient descent|turunan dan|linear regression dari nol/i,'gd',1],[/train\/test split|validasi silang|cross.validation/i,'split',1],
  /* materi data, web, dan algoritma: judulnya spesifik, jadi berlaku di jalur mana pun (atau hanya jalur yang disebut) */
  [/^(select & from|where: menyaring baris|order by, limit & distinct|urutan eksekusi query|basis data relasional: tabel, baris, kolom|sintaks & kata kunci sql)$|memilih & menyaring: loc|katalog toko nusantara/i,'query',1],[/^operator$/i,'query',1,['sql']],
  [/fungsi agregat|^group ?by$|groupby|^having$|pivot_table|ringkasan stok/i,'group',1],[/^index:|jenis indeks|explain analyze|optimasi query|pg_stat_statements/i,'index',1],

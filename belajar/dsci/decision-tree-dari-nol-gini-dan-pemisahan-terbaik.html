@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Decision tree dari nol: Gini dan pemisahan terbaik · Data Science &amp; AI · Ruang Kode</title>
+<meta name="description" content="Decision tree memilih pertanyaan yang paling &quot;memurnikan&quot; kelompok. Ukuran ketidakmurnian yang umum adalah Gini: 1 − Σ pᵢ². Kelompok yang isinya satu…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsci/decision-tree-dari-nol-gini-dan-pemisahan-terbaik">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Decision tree dari nol: Gini dan pemisahan terbaik · Data Science &amp; AI · Ruang Kode"><meta property="og:description" content="Decision tree memilih pertanyaan yang paling &quot;memurnikan&quot; kelompok. Ukuran ketidakmurnian yang umum adalah Gini: 1 − Σ pᵢ². Kelompok yang isinya satu…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsci/decision-tree-dari-nol-gini-dan-pemisahan-terbaik"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Decision tree dari nol: Gini dan pemisahan terbaik", "description": "Decision tree memilih pertanyaan yang paling \"memurnikan\" kelompok. Ukuran ketidakmurnian yang umum adalah Gini: 1 − Σ pᵢ². Kelompok yang isinya satu…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci/decision-tree-dari-nol-gini-dan-pemisahan-terbaik", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Science & AI", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Science & AI", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, {"@type": "ListItem", "position": 3, "name": "Decision tree dari nol: Gini dan pemisahan terbaik", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci/decision-tree-dari-nol-gini-dan-pemisahan-terbaik"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsci">Data Science &amp; AI</a> / Modul 7</nav>
+<div class="eyebrow">Data Science &amp; AI · Modul 7 · Konsep &amp; kode</div><h1>Decision tree dari nol: Gini dan pemisahan terbaik</h1><a class="cta" href="/#dsci-7-6">Buka versi interaktif</a>
+<p>Decision tree memilih pertanyaan yang paling "memurnikan" kelompok. Ukuran ketidakmurnian yang umum adalah <b>Gini</b>: <code>1 − Σ pᵢ²</code>. Kelompok yang isinya satu kelas punya Gini 0; kelompok 50:50 punya Gini 0,5.</p>
+<p>Untuk setiap fitur dan setiap kemungkinan ambang, hitung rata-rata Gini kedua sisi (ditimbang jumlah anggotanya). Pemisahan dengan Gini terkecil dipilih, lalu proses diulang di setiap cabang. Inilah yang dilakukan <code>DecisionTreeClassifier</code>.</p>
+<p>Kode di bawah mencari pemisahan pertama secara manual, lalu membandingkannya dengan akar pohon scikit-learn. Hasilnya sama: scikit-learn menulis ambangnya sebagai titik tengah 2,5, yang setara dengan &lt;= 2 karena jumlah keluhan selalu bilangan bulat.</p>
+<div class="lbl">PYTHON</div><pre><code>import numpy as np
+from sklearn.tree import DecisionTreeClassifier
+
+rng = np.random.default_rng(2)
+keluhan = rng.poisson(1.5, 120)
+lama = rng.integers(1, 36, 120)
+churn = ((keluhan &gt;= 3) | (lama &lt;= 3)).astype(int) ^ (rng.random(120) &lt; 0.1)
+X = np.column_stack([keluhan, lama]); nama = [&#x27;keluhan&#x27;, &#x27;lama_bulan&#x27;]
+
+def gini(y):
+    if len(y) == 0: return 0
+    p = np.bincount(y, minlength=2) / len(y)
+    return 1 - (p ** 2).sum()
+
+print(&#x27;Gini semua data:&#x27;, round(gini(churn), 3))
+terbaik = (9, None, None)
+for f in range(2):
+    for t in np.unique(X[:, f]):
+        kiri, kanan = churn[X[:, f] &lt;= t], churn[X[:, f] &gt; t]
+        g = (len(kiri) * gini(kiri) + len(kanan) * gini(kanan)) / len(churn)
+        if g &lt; terbaik[0]: terbaik = (g, f, t)
+g, f, t = terbaik
+print(f&#x27;pemisahan terbaik (manual): {nama[f]} &lt;= {t}  -&gt; Gini {g:.3f}&#x27;)
+
+pohon = DecisionTreeClassifier(max_depth=1).fit(X, churn)
+print(f&#x27;akar pohon scikit-learn  : {nama[pohon.tree_.feature[0]]} &lt;= {pohon.tree_.threshold[0]:.1f}&#x27;)</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Gini semua data: 0.45
+pemisahan terbaik (manual): keluhan &lt;= 2  -&gt; Gini 0.297
+akar pohon scikit-learn  : keluhan &lt;= 2.5</code></pre>
+<h2>Poin penting</h2><ul><li>Gini = 1 − Σp²; 0 berarti murni.</li><li>Coba semua fitur dan ambang, ambil Gini tertimbang terkecil.</li><li>Ulangi di tiap cabang sampai batas kedalaman.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Gini sebuah kelompok yang isinya semua churn?</summary><p class="ok">Jawaban: 0</p><p>1 − 1² = 0.</p></details>
+<a class="cta" href="/#dsci-7-6">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsci/naive-bayes-klasifikasi-teks">Naive Bayes: klasifikasi teks</a></p><p>Berikutnya: <a href="/belajar/dsci/feature-engineering-dan-pipeline">Feature engineering dan Pipeline</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>
