@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mini 3: Penjadwal ujian tanpa bentrok (graph coloring) · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Masalah. Bagian akademik menyusun jadwal ujian secara manual dan selalu ada mahasiswa yang dua ujiannya bentrok. Mereka butuh jadwal otomatis dengan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/mini-3-penjadwal-ujian-tanpa-bentrok-graph-coloring">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Mini 3: Penjadwal ujian tanpa bentrok (graph coloring) · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Masalah. Bagian akademik menyusun jadwal ujian secara manual dan selalu ada mahasiswa yang dua ujiannya bentrok. Mereka butuh jadwal otomatis dengan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/mini-3-penjadwal-ujian-tanpa-bentrok-graph-coloring"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Mini 3: Penjadwal ujian tanpa bentrok (graph coloring)", "description": "Masalah. Bagian akademik menyusun jadwal ujian secara manual dan selalu ada mahasiswa yang dua ujiannya bentrok. Mereka butuh jadwal otomatis dengan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-3-penjadwal-ujian-tanpa-bentrok-graph-coloring", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Mini 3: Penjadwal ujian tanpa bentrok (graph coloring)", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-3-penjadwal-ujian-tanpa-bentrok-graph-coloring"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 14</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 14 · Konsep &amp; kode</div><h1>Mini 3: Penjadwal ujian tanpa bentrok (graph coloring)</h1><a class="cta" href="/#proj-14-3">Buka versi interaktif</a>
+<p><b>Masalah.</b> Bagian akademik menyusun jadwal ujian secara manual dan selalu ada mahasiswa yang dua ujiannya bentrok. Mereka butuh jadwal otomatis dengan jumlah slot sesedikit mungkin.</p>
+<p><b>Fitur wajib:</b><br>1. Bangun graph konflik dari data pengambilan mata kuliah<br>2. Beri slot dengan heuristik DSatur<br>3. Uji dengan backtracking apakah jumlah slot bisa dikurangi<br>4. Verifikasi tidak ada pasangan bentrok<br>5. Tampilkan jadwal per slot waktu</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. Untuk setiap mahasiswa, hubungkan setiap pasangan mata kuliahnya (adjacency set).<br>2. DSatur: pilih simpul dengan saturasi (jumlah warna tetangga berbeda) tertinggi, beri warna terkecil yang aman.<br>3. Backtracking: coba warna 0..k-1 berurutan, mundur saat buntu; urutkan simpul dari derajat terbesar untuk pruning.<br>4. Periksa semua sisi: kedua ujung tidak boleh memiliki slot sama.<br>5. Petakan nomor warna ke label hari dan jam.</p>
+<p><b>Kembangkan sendiri:</b> tambahkan kapasitas ruang per slot dan aturan "maksimal 2 ujian per hari per mahasiswa", lalu ekspor ke CSV.</p>
+<div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Bangun graph konflik dari data pengambilan mata kuliah</td><td>Untuk setiap mahasiswa, hubungkan setiap pasangan mata kuliahnya (adjacency set).</td></tr><tr><td>Beri slot dengan heuristik DSatur</td><td>DSatur: pilih simpul dengan saturasi (jumlah warna tetangga berbeda) tertinggi, beri warna terkecil yang aman.</td></tr><tr><td>Uji dengan backtracking apakah jumlah slot bisa dikurangi</td><td>Backtracking: coba warna 0..k-1 berurutan, mundur saat buntu; urutkan simpul dari derajat terbesar untuk pruning.</td></tr><tr><td>Verifikasi tidak ada pasangan bentrok</td><td>Periksa semua sisi: kedua ujung tidak boleh memiliki slot sama.</td></tr><tr><td>Tampilkan jadwal per slot waktu</td><td>Petakan nomor warna ke label hari dan jam.</td></tr></tbody></table></div>
+<div class="lbl">PYTHON</div><pre><code># Penjadwal ujian tanpa bentrok: graph coloring dengan heuristik DSatur + backtracking jika slot terbatas
+ambil = {  # mahasiswa -&gt; mata kuliah yang diambil
+    &quot;M01&quot;: [&quot;Algoritma&quot;, &quot;Basis Data&quot;, &quot;Statistika&quot;], &quot;M02&quot;: [&quot;Algoritma&quot;, &quot;Jaringan&quot;], &quot;M03&quot;: [&quot;Basis Data&quot;, &quot;Jaringan&quot;, &quot;Etika&quot;],
+    &quot;M04&quot;: [&quot;Statistika&quot;, &quot;Etika&quot;], &quot;M05&quot;: [&quot;Algoritma&quot;, &quot;Basis Data&quot;], &quot;M06&quot;: [&quot;Jaringan&quot;, &quot;Statistika&quot;],
+    &quot;M07&quot;: [&quot;Kalkulus&quot;, &quot;Algoritma&quot;], &quot;M08&quot;: [&quot;Kalkulus&quot;, &quot;Etika&quot;, &quot;Basis Data&quot;],
+}
+# 1. bangun graph konflik: dua matkul bertetangga jika ada mahasiswa yang mengambil keduanya
+konflik = {}
+for mk in ambil.values():
+    for a in mk:
+        konflik.setdefault(a, set())
+        for b in mk:
+            if a != b: konflik[a].add(b)
+print(&quot;derajat konflik:&quot;, {m: len(v) for m, v in sorted(konflik.items(), key=lambda x: -len(x[1]))})
+
+# 2. DSatur: pilih matkul dengan warna tetangga paling beragam, beri slot terkecil yang aman
+def dsatur(g):
+    slot = {}
+    while len(slot) &lt; len(g):
+        sisa = [v for v in g if v not in slot]
+        v = max(sisa, key=lambda v: (len({slot[u] for u in g[v] if u in slot}), len(g[v]), v))
+        dipakai = {slot[u] for u in g[v] if u in slot}
+        slot[v] = next(s for s in range(len(g)) if s not in dipakai)
+    return slot
+
+# 3. backtracking: apakah bisa dengan k slot saja?
+def bisa(g, k):
+    urut = sorted(g, key=lambda v: -len(g[v])); slot = {}
+    def coba(i):
+        if i == len(urut): return True
+        v = urut[i]
+        for s in range(k):
+            if all(slot.get(u) != s for u in g[v]):
+                slot[v] = s
+                if coba(i + 1): return True
+                del slot[v]
+        return False
+    return dict(slot) if coba(0) else None
+
+hasil = dsatur(konflik)
+JAM = [&quot;Sen 08:00&quot;, &quot;Sen 13:00&quot;, &quot;Sel 08:00&quot;, &quot;Sel 13:00&quot;, &quot;Rab 08:00&quot;]
+print(f&quot;DSatur memakai {max(hasil.values()) + 1} slot:&quot;)
+for s in sorted(set(hasil.values())):
+    print(f&quot;  {JAM[s]}: {sorted(m for m, x in hasil.items() if x == s)}&quot;)
+for k in range(2, 5):
+    print(f&quot;bisa dengan {k} slot?&quot;, &quot;ya&quot; if bisa(konflik, k) else &quot;tidak&quot;)
+bentrok = [(a, b) for a in konflik for b in konflik[a] if hasil[a] == hasil[b]]
+print(&quot;verifikasi bentrok:&quot;, len(bentrok))
+</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>derajat konflik: {&#x27;Basis Data&#x27;: 5, &#x27;Algoritma&#x27;: 4, &#x27;Statistika&#x27;: 4, &#x27;Jaringan&#x27;: 4, &#x27;Etika&#x27;: 4, &#x27;Kalkulus&#x27;: 3}
+DSatur memakai 4 slot:
+  Sen 08:00: [&#x27;Basis Data&#x27;]
+  Sen 13:00: [&#x27;Kalkulus&#x27;, &#x27;Statistika&#x27;]
+  Sel 08:00: [&#x27;Jaringan&#x27;]
+  Sel 13:00: [&#x27;Algoritma&#x27;, &#x27;Etika&#x27;]
+bisa dengan 2 slot? tidak
+bisa dengan 3 slot? tidak
+bisa dengan 4 slot? ya
+verifikasi bentrok: 0</code></pre>
+<h2>Poin penting</h2><ul><li>Proyek mini: Penjadwal ujian tanpa bentrok (graph coloring).</li><li>Bangun graph konflik dari data pengambilan mata kuliah</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa graph coloring cocok untuk penjadwalan ujian?</summary><p class="ok">Jawaban: Mata kuliah yang berbagi mahasiswa dihubungkan, dan &quot;warna&quot; yang berbeda berarti slot berbeda, sehingga tidak ada bentrok</p><p>Pemodelan masalah sebagai graph.</p></details>
+<a class="cta" href="/#proj-14-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-2-kasir-toko-dengan-stok-voucher-dan-ppn">Mini 2: Kasir toko dengan stok, voucher, dan PPN</a></p><p>Berikutnya: <a href="/belajar/proj/mini-4-rute-kurir-dijkstra-nearest-neighbor-dan-2-opt">Mini 4: Rute kurir: Dijkstra, nearest neighbor, dan 2-opt</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mini 2: Kasir toko dengan stok, voucher, dan PPN · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Masalah. Toko kopi kecil butuh kasir sederhana yang tidak menjual barang melebihi stok, menolak voucher yang tidak memenuhi syarat, menghitung PPN dengan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/mini-2-kasir-toko-dengan-stok-voucher-dan-ppn">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Mini 2: Kasir toko dengan stok, voucher, dan PPN · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Masalah. Toko kopi kecil butuh kasir sederhana yang tidak menjual barang melebihi stok, menolak voucher yang tidak memenuhi syarat, menghitung PPN dengan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/mini-2-kasir-toko-dengan-stok-voucher-dan-ppn"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Mini 2: Kasir toko dengan stok, voucher, dan PPN", "description": "Masalah. Toko kopi kecil butuh kasir sederhana yang tidak menjual barang melebihi stok, menolak voucher yang tidak memenuhi syarat, menghitung PPN dengan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-2-kasir-toko-dengan-stok-voucher-dan-ppn", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Mini 2: Kasir toko dengan stok, voucher, dan PPN", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-2-kasir-toko-dengan-stok-voucher-dan-ppn"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 14</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 14 · Konsep &amp; kode</div><h1>Mini 2: Kasir toko dengan stok, voucher, dan PPN</h1><a class="cta" href="/#proj-14-2">Buka versi interaktif</a>
+<p><b>Masalah.</b> Toko kopi kecil butuh kasir sederhana yang tidak menjual barang melebihi stok, menolak voucher yang tidak memenuhi syarat, menghitung PPN dengan benar, dan baru mengurangi stok saat pembayaran berhasil.</p>
+<p><b>Fitur wajib:</b><br>1. Model Produk dan Keranjang dengan dataclass<br>2. Menolak penambahan yang melebihi stok, termasuk yang sudah ada di keranjang<br>3. Voucher persen dan potongan tetap dengan minimum belanja<br>4. PPN 11% dihitung dari harga setelah diskon dengan Decimal<br>5. Struk rapi dan stok berkurang hanya setelah checkout berhasil</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. Pisahkan data (dataclass) dari aturan (kelas Toko).<br>2. Hitung sisa efektif = stok - qty di keranjang; lempar StokTidakCukup jika kurang.<br>3. Simpan aturan voucher sebagai data (jenis, nilai, minimum) dan lempar VoucherTidakBerlaku.<br>4. Gunakan Decimal dan ROUND_HALF_UP untuk PPN agar pembulatan sesuai kebiasaan akuntansi.<br>5. Kurangi stok di dalam checkout setelah validasi pembayaran; cetak struk dengan format specifier.</p>
+<p><b>Kembangkan sendiri:</b> simpan produk dan transaksi ke SQLite, tambahkan laporan penjualan harian, dan buat antarmuka CLI dengan menu do-while.</p>
+<div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Model Produk dan Keranjang dengan dataclass</td><td>Pisahkan data (dataclass) dari aturan (kelas Toko).</td></tr><tr><td>Menolak penambahan yang melebihi stok, termasuk yang sudah ada di keranjang</td><td>Hitung sisa efektif = stok - qty di keranjang; lempar StokTidakCukup jika kurang.</td></tr><tr><td>Voucher persen dan potongan tetap dengan minimum belanja</td><td>Simpan aturan voucher sebagai data (jenis, nilai, minimum) dan lempar VoucherTidakBerlaku.</td></tr><tr><td>PPN 11% dihitung dari harga setelah diskon dengan Decimal</td><td>Gunakan Decimal dan ROUND_HALF_UP untuk PPN agar pembulatan sesuai kebiasaan akuntansi.</td></tr><tr><td>Struk rapi dan stok berkurang hanya setelah checkout berhasil</td><td>Kurangi stok di dalam checkout setelah validasi pembayaran; cetak struk dengan format specifier.</td></tr></tbody></table></div>
+<div class="lbl">PYTHON</div><pre><code>from dataclasses import dataclass, field
+from decimal import Decimal, ROUND_HALF_UP
+
+class StokTidakCukup(Exception): pass
+class VoucherTidakBerlaku(Exception): pass
+
+@dataclass
+class Produk:
+    sku: str
+    nama: str
+    harga: int
+    stok: int
+
+@dataclass
+class Keranjang:
+    item: dict = field(default_factory=dict)          # sku -&gt; qty
+    voucher: str | None = None
+
+class Toko:
+    PPN = Decimal(&quot;0.11&quot;)
+    VOUCHER = {&quot;HEMAT10&quot;: (&quot;persen&quot;, 10, 100_000), &quot;ONGKIR15&quot;: (&quot;potong&quot;, 15_000, 75_000)}   # (jenis, nilai, minimum belanja)
+
+    def __init__(self, produk):
+        self.produk = {p.sku: p for p in produk}
+        self.log = []
+
+    def tambah(self, k, sku, qty):
+        p = self.produk[sku]
+        if p.stok - k.item.get(sku, 0) &lt; qty:
+            raise StokTidakCukup(f&quot;{p.nama}: sisa {p.stok - k.item.get(sku, 0)}, diminta {qty}&quot;)
+        k.item[sku] = k.item.get(sku, 0) + qty
+
+    def hitung(self, k):
+        sub = sum(self.produk[s].harga * q for s, q in k.item.items())
+        diskon = 0
+        if k.voucher:
+            if k.voucher not in self.VOUCHER: raise VoucherTidakBerlaku(f&quot;{k.voucher} tidak dikenal&quot;)
+            jenis, nilai, minimum = self.VOUCHER[k.voucher]
+            if sub &lt; minimum: raise VoucherTidakBerlaku(f&quot;{k.voucher} butuh minimum belanja Rp{minimum:,}&quot;.replace(&quot;,&quot;, &quot;.&quot;))
+            diskon = sub * nilai // 100 if jenis == &quot;persen&quot; else nilai
+        dpp = sub - diskon
+        ppn = int((Decimal(dpp) * self.PPN).quantize(Decimal(&quot;1&quot;), ROUND_HALF_UP))
+        return sub, diskon, ppn, dpp + ppn
+
+    def checkout(self, k, bayar):
+        sub, diskon, ppn, total = self.hitung(k)
+        if bayar &lt; total: raise ValueError(f&quot;uang kurang Rp{total - bayar:,}&quot;.replace(&quot;,&quot;, &quot;.&quot;))
+        for s, q in k.item.items(): self.produk[s].stok -= q        # stok berkurang hanya jika transaksi sukses
+        self.log.append(total)
+        rp = lambda x: f&quot;{x:,}&quot;.replace(&quot;,&quot;, &quot;.&quot;)
+        print(&quot;-&quot; * 34)
+        for s, q in k.item.items():
+            p = self.produk[s]; print(f&quot;{p.nama:&lt;14}{q:&gt;3} x{rp(p.harga):&gt;7} {rp(p.harga * q):&gt;8}&quot;)
+        for label, v in [(&quot;Subtotal&quot;, sub), (f&quot;Voucher {k.voucher or &#x27;-&#x27;}&quot;, -diskon), (&quot;PPN 11%&quot;, ppn), (&quot;TOTAL&quot;, total), (&quot;Bayar&quot;, bayar), (&quot;Kembali&quot;, bayar - total)]:
+            print(f&quot;{label:&lt;24}{rp(v):&gt;10}&quot;)
+
+toko = Toko([Produk(&quot;KP1&quot;, &quot;Kopi Gayo&quot;, 85_000, 5), Produk(&quot;GL1&quot;, &quot;Gula aren&quot;, 32_500, 2), Produk(&quot;SS1&quot;, &quot;Susu oat&quot;, 29_900, 10)])
+k = Keranjang()
+for sku, qty in [(&quot;KP1&quot;, 2), (&quot;GL1&quot;, 3), (&quot;GL1&quot;, 2), (&quot;SS1&quot;, 1)]:
+    try: toko.tambah(k, sku, qty); print(f&quot;+ {qty} {sku}&quot;)
+    except StokTidakCukup as e: print(&quot;ditolak:&quot;, e)
+for v in [&quot;DISKON99&quot;, &quot;HEMAT10&quot;]:
+    k.voucher = v
+    try: toko.hitung(k); print(&quot;voucher dipakai:&quot;, v); break
+    except VoucherTidakBerlaku as e: print(&quot;voucher ditolak:&quot;, e)
+toko.checkout(k, 300_000)
+print(&quot;-&quot; * 34)
+print(&quot;sisa stok:&quot;, {s: p.stok for s, p in toko.produk.items()}, &quot;| transaksi hari ini:&quot;, len(toko.log))
+</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>+ 2 KP1
+ditolak: Gula aren: sisa 2, diminta 3
++ 2 GL1
++ 1 SS1
+voucher ditolak: DISKON99 tidak dikenal
+voucher dipakai: HEMAT10
+----------------------------------
+Kopi Gayo       2 x 85.000  170.000
+Gula aren       2 x 32.500   65.000
+Susu oat        1 x 29.900   29.900
+Subtotal                   264.900
+Voucher HEMAT10            -26.490
+PPN 11%                     26.225
+TOTAL                      264.635
+Bayar                      300.000
+Kembali                     35.365
+----------------------------------
+sisa stok: {&#x27;KP1&#x27;: 3, &#x27;GL1&#x27;: 0, &#x27;SS1&#x27;: 9} | transaksi hari ini: 1</code></pre>
+<h2>Poin penting</h2><ul><li>Proyek mini: Kasir toko dengan stok, voucher, dan PPN.</li><li>Model Produk dan Keranjang dengan dataclass</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa stok baru dikurangi di checkout, bukan saat barang dimasukkan ke keranjang?</summary><p class="ok">Jawaban: Keranjang bisa dibatalkan; jika stok dikurangi lebih awal, stok terlihat habis padahal barang tidak terjual</p><p>Efek samping terjadi saat transaksi pasti.</p></details>
+<a class="cta" href="/#proj-14-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-1-validator-dan-normalisasi-data-pelanggan">Mini 1: Validator dan normalisasi data pelanggan</a></p><p>Berikutnya: <a href="/belajar/proj/mini-3-penjadwal-ujian-tanpa-bentrok-graph-coloring">Mini 3: Penjadwal ujian tanpa bentrok (graph coloring)</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

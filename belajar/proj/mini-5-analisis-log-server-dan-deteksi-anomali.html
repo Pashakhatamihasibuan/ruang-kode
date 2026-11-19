@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mini 5: Analisis log server dan deteksi anomali · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Masalah. Toko daring mendadak lambat dan tim tidak tahu penyebabnya. File access log berukuran besar harus dianalisis tanpa memuat semuanya ke memori,…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/mini-5-analisis-log-server-dan-deteksi-anomali">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Mini 5: Analisis log server dan deteksi anomali · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Masalah. Toko daring mendadak lambat dan tim tidak tahu penyebabnya. File access log berukuran besar harus dianalisis tanpa memuat semuanya ke memori,…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/mini-5-analisis-log-server-dan-deteksi-anomali"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Mini 5: Analisis log server dan deteksi anomali", "description": "Masalah. Toko daring mendadak lambat dan tim tidak tahu penyebabnya. File access log berukuran besar harus dianalisis tanpa memuat semuanya ke memori,…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-5-analisis-log-server-dan-deteksi-anomali", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Mini 5: Analisis log server dan deteksi anomali", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-5-analisis-log-server-dan-deteksi-anomali"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 14</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 14 · Konsep &amp; kode</div><h1>Mini 5: Analisis log server dan deteksi anomali</h1><a class="cta" href="/#proj-14-5">Buka versi interaktif</a>
+<p><b>Masalah.</b> Toko daring mendadak lambat dan tim tidak tahu penyebabnya. File access log berukuran besar harus dianalisis tanpa memuat semuanya ke memori, lalu lonjakan trafik dan percobaan brute force login harus terdeteksi otomatis.</p>
+<p><b>Fitur wajib:</b><br>1. Baca log secara streaming dengan generator<br>2. Parsing baris dengan regex bernama<br>3. Ringkasan status, endpoint teratas, dan latensi p50/p95/p99<br>4. Deteksi lonjakan dengan sliding window 10 detik<br>5. Deteksi IP dengan banyak login gagal</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. Generator sumber_log dan parse membentuk pipeline yang memproses satu baris setiap kali.<br>2. Regex dengan named group menghasilkan field yang jelas; baris tak cocok dilewati.<br>3. Counter untuk agregasi; statistics.quantiles untuk persentil latensi.<br>4. deque menyimpan waktu request di jendela; buang yang lebih tua dari 10 detik; alert jika melewati ambang.<br>5. Hitung 401 per IP di /login; beri rekomendasi blokir di WAF.</p>
+<p><b>Kembangkan sendiri:</b> baca log Nginx sungguhan, kirim alert ke Telegram/Slack lewat webhook, dan simpan ringkasan per menit ke SQLite.</p>
+<div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Baca log secara streaming dengan generator</td><td>Generator sumber_log dan parse membentuk pipeline yang memproses satu baris setiap kali.</td></tr><tr><td>Parsing baris dengan regex bernama</td><td>Regex dengan named group menghasilkan field yang jelas; baris tak cocok dilewati.</td></tr><tr><td>Ringkasan status, endpoint teratas, dan latensi p50/p95/p99</td><td>Counter untuk agregasi; statistics.quantiles untuk persentil latensi.</td></tr><tr><td>Deteksi lonjakan dengan sliding window 10 detik</td><td>deque menyimpan waktu request di jendela; buang yang lebih tua dari 10 detik; alert jika melewati ambang.</td></tr><tr><td>Deteksi IP dengan banyak login gagal</td><td>Hitung 401 per IP di /login; beri rekomendasi blokir di WAF.</td></tr></tbody></table></div>
+<div class="lbl">PYTHON</div><pre><code>import re, statistics
+from collections import Counter, deque
+from itertools import islice
+
+# Generator log akses (di produksi: for baris in open(&quot;access.log&quot;))
+def sumber_log():
+    import random
+    rng = random.Random(42)
+    endpoint = [&quot;/&quot;, &quot;/produk&quot;, &quot;/produk/7&quot;, &quot;/keranjang&quot;, &quot;/checkout&quot;, &quot;/login&quot;]
+    for detik in range(0, 600):                       # 10 menit
+        n = 3 if not 300 &lt;= detik &lt; 330 else 25       # lonjakan di menit ke-5
+        for _ in range(rng.randint(n - 2, n + 2)):
+            ip = f&quot;10.0.{rng.randint(0, 3)}.{rng.randint(1, 40)}&quot; if detik &lt; 300 or detik &gt;= 330 else &quot;203.0.113.9&quot;
+            ep = rng.choice(endpoint) if ip != &quot;203.0.113.9&quot; else &quot;/login&quot;
+            status = 401 if ep == &quot;/login&quot; and ip == &quot;203.0.113.9&quot; else rng.choice([200] * 18 + [404, 500])
+            yield f&#x27;{ip} - - [19/Nov/2026:10:{detik // 60:02d}:{detik % 60:02d} +0700] &quot;GET {ep} HTTP/1.1&quot; {status} {rng.randint(200, 5000)} {rng.randint(20, 300)}&#x27;
+
+POLA = re.compile(r&#x27;(?P&lt;ip&gt;\S+) .*?:(?P&lt;m&gt;\d{2}):(?P&lt;s&gt;\d{2}) .*?&quot;(?P&lt;met&gt;\w+) (?P&lt;ep&gt;\S+) .*?&quot; (?P&lt;st&gt;\d{3}) (?P&lt;b&gt;\d+) (?P&lt;ms&gt;\d+)&#x27;)
+
+def parse(baris):
+    for b in baris:
+        m = POLA.match(b)
+        if m: yield m[&quot;ip&quot;], int(m[&quot;m&quot;]) * 60 + int(m[&quot;s&quot;]), m[&quot;ep&quot;], int(m[&quot;st&quot;]), int(m[&quot;ms&quot;])
+
+per_status, per_ep, durasi = Counter(), Counter(), []
+gagal_login_ip, jendela, lonjakan = Counter(), deque(), []
+for ip, t, ep, st, ms in parse(sumber_log()):
+    per_status[st // 100 * 100] += 1; per_ep[ep] += 1; durasi.append(ms)
+    if ep == &quot;/login&quot; and st == 401: gagal_login_ip[ip] += 1
+    jendela.append(t)
+    while jendela[0] &lt;= t - 10: jendela.popleft()          # sliding window 10 detik
+    if len(jendela) &gt; 150 and (not lonjakan or t - lonjakan[-1] &gt; 30): lonjakan.append(t)
+
+total = sum(per_status.values())
+print(f&quot;{total:,} request dalam 10 menit&quot;.replace(&quot;,&quot;, &quot;.&quot;))
+print(&quot;status:&quot;, {f&quot;{k // 100}xx&quot;: f&quot;{v / total:.1%}&quot;.replace(&quot;.&quot;, &quot;,&quot;) for k, v in sorted(per_status.items())})
+print(&quot;endpoint teratas:&quot;, per_ep.most_common(3))
+q = statistics.quantiles(durasi, n=100)
+print(f&quot;latensi p50 {q[49]:.0f} ms, p95 {q[94]:.0f} ms, p99 {q[98]:.0f} ms&quot;)
+for t in lonjakan: print(f&quot;ALERT lonjakan trafik mulai 10:{t // 60:02d}:{t % 60:02d}&quot;)
+for ip, n in gagal_login_ip.items():
+    if n &gt;= 20: print(f&quot;ALERT brute force login dari {ip}: {n} kali 401 -&gt; blokir sementara di WAF&quot;)
+</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>2.450 request dalam 10 menit
+status: {&#x27;2xx&#x27;: &#x27;62,2%&#x27;, &#x27;4xx&#x27;: &#x27;34,4%&#x27;, &#x27;5xx&#x27;: &#x27;3,4%&#x27;}
+endpoint teratas: [(&#x27;/login&#x27;, 1037), (&#x27;/keranjang&#x27;, 302), (&#x27;/produk&#x27;, 300)]
+latensi p50 160 ms, p95 286 ms, p99 296 ms
+ALERT lonjakan trafik mulai 10:05:05
+ALERT brute force login dari 203.0.113.9: 754 kali 401 -&gt; blokir sementara di WAF</code></pre>
+<h2>Poin penting</h2><ul><li>Proyek mini: Analisis log server dan deteksi anomali.</li><li>Baca log secara streaming dengan generator</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa log dibaca dengan generator, bukan readlines()?</summary><p class="ok">Jawaban: Generator memproses satu baris setiap kali sehingga file berukuran GB tidak memenuhi memori</p><p>Streaming hemat memori.</p></details>
+<a class="cta" href="/#proj-14-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-4-rute-kurir-dijkstra-nearest-neighbor-dan-2-opt">Mini 4: Rute kurir: Dijkstra, nearest neighbor, dan 2-opt</a></p><p>Berikutnya: <a href="/belajar/proj/mini-6-pencarian-produk-dengan-autocomplete-dan-koreksi-salah-ketik">Mini 6: Pencarian produk dengan autocomplete dan koreksi salah ketik</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

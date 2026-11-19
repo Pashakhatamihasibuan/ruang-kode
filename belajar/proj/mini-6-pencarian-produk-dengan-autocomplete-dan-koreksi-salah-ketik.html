@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mini 6: Pencarian produk dengan autocomplete dan koreksi salah ketik · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Masalah. Pengguna aplikasi sering salah ketik (&quot;kpoi&quot;, &quot;mleati&quot;) dan tidak menemukan produk, sehingga penjualan hilang. Toko butuh kotak pencarian dengan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/mini-6-pencarian-produk-dengan-autocomplete-dan-koreksi-salah-ketik">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Mini 6: Pencarian produk dengan autocomplete dan koreksi salah ketik · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Masalah. Pengguna aplikasi sering salah ketik (&quot;kpoi&quot;, &quot;mleati&quot;) dan tidak menemukan produk, sehingga penjualan hilang. Toko butuh kotak pencarian dengan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/mini-6-pencarian-produk-dengan-autocomplete-dan-koreksi-salah-ketik"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Mini 6: Pencarian produk dengan autocomplete dan koreksi salah ketik", "description": "Masalah. Pengguna aplikasi sering salah ketik (\"kpoi\", \"mleati\") dan tidak menemukan produk, sehingga penjualan hilang. Toko butuh kotak pencarian dengan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-6-pencarian-produk-dengan-autocomplete-dan-koreksi-salah-ketik", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Mini 6: Pencarian produk dengan autocomplete dan koreksi salah ketik", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-6-pencarian-produk-dengan-autocomplete-dan-koreksi-salah-ketik"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 14</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 14 · Konsep &amp; kode</div><h1>Mini 6: Pencarian produk dengan autocomplete dan koreksi salah ketik</h1><a class="cta" href="/#proj-14-6">Buka versi interaktif</a>
+<p><b>Masalah.</b> Pengguna aplikasi sering salah ketik ("kpoi", "mleati") dan tidak menemukan produk, sehingga penjualan hilang. Toko butuh kotak pencarian dengan saran otomatis dan koreksi ejaan tanpa layanan pihak ketiga.</p>
+<p><b>Fitur wajib:</b><br>1. Autocomplete berbasis trie, diurutkan dari produk terpopuler<br>2. Koreksi salah ketik dengan edit distance (Damerau-Levenshtein: hapus, sisip, ganti, tukar huruf)<br>3. Batas toleransi sesuai panjang kata<br>4. Pencarian multi-kata dengan saran "maksud Anda"<br>5. Hasil kosong ditangani dengan jelas</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. Masukkan setiap nama produk ke trie beserta skor popularitas.<br>2. Untuk awalan, turun ke simpul awalan lalu kumpulkan semua kata di bawahnya, urutkan skor menurun.<br>3. Edit distance dengan tabel DP O(m x n); tukar dua huruf bersebelahan (kpoi -> kopi) dihitung satu langkah.<br>4. Kata pendek hanya boleh salah 1 huruf, kata panjang 2, agar tidak terlalu longgar.<br>5. Cocokkan semua kata hasil koreksi ke nama produk; tampilkan saran jika ada kata yang dikoreksi.</p>
+<p><b>Kembangkan sendiri:</b> tambahkan sinonim (susu = milk), pembobotan BM25, dan ukur waktu pencarian untuk 100.000 produk.</p>
+<div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Autocomplete berbasis trie, diurutkan dari produk terpopuler</td><td>Masukkan setiap nama produk ke trie beserta skor popularitas.</td></tr><tr><td>Koreksi salah ketik dengan edit distance (Damerau-Levenshtein: hapus, sisip, ganti, tukar huruf)</td><td>Untuk awalan, turun ke simpul awalan lalu kumpulkan semua kata di bawahnya, urutkan skor menurun.</td></tr><tr><td>Batas toleransi sesuai panjang kata</td><td>Edit distance dengan tabel DP O(m x n); tukar dua huruf bersebelahan (kpoi -&gt; kopi) dihitung satu langkah.</td></tr><tr><td>Pencarian multi-kata dengan saran &quot;maksud Anda&quot;</td><td>Kata pendek hanya boleh salah 1 huruf, kata panjang 2, agar tidak terlalu longgar.</td></tr><tr><td>Hasil kosong ditangani dengan jelas</td><td>Cocokkan semua kata hasil koreksi ke nama produk; tampilkan saran jika ada kata yang dikoreksi.</td></tr></tbody></table></div>
+<div class="lbl">PYTHON</div><pre><code># Pencarian produk toleran salah ketik: trie untuk autocomplete + edit distance (DP) untuk koreksi
+PRODUK = {&quot;kopi gayo arabika&quot;: 950, &quot;kopi toraja&quot;: 610, &quot;kopi susu literan&quot;: 1200, &quot;kopiah hitam&quot;: 80, &quot;teh melati&quot;: 430,
+          &quot;teh tarik&quot;: 520, &quot;gula aren cair&quot;: 700, &quot;susu oat&quot;: 390, &quot;keripik singkong&quot;: 860, &quot;kerupuk udang&quot;: 300}
+
+class Trie:
+    def __init__(self): self.anak, self.skor = {}, None
+    def tambah(self, kata, skor):
+        n = self
+        for c in kata: n = n.anak.setdefault(c, Trie())
+        n.skor = skor
+    def awalan(self, p, k=3):
+        n = self
+        for c in p:
+            if c not in n.anak: return []
+            n = n.anak[c]
+        hasil, st = [], [(n, p)]
+        while st:
+            x, s = st.pop()
+            if x.skor is not None: hasil.append((-x.skor, s))
+            st.extend((a, s + c) for c, a in x.anak.items())
+        return [s for _, s in sorted(hasil)[:k]]
+
+def jarak_edit(a, b):                          # Damerau-Levenshtein (OSA): DP O(len(a) x len(b))
+    d = [[i + j if i * j == 0 else 0 for j in range(len(b) + 1)] for i in range(len(a) + 1)]
+    for i in range(1, len(a) + 1):
+        for j in range(1, len(b) + 1):
+            d[i][j] = min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] != b[j - 1]))
+            if i &gt; 1 and j &gt; 1 and a[i - 1] == b[j - 2] and a[i - 2] == b[j - 1]:
+                d[i][j] = min(d[i][j], d[i - 2][j - 2] + 1)          # tukar dua huruf bersebelahan
+    return d[-1][-1]
+
+KATA = sorted({w for nama in PRODUK for w in nama.split()})
+def koreksi(w):
+    if w in KATA: return w
+    batas = 1 if len(w) &lt;= 4 else 2
+    kandidat = sorted((jarak_edit(w, k), k) for k in KATA)
+    d, k = kandidat[0]
+    return k if d &lt;= batas else None
+
+trie = Trie()
+for nama, skor in PRODUK.items(): trie.tambah(nama, skor)
+
+def cari(teks):
+    kata = teks.lower().split()
+    benar = [koreksi(w) or w for w in kata]
+    hasil = [n for n in sorted(PRODUK, key=lambda n: -PRODUK[n]) if all(w in n.split() for w in benar)]
+    saran = f&quot; (maksud Anda: &#x27;{&#x27; &#x27;.join(benar)}&#x27;?)&quot; if benar != kata else &quot;&quot;
+    return hasil[:3], saran
+
+for awal in [&quot;ko&quot;, &quot;kopi s&quot;, &quot;te&quot;, &quot;ke&quot;]:
+    print(f&quot;autocomplete {awal!r:&lt;9} -&gt; {trie.awalan(awal)}&quot;)
+for q in [&quot;kopi&quot;, &quot;kpoi toraja&quot;, &quot;teh mleati&quot;, &quot;sus oat&quot;, &quot;kripik&quot;, &quot;laptop&quot;]:
+    hasil, saran = cari(q)
+    print(f&quot;cari {q!r:&lt;14} -&gt; {hasil or &#x27;tidak ditemukan&#x27;}{saran}&quot;)
+</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>autocomplete &#x27;ko&#x27;      -&gt; [&#x27;kopi susu literan&#x27;, &#x27;kopi gayo arabika&#x27;, &#x27;kopi toraja&#x27;]
+autocomplete &#x27;kopi s&#x27;  -&gt; [&#x27;kopi susu literan&#x27;]
+autocomplete &#x27;te&#x27;      -&gt; [&#x27;teh tarik&#x27;, &#x27;teh melati&#x27;]
+autocomplete &#x27;ke&#x27;      -&gt; [&#x27;keripik singkong&#x27;, &#x27;kerupuk udang&#x27;]
+cari &#x27;kopi&#x27;         -&gt; [&#x27;kopi susu literan&#x27;, &#x27;kopi gayo arabika&#x27;, &#x27;kopi toraja&#x27;]
+cari &#x27;kpoi toraja&#x27;  -&gt; [&#x27;kopi toraja&#x27;] (maksud Anda: &#x27;kopi toraja&#x27;?)
+cari &#x27;teh mleati&#x27;   -&gt; [&#x27;teh melati&#x27;] (maksud Anda: &#x27;teh melati&#x27;?)
+cari &#x27;sus oat&#x27;      -&gt; [&#x27;susu oat&#x27;] (maksud Anda: &#x27;susu oat&#x27;?)
+cari &#x27;kripik&#x27;       -&gt; [&#x27;keripik singkong&#x27;] (maksud Anda: &#x27;keripik&#x27;?)
+cari &#x27;laptop&#x27;       -&gt; tidak ditemukan</code></pre>
+<h2>Poin penting</h2><ul><li>Proyek mini: Pencarian produk dengan autocomplete dan koreksi salah ketik.</li><li>Autocomplete berbasis trie, diurutkan dari produk terpopuler</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Apa fungsi edit distance pada fitur pencarian?</summary><p class="ok">Jawaban: Mengukur berapa huruf yang perlu diubah agar kata pengguna sama dengan kata di katalog, sehingga salah ketik bisa dikoreksi</p><p>Levenshtein untuk toleransi typo.</p></details>
+<a class="cta" href="/#proj-14-6">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-5-analisis-log-server-dan-deteksi-anomali">Mini 5: Analisis log server dan deteksi anomali</a></p><p>Berikutnya: <a href="/belajar/proj/besar-1-paket-cli-pencatat-keuangan-umkm-yang-siap-rilis">Besar 1: Paket CLI pencatat keuangan UMKM yang siap rilis</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>
