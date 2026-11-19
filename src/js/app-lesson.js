@@ -34,6 +34,8 @@ function renderLesson(x){
   else if(l.k==='proj')body=projHTML(l,y);
   else body=sqlLessonHTML(l);
   if(typeof sekilasHTML==='function')body=sekilasHTML(x,y,l.pts||(l.k==='lab'&&typeof chFor==='function'?(chFor(l.n,y.t.lang)||{}).points:null))+body;
+  const dp=l.deep||(window.DEEP&&DEEP[y.t.k]&&DEEP[y.t.k][x.src?x.src.title:x.title]);
+  if(dp){const dh=deepHTML(dp,y.t.lang),qi=body.indexOf('<section class="section" id="quiz"');body=qi>=0?body.slice(0,qi)+dh+body.slice(qi):body+dh}
   const va=typeof varAnimOf==='function'&&varAnimOf(y.t.k,l);
   if(va)body=`<section class="viz va-sec" id="varAnim"><div class="viz-head"><span class="eyebrow">Animasi</span><h3>Bagaimana variabel dibuat dan diubah</h3><p>Tekan Berikutnya atau Putar otomatis. Kiri: kode dijalankan baris demi baris. Kanan: isi memori.</p></div><div id="varHost" class="vizhost"></div></section>`+body;
   return `<div class="l-top"><button class="btn ol-btn" id="olBtn" aria-controls="outline" aria-expanded="false"><span aria-hidden="true">☰</span> <span class="ol-lab">Daftar materi</span></button>
@@ -101,6 +103,9 @@ const proHTML=l=>l.pro&&l.pro.length?`<section class="section pro-sec" id="pro">
     :p.outA!=null?`<div class="pro-out two"><div><div class="eyebrow">Keluaran kode pemula</div><pre class="out">${esc(p.outA)}</pre></div><div><div class="eyebrow">Keluaran kode rapi</div><pre class="out">${esc(p.outB)}</pre></div></div>`:'';
    return `<details class="pro"><summary><span class="pro-tag">${esc(p.tag)}</span><b>${esc(p.t)}</b></summary><div class="pro-in">
     <div class="pro-grid"><div class="pro-a">${pane(lang,p.a,{label:'✗ KODE PEMULA'})}</div><div class="pro-b">${pane(lang,p.b,{label:'✓ KODE RAPI'})}</div></div>${o}<p class="pro-why">${p.why}</p></div></details>`}).join('')}</section>`:'';
+/* Pendalaman: istilah dunia kerja + contoh tambahan (data dari tools/deep). */
+const deepHTML=(d,lang)=>(d.ist&&d.ist.length?`<section class="section deep-ist"><h2>Istilah di dunia kerja</h2><p class="muted">Istilah yang sering kamu dengar di tim, rapat, lowongan, dan wawancara.</p><dl class="ist-list">${d.ist.map(([a,b])=>`<div class="ist"><dt>${a}</dt><dd>${b}</dd></div>`).join('')}</dl></section>`:'')
+ +(d.cx&&d.cx.length?`<section class="section deep-cx"><h2>Contoh tambahan</h2>${d.cx.map((c,i)=>`<article class="cx"><h3><span class="cx-no">${i+1}</span>${c.t}</h3>${c.b?`<p>${c.b}</p>`:''}${pane(c.lang||lang,c.code)}${c.out!=null?`<div class="eyebrow">Keluaran</div><div class="console">${esc(c.out)}</div>`:''}</article>`).join('')}</section>`:'');
 const ptsHTML=l=>proHTML(l)+(l.pts&&l.pts.length?`<section class="section"><h2>Poin penting</h2><ul class="points">${l.pts.map(p=>`<li>${p}</li>`).join('')}</ul></section>`:'');
 const qHTML=l=>(l.q||[]).length?`<section class="section" id="quiz"><h2>Cek pemahaman</h2>${quizHTML(l.q.map(normQ),l.t.length)}</section>`:'';
 const wireQ=l=>{const q=$('#quiz');if(q)wireQuiz(q,l.q.map(normQ))};

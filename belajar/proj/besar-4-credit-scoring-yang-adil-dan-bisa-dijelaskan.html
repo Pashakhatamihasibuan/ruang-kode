@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Besar 4: Credit scoring yang adil dan bisa dijelaskan · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Masalah. Fintech pinjaman produktif untuk UMKM ingin model skor kredit yang lebih akurat dari scorecard lama, tetapi wajib bisa menjelaskan alasan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/besar-4-credit-scoring-yang-adil-dan-bisa-dijelaskan">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Besar 4: Credit scoring yang adil dan bisa dijelaskan · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Masalah. Fintech pinjaman produktif untuk UMKM ingin model skor kredit yang lebih akurat dari scorecard lama, tetapi wajib bisa menjelaskan alasan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/besar-4-credit-scoring-yang-adil-dan-bisa-dijelaskan"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Besar 4: Credit scoring yang adil dan bisa dijelaskan", "description": "Masalah. Fintech pinjaman produktif untuk UMKM ingin model skor kredit yang lebih akurat dari scorecard lama, tetapi wajib bisa menjelaskan alasan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/besar-4-credit-scoring-yang-adil-dan-bisa-dijelaskan", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Besar 4: Credit scoring yang adil dan bisa dijelaskan", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/besar-4-credit-scoring-yang-adil-dan-bisa-dijelaskan"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 6</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 6 · Konsep &amp; kode</div><h1>Besar 4: Credit scoring yang adil dan bisa dijelaskan</h1><a class="cta" href="/#proj-6-10">Buka versi interaktif</a>
+<p><b>Masalah.</b> Fintech pinjaman produktif untuk UMKM ingin model skor kredit yang lebih akurat dari scorecard lama, tetapi wajib bisa menjelaskan alasan penolakan ke nasabah dan regulator, serta tidak diskriminatif.</p>
+<p><b>Fitur wajib:</b><br>1. Definisi target: gagal bayar 90+ hari dalam 12 bulan<br>2. Validasi out-of-time dan metrik industri: AUC, Gini, KS<br>3. Penjelasan per nasabah (SHAP) dan kode alasan penolakan<br>4. Uji keadilan antar kelompok (wilayah, jenis kelamin) dan pemantauan PSI<br>5. Dokumentasi model risk: model card, batasan, rencana pemantauan</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. Tetapkan target, jendela observasi, dan populasi; buang fitur yang tidak tersedia saat aplikasi diajukan.<br>2. Latih LightGBM dengan constraint monotonik agar perilaku model masuk akal bagi analis risiko.<br>3. Validasi out-of-time; bandingkan Gini dengan scorecard lama.<br>4. Hitung SHAP untuk setiap keputusan dan petakan fitur ke kode alasan yang dimengerti nasabah.<br>5. Ukur keadilan antar kelompok; dokumentasikan temuan dan mitigasi.<br>6. Tulis model card dan pasang pemantauan PSI bulanan.</p>
+<p><b>Standar industri yang dinilai:</b> validasi out-of-time, Gini dan KS dilaporkan, kode alasan per keputusan, uji keadilan, PSI dipantau, model card untuk model risk management</p>
+<div class="tw"><table><caption>Arsitektur dan stack (Python, LightGBM monotonik, SHAP, scikit-learn, PostgreSQL, laporan dengan Quarto)</caption><thead><tr><th>Bagian</th><th>Isi</th></tr></thead><tbody><tr><td>Data</td><td>aplikasi pinjaman, riwayat transaksi e-wallet/QRIS UMKM (dengan persetujuan), biro kredit</td></tr><tr><td>Model</td><td>LightGBM dengan constraint monotonik (mis. makin tinggi omzet → risiko tidak naik)</td></tr><tr><td>Validasi</td><td>latih 2023–2024, uji out-of-time 2025; AUC, Gini = 2·AUC − 1, KS</td></tr><tr><td>Penjelasan</td><td>SHAP per nasabah → 3 kode alasan teratas</td></tr><tr><td>Keadilan</td><td>rasio persetujuan dan TPR antar kelompok; atribut sensitif tidak dipakai sebagai fitur</td></tr><tr><td>Pemantauan</td><td>PSI skor dan fitur bulanan; ambang 0,1 waspada, 0,25 tindakan</td></tr></tbody></table></div>
+<div class="lbl">PYTHON</div><pre><code>import lightgbm as lgb, numpy as np, pandas as pd, shap
+from sklearn.metrics import roc_auc_score, roc_curve
+
+df = pd.read_parquet(&#x27;aplikasi_kredit.parquet&#x27;)
+latih, oot = df[df.tgl_aplikasi &lt; &#x27;2025-01-01&#x27;], df[df.tgl_aplikasi &gt;= &#x27;2025-01-01&#x27;]
+FITUR = [&#x27;omzet_bulanan&#x27;, &#x27;umur_usaha_bln&#x27;, &#x27;transaksi_qris_90h&#x27;, &#x27;rasio_cicilan&#x27;, &#x27;telat_bayar_12b&#x27;, &#x27;jumlah_pinjaman&#x27;]
+MONO = [-1, -1, -1, 1, 1, 1]  # arah yang diizinkan terhadap risiko
+
+m = lgb.LGBMClassifier(n_estimators=500, learning_rate=0.03, num_leaves=15, monotone_constraints=MONO, min_child_samples=200)
+m.fit(latih[FITUR], latih.gagal_bayar)
+p = m.predict_proba(oot[FITUR])[:, 1]
+auc = roc_auc_score(oot.gagal_bayar, p)
+fpr, tpr, _ = roc_curve(oot.gagal_bayar, p)
+print(f&#x27;OOT AUC {auc:.3f} | Gini {2 * auc - 1:.3f} | KS {np.max(tpr - fpr):.3f}&#x27;)
+
+# Kode alasan per nasabah dari SHAP
+ALASAN = {&#x27;telat_bayar_12b&#x27;: &#x27;R01 Riwayat keterlambatan pembayaran&#x27;, &#x27;rasio_cicilan&#x27;: &#x27;R02 Cicilan terlalu besar dibanding pendapatan&#x27;,
+          &#x27;omzet_bulanan&#x27;: &#x27;R03 Omzet usaha belum mencukupi&#x27;, &#x27;umur_usaha_bln&#x27;: &#x27;R04 Usia usaha masih singkat&#x27;,
+          &#x27;transaksi_qris_90h&#x27;: &#x27;R05 Aktivitas transaksi usaha rendah&#x27;, &#x27;jumlah_pinjaman&#x27;: &#x27;R06 Jumlah pinjaman yang diajukan tinggi&#x27;}
+ex = shap.TreeExplainer(m)
+sv = ex.shap_values(oot[FITUR])
+def alasan(i, k=3):
+    urut = np.argsort(-sv[i])[:k]
+    return [ALASAN[FITUR[j]] for j in urut if sv[i][j] &gt; 0]
+
+# Keadilan: rasio persetujuan antar kelompok (atribut sensitif TIDAK jadi fitur)
+oot = oot.assign(setuju=p &lt; 0.08)
+grup = oot.groupby(&#x27;wilayah&#x27;).agg(rasio_setuju=(&#x27;setuju&#x27;, &#x27;mean&#x27;), n=(&#x27;setuju&#x27;, &#x27;size&#x27;))
+grup[&#x27;rasio_vs_tertinggi&#x27;] = grup.rasio_setuju / grup.rasio_setuju.max()
+print(grup.round(3))  # tandai kelompok &lt; 0.8 (aturan empat-perlima) untuk investigasi
+
+# PSI bulanan
+def psi(ref, kini, bins=10):
+    q = np.quantile(ref, np.linspace(0, 1, bins + 1)); q[0], q[-1] = -np.inf, np.inf
+    a = np.histogram(ref, q)[0] / len(ref) + 1e-6; b = np.histogram(kini, q)[0] / len(kini) + 1e-6
+    return np.sum((b - a) * np.log(b / a))</code></pre>
+<h2>Poin penting</h2><ul><li>Proyek besar: Credit scoring yang adil dan bisa dijelaskan.</li><li>Stack: Python, LightGBM monotonik, SHAP, scikit-learn, PostgreSQL, laporan dengan Quarto.</li><li>Berkas inti penyelesaian ada di bawah; sisanya mengikuti pola yang sama.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Untuk apa constraint monotonik pada model kredit?</summary><p class="ok">Jawaban: Memastikan arah pengaruh fitur masuk akal, misalnya omzet lebih tinggi tidak menaikkan risiko</p><p>Penting untuk penjelasan dan regulator.</p></details>
+<a class="cta" href="/#proj-6-10">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/besar-3-asisten-tanya-jawab-dokumen-dengan-evaluasi-rag-llm">Besar 3: Asisten tanya-jawab dokumen dengan evaluasi (RAG + LLM)</a></p><p>Berikutnya: <a href="/belajar/proj/proyek-mini-logika-python-dasar">Proyek mini: Logika &amp; Python dasar</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

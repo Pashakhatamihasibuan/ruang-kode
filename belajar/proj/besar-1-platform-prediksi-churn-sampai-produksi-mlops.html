@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Besar 1: Platform prediksi churn sampai produksi (MLOps) · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Masalah. Operator telekomunikasi ingin skor risiko churn harian untuk 2 juta pelanggan, bisa dipanggil dari CRM, dipantau kualitasnya, dan dilatih ulang…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/besar-1-platform-prediksi-churn-sampai-produksi-mlops">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Besar 1: Platform prediksi churn sampai produksi (MLOps) · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Masalah. Operator telekomunikasi ingin skor risiko churn harian untuk 2 juta pelanggan, bisa dipanggil dari CRM, dipantau kualitasnya, dan dilatih ulang…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/besar-1-platform-prediksi-churn-sampai-produksi-mlops"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Besar 1: Platform prediksi churn sampai produksi (MLOps)", "description": "Masalah. Operator telekomunikasi ingin skor risiko churn harian untuk 2 juta pelanggan, bisa dipanggil dari CRM, dipantau kualitasnya, dan dilatih ulang…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/besar-1-platform-prediksi-churn-sampai-produksi-mlops", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Besar 1: Platform prediksi churn sampai produksi (MLOps)", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/besar-1-platform-prediksi-churn-sampai-produksi-mlops"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 6</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 6 · Konsep &amp; kode</div><h1>Besar 1: Platform prediksi churn sampai produksi (MLOps)</h1><a class="cta" href="/#proj-6-7">Buka versi interaktif</a>
+<p><b>Masalah.</b> Operator telekomunikasi ingin skor risiko churn harian untuk 2 juta pelanggan, bisa dipanggil dari CRM, dipantau kualitasnya, dan dilatih ulang otomatis bila performa turun.</p>
+<p><b>Fitur wajib:</b><br>1. Pipeline fitur yang sama untuk latih dan prediksi (tidak ada training-serving skew)<br>2. Eksperimen tercatat: parameter, metrik, dan artefak model<br>3. API prediksi dengan validasi input dan versi model<br>4. Pemantauan data drift dan performa, dengan pemicu latih ulang<br>5. Model card: tujuan, data, metrik per segmen, batasan</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. Definisikan label dan jendela waktu: fitur dari data sampai tanggal T, churn dihitung T+1 s.d. T+30.<br>2. Tulis modul fitur bersama (<code>fitur.py</code>) yang dipakai saat latih dan saat prediksi.<br>3. Latih dengan split berbasis waktu, catat semuanya ke MLflow, daftarkan model yang lolos ambang.<br>4. Bungkus model dengan FastAPI + Pydantic, kemas dengan Docker, sertakan versi model di respons.<br>5. Jadwalkan batch harian dan laporan drift mingguan; latih ulang jika presisi@20% turun di bawah ambang.<br>6. Tulis model card dan dokumentasi API untuk tim CRM.</p>
+<p><b>Standar industri yang dinilai:</b> split berbasis waktu, eksperimen terlacak, model registry, API tervalidasi, drift dipantau, model card tertulis</p>
+<div class="tw"><table><caption>Arsitektur dan stack (Python, scikit-learn/LightGBM, MLflow, FastAPI, Docker, PostgreSQL, Evidently, GitHub Actions)</caption><thead><tr><th>Bagian</th><th>Isi</th></tr></thead><tbody><tr><td>Data</td><td>tabel fitur harian di PostgreSQL/warehouse; label churn 30 hari ke depan</td></tr><tr><td>Pelatihan</td><td>train.py: split berbasis waktu, LightGBM, kalibrasi, log ke MLflow</td></tr><tr><td>Registry</td><td>MLflow Model Registry: Staging → Production setelah lolos ambang metrik</td></tr><tr><td>Serving</td><td>FastAPI /predict dan batch harian; model dimuat dari registry</td></tr><tr><td>Monitoring</td><td>Evidently: drift fitur (PSI/KS) mingguan, presisi@k saat label tiba</td></tr><tr><td>CI/CD</td><td>test unit + test data (Great Expectations/pandera) + build image</td></tr></tbody></table></div>
+<div class="lbl">PYTHON</div><pre><code># train.py
+import mlflow, mlflow.lightgbm, lightgbm as lgb, pandas as pd
+from sklearn.calibration import CalibratedClassifierCV
+from fitur import bangun_fitur, KOLOM_FITUR
+
+def presisi_at_k(y, p, k=0.2):
+    top = p.argsort()[::-1][: int(len(p) * k)]
+    return y.to_numpy()[top].mean()
+
+df = bangun_fitur(pd.read_parquet(&#x27;snapshot_fitur.parquet&#x27;))
+latih, valid = df[df.tanggal &lt; &#x27;2026-09-01&#x27;], df[df.tanggal &gt;= &#x27;2026-09-01&#x27;]
+
+mlflow.set_experiment(&#x27;churn-harian&#x27;)
+with mlflow.start_run():
+    params = dict(n_estimators=600, learning_rate=0.03, num_leaves=31, min_child_samples=100, subsample=0.8)
+    base = lgb.LGBMClassifier(**params)
+    model = CalibratedClassifierCV(base, method=&#x27;isotonic&#x27;, cv=3).fit(latih[KOLOM_FITUR], latih.churn)
+    p = model.predict_proba(valid[KOLOM_FITUR])[:, 1]
+    p20 = presisi_at_k(valid.churn, p)
+    mlflow.log_params(params); mlflow.log_metric(&#x27;presisi_at_20&#x27;, p20)
+    info = mlflow.sklearn.log_model(model, &#x27;model&#x27;, input_example=valid[KOLOM_FITUR].head(3))
+    if p20 &gt;= 0.45:
+        mlflow.register_model(info.model_uri, &#x27;churn&#x27;)
+
+# serve.py
+from fastapi import FastAPI
+from pydantic import BaseModel, Field
+import mlflow.pyfunc
+
+app = FastAPI(title=&#x27;Churn API&#x27;)
+MODEL = mlflow.pyfunc.load_model(&#x27;models:/churn@production&#x27;)
+
+class Pelanggan(BaseModel):
+    id_pelanggan: str
+    lama_bulan: int = Field(ge=0, le=600)
+    tiket_keluhan_30h: int = Field(ge=0)
+    pemakaian_jam_30h: float = Field(ge=0)
+    telat_bayar_90h: int = Field(ge=0)
+    paket: str
+
+@app.post(&#x27;/predict&#x27;)
+def predict(items: list[Pelanggan]):
+    X = pd.DataFrame([i.model_dump() for i in items])
+    p = MODEL.predict(bangun_fitur(X)[KOLOM_FITUR])
+    return [{&#x27;id_pelanggan&#x27;: i.id_pelanggan, &#x27;risiko&#x27;: round(float(s), 4), &#x27;model_version&#x27;: MODEL.metadata.run_id} for i, s in zip(items, p)]
+
+# monitor.py (dijadwalkan mingguan)
+from evidently import Report
+from evidently.presets import DataDriftPreset
+ref = pd.read_parquet(&#x27;fitur_referensi.parquet&#x27;); kini = pd.read_parquet(&#x27;fitur_minggu_ini.parquet&#x27;)
+hasil = Report([DataDriftPreset()]).run(reference_data=ref[KOLOM_FITUR], current_data=kini[KOLOM_FITUR])
+hasil.save_html(&#x27;drift.html&#x27;)</code></pre>
+<h2>Poin penting</h2><ul><li>Proyek besar: Platform prediksi churn sampai produksi (MLOps).</li><li>Stack: Python, scikit-learn/LightGBM, MLflow, FastAPI, Docker, PostgreSQL, Evidently, GitHub Actions.</li><li>Berkas inti penyelesaian ada di bawah; sisanya mengikuti pola yang sama.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Apa itu training-serving skew?</summary><p class="ok">Jawaban: Perbedaan cara fitur dihitung saat latih dan saat produksi sehingga performa turun</p><p>Dicegah dengan modul fitur bersama.</p></details>
+<a class="cta" href="/#proj-6-7">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-6-rekomendasi-produk-sering-dibeli-bersama">Mini 6: Rekomendasi produk &quot;sering dibeli bersama&quot;</a></p><p>Berikutnya: <a href="/belajar/proj/besar-2-peramalan-permintaan-ritel-multi-toko">Besar 2: Peramalan permintaan ritel multi-toko</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

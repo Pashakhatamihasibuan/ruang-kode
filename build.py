@@ -139,7 +139,10 @@ def build():
     css = "\n".join(read("css", f) for f in CSS)
 
     # 1. satu file untuk Artifact
-    page = f"{HEAD}<style>\n{css}\n</style>\n{BODY.replace('%NOSCRIPT%', '')}\n<script>\n{safe_inline(js_of(ALL_JS))}\n</script>\n"
+    deep_path = SRC / "js" / "deep.json"
+    deep = json.loads(deep_path.read_text()) if deep_path.exists() else {}
+    deep_js = f"window.DEEP={json.dumps(deep, ensure_ascii=False, separators=(',', ':'))};\n"
+    page = f"{HEAD}<style>\n{css}\n</style>\n{BODY.replace('%NOSCRIPT%', '')}\n<script>\n{safe_inline(deep_js + js_of(ALL_JS))}\n</script>\n"
     (ROOT / "dist").mkdir(exist_ok=True)
     (ROOT / "dist" / "artifact.html").write_text(page)
 
@@ -152,6 +155,13 @@ def build():
     skel = []
     for const, v in data["tracks"].items():
         tk = keys[const]
+        dk = deep.get(tk, {})
+        if dk:  # pendalaman ikut di isi pelajaran (chunk jalur), dicocokkan lewat judul
+            flat = [l for m in v["skel"] for l in m["lessons"]]
+            for s_, b_ in zip(flat, v["bodies"]):
+                d_ = dk.get(s_.get("t") or s_.get("_t") or "")
+                if d_:
+                    b_["deep"] = d_
         skel.append(f"const {const}={json.dumps(v['skel'], ensure_ascii=False, separators=(',', ':'))};")
         chunks["t:" + tk] = write_chunk(
             "t-" + tk, f"RKfill({json.dumps(tk)},{json.dumps(v['bodies'], ensure_ascii=False, separators=(',', ':'))});\n")
