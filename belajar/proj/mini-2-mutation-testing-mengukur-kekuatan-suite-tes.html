@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mini 2: Mutation testing: mengukur kekuatan suite tes · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Masalah. Coverage modul ongkir sudah 100%, tetapi bug batas jarak 50 km tetap lolos ke produksi. Buktikan bahwa coverage tinggi tidak sama dengan tes…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/mini-2-mutation-testing-mengukur-kekuatan-suite-tes">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Mini 2: Mutation testing: mengukur kekuatan suite tes · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Masalah. Coverage modul ongkir sudah 100%, tetapi bug batas jarak 50 km tetap lolos ke produksi. Buktikan bahwa coverage tinggi tidak sama dengan tes…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/mini-2-mutation-testing-mengukur-kekuatan-suite-tes"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Mini 2: Mutation testing: mengukur kekuatan suite tes", "description": "Masalah. Coverage modul ongkir sudah 100%, tetapi bug batas jarak 50 km tetap lolos ke produksi. Buktikan bahwa coverage tinggi tidak sama dengan tes…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-2-mutation-testing-mengukur-kekuatan-suite-tes", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Mini 2: Mutation testing: mengukur kekuatan suite tes", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-2-mutation-testing-mengukur-kekuatan-suite-tes"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 11</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 11 · Konsep &amp; kode</div><h1>Mini 2: Mutation testing: mengukur kekuatan suite tes</h1><a class="cta" href="/#proj-11-2">Buka versi interaktif</a>
+<p><b>Masalah.</b> Coverage modul ongkir sudah 100%, tetapi bug batas jarak 50 km tetap lolos ke produksi. Buktikan bahwa coverage tinggi tidak sama dengan tes yang kuat, dengan membuat mutation tester sederhana.</p>
+<p><b>Fitur wajib:</b><br>1. Membuat mutan dengan mengganti operator (>, >=, +, -, and/or) lewat AST<br>2. Menjalankan suite tes pada setiap mutan<br>3. Menghitung mutation score dan menampilkan mutan yang selamat<br>4. Menambah kasus batas lalu membandingkan skornya</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. Parse kode sumber dengan ast dan cari node operator yang bisa diganti.<br>2. Untuk tiap target, buat salinan pohon, ganti satu operator, lalu ast.unparse.<br>3. Mutan "terbunuh" jika minimal satu tes gagal atau error.<br>4. Mutan yang selamat menunjukkan kasus uji yang hilang; tambahkan tes batas.</p>
+<p><b>Kembangkan sendiri:</b> jalankan mutmut atau cosmic-ray pada proyek Python sungguhan dan tetapkan ambang mutation score di CI untuk modul kritis.</p>
+<div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Membuat mutan dengan mengganti operator (&gt;, &gt;=, +, -, and/or) lewat AST</td><td>Parse kode sumber dengan ast dan cari node operator yang bisa diganti.</td></tr><tr><td>Menjalankan suite tes pada setiap mutan</td><td>Untuk tiap target, buat salinan pohon, ganti satu operator, lalu ast.unparse.</td></tr><tr><td>Menghitung mutation score dan menampilkan mutan yang selamat</td><td>Mutan &quot;terbunuh&quot; jika minimal satu tes gagal atau error.</td></tr><tr><td>Menambah kasus batas lalu membandingkan skornya</td><td>Mutan yang selamat menunjukkan kasus uji yang hilang; tambahkan tes batas.</td></tr></tbody></table></div>
+<div class="lbl">PYTHON</div><pre><code># Mutation testing mini: seberapa kuat suite tes kita menangkap perubahan kecil?
+import ast
+
+SUMBER = &quot;&quot;&quot;
+def ongkir(berat_kg, jarak_km, member):
+    if berat_kg &lt;= 0:
+        raise ValueError(&quot;berat tidak valid&quot;)
+    biaya = 9000 + max(berat_kg - 1, 0) * 4000
+    if jarak_km &gt; 50:
+        biaya += 5000
+    if member and biaya &gt;= 20000:
+        biaya -= 10000
+    return biaya
+&quot;&quot;&quot;
+
+TES = [  # (argumen, harapan) — suite awal yang tampak &quot;lengkap&quot;
+    ((1, 10, False), 9000), ((3, 10, False), 17000), ((3, 80, False), 22000), ((5, 10, True), 15000),
+]
+TES_TAMBAHAN = [((3, 50, False), 17000), ((3, 51, False), 22000), ((2, 80, True), 13000)]   # batas!
+
+GANTI = {ast.Gt: ast.GtE, ast.GtE: ast.Gt, ast.LtE: ast.Lt, ast.Add: ast.Sub, ast.Sub: ast.Add, ast.And: ast.Or}
+
+def mutan():
+    pohon = ast.parse(SUMBER)
+    target = [n for n in ast.walk(pohon) if isinstance(getattr(n, &quot;op&quot;, None), tuple(GANTI))
+              or any(isinstance(o, tuple(GANTI)) for o in getattr(n, &quot;ops&quot;, []))]
+    for i in range(len(target)):
+        p = ast.parse(SUMBER)
+        n = [x for x in ast.walk(p) if isinstance(getattr(x, &quot;op&quot;, None), tuple(GANTI))
+             or any(isinstance(o, tuple(GANTI)) for o in getattr(x, &quot;ops&quot;, []))][i]
+        if hasattr(n, &quot;ops&quot;): lama = n.ops[0]; n.ops = [GANTI[type(lama)]()]
+        else: lama = n.op; n.op = GANTI[type(lama)]()
+        yield f&quot;baris {n.lineno - 1}: {type(lama).__name__} -&gt; {GANTI[type(lama)].__name__}&quot;, ast.unparse(p)
+
+def bunuh(kode, tes):
+    ns = {}; exec(kode, ns)
+    for arg, harap in tes:
+        try:
+            if ns[&quot;ongkir&quot;](*arg) != harap: return True
+        except Exception:
+            return True
+    return False
+
+for nama, tes in ((&quot;suite awal&quot;, TES), (&quot;suite + kasus batas&quot;, TES + TES_TAMBAHAN)):
+    hasil = [(m, bunuh(k, tes)) for m, k in mutan()]
+    mati = sum(ok for _, ok in hasil)
+    print(f&quot;{nama}: mutation score {mati}/{len(hasil)} = {mati/len(hasil):.0%}&quot;)
+    for m, ok in hasil:
+        if not ok: print(&quot;   mutan selamat -&gt;&quot;, m)
+</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>suite awal: mutation score 5/8 = 62%
+   mutan selamat -&gt; baris 2: LtE -&gt; Lt
+   mutan selamat -&gt; baris 5: Gt -&gt; GtE
+   mutan selamat -&gt; baris 7: GtE -&gt; Gt
+suite + kasus batas: mutation score 8/8 = 100%</code></pre>
+<h2>Poin penting</h2><ul><li>Proyek mini: Mutation testing: mengukur kekuatan suite tes.</li><li>Membuat mutan dengan mengganti operator (>, >=, +, -, and/or) lewat AST</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Apa arti mutan yang &quot;selamat&quot; (survived)?</summary><p class="ok">Jawaban: Kode diubah tetapi tidak ada tes yang gagal, jadi ada perilaku yang tidak diperiksa tes</p><p>Mutan selamat = celah di suite tes.</p></details>
+<a class="cta" href="/#proj-11-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-1-generator-test-case-ep-bva-dari-spesifikasi">Mini 1: Generator test case EP + BVA dari spesifikasi</a></p><p>Berikutnya: <a href="/belajar/proj/mini-3-suite-pengujian-api-top-up-kontrak-negatif-dan-idempotensi">Mini 3: Suite pengujian API top-up: kontrak, negatif, dan idempotensi</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

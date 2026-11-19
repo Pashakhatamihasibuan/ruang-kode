@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Besar 3: Uji performa dan ketahanan untuk flash sale · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Masalah. E-commerce elektronik akan menjalankan flash sale 12.12 dengan perkiraan 10x trafik normal. Tahun lalu situs melambat 40 detik dan 300 unit…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/besar-3-uji-performa-dan-ketahanan-untuk-flash-sale">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Besar 3: Uji performa dan ketahanan untuk flash sale · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Masalah. E-commerce elektronik akan menjalankan flash sale 12.12 dengan perkiraan 10x trafik normal. Tahun lalu situs melambat 40 detik dan 300 unit…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/besar-3-uji-performa-dan-ketahanan-untuk-flash-sale"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Besar 3: Uji performa dan ketahanan untuk flash sale", "description": "Masalah. E-commerce elektronik akan menjalankan flash sale 12.12 dengan perkiraan 10x trafik normal. Tahun lalu situs melambat 40 detik dan 300 unit…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/besar-3-uji-performa-dan-ketahanan-untuk-flash-sale", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Besar 3: Uji performa dan ketahanan untuk flash sale", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/besar-3-uji-performa-dan-ketahanan-untuk-flash-sale"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 11</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 11 · Konsep &amp; kode</div><h1>Besar 3: Uji performa dan ketahanan untuk flash sale</h1><a class="cta" href="/#proj-11-9">Buka versi interaktif</a>
+<p><b>Masalah.</b> E-commerce elektronik akan menjalankan flash sale 12.12 dengan perkiraan 10x trafik normal. Tahun lalu situs melambat 40 detik dan 300 unit terjual melebihi stok (oversell). Tim QA memimpin pengujian performa dan ketahanan sebelum hari H.</p>
+<p><b>Fitur wajib:</b><br>1. Model beban realistis dari data analitik (rasio browsing:checkout, puncak per detik)<br>2. Skenario load, spike, stress, dan soak 4 jam dengan k6<br>3. Threshold otomatis: p95/p99 per endpoint, error rate, nol oversell<br>4. Chaos experiment: pod mati dan latensi cache saat puncak<br>5. Observabilitas: korelasi hasil k6 dengan metrik server di Grafana</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. Ambil data trafik 12.12 tahun lalu dan susun model beban bersama tim bisnis.<br>2. Tulis skrip k6 per skenario dengan threshold; jalankan baseline di beban normal.<br>3. Naikkan beban bertahap, temukan bottleneck lewat Grafana/trace, perbaiki bersama developer, ulangi.<br>4. Jalankan chaos experiment dan soak test; pastikan tidak ada oversell.<br>5. Tulis laporan kapasitas, runbook hari H, dan pantau langsung saat flash sale.</p>
+<p><b>Standar industri yang dinilai:</b> beban dimodelkan dari data nyata, threshold otomatis di pipeline, nol oversell di semua skenario, pemulihan dari kegagalan terukur, laporan kapasitas sebelum hari H</p>
+<div class="tw"><table><caption>Arsitektur dan stack (k6 (OSS/Cloud), Grafana + Prometheus + Tempo, Kubernetes, Chaos Mesh, Redis, PostgreSQL, GitHub Actions)</caption><thead><tr><th>Bagian</th><th>Isi</th></tr></thead><tbody><tr><td>Model beban</td><td>300 RPS browsing tetap + lonjakan checkout 50 → 3.000 RPS dalam 60 detik</td></tr><tr><td>Lingkungan</td><td>staging seukuran produksi, data sintetis 2 juta produk, CDN aktif</td></tr><tr><td>Kriteria</td><td>produk p95 &lt; 300 ms, checkout p95 &lt; 800 ms dan p99 &lt; 2 s, error &lt; 0,5%, oversell = 0</td></tr><tr><td>Ketahanan</td><td>pod inventori dimatikan saat puncak; sistem pulih &lt; 60 detik</td></tr><tr><td>Analisis</td><td>bottleneck dicari dari trace: query lambat, lock baris stok, pool koneksi</td></tr><tr><td>Keputusan</td><td>laporan go/no-go dengan kapasitas aman dan rencana scale-out</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>// perf/flash-sale.js — k6: simulasi flash sale 12.12 (lonjakan 10x dalam 60 detik)
+import http from &#x27;k6/http&#x27;;
+import { check, group, sleep } from &#x27;k6&#x27;;
+import { Trend, Rate } from &#x27;k6/metrics&#x27;;
+
+const checkoutDur = new Trend(&#x27;checkout_duration&#x27;, true);
+const oversell = new Rate(&#x27;oversell&#x27;);
+
+export const options = {
+  scenarios: {
+    browsing: { executor: &#x27;constant-arrival-rate&#x27;, rate: 300, timeUnit: &#x27;1s&#x27;, duration: &#x27;10m&#x27;, preAllocatedVUs: 500 },
+    lonjakan: { executor: &#x27;ramping-arrival-rate&#x27;, startRate: 50, timeUnit: &#x27;1s&#x27;, preAllocatedVUs: 2000, startTime: &#x27;2m&#x27;,
+                stages: [{ target: 3000, duration: &#x27;60s&#x27; }, { target: 3000, duration: &#x27;3m&#x27; }, { target: 50, duration: &#x27;1m&#x27; }],
+                exec: &#x27;beliFlashSale&#x27; },
+  },
+  thresholds: {
+    &#x27;http_req_duration{name:produk}&#x27;: [&#x27;p(95)&lt;300&#x27;],
+    checkout_duration: [&#x27;p(95)&lt;800&#x27;, &#x27;p(99)&lt;2000&#x27;],
+    http_req_failed: [&#x27;rate&lt;0.005&#x27;],
+    oversell: [&#x27;rate==0&#x27;],                                     // stok tidak boleh terjual melebihi persediaan
+  },
+};
+
+export default function () {
+  http.get(`${__ENV.BASE}/api/produk/flash`, { tags: { name: &#x27;produk&#x27; } });
+  sleep(Math.random() * 3);
+}
+
+export function beliFlashSale() {
+  group(&#x27;checkout flash sale&#x27;, () =&gt; {
+    const r = http.post(`${__ENV.BASE}/api/flash/checkout`, JSON.stringify({ sku: &#x27;HP-X12&#x27;, qty: 1 }),
+                        { headers: { &#x27;Content-Type&#x27;: &#x27;application/json&#x27;, &#x27;Idempotency-Key&#x27;: `${__VU}-${__ITER}` } });
+    checkoutDur.add(r.timings.duration);
+    check(r, { &#x27;diterima atau habis&#x27;: x =&gt; [201, 409].includes(x.status) });
+    oversell.add(r.status === 201 &amp;&amp; r.json(&#x27;sisa_stok&#x27;) &lt; 0);
+  });
+}
+
+# chaos/eksperimen.yaml — Chaos Mesh: matikan 1 pod inventori saat puncak, latensi Redis +200ms
+# Hipotesis: checkout tetap &lt; 2 s p99, tidak ada oversell, antrean pulih &lt; 60 s setelah pod kembali.
+apiVersion: chaos-mesh.org/v1alpha1
+kind: PodChaos
+metadata: { name: inventori-pod-kill }
+spec: { action: pod-kill, mode: one, selector: { labelSelectors: { app: inventori } }, scheduler: { cron: &quot;@every 5m&quot; } }</code></pre>
+<h2>Poin penting</h2><ul><li>Proyek besar: Uji performa dan ketahanan untuk flash sale.</li><li>Stack: k6 (OSS/Cloud), Grafana + Prometheus + Tempo, Kubernetes, Chaos Mesh, Redis, PostgreSQL, GitHub Actions.</li><li>Berkas inti penyelesaian ada di bawah; sisanya mengikuti pola yang sama.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa threshold p99 dipakai, bukan hanya rata-rata waktu respons?</summary><p class="ok">Jawaban: Rata-rata menyembunyikan ekor lambat; p99 menunjukkan pengalaman 1% permintaan terburuk yang sering terjadi saat puncak</p><p>Persentil lebih jujur.</p></details>
+<a class="cta" href="/#proj-11-9">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/besar-2-strategi-qa-api-layanan-pembayaran-contract-negatif-dan-keaman">Besar 2: Strategi QA API layanan pembayaran: contract, negatif, dan keamanan</a></p><p>Berikutnya: <a href="/belajar/proj/besar-4-qa-untuk-fitur-berbasis-llm-evaluasi-otomatis-dan-red-teaming">Besar 4: QA untuk fitur berbasis LLM: evaluasi otomatis dan red teaming</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

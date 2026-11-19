@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mini 4: Analisis laporan JUnit XML dari CI · Proyek Portofolio · Ruang Kode</title>
+<meta name="description" content="Masalah. Pipeline E2E sering merah dan tim mulai mengabaikannya. Buat analis laporan JUnit XML dari beberapa run CI untuk membedakan regresi nyata, tes…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/proj/mini-4-analisis-laporan-junit-xml-dari-ci">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Mini 4: Analisis laporan JUnit XML dari CI · Proyek Portofolio · Ruang Kode"><meta property="og:description" content="Masalah. Pipeline E2E sering merah dan tim mulai mengabaikannya. Buat analis laporan JUnit XML dari beberapa run CI untuk membedakan regresi nyata, tes…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/proj/mini-4-analisis-laporan-junit-xml-dari-ci"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Mini 4: Analisis laporan JUnit XML dari CI", "description": "Masalah. Pipeline E2E sering merah dan tim mulai mengabaikannya. Buat analis laporan JUnit XML dari beberapa run CI untuk membedakan regresi nyata, tes…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-4-analisis-laporan-junit-xml-dari-ci", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Proyek Portofolio", "url": "https://ruang-kode-nine.vercel.app/belajar/proj"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Proyek Portofolio", "item": "https://ruang-kode-nine.vercel.app/belajar/proj"}, {"@type": "ListItem", "position": 3, "name": "Mini 4: Analisis laporan JUnit XML dari CI", "item": "https://ruang-kode-nine.vercel.app/belajar/proj/mini-4-analisis-laporan-junit-xml-dari-ci"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/proj">Proyek Portofolio</a> / Modul 11</nav>
+<div class="eyebrow">Proyek Portofolio · Modul 11 · Konsep &amp; kode</div><h1>Mini 4: Analisis laporan JUnit XML dari CI</h1><a class="cta" href="/#proj-11-4">Buka versi interaktif</a>
+<p><b>Masalah.</b> Pipeline E2E sering merah dan tim mulai mengabaikannya. Buat analis laporan JUnit XML dari beberapa run CI untuk membedakan regresi nyata, tes flaky, dan lonjakan durasi.</p>
+<p><b>Fitur wajib:</b><br>1. Membaca JUnit XML (format standar pytest, Playwright, Maven)<br>2. Riwayat lulus/gagal per tes lintas run<br>3. Klasifikasi: regresi, kemungkinan flaky, lonjakan durasi<br>4. Ringkasan pass rate untuk laporan harian</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. Parse setiap XML dengan ElementTree dan iterasi elemen testcase.<br>2. Kumpulkan riwayat (L/G), durasi, dan pesan kegagalan per nama tes.<br>3. Gagal-lulus-gagal dengan timeout = kandidat flaky; gagal berturut-turut sejak run tertentu = regresi.<br>4. Cetak tabel dan pass rate; kirim ke Slack di pipeline nyata.</p>
+<p><b>Kembangkan sendiri:</b> simpan hasil ke SQLite setiap run, hitung flakiness rate 30 hari, dan buat otomatis tiket Jira untuk tes yang flaky lebih dari 5%.</p>
+<div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Membaca JUnit XML (format standar pytest, Playwright, Maven)</td><td>Parse setiap XML dengan ElementTree dan iterasi elemen testcase.</td></tr><tr><td>Riwayat lulus/gagal per tes lintas run</td><td>Kumpulkan riwayat (L/G), durasi, dan pesan kegagalan per nama tes.</td></tr><tr><td>Klasifikasi: regresi, kemungkinan flaky, lonjakan durasi</td><td>Gagal-lulus-gagal dengan timeout = kandidat flaky; gagal berturut-turut sejak run tertentu = regresi.</td></tr><tr><td>Ringkasan pass rate untuk laporan harian</td><td>Cetak tabel dan pass rate; kirim ke Slack di pipeline nyata.</td></tr></tbody></table></div>
+<div class="lbl">PYTHON</div><pre><code>import xml.etree.ElementTree as ET
+from collections import defaultdict
+
+# Laporan JUnit XML dari 3 run CI terakhir (format standar pytest, Playwright, Maven Surefire)
+RUN = {
+ &quot;run-412&quot;: &quot;&quot;&quot;&lt;testsuite name=&quot;e2e&quot; tests=&quot;5&quot; failures=&quot;1&quot;&gt;&lt;testcase classname=&quot;checkout&quot; name=&quot;voucher&quot; time=&quot;8.1&quot;/&gt;
+   &lt;testcase classname=&quot;checkout&quot; name=&quot;bayar_qris&quot; time=&quot;12.4&quot;/&gt;&lt;testcase classname=&quot;login&quot; name=&quot;otp&quot; time=&quot;6.0&quot;&gt;&lt;failure message=&quot;timeout 30000ms waiting for getByRole(&#x27;button&#x27;, name=&#x27;Verifikasi&#x27;)&quot;/&gt;&lt;/testcase&gt;
+   &lt;testcase classname=&quot;profil&quot; name=&quot;ubah_foto&quot; time=&quot;9.7&quot;/&gt;&lt;testcase classname=&quot;keranjang&quot; name=&quot;update_qty&quot; time=&quot;4.2&quot;/&gt;&lt;/testsuite&gt;&quot;&quot;&quot;,
+ &quot;run-413&quot;: &quot;&quot;&quot;&lt;testsuite name=&quot;e2e&quot; tests=&quot;5&quot; failures=&quot;1&quot;&gt;&lt;testcase classname=&quot;checkout&quot; name=&quot;voucher&quot; time=&quot;8.3&quot;/&gt;
+   &lt;testcase classname=&quot;checkout&quot; name=&quot;bayar_qris&quot; time=&quot;31.8&quot;/&gt;&lt;testcase classname=&quot;login&quot; name=&quot;otp&quot; time=&quot;5.8&quot;/&gt;
+   &lt;testcase classname=&quot;profil&quot; name=&quot;ubah_foto&quot; time=&quot;9.9&quot;/&gt;&lt;testcase classname=&quot;keranjang&quot; name=&quot;update_qty&quot; time=&quot;4.4&quot;&gt;&lt;failure message=&quot;expected &#x27;Rp170.000&#x27; got &#x27;Rp85.000&#x27;&quot;/&gt;&lt;/testcase&gt;&lt;/testsuite&gt;&quot;&quot;&quot;,
+ &quot;run-414&quot;: &quot;&quot;&quot;&lt;testsuite name=&quot;e2e&quot; tests=&quot;5&quot; failures=&quot;2&quot;&gt;&lt;testcase classname=&quot;checkout&quot; name=&quot;voucher&quot; time=&quot;8.0&quot;/&gt;
+   &lt;testcase classname=&quot;checkout&quot; name=&quot;bayar_qris&quot; time=&quot;12.9&quot;/&gt;&lt;testcase classname=&quot;login&quot; name=&quot;otp&quot; time=&quot;30.0&quot;&gt;&lt;failure message=&quot;timeout 30000ms waiting for getByRole(&#x27;button&#x27;, name=&#x27;Verifikasi&#x27;)&quot;/&gt;&lt;/testcase&gt;
+   &lt;testcase classname=&quot;profil&quot; name=&quot;ubah_foto&quot; time=&quot;9.5&quot;/&gt;&lt;testcase classname=&quot;keranjang&quot; name=&quot;update_qty&quot; time=&quot;4.3&quot;&gt;&lt;failure message=&quot;expected &#x27;Rp170.000&#x27; got &#x27;Rp85.000&#x27;&quot;/&gt;&lt;/testcase&gt;&lt;/testsuite&gt;&quot;&quot;&quot;,
+}
+riwayat, durasi, pesan = defaultdict(str), defaultdict(list), {}
+for run, xml in RUN.items():
+    for tc in ET.fromstring(xml).iter(&quot;testcase&quot;):
+        nama = f&quot;{tc.get(&#x27;classname&#x27;)}.{tc.get(&#x27;name&#x27;)}&quot;
+        f = tc.find(&quot;failure&quot;)
+        riwayat[nama] += &quot;G&quot; if f is not None else &quot;L&quot;
+        durasi[nama].append(float(tc.get(&quot;time&quot;)))
+        if f is not None: pesan[nama] = f.get(&quot;message&quot;)
+
+print(f&quot;{&#x27;tes&#x27;:&lt;22}{&#x27;riwayat&#x27;:&lt;9}{&#x27;rata2 s&#x27;:&gt;8}  catatan&quot;)
+for nama in sorted(riwayat):
+    r, d = riwayat[nama], durasi[nama]
+    rata = sum(d) / len(d)
+    if &quot;G&quot; in r and &quot;L&quot; in r and pesan.get(nama, &quot;&quot;).startswith(&quot;timeout&quot;): cat = &quot;FLAKY? timeout -&gt; cek tunggu &amp; data&quot;
+    elif r.endswith(&quot;GG&quot;): cat = &quot;REGRESI sejak run-413: &quot; + pesan[nama]
+    elif max(d) &gt; 2 * min(d): cat = f&quot;lonjakan durasi {max(d):.1f}s -&gt; cek API/environment&quot;
+    else: cat = &quot;&quot;
+    print(f&quot;{nama:&lt;22}{r:&lt;9}{rata:&gt;8.1f}  {cat}&quot;)
+total = sum(len(r) for r in riwayat.values()); gagal = sum(r.count(&quot;G&quot;) for r in riwayat.values())
+akhir = [r[-1] for r in riwayat.values()]
+print(f&quot;pass rate 3 run: {(total - gagal) / total:.0%}; run terakhir: {akhir.count(&#x27;L&#x27;)}/{len(akhir)} lulus&quot;)
+</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>tes                   riwayat   rata2 s  catatan
+checkout.bayar_qris   LLL          19.0  lonjakan durasi 31.8s -&gt; cek API/environment
+checkout.voucher      LLL           8.1  
+keranjang.update_qty  LGG           4.3  REGRESI sejak run-413: expected &#x27;Rp170.000&#x27; got &#x27;Rp85.000&#x27;
+login.otp             GLG          13.9  FLAKY? timeout -&gt; cek tunggu &amp; data
+profil.ubah_foto      LLL           9.7  
+pass rate 3 run: 73%; run terakhir: 3/5 lulus</code></pre>
+<h2>Poin penting</h2><ul><li>Proyek mini: Analisis laporan JUnit XML dari CI.</li><li>Membaca JUnit XML (format standar pytest, Playwright, Maven)</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Tes gagal karena timeout di run 412 dan 414 tetapi lulus di 413 tanpa perubahan kode. Apa langkah pertama yang tepat?</summary><p class="ok">Jawaban: Selidiki penyebab flaky (tunggu, data, environment) lewat trace, dan karantina sementara dengan tiket</p><p>Flaky harus diperbaiki, bukan disembunyikan.</p></details>
+<a class="cta" href="/#proj-11-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-3-suite-pengujian-api-top-up-kontrak-negatif-dan-idempotensi">Mini 3: Suite pengujian API top-up: kontrak, negatif, dan idempotensi</a></p><p>Berikutnya: <a href="/belajar/proj/mini-5-pairwise-testing-untuk-kombinasi-perangkat">Mini 5: Pairwise testing untuk kombinasi perangkat</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>
