@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fetch API: GET dan menangani respons · JavaScript · Ruang Kode</title>
+<meta name="description" content="fetch(url, opsi) adalah API standar untuk permintaan HTTP di browser dan Node 18+. Ia mengembalikan Promise berisi object Response. Isi respons dibaca…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/fetch-api-get-dan-menangani-respons">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Fetch API: GET dan menangani respons · JavaScript · Ruang Kode"><meta property="og:description" content="fetch(url, opsi) adalah API standar untuk permintaan HTTP di browser dan Node 18+. Ia mengembalikan Promise berisi object Response. Isi respons dibaca…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/fetch-api-get-dan-menangani-respons"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Fetch API: GET dan menangani respons", "description": "fetch(url, opsi) adalah API standar untuk permintaan HTTP di browser dan Node 18+. Ia mengembalikan Promise berisi object Response. Isi respons dibaca…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/fetch-api-get-dan-menangani-respons", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "Fetch API: GET dan menangani respons", "item": "https://ruang-kode-nine.vercel.app/belajar/js/fetch-api-get-dan-menangani-respons"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 13</nav>
+<div class="eyebrow">JavaScript · Modul 13 · Konsep &amp; kode</div><h1>Fetch API: GET dan menangani respons</h1><a class="cta" href="/#js-13-1">Buka versi interaktif</a>
+<p><code>fetch(url, opsi)</code> adalah API standar untuk permintaan HTTP di browser dan Node 18+. Ia mengembalikan Promise berisi object <code>Response</code>. Isi respons dibaca dengan metode yang juga mengembalikan Promise: <code>res.json()</code>, <code>res.text()</code>, <code>res.blob()</code>, <code>res.arrayBuffer()</code>, <code>res.formData()</code>; body hanya bisa dibaca sekali.</p>
+<p>Jebakan terpenting: fetch <b>hanya menolak (reject) saat gagal jaringan</b> (offline, DNS, CORS diblok). Status <b>404 atau 500 tetap fulfilled</b>. Selalu cek <code>res.ok</code> (true untuk status 200 sampai 299) atau <code>res.status</code>, lalu lempar error sendiri.</p>
+<p>Di proyek nyata, buat <b>wrapper</b> kecil (misalnya <code>api.get</code>) yang menambahkan base URL, header, pengecekan status, dan parsing JSON di satu tempat. Banyak tim memakai pustaka seperti <b>TanStack Query</b> atau SWR di atas fetch untuk cache, retry, dan status loading. Contoh di bawah menjalankan server API kecil di proses yang sama agar fetch benar-benar terjadi.</p>
+<div class="tw"><table><caption>Kode status HTTP yang sering ditemui</caption><thead><tr><th>Status</th><th>Arti</th><th>Tindakan di frontend</th></tr></thead><tbody><tr><td>200 OK</td><td>Berhasil</td><td>Tampilkan data</td></tr><tr><td>201 Created</td><td>Data dibuat</td><td>Tampilkan sukses, perbarui daftar</td></tr><tr><td>204 No Content</td><td>Berhasil tanpa body</td><td>Jangan panggil res.json()</td></tr><tr><td>400 Bad Request</td><td>Input salah</td><td>Tampilkan pesan validasi</td></tr><tr><td>401 Unauthorized</td><td>Belum login atau token habis</td><td>Arahkan ke login / refresh token</td></tr><tr><td>403 Forbidden</td><td>Tidak punya izin</td><td>Sembunyikan aksi</td></tr><tr><td>404 Not Found</td><td>Tidak ada</td><td>Halaman atau pesan tidak ditemukan</td></tr><tr><td>429 Too Many Requests</td><td>Kena rate limit</td><td>Tunggu lalu coba lagi</td></tr><tr><td>500 / 503</td><td>Server error / sibuk</td><td>Pesan ramah + retry</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>import http from &#x27;node:http&#x27;;
+// server API kecil di proses yang sama, supaya contoh fetch bisa dijalankan tanpa internet
+const produk = [{ id: 1, nama: &#x27;Kopi Gayo&#x27;, harga: 85000 }, { id: 2, nama: &#x27;Teh Melati&#x27;, harga: 22000 }];
+const server = http.createServer(async (req, res) =&gt; {
+  const url = new URL(req.url, &#x27;http://x&#x27;);
+  const kirim = (status, data) =&gt; { res.writeHead(status, { &#x27;Content-Type&#x27;: &#x27;application/json&#x27; }); res.end(JSON.stringify(data)); };
+  if (req.method === &#x27;GET&#x27; &amp;&amp; url.pathname === &#x27;/api/produk&#x27;) return kirim(200, produk);
+  if (req.method === &#x27;GET&#x27; &amp;&amp; url.pathname.startsWith(&#x27;/api/produk/&#x27;)) {
+    const p = produk.find(x =&gt; x.id === Number(url.pathname.split(&#x27;/&#x27;).pop()));
+    return p ? kirim(200, p) : kirim(404, { error: &#x27;Produk tidak ditemukan&#x27; });
+  }
+  if (req.method === &#x27;POST&#x27; &amp;&amp; url.pathname === &#x27;/api/pesanan&#x27;) {
+    let body = &#x27;&#x27;;
+    for await (const potong of req) body += potong;
+    const data = JSON.parse(body);
+    if (req.headers.authorization !== &#x27;Bearer token-demo&#x27;) return kirim(401, { error: &#x27;Belum login&#x27; });
+    return kirim(201, { id: 501, ...data, status: &#x27;dibuat&#x27; });
+  }
+  if (url.pathname === &#x27;/api/lambat&#x27;) return setTimeout(() =&gt; kirim(200, { ok: true }), 500);
+  kirim(404, { error: &#x27;Rute tidak ada&#x27; });
+});
+await new Promise(r =&gt; server.listen(0, r));
+const BASE = `http://localhost:${server.address().port}`;
+
+// 1. GET daftar produk
+const res = await fetch(`${BASE}/api/produk`);
+console.log(res.status, res.ok, res.headers.get(&#x27;content-type&#x27;));
+const daftar = await res.json();
+console.log(daftar.map(p =&gt; p.nama));
+
+// 2. 404 tidak membuat fetch reject
+const r404 = await fetch(`${BASE}/api/produk/99`);
+console.log(&#x27;404 -&gt;&#x27;, r404.ok, r404.status, await r404.json());
+
+// 3. wrapper yang mengecek status
+async function ambilJSON(path) {
+  const r = await fetch(BASE + path);
+  if (!r.ok) {
+    const body = await r.json().catch(() =&gt; ({}));
+    throw new Error(`HTTP ${r.status}: ${body.error ?? r.statusText}`);
+  }
+  return r.json();
+}
+console.log(await ambilJSON(&#x27;/api/produk/2&#x27;));
+try { await ambilJSON(&#x27;/api/produk/42&#x27;); } catch (e) { console.log(&#x27;ditangkap:&#x27;, e.message); }
+
+// 4. kegagalan jaringan memang reject
+try { await fetch(&#x27;http://localhost:1/tidak-ada&#x27;); } catch (e) { console.log(&#x27;jaringan gagal:&#x27;, e.name, e.message); }
+server.close();</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>200 true application/json
+[ &#x27;Kopi Gayo&#x27;, &#x27;Teh Melati&#x27; ]
+404 -&gt; false 404 { error: &#x27;Produk tidak ditemukan&#x27; }
+{ id: 2, nama: &#x27;Teh Melati&#x27;, harga: 22000 }
+ditangkap: HTTP 404: Produk tidak ditemukan
+jaringan gagal: TypeError fetch failed</code></pre>
+<h2>Poin penting</h2><ul><li>fetch mengembalikan Promise&lt;Response>; baca body dengan res.json().</li><li>fetch tidak reject untuk 404/500: cek res.ok.</li><li>Body hanya bisa dibaca sekali.</li><li>Buat wrapper API terpusat.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Apa yang terjadi jika fetch menerima status 500?</summary><p class="ok">Jawaban: Promise tetap fulfilled, res.ok bernilai false</p><p>Reject hanya untuk kegagalan jaringan.</p></details><details><summary>res.ok bernilai true untuk status?</summary><p class="ok">Jawaban: 200 sampai 299</p><p>Rentang sukses HTTP.</p></details>
+<a class="cta" href="/#js-13-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/async-dan-await">async dan await</a></p><p>Berikutnya: <a href="/belajar/js/post-json-header-dan-abortcontroller">POST JSON, header, dan AbortController</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

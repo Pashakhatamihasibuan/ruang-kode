@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Built-in functions global · JavaScript · Ruang Kode</title>
+<meta name="description" content="Selain metode pada object bawaan, JS punya beberapa fungsi global: parseInt, parseFloat, isNaN dan isFinite (versi lama yang melakukan koersi; lebih aman…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/built-in-functions-global">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Built-in functions global · JavaScript · Ruang Kode"><meta property="og:description" content="Selain metode pada object bawaan, JS punya beberapa fungsi global: parseInt, parseFloat, isNaN dan isFinite (versi lama yang melakukan koersi; lebih aman…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/built-in-functions-global"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Built-in functions global", "description": "Selain metode pada object bawaan, JS punya beberapa fungsi global: parseInt, parseFloat, isNaN dan isFinite (versi lama yang melakukan koersi; lebih aman…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/built-in-functions-global", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "Built-in functions global", "item": "https://ruang-kode-nine.vercel.app/belajar/js/built-in-functions-global"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 10</nav>
+<div class="eyebrow">JavaScript · Modul 10 · Konsep &amp; kode</div><h1>Built-in functions global</h1><a class="cta" href="/#js-10-5">Buka versi interaktif</a>
+<p>Selain metode pada object bawaan, JS punya beberapa <b>fungsi global</b>: <code>parseInt</code>, <code>parseFloat</code>, <code>isNaN</code> dan <code>isFinite</code> (versi lama yang melakukan koersi; lebih aman <code>Number.isNaN</code> dan <code>Number.isFinite</code>), <code>encodeURIComponent</code>/<code>decodeURIComponent</code> dan <code>encodeURI</code>/<code>decodeURI</code>, <code>structuredClone</code>, <code>queueMicrotask</code>, serta <code>eval</code> (hindari).</p>
+<p>Lingkungan juga menambahkan fungsi global: <code>setTimeout</code>, <code>setInterval</code>, <code>fetch</code>, <code>console</code>, <code>atob</code>/<code>btoa</code> (Base64), <code>crypto.randomUUID()</code>, dan <code>alert</code> (browser saja). Semua tersedia di <code>globalThis</code>.</p>
+<p><code>encodeURIComponent</code> wajib dipakai saat menyusun query string dari input pengguna agar karakter seperti spasi, <code>&</code>, dan <code>?</code> tidak merusak URL. Lebih baik lagi, pakai <code>URL</code> dan <code>URLSearchParams</code>. <code>eval</code> menjalankan teks sebagai kode: berbahaya (celah keamanan XSS), lambat, dan diblok oleh Content Security Policy.</p>
+<div class="tw"><table><caption>Fungsi global yang sering dipakai</caption><thead><tr><th>Fungsi</th><th>Kegunaan</th><th>Catatan</th></tr></thead><tbody><tr><td>parseInt / parseFloat</td><td>Teks ke angka</td><td>parseInt dengan radix 10</td></tr><tr><td>Number.isNaN / isFinite</td><td>Cek angka</td><td>Tanpa koersi, lebih aman</td></tr><tr><td>encodeURIComponent</td><td>Aman untuk query string</td><td>Atau URLSearchParams</td></tr><tr><td>structuredClone</td><td>Salinan dalam</td><td>Mendukung Date, Map, Set</td></tr><tr><td>setTimeout / setInterval</td><td>Penjadwalan</td><td>Dari lingkungan (Web API/Node)</td></tr><tr><td>crypto.randomUUID</td><td>ID unik</td><td>Tersedia di browser modern dan Node</td></tr><tr><td>atob / btoa</td><td>Base64</td><td>Hanya teks Latin-1</td></tr><tr><td>eval</td><td>Jalankan teks sebagai kode</td><td>Hindari: keamanan dan performa</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>console.log(isNaN(&#x27;halo&#x27;), Number.isNaN(&#x27;halo&#x27;), isFinite(&#x27;12&#x27;), Number.isFinite(&#x27;12&#x27;));
+
+const kata = &#x27;kopi &amp; teh?&#x27;;
+console.log(encodeURIComponent(kata), encodeURI(&#x27;https://contoh.id/cari?q=&#x27; + kata));
+console.log(decodeURIComponent(&#x27;kota%3DBandung%20Barat&#x27;));
+const url = new URL(&#x27;https://toko.id/cari&#x27;);
+url.searchParams.set(&#x27;q&#x27;, &#x27;kopi &amp; teh&#x27;);
+url.searchParams.set(&#x27;hal&#x27;, 2);
+console.log(url.href, url.searchParams.get(&#x27;q&#x27;));
+
+console.log(btoa(&#x27;user:rahasia&#x27;), atob(&#x27;SGFsbw==&#x27;));
+const asli = { tgl: new Date(0), tag: new Set([&#x27;a&#x27;]), bersarang: { n: 1 } };
+const klon = structuredClone(asli);
+console.log(klon.tgl instanceof Date, klon.tag.has(&#x27;a&#x27;), klon.bersarang !== asli.bersarang);
+console.log(typeof crypto.randomUUID(), crypto.randomUUID().length);
+console.log([&#x27;setTimeout&#x27;, &#x27;fetch&#x27;, &#x27;structuredClone&#x27;, &#x27;queueMicrotask&#x27;, &#x27;document&#x27;].map(f =&gt; `${f}:${typeof globalThis[f]}`).join(&#x27; &#x27;));</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>true false true false
+kopi%20%26%20teh%3F https://contoh.id/cari?q=kopi%20&amp;%20teh?
+kota=Bandung Barat
+https://toko.id/cari?q=kopi+%26+teh&amp;hal=2 kopi &amp; teh
+dXNlcjpyYWhhc2lh Halo
+true true true
+string 36
+setTimeout:function fetch:function structuredClone:function queueMicrotask:function document:undefined</code></pre>
+<h2>Poin penting</h2><ul><li>Pakai Number.isNaN dan Number.isFinite.</li><li>encodeURIComponent atau URLSearchParams untuk input di URL.</li><li>structuredClone untuk salinan dalam.</li><li>Jangan pakai eval.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>isNaN(&#x27;halo&#x27;) vs Number.isNaN(&#x27;halo&#x27;)?</summary><p class="ok">Jawaban: true dan false</p><p>isNaN global mengoersi teks ke NaN dulu.</p></details><details><summary>Cara aman menaruh input &quot;a&amp;b&quot; di query string?</summary><p class="ok">Jawaban: encodeURIComponent atau URLSearchParams</p><p>&amp; akan memutus parameter jika tidak di-encode.</p></details>
+<a class="cta" href="/#js-10-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/lexical-scoping-dan-closure">Lexical scoping dan closure</a></p><p>Berikutnya: <a href="/belajar/js/strict-mode">Strict mode</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

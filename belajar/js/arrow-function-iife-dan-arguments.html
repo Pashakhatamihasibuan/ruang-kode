@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Arrow function, IIFE, dan arguments · JavaScript · Ruang Kode</title>
+<meta name="description" content="Arrow function ((a, b) =&gt; a + b) ringkas: satu parameter boleh tanpa kurung, satu ekspresi otomatis di-return (implicit return), dan untuk mengembalikan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/arrow-function-iife-dan-arguments">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Arrow function, IIFE, dan arguments · JavaScript · Ruang Kode"><meta property="og:description" content="Arrow function ((a, b) =&gt; a + b) ringkas: satu parameter boleh tanpa kurung, satu ekspresi otomatis di-return (implicit return), dan untuk mengembalikan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/arrow-function-iife-dan-arguments"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Arrow function, IIFE, dan arguments", "description": "Arrow function ((a, b) => a + b) ringkas: satu parameter boleh tanpa kurung, satu ekspresi otomatis di-return (implicit return), dan untuk mengembalikan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/arrow-function-iife-dan-arguments", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "Arrow function, IIFE, dan arguments", "item": "https://ruang-kode-nine.vercel.app/belajar/js/arrow-function-iife-dan-arguments"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 10</nav>
+<div class="eyebrow">JavaScript · Modul 10 · Konsep &amp; kode</div><h1>Arrow function, IIFE, dan arguments</h1><a class="cta" href="/#js-10-2">Buka versi interaktif</a>
+<p><b>Arrow function</b> (<code>(a, b) =&gt; a + b</code>) ringkas: satu parameter boleh tanpa kurung, satu ekspresi otomatis di-return (<b>implicit return</b>), dan untuk mengembalikan object literal bungkus dengan kurung <code>() =&gt; ({ ... })</code>. Arrow <b>tidak punya</b> <code>this</code>, <code>arguments</code>, <code>super</code>, maupun <code>prototype</code> sendiri, dan tidak bisa dipanggil dengan <code>new</code>.</p>
+<p><b>IIFE</b> (Immediately Invoked Function Expression), <code>(function () { ... })()</code>, langsung dijalankan saat didefinisikan. Dulu dipakai untuk membuat scope privat dan menghindari polusi global (pola <b>module pattern</b>). Kini perannya banyak digantikan modul ES dan block scope, tetapi masih muncul di kode lama, bundel, dan untuk menjalankan async di tingkat atas pada lingkungan lama.</p>
+<p>Object <code>arguments</code> adalah object mirip array (<b>array-like</b>) berisi semua argumen pada fungsi biasa. Ia tidak punya metode array (ubah dengan <code>Array.from</code>) dan tidak ada di arrow function. Di kode modern, pakai rest parameter yang merupakan array asli.</p>
+<div class="tw"><table><caption>Fungsi biasa vs arrow function</caption><thead><tr><th>Aspek</th><th>function</th><th>arrow</th></tr></thead><tbody><tr><td>this</td><td>Ditentukan cara pemanggilan</td><td>Diambil dari scope luar</td></tr><tr><td>arguments</td><td>Ada</td><td>Tidak ada (pakai ...rest)</td></tr><tr><td>new</td><td>Bisa (sebagai konstruktor)</td><td>TypeError</td></tr><tr><td>Implicit return</td><td>Tidak</td><td>Ya untuk satu ekspresi</td></tr><tr><td>Cocok untuk</td><td>Metode object, konstruktor lama</td><td>Callback, map/filter, handler di class</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>const kali = (a, b) =&gt; a * b;
+const kuadrat = x =&gt; x * x;
+const buatUser = (nama, umur) =&gt; ({ nama, umur });   // object perlu kurung
+console.log(kali(3, 4), kuadrat(9), buatUser(&#x27;Gita&#x27;, 21));
+const salahObj = () =&gt; { nama: &#x27;x&#x27; };                 // dianggap blok + label
+console.log(salahObj());
+
+const penghitung = (function () {                     // IIFE + module pattern
+  let hitungan = 0;                                   // privat
+  return { tambah: () =&gt; ++hitungan, nilai: () =&gt; hitungan };
+})();
+penghitung.tambah(); penghitung.tambah();
+console.log(penghitung.nilai(), typeof hitungan);
+
+(() =&gt; console.log(&#x27;IIFE arrow langsung jalan&#x27;))();
+
+function lama() {
+  console.log(arguments.length, arguments[0], Array.isArray(arguments));
+  return Array.from(arguments).join(&#x27;-&#x27;);
+}
+console.log(lama(&#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27;));
+const modern = (...args) =&gt; args.join(&#x27;+&#x27;);
+console.log(modern(1, 2, 3));
+try { new kali(1, 2); } catch (e) { console.log(e.name + &#x27;:&#x27;, e.message); }</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>12 81 { nama: &#x27;Gita&#x27;, umur: 21 }
+undefined
+2 undefined
+IIFE arrow langsung jalan
+3 a false
+a-b-c
+1+2+3
+TypeError: kali is not a constructor</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Ubah fungsi berikut menjadi arrow function satu baris: <code>function diskon(h, p) { return h - h * p / 100; }</code>, lalu terapkan ke array harga [10000, 25000] dengan diskon 20 memakai map.</p><details><summary>Petunjuk</summary><p>const diskon = (h, p) => h - h * p / 100;</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>const diskon = (h, p) =&gt; h - h * p / 100;
+console.log([10000, 25000].map(h =&gt; diskon(h, 20)));</code></pre><div class="lbl">KELUARAN</div><pre><code>[ 8000, 20000 ]</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Arrow: ringkas, implicit return, tanpa this/arguments sendiri.</li><li>Kembalikan object literal dengan ({ }).</li><li>IIFE untuk scope privat (pola lama).</li><li>arguments array-like; pakai rest parameter.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Hasil const f = () =&gt; { a: 1 }; f()?</summary><p class="ok">Jawaban: undefined</p><p>Kurung kurawal dibaca sebagai blok, a: menjadi label.</p></details><details><summary>Kenapa arrow function tidak bisa dipakai dengan new?</summary><p class="ok">Jawaban: Tidak punya prototype dan bukan konstruktor</p><p>Arrow tidak bisa menjadi konstruktor.</p></details>
+<a class="cta" href="/#js-10-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/membuat-fungsi-dan-parameternya">Membuat fungsi dan parameternya</a></p><p>Berikutnya: <a href="/belajar/js/call-stack-dan-rekursi">Call stack dan rekursi</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

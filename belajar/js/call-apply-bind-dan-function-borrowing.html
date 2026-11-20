@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>call, apply, bind, dan function borrowing · JavaScript · Ruang Kode</title>
+<meta name="description" content="Tiga metode milik setiap fungsi untuk explicit binding: f.call(thisArg, a, b) memanggil langsung dengan argumen satu per satu; f.apply(thisArg, [a, b])…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/call-apply-bind-dan-function-borrowing">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="call, apply, bind, dan function borrowing · JavaScript · Ruang Kode"><meta property="og:description" content="Tiga metode milik setiap fungsi untuk explicit binding: f.call(thisArg, a, b) memanggil langsung dengan argumen satu per satu; f.apply(thisArg, [a, b])…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/call-apply-bind-dan-function-borrowing"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "call, apply, bind, dan function borrowing", "description": "Tiga metode milik setiap fungsi untuk explicit binding: f.call(thisArg, a, b) memanggil langsung dengan argumen satu per satu; f.apply(thisArg, [a, b])…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/call-apply-bind-dan-function-borrowing", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "call, apply, bind, dan function borrowing", "item": "https://ruang-kode-nine.vercel.app/belajar/js/call-apply-bind-dan-function-borrowing"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 11</nav>
+<div class="eyebrow">JavaScript · Modul 11 · Konsep &amp; kode</div><h1>call, apply, bind, dan function borrowing</h1><a class="cta" href="/#js-11-4">Buka versi interaktif</a>
+<p>Tiga metode milik setiap fungsi untuk <b>explicit binding</b>: <code>f.call(thisArg, a, b)</code> memanggil langsung dengan argumen satu per satu; <code>f.apply(thisArg, [a, b])</code> memanggil langsung dengan argumen berupa array; <code>f.bind(thisArg, a)</code> <b>tidak memanggil</b>, tetapi mengembalikan fungsi baru yang this-nya terkunci permanen (dan bisa mengisi sebagian argumen di depan: <b>partial application</b>).</p>
+<p><b>Function borrowing</b> adalah meminjam metode dari object lain lewat call/apply. Contoh klasik: <code>Array.prototype.slice.call(arguments)</code> atau <code>Array.prototype.map.call('abc', ...)</code> untuk object array-like. Di kode modern, <code>Array.from</code> dan spread biasanya lebih bersih.</p>
+<p>Catatan: this pada fungsi hasil bind tidak bisa diubah lagi oleh call/apply/bind berikutnya (kecuali dipanggil dengan new). Arrow function mengabaikan thisArg sepenuhnya. Sejak spread ada, <code>apply</code> lebih jarang dipakai: <code>Math.max(...arr)</code> menggantikan <code>Math.max.apply(null, arr)</code>.</p>
+<div class="tw"><table><caption>call vs apply vs bind</caption><thead><tr><th>Metode</th><th>Langsung memanggil?</th><th>Bentuk argumen</th><th>Mengembalikan</th></tr></thead><tbody><tr><td>call</td><td>Ya</td><td>Satu per satu</td><td>Hasil fungsi</td></tr><tr><td>apply</td><td>Ya</td><td>Array</td><td>Hasil fungsi</td></tr><tr><td>bind</td><td>Tidak</td><td>Satu per satu (partial)</td><td>Fungsi baru dengan this terkunci</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>function perkenalan(salam, tanda) {
+  return `${salam}, saya ${this.nama} dari ${this.kota}${tanda}`;
+}
+const rina = { nama: &#x27;Rina&#x27;, kota: &#x27;Padang&#x27; };
+const agus = { nama: &#x27;Agus&#x27;, kota: &#x27;Kupang&#x27; };
+console.log(perkenalan.call(rina, &#x27;Halo&#x27;, &#x27;!&#x27;));
+console.log(perkenalan.apply(agus, [&#x27;Selamat pagi&#x27;, &#x27;.&#x27;]));
+const sapaRina = perkenalan.bind(rina, &#x27;Hai&#x27;);      // partial: salam sudah diisi
+console.log(sapaRina(&#x27;!!&#x27;));
+console.log(sapaRina.call(agus, &#x27;?&#x27;));              // bind tidak bisa diganti
+
+// function borrowing
+const admin = { nama: &#x27;Admin&#x27;, izin: [&#x27;baca&#x27;, &#x27;tulis&#x27;], ringkas() { return `${this.nama}: ${this.izin.join(&#x27;, &#x27;)}`; } };
+const tamu = { nama: &#x27;Tamu&#x27;, izin: [&#x27;baca&#x27;] };
+console.log(admin.ringkas.call(tamu));
+function gabung() { return Array.prototype.join.call(arguments, &#x27; + &#x27;); }
+console.log(gabung(1, 2, 3));
+console.log(Array.prototype.map.call(&#x27;abc&#x27;, c =&gt; c.toUpperCase()));
+
+console.log(Math.max.apply(null, [4, 9, 2]), Math.max(...[4, 9, 2]));
+const kaliDua = ((a, b) =&gt; a * b).bind(null, 2);
+console.log(kaliDua(21));
+const arrow = () =&gt; typeof this;
+console.log(arrow.call(rina));</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Halo, saya Rina dari Padang!
+Selamat pagi, saya Agus dari Kupang.
+Hai, saya Rina dari Padang!!
+Hai, saya Rina dari Padang?
+Tamu: baca
+1 + 2 + 3
+[ &#x27;A&#x27;, &#x27;B&#x27;, &#x27;C&#x27; ]
+9 9
+42
+undefined</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat fungsi <code>formatHarga(mataUang)</code> yang memakai <code>this.harga</code>. Panggil untuk dua produk dengan call, dan buat versi terikat untuk produk pertama dengan bind.</p><details><summary>Petunjuk</summary><p>return `${mataUang} ${this.harga}` lalu call(produk, "Rp").</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>function formatHarga(mataUang) {
+  return `${this.nama}: ${mataUang} ${this.harga.toLocaleString(&#x27;id-ID&#x27;)}`;
+}
+const p1 = { nama: &#x27;Kopi&#x27;, harga: 45000 };
+const p2 = { nama: &#x27;Teh&#x27;, harga: 22000 };
+console.log(formatHarga.call(p1, &#x27;Rp&#x27;));
+console.log(formatHarga.call(p2, &#x27;Rp&#x27;));
+const hargaKopi = formatHarga.bind(p1);
+console.log(hargaKopi(&#x27;IDR&#x27;));</code></pre><div class="lbl">KELUARAN</div><pre><code>Kopi: Rp 45.000
+Teh: Rp 22.000
+Kopi: IDR 45.000</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>call dan apply memanggil langsung; bind mengembalikan fungsi baru.</li><li>apply menerima array argumen.</li><li>bind mendukung partial application.</li><li>Function borrowing: pinjam metode dengan call.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Metode yang tidak langsung memanggil fungsi?</summary><p class="ok">Jawaban: bind</p><p>bind mengembalikan fungsi baru.</p></details><details><summary>Hasil f.bind(a).call(b) untuk this?</summary><p class="ok">Jawaban: a</p><p>this hasil bind permanen.</p></details>
+<a class="cta" href="/#js-11-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/this-di-event-handler">this di event handler</a></p><p>Berikutnya: <a href="/belajar/js/event-loop-cara-js-menangani-hal-asinkron">Event loop: cara JS menangani hal asinkron</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

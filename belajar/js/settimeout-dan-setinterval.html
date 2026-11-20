@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>setTimeout dan setInterval · JavaScript · Ruang Kode</title>
+<meta name="description" content="setTimeout(fn, ms, ...args) menjadwalkan fn sekali setelah minimal ms milidetik (bisa lebih lambat jika thread sibuk). setInterval(fn, ms) menjalankannya…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/settimeout-dan-setinterval">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="setTimeout dan setInterval · JavaScript · Ruang Kode"><meta property="og:description" content="setTimeout(fn, ms, ...args) menjadwalkan fn sekali setelah minimal ms milidetik (bisa lebih lambat jika thread sibuk). setInterval(fn, ms) menjalankannya…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/settimeout-dan-setinterval"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "setTimeout dan setInterval", "description": "setTimeout(fn, ms, ...args) menjadwalkan fn sekali setelah minimal ms milidetik (bisa lebih lambat jika thread sibuk). setInterval(fn, ms) menjalankannya…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/settimeout-dan-setinterval", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "setTimeout dan setInterval", "item": "https://ruang-kode-nine.vercel.app/belajar/js/settimeout-dan-setinterval"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 12</nav>
+<div class="eyebrow">JavaScript · Modul 12 · Konsep &amp; kode</div><h1>setTimeout dan setInterval</h1><a class="cta" href="/#js-12-2">Buka versi interaktif</a>
+<p><code>setTimeout(fn, ms, ...args)</code> menjadwalkan fn <b>sekali</b> setelah <b>minimal</b> ms milidetik (bisa lebih lambat jika thread sibuk). <code>setInterval(fn, ms)</code> menjalankannya <b>berulang</b>. Keduanya mengembalikan ID yang dipakai untuk membatalkan dengan <code>clearTimeout</code>/<code>clearInterval</code>.</p>
+<p>Browser membatasi timer: tab di latar belakang dibatasi sekitar sekali per detik, dan timer bersarang lebih dari 5 tingkat minimal 4 ms. Untuk animasi gunakan <code>requestAnimationFrame</code>, bukan setInterval. Untuk polling yang memanggil server, <b>setTimeout rekursif</b> lebih aman daripada setInterval karena panggilan berikutnya baru dijadwalkan setelah yang sebelumnya selesai.</p>
+<p>Dua pola wajib di frontend memakai timer dan closure: <b>debounce</b> (tunggu sampai pengguna berhenti mengetik, misalnya pencarian) dan <b>throttle</b> (batasi frekuensi, misalnya event scroll). Selalu bersihkan timer saat komponen dilepas (misalnya di cleanup useEffect) agar tidak bocor.</p>
+<div class="tw"><table><caption>Debounce vs throttle</caption><thead><tr><th>Aspek</th><th>Debounce</th><th>Throttle</th></tr></thead><tbody><tr><td>Perilaku</td><td>Jalan sekali setelah jeda tenang</td><td>Paling banyak sekali per interval</td></tr><tr><td>Contoh</td><td>Pencarian saat mengetik, autosave</td><td>Scroll, resize, mousemove</td></tr><tr><td>Event cepat 10 kali dalam 1 detik</td><td>Satu panggilan di akhir</td><td>Beberapa panggilan merata</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>const mulai = Date.now();
+const t = () =&gt; `${Math.round((Date.now() - mulai) / 100) * 100}ms`;
+
+setTimeout((nama) =&gt; console.log(`[${t()}] halo ${nama}`), 100, &#x27;Dina&#x27;);
+const batal = setTimeout(() =&gt; console.log(&#x27;tidak pernah muncul&#x27;), 150);
+clearTimeout(batal);
+
+let ke = 0;
+const id = setInterval(() =&gt; {
+  ke++;
+  console.log(`[${t()}] interval ke-${ke}`);
+  if (ke === 3) { clearInterval(id); console.log(&#x27;interval dihentikan&#x27;); }
+}, 200);
+
+function debounce(fn, tunggu) {
+  let timer;
+  return (...args) =&gt; {
+    clearTimeout(timer);
+    timer = setTimeout(() =&gt; fn(...args), tunggu);
+  };
+}
+const cari = debounce(q =&gt; console.log(`[${t()}] cari ke server: &quot;${q}&quot;`), 320);
+[&#x27;k&#x27;, &#x27;ko&#x27;, &#x27;kop&#x27;, &#x27;kopi&#x27;].forEach((q, i) =&gt; setTimeout(() =&gt; cari(q), i * 50));   // mengetik cepat
+
+function throttle(fn, jeda) {
+  let terakhir = 0;
+  return (...args) =&gt; {
+    const now = Date.now();
+    if (now - terakhir &gt;= jeda) { terakhir = now; fn(...args); }
+  };
+}
+const onScroll = throttle(i =&gt; console.log(&#x27;scroll diproses&#x27;, i), 1000);
+for (let i = 1; i &lt;= 5; i++) onScroll(i);   // hanya yang pertama diproses</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>scroll diproses 1
+[100ms] halo Dina
+[200ms] interval ke-1
+[400ms] interval ke-2
+[500ms] cari ke server: &quot;kopi&quot;
+[600ms] interval ke-3
+interval dihentikan</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat hitung mundur 3, 2, 1, "Mulai!" dengan jeda 100 ms memakai setTimeout rekursif (bukan setInterval).</p><details><summary>Petunjuk</summary><p>Fungsi hitung(n) mencetak n lalu menjadwalkan hitung(n - 1).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>function hitung(n) {
+  if (n === 0) return console.log(&#x27;Mulai!&#x27;);
+  console.log(n);
+  setTimeout(() =&gt; hitung(n - 1), 100);
+}
+hitung(3);</code></pre><div class="lbl">KELUARAN</div><pre><code>3
+2
+1
+Mulai!</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>setTimeout sekali, setInterval berulang; batalkan dengan clear*.</li><li>Jeda adalah waktu minimal, bukan pasti.</li><li>requestAnimationFrame untuk animasi; setTimeout rekursif untuk polling.</li><li>Debounce dan throttle dibangun dari timer + closure.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Pola untuk memanggil API pencarian hanya setelah pengguna berhenti mengetik?</summary><p class="ok">Jawaban: Debounce</p><p>Debounce menunggu jeda tenang.</p></details><details><summary>Apakah setTimeout(fn, 100) dijamin tepat 100 ms?</summary><p class="ok">Jawaban: Tidak, minimal 100 ms</p><p>Menunggu call stack kosong.</p></details>
+<a class="cta" href="/#js-12-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/event-loop-cara-js-menangani-hal-asinkron">Event loop: cara JS menangani hal asinkron</a></p><p>Berikutnya: <a href="/belajar/js/callback-dan-callback-hell">Callback dan callback hell</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

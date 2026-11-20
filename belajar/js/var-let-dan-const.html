@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>var, let, dan const · JavaScript · Ruang Kode</title>
+<meta name="description" content="Variabel adalah nama untuk sebuah nilai. JS punya tiga kata kunci: const untuk nama yang tidak akan di-assign ulang, let untuk nilai yang akan berubah,…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/var-let-dan-const">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="var, let, dan const · JavaScript · Ruang Kode"><meta property="og:description" content="Variabel adalah nama untuk sebuah nilai. JS punya tiga kata kunci: const untuk nama yang tidak akan di-assign ulang, let untuk nilai yang akan berubah,…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/var-let-dan-const"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "var, let, dan const", "description": "Variabel adalah nama untuk sebuah nilai. JS punya tiga kata kunci: const untuk nama yang tidak akan di-assign ulang, let untuk nilai yang akan berubah,…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/var-let-dan-const", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "var, let, dan const", "item": "https://ruang-kode-nine.vercel.app/belajar/js/var-let-dan-const"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 2</nav>
+<div class="eyebrow">JavaScript · Modul 2 · Konsep &amp; kode</div><h1>var, let, dan const</h1><a class="cta" href="/#js-2-1">Buka versi interaktif</a>
+<p>Variabel adalah nama untuk sebuah nilai. JS punya tiga kata kunci: <code>const</code> untuk nama yang <b>tidak akan di-assign ulang</b>, <code>let</code> untuk nilai yang akan berubah, dan <code>var</code> (gaya lama sebelum ES2015).</p>
+<p>Aturan praktis tim profesional (dan aturan ESLint <code>prefer-const</code>, <code>no-var</code>): <b>pakai const secara bawaan</b>, ganti ke let hanya jika memang perlu di-assign ulang, dan jangan memakai var di kode baru.</p>
+<p>Penting: <code>const</code> mengunci <b>ikatan (binding)</b>, bukan isinya. Objek atau array yang disimpan di const tetap bisa diubah isinya (<b>mutasi</b>). Untuk membekukan objek, pakai <code>Object.freeze()</code> (dangkal, hanya satu tingkat).</p>
+<div class="tw"><table><caption>Perbandingan var, let, const</caption><thead><tr><th>Sifat</th><th>var</th><th>let</th><th>const</th></tr></thead><tbody><tr><td>Scope</td><td>Function</td><td>Block</td><td>Block</td></tr><tr><td>Hoisting</td><td>Ya, diisi undefined</td><td>Ya, tetapi TDZ</td><td>Ya, tetapi TDZ</td></tr><tr><td>Assign ulang</td><td>Boleh</td><td>Boleh</td><td>Tidak</td></tr><tr><td>Deklarasi ulang di scope sama</td><td>Boleh</td><td>SyntaxError</td><td>SyntaxError</td></tr><tr><td>Wajib diberi nilai awal</td><td>Tidak</td><td>Tidak</td><td>Ya</td></tr><tr><td>Jadi properti window (global)</td><td>Ya</td><td>Tidak</td><td>Tidak</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>const PPN = 0.11;
+let saldo = 100000;
+saldo -= 25000;              // let boleh di-assign ulang
+console.log(&#x27;Saldo:&#x27;, saldo);
+
+try {
+  PPN = 0.12;                 // const tidak boleh
+} catch (e) {
+  console.log(e.name + &#x27;:&#x27;, e.message);
+}
+
+const keranjang = [&#x27;kopi&#x27;];
+keranjang.push(&#x27;teh&#x27;);       // mutasi isi tetap boleh
+console.log(keranjang);
+
+const cfg = Object.freeze({ tema: &#x27;gelap&#x27; });
+try {
+  cfg.tema = &#x27;terang&#x27;;       // modul ES = strict mode: TypeError
+} catch (e) { console.log(e.name); }
+console.log(cfg.tema, Object.isFrozen(cfg));</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Saldo: 75000
+TypeError: Assignment to constant variable.
+[ &#x27;kopi&#x27;, &#x27;teh&#x27; ]
+TypeError
+gelap true</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat <code>const harga = 45000</code> dan <code>let jumlah = 2</code>. Tambah jumlah menjadi 3, lalu cetak total. Coba juga meng-assign ulang harga dan tangkap errornya.</p><details><summary>Petunjuk</summary><p>Bungkus assign ulang const dengan try/catch dan cetak e.name.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>const harga = 45000;
+let jumlah = 2;
+jumlah = 3;
+console.log(&#x27;Total:&#x27;, harga * jumlah);
+try {
+  harga = 50000;
+} catch (e) {
+  console.log(&#x27;Gagal:&#x27;, e.name);
+}</code></pre><div class="lbl">KELUARAN</div><pre><code>Total: 135000
+Gagal: TypeError</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Bawaan const, let jika perlu berubah, hindari var.</li><li>const mengunci binding, bukan isi objek.</li><li>Object.freeze membekukan satu tingkat.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Hasil const daftar = [1]; daftar.push(2);?</summary><p class="ok">Jawaban: Berhasil, daftar menjadi [1, 2]</p><p>Mutasi isi diizinkan; yang dilarang assign ulang.</p></details><details><summary>Kata kunci yang dianjurkan untuk penghitung di perulangan for?</summary><p class="ok">Jawaban: let</p><p>Nilainya berubah setiap putaran.</p></details>
+<a class="cta" href="/#js-2-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/cara-menjalankan-javascript">Cara menjalankan JavaScript</a></p><p>Berikutnya: <a href="/belajar/js/aturan-penamaan-variabel">Aturan penamaan variabel</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

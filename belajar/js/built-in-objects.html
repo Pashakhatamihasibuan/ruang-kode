@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Built-in objects · JavaScript · Ruang Kode</title>
+<meta name="description" content="JS menyediakan banyak built-in objects (objek bawaan standar) yang siap pakai tanpa import. Kelompok pentingnya: dasar (Object, Function, Boolean,…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/built-in-objects">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Built-in objects · JavaScript · Ruang Kode"><meta property="og:description" content="JS menyediakan banyak built-in objects (objek bawaan standar) yang siap pakai tanpa import. Kelompok pentingnya: dasar (Object, Function, Boolean,…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/built-in-objects"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Built-in objects", "description": "JS menyediakan banyak built-in objects (objek bawaan standar) yang siap pakai tanpa import. Kelompok pentingnya: dasar (Object, Function, Boolean,…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/built-in-objects", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "Built-in objects", "item": "https://ruang-kode-nine.vercel.app/belajar/js/built-in-objects"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 3</nav>
+<div class="eyebrow">JavaScript · Modul 3 · Konsep &amp; kode</div><h1>Built-in objects</h1><a class="cta" href="/#js-3-5">Buka versi interaktif</a>
+<p>JS menyediakan banyak <b>built-in objects</b> (objek bawaan standar) yang siap pakai tanpa import. Kelompok pentingnya: <b>dasar</b> (Object, Function, Boolean, Symbol, Error), <b>angka dan tanggal</b> (Number, BigInt, Math, Date), <b>teks</b> (String, RegExp), <b>koleksi</b> (Array, Map, Set, WeakMap, WeakSet, typed arrays), <b>terstruktur</b> (JSON, ArrayBuffer), <b>kontrol abstraksi</b> (Promise, generator), <b>refleksi</b> (Reflect, Proxy), dan <b>internasionalisasi</b> (Intl).</p>
+<p>Jangan tertukar dengan <b>Web API</b> (document, fetch, localStorage, setTimeout) yang disediakan browser, atau API Node (fs, process). Built-in objects adalah bagian dari bahasa itu sendiri sehingga tersedia di semua lingkungan. Objek global tingkat atas bisa diakses lewat <code>globalThis</code>.</p>
+<p>Untuk tanggal, <code>Date</code> punya banyak kekurangan (bulan dimulai dari 0, zona waktu membingungkan). Proposal <b>Temporal</b> sedang menggantikannya dan sudah mulai tersedia di browser baru; sampai merata, banyak tim memakai pustaka seperti date-fns atau Day.js.</p>
+<div class="tw"><table><caption>Kelompok built-in objects</caption><thead><tr><th>Kelompok</th><th>Contoh</th><th>Kegunaan</th></tr></thead><tbody><tr><td>Dasar</td><td>Object, Function, Error, Symbol</td><td>Fondasi bahasa</td></tr><tr><td>Angka &amp; tanggal</td><td>Number, BigInt, Math, Date</td><td>Hitung dan waktu</td></tr><tr><td>Teks</td><td>String, RegExp</td><td>Olah teks dan pola</td></tr><tr><td>Koleksi berindeks</td><td>Array, Int8Array, Float64Array</td><td>Data berurutan</td></tr><tr><td>Koleksi berkunci</td><td>Map, Set, WeakMap, WeakSet</td><td>Data unik dan pemetaan</td></tr><tr><td>Data terstruktur</td><td>JSON, ArrayBuffer, DataView</td><td>Pertukaran dan biner</td></tr><tr><td>Asinkron</td><td>Promise, AsyncFunction</td><td>Operasi di masa depan</td></tr><tr><td>Refleksi</td><td>Reflect, Proxy</td><td>Metaprogramming</td></tr><tr><td>Intl</td><td>NumberFormat, DateTimeFormat, Collator</td><td>Format sesuai bahasa dan negara</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>console.log(Math.max(3, 9, 4), Math.round(2.5), Math.floor(-2.5), Math.trunc(-2.5));
+console.log(Number.parseFloat(&#x27;12.5kg&#x27;), Number.isInteger(5.0), (255).toString(16));
+console.log(&#x27;ruang-kode&#x27;.split(&#x27;-&#x27;), &#x27;  spasi  &#x27;.trim(), &#x27;ab&#x27;.repeat(3), &#x27;Kopi&#x27;.padStart(6, &#x27;*&#x27;));
+
+const d = new Date(Date.UTC(2026, 7, 17, 3, 0));   // bulan 7 = Agustus (dimulai 0)
+console.log(d.toISOString());
+console.log(new Intl.DateTimeFormat(&#x27;id-ID&#x27;, { dateStyle: &#x27;full&#x27;, timeZone: &#x27;Asia/Jakarta&#x27; }).format(d));
+
+console.log(/^08\d{8,11}$/.test(&#x27;081234567890&#x27;));    // RegExp: nomor HP Indonesia
+console.log(JSON.stringify({ a: [1, 2] }), Reflect.ownKeys({ x: 1, [Symbol(&#x27;s&#x27;)]: 2 }));
+console.log(new Intl.NumberFormat(&#x27;id-ID&#x27;).format(1234567.891));
+console.log(typeof globalThis.Math, typeof globalThis.setTimeout);</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>9 3 -3 -2
+12.5 true ff
+[ &#x27;ruang&#x27;, &#x27;kode&#x27; ] spasi ababab **Kopi
+2026-08-17T03:00:00.000Z
+Senin, 17 Agustus 2026
+true
+{&quot;a&quot;:[1,2]} [ &#x27;x&#x27;, Symbol(s) ]
+1.234.567,891
+object function</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Validasi tiga alamat email dengan RegExp sederhana (ada teks, @, domain, titik, akhiran minimal 2 huruf) dan cetak hasilnya.</p><details><summary>Petunjuk</summary><p>Pola contoh: /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>const pola = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
+for (const e of [&#x27;rina@kampus.ac.id&#x27;, &#x27;budi@&#x27;, &#x27;tari @mail.com&#x27;]) {
+  console.log(e.padEnd(18), pola.test(e) ? &#x27;valid&#x27; : &#x27;tidak valid&#x27;);
+}</code></pre><div class="lbl">KELUARAN</div><pre><code>rina@kampus.ac.id  valid
+budi@              tidak valid
+tari @mail.com     tidak valid</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Built-in objects tersedia di semua lingkungan tanpa import.</li><li>Web API (document, fetch) bukan bagian dari bahasa.</li><li>Bulan di Date dimulai dari 0.</li><li>Intl untuk format angka dan tanggal lokal.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Mana yang termasuk built-in object JavaScript, bukan Web API?</summary><p class="ok">Jawaban: Math</p><p>document dan localStorage disediakan browser.</p></details><details><summary>new Date(2026, 0, 1) adalah tanggal?</summary><p class="ok">Jawaban: 1 Januari 2026</p><p>Bulan 0 = Januari.</p></details>
+<a class="cta" href="/#js-3-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/prototype-dan-pewarisan-prototipe">Prototype dan pewarisan prototipe</a></p><p>Berikutnya: <a href="/belajar/js/konversi-eksplisit">Konversi eksplisit</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

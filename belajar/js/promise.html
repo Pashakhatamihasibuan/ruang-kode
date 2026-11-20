@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Promise · JavaScript · Ruang Kode</title>
+<meta name="description" content="Promise adalah object yang mewakili hasil operasi asinkron di masa depan. Statusnya pending, lalu berubah sekali menjadi fulfilled (berhasil, dengan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/promise">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Promise · JavaScript · Ruang Kode"><meta property="og:description" content="Promise adalah object yang mewakili hasil operasi asinkron di masa depan. Statusnya pending, lalu berubah sekali menjadi fulfilled (berhasil, dengan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/promise"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Promise", "description": "Promise adalah object yang mewakili hasil operasi asinkron di masa depan. Statusnya pending, lalu berubah sekali menjadi fulfilled (berhasil, dengan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/promise", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "Promise", "item": "https://ruang-kode-nine.vercel.app/belajar/js/promise"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 12</nav>
+<div class="eyebrow">JavaScript · Modul 12 · Konsep &amp; kode</div><h1>Promise</h1><a class="cta" href="/#js-12-4">Buka versi interaktif</a>
+<p><b>Promise</b> adalah object yang mewakili hasil operasi asinkron di masa depan. Statusnya <b>pending</b>, lalu berubah sekali menjadi <b>fulfilled</b> (berhasil, dengan nilai) atau <b>rejected</b> (gagal, dengan alasan/error); keduanya disebut <b>settled</b> dan tidak bisa berubah lagi.</p>
+<p>Konsumsi dengan <code>.then(onSukses)</code>, <code>.catch(onGagal)</code>, dan <code>.finally(onSelesai)</code>. Setiap then mengembalikan Promise baru sehingga bisa <b>dirantai</b>; nilai yang di-return diteruskan ke then berikutnya, dan error melompat ke catch terdekat. Selalu return Promise di dalam then agar rantai menunggu, dan selalu akhiri dengan catch.</p>
+<p>Kombinator: <code>Promise.all</code> (paralel, gagal jika satu gagal), <code>Promise.allSettled</code> (tunggu semua, laporkan status masing-masing), <code>Promise.race</code> (yang pertama settled, cocok untuk timeout), <code>Promise.any</code> (yang pertama sukses, AggregateError jika semua gagal). <code>Promise.withResolvers()</code> (ES2024) memberi promise beserta fungsi resolve/reject-nya.</p>
+<div class="tw"><table><caption>Kombinator Promise</caption><thead><tr><th>Metode</th><th>Selesai saat</th><th>Hasil</th><th>Contoh pemakaian</th></tr></thead><tbody><tr><td>Promise.all</td><td>Semua sukses atau satu gagal</td><td>Array nilai / error pertama</td><td>Muat beberapa data wajib paralel</td></tr><tr><td>Promise.allSettled</td><td>Semua settled</td><td>Array {status, value/reason}</td><td>Dashboard dengan widget independen</td></tr><tr><td>Promise.race</td><td>Yang pertama settled</td><td>Nilai/error pertama</td><td>Timeout permintaan</td></tr><tr><td>Promise.any</td><td>Yang pertama sukses</td><td>Nilai / AggregateError</td><td>Server cermin (mirror) tercepat</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>const tunda = (ms, nilai, gagal = false) =&gt;
+  new Promise((resolve, reject) =&gt; setTimeout(() =&gt; (gagal ? reject(new Error(nilai)) : resolve(nilai)), ms));
+
+const p = tunda(50, &#x27;data siap&#x27;);
+console.log(p);                                   // masih pending
+p.then(v =&gt; { console.log(&#x27;then:&#x27;, v); return v.length; })
+ .then(n =&gt; console.log(&#x27;panjang:&#x27;, n))
+ .finally(() =&gt; console.log(&#x27;finally: selesai&#x27;));
+
+tunda(60, &#x27;server error&#x27;, true)
+  .then(() =&gt; console.log(&#x27;tidak dijalankan&#x27;))
+  .catch(e =&gt; { console.log(&#x27;catch:&#x27;, e.message); return &#x27;nilai cadangan&#x27;; })
+  .then(v =&gt; console.log(&#x27;lanjut dengan&#x27;, v));
+
+const stok = () =&gt; tunda(80, { stok: 12 });
+const harga = () =&gt; tunda(40, { harga: 85000 });
+const ulasan = () =&gt; tunda(60, &#x27;layanan ulasan mati&#x27;, true);
+
+setTimeout(async () =&gt; {
+  console.log(&#x27;all:&#x27;, await Promise.all([stok(), harga()]));
+  const hasil = await Promise.allSettled([stok(), ulasan()]);
+  console.log(&#x27;allSettled:&#x27;, hasil.map(h =&gt; h.status));
+  console.log(&#x27;race:&#x27;, await Promise.race([tunda(100, &#x27;lambat&#x27;), tunda(10, &#x27;cepat&#x27;)]));
+  console.log(&#x27;any:&#x27;, await Promise.any([ulasan(), harga()]));
+  try { await Promise.all([stok(), ulasan()]); } catch (e) { console.log(&#x27;all gagal:&#x27;, e.message); }
+  try { await Promise.any([ulasan(), ulasan()]); } catch (e) { console.log(e.name, e.errors.length); }
+  const { promise, resolve } = Promise.withResolvers();
+  setTimeout(() =&gt; resolve(&#x27;diselesaikan dari luar&#x27;), 10);
+  console.log(await promise);
+}, 150);</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Promise { &lt;pending&gt; }
+then: data siap
+panjang: 9
+finally: selesai
+catch: server error
+lanjut dengan nilai cadangan
+all: [ { stok: 12 }, { harga: 85000 } ]
+allSettled: [ &#x27;fulfilled&#x27;, &#x27;rejected&#x27; ]
+race: cepat
+any: { harga: 85000 }
+all gagal: layanan ulasan mati
+AggregateError 2
+diselesaikan dari luar</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat fungsi <code>denganTimeout(promise, ms)</code> memakai Promise.race yang menolak dengan Error "timeout" jika promise lebih lambat dari ms. Uji dengan proses 50 ms (batas 100) dan 200 ms (batas 100).</p><details><summary>Petunjuk</summary><p>Race antara promise asli dan promise yang reject setelah ms.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>const tunda = (ms, v) =&gt; new Promise(r =&gt; setTimeout(() =&gt; r(v), ms));
+function denganTimeout(p, ms) {
+  const batas = new Promise((_, reject) =&gt; setTimeout(() =&gt; reject(new Error(&#x27;timeout&#x27;)), ms));
+  return Promise.race([p, batas]);
+}
+denganTimeout(tunda(50, &#x27;cepat selesai&#x27;), 100).then(console.log, e =&gt; console.log(e.message));
+denganTimeout(tunda(200, &#x27;lambat&#x27;), 100).then(console.log, e =&gt; console.log(&#x27;gagal:&#x27;, e.message));</code></pre><div class="lbl">KELUARAN</div><pre><code>cepat selesai
+gagal: timeout</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Status: pending lalu fulfilled atau rejected, sekali saja.</li><li>then berantai; return nilai/Promise; akhiri dengan catch.</li><li>all, allSettled, race, any untuk banyak Promise.</li><li>Promise.all menjalankan secara paralel.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kombinator yang tetap memberi semua hasil walau sebagian gagal?</summary><p class="ok">Jawaban: Promise.allSettled</p><p>allSettled melaporkan status setiap Promise.</p></details><details><summary>Apa yang terjadi pada nilai yang di-return di dalam then?</summary><p class="ok">Jawaban: Diteruskan ke then berikutnya</p><p>then mengembalikan Promise baru.</p></details>
+<a class="cta" href="/#js-12-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/callback-dan-callback-hell">Callback dan callback hell</a></p><p>Berikutnya: <a href="/belajar/js/async-dan-await">async dan await</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

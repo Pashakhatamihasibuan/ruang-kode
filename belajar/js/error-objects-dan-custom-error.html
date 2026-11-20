@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Error objects dan custom error · JavaScript · Ruang Kode</title>
+<meta name="description" content="Semua error bawaan turunan dari Error dan punya name, message, stack, serta opsional cause. Tipe bawaan: SyntaxError (kode atau JSON tidak valid),…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/error-objects-dan-custom-error">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Error objects dan custom error · JavaScript · Ruang Kode"><meta property="og:description" content="Semua error bawaan turunan dari Error dan punya name, message, stack, serta opsional cause. Tipe bawaan: SyntaxError (kode atau JSON tidak valid),…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/error-objects-dan-custom-error"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Error objects dan custom error", "description": "Semua error bawaan turunan dari Error dan punya name, message, stack, serta opsional cause. Tipe bawaan: SyntaxError (kode atau JSON tidak valid),…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/error-objects-dan-custom-error", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "Error objects dan custom error", "item": "https://ruang-kode-nine.vercel.app/belajar/js/error-objects-dan-custom-error"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 8</nav>
+<div class="eyebrow">JavaScript · Modul 8 · Konsep &amp; kode</div><h1>Error objects dan custom error</h1><a class="cta" href="/#js-8-3">Buka versi interaktif</a>
+<p>Semua error bawaan turunan dari <code>Error</code> dan punya <code>name</code>, <code>message</code>, <code>stack</code>, serta opsional <code>cause</code>. Tipe bawaan: <code>SyntaxError</code> (kode atau JSON tidak valid), <code>ReferenceError</code> (nama tidak dikenal, TDZ), <code>TypeError</code> (operasi pada tipe yang salah, misal memanggil undefined), <code>RangeError</code> (nilai di luar rentang), <code>URIError</code>, <code>EvalError</code>, dan <code>AggregateError</code> (banyak error sekaligus, dari Promise.any).</p>
+<p>Untuk aplikasi nyata, buat <b>custom error class</b> dengan <code>class ValidasiError extends Error</code>, set <code>this.name</code>, dan tambahkan data (field yang salah, kode HTTP). Penanganannya kemudian memakai <code>instanceof</code> untuk membedakan error yang diharapkan (validasi, 404) dari bug tak terduga.</p>
+<p>Di produksi, error yang tidak tertangkap dicatat oleh layanan <b>error monitoring</b> seperti Sentry. Di browser ada event <code>window.onerror</code> dan <code>unhandledrejection</code>; di Node ada <code>process.on("uncaughtException")</code>. Pesan error untuk pengguna harus ramah, sementara detail teknis hanya ke log.</p>
+<div class="tw"><table><caption>Tipe error bawaan</caption><thead><tr><th>Error</th><th>Penyebab umum</th><th>Contoh</th></tr></thead><tbody><tr><td>SyntaxError</td><td>Kode atau JSON tidak valid</td><td>JSON.parse(&#x27;{a:1}&#x27;)</td></tr><tr><td>ReferenceError</td><td>Nama tidak ada atau di TDZ</td><td>console.log(belumAda)</td></tr><tr><td>TypeError</td><td>Operasi pada tipe yang salah</td><td>undefined.nama, null()</td></tr><tr><td>RangeError</td><td>Nilai di luar rentang</td><td>new Array(-1), toFixed(200)</td></tr><tr><td>URIError</td><td>URI tidak valid</td><td>decodeURIComponent(&#x27;%&#x27;)</td></tr><tr><td>AggregateError</td><td>Kumpulan beberapa error</td><td>Promise.any semua gagal</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>class ValidasiError extends Error {
+  constructor(field, pesan) {
+    super(pesan);
+    this.name = &#x27;ValidasiError&#x27;;
+    this.field = field;
+  }
+}
+class TidakDitemukanError extends Error {
+  name = &#x27;TidakDitemukanError&#x27;;
+  status = 404;
+}
+
+function daftar(user) {
+  if (!user.email?.includes(&#x27;@&#x27;)) throw new ValidasiError(&#x27;email&#x27;, &#x27;Format email salah&#x27;);
+  if (user.email === &#x27;ada@contoh.id&#x27;) throw new TidakDitemukanError(&#x27;Paket tidak ditemukan&#x27;);
+  return &#x27;terdaftar&#x27;;
+}
+
+for (const u of [{ email: &#x27;rina@contoh.id&#x27; }, { email: &#x27;rina&#x27; }, { email: &#x27;ada@contoh.id&#x27; }, null]) {
+  try {
+    console.log(daftar(u));
+  } catch (e) {
+    if (e instanceof ValidasiError) console.log(`[400] ${e.field}: ${e.message}`);
+    else if (e instanceof TidakDitemukanError) console.log(`[${e.status}] ${e.message}`);
+    else console.log(`[500] bug: ${e.name} - ${e.message}`);
+  }
+}
+const e = new ValidasiError(&#x27;nama&#x27;, &#x27;wajib&#x27;);
+console.log(e instanceof Error, e.stack.split(&#x27;\n&#x27;)[0]);
+
+for (const kode of [&#x27;null.x&#x27;, &#x27;x.y.z&#x27;, &#x27;new Array(-1)&#x27;, &#x27;[].reduce((a,b)=&gt;a)&#x27;]) {
+  try { new Function(kode)(); } catch (err) { console.log(kode.padEnd(20), err.name); }
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>terdaftar
+[400] email: Format email salah
+[404] Paket tidak ditemukan
+[500] bug: TypeError - Cannot read properties of null (reading &#x27;email&#x27;)
+true ValidasiError: wajib
+null.x               TypeError
+x.y.z                ReferenceError
+new Array(-1)        RangeError
+[].reduce((a,b)=&gt;a)  TypeError</code></pre>
+<h2>Poin penting</h2><ul><li>Error punya name, message, stack, cause.</li><li>TypeError dan ReferenceError paling sering ditemui.</li><li>Custom error dengan extends Error + instanceof.</li><li>Error monitoring (Sentry) untuk produksi.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Error yang muncul saat mengakses properti dari undefined?</summary><p class="ok">Jawaban: TypeError</p><p>Membaca properti dari undefined adalah operasi pada tipe yang salah.</p></details><details><summary>Cara membedakan jenis custom error di catch?</summary><p class="ok">Jawaban: e instanceof NamaError</p><p>instanceof memeriksa rantai prototype.</p></details>
+<a class="cta" href="/#js-8-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/throw-try-catch-finally">throw, try, catch, finally</a></p><p>Berikutnya: <a href="/belajar/js/aritmetika-assignment-dan-perbandingan">Aritmetika, assignment, dan perbandingan</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

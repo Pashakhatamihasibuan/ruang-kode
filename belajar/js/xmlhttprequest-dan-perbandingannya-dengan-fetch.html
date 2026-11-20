@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>XMLHttpRequest dan perbandingannya dengan fetch · JavaScript · Ruang Kode</title>
+<meta name="description" content="XMLHttpRequest (XHR) adalah API lama (sejak awal 2000-an) yang memungkinkan AJAX: memuat data tanpa memuat ulang halaman, teknologi di balik Gmail dan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/xmlhttprequest-dan-perbandingannya-dengan-fetch">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="XMLHttpRequest dan perbandingannya dengan fetch · JavaScript · Ruang Kode"><meta property="og:description" content="XMLHttpRequest (XHR) adalah API lama (sejak awal 2000-an) yang memungkinkan AJAX: memuat data tanpa memuat ulang halaman, teknologi di balik Gmail dan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/xmlhttprequest-dan-perbandingannya-dengan-fetch"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "XMLHttpRequest dan perbandingannya dengan fetch", "description": "XMLHttpRequest (XHR) adalah API lama (sejak awal 2000-an) yang memungkinkan AJAX: memuat data tanpa memuat ulang halaman, teknologi di balik Gmail dan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/xmlhttprequest-dan-perbandingannya-dengan-fetch", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "XMLHttpRequest dan perbandingannya dengan fetch", "item": "https://ruang-kode-nine.vercel.app/belajar/js/xmlhttprequest-dan-perbandingannya-dengan-fetch"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 13</nav>
+<div class="eyebrow">JavaScript · Modul 13 · Konsep &amp; kode</div><h1>XMLHttpRequest dan perbandingannya dengan fetch</h1><a class="cta" href="/#js-13-3">Buka versi interaktif</a>
+<p><b>XMLHttpRequest</b> (XHR) adalah API lama (sejak awal 2000-an) yang memungkinkan <b>AJAX</b>: memuat data tanpa memuat ulang halaman, teknologi di balik Gmail dan Google Maps generasi awal. Walau namanya XML, XHR bisa mengambil JSON, teks, dan biner.</p>
+<p>XHR berbasis event dan callback (<code>onload</code>, <code>onerror</code>, <code>onprogress</code>), bukan Promise, sehingga lebih bertele-tele. Kelebihan yang masih membuatnya dipakai: event <code>upload.onprogress</code> untuk <b>progress bar unggah</b> yang belum ada padanannya yang sederhana di fetch. Pustaka <b>Axios</b> di browser juga memakai XHR di baliknya.</p>
+<p>Untuk kode baru, gunakan fetch. Kenali XHR karena masih ada di kode lama, plugin jQuery (<code>$.ajax</code>), dan pertanyaan wawancara. API ini hanya ada di browser, jadi contoh di bawah tidak dijalankan di Node.</p>
+<div class="tw"><table><caption>XMLHttpRequest vs fetch vs Axios</caption><thead><tr><th>Aspek</th><th>XMLHttpRequest</th><th>fetch</th><th>Axios</th></tr></thead><tbody><tr><td>Gaya</td><td>Event/callback</td><td>Promise</td><td>Promise</td></tr><tr><td>Tolak saat 4xx/5xx</td><td>Tidak (cek status)</td><td>Tidak (cek res.ok)</td><td>Ya</td></tr><tr><td>Parse JSON</td><td>responseType</td><td>res.json()</td><td>Otomatis</td></tr><tr><td>Progress unggah</td><td>Ya</td><td>Belum sederhana</td><td>Ya (lewat XHR)</td></tr><tr><td>Batalkan</td><td>xhr.abort()</td><td>AbortController</td><td>AbortController</td></tr><tr><td>Tersedia di Node</td><td>Tidak</td><td>Ya (18+)</td><td>Ya (pustaka)</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>// GET dengan XMLHttpRequest
+const xhr = new XMLHttpRequest();
+xhr.open(&#x27;GET&#x27;, &#x27;/api/produk&#x27;);
+xhr.responseType = &#x27;json&#x27;;
+xhr.onload = () =&gt; {
+  if (xhr.status &gt;= 200 &amp;&amp; xhr.status &lt; 300) console.log(&#x27;data&#x27;, xhr.response);
+  else console.error(&#x27;HTTP&#x27;, xhr.status);
+};
+xhr.onerror = () =&gt; console.error(&#x27;jaringan gagal&#x27;);
+xhr.send();
+
+// unggah file dengan progress bar
+function unggah(file, onPersen) {
+  return new Promise((resolve, reject) =&gt; {
+    const x = new XMLHttpRequest();
+    x.open(&#x27;POST&#x27;, &#x27;/api/unggah&#x27;);
+    x.upload.onprogress = e =&gt; e.lengthComputable &amp;&amp; onPersen(Math.round(e.loaded / e.total * 100));
+    x.onload = () =&gt; (x.status &lt; 300 ? resolve(x.response) : reject(new Error(`HTTP ${x.status}`)));
+    x.onerror = () =&gt; reject(new Error(&#x27;jaringan gagal&#x27;));
+    const fd = new FormData();
+    fd.append(&#x27;berkas&#x27;, file);
+    x.send(fd);
+  });
+}
+await unggah(inputFile.files[0], p =&gt; (progress.value = p));
+
+// padanannya dengan fetch (tanpa progress unggah)
+const res = await fetch(&#x27;/api/produk&#x27;);
+if (!res.ok) throw new Error(`HTTP ${res.status}`);
+console.log(await res.json());</code></pre>
+<h2>Poin penting</h2><ul><li>XHR adalah API AJAX lama berbasis event.</li><li>Kelebihan XHR: progress unggah.</li><li>Kode baru: fetch.</li><li>Axios memakai XHR di browser.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa XHR masih dipakai untuk unggah file besar?</summary><p class="ok">Jawaban: Punya event upload.onprogress untuk progress bar</p><p>fetch belum punya progress unggah yang sederhana.</p></details>
+<a class="cta" href="/#js-13-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/post-json-header-dan-abortcontroller">POST JSON, header, dan AbortController</a></p><p>Berikutnya: <a href="/belajar/js/class-constructor-dan-anggota-class">Class, constructor, dan anggota class</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

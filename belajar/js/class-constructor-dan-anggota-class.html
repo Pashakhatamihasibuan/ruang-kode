@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Class, constructor, dan anggota class · JavaScript · Ruang Kode</title>
+<meta name="description" content="class (ES2015) adalah cara rapi menulis cetakan object di atas sistem prototype. constructor berjalan saat new dipanggil untuk mengisi data awal. Metode…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/class-constructor-dan-anggota-class">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Class, constructor, dan anggota class · JavaScript · Ruang Kode"><meta property="og:description" content="class (ES2015) adalah cara rapi menulis cetakan object di atas sistem prototype. constructor berjalan saat new dipanggil untuk mengisi data awal. Metode…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/class-constructor-dan-anggota-class"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Class, constructor, dan anggota class", "description": "class (ES2015) adalah cara rapi menulis cetakan object di atas sistem prototype. constructor berjalan saat new dipanggil untuk mengisi data awal. Metode…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/class-constructor-dan-anggota-class", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "Class, constructor, dan anggota class", "item": "https://ruang-kode-nine.vercel.app/belajar/js/class-constructor-dan-anggota-class"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 14</nav>
+<div class="eyebrow">JavaScript · Modul 14 · Konsep &amp; kode</div><h1>Class, constructor, dan anggota class</h1><a class="cta" href="/#js-14-1">Buka versi interaktif</a>
+<p><code>class</code> (ES2015) adalah cara rapi menulis <b>cetakan object</b> di atas sistem prototype. <code>constructor</code> berjalan saat <code>new</code> dipanggil untuk mengisi data awal. Metode yang ditulis di badan class disimpan di prototype sehingga dibagi semua instance. Isi class selalu strict mode, dan class tidak di-hoist seperti fungsi (berada di TDZ).</p>
+<p><b>Class field</b> (<code>stok = 0</code>) mendeklarasikan properti instance langsung. <b>Field dan metode privat</b> berawalan <code>#</code> (<code>#saldo</code>) benar-benar tidak bisa diakses dari luar, berbeda dengan konvensi lama <code>_saldo</code> yang hanya kesepakatan. <b>Getter</b>/<b>setter</b> (<code>get total()</code>, <code>set harga(v)</code>) membuat properti terhitung atau tervalidasi yang diakses seperti properti biasa.</p>
+<p><b>Static</b> member (<code>static dariJSON()</code>, <code>static #jumlah</code>) milik class itu sendiri, bukan instance; cocok untuk <b>factory method</b> dan penghitung. <b>Static block</b> (<code>static { }</code>) menjalankan inisialisasi sekali. Prinsip <b>enkapsulasi</b>: sembunyikan state internal, buka hanya metode yang aman.</p>
+<div class="tw"><table><caption>Anggota class</caption><thead><tr><th>Anggota</th><th>Sintaks</th><th>Milik</th></tr></thead><tbody><tr><td>Constructor</td><td>constructor(a) { }</td><td>Dipanggil saat new</td></tr><tr><td>Field publik</td><td>nama = nilai</td><td>Setiap instance</td></tr><tr><td>Field/metode privat</td><td>#nama, #metode()</td><td>Hanya di dalam class</td></tr><tr><td>Metode</td><td>metode() { }</td><td>Prototype (dibagi)</td></tr><tr><td>Getter / setter</td><td>get x() / set x(v)</td><td>Prototype</td></tr><tr><td>Static</td><td>static f(), static #n</td><td>Class itu sendiri</td></tr><tr><td>Static block</td><td>static { ... }</td><td>Inisialisasi sekali</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>class RekeningBank {
+  static #jumlahRekening = 0;              // privat statis
+  #saldo = 0;                              // privat instance
+  riwayat = [];                            // field publik
+
+  constructor(pemilik, saldoAwal = 0) {
+    this.pemilik = pemilik;
+    this.setor(saldoAwal);
+    RekeningBank.#jumlahRekening++;
+  }
+  setor(n) {
+    if (n &lt; 0) throw new RangeError(&#x27;setoran negatif&#x27;);
+    this.#saldo += n;
+    this.#catat(&#x27;setor&#x27;, n);
+    return this;                           // memungkinkan chaining
+  }
+  tarik(n) {
+    if (n &gt; this.#saldo) throw new Error(&#x27;saldo tidak cukup&#x27;);
+    this.#saldo -= n;
+    this.#catat(&#x27;tarik&#x27;, n);
+    return this;
+  }
+  #catat(jenis, n) { this.riwayat.push(`${jenis} ${n}`); }   // metode privat
+  get saldo() { return this.#saldo; }       // getter: hanya baca
+  static get jumlah() { return RekeningBank.#jumlahRekening; }
+  static dariJSON(teks) { const d = JSON.parse(teks); return new RekeningBank(d.pemilik, d.saldo); }
+}
+
+const r = new RekeningBank(&#x27;Sinta&#x27;, 100000);
+r.setor(50000).tarik(30000);
+console.log(r.pemilik, r.saldo, r.riwayat);
+try { r.saldo = 999; } catch (e) { console.log(&#x27;getter tanpa setter:&#x27;, e.name); }
+try { r.tarik(1e9); } catch (e) { console.log(&#x27;ditolak:&#x27;, e.message); }
+console.log(Object.keys(r), &#x27;#saldo&#x27; in r, typeof r.setor);
+const r2 = RekeningBank.dariJSON(&#x27;{&quot;pemilik&quot;:&quot;Yoga&quot;,&quot;saldo&quot;:5000}&#x27;);
+console.log(r2.saldo, RekeningBank.jumlah, typeof RekeningBank);
+console.log(Object.getPrototypeOf(r) === RekeningBank.prototype, r.setor === r2.setor);</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Sinta 120000 [ &#x27;setor 100000&#x27;, &#x27;setor 50000&#x27;, &#x27;tarik 30000&#x27; ]
+getter tanpa setter: TypeError
+ditolak: saldo tidak cukup
+[ &#x27;riwayat&#x27;, &#x27;pemilik&#x27; ] false function
+5000 2 function
+true true</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat class <code>Keranjang</code> dengan field privat <code>#item</code> (array), metode <code>tambah(nama, harga, qty = 1)</code> yang bisa dirantai, getter <code>total</code>, dan getter <code>jumlahItem</code>.</p><details><summary>Petunjuk</summary><p>Simpan objek {nama, harga, qty}; total = reduce harga * qty.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>class Keranjang {
+  #item = [];
+  tambah(nama, harga, qty = 1) {
+    this.#item.push({ nama, harga, qty });
+    return this;
+  }
+  get total() { return this.#item.reduce((a, i) =&gt; a + i.harga * i.qty, 0); }
+  get jumlahItem() { return this.#item.reduce((a, i) =&gt; a + i.qty, 0); }
+}
+const k = new Keranjang().tambah(&#x27;Kopi&#x27;, 45000, 2).tambah(&#x27;Roti&#x27;, 15000);
+console.log(k.jumlahItem, &#x27;item, total&#x27;, k.total);</code></pre><div class="lbl">KELUARAN</div><pre><code>3 item, total 105000</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>class = syntactic sugar di atas prototype.</li><li>Metode di prototype, field di instance.</li><li>#privat benar-benar tersembunyi.</li><li>Getter/setter untuk properti terhitung/tervalidasi.</li><li>Static untuk factory dan data tingkat class.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Di mana metode class disimpan?</summary><p class="ok">Jawaban: Di prototype class, dibagi semua instance</p><p>Itulah sebabnya r.setor === r2.setor.</p></details><details><summary>Perbedaan #saldo dan _saldo?</summary><p class="ok">Jawaban: #saldo benar-benar privat; _saldo hanya konvensi</p><p>Field # diperiksa oleh engine.</p></details>
+<a class="cta" href="/#js-14-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/xmlhttprequest-dan-perbandingannya-dengan-fetch">XMLHttpRequest dan perbandingannya dengan fetch</a></p><p>Berikutnya: <a href="/belajar/js/pewarisan-extends-super-dan-polimorfisme">Pewarisan: extends, super, dan polimorfisme</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

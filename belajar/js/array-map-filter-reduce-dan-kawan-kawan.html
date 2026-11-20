@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Array: map, filter, reduce, dan kawan-kawan · JavaScript · Ruang Kode</title>
+<meta name="description" content="Metode higher-order menerima fungsi callback dan menjadi inti gaya fungsional JS. map mengubah setiap elemen (panjang tetap), filter menyaring, reduce…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/array-map-filter-reduce-dan-kawan-kawan">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Array: map, filter, reduce, dan kawan-kawan · JavaScript · Ruang Kode"><meta property="og:description" content="Metode higher-order menerima fungsi callback dan menjadi inti gaya fungsional JS. map mengubah setiap elemen (panjang tetap), filter menyaring, reduce…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/array-map-filter-reduce-dan-kawan-kawan"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Array: map, filter, reduce, dan kawan-kawan", "description": "Metode higher-order menerima fungsi callback dan menjadi inti gaya fungsional JS. map mengubah setiap elemen (panjang tetap), filter menyaring, reduce…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/array-map-filter-reduce-dan-kawan-kawan", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "Array: map, filter, reduce, dan kawan-kawan", "item": "https://ruang-kode-nine.vercel.app/belajar/js/array-map-filter-reduce-dan-kawan-kawan"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 5</nav>
+<div class="eyebrow">JavaScript · Modul 5 · Konsep &amp; kode</div><h1>Array: map, filter, reduce, dan kawan-kawan</h1><a class="cta" href="/#js-5-2">Buka versi interaktif</a>
+<p>Metode <b>higher-order</b> menerima fungsi <b>callback</b> dan menjadi inti gaya fungsional JS. <code>map</code> mengubah setiap elemen (panjang tetap), <code>filter</code> menyaring, <code>reduce</code> mengakumulasi menjadi satu nilai, <code>forEach</code> hanya menjalankan efek (tanpa nilai kembali), <code>some/every</code> mengecek kondisi, <code>flatMap</code> memetakan lalu meratakan satu tingkat.</p>
+<p>Metode ini bisa <b>dirantai</b> (method chaining) sehingga transformasi data terbaca seperti pipeline. Untuk data sangat besar, satu <code>reduce</code> atau loop biasa bisa lebih hemat dibanding rantai panjang karena setiap tahap membuat array baru.</p>
+<p>Selalu beri <b>nilai awal</b> pada <code>reduce</code>; tanpa itu, reduce pada array kosong melempar TypeError. Untuk mengelompokkan data, ES2024 menyediakan <code>Object.groupBy</code> dan <code>Map.groupBy</code>.</p>
+<div class="tw"><table><caption>Metode iterasi array</caption><thead><tr><th>Metode</th><th>Mengembalikan</th><th>Pakai untuk</th></tr></thead><tbody><tr><td>map(fn)</td><td>Array baru, panjang sama</td><td>Ubah bentuk setiap item</td></tr><tr><td>filter(fn)</td><td>Array baru, mungkin lebih pendek</td><td>Saring</td></tr><tr><td>reduce(fn, awal)</td><td>Satu nilai apa saja</td><td>Total, objek indeks, gabung</td></tr><tr><td>forEach(fn)</td><td>undefined</td><td>Efek samping (log, kirim)</td></tr><tr><td>find(fn)</td><td>Elemen pertama atau undefined</td><td>Cari satu</td></tr><tr><td>some / every</td><td>boolean</td><td>Ada yang / semua memenuhi</td></tr><tr><td>flatMap(fn)</td><td>Array rata satu tingkat</td><td>Satu item jadi banyak</td></tr><tr><td>Object.groupBy(a, fn)</td><td>Object kelompok</td><td>Grouping (ES2024)</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>const pesanan = [
+  { id: 1, kota: &#x27;Bandung&#x27;, total: 125000, status: &#x27;lunas&#x27; },
+  { id: 2, kota: &#x27;Jakarta&#x27;, total: 89000, status: &#x27;batal&#x27; },
+  { id: 3, kota: &#x27;Bandung&#x27;, total: 230000, status: &#x27;lunas&#x27; },
+  { id: 4, kota: &#x27;Medan&#x27;, total: 54000, status: &#x27;lunas&#x27; },
+];
+const lunas = pesanan.filter(p =&gt; p.status === &#x27;lunas&#x27;);
+console.log(lunas.map(p =&gt; p.id));
+const omzet = lunas.reduce((acc, p) =&gt; acc + p.total, 0);
+console.log(&#x27;omzet:&#x27;, omzet.toLocaleString(&#x27;id-ID&#x27;));
+console.log(pesanan.some(p =&gt; p.total &gt; 200000), pesanan.every(p =&gt; p.total &gt; 50000));
+
+const perKota = Object.groupBy(lunas, p =&gt; p.kota);
+for (const [kota, daftar] of Object.entries(perKota)) {
+  console.log(kota.padEnd(8), daftar.reduce((a, p) =&gt; a + p.total, 0));
+}
+const tag = [[&#x27;js&#x27;, &#x27;web&#x27;], [&#x27;node&#x27;], []].flatMap(t =&gt; t);
+console.log(tag, [].reduce((a, b) =&gt; a + b, 0));</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>[ 1, 3, 4 ]
+omzet: 409.000
+true true
+Bandung  355000
+Medan    54000
+[ &#x27;js&#x27;, &#x27;web&#x27;, &#x27;node&#x27; ] 0</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Dari data nilai <code>[{nama:"Ani",n:88},{nama:"Budi",n:62},{nama:"Citra",n:75},{nama:"Dodi",n:91}]</code>, cetak nama yang lulus (n &gt;= 70) diurutkan dari nilai tertinggi, dan rata-rata semua nilai dengan 1 desimal.</p><details><summary>Petunjuk</summary><p>filter, toSorted, map; reduce untuk jumlah lalu bagi length.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>const data = [{ nama: &#x27;Ani&#x27;, n: 88 }, { nama: &#x27;Budi&#x27;, n: 62 }, { nama: &#x27;Citra&#x27;, n: 75 }, { nama: &#x27;Dodi&#x27;, n: 91 }];
+const lulus = data.filter(d =&gt; d.n &gt;= 70).toSorted((a, b) =&gt; b.n - a.n).map(d =&gt; d.nama);
+console.log(&#x27;Lulus:&#x27;, lulus.join(&#x27;, &#x27;));
+const rata = data.reduce((a, d) =&gt; a + d.n, 0) / data.length;
+console.log(&#x27;Rata-rata:&#x27;, rata.toFixed(1));</code></pre><div class="lbl">KELUARAN</div><pre><code>Lulus: Dodi, Ani, Citra
+Rata-rata: 79.0</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>map ubah, filter saring, reduce akumulasi.</li><li>Rantai metode membentuk pipeline data.</li><li>reduce selalu dengan nilai awal.</li><li>Object.groupBy untuk pengelompokan.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Hasil [1, 2, 3].map(x =&gt; x * 2).filter(x =&gt; x &gt; 2)?</summary><p class="ok">Jawaban: [4, 6]</p><p>map menghasilkan [2,4,6], filter menyisakan [4,6].</p></details><details><summary>Nilai kembali forEach?</summary><p class="ok">Jawaban: undefined</p><p>forEach hanya untuk efek samping.</p></details>
+<a class="cta" href="/#js-5-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/array-dasar-dan-mutasi">Array: dasar dan mutasi</a></p><p>Berikutnya: <a href="/belajar/js/typed-arrays">Typed Arrays</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

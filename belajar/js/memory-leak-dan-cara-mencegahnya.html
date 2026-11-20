@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Memory leak dan cara mencegahnya · JavaScript · Ruang Kode</title>
+<meta name="description" content="Memory leak terjadi saat memori yang tidak dibutuhkan tetap terjangkau sehingga GC tidak bisa membersihkannya. Gejalanya: aplikasi makin lambat dan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/memory-leak-dan-cara-mencegahnya">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Memory leak dan cara mencegahnya · JavaScript · Ruang Kode"><meta property="og:description" content="Memory leak terjadi saat memori yang tidak dibutuhkan tetap terjangkau sehingga GC tidak bisa membersihkannya. Gejalanya: aplikasi makin lambat dan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/memory-leak-dan-cara-mencegahnya"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Memory leak dan cara mencegahnya", "description": "Memory leak terjadi saat memori yang tidak dibutuhkan tetap terjangkau sehingga GC tidak bisa membersihkannya. Gejalanya: aplikasi makin lambat dan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/memory-leak-dan-cara-mencegahnya", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "Memory leak dan cara mencegahnya", "item": "https://ruang-kode-nine.vercel.app/belajar/js/memory-leak-dan-cara-mencegahnya"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 17</nav>
+<div class="eyebrow">JavaScript · Modul 17 · Konsep &amp; kode</div><h1>Memory leak dan cara mencegahnya</h1><a class="cta" href="/#js-17-2">Buka versi interaktif</a>
+<p><b>Memory leak</b> terjadi saat memori yang tidak dibutuhkan tetap terjangkau sehingga GC tidak bisa membersihkannya. Gejalanya: aplikasi makin lambat dan pemakaian memori terus naik setelah lama dipakai, terutama di <b>SPA</b> yang jarang dimuat ulang.</p>
+<p>Penyebab paling umum: (1) <b>variabel global</b> tak sengaja atau cache global tanpa batas; (2) <b>event listener</b> yang tidak dilepas saat komponen hilang; (3) <b>timer</b> setInterval yang lupa di-clear; (4) <b>closure</b> yang menahan object besar; (5) <b>detached DOM</b>: elemen sudah dihapus dari halaman tetapi masih dirujuk variabel JS; (6) langganan WebSocket/observer yang tidak ditutup.</p>
+<p>Pencegahan: batasi ukuran cache (misalnya LRU), gunakan <b>WeakMap</b> untuk metadata per object, selalu sediakan fungsi <b>cleanup</b> (return dari useEffect, <code>removeEventListener</code>, <code>clearInterval</code>, <code>controller.abort()</code>), dan gunakan opsi <code>{ signal }</code> di addEventListener agar banyak listener bisa dilepas sekaligus. Ukur dengan panel <b>Memory</b> di DevTools sebelum dan sesudah perbaikan.</p>
+<div class="tw"><table><caption>Penyebab memory leak dan perbaikannya</caption><thead><tr><th>Penyebab</th><th>Contoh</th><th>Perbaikan</th></tr></thead><tbody><tr><td>Global tak sengaja</td><td>x = [] tanpa let</td><td>Strict mode / modul ES</td></tr><tr><td>Cache tak terbatas</td><td>Map yang terus tumbuh</td><td>LRU, TTL, atau WeakMap</td></tr><tr><td>Listener tidak dilepas</td><td>window.addEventListener di komponen</td><td>removeEventListener / { signal }</td></tr><tr><td>Timer lupa dihentikan</td><td>setInterval di halaman</td><td>clearInterval di cleanup</td></tr><tr><td>Detached DOM</td><td>Variabel menyimpan elemen yang dihapus</td><td>Set variabel ke null, pakai WeakRef/WeakMap</td></tr><tr><td>Closure menahan data besar</td><td>Handler merujuk array besar</td><td>Ambil hanya yang perlu</td></tr><tr><td>Langganan tak ditutup</td><td>WebSocket, observer</td><td>close(), disconnect() di cleanup</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>// 1. cache tanpa batas -&gt; bocor; cache LRU dengan batas -&gt; aman
+class CacheLRU {
+  #maks; #data = new Map();
+  constructor(maks) { this.#maks = maks; }
+  get(k) {
+    if (!this.#data.has(k)) return undefined;
+    const v = this.#data.get(k);
+    this.#data.delete(k); this.#data.set(k, v);       // pindah ke paling baru
+    return v;
+  }
+  set(k, v) {
+    this.#data.delete(k);
+    this.#data.set(k, v);
+    if (this.#data.size &gt; this.#maks) this.#data.delete(this.#data.keys().next().value);   // buang yang terlama
+  }
+  get kunci() { return [...this.#data.keys()]; }
+}
+const cache = new CacheLRU(3);
+for (const id of [1, 2, 3]) cache.set(id, `profil-${id}`);
+cache.get(1);
+cache.set(4, &#x27;profil-4&#x27;);
+console.log(&#x27;isi cache:&#x27;, cache.kunci);
+
+// 2. listener + timer dengan cleanup memakai AbortController
+const bus = new EventTarget();
+function pasangWidget(nama) {
+  const ctrl = new AbortController();
+  let detak = 0;
+  bus.addEventListener(&#x27;pesan&#x27;, e =&gt; console.log(`${nama} menerima ${e.detail}`), { signal: ctrl.signal });
+  const timer = setInterval(() =&gt; detak++, 10);
+  return function bersihkan() {
+    ctrl.abort();                 // melepas semua listener dengan signal ini
+    clearInterval(timer);
+    console.log(`${nama} dibersihkan`);
+  };
+}
+const bersihkan = pasangWidget(&#x27;Widget Cuaca&#x27;);
+bus.dispatchEvent(new CustomEvent(&#x27;pesan&#x27;, { detail: &#x27;hujan&#x27; }));
+bersihkan();
+bus.dispatchEvent(new CustomEvent(&#x27;pesan&#x27;, { detail: &#x27;cerah&#x27; }));   // tidak ada yang menerima
+console.log(&#x27;event loop tidak tertahan timer, program selesai normal&#x27;);</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>isi cache: [ 3, 1, 4 ]
+Widget Cuaca menerima hujan
+Widget Cuaca dibersihkan
+event loop tidak tertahan timer, program selesai normal</code></pre>
+<h2>Poin penting</h2><ul><li>Leak = memori tak terpakai yang masih terjangkau.</li><li>Penyebab utama: listener, timer, cache, detached DOM.</li><li>Selalu tulis cleanup.</li><li>AbortController signal melepas banyak listener sekaligus.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Apa itu detached DOM node?</summary><p class="ok">Jawaban: Elemen yang sudah dihapus dari halaman tetapi masih dirujuk JS</p><p>Masih terjangkau sehingga tidak dibersihkan.</p></details><details><summary>Cara aman menyimpan cache hasil per object DOM?</summary><p class="ok">Jawaban: WeakMap dengan elemen sebagai key</p><p>Entri hilang saat elemen tidak terjangkau.</p></details>
+<a class="cta" href="/#js-17-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/siklus-hidup-memori-dan-garbage-collection">Siklus hidup memori dan garbage collection</a></p><p>Berikutnya: <a href="/belajar/js/konsol-tingkat-lanjut">Konsol tingkat lanjut</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Object.is, SameValue, dan SameValueZero · JavaScript · Ruang Kode</title>
+<meta name="description" content="Selain == dan ===, spesifikasi punya dua algoritma kesetaraan lain. SameValue dipakai oleh Object.is(a, b): sama seperti === kecuali NaN dianggap sama…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/object-is-samevalue-dan-samevaluezero">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Object.is, SameValue, dan SameValueZero · JavaScript · Ruang Kode"><meta property="og:description" content="Selain == dan ===, spesifikasi punya dua algoritma kesetaraan lain. SameValue dipakai oleh Object.is(a, b): sama seperti === kecuali NaN dianggap sama…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/object-is-samevalue-dan-samevaluezero"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Object.is, SameValue, dan SameValueZero", "description": "Selain == dan ===, spesifikasi punya dua algoritma kesetaraan lain. SameValue dipakai oleh Object.is(a, b): sama seperti === kecuali NaN dianggap sama…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/object-is-samevalue-dan-samevaluezero", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "Object.is, SameValue, dan SameValueZero", "item": "https://ruang-kode-nine.vercel.app/belajar/js/object-is-samevalue-dan-samevaluezero"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 6</nav>
+<div class="eyebrow">JavaScript · Modul 6 · Konsep &amp; kode</div><h1>Object.is, SameValue, dan SameValueZero</h1><a class="cta" href="/#js-6-2">Buka versi interaktif</a>
+<p>Selain == dan ===, spesifikasi punya dua algoritma kesetaraan lain. <b>SameValue</b> dipakai oleh <code>Object.is(a, b)</code>: sama seperti === kecuali <code>NaN</code> dianggap sama dengan NaN, dan <code>+0</code> dibedakan dari <code>-0</code>.</p>
+<p><b>SameValueZero</b> sama dengan SameValue kecuali +0 dan -0 dianggap sama. Algoritma inilah yang dipakai <code>Array.prototype.includes</code>, key <code>Map</code>, dan nilai <code>Set</code>. Sementara <code>indexOf</code> dan <code>lastIndexOf</code> memakai === sehingga tidak bisa menemukan NaN.</p>
+<p>Dalam praktik, Object.is dipakai pustaka seperti <b>React</b> untuk memutuskan apakah state berubah (<code>useState</code>, dependency <code>useEffect</code>, <code>useMemo</code>). Karena perbandingannya per referensi, memutasi object lalu men-set object yang sama tidak memicu render ulang; buat object baru.</p>
+<div class="tw"><table><caption>Empat algoritma kesetaraan</caption><thead><tr><th>Algoritma</th><th>Dipakai oleh</th><th>NaN vs NaN</th><th>+0 vs -0</th><th>Konversi tipe</th></tr></thead><tbody><tr><td>IsLooselyEqual</td><td>==</td><td>false</td><td>sama</td><td>Ya</td></tr><tr><td>IsStrictlyEqual</td><td>===, indexOf, switch</td><td>false</td><td>sama</td><td>Tidak</td></tr><tr><td>SameValueZero</td><td>includes, Map, Set</td><td>sama</td><td>sama</td><td>Tidak</td></tr><tr><td>SameValue</td><td>Object.is, React</td><td>sama</td><td>beda</td><td>Tidak</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>console.log(NaN === NaN, Object.is(NaN, NaN));
+console.log(0 === -0, Object.is(0, -0));
+console.log([NaN].includes(NaN), [NaN].indexOf(NaN));     // SameValueZero vs ===
+console.log([-0].includes(0), new Set([0, -0]).size);
+const m = new Map([[NaN, &#x27;bukan angka&#x27;]]);
+console.log(m.get(NaN));
+console.log(1 / 0, 1 / -0);                               // kenapa -0 bisa penting
+
+// cara kerja seperti React: bandingkan state lama dan baru dengan Object.is
+function setState(lama, baru) {
+  return Object.is(lama, baru) ? &#x27;tidak render ulang&#x27; : &#x27;render ulang&#x27;;
+}
+const state = { items: [1] };
+state.items.push(2);
+console.log(setState(state, state));                     // mutasi: referensi sama
+console.log(setState(state, { ...state, items: [...state.items, 3] }));</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>false true
+true false
+true -1
+true 1
+bukan angka
+Infinity -Infinity
+tidak render ulang
+render ulang</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis fungsi <code>samaDangkal(a, b)</code> yang membandingkan dua object satu tingkat memakai Object.is untuk setiap key (seperti shallowEqual di React). Uji dengan tiga pasangan.</p><details><summary>Petunjuk</summary><p>Cek jumlah key sama, lalu every key Object.is(a[k], b[k]).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>function samaDangkal(a, b) {
+  if (Object.is(a, b)) return true;
+  const ka = Object.keys(a), kb = Object.keys(b);
+  return ka.length === kb.length &amp;&amp; ka.every(k =&gt; Object.hasOwn(b, k) &amp;&amp; Object.is(a[k], b[k]));
+}
+const list = [1];
+console.log(samaDangkal({ x: 1, y: NaN }, { x: 1, y: NaN }));
+console.log(samaDangkal({ a: list }, { a: list }));
+console.log(samaDangkal({ a: [1] }, { a: [1] }));</code></pre><div class="lbl">KELUARAN</div><pre><code>true
+true
+false</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Object.is = SameValue: NaN sama, +0 beda -0.</li><li>includes, Map, Set = SameValueZero.</li><li>indexOf dan switch memakai ===.</li><li>React membandingkan state dengan Object.is: jangan mutasi.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Metode yang bisa menemukan NaN di array?</summary><p class="ok">Jawaban: includes</p><p>includes memakai SameValueZero.</p></details><details><summary>Object.is(0, -0)?</summary><p class="ok">Jawaban: false</p><p>SameValue membedakan tanda nol.</p></details>
+<a class="cta" href="/#js-6-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/versus">== versus ===</a></p><p>Berikutnya: <a href="/belajar/js/for-while-dan-do-while">for, while, dan do...while</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

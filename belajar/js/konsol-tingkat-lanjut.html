@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Konsol tingkat lanjut · JavaScript · Ruang Kode</title>
+<meta name="description" content="Panel Console lebih dari sekadar console.log. Gunakan console.table untuk array object, console.group/groupEnd untuk mengelompokkan log,…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/konsol-tingkat-lanjut">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Konsol tingkat lanjut · JavaScript · Ruang Kode"><meta property="og:description" content="Panel Console lebih dari sekadar console.log. Gunakan console.table untuk array object, console.group/groupEnd untuk mengelompokkan log,…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/konsol-tingkat-lanjut"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Konsol tingkat lanjut", "description": "Panel Console lebih dari sekadar console.log. Gunakan console.table untuk array object, console.group/groupEnd untuk mengelompokkan log,…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/konsol-tingkat-lanjut", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "Konsol tingkat lanjut", "item": "https://ruang-kode-nine.vercel.app/belajar/js/konsol-tingkat-lanjut"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 18</nav>
+<div class="eyebrow">JavaScript · Modul 18 · Konsep &amp; kode</div><h1>Konsol tingkat lanjut</h1><a class="cta" href="/#js-18-1">Buka versi interaktif</a>
+<p>Panel <b>Console</b> lebih dari sekadar <code>console.log</code>. Gunakan <code>console.table</code> untuk array object, <code>console.group</code>/<code>groupEnd</code> untuk mengelompokkan log, <code>console.warn</code>/<code>console.error</code> untuk tingkat keparahan (bisa difilter), <code>console.count</code> untuk menghitung berapa kali kode terpanggil, <code>console.time</code>/<code>timeEnd</code> untuk mengukur durasi, <code>console.assert</code> untuk mencatat jika kondisi salah, dan <code>console.trace</code> untuk melihat call stack.</p>
+<p>Di konsol browser tersedia utilitas khusus: <code>$0</code> (elemen yang dipilih di panel Elements), <code>$('sel')</code> dan <code>$$('sel')</code> (querySelector dan querySelectorAll), <code>copy(obj)</code> (salin ke clipboard), <code>monitorEvents(el)</code>, dan <b>Live Expression</b> (ikon mata) untuk memantau nilai terus-menerus.</p>
+<p>Di kode produksi, hapus log debug atau pakai pustaka logging dengan level (misalnya pino di Node). Banyak tim memasang aturan ESLint <code>no-console</code> dan menghapus console otomatis saat build.</p>
+<div class="tw"><table><caption>Metode console</caption><thead><tr><th>Metode</th><th>Kegunaan</th></tr></thead><tbody><tr><td>console.table</td><td>Tampilkan array/object sebagai tabel</td></tr><tr><td>console.group / groupEnd</td><td>Kelompokkan log bertingkat</td></tr><tr><td>console.count</td><td>Hitung berapa kali dipanggil</td></tr><tr><td>console.time / timeEnd</td><td>Ukur durasi</td></tr><tr><td>console.assert</td><td>Log hanya jika kondisi false</td></tr><tr><td>console.trace</td><td>Cetak call stack</td></tr><tr><td>console.warn / error</td><td>Level peringatan / error (bisa difilter)</td></tr><tr><td>console.dir</td><td>Tampilkan properti object</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>const pesanan = [
+  { id: &#x27;INV-1&#x27;, kota: &#x27;Bandung&#x27;, total: 125000 },
+  { id: &#x27;INV-2&#x27;, kota: &#x27;Medan&#x27;, total: 89000 },
+];
+console.table(pesanan);
+
+console.group(&#x27;Checkout&#x27;);
+console.log(&#x27;validasi alamat&#x27;);
+console.warn(&#x27;stok tinggal 1&#x27;);
+console.groupEnd();
+
+for (const p of pesanan) console.count(&#x27;render baris&#x27;);
+console.assert(pesanan.length === 3, &#x27;jumlah pesanan seharusnya 3&#x27;);
+console.log(&#x27;%s membeli %d barang (%o)&#x27;, &#x27;Rani&#x27;, 3, { vip: true });
+console.dir({ a: { b: { c: { d: 1 } } } }, { depth: 0 });</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>┌─────────┬─────────┬───────────┬────────┐
+│ (index) │ id      │ kota      │ total  │
+├─────────┼─────────┼───────────┼────────┤
+│ 0       │ &#x27;INV-1&#x27; │ &#x27;Bandung&#x27; │ 125000 │
+│ 1       │ &#x27;INV-2&#x27; │ &#x27;Medan&#x27;   │ 89000  │
+└─────────┴─────────┴───────────┴────────┘
+Checkout
+  validasi alamat
+  stok tinggal 1
+render baris: 1
+render baris: 2
+Assertion failed: jumlah pesanan seharusnya 3
+Rani membeli 3 barang ({ vip: true })
+{ a: [Object] }</code></pre>
+<h2>Poin penting</h2><ul><li>table, group, count, time, assert, trace mempercepat debugging.</li><li>$0, $(), $$(), copy() hanya di konsol DevTools.</li><li>Live Expression untuk memantau nilai.</li><li>Bersihkan log di produksi.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Metode untuk menampilkan array object sebagai tabel?</summary><p class="ok">Jawaban: console.table</p><p>Kolom diambil dari key object.</p></details>
+<a class="cta" href="/#js-18-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/memory-leak-dan-cara-mencegahnya">Memory leak dan cara mencegahnya</a></p><p>Berikutnya: <a href="/belajar/js/debugging-dengan-breakpoint">Debugging dengan breakpoint</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

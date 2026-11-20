@@ -4,12 +4,12 @@
 const OSES=[['win','Windows'],['mac','macOS'],['lin','Linux (Ubuntu/Debian)']];
 const SETUP=[
   {id:'browser',name:'Browser modern',why:'Untuk membuka Ruang Kode, melihat hasil HTML/CSS, dan memakai DevTools (tekan F12).',
-   tr:['html','css','fe0','fe','react','ux','ds','msi','sim','pseudo','flowg','tw','bs','ui','slw'],
+   tr:['html','css','js','fe0','fe','react','ux','ds','msi','sim','pseudo','flowg','tw','bs','ui','slw'],
    os:{win:['Pakai Google Chrome, Microsoft Edge, atau Firefox versi terbaru. Edge sudah terpasang di Windows 10/11.'],
        mac:['Pakai Chrome, Edge, Firefox, atau Safari versi terbaru.'],
        lin:['Pakai Chrome atau Firefox versi terbaru. Firefox biasanya sudah terpasang.']}},
   {id:'vscode',name:'Visual Studio Code',why:'Editor kode gratis untuk semua bahasa di Ruang Kode. Pasang ekstensi sesuai jalur dari menu Extensions (Ctrl+Shift+X).',
-   tr:['java','python','ts','fe0','html','css','fe','react','pda','da','de','git','dart','flutter','tw','bs','slw','dsa','pgdba','qa','django','nextjs','vue','dsci','proj'],
+   tr:['java','python','js','ts','fe0','html','css','fe','react','pda','da','de','git','dart','flutter','tw','bs','slw','dsa','pgdba','qa','django','nextjs','vue','dsci','proj'],
    os:{win:['Unduh dari code.visualstudio.com lalu jalankan installer. Centang "Add to PATH" dan "Open with Code".'],
        mac:['Unduh dari code.visualstudio.com, buka file zip, lalu seret Visual Studio Code ke folder Applications.'],
        lin:['Unduh paket .deb dari code.visualstudio.com, atau pasang lewat Snap.']},
@@ -42,7 +42,7 @@ const SETUP=[
    check:'java -version',
    first:{file:'Main.java',code:'public class Main {\n    public static void main(String[] args) {\n        String nama = "Ruang Kode";\n        System.out.println("Halo dari " + nama + "!");\n    }\n}',run:'java Main.java',out:'Halo dari Ruang Kode!'}},
   {id:'node',name:'Node.js (versi LTS)',why:'Untuk menjalankan JavaScript dan TypeScript di luar browser, serta npm untuk React, Vite, dan Tailwind.',
-   tr:['ts','fe0','fe','react','tw','bs','qa','nextjs','vue','proj'],
+   tr:['js','ts','fe0','fe','react','tw','bs','qa','nextjs','vue','proj'],
    os:{win:['Unduh installer LTS dari nodejs.org lalu jalankan dengan pilihan bawaan.'],
        mac:['Unduh installer LTS (.pkg) dari nodejs.org lalu ikuti langkahnya.'],
        lin:['Paket Node di repositori Ubuntu sering terlalu lama. Pakai nvm: pasang nvm dari github.com/nvm-sh/nvm, tutup lalu buka lagi terminal, kemudian jalankan perintah di bawah.']},

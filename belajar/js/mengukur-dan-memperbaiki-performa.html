@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mengukur dan memperbaiki performa · JavaScript · Ruang Kode</title>
+<meta name="description" content="Panel Performance merekam apa yang dilakukan browser: klik Record, lakukan aksi yang lambat, lalu Stop. Perhatikan Main thread dalam bentuk flame chart:…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/mengukur-dan-memperbaiki-performa">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Mengukur dan memperbaiki performa · JavaScript · Ruang Kode"><meta property="og:description" content="Panel Performance merekam apa yang dilakukan browser: klik Record, lakukan aksi yang lambat, lalu Stop. Perhatikan Main thread dalam bentuk flame chart:…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/mengukur-dan-memperbaiki-performa"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Mengukur dan memperbaiki performa", "description": "Panel Performance merekam apa yang dilakukan browser: klik Record, lakukan aksi yang lambat, lalu Stop. Perhatikan Main thread dalam bentuk flame chart:…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/mengukur-dan-memperbaiki-performa", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "Mengukur dan memperbaiki performa", "item": "https://ruang-kode-nine.vercel.app/belajar/js/mengukur-dan-memperbaiki-performa"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 18</nav>
+<div class="eyebrow">JavaScript · Modul 18 · Konsep &amp; kode</div><h1>Mengukur dan memperbaiki performa</h1><a class="cta" href="/#js-18-4">Buka versi interaktif</a>
+<p>Panel <b>Performance</b> merekam apa yang dilakukan browser: klik Record, lakukan aksi yang lambat, lalu Stop. Perhatikan <b>Main thread</b> dalam bentuk <b>flame chart</b>: blok lebar adalah fungsi yang lama. <b>Long task</b> (lebih dari 50 ms, ditandai segitiga merah) membuat halaman terasa macet dan memperburuk metrik <b>INP</b> (Interaction to Next Paint). Ungu = layout/recalculate style, hijau = paint.</p>
+<p>Masalah performa JS yang sering ditemukan: perulangan berat di main thread, <b>layout thrashing</b> (membaca ukuran elemen lalu menulis style bergantian di dalam loop sehingga memaksa layout berulang), render ulang berlebihan, dan bundle JS terlalu besar. Perbaikannya: pecah pekerjaan (<code>scheduler.yield()</code> atau setTimeout), pindahkan ke <b>Web Worker</b>, kelompokkan baca lalu tulis DOM, debounce event, memoization, dan code splitting.</p>
+<p>Untuk mengukur di kode, gunakan <code>performance.now()</code> (resolusi tinggi), <code>performance.mark/measure</code> (tampil di panel Performance), dan <b>Lighthouse</b> untuk audit menyeluruh. Prinsipnya: <b>ukur dulu</b>, optimasi bagian yang terbukti lambat, lalu ukur lagi. Contoh di bawah membandingkan pencarian di array dan Set; angka pasti berbeda di setiap komputer, jadi yang dicetak hanya kesimpulannya.</p>
+<div class="tw"><table><caption>Gejala dan perbaikan performa</caption><thead><tr><th>Gejala di DevTools</th><th>Kemungkinan penyebab</th><th>Perbaikan</th></tr></thead><tbody><tr><td>Long task merah &gt; 50 ms</td><td>Komputasi berat di main thread</td><td>Pecah tugas, Web Worker</td></tr><tr><td>Banyak blok ungu Layout berulang</td><td>Layout thrashing</td><td>Baca semua dulu, lalu tulis; pakai transform</td></tr><tr><td>Scripting tinggi saat scroll</td><td>Handler scroll tanpa batas</td><td>Throttle, passive listener, IntersectionObserver</td></tr><tr><td>Unduh JS besar di awal</td><td>Bundle tidak dipecah</td><td>Code splitting, import() dinamis</td></tr><tr><td>Fungsi sama dipanggil berulang</td><td>Perhitungan diulang</td><td>Memoization, useMemo</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>const N = 200_000;
+const idArr = Array.from({ length: N }, (_, i) =&gt; `user-${i}`);
+const idSet = new Set(idArr);
+const dicari = Array.from({ length: 2000 }, (_, i) =&gt; `user-${N - 1 - i * 7}`);
+
+function ukur(label, fn) {
+  performance.mark(`${label}-mulai`);
+  const t0 = performance.now();
+  const hasil = fn();
+  const ms = performance.now() - t0;
+  performance.measure(label, `${label}-mulai`);   // muncul di panel Performance (browser)
+  return { label, hasil, ms };
+}
+const a = ukur(&#x27;array.includes&#x27;, () =&gt; dicari.filter(id =&gt; idArr.includes(id)).length);
+const s = ukur(&#x27;set.has&#x27;, () =&gt; dicari.filter(id =&gt; idSet.has(id)).length);
+console.log(a.label, &#x27;menemukan&#x27;, a.hasil, &#x27;|&#x27;, s.label, &#x27;menemukan&#x27;, s.hasil);
+console.log(&#x27;Set lebih cepat minimal 10x:&#x27;, a.ms / s.ms &gt; 10);
+
+// memoization untuk fungsi murni yang mahal
+function memo(fn) {
+  const cache = new Map();
+  return n =&gt; (cache.has(n) ? cache.get(n) : (cache.set(n, fn(n)), cache.get(n)));
+}
+let dihitung = 0;
+const ongkirMahal = memo(kota =&gt; { dihitung++; return kota.length * 1000; });
+[&#x27;Bandung&#x27;, &#x27;Medan&#x27;, &#x27;Bandung&#x27;, &#x27;Bandung&#x27;].forEach(ongkirMahal);
+console.log(&#x27;fungsi mahal dihitung&#x27;, dihitung, &#x27;kali untuk 4 panggilan&#x27;);
+console.log(performance.getEntriesByType(&#x27;measure&#x27;).map(m =&gt; m.name));</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>array.includes menemukan 2000 | set.has menemukan 2000
+Set lebih cepat minimal 10x: true
+fungsi mahal dihitung 2 kali untuk 4 panggilan
+[ &#x27;array.includes&#x27;, &#x27;set.has&#x27; ]</code></pre>
+<h2>Poin penting</h2><ul><li>Panel Performance: cari long task dan blok lebar di flame chart.</li><li>Long task > 50 ms memperburuk INP.</li><li>Hindari layout thrashing; pakai Worker untuk komputasi berat.</li><li>performance.now, mark, measure, dan Lighthouse.</li><li>Ukur dulu, optimasi, ukur lagi.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Batas durasi sebuah tugas disebut long task?</summary><p class="ok">Jawaban: Lebih dari 50 ms</p><p>Di atas 50 ms interaksi terasa tertunda.</p></details><details><summary>Apa itu layout thrashing?</summary><p class="ok">Jawaban: Membaca dan menulis layout bergantian sehingga layout dihitung ulang berkali-kali</p><p>Kelompokkan baca lalu tulis.</p></details>
+<a class="cta" href="/#js-18-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/menemukan-memory-leak-dengan-panel-memory">Menemukan memory leak dengan panel Memory</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

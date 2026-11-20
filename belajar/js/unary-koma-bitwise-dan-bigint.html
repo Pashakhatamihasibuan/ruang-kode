@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Unary, koma, bitwise, dan BigInt · JavaScript · Ruang Kode</title>
+<meta name="description" content="Unary operator bekerja pada satu operand: typeof, delete (hapus properti), void (selalu undefined), +x (ke number), -x, !x, ~x (NOT bitwise), ++/--,…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/unary-koma-bitwise-dan-bigint">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Unary, koma, bitwise, dan BigInt · JavaScript · Ruang Kode"><meta property="og:description" content="Unary operator bekerja pada satu operand: typeof, delete (hapus properti), void (selalu undefined), +x (ke number), -x, !x, ~x (NOT bitwise), ++/--,…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/unary-koma-bitwise-dan-bigint"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Unary, koma, bitwise, dan BigInt", "description": "Unary operator bekerja pada satu operand: typeof, delete (hapus properti), void (selalu undefined), +x (ke number), -x, !x, ~x (NOT bitwise), ++/--,…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/unary-koma-bitwise-dan-bigint", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "Unary, koma, bitwise, dan BigInt", "item": "https://ruang-kode-nine.vercel.app/belajar/js/unary-koma-bitwise-dan-bigint"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 9</nav>
+<div class="eyebrow">JavaScript · Modul 9 · Konsep &amp; kode</div><h1>Unary, koma, bitwise, dan BigInt</h1><a class="cta" href="/#js-9-3">Buka versi interaktif</a>
+<p><b>Unary operator</b> bekerja pada satu operand: <code>typeof</code>, <code>delete</code> (hapus properti), <code>void</code> (selalu undefined), <code>+x</code> (ke number), <code>-x</code>, <code>!x</code>, <code>~x</code> (NOT bitwise), <code>++</code>/<code>--</code>, serta <code>await</code>.</p>
+<p><b>Operator koma</b> mengevaluasi beberapa ekspresi dari kiri ke kanan dan mengembalikan yang terakhir. Pemakaian yang wajar hanya di bagian for dengan dua penghitung; di luar itu membuat kode sulit dibaca.</p>
+<p><b>Bitwise</b> (<code>& | ^ ~ &lt;&lt; &gt;&gt; &gt;&gt;&gt;</code>) mengubah operand menjadi bilangan bulat <b>32-bit</b> lalu bekerja per bit. Dipakai untuk <b>flag/izin</b> yang digabung dalam satu angka, warna heksadesimal, hashing, dan grafis. <b>Operator BigInt</b> sama dengan number (<code>+ - * / % **</code>, bitwise kecuali <code>&gt;&gt;&gt;</code>), pembagian dibulatkan ke nol, dan unary <code>+</code> tidak diizinkan.</p>
+<div class="tw"><table><caption>Operator bitwise</caption><thead><tr><th>Operator</th><th>Nama</th><th>Contoh (biner)</th></tr></thead><tbody><tr><td>&amp;</td><td>AND</td><td>101 &amp; 011 = 001</td></tr><tr><td>|</td><td>OR</td><td>101 | 011 = 111</td></tr><tr><td>^</td><td>XOR</td><td>101 ^ 011 = 110</td></tr><tr><td>~</td><td>NOT</td><td>~5 = -6</td></tr><tr><td>&lt;&lt;</td><td>Geser kiri</td><td>1 &lt;&lt; 3 = 8</td></tr><tr><td>&gt;&gt;</td><td>Geser kanan (jaga tanda)</td><td>-16 &gt;&gt; 2 = -4</td></tr><tr><td>&gt;&gt;&gt;</td><td>Geser kanan tanpa tanda</td><td>-16 &gt;&gt;&gt; 28 = 15</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>const akun = { nama: &#x27;Lia&#x27;, token: &#x27;rahasia&#x27; };
+delete akun.token;
+console.log(akun, typeof akun.token, void 0, -&#x27;5&#x27;, +true);
+
+for (let i = 0, j = 4; i &lt; j; i++, j--) console.log(&#x27;pasangan&#x27;, i, j);   // koma di for
+const x = (1, 2, 3);
+console.log(&#x27;koma mengembalikan yang terakhir:&#x27;, x);
+
+// flag izin dengan bitwise
+const BACA = 1, TULIS = 2, HAPUS = 4;      // 001, 010, 100
+let izin = BACA | TULIS;                   // gabung
+console.log(izin.toString(2).padStart(3, &#x27;0&#x27;), Boolean(izin &amp; TULIS), Boolean(izin &amp; HAPUS));
+izin |= HAPUS; izin &amp;= ~TULIS;             // tambah HAPUS, cabut TULIS
+console.log(izin.toString(2).padStart(3, &#x27;0&#x27;));
+
+const warna = 0xff8800;                    // pecah warna hex ke RGB
+console.log((warna &gt;&gt; 16) &amp; 255, (warna &gt;&gt; 8) &amp; 255, warna &amp; 255);
+console.log(5 ^ 3, ~5, 1 &lt;&lt; 10, -16 &gt;&gt; 2, -16 &gt;&gt;&gt; 28, 2 ** 32 | 0);
+
+console.log(7n / 2n, -7n / 2n, 2n ** 70n, 6n &amp; 3n, 1n &lt;&lt; 64n);
+try { console.log(+5n); } catch (e) { console.log(e.name + &#x27;:&#x27;, e.message); }
+console.log(5n == 5, 5n === 5, 2n &gt; 1, typeof (5n * 2n));</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>{ nama: &#x27;Lia&#x27; } undefined undefined -5 1
+pasangan 0 4
+pasangan 1 3
+koma mengembalikan yang terakhir: 3
+011 true false
+101
+255 136 0
+6 -6 1024 -4 15 0
+3n -3n 1180591620717411303424n 2n 18446744073709551616n
+TypeError: Cannot convert a BigInt value to a number
+true false true bigint</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Ubah warna hex <code>"#1E90FF"</code> menjadi string "rgb(30, 144, 255)" memakai parseInt basis 16 dan operator geser bitwise.</p><details><summary>Petunjuk</summary><p>n = parseInt(hex.slice(1), 16); r = n >> 16 & 255.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>const hex = &#x27;#1E90FF&#x27;;
+const n = parseInt(hex.slice(1), 16);
+const r = (n &gt;&gt; 16) &amp; 255, g = (n &gt;&gt; 8) &amp; 255, b = n &amp; 255;
+console.log(`rgb(${r}, ${g}, ${b})`);</code></pre><div class="lbl">KELUARAN</div><pre><code>rgb(30, 144, 255)</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>delete menghapus properti; void selalu undefined.</li><li>Operator koma hanya wajar di for.</li><li>Bitwise bekerja pada 32-bit; cocok untuk flag dan warna.</li><li>BigInt: pembagian dibulatkan ke nol, tanpa unary +.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Hasil 6 &amp; 3?</summary><p class="ok">Jawaban: 2</p><p>110 &amp; 011 = 010.</p></details><details><summary>Hasil 7n / 2n?</summary><p class="ok">Jawaban: 3n</p><p>Pembagian BigInt dibulatkan ke nol.</p></details>
+<a class="cta" href="/#js-9-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/operator-logika-kondisional-dan-string">Operator logika, kondisional, dan string</a></p><p>Berikutnya: <a href="/belajar/js/destructuring-spread-rest-dan-presedensi">Destructuring, spread, rest, dan presedensi</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

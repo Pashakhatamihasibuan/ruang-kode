@@ -77,7 +77,7 @@ function wireLesson(x){
   mount3d(x,y);
 }
 /* visual 3D: disisipkan setelah penjelasan pertama bila judul pelajaran cocok dengan salah satu adegan */
-function mount3d(x,y){const k=typeof v3dOf==='function'&&v3dOf(y.t,x.title);if(!k)return;const lb=$('#view .l-body');if(!lb||lb.querySelector('.v3-sec'))return;
+function mount3d(x,y){const k=y.l&&'v3' in y.l?y.l.v3:typeof v3dOf==='function'&&v3dOf(y.t,x.title);if(!k)return;const lb=$('#view .l-body');if(!lb||lb.querySelector('.v3-sec'))return;
   const sec=document.createElement('section');sec.className='viz v3-sec';sec.id='v3d';
   sec.innerHTML=`<div class="viz-head"><span class="eyebrow">Visual interaktif · 3D</span><h3>${V3DT(k)}</h3><p>Ikuti langkahnya satu per satu. Seret panggung untuk melihat dari sudut lain.</p></div><div class="vizhost v3host"></div>`;
   /* panggung jadi pusat pelajaran: tepat setelah kotak Sekilas, sebelum penjelasan teks */

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>== versus === · JavaScript · Ruang Kode</title>
+<meta name="description" content="=== (strict equality, algoritma IsStrictlyEqual) membandingkan tanpa konversi: tipe berbeda langsung false. == (loose equality, algoritma IsLooselyEqual)…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/versus">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="== versus === · JavaScript · Ruang Kode"><meta property="og:description" content="=== (strict equality, algoritma IsStrictlyEqual) membandingkan tanpa konversi: tipe berbeda langsung false. == (loose equality, algoritma IsLooselyEqual)…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/versus"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "== versus ===", "description": "=== (strict equality, algoritma IsStrictlyEqual) membandingkan tanpa konversi: tipe berbeda langsung false. == (loose equality, algoritma IsLooselyEqual)…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/versus", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "== versus ===", "item": "https://ruang-kode-nine.vercel.app/belajar/js/versus"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 6</nav>
+<div class="eyebrow">JavaScript · Modul 6 · Konsep &amp; kode</div><h1>== versus ===</h1><a class="cta" href="/#js-6-1">Buka versi interaktif</a>
+<p><code>===</code> (<b>strict equality</b>, algoritma <b>IsStrictlyEqual</b>) membandingkan tanpa konversi: tipe berbeda langsung false. <code>==</code> (<b>loose equality</b>, algoritma <b>IsLooselyEqual</b>) mengonversi tipe lebih dulu dengan aturan yang rumit.</p>
+<p>Ringkasan aturan <code>==</code>: null dan undefined hanya sama satu sama lain; number vs string, string diubah ke number; boolean selalu diubah ke number lebih dulu (sehingga <code>"true" == true</code> justru false); object vs primitif, object diubah ke primitif. NaN tidak sama dengan apa pun, termasuk dirinya sendiri.</p>
+<p>Standar industri: <b>selalu pakai === dan !==</b> (aturan ESLint <code>eqeqeq</code>). Satu-satunya pengecualian yang sering diterima adalah <code>x == null</code> untuk mengecek null atau undefined sekaligus. Object, array, dan fungsi dibandingkan <b>berdasarkan referensi</b> pada kedua operator: dua object dengan isi sama tetap tidak sama.</p>
+<div class="tw"><table><caption>Aturan IsLooselyEqual (==) secara ringkas</caption><thead><tr><th>Pasangan tipe</th><th>Yang dilakukan</th></tr></thead><tbody><tr><td>Tipe sama</td><td>Sama seperti ===</td></tr><tr><td>null dan undefined</td><td>true (dan tidak sama dengan nilai lain)</td></tr><tr><td>number dan string</td><td>String diubah ke number</td></tr><tr><td>boolean dan apa saja</td><td>Boolean diubah ke number (true = 1)</td></tr><tr><td>object dan primitif</td><td>Object diubah dengan ToPrimitive</td></tr><tr><td>bigint dan string/number</td><td>Dibandingkan sebagai nilai matematis</td></tr><tr><td>NaN</td><td>Selalu false</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>const kasus = [
+  [1, &#x27;1&#x27;], [0, &#x27;&#x27;], [0, &#x27;0&#x27;], [&#x27;&#x27;, &#x27;0&#x27;], [null, undefined], [null, 0],
+  [false, &#x27;false&#x27;], [true, &#x27;true&#x27;], [true, &#x27;1&#x27;], [NaN, NaN], [[1], 1], [[], false],
+];
+console.log(&#x27;a&#x27;.padEnd(10), &#x27;b&#x27;.padEnd(11), &#x27;==    ===&#x27;);
+for (const [a, b] of kasus) {
+  const tampil = v =&gt; (typeof v === &#x27;string&#x27; ? `&#x27;${v}&#x27;` : Array.isArray(v) ? `[${v}]` : String(v));
+  console.log(tampil(a).padEnd(10), tampil(b).padEnd(11), String(a == b).padEnd(5), a === b);
+}
+const p1 = { id: 1 }, p2 = { id: 1 }, p3 = p1;
+console.log(p1 === p2, p1 == p2, p1 === p3);
+const input = undefined;
+console.log(input == null, input === null);</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>a          b           ==    ===
+1          &#x27;1&#x27;         true  false
+0          &#x27;&#x27;          true  false
+0          &#x27;0&#x27;         true  false
+&#x27;&#x27;         &#x27;0&#x27;         false false
+null       undefined   true  false
+null       0           false false
+false      &#x27;false&#x27;     false false
+true       &#x27;true&#x27;      false false
+true       &#x27;1&#x27;         true  false
+NaN        NaN         false false
+[1]        1           true  false
+[]         false       true  false
+false false true
+true false</code></pre>
+<h2>Poin penting</h2><ul><li>=== tanpa konversi; == dengan koersi.</li><li>Pakai === (eqeqeq); x == null pengecualian yang umum.</li><li>Object dibandingkan berdasarkan referensi.</li><li>NaN tidak sama dengan dirinya.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Hasil &#x27;true&#x27; == true?</summary><p class="ok">Jawaban: false</p><p>true diubah ke 1, &quot;true&quot; diubah ke NaN.</p></details><details><summary>Hasil null == 0?</summary><p class="ok">Jawaban: false</p><p>null hanya == undefined.</p></details><details><summary>Hasil [] == false?</summary><p class="ok">Jawaban: true</p><p>false -&gt; 0, [] -&gt; &quot;&quot; -&gt; 0.</p></details>
+<a class="cta" href="/#js-6-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/json">JSON</a></p><p>Berikutnya: <a href="/belajar/js/object-is-samevalue-dan-samevaluezero">Object.is, SameValue, dan SameValueZero</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

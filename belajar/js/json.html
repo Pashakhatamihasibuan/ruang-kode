@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>JSON · JavaScript · Ruang Kode</title>
+<meta name="description" content="JSON (JavaScript Object Notation) adalah format teks untuk pertukaran data, dipakai hampir semua REST API, file konfigurasi (package.json), dan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/json">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="JSON · JavaScript · Ruang Kode"><meta property="og:description" content="JSON (JavaScript Object Notation) adalah format teks untuk pertukaran data, dipakai hampir semua REST API, file konfigurasi (package.json), dan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/json"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "JSON", "description": "JSON (JavaScript Object Notation) adalah format teks untuk pertukaran data, dipakai hampir semua REST API, file konfigurasi (package.json), dan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/json", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "JSON", "item": "https://ruang-kode-nine.vercel.app/belajar/js/json"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 5</nav>
+<div class="eyebrow">JavaScript · Modul 5 · Konsep &amp; kode</div><h1>JSON</h1><a class="cta" href="/#js-5-6">Buka versi interaktif</a>
+<p><b>JSON</b> (JavaScript Object Notation) adalah format teks untuk pertukaran data, dipakai hampir semua REST API, file konfigurasi (package.json), dan penyimpanan seperti localStorage. Sintaksnya lebih ketat dari object JS: key wajib kutip dua, string kutip dua, tidak ada koma di akhir, tidak ada komentar, dan nilai hanya string, number, boolean, null, array, atau object.</p>
+<p><code>JSON.stringify(nilai, replacer, spasi)</code> mengubah nilai menjadi teks. Yang <b>hilang atau berubah</b>: undefined, fungsi, dan symbol dibuang (di array menjadi null), Date menjadi string ISO, Map/Set menjadi <code>{}</code>, NaN/Infinity menjadi null, dan BigInt melempar TypeError. Object bisa mengatur bentuk JSON-nya dengan metode <code>toJSON()</code>.</p>
+<p><code>JSON.parse(teks, reviver)</code> mengubah teks menjadi nilai; teks tidak valid melempar <code>SyntaxError</code>, jadi selalu bungkus dengan try/catch saat datanya dari luar. Parameter <b>reviver</b> berguna untuk menghidupkan kembali tanggal. Ingat, JSON hanya data: jangan pernah memakai <code>eval</code> untuk mengurai JSON.</p>
+<div class="tw"><table><caption>Apa yang terjadi saat JSON.stringify</caption><thead><tr><th>Nilai JS</th><th>Di dalam object</th><th>Di dalam array</th></tr></thead><tbody><tr><td>undefined, fungsi, symbol</td><td>Key dibuang</td><td>Menjadi null</td></tr><tr><td>NaN, Infinity</td><td>null</td><td>null</td></tr><tr><td>Date</td><td>String ISO (toJSON)</td><td>String ISO</td></tr><tr><td>Map, Set</td><td>{}</td><td>{}</td></tr><tr><td>BigInt</td><td>TypeError</td><td>TypeError</td></tr><tr><td>Object dengan toJSON()</td><td>Hasil toJSON</td><td>Hasil toJSON</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>const pesanan = {
+  id: 101,
+  pelanggan: &#x27;Dewi&#x27;,
+  item: [{ sku: &#x27;KP-01&#x27;, qty: 2 }],
+  dibuat: new Date(Date.UTC(2026, 10, 20, 2, 30)),
+  catatan: undefined,
+  hitung() { return 1; },
+  tag: new Set([&#x27;promo&#x27;]),
+};
+const teks = JSON.stringify(pesanan);
+console.log(teks);
+console.log(JSON.stringify({ a: 1, b: [1, 2] }, null, 2));
+console.log(JSON.stringify(pesanan, [&#x27;id&#x27;, &#x27;pelanggan&#x27;]));     // replacer: pilih key
+
+const balik = JSON.parse(teks, (k, v) =&gt; (k === &#x27;dibuat&#x27; ? new Date(v) : v));
+console.log(balik.dibuat instanceof Date, balik.dibuat.getUTCHours());
+
+try {
+  JSON.parse(&quot;{ nama: &#x27;Dewi&#x27; }&quot;);
+} catch (e) {
+  console.log(e.name, &#x27;-&#x27;, e.message.split(&#x27;\n&#x27;)[0]);
+}
+console.log(JSON.stringify({ n: NaN, x: [undefined, () =&gt; 1] }));
+const rupiah = { nilai: 15000, toJSON() { return `Rp${this.nilai}`; } };
+console.log(JSON.stringify({ harga: rupiah }));</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>{&quot;id&quot;:101,&quot;pelanggan&quot;:&quot;Dewi&quot;,&quot;item&quot;:[{&quot;sku&quot;:&quot;KP-01&quot;,&quot;qty&quot;:2}],&quot;dibuat&quot;:&quot;2026-11-20T02:30:00.000Z&quot;,&quot;tag&quot;:{}}
+{
+  &quot;a&quot;: 1,
+  &quot;b&quot;: [
+    1,
+    2
+  ]
+}
+{&quot;id&quot;:101,&quot;pelanggan&quot;:&quot;Dewi&quot;}
+true 2
+SyntaxError - Expected property name or &#x27;}&#x27; in JSON at position 2 (line 1 column 3)
+{&quot;n&quot;:null,&quot;x&quot;:[null,null]}
+{&quot;harga&quot;:&quot;Rp15000&quot;}</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Simpan keranjang <code>[{nama:"Kopi", qty:2}]</code> sebagai teks JSON (seperti ke localStorage), lalu baca kembali dan tambahkan qty. Tangani juga teks rusak <code>"[{nama:"</code> dengan nilai default array kosong.</p><details><summary>Petunjuk</summary><p>Buat fungsi bacaAman(teks) dengan try/catch.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>const simpan = JSON.stringify([{ nama: &#x27;Kopi&#x27;, qty: 2 }]);
+console.log(&#x27;disimpan:&#x27;, simpan);
+function bacaAman(teks) {
+  try {
+    return JSON.parse(teks);
+  } catch {
+    return [];
+  }
+}
+const keranjang = bacaAman(simpan);
+keranjang[0].qty += 1;
+console.log(keranjang);
+console.log(bacaAman(&#x27;[{nama:&#x27;));</code></pre><div class="lbl">KELUARAN</div><pre><code>disimpan: [{&quot;nama&quot;:&quot;Kopi&quot;,&quot;qty&quot;:2}]
+[ { nama: &#x27;Kopi&#x27;, qty: 3 } ]
+[]</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>JSON: key dan string kutip dua, tanpa komentar dan koma akhir.</li><li>stringify membuang undefined/fungsi dan mengubah Date ke string.</li><li>parse dalam try/catch; reviver untuk tanggal.</li><li>Jangan pernah eval untuk JSON.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Hasil JSON.stringify({a: undefined, b: 1})?</summary><p class="ok">Jawaban: {&quot;b&quot;:1}</p><p>Properti undefined dibuang.</p></details><details><summary>JSON.parse(&quot;{&#x27;a&#x27;: 1}&quot;) menghasilkan?</summary><p class="ok">Jawaban: SyntaxError</p><p>JSON wajib memakai kutip dua.</p></details>
+<a class="cta" href="/#js-5-6">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/weakmap-dan-weakset">WeakMap dan WeakSet</a></p><p>Berikutnya: <a href="/belajar/js/versus">== versus ===</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

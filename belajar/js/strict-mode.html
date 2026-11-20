@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Strict mode · JavaScript · Ruang Kode</title>
+<meta name="description" content="Strict mode diaktifkan dengan &#x27;use strict&#x27;; di awal file atau fungsi. Mode ini mengubah beberapa kesalahan diam-diam menjadi error, menutup fitur yang…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/strict-mode">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Strict mode · JavaScript · Ruang Kode"><meta property="og:description" content="Strict mode diaktifkan dengan &#x27;use strict&#x27;; di awal file atau fungsi. Mode ini mengubah beberapa kesalahan diam-diam menjadi error, menutup fitur yang…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/strict-mode"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Strict mode", "description": "Strict mode diaktifkan dengan 'use strict'; di awal file atau fungsi. Mode ini mengubah beberapa kesalahan diam-diam menjadi error, menutup fitur yang…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/strict-mode", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "Strict mode", "item": "https://ruang-kode-nine.vercel.app/belajar/js/strict-mode"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 11</nav>
+<div class="eyebrow">JavaScript · Modul 11 · Konsep &amp; kode</div><h1>Strict mode</h1><a class="cta" href="/#js-11-1">Buka versi interaktif</a>
+<p><b>Strict mode</b> diaktifkan dengan <code>'use strict';</code> di awal file atau fungsi. Mode ini mengubah beberapa kesalahan diam-diam menjadi error, menutup fitur yang berbahaya, dan membantu engine mengoptimasi kode.</p>
+<p>Perubahan utamanya: assign ke variabel yang belum dideklarasikan melempar ReferenceError (tanpa strict, diam-diam membuat global); <code>this</code> di fungsi biasa yang dipanggil tanpa object bernilai <code>undefined</code> (bukan objek global); menulis ke properti read-only atau object yang dibekukan melempar TypeError; parameter dengan nama ganda dan <code>with</code> dilarang; serta <code>delete</code> pada variabel atau properti yang tidak bisa dihapus melempar error.</p>
+<p>Kabar baiknya, <b>modul ES dan isi class otomatis strict</b>. Kode modern dengan import/export (Vite, Next.js, Node ESM) sudah strict tanpa perlu menulis direktifnya. Contoh di bawah dijalankan sebagai CommonJS agar perbedaan mode non-strict (<b>sloppy mode</b>) dan strict terlihat.</p>
+<div class="tw"><table><caption>Sloppy mode vs strict mode</caption><thead><tr><th>Kasus</th><th>Sloppy</th><th>Strict</th></tr></thead><tbody><tr><td>x = 1 tanpa deklarasi</td><td>Membuat global</td><td>ReferenceError</td></tr><tr><td>this di fungsi biasa</td><td>globalThis</td><td>undefined</td></tr><tr><td>Tulis ke properti read-only</td><td>Diabaikan</td><td>TypeError</td></tr><tr><td>function f(a, a)</td><td>Boleh</td><td>SyntaxError</td></tr><tr><td>with (obj)</td><td>Boleh</td><td>SyntaxError</td></tr><tr><td>Angka oktal 010</td><td>Boleh (= 8)</td><td>SyntaxError</td></tr><tr><td>Aktif otomatis</td><td>-</td><td>Modul ES, class</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>function sloppy() {
+  bocor = &#x27;jadi global&#x27;;          // tanpa deklarasi
+  return typeof this;
+}
+console.log(sloppy(), typeof globalThis.bocor);
+
+function ketat() {
+  &#x27;use strict&#x27;;
+  try { tidakAda = 1; } catch (e) { console.log(e.name + &#x27;:&#x27;, e.message); }
+  const beku = Object.freeze({ a: 1 });
+  try { beku.a = 2; } catch (e) { console.log(e.name + &#x27;:&#x27;, e.message); }
+  try { delete Object.prototype; } catch (e) { console.log(e.name + &#x27;:&#x27;, e.message); }
+  return typeof this;
+}
+console.log(ketat());
+
+class Contoh { cek() { return (function () { return this; })(); } }
+console.log(&#x27;isi class otomatis strict:&#x27;, new Contoh().cek());</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>object string
+ReferenceError: tidakAda is not defined
+TypeError: Cannot assign to read only property &#x27;a&#x27; of object &#x27;#&lt;Object&gt;&#x27;
+TypeError: Cannot delete property &#x27;prototype&#x27; of function Object() { [native code] }
+undefined
+isi class otomatis strict: undefined</code></pre>
+<h2>Poin penting</h2><ul><li>'use strict' mengubah kesalahan diam menjadi error.</li><li>this di fungsi biasa = undefined di strict.</li><li>Modul ES dan class otomatis strict.</li><li>Strict membantu menemukan bug lebih awal.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Di strict mode, nilai this pada fungsi biasa yang dipanggil langsung f()?</summary><p class="ok">Jawaban: undefined</p><p>Tidak ada object pemanggil.</p></details><details><summary>Mana yang otomatis strict?</summary><p class="ok">Jawaban: File modul ES (import/export)</p><p>Modul ES dan class body selalu strict.</p></details>
+<a class="cta" href="/#js-11-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/built-in-functions-global">Built-in functions global</a></p><p>Berikutnya: <a href="/belajar/js/nilai-this-di-berbagai-konteks">Nilai this di berbagai konteks</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pewarisan: extends, super, dan polimorfisme · JavaScript · Ruang Kode</title>
+<meta name="description" content="class Anak extends Induk membuat Anak mewarisi semua metode Induk lewat prototype chain. Di constructor Anak, wajib memanggil super(...) sebelum memakai…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/pewarisan-extends-super-dan-polimorfisme">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Pewarisan: extends, super, dan polimorfisme · JavaScript · Ruang Kode"><meta property="og:description" content="class Anak extends Induk membuat Anak mewarisi semua metode Induk lewat prototype chain. Di constructor Anak, wajib memanggil super(...) sebelum memakai…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/pewarisan-extends-super-dan-polimorfisme"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Pewarisan: extends, super, dan polimorfisme", "description": "class Anak extends Induk membuat Anak mewarisi semua metode Induk lewat prototype chain. Di constructor Anak, wajib memanggil super(...) sebelum memakai…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/pewarisan-extends-super-dan-polimorfisme", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "Pewarisan: extends, super, dan polimorfisme", "item": "https://ruang-kode-nine.vercel.app/belajar/js/pewarisan-extends-super-dan-polimorfisme"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 14</nav>
+<div class="eyebrow">JavaScript · Modul 14 · Konsep &amp; kode</div><h1>Pewarisan: extends, super, dan polimorfisme</h1><a class="cta" href="/#js-14-2">Buka versi interaktif</a>
+<p><code>class Anak extends Induk</code> membuat Anak mewarisi semua metode Induk lewat prototype chain. Di constructor Anak, <b>wajib</b> memanggil <code>super(...)</code> sebelum memakai <code>this</code>. <code>super.metode()</code> memanggil versi induk dari dalam metode yang di-<b>override</b>.</p>
+<p><b>Polimorfisme</b>: beberapa class punya metode bernama sama dengan perilaku berbeda, sehingga kode pemanggil cukup memanggil <code>x.hitung()</code> tanpa peduli jenisnya. <code>instanceof</code> mengecek apakah prototype sebuah class ada di rantai object. Class bawaan juga bisa diwarisi, misalnya <code>extends Error</code> atau <code>extends EventTarget</code>.</p>
+<p>Prinsip desain yang dipegang tim profesional: <b>composition over inheritance</b>. Pewarisan yang dalam (lebih dari dua tingkat) membuat kode kaku; sering lebih baik menyusun object dari bagian-bagian kecil atau fungsi. Di ekosistem React modern, komponen class sudah jarang dan digantikan fungsi + hook, tetapi class tetap umum di backend (NestJS), pustaka, dan game.</p>
+<div class="tw"><table><caption>Pewarisan vs komposisi</caption><thead><tr><th>Aspek</th><th>Pewarisan (extends)</th><th>Komposisi</th></tr></thead><tbody><tr><td>Hubungan</td><td>&quot;adalah&quot; (Kartu adalah Pembayaran)</td><td>&quot;punya/bisa&quot; (produk bisa diskon)</td></tr><tr><td>Kelenturan</td><td>Kaku jika rantai dalam</td><td>Mudah digabung dan diganti</td></tr><tr><td>Contoh tepat</td><td>Custom Error, hierarki pendek</td><td>Fitur lintas jenis, hook, mixin</td></tr><tr><td>Risiko</td><td>Fragile base class</td><td>Bentrok nama properti</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>class Pembayaran {
+  constructor(nominal) { this.nominal = nominal; }
+  biayaAdmin() { return 0; }
+  total() { return this.nominal + this.biayaAdmin(); }
+  toString() { return `${this.constructor.name}: Rp${this.total().toLocaleString(&#x27;id-ID&#x27;)}`; }
+}
+class Transfer extends Pembayaran {
+  constructor(nominal, bank) {
+    super(nominal);                       // wajib sebelum this
+    this.bank = bank;
+  }
+  biayaAdmin() { return this.bank === &#x27;BCA&#x27; ? 0 : 6500; }
+}
+class Kartu extends Pembayaran {
+  biayaAdmin() { return Math.round(this.nominal * 0.02); }
+  toString() { return super.toString() + &#x27; (termasuk MDR 2%)&#x27;; }   // pakai versi induk
+}
+class QRIS extends Pembayaran {
+  biayaAdmin() { return Math.round(this.nominal * 0.007); }
+}
+
+const daftar = [new Transfer(250000, &#x27;BRI&#x27;), new Transfer(250000, &#x27;BCA&#x27;), new Kartu(250000), new QRIS(250000)];
+for (const p of daftar) console.log(String(p));   // polimorfisme
+console.log(daftar[2] instanceof Kartu, daftar[2] instanceof Pembayaran, daftar[2] instanceof Transfer);
+console.log(Object.getPrototypeOf(Kartu.prototype) === Pembayaran.prototype);
+
+class Salah extends Pembayaran { constructor() { this.x = 1; super(0); } }
+try { new Salah(); } catch (e) { console.log(e.name + &#x27;:&#x27;, e.message); }
+
+// composition: gabungkan kemampuan tanpa pewarisan dalam
+const bisaDiskon = obj =&gt; ({ ...obj, diskon(p) { return obj.harga * (1 - p / 100); } });
+const bisaPajak = obj =&gt; ({ ...obj, pajak() { return obj.harga * 0.11; } });
+const produk = bisaPajak(bisaDiskon({ nama: &#x27;Headset&#x27;, harga: 300000 }));
+console.log(produk.diskon(10), produk.pajak());</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Transfer: Rp256.500
+Transfer: Rp250.000
+Kartu: Rp255.000 (termasuk MDR 2%)
+QRIS: Rp251.750
+true true false
+true
+ReferenceError: Must call super constructor in derived class before accessing &#x27;this&#x27; or returning from derived constructor
+270000 33000</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat class <code>Bentuk</code> dengan metode <code>luas()</code> yang mengembalikan 0 dan <code>info()</code>. Turunkan <code>Persegi(sisi)</code> dan <code>Lingkaran(r)</code> yang override luas(). Cetak info semua bentuk dalam satu array.</p><details><summary>Petunjuk</summary><p>info() memakai this.constructor.name dan this.luas().toFixed(2).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>class Bentuk {
+  luas() { return 0; }
+  info() { return `${this.constructor.name} luas ${this.luas().toFixed(2)}`; }
+}
+class Persegi extends Bentuk {
+  constructor(s) { super(); this.s = s; }
+  luas() { return this.s ** 2; }
+}
+class Lingkaran extends Bentuk {
+  constructor(r) { super(); this.r = r; }
+  luas() { return Math.PI * this.r ** 2; }
+}
+for (const b of [new Persegi(4), new Lingkaran(3), new Bentuk()]) console.log(b.info());</code></pre><div class="lbl">KELUARAN</div><pre><code>Persegi luas 16.00
+Lingkaran luas 28.27
+Bentuk luas 0.00</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>extends mewarisi lewat prototype chain.</li><li>super() wajib sebelum this di constructor anak.</li><li>super.metode() memanggil versi induk.</li><li>Polimorfisme: metode sama, perilaku beda.</li><li>Composition over inheritance.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Apa yang terjadi jika constructor anak memakai this sebelum super()?</summary><p class="ok">Jawaban: ReferenceError</p><p>this belum diinisialisasi sebelum super.</p></details><details><summary>new Kartu() instanceof Pembayaran?</summary><p class="ok">Jawaban: true</p><p>Pembayaran.prototype ada di rantai prototype Kartu.</p></details>
+<a class="cta" href="/#js-14-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/class-constructor-dan-anggota-class">Class, constructor, dan anggota class</a></p><p>Berikutnya: <a href="/belajar/js/protokol-iterable-dan-iterator">Protokol iterable dan iterator</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

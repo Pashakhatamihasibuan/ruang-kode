@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Konversi eksplisit · JavaScript · Ruang Kode</title>
+<meta name="description" content="Type conversion (atau explicit casting) adalah mengubah tipe dengan sengaja memakai fungsi. Type coercion (atau implicit casting) adalah konversi…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/konversi-eksplisit">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Konversi eksplisit · JavaScript · Ruang Kode"><meta property="og:description" content="Type conversion (atau explicit casting) adalah mengubah tipe dengan sengaja memakai fungsi. Type coercion (atau implicit casting) adalah konversi…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/konversi-eksplisit"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Konversi eksplisit", "description": "Type conversion (atau explicit casting) adalah mengubah tipe dengan sengaja memakai fungsi. Type coercion (atau implicit casting) adalah konversi…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/konversi-eksplisit", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "Konversi eksplisit", "item": "https://ruang-kode-nine.vercel.app/belajar/js/konversi-eksplisit"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 4</nav>
+<div class="eyebrow">JavaScript · Modul 4 · Konsep &amp; kode</div><h1>Konversi eksplisit</h1><a class="cta" href="/#js-4-1">Buka versi interaktif</a>
+<p><b>Type conversion</b> (atau <b>explicit casting</b>) adalah mengubah tipe dengan sengaja memakai fungsi. <b>Type coercion</b> (atau <b>implicit casting</b>) adalah konversi otomatis yang dilakukan engine saat operator bertemu tipe berbeda. Prinsip kode profesional: <b>buat konversi eksplisit</b> agar maksudnya jelas.</p>
+<p>Ke <b>string</b>: <code>String(x)</code>, <code>x.toString()</code> (gagal pada null/undefined), atau template literal. Ke <b>number</b>: <code>Number(x)</code> mengubah seluruh string (gagal = NaN), sedangkan <code>parseInt(x, 10)</code> dan <code>parseFloat(x)</code> membaca dari awal sampai karakter tidak valid. Selalu beri radix 10 pada parseInt. Unary <code>+x</code> sama dengan Number(x).</p>
+<p>Ke <b>boolean</b>: <code>Boolean(x)</code> atau <code>!!x</code>. Hanya ada 8 nilai <b>falsy</b>: <code>false</code>, <code>0</code>, <code>-0</code>, <code>0n</code>, <code>""</code>, <code>null</code>, <code>undefined</code>, <code>NaN</code>. Selain itu <b>truthy</b>, termasuk <code>"0"</code>, <code>"false"</code>, <code>[]</code>, dan <code>{}</code>.</p>
+<div class="tw"><table><caption>Fungsi konversi</caption><thead><tr><th>Input</th><th>Number()</th><th>parseInt(x, 10)</th><th>Boolean()</th></tr></thead><tbody><tr><td>&#x27;42&#x27;</td><td>42</td><td>42</td><td>true</td></tr><tr><td>&#x27;42px&#x27;</td><td>NaN</td><td>42</td><td>true</td></tr><tr><td>&#x27;&#x27;</td><td>0</td><td>NaN</td><td>false</td></tr><tr><td>&#x27;  7 &#x27;</td><td>7</td><td>7</td><td>true</td></tr><tr><td>null</td><td>0</td><td>NaN</td><td>false</td></tr><tr><td>undefined</td><td>NaN</td><td>NaN</td><td>false</td></tr><tr><td>true</td><td>1</td><td>NaN</td><td>true</td></tr><tr><td>[]</td><td>0</td><td>NaN</td><td>true</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>const input = &#x27;12500&#x27;;                         // nilai dari form selalu string
+console.log(Number(input) + 500, typeof Number(input));
+console.log(Number(&#x27;&#x27;), Number(&#x27;  42 &#x27;), Number(&#x27;12px&#x27;), Number(null), Number(undefined), Number(true));
+console.log(parseInt(&#x27;12px&#x27;, 10), parseFloat(&#x27;3.75kg&#x27;), parseInt(&#x27;0x1F&#x27;, 16), parseInt(&#x27;101&#x27;, 2));
+console.log(+&#x27;7&#x27;, +&#x27;&#x27;, +[], +{});
+
+console.log(String(123), (255).toString(2), String(null), `${[1, 2]}`);
+
+const nilai = [false, 0, -0, 0n, &#x27;&#x27;, null, undefined, NaN, &#x27;0&#x27;, &#x27;false&#x27;, [], {}, &#x27; &#x27;];
+console.log(nilai.map(v =&gt; (Object.is(v, -0) ? &#x27;-0&#x27; : typeof v === &#x27;bigint&#x27; ? &#x27;0n&#x27; : Number.isNaN(v) ? &#x27;NaN&#x27; : JSON.stringify(v) ?? String(v)) + &#x27;=&#x27; + Boolean(v)).join(&#x27;  &#x27;));</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>13000 number
+0 42 NaN 0 NaN 1
+12 3.75 31 5
+7 0 0 NaN
+123 11111111 null 1,2
+false=false  0=false  -0=false  0n=false  &quot;&quot;=false  null=false  undefined=false  NaN=false  &quot;0&quot;=true  &quot;false&quot;=true  []=true  {}=true  &quot; &quot;=true</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Input dari form: <code>["15", "7.5", "abc", "", "20kg"]</code>. Jumlahkan hanya yang merupakan angka valid menurut Number() dan bukan string kosong.</p><details><summary>Petunjuk</summary><p>Lewati jika x.trim() === "" atau Number.isNaN(Number(x)).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>const input = [&#x27;15&#x27;, &#x27;7.5&#x27;, &#x27;abc&#x27;, &#x27;&#x27;, &#x27;20kg&#x27;];
+let total = 0;
+for (const x of input) {
+  if (x.trim() === &#x27;&#x27; || Number.isNaN(Number(x))) {
+    console.log(&#x27;lewati:&#x27;, JSON.stringify(x));
+    continue;
+  }
+  total += Number(x);
+}
+console.log(&#x27;total:&#x27;, total);</code></pre><div class="lbl">KELUARAN</div><pre><code>lewati: &quot;abc&quot;
+lewati: &quot;&quot;
+lewati: &quot;20kg&quot;
+total: 22.5</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Conversion = sengaja; coercion = otomatis oleh engine.</li><li>Number() ketat; parseInt/parseFloat membaca awalan.</li><li>parseInt selalu dengan radix 10.</li><li>Hafalkan 8 nilai falsy; sisanya truthy.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Number(&quot;12px&quot;)?</summary><p class="ok">Jawaban: NaN</p><p>Number membaca seluruh string.</p></details><details><summary>Nilai yang truthy?</summary><p class="ok">Jawaban: &quot;0&quot;</p><p>String tidak kosong selalu truthy.</p></details><details><summary>Number(null) dan Number(undefined)?</summary><p class="ok">Jawaban: 0 dan NaN</p><p>Perbedaan klasik null vs undefined.</p></details>
+<a class="cta" href="/#js-4-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/built-in-objects">Built-in objects</a></p><p>Berikutnya: <a href="/belajar/js/koersi-implisit">Koersi implisit</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

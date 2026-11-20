@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Call stack dan rekursi · JavaScript · Ruang Kode</title>
+<meta name="description" content="Setiap kali fungsi dipanggil, engine mendorong sebuah stack frame (berisi argumen, variabel lokal, dan alamat kembali) ke call stack. Saat fungsi…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/call-stack-dan-rekursi">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Call stack dan rekursi · JavaScript · Ruang Kode"><meta property="og:description" content="Setiap kali fungsi dipanggil, engine mendorong sebuah stack frame (berisi argumen, variabel lokal, dan alamat kembali) ke call stack. Saat fungsi…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/call-stack-dan-rekursi"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Call stack dan rekursi", "description": "Setiap kali fungsi dipanggil, engine mendorong sebuah stack frame (berisi argumen, variabel lokal, dan alamat kembali) ke call stack. Saat fungsi…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/call-stack-dan-rekursi", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "Call stack dan rekursi", "item": "https://ruang-kode-nine.vercel.app/belajar/js/call-stack-dan-rekursi"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 10</nav>
+<div class="eyebrow">JavaScript · Modul 10 · Konsep &amp; kode</div><h1>Call stack dan rekursi</h1><a class="cta" href="/#js-10-3">Buka versi interaktif</a>
+<p>Setiap kali fungsi dipanggil, engine mendorong sebuah <b>stack frame</b> (berisi argumen, variabel lokal, dan alamat kembali) ke <b>call stack</b>. Saat fungsi selesai, frame-nya diambil (LIFO: last in, first out). Stack trace pada error menunjukkan isi call stack saat error terjadi, jadi bacalah dari atas untuk menemukan sumber masalah.</p>
+<p><b>Rekursi</b> adalah fungsi yang memanggil dirinya sendiri. Setiap fungsi rekursif harus punya <b>base case</b> (kondisi berhenti) dan <b>recursive case</b> yang mendekati base case. Tanpa base case, call stack penuh dan muncul <code>RangeError: Maximum call stack size exceeded</code> (<b>stack overflow</b>), biasanya setelah sekitar 10 ribu frame.</p>
+<p>Rekursi alami untuk data bersarang: pohon menu/kategori, komentar berbalas, struktur folder, JSON bersarang, dan DOM. Untuk kedalaman besar, ubah ke loop dengan stack manual. <b>Memoization</b> menyimpan hasil agar rekursi seperti Fibonacci tidak menghitung ulang.</p>
+<div class="tw"><table><caption>Rekursi vs iterasi</caption><thead><tr><th>Aspek</th><th>Rekursi</th><th>Iterasi (loop)</th></tr></thead><tbody><tr><td>Cocok untuk</td><td>Struktur bersarang (pohon, graf)</td><td>Urutan linear</td></tr><tr><td>Memori</td><td>Satu frame per panggilan</td><td>Konstan</td></tr><tr><td>Risiko</td><td>Stack overflow pada kedalaman besar</td><td>Infinite loop</td></tr><tr><td>Keterbacaan</td><td>Ringkas untuk masalah rekursif</td><td>Lebih eksplisit</td></tr><tr><td>Optimasi</td><td>Memoization</td><td>Sudah efisien</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>function faktorial(n) {
+  if (n &lt;= 1) return 1;            // base case
+  return n * faktorial(n - 1);     // recursive case
+}
+console.log(faktorial(5), faktorial(20));
+
+function lacak(n, kedalaman = 0) {
+  console.log(&#x27; &#x27;.repeat(kedalaman * 2) + `masuk lacak(${n})`);
+  if (n &gt; 0) lacak(n - 1, kedalaman + 1);
+  console.log(&#x27; &#x27;.repeat(kedalaman * 2) + `keluar lacak(${n})`);
+}
+lacak(2);
+
+const kategori = { nama: &#x27;Elektronik&#x27;, anak: [
+  { nama: &#x27;HP&#x27;, anak: [{ nama: &#x27;Android&#x27;, anak: [] }, { nama: &#x27;iPhone&#x27;, anak: [] }] },
+  { nama: &#x27;Laptop&#x27;, anak: [] },
+] };
+function cetakPohon(node, level = 0) {
+  console.log(&#x27;  &#x27;.repeat(level) + &#x27;- &#x27; + node.nama);
+  node.anak.forEach(a =&gt; cetakPohon(a, level + 1));
+}
+cetakPohon(kategori);
+
+const memo = new Map();
+function fib(n) {
+  if (n &lt; 2) return n;
+  if (memo.has(n)) return memo.get(n);
+  const h = fib(n - 1) + fib(n - 2);
+  memo.set(n, h);
+  return h;
+}
+console.log(fib(50));
+
+function tanpaBase(n) { return tanpaBase(n + 1); }
+try { tanpaBase(0); } catch (e) { console.log(e.name + &#x27;:&#x27;, e.message); }</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>120 2432902008176640000
+masuk lacak(2)
+  masuk lacak(1)
+    masuk lacak(0)
+    keluar lacak(0)
+  keluar lacak(1)
+keluar lacak(2)
+- Elektronik
+  - HP
+    - Android
+    - iPhone
+  - Laptop
+12586269025
+RangeError: Maximum call stack size exceeded</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis fungsi rekursif <code>totalUkuran(folder)</code> yang menjumlahkan ukuran semua file di struktur folder bersarang <code>{nama, file:[ukuran...], sub:[folder...]}</code>.</p><details><summary>Petunjuk</summary><p>Jumlah file sendiri + jumlah totalUkuran setiap sub.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>const root = {
+  nama: &#x27;proyek&#x27;, file: [120, 80],
+  sub: [
+    { nama: &#x27;src&#x27;, file: [300, 45], sub: [{ nama: &#x27;utils&#x27;, file: [10], sub: [] }] },
+    { nama: &#x27;docs&#x27;, file: [500], sub: [] },
+  ],
+};
+function totalUkuran(f) {
+  const sendiri = f.file.reduce((a, b) =&gt; a + b, 0);
+  return sendiri + f.sub.reduce((a, s) =&gt; a + totalUkuran(s), 0);
+}
+console.log(&#x27;total:&#x27;, totalUkuran(root), &#x27;KB&#x27;);</code></pre><div class="lbl">KELUARAN</div><pre><code>total: 1055 KB</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Call stack LIFO; stack trace dibaca dari atas.</li><li>Rekursi butuh base case.</li><li>Stack overflow = RangeError Maximum call stack size exceeded.</li><li>Memoization untuk subproblem berulang.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Error saat rekursi tidak punya base case?</summary><p class="ok">Jawaban: RangeError: Maximum call stack size exceeded</p><p>Call stack penuh.</p></details><details><summary>Urutan call stack?</summary><p class="ok">Jawaban: LIFO: yang terakhir masuk, pertama keluar</p><p>Seperti tumpukan piring.</p></details>
+<a class="cta" href="/#js-10-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/arrow-function-iife-dan-arguments">Arrow function, IIFE, dan arguments</a></p><p>Berikutnya: <a href="/belajar/js/lexical-scoping-dan-closure">Lexical scoping dan closure</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

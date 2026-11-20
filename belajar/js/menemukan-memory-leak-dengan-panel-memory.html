@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Menemukan memory leak dengan panel Memory · JavaScript · Ruang Kode</title>
+<meta name="description" content="Langkah standar menemukan leak: (1) buka panel Memory, pilih Heap snapshot, ambil snapshot awal; (2) lakukan aksi yang dicurigai beberapa kali (buka dan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/menemukan-memory-leak-dengan-panel-memory">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Menemukan memory leak dengan panel Memory · JavaScript · Ruang Kode"><meta property="og:description" content="Langkah standar menemukan leak: (1) buka panel Memory, pilih Heap snapshot, ambil snapshot awal; (2) lakukan aksi yang dicurigai beberapa kali (buka dan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/menemukan-memory-leak-dengan-panel-memory"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Menemukan memory leak dengan panel Memory", "description": "Langkah standar menemukan leak: (1) buka panel Memory, pilih Heap snapshot, ambil snapshot awal; (2) lakukan aksi yang dicurigai beberapa kali (buka dan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/menemukan-memory-leak-dengan-panel-memory", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "Menemukan memory leak dengan panel Memory", "item": "https://ruang-kode-nine.vercel.app/belajar/js/menemukan-memory-leak-dengan-panel-memory"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 18</nav>
+<div class="eyebrow">JavaScript · Modul 18 · Konsep &amp; kode</div><h1>Menemukan memory leak dengan panel Memory</h1><a class="cta" href="/#js-18-3">Buka versi interaktif</a>
+<p>Langkah standar menemukan leak: (1) buka panel <b>Memory</b>, pilih <b>Heap snapshot</b>, ambil snapshot awal; (2) lakukan aksi yang dicurigai beberapa kali (buka dan tutup modal, pindah halaman di SPA); (3) klik ikon tempat sampah untuk memaksa GC; (4) ambil snapshot kedua; (5) pilih tampilan <b>Comparison</b> untuk melihat object yang bertambah dan tidak hilang.</p>
+<p>Istilah di heap snapshot: <b>Shallow size</b> (memori object itu sendiri), <b>Retained size</b> (memori yang ikut bebas jika object ini dihapus; fokus ke angka ini), <b>Retainers</b> (rantai referensi yang menahan object tetap hidup; baca dari bawah untuk menemukan pelaku, misalnya listener atau variabel global), dan <b>Detached</b> (ketik "Detached" di filter untuk menemukan elemen DOM yang terlepas).</p>
+<p>Alat lain: <b>Allocation instrumentation on timeline</b> (batang biru yang tetap ada menandakan memori tidak dibebaskan), panel <b>Performance</b> dengan centang Memory untuk melihat grafik JS heap naik terus (pola gergaji yang terus naik = leak), <b>Performance monitor</b> (jumlah node DOM dan listener secara langsung), serta <code>performance.memory</code> di Chrome.</p>
+<div class="tw"><table><caption>Istilah panel Memory</caption><thead><tr><th>Istilah</th><th>Arti</th></tr></thead><tbody><tr><td>Heap snapshot</td><td>Foto semua object di heap pada satu waktu</td></tr><tr><td>Shallow size</td><td>Ukuran object itu sendiri</td></tr><tr><td>Retained size</td><td>Total memori yang bebas jika object dihapus</td></tr><tr><td>Retainers</td><td>Rantai referensi yang menahan object tetap hidup</td></tr><tr><td>Detached</td><td>Node DOM yang lepas dari dokumen tetapi masih dirujuk</td></tr><tr><td>Comparison</td><td>Selisih dua snapshot</td></tr><tr><td>Allocation timeline</td><td>Alokasi dari waktu ke waktu</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>// Contoh leak klasik di SPA: modal yang dibuka-tutup
+const daftarModal = [];                       // global, terus bertambah
+
+function bukaModal() {
+  const el = document.createElement(&#x27;div&#x27;);
+  el.className = &#x27;modal&#x27;;
+  el.innerHTML = &#x27;&lt;p&gt;Promo hari ini&lt;/p&gt;&lt;button&gt;Tutup&lt;/button&gt;&#x27;;
+  document.body.append(el);
+  daftarModal.push(el);                       // BOCOR: elemen tetap dirujuk
+  window.addEventListener(&#x27;resize&#x27;, () =&gt; posisikan(el));   // BOCOR: listener tidak dilepas
+  el.querySelector(&#x27;button&#x27;).onclick = () =&gt; el.remove();
+}
+
+// Perbaikan
+function bukaModalAman() {
+  const el = document.createElement(&#x27;div&#x27;);
+  const ctrl = new AbortController();
+  el.innerHTML = &#x27;&lt;p&gt;Promo hari ini&lt;/p&gt;&lt;button&gt;Tutup&lt;/button&gt;&#x27;;
+  document.body.append(el);
+  window.addEventListener(&#x27;resize&#x27;, () =&gt; posisikan(el), { signal: ctrl.signal });
+  el.querySelector(&#x27;button&#x27;).addEventListener(&#x27;click&#x27;, () =&gt; {
+    ctrl.abort();                               // lepas listener
+    el.remove();                                // tidak ada referensi tersisa
+  }, { once: true });
+}
+
+// Di DevTools: Memory &gt; Heap snapshot &gt; buka/tutup modal 10x &gt; snapshot lagi
+// &gt; Comparison &gt; filter &quot;Detached&quot; &gt; lihat Retainers: daftarModal dan listener resize</code></pre>
+<h2>Poin penting</h2><ul><li>Snapshot, ulangi aksi, paksa GC, snapshot lagi, bandingkan.</li><li>Fokus ke Retained size dan Retainers.</li><li>Filter "Detached" untuk DOM yang bocor.</li><li>Grafik heap yang terus naik menandakan leak.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Angka yang paling penting untuk menilai dampak sebuah object yang bocor?</summary><p class="ok">Jawaban: Retained size</p><p>Menunjukkan berapa memori yang ikut tertahan.</p></details>
+<a class="cta" href="/#js-18-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/debugging-dengan-breakpoint">Debugging dengan breakpoint</a></p><p>Berikutnya: <a href="/belajar/js/mengukur-dan-memperbaiki-performa">Mengukur dan memperbaiki performa</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

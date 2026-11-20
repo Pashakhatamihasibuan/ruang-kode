@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>bigint, undefined, null, dan Symbol · JavaScript · Ruang Kode</title>
+<meta name="description" content="bigint menyimpan bilangan bulat sebesar apa pun, ditulis dengan akhiran n (123n) atau BigInt(&#x27;123&#x27;). Cocok untuk ID 64-bit dari database atau API…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/bigint-undefined-null-dan-symbol">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="bigint, undefined, null, dan Symbol · JavaScript · Ruang Kode"><meta property="og:description" content="bigint menyimpan bilangan bulat sebesar apa pun, ditulis dengan akhiran n (123n) atau BigInt(&#x27;123&#x27;). Cocok untuk ID 64-bit dari database atau API…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/bigint-undefined-null-dan-symbol"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "bigint, undefined, null, dan Symbol", "description": "bigint menyimpan bilangan bulat sebesar apa pun, ditulis dengan akhiran n (123n) atau BigInt('123'). Cocok untuk ID 64-bit dari database atau API…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/bigint-undefined-null-dan-symbol", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "bigint, undefined, null, dan Symbol", "item": "https://ruang-kode-nine.vercel.app/belajar/js/bigint-undefined-null-dan-symbol"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 3</nav>
+<div class="eyebrow">JavaScript · Modul 3 · Konsep &amp; kode</div><h1>bigint, undefined, null, dan Symbol</h1><a class="cta" href="/#js-3-2">Buka versi interaktif</a>
+<p><b>bigint</b> menyimpan bilangan bulat sebesar apa pun, ditulis dengan akhiran <code>n</code> (<code>123n</code>) atau <code>BigInt('123')</code>. Cocok untuk ID 64-bit dari database atau API (misalnya ID tweet), kriptografi, dan perhitungan bulat besar. bigint tidak bisa dicampur langsung dengan number dalam operasi aritmetika.</p>
+<p><b>undefined</b> berarti "belum diberi nilai": variabel tanpa nilai awal, parameter yang tidak dikirim, properti yang tidak ada, atau fungsi tanpa return. <b>null</b> berarti "sengaja kosong", diisi oleh programmer. <code>typeof null</code> menghasilkan <code>"object"</code>, bug sejak versi pertama yang dipertahankan demi kompatibilitas.</p>
+<p><b>Symbol</b> adalah nilai unik yang dipakai sebagai kunci properti yang tidak akan bentrok. Dua <code>Symbol('id')</code> selalu berbeda. Symbol bawaan (<b>well-known symbols</b>) seperti <code>Symbol.iterator</code> dan <code>Symbol.toPrimitive</code> dipakai untuk mengatur perilaku objek. Properti bersimbol tidak muncul di <code>for...in</code> maupun <code>JSON.stringify</code>.</p>
+<div class="tw"><table><caption>undefined vs null</caption><thead><tr><th>Aspek</th><th>undefined</th><th>null</th></tr></thead><tbody><tr><td>Arti</td><td>Belum ada nilai</td><td>Sengaja kosong</td></tr><tr><td>Siapa yang mengisi</td><td>Biasanya engine</td><td>Programmer</td></tr><tr><td>typeof</td><td>&quot;undefined&quot;</td><td>&quot;object&quot;</td></tr><tr><td>Di JSON</td><td>Properti dihilangkan</td><td>Tetap null</td></tr><tr><td>Number(x)</td><td>NaN</td><td>0</td></tr><tr><td>x == null</td><td>true</td><td>true</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>const idPesanan = 9007199254740993n;
+console.log(idPesanan + 2n, typeof idPesanan);
+console.log(9007199254740993);                 // number kehilangan presisi
+try { console.log(1n + 1); } catch (e) { console.log(e.name + &#x27;:&#x27;, e.message); }
+console.log(5n / 2n, BigInt(10) ** 20n);       // pembagian bigint dibulatkan ke bawah
+
+let alamat;
+const user = { nama: &#x27;Sari&#x27;, telepon: null };
+console.log(alamat, user.email, user.telepon);
+console.log(typeof undefined, typeof null);
+
+const ID = Symbol(&#x27;id&#x27;);
+const a = Symbol(&#x27;id&#x27;);
+console.log(ID === a, ID.toString(), ID.description);
+const akun = { nama: &#x27;Sari&#x27;, [ID]: 777 };
+console.log(akun[ID], Object.keys(akun), JSON.stringify(akun));</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>9007199254740995n bigint
+9007199254740992
+TypeError: Cannot mix BigInt and other types, use explicit conversions
+2n 100000000000000000000n
+undefined undefined null
+undefined object
+false Symbol(id) id
+777 [ &#x27;nama&#x27; ] {&quot;nama&quot;:&quot;Sari&quot;}</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Hitung 2 pangkat 64 dengan number dan dengan bigint, lalu cetak keduanya untuk melihat perbedaan presisi.</p><details><summary>Petunjuk</summary><p>Gunakan 2 ** 64 dan 2n ** 64n.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>console.log(&#x27;number:&#x27;, 2 ** 64);
+console.log(&#x27;bigint:&#x27;, (2n ** 64n).toString());</code></pre><div class="lbl">KELUARAN</div><pre><code>number: 18446744073709552000
+bigint: 18446744073709551616</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>bigint untuk bilangan bulat besar, akhiran n, tidak dicampur number.</li><li>undefined = belum ada; null = sengaja kosong.</li><li>typeof null === "object" adalah bug historis.</li><li>Symbol selalu unik; cocok untuk kunci tersembunyi.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Hasil 1n + 1?</summary><p class="ok">Jawaban: TypeError</p><p>bigint dan number tidak bisa dicampur langsung.</p></details><details><summary>Nilai fungsi tanpa return saat dipanggil?</summary><p class="ok">Jawaban: undefined</p><p>Fungsi tanpa return mengembalikan undefined.</p></details>
+<a class="cta" href="/#js-3-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/tipe-primitif-string-number-boolean">Tipe primitif: string, number, boolean</a></p><p>Berikutnya: <a href="/belajar/js/object-dan-operator-typeof">Object dan operator typeof</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

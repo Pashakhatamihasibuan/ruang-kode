@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>for...in dan for...of · JavaScript · Ruang Kode</title>
+<meta name="description" content="for...of mengiterasi nilai dari objek iterable: array, string (per karakter Unicode, aman untuk emoji), Map, Set, arguments, NodeList, dan generator. Ini…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/for-in-dan-for-of">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="for...in dan for...of · JavaScript · Ruang Kode"><meta property="og:description" content="for...of mengiterasi nilai dari objek iterable: array, string (per karakter Unicode, aman untuk emoji), Map, Set, arguments, NodeList, dan generator. Ini…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/for-in-dan-for-of"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "for...in dan for...of", "description": "for...of mengiterasi nilai dari objek iterable: array, string (per karakter Unicode, aman untuk emoji), Map, Set, arguments, NodeList, dan generator. Ini…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/for-in-dan-for-of", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "for...in dan for...of", "item": "https://ruang-kode-nine.vercel.app/belajar/js/for-in-dan-for-of"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 7</nav>
+<div class="eyebrow">JavaScript · Modul 7 · Konsep &amp; kode</div><h1>for...in dan for...of</h1><a class="cta" href="/#js-7-2">Buka versi interaktif</a>
+<p><code>for...of</code> mengiterasi <b>nilai</b> dari objek <b>iterable</b>: array, string (per karakter Unicode, aman untuk emoji), Map, Set, arguments, NodeList, dan generator. Ini pilihan utama untuk array. Butuh indeks? Pakai <code>arr.entries()</code> dengan destructuring.</p>
+<p><code>for...in</code> mengiterasi <b>key string enumerable</b> sebuah object, <b>termasuk yang diwarisi</b> dari prototype. Untuk object biasa, gaya modern lebih memilih <code>Object.keys</code>, <code>Object.values</code>, atau <code>Object.entries</code> dengan for...of karena hanya mengambil properti milik sendiri. Jangan pakai for...in untuk array: key-nya string dan urutan atau properti tambahan bisa mengejutkan.</p>
+<p>Object biasa <b>bukan iterable</b>, sehingga <code>for (const x of obj)</code> melempar TypeError. Urutan key object: key berbentuk bilangan bulat diurutkan naik lebih dulu, lalu key string sesuai urutan sisip.</p>
+<div class="tw"><table><caption>for...in vs for...of</caption><thead><tr><th>Aspek</th><th>for...in</th><th>for...of</th></tr></thead><tbody><tr><td>Mengambil</td><td>Key (string)</td><td>Nilai</td></tr><tr><td>Bekerja pada</td><td>Object apa saja</td><td>Iterable (array, string, Map, Set)</td></tr><tr><td>Properti warisan</td><td>Ikut</td><td>Tidak relevan</td></tr><tr><td>Untuk array</td><td>Tidak dianjurkan</td><td>Dianjurkan</td></tr><tr><td>Untuk object biasa</td><td>Bisa (hati-hati warisan)</td><td>TypeError; pakai Object.entries</td></tr><tr><td>Bisa break/continue</td><td>Ya</td><td>Ya</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>const nilai = [90, 75, 88];
+for (const n of nilai) console.log(&#x27;nilai&#x27;, n);
+for (const [i, n] of nilai.entries()) console.log(`#${i + 1}: ${n}`);
+
+for (const ch of &#x27;Hi😀&#x27;) console.log(ch);           // per karakter, emoji utuh
+console.log(&#x27;Hi😀&#x27;.length, [...&#x27;Hi😀&#x27;].length);
+
+const produk = { nama: &#x27;Sambal&#x27;, harga: 18000, stok: 40 };
+for (const key in produk) console.log(key, &#x27;=&#x27;, produk[key]);
+for (const [k, v] of Object.entries(produk)) console.log(`${k}: ${v}`);
+
+const induk = { warisan: true };
+const anak = Object.create(induk);
+anak.milikSendiri = 1;
+const dariForIn = [];
+for (const k in anak) dariForIn.push(k);
+console.log(dariForIn, Object.keys(anak));
+console.log(Object.keys({ b: 1, 2: &#x27;x&#x27;, a: 2, 1: &#x27;y&#x27; }));
+try {
+  for (const x of produk) console.log(x);
+} catch (e) { console.log(e.name + &#x27;:&#x27;, e.message); }</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>nilai 90
+nilai 75
+nilai 88
+#1: 90
+#2: 75
+#3: 88
+H
+i
+😀
+4 3
+nama = Sambal
+harga = 18000
+stok = 40
+nama: Sambal
+harga: 18000
+stok: 40
+[ &#x27;milikSendiri&#x27;, &#x27;warisan&#x27; ] [ &#x27;milikSendiri&#x27; ]
+[ &#x27;1&#x27;, &#x27;2&#x27;, &#x27;b&#x27;, &#x27;a&#x27; ]
+TypeError: produk is not iterable</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Object stok <code>{kopi: 3, teh: 0, gula: 12, susu: 0}</code>: cetak barang yang habis memakai Object.entries dan for...of.</p><details><summary>Petunjuk</summary><p>Destructuring [barang, jumlah] lalu cek jumlah === 0.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>const stok = { kopi: 3, teh: 0, gula: 12, susu: 0 };
+for (const [barang, jumlah] of Object.entries(stok)) {
+  if (jumlah === 0) console.log(`${barang} habis`);
+}</code></pre><div class="lbl">KELUARAN</div><pre><code>teh habis
+susu habis</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>for...of untuk nilai iterable; for...in untuk key object.</li><li>for...in ikut properti warisan.</li><li>Object.entries + for...of untuk object.</li><li>Object biasa bukan iterable.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Output for (const i in [&quot;a&quot;,&quot;b&quot;]) console.log(typeof i)?</summary><p class="ok">Jawaban: &quot;string&quot; dua kali</p><p>Key array dibaca sebagai string.</p></details><details><summary>Cara mendapatkan indeks dan nilai di for...of?</summary><p class="ok">Jawaban: for (const [i, v] of arr.entries())</p><p>entries menghasilkan pasangan [indeks, nilai].</p></details>
+<a class="cta" href="/#js-7-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/for-while-dan-do-while">for, while, dan do...while</a></p><p>Berikutnya: <a href="/belajar/js/break-continue-dan-label">break, continue, dan label</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

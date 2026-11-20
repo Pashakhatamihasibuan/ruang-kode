@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Operator logika, kondisional, dan string · JavaScript · Ruang Kode</title>
+<meta name="description" content="&amp;&amp;, ||, dan ?? tidak selalu mengembalikan boolean; mereka mengembalikan salah satu operand dan melakukan short-circuit (operand kanan tidak dievaluasi…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/operator-logika-kondisional-dan-string">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Operator logika, kondisional, dan string · JavaScript · Ruang Kode"><meta property="og:description" content="&amp;&amp;, ||, dan ?? tidak selalu mengembalikan boolean; mereka mengembalikan salah satu operand dan melakukan short-circuit (operand kanan tidak dievaluasi…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/operator-logika-kondisional-dan-string"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Operator logika, kondisional, dan string", "description": "&&, ||, dan ?? tidak selalu mengembalikan boolean; mereka mengembalikan salah satu operand dan melakukan short-circuit (operand kanan tidak dievaluasi…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/operator-logika-kondisional-dan-string", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "Operator logika, kondisional, dan string", "item": "https://ruang-kode-nine.vercel.app/belajar/js/operator-logika-kondisional-dan-string"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 9</nav>
+<div class="eyebrow">JavaScript · Modul 9 · Konsep &amp; kode</div><h1>Operator logika, kondisional, dan string</h1><a class="cta" href="/#js-9-2">Buka versi interaktif</a>
+<p><code>&&</code>, <code>||</code>, dan <code>??</code> tidak selalu mengembalikan boolean; mereka mengembalikan <b>salah satu operand</b> dan melakukan <b>short-circuit</b> (operand kanan tidak dievaluasi jika tidak perlu). <code>a || b</code> = a jika truthy, selain itu b. <code>a && b</code> = a jika falsy, selain itu b. <code>a ?? b</code> = a kecuali a null/undefined. <code>!</code> membalik boolean, <code>!!</code> mengubah ke boolean.</p>
+<p><b>Optional chaining</b> <code>?.</code> menghentikan akses jika nilai di kiri null/undefined dan menghasilkan undefined, termasuk untuk panggilan (<code>fn?.()</code>) dan indeks (<code>arr?.[0]</code>). Gabungan <code>a?.b ?? 'default'</code> sangat umum untuk data API yang tidak lengkap.</p>
+<p><b>Operator kondisional (ternary)</b> <code>kondisi ? a : b</code> adalah satu-satunya operator dengan tiga operand; cocok untuk memilih nilai, hindari ternary bersarang yang sulit dibaca. <b>Operator string</b>: <code>+</code> dan <code>+=</code> menggabungkan string, tetapi template literal biasanya lebih jelas.</p>
+<div class="tw"><table><caption>Nilai kembali operator logika</caption><thead><tr><th>Ekspresi</th><th>Hasil</th><th>Alasan</th></tr></thead><tbody><tr><td>&#x27;&#x27; || &#x27;tamu&#x27;</td><td>&#x27;tamu&#x27;</td><td>&#x27;&#x27; falsy</td></tr><tr><td>0 ?? 5</td><td>0</td><td>0 bukan nullish</td></tr><tr><td>user &amp;&amp; user.nama</td><td>null jika user null, selain itu user.nama</td><td>short-circuit</td></tr><tr><td>null?.x</td><td>undefined</td><td>optional chaining berhenti</td></tr><tr><td>a?.b ?? &#x27;x&#x27;</td><td>&#x27;x&#x27; jika a atau a.b nullish</td><td>kombinasi umum</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>console.log(&#x27;a&#x27; || &#x27;b&#x27;, &#x27;&#x27; || &#x27;b&#x27;, 0 &amp;&amp; &#x27;x&#x27;, 1 &amp;&amp; &#x27;x&#x27;, null ?? &#x27;def&#x27;, 0 ?? &#x27;def&#x27;);
+
+function log(pesan) { console.log(&#x27;  dipanggil:&#x27;, pesan); return true; }
+console.log(false &amp;&amp; log(&#x27;tidak akan jalan&#x27;));
+console.log(true || log(&#x27;tidak akan jalan&#x27;));
+console.log(true &amp;&amp; log(&#x27;jalan&#x27;));
+
+const respons = { data: { user: { nama: &#x27;Bayu&#x27;, alamat: null } } };
+console.log(respons.data?.user?.nama, respons.data?.user?.alamat?.kota ?? &#x27;kota belum diisi&#x27;);
+console.log(respons.meta?.halaman, respons.data.sapa?.(), respons.list?.[0]);
+
+const stok = 0;
+const label = stok &gt; 10 ? &#x27;tersedia&#x27; : stok &gt; 0 ? &#x27;hampir habis&#x27; : &#x27;habis&#x27;;
+console.log(label);
+let salam = &#x27;Halo&#x27;;
+salam += &#x27;, &#x27; + &#x27;Bayu&#x27;;
+console.log(salam, `${salam}!`.length);
+console.log(!!&#x27;teks&#x27;, !0, !![]);</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>a b 0 x def 0
+false
+true
+  dipanggil: jalan
+true
+Bayu kota belum diisi
+undefined undefined undefined
+habis
+Halo, Bayu 11
+true true true</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Dari respons API <code>{produk: {nama: "Keripik", diskon: 0, varian: null}}</code>, cetak nama, diskon (0 harus tetap 0), jumlah varian (0 jika null), dan nama penjual (default "Toko Resmi") yang tidak ada di data.</p><details><summary>Petunjuk</summary><p>Gunakan ?. dan ??, jangan ||.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>const res = { produk: { nama: &#x27;Keripik&#x27;, diskon: 0, varian: null } };
+console.log(&#x27;nama   :&#x27;, res.produk?.nama);
+console.log(&#x27;diskon :&#x27;, res.produk?.diskon ?? 10);
+console.log(&#x27;varian :&#x27;, res.produk?.varian?.length ?? 0);
+console.log(&#x27;penjual:&#x27;, res.produk?.penjual?.nama ?? &#x27;Toko Resmi&#x27;);</code></pre><div class="lbl">KELUARAN</div><pre><code>nama   : Keripik
+diskon : 0
+varian : 0
+penjual: Toko Resmi</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>&&, ||, ?? mengembalikan operand, bukan selalu boolean.</li><li>Short-circuit: sisi kanan bisa tidak dievaluasi.</li><li>?. untuk data yang mungkin kosong; padukan dengan ??.</li><li>Ternary untuk memilih nilai, hindari bersarang.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Hasil 0 || &#x27;kosong&#x27;?</summary><p class="ok">Jawaban: &#x27;kosong&#x27;</p><p>0 falsy.</p></details><details><summary>Hasil 0 ?? &#x27;kosong&#x27;?</summary><p class="ok">Jawaban: 0</p><p>?? hanya untuk null/undefined.</p></details><details><summary>Hasil user?.profil?.foto jika user undefined?</summary><p class="ok">Jawaban: undefined</p><p>Optional chaining menghentikan akses.</p></details>
+<a class="cta" href="/#js-9-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/aritmetika-assignment-dan-perbandingan">Aritmetika, assignment, dan perbandingan</a></p><p>Berikutnya: <a href="/belajar/js/unary-koma-bitwise-dan-bigint">Unary, koma, bitwise, dan BigInt</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

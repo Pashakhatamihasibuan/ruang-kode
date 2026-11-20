@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>this di event handler · JavaScript · Ruang Kode</title>
+<meta name="description" content="Di browser, saat fungsi biasa dipasang dengan addEventListener, this di dalamnya adalah elemen tempat listener dipasang (sama dengan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/this-di-event-handler">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="this di event handler · JavaScript · Ruang Kode"><meta property="og:description" content="Di browser, saat fungsi biasa dipasang dengan addEventListener, this di dalamnya adalah elemen tempat listener dipasang (sama dengan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/this-di-event-handler"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "this di event handler", "description": "Di browser, saat fungsi biasa dipasang dengan addEventListener, this di dalamnya adalah elemen tempat listener dipasang (sama dengan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/this-di-event-handler", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "this di event handler", "item": "https://ruang-kode-nine.vercel.app/belajar/js/this-di-event-handler"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 11</nav>
+<div class="eyebrow">JavaScript · Modul 11 · Konsep &amp; kode</div><h1>this di event handler</h1><a class="cta" href="/#js-11-3">Buka versi interaktif</a>
+<p>Di browser, saat fungsi <b>biasa</b> dipasang dengan <code>addEventListener</code>, <code>this</code> di dalamnya adalah elemen tempat listener dipasang (sama dengan <code>event.currentTarget</code>). Dengan <b>arrow function</b>, this mengikuti scope luar, sehingga di modul bernilai undefined atau, di dalam class, instance class tersebut.</p>
+<p>Gaya modern lebih eksplisit: pakai <code>event.currentTarget</code> (elemen yang memasang listener) atau <code>event.target</code> (elemen yang sebenarnya diklik, bisa anak di dalamnya) daripada mengandalkan this. Untuk <b>event delegation</b>, satu listener di induk memeriksa <code>event.target.closest(selector)</code>.</p>
+<p>Di komponen class (misalnya Web Components atau React class lama), metode yang dipakai sebagai handler harus di-bind di konstruktor atau ditulis sebagai class field arrow agar this tetap instance. Ingat juga untuk melepas listener dengan <code>removeEventListener</code> memakai <b>referensi fungsi yang sama</b>; fungsi hasil bind baru setiap kali dipanggil, jadi simpan hasilnya.</p>
+<div class="tw"><table><caption>target vs currentTarget</caption><thead><tr><th>Properti</th><th>Isinya</th><th>Kapan dipakai</th></tr></thead><tbody><tr><td>event.currentTarget</td><td>Elemen yang memasang listener</td><td>Pengganti this yang eksplisit</td></tr><tr><td>event.target</td><td>Elemen yang benar-benar memicu event</td><td>Event delegation</td></tr><tr><td>this (function biasa)</td><td>Sama dengan currentTarget</td><td>Kode lama</td></tr><tr><td>this (arrow)</td><td>this scope luar</td><td>Handler di class</td></tr></tbody></table></div>
+<div class="lbl">HTML</div><pre><code>&lt;button id=&quot;simpan&quot;&gt;Simpan &lt;span&gt;💾&lt;/span&gt;&lt;/button&gt;
+&lt;ul id=&quot;menu&quot;&gt;&lt;li data-id=&quot;1&quot;&gt;Beranda&lt;/li&gt;&lt;li data-id=&quot;2&quot;&gt;Produk&lt;/li&gt;&lt;/ul&gt;
+
+&lt;script type=&quot;module&quot;&gt;
+const btn = document.querySelector(&#x27;#simpan&#x27;);
+
+btn.addEventListener(&#x27;click&#x27;, function (e) {
+  console.log(this === btn, this === e.currentTarget);   // true true
+  console.log(e.target.tagName);   // &#x27;SPAN&#x27; jika ikon yang diklik
+});
+
+btn.addEventListener(&#x27;click&#x27;, (e) =&gt; {
+  console.log(this);               // undefined (modul): arrow tidak punya this
+  console.log(e.currentTarget.id); // &#x27;simpan&#x27;
+});
+
+// event delegation
+document.querySelector(&#x27;#menu&#x27;).addEventListener(&#x27;click&#x27;, (e) =&gt; {
+  const li = e.target.closest(&#x27;li&#x27;);
+  if (li) console.log(&#x27;buka menu&#x27;, li.dataset.id);
+});
+
+class Penghitung {
+  n = 0;
+  constructor(el) {
+    this.el = el;
+    this.klik = this.klik.bind(this);          // simpan hasil bind
+    el.addEventListener(&#x27;click&#x27;, this.klik);
+  }
+  klik() { this.n++; this.el.textContent = `Diklik ${this.n}x`; }
+  hancurkan() { this.el.removeEventListener(&#x27;click&#x27;, this.klik); }  // referensi sama
+}
+new Penghitung(btn);
+&lt;/script&gt;</code></pre>
+<h2>Poin penting</h2><ul><li>Function biasa di addEventListener: this = elemen.</li><li>Arrow: this dari luar.</li><li>Lebih jelas pakai e.currentTarget dan e.target.</li><li>Simpan fungsi hasil bind agar bisa removeEventListener.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Di handler function biasa, this sama dengan?</summary><p class="ok">Jawaban: event.currentTarget</p><p>Elemen yang memasang listener.</p></details><details><summary>Kenapa removeEventListener(el, f.bind(this)) tidak melepas listener?</summary><p class="ok">Jawaban: bind membuat fungsi baru yang berbeda referensi</p><p>Harus referensi yang sama.</p></details>
+<a class="cta" href="/#js-11-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/nilai-this-di-berbagai-konteks">Nilai this di berbagai konteks</a></p><p>Berikutnya: <a href="/belajar/js/call-apply-bind-dan-function-borrowing">call, apply, bind, dan function borrowing</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Block, function, dan global scope · JavaScript · Ruang Kode</title>
+<meta name="description" content="Scope menentukan dari mana sebuah variabel bisa diakses. Global scope: dideklarasikan di luar fungsi atau blok; bisa diakses di mana saja. Di browser,…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/block-function-dan-global-scope">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Block, function, dan global scope · JavaScript · Ruang Kode"><meta property="og:description" content="Scope menentukan dari mana sebuah variabel bisa diakses. Global scope: dideklarasikan di luar fungsi atau blok; bisa diakses di mana saja. Di browser,…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/block-function-dan-global-scope"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Block, function, dan global scope", "description": "Scope menentukan dari mana sebuah variabel bisa diakses. Global scope: dideklarasikan di luar fungsi atau blok; bisa diakses di mana saja. Di browser,…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/block-function-dan-global-scope", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "Block, function, dan global scope", "item": "https://ruang-kode-nine.vercel.app/belajar/js/block-function-dan-global-scope"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 2</nav>
+<div class="eyebrow">JavaScript · Modul 2 · Konsep &amp; kode</div><h1>Block, function, dan global scope</h1><a class="cta" href="/#js-2-4">Buka versi interaktif</a>
+<p><b>Scope</b> menentukan dari mana sebuah variabel bisa diakses. <b>Global scope</b>: dideklarasikan di luar fungsi atau blok; bisa diakses di mana saja. Di browser, <code>var</code> global dan deklarasi fungsi global menjadi properti <code>window</code>; di modul ES, variabel tingkat atas hanya berlaku di modul itu (<b>module scope</b>).</p>
+<p><b>Function scope</b>: variabel di dalam fungsi hanya terlihat di dalam fungsi itu. <b>Block scope</b>: <code>let</code> dan <code>const</code> di dalam kurung kurawal (if, for, atau blok biasa) hanya terlihat di blok itu. <code>var</code> mengabaikan blok dan "bocor" ke fungsi pembungkusnya.</p>
+<p>Scope bersarang membentuk <b>scope chain</b>: saat mencari nama, engine melihat scope saat ini, lalu scope luarnya, sampai global. Variabel dalam yang bernama sama dengan variabel luar disebut <b>shadowing</b>. Minimalkan variabel global karena rawan bentrok antar skrip dan sulit dilacak.</p>
+<div class="tw"><table><caption>Jenis scope</caption><thead><tr><th>Scope</th><th>Dibuat oleh</th><th>Berlaku untuk</th></tr></thead><tbody><tr><td>Global</td><td>Kode tingkat atas skrip biasa</td><td>var, let, const, function</td></tr><tr><td>Module</td><td>Kode tingkat atas modul ES</td><td>Semua deklarasi di modul</td></tr><tr><td>Function</td><td>Setiap fungsi</td><td>var, let, const, parameter</td></tr><tr><td>Block</td><td>Kurung kurawal: if, for, while, try, blok</td><td>let, const, class</td></tr><tr><td>Lexical (scope chain)</td><td>Posisi kode saat ditulis</td><td>Pencarian nama ke luar</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>const aplikasi = &#x27;Ruang Kode&#x27;;            // global (module scope di file ini)
+
+function hitungDiskon(harga) {
+  const persen = 10;                      // function scope
+  if (harga &gt; 100000) {
+    let bonus = 5000;                     // block scope
+    var catatan = &#x27;harga besar&#x27;;          // var bocor ke seluruh fungsi
+    console.log(&#x27;di blok:&#x27;, bonus, catatan);
+  }
+  console.log(&#x27;di fungsi:&#x27;, typeof bonus, catatan);
+  return harga - harga * persen / 100;
+}
+console.log(hitungDiskon(200000));
+console.log(typeof persen);               // tidak terlihat di luar fungsi
+
+const nilai = &#x27;luar&#x27;;
+{
+  const nilai = &#x27;dalam&#x27;;                  // shadowing
+  console.log(nilai, &#x27;-&#x27;, aplikasi);      // scope chain sampai global
+}
+console.log(nilai);
+
+for (var i = 0; i &lt; 3; i++) {}
+console.log(&#x27;var i setelah loop:&#x27;, i);</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>di blok: 5000 harga besar
+di fungsi: undefined harga besar
+180000
+undefined
+dalam - Ruang Kode
+luar
+var i setelah loop: 3</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat fungsi <code>buatSalam(jam)</code>: di dalam blok if/else deklarasikan <code>const salam</code> sesuai jam (pagi di bawah 11, siang di bawah 15, sisanya sore). Kembalikan salam itu dengan benar walaupun const ada di dalam blok.</p><details><summary>Petunjuk</summary><p>Deklarasikan let hasil di function scope, isi di blok, lalu return.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>function buatSalam(jam) {
+  let hasil;
+  if (jam &lt; 11) {
+    const salam = &#x27;Selamat pagi&#x27;;
+    hasil = salam;
+  } else if (jam &lt; 15) {
+    const salam = &#x27;Selamat siang&#x27;;
+    hasil = salam;
+  } else {
+    const salam = &#x27;Selamat sore&#x27;;
+    hasil = salam;
+  }
+  return hasil;
+}
+console.log(buatSalam(8));
+console.log(buatSalam(13));
+console.log(buatSalam(17));</code></pre><div class="lbl">KELUARAN</div><pre><code>Selamat pagi
+Selamat siang
+Selamat sore</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Global, module, function, dan block scope.</li><li>var tidak mengenal block scope.</li><li>Scope chain mencari nama dari dalam ke luar.</li><li>Shadowing: nama dalam menutupi nama luar.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Output: if (true) { let a = 1; } console.log(typeof a);</summary><p class="ok">Jawaban: undefined</p><p>a hanya ada di blok if; typeof nama tak dikenal menghasilkan &quot;undefined&quot;.</p></details><details><summary>Kenapa var di dalam for bisa dibaca setelah loop?</summary><p class="ok">Jawaban: var berscope fungsi, bukan blok</p><p>var mengabaikan blok.</p></details>
+<a class="cta" href="/#js-2-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/hoisting-dan-temporal-dead-zone">Hoisting dan Temporal Dead Zone</a></p><p>Berikutnya: <a href="/belajar/js/tipe-primitif-string-number-boolean">Tipe primitif: string, number, boolean</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

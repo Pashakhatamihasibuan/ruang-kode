@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Protokol iterable dan iterator · JavaScript · Ruang Kode</title>
+<meta name="description" content="Sebuah object disebut iterable jika punya metode [Symbol.iterator]() yang mengembalikan iterator. Iterator adalah object dengan metode next() yang setiap…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/protokol-iterable-dan-iterator">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Protokol iterable dan iterator · JavaScript · Ruang Kode"><meta property="og:description" content="Sebuah object disebut iterable jika punya metode [Symbol.iterator]() yang mengembalikan iterator. Iterator adalah object dengan metode next() yang setiap…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/protokol-iterable-dan-iterator"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Protokol iterable dan iterator", "description": "Sebuah object disebut iterable jika punya metode [Symbol.iterator]() yang mengembalikan iterator. Iterator adalah object dengan metode next() yang setiap…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/protokol-iterable-dan-iterator", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "Protokol iterable dan iterator", "item": "https://ruang-kode-nine.vercel.app/belajar/js/protokol-iterable-dan-iterator"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 15</nav>
+<div class="eyebrow">JavaScript · Modul 15 · Konsep &amp; kode</div><h1>Protokol iterable dan iterator</h1><a class="cta" href="/#js-15-1">Buka versi interaktif</a>
+<p>Sebuah object disebut <b>iterable</b> jika punya metode <code>[Symbol.iterator]()</code> yang mengembalikan <b>iterator</b>. Iterator adalah object dengan metode <code>next()</code> yang setiap dipanggil mengembalikan <code>{ value, done }</code>; ketika <code>done: true</code>, iterasi selesai.</p>
+<p>Protokol inilah yang dipakai <code>for...of</code>, spread <code>[...x]</code>, destructuring array, <code>Array.from</code>, <code>Promise.all</code>, serta constructor <code>Map</code> dan <code>Set</code>. Array, string, Map, Set, arguments, NodeList, dan typed array sudah iterable bawaan; object biasa tidak.</p>
+<p>Dengan mengimplementasikan Symbol.iterator, class buatanmu (misalnya <code>Rentang</code>, <code>Playlist</code>, atau daftar berhalaman) bisa langsung dipakai di for...of. Iterator juga bisa punya <code>return()</code> yang dipanggil saat loop dihentikan lebih awal (break), berguna untuk menutup sumber daya.</p>
+<div class="tw"><table><caption>Yang memakai protokol iterable</caption><thead><tr><th>Fitur</th><th>Contoh</th></tr></thead><tbody><tr><td>for...of</td><td>for (const x of iterable)</td></tr><tr><td>Spread</td><td>[...iterable], f(...iterable)</td></tr><tr><td>Destructuring array</td><td>const [a, b] = iterable</td></tr><tr><td>Array.from</td><td>Array.from(iterable, fn)</td></tr><tr><td>Map / Set</td><td>new Set(iterable)</td></tr><tr><td>Promise.all/any/race</td><td>Promise.all(iterable)</td></tr><tr><td>yield*</td><td>yield* iterableLain</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>const arr = [&#x27;a&#x27;, &#x27;b&#x27;];
+const it = arr[Symbol.iterator]();
+console.log(it.next(), it.next(), it.next());
+
+class Rentang {
+  constructor(awal, akhir, langkah = 1) { Object.assign(this, { awal, akhir, langkah }); }
+  [Symbol.iterator]() {
+    let n = this.awal;
+    const { akhir, langkah } = this;
+    return {
+      next: () =&gt; (n &lt;= akhir ? { value: (n += langkah) - langkah, done: false } : { value: undefined, done: true }),
+      return: () =&gt; { console.log(&#x27;  (iterator ditutup lebih awal)&#x27;); return { done: true }; },
+    };
+  }
+}
+const r = new Rentang(1, 10, 3);
+console.log([...r], Array.from(r, x =&gt; x * 10));
+for (const x of r) { if (x &gt; 4) break; console.log(&#x27;for...of&#x27;, x); }
+const [pertama, kedua] = new Rentang(5, 100);   // destructuring juga menutup iterator
+console.log(pertama, kedua, new Set(new Rentang(1, 3)));
+console.log(typeof {}[Symbol.iterator], typeof &#x27;teks&#x27;[Symbol.iterator], typeof new Map()[Symbol.iterator]);</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>{ value: &#x27;a&#x27;, done: false } { value: &#x27;b&#x27;, done: false } { value: undefined, done: true }
+[ 1, 4, 7, 10 ] [ 10, 40, 70, 100 ]
+for...of 1
+for...of 4
+  (iterator ditutup lebih awal)
+  (iterator ditutup lebih awal)
+5 6 Set(3) { 1, 2, 3 }
+undefined function function</code></pre>
+<h2>Poin penting</h2><ul><li>Iterable punya [Symbol.iterator]() yang mengembalikan iterator.</li><li>Iterator punya next() yang mengembalikan { value, done }.</li><li>for...of, spread, destructuring memakai protokol ini.</li><li>return() dipanggil saat break.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Bentuk nilai kembali next() pada iterator?</summary><p class="ok">Jawaban: { value, done }</p><p>done menandai akhir iterasi.</p></details><details><summary>Kenapa object biasa tidak bisa di-for...of?</summary><p class="ok">Jawaban: Tidak punya Symbol.iterator</p><p>Object biasa bukan iterable.</p></details>
+<a class="cta" href="/#js-15-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/pewarisan-extends-super-dan-polimorfisme">Pewarisan: extends, super, dan polimorfisme</a></p><p>Berikutnya: <a href="/belajar/js/generator-function-dan-yield">Generator function dan yield</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

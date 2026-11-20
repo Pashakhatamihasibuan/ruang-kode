@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Siklus hidup memori dan garbage collection · JavaScript · Ruang Kode</title>
+<meta name="description" content="Setiap nilai melewati siklus hidup memori: alokasi (saat membuat variabel, object, array, fungsi), pemakaian (membaca dan menulis), dan pelepasan saat…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/siklus-hidup-memori-dan-garbage-collection">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Siklus hidup memori dan garbage collection · JavaScript · Ruang Kode"><meta property="og:description" content="Setiap nilai melewati siklus hidup memori: alokasi (saat membuat variabel, object, array, fungsi), pemakaian (membaca dan menulis), dan pelepasan saat…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/siklus-hidup-memori-dan-garbage-collection"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Siklus hidup memori dan garbage collection", "description": "Setiap nilai melewati siklus hidup memori: alokasi (saat membuat variabel, object, array, fungsi), pemakaian (membaca dan menulis), dan pelepasan saat…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/siklus-hidup-memori-dan-garbage-collection", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "Siklus hidup memori dan garbage collection", "item": "https://ruang-kode-nine.vercel.app/belajar/js/siklus-hidup-memori-dan-garbage-collection"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 17</nav>
+<div class="eyebrow">JavaScript · Modul 17 · Konsep &amp; kode</div><h1>Siklus hidup memori dan garbage collection</h1><a class="cta" href="/#js-17-1">Buka versi interaktif</a>
+<p>Setiap nilai melewati <b>siklus hidup memori</b>: <b>alokasi</b> (saat membuat variabel, object, array, fungsi), <b>pemakaian</b> (membaca dan menulis), dan <b>pelepasan</b> saat tidak dibutuhkan. Di JS, alokasi dan pelepasan otomatis; pelepasan dilakukan oleh <b>garbage collector (GC)</b>.</p>
+<p>Secara konsep, nilai primitif kecil dan frame fungsi berada di <b>stack</b>, sedangkan object, array, dan closure berada di <b>heap</b>. GC modern memakai algoritma <b>mark-and-sweep</b>: mulai dari <b>roots</b> (variabel global, call stack aktif), tandai semua yang bisa dijangkau lewat referensi, lalu bersihkan sisanya. Karena itu object yang saling merujuk (siklus) tetap dibersihkan jika tidak terjangkau dari root, masalah yang dulu ada pada algoritma reference counting.</p>
+<p>V8 memakai <b>generational GC</b>: object baru ditaruh di <b>young generation</b> yang sering dibersihkan cepat (minor GC/scavenge), sedangkan yang bertahan dipindah ke <b>old generation</b> yang dibersihkan lebih jarang (major GC). Kita tidak bisa memaksa GC di kode biasa; tugas kita adalah <b>tidak menyimpan referensi yang tidak perlu</b>. Contoh di bawah memakai FinalizationRegistry untuk mengamati kapan object dibersihkan (Node dijalankan dengan izin memicu GC hanya untuk demonstrasi).</p>
+<div class="tw"><table><caption>Stack vs heap (konsep)</caption><thead><tr><th>Aspek</th><th>Stack</th><th>Heap</th></tr></thead><tbody><tr><td>Isi</td><td>Frame fungsi, nilai primitif lokal, referensi</td><td>Object, array, fungsi, closure</td></tr><tr><td>Ukuran</td><td>Kecil, tetap</td><td>Besar, dinamis</td></tr><tr><td>Pengelolaan</td><td>Otomatis saat fungsi selesai</td><td>Garbage collector</td></tr><tr><td>Kecepatan</td><td>Sangat cepat</td><td>Lebih lambat</td></tr><tr><td>Error khas</td><td>Stack overflow (rekursi)</td><td>Out of memory, memory leak</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>import v8 from &#x27;node:v8&#x27;;
+import vm from &#x27;node:vm&#x27;;
+v8.setFlagsFromString(&#x27;--expose-gc&#x27;);
+const gc = vm.runInNewContext(&#x27;gc&#x27;);           // hanya untuk demo; jangan di produksi
+
+const registry = new FinalizationRegistry(label =&gt; console.log(`GC membersihkan: ${label}`));
+const tunggu = () =&gt; new Promise(r =&gt; setTimeout(r, 20));
+
+let laporan = { data: new Array(100_000).fill(&#x27;x&#x27;) };
+registry.register(laporan, &#x27;laporan besar&#x27;);
+const cadangan = laporan;                      // referensi kedua
+laporan = null;
+gc(); await tunggu();
+console.log(&#x27;masih ada referensi lain -&gt; belum dibersihkan&#x27;);
+
+let a = { nama: &#x27;A&#x27; }, b = { nama: &#x27;B&#x27; };
+a.teman = b; b.teman = a;                      // referensi melingkar
+registry.register(a, &#x27;siklus A-B&#x27;);
+a = b = null;
+gc(); await tunggu();
+
+const ref = new WeakRef(cadangan);
+console.log(&#x27;WeakRef masih hidup:&#x27;, ref.deref() !== undefined);
+console.log(&#x27;heap terpakai (MB) kira-kira:&#x27;, Math.round(process.memoryUsage().heapUsed / 1e6) &gt; 0);</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>masih ada referensi lain -&gt; belum dibersihkan
+GC membersihkan: siklus A-B
+WeakRef masih hidup: true
+heap terpakai (MB) kira-kira: true</code></pre>
+<h2>Poin penting</h2><ul><li>Siklus: alokasi, pakai, lepas.</li><li>GC mark-and-sweep: yang tidak terjangkau dari root dibersihkan.</li><li>Referensi melingkar tetap bisa dibersihkan.</li><li>Generational GC: young dan old generation.</li><li>Tugas kita: jangan menahan referensi yang tidak perlu.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Object kapan boleh dibersihkan GC?</summary><p class="ok">Jawaban: Saat tidak bisa dijangkau lagi dari root</p><p>Mark-and-sweep berbasis keterjangkauan.</p></details><details><summary>Apakah dua object yang saling merujuk tetapi tidak terjangkau akan dibersihkan?</summary><p class="ok">Jawaban: Ya, oleh mark-and-sweep</p><p>Siklus tidak menghalangi mark-and-sweep.</p></details>
+<a class="cta" href="/#js-17-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/commonjs-dan-perbedaannya-dengan-esm">CommonJS dan perbedaannya dengan ESM</a></p><p>Berikutnya: <a href="/belajar/js/memory-leak-dan-cara-mencegahnya">Memory leak dan cara mencegahnya</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Koersi implisit · JavaScript · Ruang Kode</title>
+<meta name="description" content="Koersi terjadi saat operator menerima tipe yang tidak sesuai. Aturan intinya: operator + dengan salah satu operand string melakukan penggabungan string;…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/koersi-implisit">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Koersi implisit · JavaScript · Ruang Kode"><meta property="og:description" content="Koersi terjadi saat operator menerima tipe yang tidak sesuai. Aturan intinya: operator + dengan salah satu operand string melakukan penggabungan string;…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/koersi-implisit"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Koersi implisit", "description": "Koersi terjadi saat operator menerima tipe yang tidak sesuai. Aturan intinya: operator + dengan salah satu operand string melakukan penggabungan string;…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/koersi-implisit", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "Koersi implisit", "item": "https://ruang-kode-nine.vercel.app/belajar/js/koersi-implisit"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 4</nav>
+<div class="eyebrow">JavaScript · Modul 4 · Konsep &amp; kode</div><h1>Koersi implisit</h1><a class="cta" href="/#js-4-2">Buka versi interaktif</a>
+<p>Koersi terjadi saat operator menerima tipe yang tidak sesuai. Aturan intinya: operator <code>+</code> dengan <b>salah satu operand string</b> melakukan penggabungan string; operator aritmetika lain (<code>- * / %</code>) mengubah operand menjadi number; konteks kondisi (<code>if</code>, <code>&&</code>, <code>||</code>, <code>!</code>) mengubah ke boolean; <code>==</code> melakukan koersi sebelum membandingkan.</p>
+<p>Object dikonversi ke primitif lewat <b>ToPrimitive</b>: memanggil <code>[Symbol.toPrimitive]</code> jika ada, lalu <code>valueOf()</code> atau <code>toString()</code> tergantung hint. Itu sebabnya <code>[] + {}</code> menghasilkan <code>"[object Object]"</code> dan <code>[1,2] + [3]</code> menghasilkan <code>"1,23"</code>.</p>
+<p>Bug koersi yang sering terjadi di produksi: menjumlahkan nilai input form (<code>"10" + 5 = "105"</code>), membandingkan string angka (<code>"10" &lt; "9"</code> bernilai true karena dibandingkan per karakter), dan memakai <code>||</code> untuk default padahal 0 adalah nilai sah. TypeScript dan ESLint (<code>eqeqeq</code>) membantu mencegahnya.</p>
+<div class="tw"><table><caption>Aturan koersi operator</caption><thead><tr><th>Konteks</th><th>Dikonversi ke</th><th>Contoh</th></tr></thead><tbody><tr><td>a + b, salah satu string</td><td>String</td><td>&#x27;3&#x27; + 4 = &#x27;34&#x27;</td></tr><tr><td>- * / % **</td><td>Number</td><td>&#x27;6&#x27; / &#x27;2&#x27; = 3</td></tr><tr><td>Unary +</td><td>Number</td><td>+&#x27;5&#x27; = 5</td></tr><tr><td>if, !, &amp;&amp;, ||, ? :</td><td>Boolean</td><td>if (&#x27;&#x27;) tidak masuk</td></tr><tr><td>== antar tipe berbeda</td><td>Number (umumnya)</td><td>&#x27;1&#x27; == 1 true</td></tr><tr><td>Template literal</td><td>String</td><td>`${[1,2]}` = &quot;1,2&quot;</td></tr><tr><td>&lt; &gt; &lt;= &gt;= dua string</td><td>Tetap string, leksikografis</td><td>&#x27;10&#x27; &lt; &#x27;9&#x27; true</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>console.log(&#x27;10&#x27; + 5, &#x27;10&#x27; - 5, &#x27;10&#x27; * &#x27;2&#x27;, &#x27;10&#x27; / &#x27;a&#x27;);
+console.log(5 + 5 + &#x27;5&#x27;, &#x27;5&#x27; + 5 + 5);       // kiri ke kanan
+console.log(true + 1, null + 1, undefined + 1);
+console.log([] + [], [] + {}, [1, 2] + [3]);
+console.log(&#x27;10&#x27; &lt; &#x27;9&#x27;, 10 &lt; 9, &#x27;10&#x27; &lt; 9);      // string vs number
+
+const harga = {
+  nilai: 15000,
+  [Symbol.toPrimitive](hint) {
+    return hint === &#x27;number&#x27; ? this.nilai : `Rp${this.nilai}`;
+  },
+};
+console.log(+harga, `${harga}`, harga * 2);
+
+const diskon = 0;
+console.log(diskon || 10, diskon ?? 10);       // || salah untuk nilai 0
+if (&#x27;0&#x27;) console.log(&quot;&#x27;0&#x27; truthy, masuk if&quot;);</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>105 5 20 NaN
+105 555
+2 1 NaN
+ [object Object] 1,23
+true false false
+15000 Rp15000 30000
+10 0
+&#x27;0&#x27; truthy, masuk if</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Urutkan <code>["100", "25", "3"]</code> secara numerik. Tunjukkan dulu hasil sort() tanpa pembanding, lalu hasil yang benar.</p><details><summary>Petunjuk</summary><p>sort() bawaan membandingkan sebagai string; pakai (a, b) => a - b.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>const data = [&#x27;100&#x27;, &#x27;25&#x27;, &#x27;3&#x27;];
+console.log([...data].sort());
+console.log([...data].sort((a, b) =&gt; a - b));
+console.log(data.map(Number).sort((a, b) =&gt; a - b));</code></pre><div class="lbl">KELUARAN</div><pre><code>[ &#x27;100&#x27;, &#x27;25&#x27;, &#x27;3&#x27; ]
+[ &#x27;3&#x27;, &#x27;25&#x27;, &#x27;100&#x27; ]
+[ 3, 25, 100 ]</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>+ dengan string = gabung; operator lain = number.</li><li>Object diubah ke primitif lewat Symbol.toPrimitive/valueOf/toString.</li><li>Bandingkan string angka setelah dikonversi ke number.</li><li>Pakai ?? untuk default jika 0 atau "" valid.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Hasil &#x27;5&#x27; + 5 + 5?</summary><p class="ok">Jawaban: &#x27;555&#x27;</p><p>Dari kiri: &quot;5&quot;+5 = &quot;55&quot;, lalu &quot;55&quot;+5.</p></details><details><summary>Hasil &#x27;10&#x27; &amp;lt; &#x27;9&#x27;?</summary><p class="ok">Jawaban: true</p><p>Dua string dibandingkan per karakter: &quot;1&quot; &amp;lt; &quot;9&quot;.</p></details>
+<a class="cta" href="/#js-4-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/konversi-eksplisit">Konversi eksplisit</a></p><p>Berikutnya: <a href="/belajar/js/array-dasar-dan-mutasi">Array: dasar dan mutasi</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

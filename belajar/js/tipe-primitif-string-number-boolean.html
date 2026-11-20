@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tipe primitif: string, number, boolean · JavaScript · Ruang Kode</title>
+<meta name="description" content="JS punya 8 tipe data: tujuh primitif (string, number, bigint, boolean, undefined, null, symbol) dan object. Nilai primitif bersifat immutable (tidak bisa…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/tipe-primitif-string-number-boolean">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Tipe primitif: string, number, boolean · JavaScript · Ruang Kode"><meta property="og:description" content="JS punya 8 tipe data: tujuh primitif (string, number, bigint, boolean, undefined, null, symbol) dan object. Nilai primitif bersifat immutable (tidak bisa…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/tipe-primitif-string-number-boolean"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Tipe primitif: string, number, boolean", "description": "JS punya 8 tipe data: tujuh primitif (string, number, bigint, boolean, undefined, null, symbol) dan object. Nilai primitif bersifat immutable (tidak bisa…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/tipe-primitif-string-number-boolean", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "Tipe primitif: string, number, boolean", "item": "https://ruang-kode-nine.vercel.app/belajar/js/tipe-primitif-string-number-boolean"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 3</nav>
+<div class="eyebrow">JavaScript · Modul 3 · Konsep &amp; kode</div><h1>Tipe primitif: string, number, boolean</h1><a class="cta" href="/#js-3-1">Buka versi interaktif</a>
+<p>JS punya <b>8 tipe data</b>: tujuh <b>primitif</b> (string, number, bigint, boolean, undefined, null, symbol) dan <b>object</b>. Nilai primitif bersifat <b>immutable</b> (tidak bisa diubah, hanya diganti) dan dibandingkan berdasarkan nilainya.</p>
+<p><b>string</b>: teks dalam kutip satu, kutip dua, atau backtick (template literal, bisa multi-baris dan interpolasi). String immutable: metode seperti <code>toUpperCase()</code> mengembalikan string baru. <b>number</b>: satu tipe untuk bulat dan pecahan, berupa <b>64-bit floating point (IEEE 754)</b>, sehingga <code>0.1 + 0.2</code> tidak persis 0.3. Bilangan bulat aman hanya sampai <code>Number.MAX_SAFE_INTEGER</code> (2 pangkat 53 dikurangi 1). Ada nilai khusus <code>Infinity</code>, <code>-Infinity</code>, dan <code>NaN</code> (Not a Number, tetapi bertipe number).</p>
+<p><b>boolean</b>: <code>true</code> atau <code>false</code>. Untuk uang di aplikasi nyata, hindari pecahan float: simpan dalam satuan terkecil (rupiah atau sen) sebagai bilangan bulat, lalu format dengan <code>Intl.NumberFormat</code>.</p>
+<div class="tw"><table><caption>Tujuh tipe primitif</caption><thead><tr><th>Tipe</th><th>Contoh</th><th>typeof</th></tr></thead><tbody><tr><td>string</td><td>&#x27;halo&#x27;, `hai ${n}`</td><td>string</td></tr><tr><td>number</td><td>42, 3.14, NaN, Infinity</td><td>number</td></tr><tr><td>bigint</td><td>9007199254740993n</td><td>bigint</td></tr><tr><td>boolean</td><td>true, false</td><td>boolean</td></tr><tr><td>undefined</td><td>let x;</td><td>undefined</td></tr><tr><td>null</td><td>null</td><td>object (bug historis)</td></tr><tr><td>symbol</td><td>Symbol(&#x27;id&#x27;)</td><td>symbol</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>const produk = &#x27;Kopi Gayo&#x27;;
+console.log(produk.length, produk.toUpperCase(), produk[0]);
+console.log(`Stok ${produk}:
+  12 bungkus`);
+
+console.log(0.1 + 0.2, 0.1 + 0.2 === 0.3);
+console.log(Math.abs(0.1 + 0.2 - 0.3) &lt; Number.EPSILON);  // cara membandingkan float
+console.log(Number.MAX_SAFE_INTEGER, 2 ** 53 + 1);
+console.log(10 / 0, -10 / 0, &#x27;abc&#x27; * 2, typeof NaN);
+console.log(Number.isNaN(&#x27;abc&#x27; * 2), (1234.5678).toFixed(2));
+
+const rupiah = new Intl.NumberFormat(&#x27;id-ID&#x27;, { style: &#x27;currency&#x27;, currency: &#x27;IDR&#x27;, maximumFractionDigits: 0 });
+console.log(rupiah.format(1250000));
+
+const lunas = true;
+console.log(typeof lunas, !lunas);</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>9 KOPI GAYO K
+Stok Kopi Gayo:
+  12 bungkus
+0.30000000000000004 false
+true
+9007199254740991 9007199254740992
+Infinity -Infinity NaN number
+true 1234.57
+Rp 1.250.000
+boolean false</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Hitung total belanja 3 barang Rp19.900, Rp45.500, Rp7.250 dengan PPN 11%, bulatkan ke rupiah terdekat, lalu tampilkan dengan format Rupiah Indonesia.</p><details><summary>Petunjuk</summary><p>Math.round untuk membulatkan, Intl.NumberFormat id-ID currency IDR.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>const harga = [19900, 45500, 7250];
+let subtotal = 0;
+for (const h of harga) subtotal += h;
+const total = Math.round(subtotal * 1.11);
+const rp = new Intl.NumberFormat(&#x27;id-ID&#x27;, { style: &#x27;currency&#x27;, currency: &#x27;IDR&#x27;, maximumFractionDigits: 0 });
+console.log(&#x27;Subtotal:&#x27;, rp.format(subtotal));
+console.log(&#x27;Total + PPN:&#x27;, rp.format(total));</code></pre><div class="lbl">KELUARAN</div><pre><code>Subtotal: Rp 72.650
+Total + PPN: Rp 80.642</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>7 primitif + object.</li><li>Primitif immutable dan dibandingkan per nilai.</li><li>number = float 64-bit: hati-hati 0.1 + 0.2.</li><li>NaN bertipe number; cek dengan Number.isNaN.</li><li>Uang: bilangan bulat + Intl.NumberFormat.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Hasil 0.1 + 0.2 === 0.3?</summary><p class="ok">Jawaban: false</p><p>Hasilnya 0.30000000000000004 karena representasi biner float.</p></details><details><summary>typeof NaN?</summary><p class="ok">Jawaban: &quot;number&quot;</p><p>NaN adalah nilai number khusus.</p></details>
+<a class="cta" href="/#js-3-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/block-function-dan-global-scope">Block, function, dan global scope</a></p><p>Berikutnya: <a href="/belajar/js/bigint-undefined-null-dan-symbol">bigint, undefined, null, dan Symbol</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

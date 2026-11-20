@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Prototype dan pewarisan prototipe · JavaScript · Ruang Kode</title>
+<meta name="description" content="Setiap object di JS punya tautan tersembunyi ke object lain yang disebut prototype (dibaca dengan Object.getPrototypeOf(obj), di konsol tampil sebagai…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/prototype-dan-pewarisan-prototipe">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Prototype dan pewarisan prototipe · JavaScript · Ruang Kode"><meta property="og:description" content="Setiap object di JS punya tautan tersembunyi ke object lain yang disebut prototype (dibaca dengan Object.getPrototypeOf(obj), di konsol tampil sebagai…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/prototype-dan-pewarisan-prototipe"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Prototype dan pewarisan prototipe", "description": "Setiap object di JS punya tautan tersembunyi ke object lain yang disebut prototype (dibaca dengan Object.getPrototypeOf(obj), di konsol tampil sebagai…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/prototype-dan-pewarisan-prototipe", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "Prototype dan pewarisan prototipe", "item": "https://ruang-kode-nine.vercel.app/belajar/js/prototype-dan-pewarisan-prototipe"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 3</nav>
+<div class="eyebrow">JavaScript · Modul 3 · Konsep &amp; kode</div><h1>Prototype dan pewarisan prototipe</h1><a class="cta" href="/#js-3-4">Buka versi interaktif</a>
+<p>Setiap object di JS punya tautan tersembunyi ke object lain yang disebut <b>prototype</b> (dibaca dengan <code>Object.getPrototypeOf(obj)</code>, di konsol tampil sebagai <code>[[Prototype]]</code> atau <code>__proto__</code>). Saat properti tidak ditemukan di object, engine mencarinya di prototype, lalu prototype dari prototype, dan seterusnya sampai <code>null</code>. Rantai ini disebut <b>prototype chain</b>.</p>
+<p>Itulah sebabnya array kosong bisa memanggil <code>map</code>: metode itu tinggal di <code>Array.prototype</code>. <b>Pewarisan prototipe</b> (prototypal inheritance) berarti object mewarisi langsung dari object lain, bukan dari "cetakan" seperti di Java. Kata kunci <code>class</code> (ES2015) hanyalah sintaks yang lebih rapi di atas mekanisme prototype ini (<b>syntactic sugar</b>).</p>
+<p>Buat object dengan prototype tertentu memakai <code>Object.create(proto)</code>. Fungsi konstruktor menyimpan metode bersama di <code>Fungsi.prototype</code>. Jangan menambah metode ke prototype bawaan (<code>Array.prototype.x = ...</code>): praktik ini disebut <b>monkey patching</b> dan bisa bentrok dengan fitur bahasa di masa depan.</p>
+<div class="tw"><table><caption>Istilah prototype</caption><thead><tr><th>Istilah</th><th>Arti</th></tr></thead><tbody><tr><td>[[Prototype]]</td><td>Tautan internal object ke prototype-nya</td></tr><tr><td>Object.getPrototypeOf(o)</td><td>Cara resmi membaca prototype</td></tr><tr><td>F.prototype</td><td>Object yang menjadi prototype bagi hasil new F()</td></tr><tr><td>Object.create(p)</td><td>Membuat object baru dengan prototype p</td></tr><tr><td>Object.hasOwn(o, k)</td><td>Cek properti milik sendiri (bukan warisan)</td></tr><tr><td>Prototype chain</td><td>Urutan pencarian properti sampai null</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>const hewan = {
+  bersuara() { return `${this.nama} bersuara: ${this.suara}`; },
+};
+const kucing = Object.create(hewan);   // prototype kucing = hewan
+kucing.nama = &#x27;Oyen&#x27;;
+kucing.suara = &#x27;meong&#x27;;
+console.log(kucing.bersuara());
+console.log(Object.getPrototypeOf(kucing) === hewan, Object.hasOwn(kucing, &#x27;bersuara&#x27;));
+
+// fungsi konstruktor (gaya sebelum class)
+function Akun(pemilik, saldo) {
+  this.pemilik = pemilik;
+  this.saldo = saldo;
+}
+Akun.prototype.setor = function (n) { this.saldo += n; return this.saldo; };
+const a1 = new Akun(&#x27;Rudi&#x27;, 1000);
+const a2 = new Akun(&#x27;Tari&#x27;, 500);
+console.log(a1.setor(250), a1.setor === a2.setor);   // metode dibagi bersama
+
+// rantai prototype sebuah array
+let p = [1, 2];
+const rantai = [];
+while (p) { p = Object.getPrototypeOf(p); rantai.push(p === null ? &#x27;null&#x27; : p.constructor.name + &#x27;.prototype&#x27;); }
+console.log(rantai.join(&#x27; -&gt; &#x27;));</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Oyen bersuara: meong
+true false
+1250 true
+Array.prototype -&gt; Object.prototype -&gt; null</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat object <code>kendaraan</code> dengan metode <code>info()</code> yang mencetak merek dan roda. Buat <code>motor</code> dengan Object.create(kendaraan), isi merek dan roda = 2, lalu panggil info().</p><details><summary>Petunjuk</summary><p>Gunakan this di dalam metode info.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>const kendaraan = {
+  info() { return `${this.merek} beroda ${this.roda}`; },
+};
+const motor = Object.create(kendaraan);
+motor.merek = &#x27;Honda Beat&#x27;;
+motor.roda = 2;
+console.log(motor.info());
+console.log(Object.hasOwn(motor, &#x27;info&#x27;));</code></pre><div class="lbl">KELUARAN</div><pre><code>Honda Beat beroda 2
+false</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Setiap object punya prototype; pencarian properti menelusuri prototype chain.</li><li>Metode bawaan tinggal di prototype seperti Array.prototype.</li><li>class adalah syntactic sugar di atas prototype.</li><li>Jangan memodifikasi prototype bawaan.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa [].map bisa dipanggil padahal array kosong tidak punya properti map sendiri?</summary><p class="ok">Jawaban: map ditemukan di Array.prototype lewat prototype chain</p><p>Pencarian properti naik ke prototype.</p></details><details><summary>Ujung akhir setiap prototype chain?</summary><p class="ok">Jawaban: null</p><p>Object.prototype punya prototype null.</p></details>
+<a class="cta" href="/#js-3-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/object-dan-operator-typeof">Object dan operator typeof</a></p><p>Berikutnya: <a href="/belajar/js/built-in-objects">Built-in objects</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

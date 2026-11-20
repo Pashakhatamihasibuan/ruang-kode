@@ -17,6 +17,7 @@ const TRACKS=[
   {k:'flowg',g:'logika',name:'Flowgorithm',lang:'text',mods:FLOWG_MODULES,road:'',mark:'FG',h:'Flowchart yang bisa dijalankan',d:'Simbol flowchart, memakai aplikasi Flowgorithm, input-proses-output, If, For, While, Do, array, fungsi, dan proyek kasir.'},
   {k:'java',g:'prog',name:'Java',lang:'java',mods:JAVA_MODULES,road:'java',mark:'J',h:'Java dari nol sampai siap kerja',d:'Bahasa bertipe statis untuk Android, perbankan, dan backend skala besar. Dari variabel dan OOP sampai konkurensi, JDBC, dan Spring Boot.'},
   {k:'python',g:'prog',name:'Python',lang:'python',mods:PY_MODULES,road:'python',mark:'Py',h:'Python yang rapi dan idiomatik',d:'Bahasa ringkas untuk otomasi, data, AI, dan web. Dari sintaks dasar sampai type hints, testing, asyncio, dan framework web.'},
+  {k:'js',g:'prog',name:'JavaScript',lang:'js',mods:JS_MODULES,road:'javascript',mark:'JS',h:'JavaScript lengkap dari dasar sampai mahir',d:'Variabel dan scope, tipe data, prototype, type casting, struktur data, equality, perulangan, exception, operator, fungsi dan closure, this, event loop, Promise dan async/await, Fetch API, class, generator, modul, manajemen memori, dan Chrome DevTools.'},
   {k:'ts',g:'prog',name:'TypeScript',lang:'ts',mods:TS_MODULES,road:'typescript',mark:'TS',h:'JavaScript yang lebih aman dengan tipe',d:'Tipe dasar, interface, generics, narrowing, utility types, sampai konfigurasi proyek nyata.'},
   {k:'dart',g:'prog',name:'Dart',lang:'dart',mods:DART_MODULES,road:'',mark:'Dt',h:'Bahasa di balik Flutter',d:'Variabel, null safety, format keluaran, algoritma, fungsi, koleksi, OOP, async, Stream, exception, generics, records, pattern matching, dan proyek kasir.'},
   {k:'kotlin',g:'prog',name:'Kotlin',lang:'kotlin',mods:KOTLIN_MODULES,road:'',mark:'Kt',h:'Bahasa resmi Android',d:'val dan var, null safety, format keluaran, when, algoritma, lambda, koleksi, data dan sealed class, coroutines, Flow, Result, generics, pewarisan dan interface, delegation, operator overloading, higher-order dan inline, DSL, pengujian dengan JUnit 5 dan MockK, serta proyek kasir.'},
@@ -54,7 +55,7 @@ const TRACKS=[
 const TK=Object.fromEntries(TRACKS.map(t=>[t.k,t]));
 const PATHS=[
   {k:'pseudo',t:'Dasar Logika Pemrograman',d:'Melatih cara berpikir algoritma sebelum masuk ke bahasa pemrograman.',tr:['pseudo','flowg','python','dsa','java','proj']},
-  {k:'fe',t:'Frontend Developer',d:'Membangun antarmuka web yang cepat dan mudah dipakai.',tr:['fe0','html','css','git','ts','react','nextjs','fe','proj']},
+  {k:'fe',t:'Frontend Developer',d:'Membangun antarmuka web yang cepat dan mudah dipakai.',tr:['fe0','html','css','js','git','ts','react','nextjs','fe','proj']},
   {k:'da',t:'Data Analyst',d:'Menjawab pertanyaan bisnis dengan data.',tr:['sql','pda','da','bi','proj']},
   {k:'dsci',t:'Data Scientist',d:'Memprediksi dan bereksperimen dengan data, statistik, dan machine learning.',tr:['python','sql','pda','dsci','dsa','proj']},
   {k:'de',t:'Data Engineer',d:'Membangun jalur data dari sumber ke dashboard.',tr:['python','sql','git','pda','de','proj']},
@@ -64,7 +65,7 @@ const PATHS=[
   {k:'flutterdev',t:'Mobile Developer (Flutter)',d:'Membangun aplikasi Android dan iOS dari satu kode.',tr:['pseudo','dart','flutter','slm','git','proj']},
   {k:'android',t:'Android Developer',d:'Membangun aplikasi Android native lalu berbagi kode ke iOS.',tr:['kotlin','compose','slm','kmp','git','proj']},
   {k:'pydev',t:'Backend Python (Django)',d:'Membangun aplikasi web dan API dengan Python.',tr:['python','sql','pgdba','django','git','proj']},
-  {k:'vuedev',t:'Frontend Developer (Vue)',d:'Membangun antarmuka web dengan Vue dan Nuxt.',tr:['html','css','ts','vue','git','proj']},
+  {k:'vuedev',t:'Frontend Developer (Vue)',d:'Membangun antarmuka web dengan Vue dan Nuxt.',tr:['html','css','js','ts','vue','git','proj']},
   {k:'qae',t:'QA Engineer',d:'Menjamin kualitas aplikasi lewat pengujian manual dan otomatis.',tr:['pseudo','python','qa','git','proj']},
   {k:'dba',t:'Database Administrator',d:'Menjaga database tetap aman, cepat, dan bisa dipulihkan.',tr:['sql','pgdba','git','proj']},
   {k:'webui',t:'Web UI dengan Framework CSS',d:'Membangun tampilan web cepat dengan Tailwind dan Bootstrap.',tr:['html','css','tw','bs','slw','git','proj']}];

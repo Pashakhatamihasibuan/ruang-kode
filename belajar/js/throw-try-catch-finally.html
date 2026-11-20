@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>throw, try, catch, finally · JavaScript · Ruang Kode</title>
+<meta name="description" content="Saat terjadi kesalahan yang tidak bisa ditangani di tempat, throw menghentikan eksekusi dan melempar nilai ke atas tumpukan pemanggil sampai ditangkap…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/throw-try-catch-finally">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="throw, try, catch, finally · JavaScript · Ruang Kode"><meta property="og:description" content="Saat terjadi kesalahan yang tidak bisa ditangani di tempat, throw menghentikan eksekusi dan melempar nilai ke atas tumpukan pemanggil sampai ditangkap…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/throw-try-catch-finally"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "throw, try, catch, finally", "description": "Saat terjadi kesalahan yang tidak bisa ditangani di tempat, throw menghentikan eksekusi dan melempar nilai ke atas tumpukan pemanggil sampai ditangkap…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/throw-try-catch-finally", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "throw, try, catch, finally", "item": "https://ruang-kode-nine.vercel.app/belajar/js/throw-try-catch-finally"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 8</nav>
+<div class="eyebrow">JavaScript · Modul 8 · Konsep &amp; kode</div><h1>throw, try, catch, finally</h1><a class="cta" href="/#js-8-2">Buka versi interaktif</a>
+<p>Saat terjadi kesalahan yang tidak bisa ditangani di tempat, <code>throw</code> menghentikan eksekusi dan melempar nilai ke atas tumpukan pemanggil sampai ditangkap <code>catch</code>. Jika tidak ada yang menangkap, program berhenti (di Node) atau error muncul di konsol (di browser).</p>
+<p><code>try { }</code> berisi kode yang mungkin gagal, <code>catch (e) { }</code> menanganinya, dan <code>finally { }</code> <b>selalu</b> dijalankan, baik sukses maupun gagal, bahkan setelah <code>return</code>. Finally cocok untuk membersihkan sumber daya: menutup koneksi, mematikan spinner loading, melepas kunci.</p>
+<p>Praktik profesional: selalu <code>throw new Error(...)</code> (bukan string) agar ada stack trace; tangkap hanya error yang bisa kamu tangani dan lempar ulang sisanya; jangan menelan error diam-diam dengan catch kosong; dan sertakan <b>cause</b> (<code>new Error(pesan, { cause: e })</code>, ES2022) saat membungkus error agar penyebab asli tidak hilang. Parameter catch boleh dihilangkan (<code>catch { }</code>) jika tidak dipakai.</p>
+<div class="tw"><table><caption>Alur try/catch/finally</caption><thead><tr><th>Kejadian di try</th><th>catch jalan?</th><th>finally jalan?</th></tr></thead><tbody><tr><td>Sukses</td><td>Tidak</td><td>Ya</td></tr><tr><td>Error dilempar</td><td>Ya</td><td>Ya, setelah catch</td></tr><tr><td>return di try</td><td>Tidak</td><td>Ya, sebelum nilai dikembalikan</td></tr><tr><td>Error di catch</td><td>-</td><td>Ya, lalu error baru diteruskan</td></tr><tr><td>Error asinkron tanpa await</td><td>Tidak tertangkap</td><td>Ya (terlalu cepat)</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>function bagi(a, b) {
+  if (b === 0) throw new RangeError(&#x27;pembagi tidak boleh nol&#x27;);
+  return a / b;
+}
+
+function proses(a, b) {
+  console.log(`mulai ${a}/${b}`);
+  try {
+    return `hasil ${bagi(a, b)}`;
+  } catch (e) {
+    return `gagal: ${e.message}`;
+  } finally {
+    console.log(&#x27;  finally: matikan spinner&#x27;);   // tetap jalan walau ada return
+  }
+}
+console.log(proses(10, 4));
+console.log(proses(1, 0));
+
+function bacaKonfig(teks) {
+  try {
+    return JSON.parse(teks);
+  } catch (e) {
+    throw new Error(&#x27;konfigurasi rusak&#x27;, { cause: e });   // bungkus dengan cause
+  }
+}
+try {
+  bacaKonfig(&#x27;{port: 80}&#x27;);
+} catch (e) {
+  console.log(e.message, &#x27;&lt;-&#x27;, e.cause.name);
+}</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>mulai 10/4
+  finally: matikan spinner
+hasil 2.5
+mulai 1/0
+  finally: matikan spinner
+gagal: pembagi tidak boleh nol
+konfigurasi rusak &lt;- SyntaxError</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Tulis <code>ambilUmur(teks)</code> yang mengubah teks ke number dan melempar TypeError jika bukan angka, serta RangeError jika di luar 0 sampai 120. Panggil untuk "25", "abc", "150" dan cetak nama error atau hasilnya.</p><details><summary>Petunjuk</summary><p>Number(teks), cek Number.isNaN, lalu rentang.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>function ambilUmur(teks) {
+  const n = Number(teks);
+  if (teks.trim() === &#x27;&#x27; || Number.isNaN(n)) throw new TypeError(`&#x27;${teks}&#x27; bukan angka`);
+  if (n &lt; 0 || n &gt; 120) throw new RangeError(`umur ${n} di luar rentang`);
+  return n;
+}
+for (const t of [&#x27;25&#x27;, &#x27;abc&#x27;, &#x27;150&#x27;]) {
+  try {
+    console.log(&#x27;umur:&#x27;, ambilUmur(t));
+  } catch (e) {
+    console.log(`${e.name}: ${e.message}`);
+  }
+}</code></pre><div class="lbl">KELUARAN</div><pre><code>umur: 25
+TypeError: &#x27;abc&#x27; bukan angka
+RangeError: umur 150 di luar rentang</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>throw new Error(...) agar ada stack trace.</li><li>finally selalu jalan, cocok untuk cleanup.</li><li>Jangan menelan error dengan catch kosong.</li><li>Bungkus error dengan { cause } untuk konteks.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kapan blok finally dijalankan?</summary><p class="ok">Jawaban: Selalu, sukses maupun gagal</p><p>Termasuk saat try melakukan return.</p></details><details><summary>Kenapa lebih baik throw new Error(&quot;x&quot;) daripada throw &quot;x&quot;?</summary><p class="ok">Jawaban: Error membawa stack trace dan name</p><p>Stack trace penting untuk debugging.</p></details>
+<a class="cta" href="/#js-8-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/if-else-dan-switch">if...else dan switch</a></p><p>Berikutnya: <a href="/belajar/js/error-objects-dan-custom-error">Error objects dan custom error</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

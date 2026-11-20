@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Map dan Set · JavaScript · Ruang Kode</title>
+<meta name="description" content="Map adalah koleksi key-value di mana key bisa tipe apa saja (object, fungsi, number), urutan sisip terjaga, ukurannya tersedia lewat size, dan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/map-dan-set">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Map dan Set · JavaScript · Ruang Kode"><meta property="og:description" content="Map adalah koleksi key-value di mana key bisa tipe apa saja (object, fungsi, number), urutan sisip terjaga, ukurannya tersedia lewat size, dan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/map-dan-set"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Map dan Set", "description": "Map adalah koleksi key-value di mana key bisa tipe apa saja (object, fungsi, number), urutan sisip terjaga, ukurannya tersedia lewat size, dan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/map-dan-set", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "Map dan Set", "item": "https://ruang-kode-nine.vercel.app/belajar/js/map-dan-set"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 5</nav>
+<div class="eyebrow">JavaScript · Modul 5 · Konsep &amp; kode</div><h1>Map dan Set</h1><a class="cta" href="/#js-5-4">Buka versi interaktif</a>
+<p><b>Map</b> adalah koleksi key-value di mana <b>key bisa tipe apa saja</b> (object, fungsi, number), urutan sisip terjaga, ukurannya tersedia lewat <code>size</code>, dan dioptimalkan untuk tambah/hapus yang sering. Gunakan Map untuk kamus dinamis (cache, indeks berdasarkan ID); gunakan object biasa untuk struktur data dengan field tetap.</p>
+<p><b>Set</b> menyimpan <b>nilai unik</b>. Cara tercepat menghapus duplikat: <code>[...new Set(arr)]</code>. Pengecekan <code>has</code> pada Set rata-rata O(1), jauh lebih cepat daripada <code>includes</code> pada array besar yang O(n). ES2025 menambahkan operasi himpunan: <code>union</code>, <code>intersection</code>, <code>difference</code>, <code>symmetricDifference</code>, <code>isSubsetOf</code>.</p>
+<p>Keduanya iterable, jadi bisa dipakai di <code>for...of</code>, spread, dan destructuring. Kesetaraan key memakai algoritma <b>SameValueZero</b>: NaN dianggap sama dengan NaN, dan dua object berbeda tetap dua key berbeda walau isinya sama.</p>
+<div class="tw"><table><caption>Object vs Map, Array vs Set</caption><thead><tr><th>Aspek</th><th>Object</th><th>Map</th></tr></thead><tbody><tr><td>Tipe key</td><td>String/symbol</td><td>Apa saja</td></tr><tr><td>Ukuran</td><td>Object.keys(o).length</td><td>map.size</td></tr><tr><td>Urutan</td><td>Aturan khusus (angka dulu)</td><td>Urutan sisip</td></tr><tr><td>Iterasi langsung</td><td>Tidak (perlu Object.entries)</td><td>Ya, for...of</td></tr><tr><td>Risiko key bawaan</td><td>Ada (toString, __proto__)</td><td>Tidak ada</td></tr><tr><td>Cocok untuk</td><td>Record dengan field tetap, JSON</td><td>Kamus dinamis, cache</td></tr></tbody></table></div>
+<div class="tw"><table><caption>Kapan memakai Set</caption><thead><tr><th>Kebutuhan</th><th>Array</th><th>Set</th></tr></thead><tbody><tr><td>Duplikat</td><td>Boleh</td><td>Otomatis dibuang</td></tr><tr><td>Cek keberadaan</td><td>includes O(n)</td><td>has O(1)</td></tr><tr><td>Akses indeks</td><td>Ya</td><td>Tidak</td></tr><tr><td>Operasi himpunan</td><td>Manual</td><td>union, intersection (ES2025)</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>const stok = new Map();
+stok.set(&#x27;kopi&#x27;, 12).set(&#x27;teh&#x27;, 30).set(&#x27;gula&#x27;, 0);
+console.log(stok.get(&#x27;teh&#x27;), stok.has(&#x27;susu&#x27;), stok.size);
+stok.delete(&#x27;gula&#x27;);
+for (const [barang, jml] of stok) console.log(barang, &#x27;=&gt;&#x27;, jml);
+
+const objKey = { id: 7 };
+const sesi = new Map([[objKey, &#x27;aktif&#x27;]]);       // object sebagai key
+console.log(sesi.get(objKey), sesi.get({ id: 7 }));
+console.log(Object.fromEntries(stok), new Map(Object.entries({ a: 1 })));
+
+const kunjungan = [&#x27;bdg&#x27;, &#x27;jkt&#x27;, &#x27;bdg&#x27;, &#x27;mdn&#x27;, &#x27;jkt&#x27;];
+const unik = new Set(kunjungan);
+console.log(unik, unik.size, [...unik]);
+console.log(new Set([NaN, NaN, 0, -0]).size);
+
+const kelasA = new Set([&#x27;Ani&#x27;, &#x27;Budi&#x27;, &#x27;Citra&#x27;]);
+const kelasB = new Set([&#x27;Budi&#x27;, &#x27;Dodi&#x27;]);
+console.log([...kelasA.intersection(kelasB)], [...kelasA.union(kelasB)], [...kelasA.difference(kelasB)]);</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>30 false 3
+kopi =&gt; 12
+teh =&gt; 30
+aktif undefined
+{ kopi: 12, teh: 30 } Map(1) { &#x27;a&#x27; =&gt; 1 }
+Set(3) { &#x27;bdg&#x27;, &#x27;jkt&#x27;, &#x27;mdn&#x27; } 3 [ &#x27;bdg&#x27;, &#x27;jkt&#x27;, &#x27;mdn&#x27; ]
+2
+[ &#x27;Budi&#x27; ] [ &#x27;Ani&#x27;, &#x27;Budi&#x27;, &#x27;Citra&#x27;, &#x27;Dodi&#x27; ] [ &#x27;Ani&#x27;, &#x27;Citra&#x27; ]</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Hitung frekuensi kata pada kalimat "kopi susu kopi gula kopi susu" memakai Map, lalu cetak kata dan jumlahnya diurutkan dari yang terbanyak.</p><details><summary>Petunjuk</summary><p>map.set(k, (map.get(k) ?? 0) + 1), lalu [...map].sort.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>const kata = &#x27;kopi susu kopi gula kopi susu&#x27;.split(&#x27; &#x27;);
+const frek = new Map();
+for (const k of kata) frek.set(k, (frek.get(k) ?? 0) + 1);
+for (const [k, n] of [...frek].sort((a, b) =&gt; b[1] - a[1])) console.log(k, n);</code></pre><div class="lbl">KELUARAN</div><pre><code>kopi 3
+susu 2
+gula 1</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Map: key tipe apa saja, size, urutan sisip.</li><li>Set: nilai unik, has O(1).</li><li>[...new Set(arr)] menghapus duplikat.</li><li>Kesetaraan key memakai SameValueZero.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Cara cepat membuang duplikat dari array?</summary><p class="ok">Jawaban: [...new Set(arr)]</p><p>Set hanya menyimpan nilai unik.</p></details><details><summary>map.get({id: 7}) jika key yang disimpan adalah object lain dengan isi sama?</summary><p class="ok">Jawaban: undefined</p><p>Object dibandingkan berdasarkan referensi.</p></details>
+<a class="cta" href="/#js-5-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/typed-arrays">Typed Arrays</a></p><p>Berikutnya: <a href="/belajar/js/weakmap-dan-weakset">WeakMap dan WeakSet</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Generator function dan yield · JavaScript · Ruang Kode</title>
+<meta name="description" content="Generator function ditulis function*. Memanggilnya tidak langsung menjalankan isinya, tetapi mengembalikan object generator yang sekaligus iterator dan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/generator-function-dan-yield">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Generator function dan yield · JavaScript · Ruang Kode"><meta property="og:description" content="Generator function ditulis function*. Memanggilnya tidak langsung menjalankan isinya, tetapi mengembalikan object generator yang sekaligus iterator dan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/generator-function-dan-yield"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Generator function dan yield", "description": "Generator function ditulis function*. Memanggilnya tidak langsung menjalankan isinya, tetapi mengembalikan object generator yang sekaligus iterator dan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/generator-function-dan-yield", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "Generator function dan yield", "item": "https://ruang-kode-nine.vercel.app/belajar/js/generator-function-dan-yield"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 15</nav>
+<div class="eyebrow">JavaScript · Modul 15 · Konsep &amp; kode</div><h1>Generator function dan yield</h1><a class="cta" href="/#js-15-2">Buka versi interaktif</a>
+<p><b>Generator function</b> ditulis <code>function*</code>. Memanggilnya tidak langsung menjalankan isinya, tetapi mengembalikan object <b>generator</b> yang sekaligus iterator dan iterable. Setiap <code>next()</code> menjalankan kode sampai <code>yield</code> berikutnya, menyerahkan nilai, lalu <b>menjeda</b> dengan state tetap tersimpan. Ini cara termudah membuat iterator.</p>
+<p>Karena <b>lazy</b> (menghitung hanya saat diminta), generator bisa mewakili urutan <b>tak terbatas</b> seperti ID berurutan atau deret Fibonacci, dan memproses data besar per potong tanpa memuat semuanya ke memori. <code>yield*</code> mendelegasikan ke iterable lain, dan <code>next(nilai)</code> bisa mengirim nilai masuk ke dalam generator.</p>
+<p>ES2025 menambahkan <b>iterator helpers</b>: <code>.map</code>, <code>.filter</code>, <code>.take</code>, <code>.drop</code>, <code>.flatMap</code>, <code>.reduce</code>, <code>.toArray</code> langsung pada iterator, sehingga pipeline lazy bisa ditulis tanpa membuat array perantara. <b>Async generator</b> (<code>async function*</code>) dikonsumsi dengan <code>for await...of</code>, cocok untuk data berhalaman dari API atau stream.</p>
+<div class="tw"><table><caption>Metode object generator</caption><thead><tr><th>Metode</th><th>Efek</th></tr></thead><tbody><tr><td>next(v)</td><td>Lanjut sampai yield berikutnya; v menjadi hasil ekspresi yield</td></tr><tr><td>return(v)</td><td>Hentikan generator, done: true</td></tr><tr><td>throw(err)</td><td>Lempar error di posisi yield terakhir</td></tr><tr><td>[Symbol.iterator]()</td><td>Mengembalikan dirinya sendiri (generator adalah iterable)</td></tr><tr><td>.map/.filter/.take (ES2025)</td><td>Iterator helpers yang lazy</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>function* langkahCheckout() {
+  console.log(&#x27;  (generator mulai)&#x27;);
+  yield &#x27;keranjang&#x27;;
+  yield &#x27;alamat&#x27;;
+  const metode = yield &#x27;pembayaran&#x27;;      // menerima nilai dari next()
+  return `selesai dengan ${metode}`;
+}
+const g = langkahCheckout();
+console.log(&#x27;generator dibuat, belum jalan&#x27;);
+console.log(g.next(), g.next(), g.next());
+console.log(g.next(&#x27;QRIS&#x27;), g.next());
+
+function* idBerurutan(awalan) {
+  let n = 1;
+  while (true) yield `${awalan}-${String(n++).padStart(4, &#x27;0&#x27;)}`;   // tak terbatas, tetapi lazy
+}
+const idGen = idBerurutan(&#x27;INV&#x27;);
+console.log(idGen.next().value, idGen.next().value);
+
+function* fibonacci() { let [a, b] = [0, 1]; while (true) { yield a; [a, b] = [b, a + b]; } }
+console.log(fibonacci().filter(n =&gt; n % 2 === 0).take(6).toArray());   // iterator helpers ES2025
+
+function* gabung() { yield* [1, 2]; yield* &#x27;ab&#x27;; }
+console.log([...gabung()]);
+
+async function* ambilHalaman() {               // async generator: data berhalaman
+  const db = [[&#x27;a&#x27;, &#x27;b&#x27;], [&#x27;c&#x27;, &#x27;d&#x27;], [&#x27;e&#x27;]];
+  for (let hal = 0; hal &lt; db.length; hal++) {
+    await new Promise(r =&gt; setTimeout(r, 10));
+    yield db[hal];
+  }
+}
+for await (const halaman of ambilHalaman()) console.log(&#x27;halaman&#x27;, halaman);</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>generator dibuat, belum jalan
+  (generator mulai)
+{ value: &#x27;keranjang&#x27;, done: false } { value: &#x27;alamat&#x27;, done: false } { value: &#x27;pembayaran&#x27;, done: false }
+{ value: &#x27;selesai dengan QRIS&#x27;, done: true } { value: undefined, done: true }
+INV-0001 INV-0002
+[ 0, 2, 8, 34, 144, 610 ]
+[ 1, 2, &#x27;a&#x27;, &#x27;b&#x27; ]
+halaman [ &#x27;a&#x27;, &#x27;b&#x27; ]
+halaman [ &#x27;c&#x27;, &#x27;d&#x27; ]
+halaman [ &#x27;e&#x27; ]</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat generator <code>potong(arr, ukuran)</code> yang menghasilkan array per potongan (chunk). Uji dengan 7 angka dan ukuran 3.</p><details><summary>Petunjuk</summary><p>Loop i += ukuran, yield arr.slice(i, i + ukuran).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>function* potong(arr, ukuran) {
+  for (let i = 0; i &lt; arr.length; i += ukuran) yield arr.slice(i, i + ukuran);
+}
+for (const bagian of potong([1, 2, 3, 4, 5, 6, 7], 3)) console.log(bagian);</code></pre><div class="lbl">KELUARAN</div><pre><code>[ 1, 2, 3 ]
+[ 4, 5, 6 ]
+[ 7 ]</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>function* mengembalikan generator; isi jalan saat next().</li><li>yield menjeda dan menyerahkan nilai.</li><li>Lazy: bisa tak terbatas dan hemat memori.</li><li>yield* untuk delegasi; next(v) mengirim nilai masuk.</li><li>async function* + for await untuk data berhalaman.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Apa yang terjadi saat function* dipanggil?</summary><p class="ok">Jawaban: Mengembalikan object generator tanpa menjalankan isinya</p><p>Isi berjalan saat next() pertama.</p></details><details><summary>Kenapa generator tak terbatas tidak membuat program macet?</summary><p class="ok">Jawaban: Nilai dihitung hanya saat diminta (lazy)</p><p>Generator menjeda di setiap yield.</p></details>
+<a class="cta" href="/#js-15-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/protokol-iterable-dan-iterator">Protokol iterable dan iterator</a></p><p>Berikutnya: <a href="/belajar/js/modul-es-import-dan-export">Modul ES: import dan export</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

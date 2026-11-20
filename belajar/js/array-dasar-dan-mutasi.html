@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Array: dasar dan mutasi · JavaScript · Ruang Kode</title>
+<meta name="description" content="Array adalah koleksi berindeks mulai dari 0. Panjangnya dinamis dan isinya boleh campuran tipe, walau di praktik sebaiknya satu jenis. length selalu…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/array-dasar-dan-mutasi">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Array: dasar dan mutasi · JavaScript · Ruang Kode"><meta property="og:description" content="Array adalah koleksi berindeks mulai dari 0. Panjangnya dinamis dan isinya boleh campuran tipe, walau di praktik sebaiknya satu jenis. length selalu…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/array-dasar-dan-mutasi"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Array: dasar dan mutasi", "description": "Array adalah koleksi berindeks mulai dari 0. Panjangnya dinamis dan isinya boleh campuran tipe, walau di praktik sebaiknya satu jenis. length selalu…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/array-dasar-dan-mutasi", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "Array: dasar dan mutasi", "item": "https://ruang-kode-nine.vercel.app/belajar/js/array-dasar-dan-mutasi"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 5</nav>
+<div class="eyebrow">JavaScript · Modul 5 · Konsep &amp; kode</div><h1>Array: dasar dan mutasi</h1><a class="cta" href="/#js-5-1">Buka versi interaktif</a>
+<p><b>Array</b> adalah koleksi berindeks mulai dari 0. Panjangnya dinamis dan isinya boleh campuran tipe, walau di praktik sebaiknya satu jenis. <code>length</code> selalu indeks terbesar + 1. Gunakan <code>at(-1)</code> untuk elemen terakhir.</p>
+<p>Metode <b>mutating</b> mengubah array asli: <code>push/pop</code> (ujung belakang), <code>unshift/shift</code> (depan, lebih lambat karena menggeser indeks), <code>splice</code> (sisip/hapus di tengah), <code>sort</code>, <code>reverse</code>, <code>fill</code>. Di React dan Redux, state tidak boleh dimutasi, jadi pakai versi <b>non-mutating</b>: <code>slice</code>, <code>concat</code>, spread <code>[...a]</code>, serta ES2023 <code>toSorted</code>, <code>toReversed</code>, <code>toSpliced</code>, <code>with</code>.</p>
+<p>Pencarian: <code>includes</code> (ada atau tidak), <code>indexOf</code> (posisi), <code>find/findIndex</code> (dengan kondisi), <code>findLast</code>. Cek array kosong dengan <code>arr.length === 0</code>, karena array kosong tetap truthy.</p>
+<div class="tw"><table><caption>Metode mutating vs non-mutating</caption><thead><tr><th>Tujuan</th><th>Mengubah asli</th><th>Tidak mengubah asli</th></tr></thead><tbody><tr><td>Tambah di akhir</td><td>push(x)</td><td>[...a, x] atau concat</td></tr><tr><td>Hapus/sisip di tengah</td><td>splice(i, n, ...)</td><td>toSpliced(i, n, ...)</td></tr><tr><td>Urutkan</td><td>sort(fn)</td><td>toSorted(fn)</td></tr><tr><td>Balik</td><td>reverse()</td><td>toReversed()</td></tr><tr><td>Ganti satu indeks</td><td>a[i] = x</td><td>with(i, x)</td></tr><tr><td>Ambil potongan</td><td>-</td><td>slice(awal, akhir)</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>const antrean = [&#x27;Ani&#x27;, &#x27;Budi&#x27;];
+antrean.push(&#x27;Citra&#x27;);               // tambah di belakang
+antrean.unshift(&#x27;Dodi&#x27;);             // tambah di depan
+console.log(antrean, antrean.length, antrean.at(-1));
+console.log(&#x27;dilayani:&#x27;, antrean.shift(), &#x27;| sisa:&#x27;, antrean);
+antrean.splice(1, 1, &#x27;Eko&#x27;, &#x27;Fani&#x27;); // dari indeks 1 hapus 1, sisipkan 2
+console.log(antrean);
+
+const nilai = [70, 95, 82];
+const urut = nilai.toSorted((a, b) =&gt; b - a);   // tidak mengubah asli
+const ganti = nilai.with(0, 75);
+console.log(nilai, urut, ganti);
+console.log(nilai.includes(95), nilai.indexOf(82), nilai.find(n =&gt; n &gt; 80), nilai.findLast(n =&gt; n &gt; 80));
+console.log(Array.from({ length: 5 }, (_, i) =&gt; i * i), Array.of(7), new Array(3).fill(0));
+console.log([[1, 2], [3, [4]]].flat(Infinity), Boolean([]));</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>[ &#x27;Dodi&#x27;, &#x27;Ani&#x27;, &#x27;Budi&#x27;, &#x27;Citra&#x27; ] 4 Citra
+dilayani: Dodi | sisa: [ &#x27;Ani&#x27;, &#x27;Budi&#x27;, &#x27;Citra&#x27; ]
+[ &#x27;Ani&#x27;, &#x27;Eko&#x27;, &#x27;Fani&#x27;, &#x27;Citra&#x27; ]
+[ 70, 95, 82 ] [ 95, 82, 70 ] [ 75, 95, 82 ]
+true 2 95 82
+[ 0, 1, 4, 9, 16 ] [ 7 ] [ 0, 0, 0 ]
+[ 1, 2, 3, 4 ] true</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Daftar tugas <code>["desain", "coding", "testing"]</code>: sisipkan "review" sebelum "testing", hapus "desain", dan tampilkan hasil akhirnya tanpa memakai push.</p><details><summary>Petunjuk</summary><p>splice(indeks, jumlahHapus, ...sisipan).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>const tugas = [&#x27;desain&#x27;, &#x27;coding&#x27;, &#x27;testing&#x27;];
+tugas.splice(tugas.indexOf(&#x27;testing&#x27;), 0, &#x27;review&#x27;);
+tugas.splice(tugas.indexOf(&#x27;desain&#x27;), 1);
+console.log(tugas);</code></pre><div class="lbl">KELUARAN</div><pre><code>[ &#x27;coding&#x27;, &#x27;review&#x27;, &#x27;testing&#x27; ]</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Indeks mulai 0; at(-1) untuk elemen terakhir.</li><li>Bedakan metode mutating dan non-mutating.</li><li>toSorted, toReversed, toSpliced, with (ES2023) untuk state immutable.</li><li>Array kosong itu truthy; cek length.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Metode yang TIDAK mengubah array asli?</summary><p class="ok">Jawaban: slice</p><p>slice mengembalikan salinan potongan.</p></details><details><summary>Cara aman mengurutkan state array di React?</summary><p class="ok">Jawaban: state.toSorted(fn) atau [...state].sort(fn)</p><p>Jangan mutasi state.</p></details>
+<a class="cta" href="/#js-5-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/koersi-implisit">Koersi implisit</a></p><p>Berikutnya: <a href="/belajar/js/array-map-filter-reduce-dan-kawan-kawan">Array: map, filter, reduce, dan kawan-kawan</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

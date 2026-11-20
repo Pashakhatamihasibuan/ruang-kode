@@ -102,7 +102,7 @@ const kecil=s=>s?s.charAt(0).toLowerCase()+s.slice(1):s;
 const titik=s=>/[.!?]$/.test(s)?s:s+'.';
 function analogi(title,mod){if(/^(Mini|Besar) \d+:/.test(title))return '';for(const [rx,t] of ANALOGI)if(rx.test(title))return t;for(const [rx,t] of ANALOGI)if(rx.test(mod))return t;return ''}
 window.sekilasHTML=function(x,y,points){const l=y.l,m=y.m||x.m;if(!m)return '';
-  const t=strip(x.title),md=strip(m.d),an=analogi(t,strip(m.t));
+  const t=strip(x.title),md=strip(m.d),an=l&&l.an!=null?l.an:analogi(t,strip(m.t));
   const pos=x.li===0?'Pelajaran ini membuka modul':'Pelajaran ini bagian dari modul';
   let p=`${an?an+' ':`Pelajaran <b>${esc(t)}</b> dijelaskan dengan bahasa sederhana: apa maksudnya, kenapa penting, dan bagaimana menerapkannya. `}${pos} <b>${esc(strip(m.t))}</b>.${md?' '+esc(titik(md.charAt(0).toUpperCase()+md.slice(1))):''}`;
   const pts=(points||[]).map(v=>String(v||'').trim()).filter(Boolean).slice(0,4);

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cara menjalankan JavaScript · JavaScript · Ruang Kode</title>
+<meta name="description" content="1. Konsol browser. Tekan F12 (atau Ctrl+Shift+J / Cmd+Option+J), buka tab Console, ketik kode, lalu Enter. Cocok untuk mencoba potongan kecil dan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/cara-menjalankan-javascript">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Cara menjalankan JavaScript · JavaScript · Ruang Kode"><meta property="og:description" content="1. Konsol browser. Tekan F12 (atau Ctrl+Shift+J / Cmd+Option+J), buka tab Console, ketik kode, lalu Enter. Cocok untuk mencoba potongan kecil dan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/cara-menjalankan-javascript"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Cara menjalankan JavaScript", "description": "1. Konsol browser. Tekan F12 (atau Ctrl+Shift+J / Cmd+Option+J), buka tab Console, ketik kode, lalu Enter. Cocok untuk mencoba potongan kecil dan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/cara-menjalankan-javascript", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "Cara menjalankan JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js/cara-menjalankan-javascript"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 1</nav>
+<div class="eyebrow">JavaScript · Modul 1 · Konsep &amp; kode</div><h1>Cara menjalankan JavaScript</h1><a class="cta" href="/#js-1-3">Buka versi interaktif</a>
+<p><b>1. Konsol browser.</b> Tekan F12 (atau Ctrl+Shift+J / Cmd+Option+J), buka tab <b>Console</b>, ketik kode, lalu Enter. Cocok untuk mencoba potongan kecil dan memeriksa halaman yang sedang terbuka.</p>
+<p><b>2. Di halaman HTML.</b> Tulis kode di file terpisah dan muat dengan tag script di akhir body, atau di head dengan atribut <code>defer</code> agar HTML selesai dibaca dulu. Atribut <code>type="module"</code> mengaktifkan import/export dan strict mode, serta otomatis bersifat defer.</p>
+<p><b>3. Node.js.</b> Pasang Node versi LTS dari nodejs.org (atau lewat nvm/fnm), lalu jalankan <code>node app.js</code>. Ketik <code>node</code> saja untuk masuk <b>REPL</b> (Read-Eval-Print Loop). File berakhiran <code>.mjs</code> atau proyek dengan <code>"type": "module"</code> di package.json memakai modul ES.</p>
+<p><b>4. Playground online</b> seperti CodePen, JSFiddle, StackBlitz, atau tombol <b>Jalankan</b> di Ruang Kode. Di dunia kerja, editor yang umum adalah VS Code dengan ekstensi ESLint dan Prettier.</p>
+<div class="tw"><table><caption>Cara memuat skrip di HTML</caption><thead><tr><th>Cara</th><th>Kapan dijalankan</th><th>Urutan antar skrip</th></tr></thead><tbody><tr><td>script biasa di head</td><td>Segera, menghentikan parsing HTML</td><td>Sesuai urutan</td></tr><tr><td>script di akhir body</td><td>Setelah HTML di atasnya terbaca</td><td>Sesuai urutan</td></tr><tr><td>defer</td><td>Setelah HTML selesai diparse</td><td>Sesuai urutan</td></tr><tr><td>async</td><td>Begitu selesai diunduh</td><td>Tidak dijamin (cocok untuk analytics)</td></tr><tr><td>type=&quot;module&quot;</td><td>Seperti defer, mode strict, mendukung import</td><td>Sesuai urutan</td></tr></tbody></table></div>
+<div class="lbl">HTML</div><pre><code>&lt;!-- index.html --&gt;
+&lt;!doctype html&gt;
+&lt;html lang=&quot;id&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;utf-8&quot;&gt;
+  &lt;title&gt;Belajar JS&lt;/title&gt;
+  &lt;script src=&quot;app.js&quot; defer&gt;&lt;/script&gt;        &lt;!-- skrip biasa, jalan setelah HTML siap --&gt;
+  &lt;script type=&quot;module&quot; src=&quot;main.js&quot;&gt;&lt;/script&gt; &lt;!-- modul ES --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1 id=&quot;judul&quot;&gt;Halo&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+// app.js
+document.querySelector(&#x27;#judul&#x27;).textContent = &#x27;Halo dari JavaScript!&#x27;;
+console.log(&#x27;Halaman siap&#x27;);
+
+# terminal
+$ node --version
+v22.22.0
+$ node app-server.js
+$ node                # masuk REPL, keluar dengan .exit atau Ctrl+D
+&gt; 2 ** 10
+1024</code></pre>
+<h2>Poin penting</h2><ul><li>Konsol DevTools untuk eksperimen cepat.</li><li>Di HTML: pakai defer atau type="module".</li><li>Node.js menjalankan JS di terminal; REPL untuk mencoba.</li><li>VS Code + ESLint + Prettier adalah setelan umum.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Atribut script yang menunda eksekusi sampai HTML selesai diparse dan tetap menjaga urutan?</summary><p class="ok">Jawaban: defer</p><p>async tidak menjamin urutan.</p></details><details><summary>Perintah untuk menjalankan file app.js dengan Node?</summary><p class="ok">Jawaban: node app.js</p><p>node diikuti nama file.</p></details>
+<a class="cta" href="/#js-1-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/sejarah-dan-versi-ecmascript">Sejarah dan versi ECMAScript</a></p><p>Berikutnya: <a href="/belajar/js/var-let-dan-const">var, let, dan const</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

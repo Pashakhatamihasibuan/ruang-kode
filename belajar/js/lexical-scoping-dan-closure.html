@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lexical scoping dan closure · JavaScript · Ruang Kode</title>
+<meta name="description" content="Lexical scoping berarti scope ditentukan oleh posisi kode saat ditulis, bukan saat dipanggil. Fungsi di dalam fungsi lain bisa mengakses variabel fungsi…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/js/lexical-scoping-dan-closure">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Lexical scoping dan closure · JavaScript · Ruang Kode"><meta property="og:description" content="Lexical scoping berarti scope ditentukan oleh posisi kode saat ditulis, bukan saat dipanggil. Fungsi di dalam fungsi lain bisa mengakses variabel fungsi…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/js/lexical-scoping-dan-closure"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Lexical scoping dan closure", "description": "Lexical scoping berarti scope ditentukan oleh posisi kode saat ditulis, bukan saat dipanggil. Fungsi di dalam fungsi lain bisa mengakses variabel fungsi…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/js/lexical-scoping-dan-closure", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "JavaScript", "url": "https://ruang-kode-nine.vercel.app/belajar/js"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "JavaScript", "item": "https://ruang-kode-nine.vercel.app/belajar/js"}, {"@type": "ListItem", "position": 3, "name": "Lexical scoping dan closure", "item": "https://ruang-kode-nine.vercel.app/belajar/js/lexical-scoping-dan-closure"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/js">JavaScript</a> / Modul 10</nav>
+<div class="eyebrow">JavaScript · Modul 10 · Konsep &amp; kode</div><h1>Lexical scoping dan closure</h1><a class="cta" href="/#js-10-4">Buka versi interaktif</a>
+<p><b>Lexical scoping</b> berarti scope ditentukan oleh <b>posisi kode saat ditulis</b>, bukan saat dipanggil. Fungsi di dalam fungsi lain bisa mengakses variabel fungsi luarnya.</p>
+<p><b>Closure</b> adalah fungsi beserta referensi ke lingkungan leksikal tempat ia dibuat. Fungsi dalam tetap "mengingat" variabel luar <b>walaupun fungsi luar sudah selesai</b>. Ini dasar dari banyak pola: data privat, <b>function factory</b>, memoization, <b>debounce/throttle</b>, partial application, serta hook React (useState dan useEffect bergantung pada closure).</p>
+<p>Jebakan klasik: <code>var</code> di loop dengan callback asinkron membuat semua callback berbagi satu variabel. <code>let</code> menyelesaikannya karena setiap putaran punya binding baru. Jebakan lain di React adalah <b>stale closure</b>: callback menangkap nilai state lama. Closure juga menahan variabel di memori selama fungsinya masih dirujuk, jadi lepaskan referensi (misalnya event listener) jika tidak dipakai lagi.</p>
+<div class="tw"><table><caption>Pola yang memakai closure</caption><thead><tr><th>Pola</th><th>Contoh nyata</th></tr></thead><tbody><tr><td>Data privat</td><td>Penghitung, state modul</td></tr><tr><td>Function factory</td><td>buatPengali, buatLogger(prefix)</td></tr><tr><td>Memoization</td><td>Cache hasil fungsi mahal</td></tr><tr><td>Debounce/throttle</td><td>Pencarian saat mengetik, scroll handler</td></tr><tr><td>once</td><td>Inisialisasi SDK sekali saja</td></tr><tr><td>Hook React</td><td>useState, useEffect, useCallback</td></tr></tbody></table></div>
+<div class="lbl">JAVASCRIPT</div><pre><code>function buatPenghitung(awal = 0) {
+  let n = awal;                         // ditangkap closure, privat
+  return {
+    tambah() { return ++n; },
+    reset() { n = awal; return n; },
+  };
+}
+const a = buatPenghitung(), b = buatPenghitung(100);
+a.tambah(); a.tambah();
+console.log(a.tambah(), b.tambah(), a.reset());
+
+const buatPengali = faktor =&gt; angka =&gt; angka * faktor;   // function factory
+const dobel = buatPengali(2), tripel = buatPengali(3);
+console.log(dobel(7), tripel(7));
+
+function buatFormatRp(prefix) {
+  const fmt = new Intl.NumberFormat(&#x27;id-ID&#x27;);
+  return n =&gt; `${prefix}${fmt.format(n)}`;
+}
+console.log(buatFormatRp(&#x27;Rp&#x27;)(2500000));
+
+const hasilVar = [], hasilLet = [];
+for (var i = 0; i &lt; 3; i++) hasilVar.push(() =&gt; i);
+for (let j = 0; j &lt; 3; j++) hasilLet.push(() =&gt; j);
+console.log(hasilVar.map(f =&gt; f()), hasilLet.map(f =&gt; f()));
+
+function sekali(fn) {
+  let sudah = false, hasil;
+  return (...args) =&gt; (sudah ? hasil : ((sudah = true), (hasil = fn(...args))));
+}
+const inisialisasi = sekali(() =&gt; { console.log(&#x27;koneksi dibuat&#x27;); return &#x27;db&#x27;; });
+console.log(inisialisasi(), inisialisasi());</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>3 101 0
+14 21
+Rp2.500.000
+[ 3, 3, 3 ] [ 0, 1, 2 ]
+koneksi dibuat
+db db</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Buat <code>buatBatas(maks)</code> yang mengembalikan fungsi <code>coba()</code>: setiap panggilan mengembalikan "percobaan ke-n" sampai maks, lalu "terkunci". Uji dengan maks 3 dan panggil 4 kali.</p><details><summary>Petunjuk</summary><p>Simpan hitungan di closure.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">JAVASCRIPT</div><pre><code>function buatBatas(maks) {
+  let n = 0;
+  return function coba() {
+    if (n &gt;= maks) return &#x27;terkunci&#x27;;
+    n++;
+    return `percobaan ke-${n}`;
+  };
+}
+const login = buatBatas(3);
+for (let i = 0; i &lt; 4; i++) console.log(login());</code></pre><div class="lbl">KELUARAN</div><pre><code>percobaan ke-1
+percobaan ke-2
+percobaan ke-3
+terkunci</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Scope ditentukan saat kode ditulis (lexical).</li><li>Closure mengingat variabel luar setelah fungsi luar selesai.</li><li>Dasar data privat, factory, debounce, hook React.</li><li>let di loop mencegah bug closure var.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Output: for (var i=0;i&amp;lt;3;i++) setTimeout(()=&gt;console.log(i))?</summary><p class="ok">Jawaban: 3 3 3</p><p>Semua callback berbagi satu var i yang akhirnya 3.</p></details><details><summary>Apa yang membuat variabel n di buatPenghitung tetap ada?</summary><p class="ok">Jawaban: Closure dari fungsi yang dikembalikan</p><p>Fungsi dalam masih merujuk lingkungan luarnya.</p></details>
+<a class="cta" href="/#js-10-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/js/call-stack-dan-rekursi">Call stack dan rekursi</a></p><p>Berikutnya: <a href="/belajar/js/built-in-functions-global">Built-in functions global</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>
