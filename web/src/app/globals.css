@@ -434,12 +434,10 @@ a.card:active { transform: translate(4px, 4px); }
 .hero-art .t1 { background: var(--red); color: var(--on-red); }
 .hero-art .t2 { background: var(--yellow); }
 .hero-art .t3 { background: var(--blue); color: #fff; }
-.hero-art .t4 { background: var(--surface); color: var(--ink); }
 .hero-art .tile::after { content: ""; position: absolute; pointer-events: none; }
 .hero-art .t1::after { width: 120px; height: 120px; border-radius: 50%; background: #121212; opacity: 0.14; right: -30px; top: -30px; }
 .hero-art .t2::after { width: 0; height: 0; border-left: 70px solid transparent; border-bottom: 120px solid #121212; opacity: 0.14; right: 14px; top: -8px; }
 .hero-art .t3::after { width: 90px; height: 90px; background: #fff; opacity: 0.16; right: -18px; top: -18px; transform: rotate(18deg); }
-.hero-art .t4::after { width: 70px; height: 70px; border-radius: 50%; background: var(--red); right: 18px; top: 18px; box-shadow: 0 0 0 2px var(--edge); }
 :root[data-theme="dark"] .hero-art .t3 { color: #0e0e0e; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .hero-art .t3 { color: #0e0e0e; } }
 .hero h1 em { color: var(--red); }
@@ -447,3 +445,14 @@ a.card:active { transform: translate(4px, 4px); }
 
 /* aksen garis tiga warna di bawah header */
 .top-in { border-bottom: 0; }
+.hero-art .t3 { grid-column: 1 / -1; }
+
+/* tombol berderet dan konfirmasi hapus */
+.row-btn { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.stack-sm > * + * { margin-top: 12px; }
+.btn.danger { --b: var(--bad); --c: #fff; }
+:root[data-theme="dark"] .btn.danger { --c: #0e0e0e; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn.danger { --c: #0e0e0e; } }
+.tcard .row-btn { margin-top: 16px; }
+.tcard h2 a { color: inherit; text-decoration: none; }
+.tcard h2 a:hover { text-decoration: underline; }
