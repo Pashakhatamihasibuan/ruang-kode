@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Metrik bisnis per industri: keuangan, pemasaran, kesehatan, logistik · Data Science &amp; AI · Ruang Kode</title>
+<meta name="description" content="Model dinilai tim data dengan AUC atau RMSE, tetapi dinilai manajemen dengan metrik bisnis. Tugas data scientist adalah menjembatani keduanya. Setiap…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsci/metrik-bisnis-per-industri-keuangan-pemasaran-kesehatan-logistik">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Metrik bisnis per industri: keuangan, pemasaran, kesehatan, logistik · Data Science &amp; AI · Ruang Kode"><meta property="og:description" content="Model dinilai tim data dengan AUC atau RMSE, tetapi dinilai manajemen dengan metrik bisnis. Tugas data scientist adalah menjembatani keduanya. Setiap…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsci/metrik-bisnis-per-industri-keuangan-pemasaran-kesehatan-logistik"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Metrik bisnis per industri: keuangan, pemasaran, kesehatan, logistik", "description": "Model dinilai tim data dengan AUC atau RMSE, tetapi dinilai manajemen dengan metrik bisnis. Tugas data scientist adalah menjembatani keduanya. Setiap…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci/metrik-bisnis-per-industri-keuangan-pemasaran-kesehatan-logistik", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Science & AI", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Science & AI", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, {"@type": "ListItem", "position": 3, "name": "Metrik bisnis per industri: keuangan, pemasaran, kesehatan, logistik", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci/metrik-bisnis-per-industri-keuangan-pemasaran-kesehatan-logistik"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsci">Data Science &amp; AI</a> / Modul 12</nav>
+<div class="eyebrow">Data Science &amp; AI · Modul 12 · Konsep &amp; kode</div><h1>Metrik bisnis per industri: keuangan, pemasaran, kesehatan, logistik</h1><a class="cta" href="/#dsci-12-1">Buka versi interaktif</a>
+<p>Model dinilai tim data dengan AUC atau RMSE, tetapi dinilai manajemen dengan <b>metrik bisnis</b>. Tugas data scientist adalah menjembatani keduanya. Setiap industri punya metrik utama yang berbeda, jadi kenali bahasanya sebelum presentasi.</p>
+<p><b>Keuangan</b>: approval rate, bad rate / NPL (porsi kredit macet), dan <b>expected loss = PD × LGD × EAD</b>. <b>Pemasaran dan penjualan</b>: conversion rate, CAC (biaya akuisisi per pelanggan), ROAS (pendapatan per rupiah iklan), dan LTV (nilai pelanggan seumur hidup); aturan praktis yang sering dipakai: LTV/CAC ≥ 3. <b>Kesehatan</b>: sensitivitas (pasien sakit yang terdeteksi), spesifisitas, dan PPV; kesalahan melewatkan pasien sakit biasanya jauh lebih mahal. <b>Logistik</b>: on-time delivery rate, rata-rata waktu antar, biaya per pengiriman, dan MAPE untuk peramalan permintaan.</p>
+<p>Contoh di bawah menghitung semua metrik itu dari angka kecil yang mudah diikuti. Biasakan setiap laporan model diakhiri satu kalimat seperti "model ini menurunkan bad rate dari 6,1% menjadi 4,3% pada approval rate yang sama".</p>
+<div class="tw"><table><caption>Metrik utama per industri</caption><thead><tr><th>Industri</th><th>Metrik</th><th>Yang ditanyakan manajemen</th></tr></thead><tbody><tr><td>Keuangan</td><td>Approval rate, bad rate/NPL, expected loss</td><td>Berapa banyak yang bisa disetujui tanpa menambah kredit macet?</td></tr><tr><td>Pemasaran &amp; penjualan</td><td>Konversi, CAC, ROAS, LTV</td><td>Apakah setiap rupiah iklan kembali lebih banyak?</td></tr><tr><td>Kesehatan</td><td>Sensitivitas, spesifisitas, PPV</td><td>Berapa pasien berisiko yang terlewat?</td></tr><tr><td>Logistik &amp; transportasi</td><td>On-time rate, waktu antar, biaya/kiriman, MAPE</td><td>Apakah paket tiba tepat waktu dengan biaya wajar?</td></tr></tbody></table></div>
+<div class="lbl">PYTHON</div><pre><code>import numpy as np
+
+# Keuangan: 1.000 pengajuan pinjaman
+disetujui, macet = 720, 31
+pd_, lgd, ead = 0.045, 0.6, 8_000_000
+print(f&#x27;[Keuangan] approval {disetujui / 1000:.0%}, bad rate {macet / disetujui:.1%}, expected loss/pinjaman Rp{pd_ * lgd * ead:,.0f}&#x27;)
+
+# Pemasaran
+iklan, klik, beli, pendapatan = 25_000_000, 18_000, 540, 97_200_000
+margin_bln, umur_bln = 38_000, 14
+cac = iklan / beli
+ltv = margin_bln * umur_bln
+print(f&#x27;[Pemasaran] konversi {beli / klik:.1%}, CAC Rp{cac:,.0f}, ROAS {pendapatan / iklan:.2f}x, LTV Rp{ltv:,.0f}, LTV/CAC {ltv / cac:.1f}&#x27;)
+
+# Kesehatan: skrining 2.000 pasien
+tp, fn, fp, tn = 86, 14, 190, 1710
+print(f&#x27;[Kesehatan] sensitivitas {tp / (tp + fn):.0%}, spesifisitas {tn / (tn + fp):.0%}, PPV {tp / (tp + fp):.0%}&#x27;)
+
+# Logistik
+tepat, total, biaya = 4_620, 5_000, 61_500_000
+aktual = np.array([120, 135, 150, 128, 160])
+ramalan = np.array([110, 140, 138, 130, 172])
+mape = np.mean(np.abs(aktual - ramalan) / aktual)
+print(f&#x27;[Logistik] on-time {tepat / total:.1%}, biaya/kiriman Rp{biaya / total:,.0f}, MAPE ramalan {mape:.1%}&#x27;)</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>[Keuangan] approval 72%, bad rate 4.3%, expected loss/pinjaman Rp216,000
+[Pemasaran] konversi 3.0%, CAC Rp46,296, ROAS 3.89x, LTV Rp532,000, LTV/CAC 11.5
+[Kesehatan] sensitivitas 86%, spesifisitas 90%, PPV 31%
+[Logistik] on-time 92.4%, biaya/kiriman Rp12,300, MAPE ramalan 5.8%</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Biaya iklan Rp12 juta menghasilkan 300 pelanggan baru. Margin per pelanggan Rp25.000 per bulan dan rata-rata bertahan 10 bulan. Hitung CAC, LTV, dan rasio LTV/CAC.</p><details><summary>Petunjuk</summary><p>CAC = biaya / pelanggan; LTV = margin × umur.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>cac = 12_000_000 / 300
+ltv = 25_000 * 10
+print(cac, ltv, round(ltv / cac, 2))</code></pre><div class="lbl">KELUARAN</div><pre><code>40000.0 250000 6.25</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Model dinilai manajemen lewat metrik bisnis.</li><li>Expected loss = PD × LGD × EAD.</li><li>LTV/CAC dan ROAS untuk pemasaran.</li><li>Sensitivitas penting di kesehatan; on-time rate dan MAPE di logistik.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>PD 5%, LGD 60%, EAD Rp10 juta. Expected loss per pinjaman?</summary><p class="ok">Jawaban: Rp300.000</p><p>0,05 × 0,6 × 10 juta.</p></details><details><summary>Dalam skrining penyakit serius, metrik yang paling dijaga biasanya?</summary><p class="ok">Jawaban: Sensitivitas (recall)</p><p>Melewatkan pasien sakit paling mahal.</p></details>
+<a class="cta" href="/#dsci-12-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsci/proyek-memprediksi-pelanggan-yang-akan-churn">Proyek: memprediksi pelanggan yang akan churn</a></p><p>Berikutnya: <a href="/belajar/dsci/kasus-churn-dari-peluang-ke-rupiah">Kasus churn: dari peluang ke rupiah</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Menyaring dan menggabungkan: isin, anti-join, apply, dan map · Data Science &amp; AI · Ruang Kode</title>
+<meta name="description" content="loc memilih dengan label dan kondisi, iloc dengan posisi angka. Beberapa kondisi digabung dengan &amp; (dan) serta | (atau), masing-masing di dalam tanda…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsci/menyaring-dan-menggabungkan-isin-anti-join-apply-dan-map">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Menyaring dan menggabungkan: isin, anti-join, apply, dan map · Data Science &amp; AI · Ruang Kode"><meta property="og:description" content="loc memilih dengan label dan kondisi, iloc dengan posisi angka. Beberapa kondisi digabung dengan &amp; (dan) serta | (atau), masing-masing di dalam tanda…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsci/menyaring-dan-menggabungkan-isin-anti-join-apply-dan-map"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Menyaring dan menggabungkan: isin, anti-join, apply, dan map", "description": "loc memilih dengan label dan kondisi, iloc dengan posisi angka. Beberapa kondisi digabung dengan & (dan) serta | (atau), masing-masing di dalam tanda…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci/menyaring-dan-menggabungkan-isin-anti-join-apply-dan-map", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Science & AI", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Science & AI", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, {"@type": "ListItem", "position": 3, "name": "Menyaring dan menggabungkan: isin, anti-join, apply, dan map", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci/menyaring-dan-menggabungkan-isin-anti-join-apply-dan-map"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsci">Data Science &amp; AI</a> / Modul 1</nav>
+<div class="eyebrow">Data Science &amp; AI · Modul 1 · Konsep &amp; kode</div><h1>Menyaring dan menggabungkan: isin, anti-join, apply, dan map</h1><a class="cta" href="/#dsci-1-6">Buka versi interaktif</a>
+<p><code>loc</code> memilih dengan label dan kondisi, <code>iloc</code> dengan posisi angka. Beberapa kondisi digabung dengan <code>&amp;</code> (dan) serta <code>|</code> (atau), masing-masing di dalam tanda kurung. Untuk "nilainya salah satu dari daftar ini", pakai <code>isin([...])</code> daripada menulis banyak <code>|</code>.</p>
+<p><code>merge</code> menggabungkan tabel seperti JOIN di SQL: <code>inner</code> (hanya yang cocok di kedua tabel), <code>left</code> (semua baris kiri), <code>right</code>, dan <code>outer</code>. Pertanyaan "pelanggan mana yang belum pernah memesan?" dijawab dengan <b>anti-join</b>: left join dengan <code>indicator=True</code>, lalu ambil baris yang hanya ada di kiri. <code>concat</code> menumpuk tabel dengan kolom yang sama, misalnya data Januari dan Februari.</p>
+<p><code>apply</code> menjalankan fungsi per baris atau per kolom; <code>Series.map</code> menerjemahkan nilai dengan dict atau fungsi, dan <code>DataFrame.map</code> (pengganti <code>applymap</code> yang sudah usang sejak pandas 2.1) menjalankan fungsi ke setiap sel. Gunakan seperlunya: operasi vektor seperti <code>df["a"] * df["b"]</code> jauh lebih cepat daripada <code>apply</code> baris demi baris.</p>
+<div class="lbl">PYTHON</div><pre><code>import pandas as pd
+
+pelanggan = pd.DataFrame({
+    &#x27;id_pelanggan&#x27;: [101, 102, 103, 104, 105, 106, 107],
+    &#x27;nama&#x27;: [&#x27;Ayu&#x27;, &#x27;Bima&#x27;, &#x27;Citra&#x27;, &#x27;Dodi&#x27;, &#x27;Eka&#x27;, &#x27;Fajar&#x27;, &#x27;Gita&#x27;],
+    &#x27;kota&#x27;: [&#x27;Medan&#x27;, &#x27;Bandung&#x27;, &#x27;Medan&#x27;, &#x27;Jakarta&#x27;, &#x27;Bandung&#x27;, &#x27;Jakarta&#x27;, &#x27;Medan&#x27;],
+})
+pesanan = pd.DataFrame({
+    &#x27;id_pesanan&#x27;: [1, 2, 3, 4, 5, 6, 7, 8],
+    &#x27;id_pelanggan&#x27;: [101, 103, 101, 104, 105, 101, 104, 103],
+    &#x27;nilai&#x27;: [120_000, 85_000, 64_000, 310_000, 45_000, 99_000, 150_000, 72_000],
+    &#x27;status&#x27;: [&#x27;selesai&#x27;, &#x27;selesai&#x27;, &#x27;batal&#x27;, &#x27;selesai&#x27;, &#x27;selesai&#x27;, &#x27;selesai&#x27;, &#x27;retur&#x27;, &#x27;selesai&#x27;],
+})
+
+# 1) isin: pesanan yang bermasalah
+print(pesanan[pesanan[&#x27;status&#x27;].isin([&#x27;batal&#x27;, &#x27;retur&#x27;])])
+
+# 2) anti-join: pelanggan yang belum pernah memesan
+gabung = pelanggan.merge(pesanan, on=&#x27;id_pelanggan&#x27;, how=&#x27;left&#x27;, indicator=True)
+belum = gabung.loc[gabung[&#x27;_merge&#x27;] == &#x27;left_only&#x27;, [&#x27;id_pelanggan&#x27;, &#x27;nama&#x27;, &#x27;kota&#x27;]]
+print(&#x27;Belum pernah memesan:\n&#x27;, belum.to_string(index=False))
+
+# 3) total belanja per kota (hanya pesanan selesai)
+selesai = pesanan[pesanan[&#x27;status&#x27;] == &#x27;selesai&#x27;]
+per_kota = (selesai.merge(pelanggan, on=&#x27;id_pelanggan&#x27;, how=&#x27;inner&#x27;)
+                   .groupby(&#x27;kota&#x27;, as_index=False)[&#x27;nilai&#x27;].sum()
+                   .sort_values(&#x27;nilai&#x27;, ascending=False))
+print(per_kota.to_string(index=False))
+
+# 4) map dan apply
+pesanan[&#x27;status_id&#x27;] = pesanan[&#x27;status&#x27;].map({&#x27;selesai&#x27;: 1, &#x27;batal&#x27;: 0, &#x27;retur&#x27;: 0})
+pesanan[&#x27;ukuran&#x27;] = pesanan[&#x27;nilai&#x27;].apply(lambda x: &#x27;besar&#x27; if x &gt;= 100_000 else &#x27;kecil&#x27;)
+print(pesanan[[&#x27;nilai&#x27;, &#x27;status_id&#x27;, &#x27;ukuran&#x27;]].head(4))
+print(pesanan[[&#x27;nilai&#x27;]].head(3).map(lambda x: f&#x27;Rp{x:,}&#x27;))</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>   id_pesanan  id_pelanggan   nilai status
+2           3           101   64000  batal
+6           7           104  150000  retur
+Belum pernah memesan:
+  id_pelanggan  nama    kota
+          102  Bima Bandung
+          106 Fajar Jakarta
+          107  Gita   Medan
+   kota  nilai
+  Medan 376000
+Jakarta 310000
+Bandung  45000
+    nilai  status_id ukuran
+0  120000          1  besar
+1   85000          1  kecil
+2   64000          0  kecil
+3  310000          1  besar
+       nilai
+0  Rp120,000
+1   Rp85,000
+2   Rp64,000</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Dengan tabel <code>pelanggan</code> dan <code>pesanan</code> di atas, hitung jumlah pesanan (semua status) per nama pelanggan, termasuk yang 0 pesanan.</p><details><summary>Petunjuk</summary><p>Left join, lalu groupby nama dan hitung id_pesanan dengan count (NaN tidak dihitung).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import pandas as pd
+
+pelanggan = pd.DataFrame({
+    &#x27;id_pelanggan&#x27;: [101, 102, 103, 104, 105, 106, 107],
+    &#x27;nama&#x27;: [&#x27;Ayu&#x27;, &#x27;Bima&#x27;, &#x27;Citra&#x27;, &#x27;Dodi&#x27;, &#x27;Eka&#x27;, &#x27;Fajar&#x27;, &#x27;Gita&#x27;],
+    &#x27;kota&#x27;: [&#x27;Medan&#x27;, &#x27;Bandung&#x27;, &#x27;Medan&#x27;, &#x27;Jakarta&#x27;, &#x27;Bandung&#x27;, &#x27;Jakarta&#x27;, &#x27;Medan&#x27;],
+})
+pesanan = pd.DataFrame({
+    &#x27;id_pesanan&#x27;: [1, 2, 3, 4, 5, 6, 7, 8],
+    &#x27;id_pelanggan&#x27;: [101, 103, 101, 104, 105, 101, 104, 103],
+    &#x27;nilai&#x27;: [120_000, 85_000, 64_000, 310_000, 45_000, 99_000, 150_000, 72_000],
+    &#x27;status&#x27;: [&#x27;selesai&#x27;, &#x27;selesai&#x27;, &#x27;batal&#x27;, &#x27;selesai&#x27;, &#x27;selesai&#x27;, &#x27;selesai&#x27;, &#x27;retur&#x27;, &#x27;selesai&#x27;],
+})
+g = pelanggan.merge(pesanan, on=&#x27;id_pelanggan&#x27;, how=&#x27;left&#x27;)
+print(g.groupby(&#x27;nama&#x27;)[&#x27;id_pesanan&#x27;].count().sort_values(ascending=False))</code></pre><div class="lbl">KELUARAN</div><pre><code>nama
+Ayu      3
+Citra    2
+Dodi     2
+Eka      1
+Bima     0
+Fajar    0
+Gita     0
+Name: id_pesanan, dtype: int64</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>isin untuk banyak nilai sekaligus.</li><li>Anti-join: left join + indicator=True, ambil left_only.</li><li>merge = JOIN, concat = menumpuk.</li><li>map untuk menerjemahkan nilai; apply secukupnya.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Cara pandas mencari pelanggan yang tidak punya pesanan sama sekali?</summary><p class="ok">Jawaban: Left join dengan indicator=True lalu ambil &#x27;_merge&#x27; == &#x27;left_only&#x27;</p><p>Anti-join.</p></details><details><summary>Kenapa hasil per kota memakai inner join setelah menyaring pesanan selesai?</summary><p class="ok">Jawaban: Hanya pesanan yang punya pelanggan dan berstatus selesai yang dihitung</p><p>Inner join hanya menyimpan pasangan yang cocok.</p></details>
+<a class="cta" href="/#dsci-1-6">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsci/pandas-sehari-hari-membuat-menyimpan-mengurutkan-dan-mengubah-tipe">pandas sehari-hari: membuat, menyimpan, mengurutkan, dan mengubah tipe</a></p><p>Berikutnya: <a href="/belajar/dsci/vektor-matriks-dan-perkalian-matriks">Vektor, matriks, dan perkalian matriks</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Studi kasus 1: Memprediksi paket yang akan terlambat · Data Science &amp; AI · Ruang Kode</title>
+<meta name="description" content="Masalah. Perusahaan ekspedisi menanggung kompensasi Rp35.000 setiap paket terlambat. Gudang bisa memprioritaskan sortir untuk sekitar 15% paket per hari.…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsci/studi-kasus-1-memprediksi-paket-yang-akan-terlambat">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Studi kasus 1: Memprediksi paket yang akan terlambat · Data Science &amp; AI · Ruang Kode"><meta property="og:description" content="Masalah. Perusahaan ekspedisi menanggung kompensasi Rp35.000 setiap paket terlambat. Gudang bisa memprioritaskan sortir untuk sekitar 15% paket per hari.…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsci/studi-kasus-1-memprediksi-paket-yang-akan-terlambat"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Studi kasus 1: Memprediksi paket yang akan terlambat", "description": "Masalah. Perusahaan ekspedisi menanggung kompensasi Rp35.000 setiap paket terlambat. Gudang bisa memprioritaskan sortir untuk sekitar 15% paket per hari.…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci/studi-kasus-1-memprediksi-paket-yang-akan-terlambat", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Science & AI", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Science & AI", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, {"@type": "ListItem", "position": 3, "name": "Studi kasus 1: Memprediksi paket yang akan terlambat", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci/studi-kasus-1-memprediksi-paket-yang-akan-terlambat"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsci">Data Science &amp; AI</a> / Modul 13</nav>
+<div class="eyebrow">Data Science &amp; AI · Modul 13 · Konsep &amp; kode</div><h1>Studi kasus 1: Memprediksi paket yang akan terlambat</h1><a class="cta" href="/#dsci-13-1">Buka versi interaktif</a>
+<p><b>Masalah.</b> Perusahaan ekspedisi menanggung kompensasi Rp35.000 setiap paket terlambat. Gudang bisa memprioritaskan sortir untuk sekitar 15% paket per hari. Paket mana yang harus didahulukan?</p>
+<p><b>Fitur wajib:</b><br>1. Target telat (0/1), keputusan prioritas sortir untuk 15% paket, metrik recall@15%<br>2. Buang duplikat impor ulang, ubah berat timbangan yang mustahil menjadi NaN lalu isi median<br>3. Bandingkan keterlambatan per pulau tujuan dan saat gudang padat<br>4. Fitur pickup malam dan rasio jarak per berat; one-hot dan scaling di Pipeline<br>5. Baseline aturan vs logistic regression vs gradient boosting dengan AUC dan recall@15%<br>6. Hitung penghematan kompensasi dalam rupiah untuk paket yang diprioritaskan</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. Pemahaman bisnis: rumuskan keputusan, target, dan metrik keberhasilan.<br>2. Pembersihan data: duplikat, nilai mustahil, nilai hilang, dan outlier.<br>3. EDA: hubungan fitur dengan target, lalu tulis temuan.<br>4. Persiapan data: fitur baru, encoding, split latih-uji tanpa kebocoran.<br>5. Pemodelan dan evaluasi: baseline, dua model atau lebih, metrik yang sesuai.<br>6. Kesimpulan bisnis: angka rupiah atau operasional, rekomendasi, dan risiko.</p>
+<p><b>Kembangkan sendiri:</b> tambahkan data cuaca per hari dan uji apakah recall@15% naik; buat dasbor harian daftar paket prioritas.</p>
+<div class="tw"><table><caption>Enam langkah dan isinya di kasus ini</caption><thead><tr><th>Langkah</th><th>Yang dikerjakan</th></tr></thead><tbody><tr><td>Pemahaman bisnis</td><td>Target telat (0/1), keputusan prioritas sortir untuk 15% paket, metrik recall@15%</td></tr><tr><td>Pembersihan data</td><td>Buang duplikat impor ulang, ubah berat timbangan yang mustahil menjadi NaN lalu isi median</td></tr><tr><td>EDA</td><td>Bandingkan keterlambatan per pulau tujuan dan saat gudang padat</td></tr><tr><td>Persiapan data</td><td>Fitur pickup malam dan rasio jarak per berat; one-hot dan scaling di Pipeline</td></tr><tr><td>Pemodelan dan evaluasi</td><td>Baseline aturan vs logistic regression vs gradient boosting dengan AUC dan recall@15%</td></tr><tr><td>Kesimpulan bisnis</td><td>Hitung penghematan kompensasi dalam rupiah untuk paket yang diprioritaskan</td></tr></tbody></table></div>
+<h2>Poin penting</h2><ul><li>Studi kasus 1: Memprediksi paket yang akan terlambat.</li><li>Enam langkah: bisnis, bersihkan, EDA, persiapan, model, kesimpulan.</li><li>Kerjakan dulu sendiri, lalu buka kode final untuk code review.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kenapa metriknya recall@15% dan bukan akurasi?</summary><p class="ok">Jawaban: Gudang hanya bisa memprioritaskan 15% paket, jadi yang penting berapa paket telat yang tertangkap di kelompok itu</p><p>Metrik mengikuti kapasitas operasional.</p></details>
+<a class="cta" href="/#dsci-13-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsci/karier-data-scientist-2026-2030-peran-portofolio-dan-wawancara">Karier data scientist 2026-2030: peran, portofolio, dan wawancara</a></p><p>Berikutnya: <a href="/belajar/dsci/studi-kasus-2-mencegah-pasien-kembali-dirawat-dalam-30-hari">Studi kasus 2: Mencegah pasien kembali dirawat dalam 30 hari</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

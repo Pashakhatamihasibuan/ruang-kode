@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>EDA univariat, bivariat, dan multivariat · Data Science &amp; AI · Ruang Kode</title>
+<meta name="description" content="Univariat: satu kolom pada satu waktu. Untuk angka lihat pusat, sebaran, kemiringan, dan outlier; untuk kategori lihat frekuensi dan kategori langka.…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsci/eda-univariat-bivariat-dan-multivariat">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="EDA univariat, bivariat, dan multivariat · Data Science &amp; AI · Ruang Kode"><meta property="og:description" content="Univariat: satu kolom pada satu waktu. Untuk angka lihat pusat, sebaran, kemiringan, dan outlier; untuk kategori lihat frekuensi dan kategori langka.…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsci/eda-univariat-bivariat-dan-multivariat"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "EDA univariat, bivariat, dan multivariat", "description": "Univariat: satu kolom pada satu waktu. Untuk angka lihat pusat, sebaran, kemiringan, dan outlier; untuk kategori lihat frekuensi dan kategori langka.…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci/eda-univariat-bivariat-dan-multivariat", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Science & AI", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Science & AI", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, {"@type": "ListItem", "position": 3, "name": "EDA univariat, bivariat, dan multivariat", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci/eda-univariat-bivariat-dan-multivariat"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsci">Data Science &amp; AI</a> / Modul 5</nav>
+<div class="eyebrow">Data Science &amp; AI · Modul 5 · Konsep &amp; kode</div><h1>EDA univariat, bivariat, dan multivariat</h1><a class="cta" href="/#dsci-5-7">Buka versi interaktif</a>
+<p><b>Univariat</b>: satu kolom pada satu waktu. Untuk angka lihat pusat, sebaran, kemiringan, dan outlier; untuk kategori lihat frekuensi dan kategori langka. <b>Bivariat</b>: hubungan dua kolom, terutama setiap fitur terhadap target, misalnya churn rate per kelompok lama berlangganan.</p>
+<p><b>Multivariat</b>: tiga kolom atau lebih sekaligus. Di sinilah pola yang tersembunyi muncul: churn tinggi di pelanggan baru, tetapi jauh lebih tinggi lagi pada pelanggan baru yang membayar manual. Alat yang sering dipakai: <code>pd.crosstab</code> atau <code>pivot_table</code> dua dimensi, lalu ditampilkan sebagai heatmap.</p>
+<p>Tutup setiap EDA dengan <b>daftar temuan yang bisa ditindaklanjuti</b>: fitur yang menjanjikan untuk model, masalah data yang harus diperbaiki, dan hipotesis untuk diuji. EDA tanpa kesimpulan hanyalah kumpulan grafik.</p>
+<div class="lbl">PYTHON</div><pre><code>import numpy as np
+import pandas as pd
+
+rng = np.random.default_rng(7)
+n = 300
+df = pd.DataFrame({
+    &#x27;umur&#x27;: rng.integers(18, 60, n),
+    &#x27;lama_bulan&#x27;: rng.integers(1, 48, n),
+    &#x27;belanja_bln&#x27;: rng.normal(350, 120, n).round(0).clip(50),
+    &#x27;keluhan&#x27;: rng.poisson(1.2, n),
+    &#x27;kota&#x27;: rng.choice([&#x27;Jakarta&#x27;, &#x27;Bandung&#x27;, &#x27;Surabaya&#x27;, &#x27;Medan&#x27;], n),
+})
+skor = -1.2 + 0.9 * df[&#x27;keluhan&#x27;] - 0.06 * df[&#x27;lama_bulan&#x27;] - 0.003 * (df[&#x27;belanja_bln&#x27;] - 350)
+df[&#x27;churn&#x27;] = (rng.random(n) &lt; 1 / (1 + np.exp(-skor))).astype(int)
+import matplotlib.pyplot as plt
+
+rng2 = np.random.default_rng(3)
+df[&#x27;metode_bayar&#x27;] = np.where(rng2.random(len(df)) &lt; 0.35 + 0.35 * df[&#x27;churn&#x27;], &#x27;transfer manual&#x27;, &#x27;autodebet&#x27;)
+df[&#x27;kel_lama&#x27;] = pd.cut(df[&#x27;lama_bulan&#x27;], [0, 6, 12, 24, 48], labels=[&#x27;0-6&#x27;, &#x27;7-12&#x27;, &#x27;13-24&#x27;, &#x27;25-48&#x27;])
+
+# univariat
+print(&#x27;kemiringan belanja:&#x27;, round(df[&#x27;belanja_bln&#x27;].skew(), 2))
+print(df[&#x27;metode_bayar&#x27;].value_counts(normalize=True).round(2))
+
+# bivariat: fitur vs target
+print((df.groupby(&#x27;kel_lama&#x27;, observed=True)[&#x27;churn&#x27;].mean() * 100).round(1))
+
+# multivariat: lama x metode bayar -&gt; churn rate
+pv = df.pivot_table(index=&#x27;kel_lama&#x27;, columns=&#x27;metode_bayar&#x27;, values=&#x27;churn&#x27;, aggfunc=&#x27;mean&#x27;, observed=True) * 100
+print(pv.round(1))
+
+fig, ax = plt.subplots(figsize=(5.4, 3.4))
+im = ax.imshow(pv.values, cmap=&#x27;Reds&#x27;, vmin=0, vmax=100)
+ax.set_xticks(range(pv.shape[1]), pv.columns); ax.set_yticks(range(pv.shape[0]), pv.index)
+for i in range(pv.shape[0]):
+    for j in range(pv.shape[1]):
+        ax.text(j, i, f&#x27;{pv.values[i, j]:.0f}%&#x27;, ha=&#x27;center&#x27;, va=&#x27;center&#x27;)
+ax.set_ylabel(&#x27;lama berlangganan (bulan)&#x27;)
+ax.set_title(&#x27;Churn tertinggi: pelanggan baru + transfer manual&#x27;)
+fig.colorbar(im)</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>kemiringan belanja: 0.16
+metode_bayar
+autodebet          0.6
+transfer manual    0.4
+Name: proportion, dtype: float64
+kel_lama
+0-6      51.4
+7-12     45.5
+13-24    24.6
+25-48    13.5
+Name: churn, dtype: float64
+metode_bayar  autodebet  transfer manual
+kel_lama                                
+0-6                23.5             77.8
+7-12               19.0             69.6
+13-24              10.8             42.9
+25-48               8.7             23.1</code></pre>
+<h2>Poin penting</h2><ul><li>Univariat: satu kolom. Bivariat: fitur vs target.</li><li>Multivariat: pivot dua dimensi + heatmap.</li><li>Akhiri EDA dengan temuan yang bisa ditindaklanjuti.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Membandingkan churn rate per kombinasi lama berlangganan dan metode bayar termasuk analisis?</summary><p class="ok">Jawaban: Multivariat</p><p>Tiga variabel sekaligus.</p></details><details><summary>Hasil EDA yang paling berguna bagi tim adalah?</summary><p class="ok">Jawaban: Daftar temuan, masalah data, dan hipotesis yang bisa ditindaklanjuti</p><p>EDA harus berujung pada keputusan.</p></details>
+<a class="cta" href="/#dsci-5-7">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsci/membersihkan-data-duplikat-nilai-mustahil-dan-outlier">Membersihkan data: duplikat, nilai mustahil, dan outlier</a></p><p>Berikutnya: <a href="/belajar/dsci/feature-engineering-membuat-variabel-baru-yang-bermakna">Feature engineering: membuat variabel baru yang bermakna</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

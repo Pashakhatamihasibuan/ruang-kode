@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Membersihkan data: duplikat, nilai mustahil, dan outlier · Data Science &amp; AI · Ruang Kode</title>
+<meta name="description" content="Data dari sistem nyata hampir selalu punya tiga masalah selain nilai hilang. Duplikat: baris yang sama tercatat dua kali (sering karena tombol ditekan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsci/membersihkan-data-duplikat-nilai-mustahil-dan-outlier">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Membersihkan data: duplikat, nilai mustahil, dan outlier · Data Science &amp; AI · Ruang Kode"><meta property="og:description" content="Data dari sistem nyata hampir selalu punya tiga masalah selain nilai hilang. Duplikat: baris yang sama tercatat dua kali (sering karena tombol ditekan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsci/membersihkan-data-duplikat-nilai-mustahil-dan-outlier"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Membersihkan data: duplikat, nilai mustahil, dan outlier", "description": "Data dari sistem nyata hampir selalu punya tiga masalah selain nilai hilang. Duplikat: baris yang sama tercatat dua kali (sering karena tombol ditekan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci/membersihkan-data-duplikat-nilai-mustahil-dan-outlier", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Science & AI", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Science & AI", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, {"@type": "ListItem", "position": 3, "name": "Membersihkan data: duplikat, nilai mustahil, dan outlier", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci/membersihkan-data-duplikat-nilai-mustahil-dan-outlier"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsci">Data Science &amp; AI</a> / Modul 5</nav>
+<div class="eyebrow">Data Science &amp; AI · Modul 5 · Konsep &amp; kode</div><h1>Membersihkan data: duplikat, nilai mustahil, dan outlier</h1><a class="cta" href="/#dsci-5-6">Buka versi interaktif</a>
+<p>Data dari sistem nyata hampir selalu punya tiga masalah selain nilai hilang. <b>Duplikat</b>: baris yang sama tercatat dua kali (sering karena tombol ditekan dua kali atau proses impor diulang). Bedakan duplikat <b>persis</b> (<code>duplicated()</code>) dan duplikat <b>kunci</b> (<code>duplicated(subset=["id"])</code>), lalu putuskan baris mana yang dipertahankan, misalnya yang terbaru.</p>
+<p><b>Nilai mustahil</b>: umur 230 tahun, harga negatif, tanggal di masa depan. Ini bukan outlier melainkan kesalahan, jadi tandai sebagai kosong (NaN) lalu tangani seperti nilai hilang. Tuliskan aturannya sebagai kode agar bisa diulang setiap ada data baru.</p>
+<p><b>Outlier</b> adalah nilai ekstrem yang mungkin benar (pelanggan korporat yang belanja 50 kali lipat). Deteksi dengan aturan <b>IQR</b> (di luar Q1 − 1,5·IQR dan Q3 + 1,5·IQR) atau z-score. Pilihan penanganan: biarkan (jika memang penting), <b>capping/winsorizing</b> ke batas, transformasi log, atau pisahkan sebagai segmen sendiri. Jangan menghapus outlier hanya karena "mengganggu grafik".</p>
+<div class="lbl">PYTHON</div><pre><code>import numpy as np
+import pandas as pd
+
+df = pd.DataFrame({
+    &#x27;id&#x27;: [1, 2, 2, 3, 4, 5, 6, 7, 8, 8],
+    &#x27;umur&#x27;: [25, 31, 31, 230, 42, 19, -3, 37, 28, 28],
+    &#x27;belanja&#x27;: [320, 410, 410, 280, 9_800, 150, 300, 365, 390, 395],
+    &#x27;diperbarui&#x27;: pd.to_datetime([&#x27;2026-05-01&#x27;, &#x27;2026-05-02&#x27;, &#x27;2026-05-02&#x27;, &#x27;2026-05-02&#x27;, &#x27;2026-05-03&#x27;,
+                                  &#x27;2026-05-03&#x27;, &#x27;2026-05-04&#x27;, &#x27;2026-05-04&#x27;, &#x27;2026-05-05&#x27;, &#x27;2026-05-07&#x27;]),
+})
+print(&#x27;duplikat persis:&#x27;, df.duplicated().sum(), &#x27;| duplikat id:&#x27;, df.duplicated(subset=[&#x27;id&#x27;]).sum())
+df = (df.sort_values(&#x27;diperbarui&#x27;)
+        .drop_duplicates(subset=[&#x27;id&#x27;], keep=&#x27;last&#x27;))      # simpan versi terbaru per id
+
+# nilai mustahil -&gt; NaN, lalu isi median
+mustahil = ~df[&#x27;umur&#x27;].between(15, 100)
+print(&#x27;umur mustahil:&#x27;, df.loc[mustahil, &#x27;umur&#x27;].tolist())
+df.loc[mustahil, &#x27;umur&#x27;] = np.nan
+df[&#x27;umur&#x27;] = df[&#x27;umur&#x27;].fillna(df[&#x27;umur&#x27;].median())
+
+# outlier belanja dengan IQR
+q1, q3 = df[&#x27;belanja&#x27;].quantile([0.25, 0.75])
+atas = q3 + 1.5 * (q3 - q1)
+print(f&#x27;batas atas IQR: {atas:.0f} | outlier:&#x27;, df.loc[df[&#x27;belanja&#x27;] &gt; atas, &#x27;belanja&#x27;].tolist())
+df[&#x27;belanja_cap&#x27;] = df[&#x27;belanja&#x27;].clip(upper=round(atas))   # capping
+df[&#x27;belanja_log&#x27;] = np.log1p(df[&#x27;belanja&#x27;]).round(2)    # alternatif: transformasi log
+print(df[[&#x27;id&#x27;, &#x27;umur&#x27;, &#x27;belanja&#x27;, &#x27;belanja_cap&#x27;, &#x27;belanja_log&#x27;]].to_string(index=False))
+print(&#x27;rata-rata sebelum/sesudah capping:&#x27;, round(df[&#x27;belanja&#x27;].mean()), round(df[&#x27;belanja_cap&#x27;].mean()))</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>duplikat persis: 1 | duplikat id: 2
+umur mustahil: [230, -3]
+batas atas IQR: 554 | outlier: [9800]
+ id  umur  belanja  belanja_cap  belanja_log
+  1  25.0      320          320         5.77
+  2  31.0      410          410         6.02
+  3  29.5      280          280         5.64
+  4  42.0     9800          554         9.19
+  5  19.0      150          150         5.02
+  6  29.5      300          300         5.71
+  7  37.0      365          365         5.90
+  8  28.0      395          395         5.98
+rata-rata sebelum/sesudah capping: 1502 347</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Dari Series <code>[12, 15, 14, 13, 90, 16, 11]</code>, hitung batas atas IQR lalu cetak nilai yang termasuk outlier.</p><details><summary>Petunjuk</summary><p>quantile(0.25) dan quantile(0.75), batas = Q3 + 1,5 × IQR.</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>import pandas as pd
+s = pd.Series([12, 15, 14, 13, 90, 16, 11])
+q1, q3 = s.quantile([0.25, 0.75])
+atas = q3 + 1.5 * (q3 - q1)
+print(atas, s[s &gt; atas].tolist())</code></pre><div class="lbl">KELUARAN</div><pre><code>20.0 [90]</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>Duplikat persis vs duplikat kunci; simpan versi terbaru.</li><li>Nilai mustahil adalah kesalahan: jadikan NaN.</li><li>Outlier bisa benar: capping, log, atau segmen sendiri.</li><li>Tulis aturan pembersihan sebagai kode yang bisa diulang.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Umur pelanggan tercatat -3. Penanganan yang tepat?</summary><p class="ok">Jawaban: Anggap kesalahan, jadikan NaN, lalu isi atau buang sesuai aturan</p><p>Nilai mustahil bukan outlier.</p></details><details><summary>&lt;code&gt;drop_duplicates(subset=[&quot;id&quot;], keep=&quot;last&quot;)&lt;/code&gt; setelah diurutkan menurut tanggal artinya?</summary><p class="ok">Jawaban: Menyimpan baris terbaru untuk setiap id</p><p>keep=&quot;last&quot; pada data terurut waktu.</p></details>
+<a class="cta" href="/#dsci-5-6">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsci/empat-tujuan-grafik-perbandingan-distribusi-hubungan-dan-komposisi">Empat tujuan grafik: perbandingan, distribusi, hubungan, dan komposisi</a></p><p>Berikutnya: <a href="/belajar/dsci/eda-univariat-bivariat-dan-multivariat">EDA univariat, bivariat, dan multivariat</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

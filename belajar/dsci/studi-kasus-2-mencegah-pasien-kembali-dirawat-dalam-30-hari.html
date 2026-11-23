@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Studi kasus 2: Mencegah pasien kembali dirawat dalam 30 hari · Data Science &amp; AI · Ruang Kode</title>
+<meta name="description" content="Masalah. Rumah sakit dikenai biaya besar setiap pasien kembali dirawat dalam 30 hari. Perawat hanya sanggup menelepon dan menjadwalkan kontrol awal untuk…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsci/studi-kasus-2-mencegah-pasien-kembali-dirawat-dalam-30-hari">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Studi kasus 2: Mencegah pasien kembali dirawat dalam 30 hari · Data Science &amp; AI · Ruang Kode"><meta property="og:description" content="Masalah. Rumah sakit dikenai biaya besar setiap pasien kembali dirawat dalam 30 hari. Perawat hanya sanggup menelepon dan menjadwalkan kontrol awal untuk…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsci/studi-kasus-2-mencegah-pasien-kembali-dirawat-dalam-30-hari"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Studi kasus 2: Mencegah pasien kembali dirawat dalam 30 hari", "description": "Masalah. Rumah sakit dikenai biaya besar setiap pasien kembali dirawat dalam 30 hari. Perawat hanya sanggup menelepon dan menjadwalkan kontrol awal untuk…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci/studi-kasus-2-mencegah-pasien-kembali-dirawat-dalam-30-hari", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Science & AI", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Science & AI", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, {"@type": "ListItem", "position": 3, "name": "Studi kasus 2: Mencegah pasien kembali dirawat dalam 30 hari", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci/studi-kasus-2-mencegah-pasien-kembali-dirawat-dalam-30-hari"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsci">Data Science &amp; AI</a> / Modul 13</nav>
+<div class="eyebrow">Data Science &amp; AI · Modul 13 · Konsep &amp; kode</div><h1>Studi kasus 2: Mencegah pasien kembali dirawat dalam 30 hari</h1><a class="cta" href="/#dsci-13-2">Buka versi interaktif</a>
+<p><b>Masalah.</b> Rumah sakit dikenai biaya besar setiap pasien kembali dirawat dalam 30 hari. Perawat hanya sanggup menelepon dan menjadwalkan kontrol awal untuk sekitar 25% pasien yang pulang.</p>
+<p><b>Fitur wajib:</b><br>1. Target dirawat lagi ≤ 30 hari, kapasitas perawat 25% pasien, metrik sensitivitas<br>2. Umur tidak valid menjadi NaN; HbA1c kosong diberi penanda karena kekosongannya bermakna<br>3. Bandingkan tingkat rawat ulang per diagnosis dan per status kontrol terjadwal<br>4. Fitur lansia dan polifarmasi; imputasi median di dalam Pipeline<br>5. class_weight="balanced", validasi silang dengan PR-AUC, lalu sensitivitas dan PPV di data uji<br>6. Hitung rawat ulang yang dicegah dan penghematan bersih, plus catatan etika klinis</p>
+<p><b>Penyelesaian langkah demi langkah:</b><br>1. Pemahaman bisnis: rumuskan keputusan, target, dan metrik keberhasilan.<br>2. Pembersihan data: duplikat, nilai mustahil, nilai hilang, dan outlier.<br>3. EDA: hubungan fitur dengan target, lalu tulis temuan.<br>4. Persiapan data: fitur baru, encoding, split latih-uji tanpa kebocoran.<br>5. Pemodelan dan evaluasi: baseline, dua model atau lebih, metrik yang sesuai.<br>6. Kesimpulan bisnis: angka rupiah atau operasional, rekomendasi, dan risiko.</p>
+<p><b>Kembangkan sendiri:</b> ukur sensitivitas terpisah untuk pasien lansia dan non-lansia, lalu periksa apakah model adil untuk keduanya.</p>
+<div class="tw"><table><caption>Enam langkah dan isinya di kasus ini</caption><thead><tr><th>Langkah</th><th>Yang dikerjakan</th></tr></thead><tbody><tr><td>Pemahaman bisnis</td><td>Target dirawat lagi ≤ 30 hari, kapasitas perawat 25% pasien, metrik sensitivitas</td></tr><tr><td>Pembersihan data</td><td>Umur tidak valid menjadi NaN; HbA1c kosong diberi penanda karena kekosongannya bermakna</td></tr><tr><td>EDA</td><td>Bandingkan tingkat rawat ulang per diagnosis dan per status kontrol terjadwal</td></tr><tr><td>Persiapan data</td><td>Fitur lansia dan polifarmasi; imputasi median di dalam Pipeline</td></tr><tr><td>Pemodelan dan evaluasi</td><td>class_weight=&quot;balanced&quot;, validasi silang dengan PR-AUC, lalu sensitivitas dan PPV di data uji</td></tr><tr><td>Kesimpulan bisnis</td><td>Hitung rawat ulang yang dicegah dan penghematan bersih, plus catatan etika klinis</td></tr></tbody></table></div>
+<h2>Poin penting</h2><ul><li>Studi kasus 2: Mencegah pasien kembali dirawat dalam 30 hari.</li><li>Enam langkah: bisnis, bersihkan, EDA, persiapan, model, kesimpulan.</li><li>Kerjakan dulu sendiri, lalu buka kode final untuk code review.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kolom HbA1c kosong untuk pasien non-diabetes. Penanganan yang tepat?</summary><p class="ok">Jawaban: Isi nilai tengah dan tambahkan penanda hba1c_diukur karena kekosongannya bermakna</p><p>Kosong yang bermakna perlu penanda.</p></details>
+<a class="cta" href="/#dsci-13-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsci/studi-kasus-1-memprediksi-paket-yang-akan-terlambat">Studi kasus 1: Memprediksi paket yang akan terlambat</a></p><p>Berikutnya: <a href="/belajar/dsci/studi-kasus-3-menaksir-harga-wajar-mobil-bekas">Studi kasus 3: Menaksir harga wajar mobil bekas</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

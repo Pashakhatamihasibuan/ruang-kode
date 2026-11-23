@@ -40,6 +40,7 @@ Lima jalur karier menyusun jalur di atas dalam urutan yang disarankan: Frontend 
 - **Persiapan laptop** (`#persiapan`): langkah memasang VS Code, Python, JDK, Node.js, Git, SQLite, dan Figma untuk Windows, macOS, dan Linux, disaring per jalur, plus cara memasang Ruang Kode sebagai aplikasi.
 - **Kode pemula vs kode rapi**: 74 perbandingan yang bisa dibuka-tutup di pelajaran terkait, misalnya `1_000_000` untuk angka besar, f-string, `enumerate`, `?.` dan `??`, `CASE` di SQL. 52 pasangan yang bisa dijalankan sudah diuji dan menghasilkan keluaran yang sama.
 - **45 visual interaktif**, antara lain box model, flexbox, grid, event loop JavaScript, CSR/SSR/SSG, simulator Git, skema bintang, A/B test, MapReduce, Kafka, model Fogg, siklus Hook, token desain, pemeriksa kontras, dan skala tipografi.
+- **Proyek portofolio di setiap jalur**: modul terakhir setiap jalur berisi 6 proyek mini dan 4 proyek besar yang sesuai (dengan kode final yang dibuka setelah mencoba sendiri) serta materi menyajikan portofolio. Progresnya sama dengan menu Proyek Portofolio (`tools/gen/portofolio_jalur.py`).
 - **Belajar saya**: kalender aktivitas, target harian, nilai ujian, cadangan dan pemulihan progres.
 - **Ulang**: setiap jawaban kuis atau ujian yang salah masuk daftar ulang sampai dijawab benar.
 - **Kuis cerita** dan **glosarium**.

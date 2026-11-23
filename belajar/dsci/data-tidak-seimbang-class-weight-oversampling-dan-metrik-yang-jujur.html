@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Data tidak seimbang: class_weight, oversampling, dan metrik yang jujur · Data Science &amp; AI · Ruang Kode</title>
+<meta name="description" content="Di banyak masalah nyata kelas penting sangat jarang: penipuan 1%, gagal bayar 5%, pasien kembali dirawat 10%. Model yang selalu menebak &quot;tidak&quot; sudah…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsci/data-tidak-seimbang-class-weight-oversampling-dan-metrik-yang-jujur">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Data tidak seimbang: class_weight, oversampling, dan metrik yang jujur · Data Science &amp; AI · Ruang Kode"><meta property="og:description" content="Di banyak masalah nyata kelas penting sangat jarang: penipuan 1%, gagal bayar 5%, pasien kembali dirawat 10%. Model yang selalu menebak &quot;tidak&quot; sudah…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsci/data-tidak-seimbang-class-weight-oversampling-dan-metrik-yang-jujur"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Data tidak seimbang: class_weight, oversampling, dan metrik yang jujur", "description": "Di banyak masalah nyata kelas penting sangat jarang: penipuan 1%, gagal bayar 5%, pasien kembali dirawat 10%. Model yang selalu menebak \"tidak\" sudah…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci/data-tidak-seimbang-class-weight-oversampling-dan-metrik-yang-jujur", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Science & AI", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Science & AI", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, {"@type": "ListItem", "position": 3, "name": "Data tidak seimbang: class_weight, oversampling, dan metrik yang jujur", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci/data-tidak-seimbang-class-weight-oversampling-dan-metrik-yang-jujur"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsci">Data Science &amp; AI</a> / Modul 6</nav>
+<div class="eyebrow">Data Science &amp; AI · Modul 6 · Konsep &amp; kode</div><h1>Data tidak seimbang: class_weight, oversampling, dan metrik yang jujur</h1><a class="cta" href="/#dsci-6-8">Buka versi interaktif</a>
+<p>Di banyak masalah nyata kelas penting sangat jarang: penipuan 1%, gagal bayar 5%, pasien kembali dirawat 10%. Model yang selalu menebak "tidak" sudah mendapat akurasi 95% tetapi tidak berguna. Karena itu <b>akurasi menyesatkan</b>; pakai <b>precision</b>, <b>recall</b>, <b>F1</b>, dan <b>PR-AUC</b> (average precision).</p>
+<p>Tiga cara menangani: <b>(1)</b> <code>class_weight="balanced"</code> agar kesalahan pada kelas langka dihukum lebih berat (paling sederhana, tanpa mengubah data); <b>(2)</b> <b>resampling</b> data latih: oversampling kelas langka (acak atau SMOTE dari pustaka <code>imbalanced-learn</code>) atau undersampling kelas mayoritas; <b>(3)</b> <b>menggeser ambang</b> keputusan sesuai biaya.</p>
+<p>Aturan wajib: resampling <b>hanya pada data latih</b>, tidak pernah pada data uji, karena data uji harus mencerminkan dunia nyata. Gunakan <code>stratify=y</code> saat membagi data agar proporsi kelas langka sama di latih dan uji.</p>
+<div class="lbl">PYTHON</div><pre><code>import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.utils import resample
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, average_precision_score
+
+rng = np.random.default_rng(5)
+n = 4000
+X = pd.DataFrame({&#x27;telat_bayar&#x27;: rng.poisson(0.6, n), &#x27;rasio_utang&#x27;: rng.beta(2, 5, n), &#x27;lama_kerja&#x27;: rng.integers(0, 20, n)})
+logit = -4.4 + 0.9 * X[&#x27;telat_bayar&#x27;] + 3.0 * X[&#x27;rasio_utang&#x27;] - 0.05 * X[&#x27;lama_kerja&#x27;]
+y = (rng.random(n) &lt; 1 / (1 + np.exp(-logit))).astype(int)
+print(f&#x27;proporsi gagal bayar: {y.mean():.1%}&#x27;)
+X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.3, stratify=y, random_state=0)
+
+def nilai(nama, model, Xl, yl):
+    model.fit(Xl, yl)
+    p = model.predict(X_te)
+    ap = average_precision_score(y_te, model.predict_proba(X_te)[:, 1])
+    print(f&#x27;{nama:22} akurasi={accuracy_score(y_te, p):.3f} precision={precision_score(y_te, p, zero_division=0):.2f} &#x27;
+          f&#x27;recall={recall_score(y_te, p):.2f} F1={f1_score(y_te, p):.2f} PR-AUC={ap:.3f}&#x27;)
+
+nilai(&#x27;tanpa penanganan&#x27;, LogisticRegression(max_iter=1000), X_tr, y_tr)
+nilai(&#x27;class_weight=balanced&#x27;, LogisticRegression(max_iter=1000, class_weight=&#x27;balanced&#x27;), X_tr, y_tr)
+
+latih = X_tr.assign(y=y_tr)
+langka = latih[latih.y == 1]
+banyak = latih[latih.y == 0]
+naik = pd.concat([banyak, resample(langka, n_samples=len(banyak), replace=True, random_state=0)])
+nilai(&#x27;oversampling (latih)&#x27;, LogisticRegression(max_iter=1000), naik.drop(columns=&#x27;y&#x27;), naik[&#x27;y&#x27;])</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>proporsi gagal bayar: 4.2%
+tanpa penanganan       akurasi=0.958 precision=0.00 recall=0.00 F1=0.00 PR-AUC=0.197
+class_weight=balanced  akurasi=0.709 precision=0.09 recall=0.67 F1=0.16 PR-AUC=0.203
+oversampling (latih)   akurasi=0.711 precision=0.10 recall=0.69 F1=0.17 PR-AUC=0.201</code></pre>
+<h2>Poin penting</h2><ul><li>Kelas langka: akurasi menyesatkan.</li><li>Pakai precision, recall, F1, PR-AUC.</li><li>class_weight, resampling (hanya data latih), atau geser ambang.</li><li>stratify=y saat split.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Model tanpa penanganan mendapat akurasi tinggi tetapi recall 0. Artinya?</summary><p class="ok">Jawaban: Model hampir selalu menebak kelas mayoritas</p><p>Akurasi didominasi kelas mayoritas.</p></details><details><summary>Oversampling sebaiknya diterapkan ke?</summary><p class="ok">Jawaban: Data latih saja</p><p>Data uji harus mencerminkan dunia nyata.</p></details>
+<a class="cta" href="/#dsci-6-8">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsci/peta-ml-dan-persiapan-data-sebelum-model">Peta ML dan persiapan data sebelum model</a></p><p>Berikutnya: <a href="/belajar/dsci/linear-regression-dari-nol">Linear regression dari nol</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -311,3 +311,7 @@ DSCI_SO = {}
 from rb_dsci_algo import ALGO_DASAR, ALGO_LANJUT
 DSCI.insert(6, ALGO_DASAR)
 DSCI.insert(8, ALGO_LANJUT)
+
+# kelengkapan silabus: pelajaran tambahan di akhir modul lama + modul bisnis dan studi kasus di akhir jalur
+from rb_dsci_silabus import pasang
+pasang(DSCI)
