@@ -15,7 +15,7 @@ export function MyProgress({ tracks }: { tracks: T[] }) {
     window.addEventListener("rk-lms", f);
     return () => window.removeEventListener("rk-lms", f);
   }, []);
-  if (!s) return <p className="muted">Memuat progres…</p>;
+  if (!s) return <p className="muted" style={{ minHeight: "80vh" }}>Memuat progres…</p>;
   const rows = tracks.map((t) => ({ ...t, d: t.ids.filter((i) => s.done[i]).length, at: s.lastAt?.[t.k] ?? 0 }))
     .filter((t) => t.d > 0 || t.at > 0).sort((a, b) => b.at - a.at);
   const total = Object.keys(s.done).length;
@@ -52,7 +52,7 @@ export function MyProgress({ tracks }: { tracks: T[] }) {
     </div>
   );
   return (
-    <div className="stack">
+    <div className="stack" style={{ minHeight: "80vh" }}>
       <div aria-live="polite">
         {undo && (
           <div className="msg info row-btn" style={{ justifyContent: "space-between" }}>
