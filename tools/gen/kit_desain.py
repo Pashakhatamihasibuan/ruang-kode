@@ -9,6 +9,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'tools/figma'))
 import proyek_data as D
 from svgkit import GAYA
+import kode_final as KF
 
 KATALOG = {k['id']: k for k in json.loads((ROOT / 'desain/katalog.json').read_text())}
 SPEC = {s['id']: s for s in D.SEMUA}
@@ -231,7 +232,9 @@ def _proyek(spec, jalur):
                                                                          ['Responsif', '360 - 1440' if jalur == 'slw' else '360 - 430 lebar HP, aman di notch & gesture bar'], ['Aksesibilitas', 'WCAG 2.2 AA, target sentuh 48'],
                                                                          ['Animasi', 'Sesuai prototype, hormati reduced motion'], ['Portofolio', 'Studi kasus: masalah, keputusan, hasil']]}],
              pts=[f'Proyek {jenis}: {s["judul"]}.', f'Gaya visual: {GAYA[s["gaya"]]["label"]}.', 'Ambil nilai dari tokens.json, jangan menebak dari gambar.']) | {'dl': [dl(s['id'])]}
-    return _gabung(d, _peta(s, jalur), jalur)
+    d = _gabung(d, _peta(s, jalur), jalur)
+    d['fin'] = KF.web_final(s) if jalur == 'slw' else KF.flutter_final(s)
+    return d
 
 
 def _gabung(d, p, jalur):

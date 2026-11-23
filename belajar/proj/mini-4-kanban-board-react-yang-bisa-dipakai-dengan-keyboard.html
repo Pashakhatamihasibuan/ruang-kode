@@ -24,58 +24,7 @@
 <p><b>Penyelesaian langkah demi langkah:</b><br>1. Simpan state sebagai array kartu <code>{id, judul, kolom}</code>; kolom adalah turunan (filter) dari state, bukan state terpisah.<br>2. Buat fungsi murni <code>pindah(kartu, arah)</code> yang mudah diuji.<br>3. Sinkronkan ke <code>localStorage</code> dengan <code>useEffect</code>; baca nilai awal dengan inisialisasi malas <code>useState(() =&gt; ...)</code>.<br>4. Seret memakai HTML5 drag events; tombol ← → tetap ada untuk keyboard dan layar sentuh.</p>
 <p><b>Kembangkan sendiri:</b> urutkan kartu di dalam kolom, filter per label, dan test Vitest untuk fungsi <code>pindah</code>.</p>
 <div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Tiga kolom: Akan, Sedang, Selesai</td><td>Simpan state sebagai array kartu {id, judul, kolom}; kolom adalah turunan (filter) dari state, bukan state terpisah.</td></tr><tr><td>Tambah kartu, pindah kolom dengan tombol ← → dan dengan seret</td><td>Buat fungsi murni pindah(kartu, arah) yang mudah diuji.</td></tr><tr><td>Data tetap ada setelah halaman dimuat ulang</td><td>Sinkronkan ke localStorage dengan useEffect; baca nilai awal dengan inisialisasi malas useState(() =&gt; ...).</td></tr><tr><td>Keadaan kosong per kolom</td><td>Seret memakai HTML5 drag events; tombol ← → tetap ada untuk keyboard dan layar sentuh.</td></tr></tbody></table></div>
-<div class="lbl">KODE</div><pre><code>import { useEffect, useState } from &#x27;react&#x27;;
-
-type Kolom = &#x27;akan&#x27; | &#x27;sedang&#x27; | &#x27;selesai&#x27;;
-type Kartu = { id: string; judul: string; kolom: Kolom };
-const KOLOM: Kolom[] = [&#x27;akan&#x27;, &#x27;sedang&#x27;, &#x27;selesai&#x27;];
-const LABEL = { akan: &#x27;Akan&#x27;, sedang: &#x27;Sedang&#x27;, selesai: &#x27;Selesai&#x27; };
-
-export function pindah(k: Kartu, arah: -1 | 1): Kartu {
-  const i = Math.min(2, Math.max(0, KOLOM.indexOf(k.kolom) + arah));
-  return { ...k, kolom: KOLOM[i] };
-}
-
-export default function Kanban() {
-  const [kartu, setKartu] = useState&lt;Kartu[]&gt;(() =&gt; JSON.parse(localStorage.getItem(&#x27;kanban&#x27;) ?? &#x27;[]&#x27;));
-  const [judul, setJudul] = useState(&#x27;&#x27;);
-  useEffect(() =&gt; localStorage.setItem(&#x27;kanban&#x27;, JSON.stringify(kartu)), [kartu]);
-
-  const ubah = (id: string, f: (k: Kartu) =&gt; Kartu) =&gt; setKartu(ks =&gt; ks.map(k =&gt; (k.id === id ? f(k) : k)));
-
-  return (
-    &lt;main&gt;
-      &lt;form onSubmit={e =&gt; { e.preventDefault(); if (!judul.trim()) return;
-        setKartu([...kartu, { id: crypto.randomUUID(), judul: judul.trim(), kolom: &#x27;akan&#x27; }]); setJudul(&#x27;&#x27;); }}&gt;
-        &lt;label htmlFor=&quot;j&quot;&gt;Tugas baru&lt;/label&gt;
-        &lt;input id=&quot;j&quot; value={judul} onChange={e =&gt; setJudul(e.target.value)} /&gt;
-        &lt;button&gt;Tambah&lt;/button&gt;
-      &lt;/form&gt;
-      &lt;div className=&quot;papan&quot;&gt;
-        {KOLOM.map(kol =&gt; {
-          const isi = kartu.filter(k =&gt; k.kolom === kol);
-          return (
-            &lt;section key={kol} aria-label={LABEL[kol]}
-              onDragOver={e =&gt; e.preventDefault()}
-              onDrop={e =&gt; ubah(e.dataTransfer.getData(&#x27;id&#x27;), k =&gt; ({ ...k, kolom: kol }))}&gt;
-              &lt;h2&gt;{LABEL[kol]} ({isi.length})&lt;/h2&gt;
-              {isi.length === 0 &amp;&amp; &lt;p className=&quot;kosong&quot;&gt;Belum ada tugas.&lt;/p&gt;}
-              {isi.map(k =&gt; (
-                &lt;article key={k.id} draggable onDragStart={e =&gt; e.dataTransfer.setData(&#x27;id&#x27;, k.id)}&gt;
-                  {k.judul}
-                  &lt;button aria-label={`Pindah ${k.judul} ke kiri`} disabled={kol === &#x27;akan&#x27;} onClick={() =&gt; ubah(k.id, x =&gt; pindah(x, -1))}&gt;←&lt;/button&gt;
-                  &lt;button aria-label={`Pindah ${k.judul} ke kanan`} disabled={kol === &#x27;selesai&#x27;} onClick={() =&gt; ubah(k.id, x =&gt; pindah(x, 1))}&gt;→&lt;/button&gt;
-                  &lt;button aria-label={`Hapus ${k.judul}`} onClick={() =&gt; setKartu(kartu.filter(x =&gt; x.id !== k.id))}&gt;✕&lt;/button&gt;
-                &lt;/article&gt;
-              ))}
-            &lt;/section&gt;
-          );
-        })}
-      &lt;/div&gt;
-    &lt;/main&gt;
-  );
-}</code></pre>
-<h2>Poin penting</h2><ul><li>Proyek mini: Kanban board React yang bisa dipakai dengan keyboard.</li><li>Tiga kolom: Akan, Sedang, Selesai</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Poin penting</h2><ul><li>Proyek mini: Kanban board React yang bisa dipakai dengan keyboard.</li><li>Tiga kolom: Akan, Sedang, Selesai</li><li>Kerjakan dulu sendiri, lalu buka kode final untuk code review.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa tombol ← → tetap disediakan walau ada seret-lepas?</summary><p class="ok">Jawaban: Pengguna keyboard dan pembaca layar tidak bisa menyeret</p><p>WCAG 2.2 meminta alternatif untuk gerakan seret.</p></details>
 <a class="cta" href="/#proj-3-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-3-dashboard-cuaca-dengan-status-loading-error-dan-offline">Mini 3: Dashboard cuaca dengan status loading, error, dan offline</a></p><p>Berikutnya: <a href="/belajar/proj/mini-5-form-pendaftaran-multi-langkah-dengan-zod">Mini 5: Form pendaftaran multi-langkah dengan Zod</a></p>
 </main>

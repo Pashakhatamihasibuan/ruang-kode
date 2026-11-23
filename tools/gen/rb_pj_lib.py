@@ -2,6 +2,7 @@
 Setiap proyek: masalah, fitur wajib, langkah penyelesaian, dan kode penyelesaian lengkap."""
 import html, pathlib, re, subprocess, tempfile
 from rb_lib import C, M, q, jalan
+import paket_industri as PI
 
 
 def polos(t):
@@ -33,19 +34,23 @@ def MINI(no, nama, masalah, wajib, langkah, code, lang, out=None, run=False, cek
     if run:
         out = jalan(code)
     tantangan = f'<b>Kembangkan sendiri:</b> {kunci}' if kunci else None
-    return C(f'Mini {no}: {nama}', _body(masalah, wajib, langkah, tantangan), code, out, lang,
-             tb=[{'c': 'Fitur wajib dan cara penyelesaiannya', 'h': ['Fitur', 'Penyelesaian'], 'r': [[polos(w), polos(s)] for w, s in zip(wajib, langkah)]}],
-             pts=[f'Proyek mini: {nama}.', polos(wajib[0]), 'Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.'],
-             qs=[cek] if cek else None)
+    d = C(f'Mini {no}: {nama}', _body(masalah, wajib, langkah, tantangan), None, None, lang,
+          tb=[{'c': 'Fitur wajib dan cara penyelesaiannya', 'h': ['Fitur', 'Penyelesaian'], 'r': [[polos(w), polos(s)] for w, s in zip(wajib, langkah)]}],
+          pts=[f'Proyek mini: {nama}.', polos(wajib[0]), 'Kerjakan dulu sendiri, lalu buka kode final untuk code review.'],
+          qs=[cek] if cek else None)
+    d['fin'] = PI.paket('mini', nama, masalah, wajib, langkah, code, lang, out)
+    return d
 
 
 def BESAR(no, nama, masalah, wajib, stack, arsitektur, langkah, code, lang, out=None, cek=None, standar=None):
     """Proyek besar berskala industri: kode berisi berkas-berkas inti penyelesaiannya."""
     extra = f'<b>Standar industri yang dinilai:</b> {standar}' if standar else None
-    return C(f'Besar {no}: {nama}', _body(masalah, wajib, langkah, extra), code, out, lang,
-             tb=[{'c': f'Arsitektur dan stack ({stack})', 'h': ['Bagian', 'Isi'], 'r': [[polos(c) for c in r] for r in arsitektur]}],
-             pts=[f'Proyek besar: {nama}.', f'Stack: {stack}.', 'Berkas inti penyelesaian ada di bawah; sisanya mengikuti pola yang sama.'],
-             qs=[cek] if cek else None)
+    d = C(f'Besar {no}: {nama}', _body(masalah, wajib, langkah, extra), None, None, lang,
+          tb=[{'c': f'Arsitektur dan stack ({stack})', 'h': ['Bagian', 'Isi'], 'r': [[polos(c) for c in r] for r in arsitektur]}],
+          pts=[f'Proyek besar: {nama}.', f'Stack: {stack}.', 'Kerjakan dulu sendiri, lalu buka kode final untuk code review.'],
+          qs=[cek] if cek else None)
+    d['fin'] = PI.paket('besar', nama, masalah, wajib, langkah, code, lang, out, stack, standar, arsitektur)
+    return d
 
 
 def JALUR_M(nama, lvl, d, nodes, mini, besar):

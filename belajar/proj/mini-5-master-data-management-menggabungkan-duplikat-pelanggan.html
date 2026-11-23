@@ -24,60 +24,7 @@
 <p><b>Penyelesaian langkah demi langkah:</b><br>1. Tulis fungsi normalisasi agar perbedaan format tidak dianggap perbedaan isi.<br>2. Gunakan SequenceMatcher untuk nama dan perbandingan persis untuk telepon, beri bobot.<br>3. Gabungkan pasangan dengan skor ≥ ambang menjadi klaster.<br>4. Pilih nilai dari sumber prioritas tertinggi dan catat asal setiap catatan.</p>
 <p><b>Kembangkan sendiri:</b> tambahkan antrean review manual untuk skor 0,6-0,75, dan simpan tabel pemetaan ID sumber ke ID master.</p>
 <div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Normalisasi nama badan usaha (PT, CV, UD, tanda baca) dan nomor telepon (+62/0)</td><td>Tulis fungsi normalisasi agar perbedaan format tidak dianggap perbedaan isi.</td></tr><tr><td>Skor kemiripan gabungan nama (fuzzy) dan telepon (persis)</td><td>Gunakan SequenceMatcher untuk nama dan perbandingan persis untuk telepon, beri bobot.</td></tr><tr><td>Pengelompokan catatan yang cocok (union-find)</td><td>Gabungkan pasangan dengan skor ≥ ambang menjadi klaster.</td></tr><tr><td>Aturan survivorship: sumber paling tepercaya menjadi golden record</td><td>Pilih nilai dari sumber prioritas tertinggi dan catat asal setiap catatan.</td></tr></tbody></table></div>
-<div class="lbl">PYTHON</div><pre><code>from difflib import SequenceMatcher
-import re
-
-# Master data pelanggan dari 3 sistem (CRM, POS, e-commerce) penuh duplikat -&gt; golden record
-DATA = [
-    (&quot;CRM&quot;, &quot;PT Maju Jaya Abadi&quot;, &quot;021-5550123&quot;, &quot;Jl. Gatot Subroto Kav. 5, Jakarta&quot;),
-    (&quot;POS&quot;, &quot;PT. MAJU JAYA ABADI&quot;, &quot;(021) 555 0123&quot;, &quot;Jl Gatot Subroto Kav 5 Jakarta Selatan&quot;),
-    (&quot;WEB&quot;, &quot;Maju Jaya Abadi&quot;, &quot;+62 21 5550123&quot;, &quot;Gatot Subroto 5, Jaksel&quot;),
-    (&quot;CRM&quot;, &quot;CV Sinar Terang&quot;, &quot;0812-3456-7890&quot;, &quot;Jl. Pahlawan 12, Surabaya&quot;),
-    (&quot;POS&quot;, &quot;CV Sinar Terang Elektrik&quot;, &quot;081234567890&quot;, &quot;Jl Pahlawan No 12 Surabaya&quot;),
-    (&quot;WEB&quot;, &quot;Toko Sinar&quot;, &quot;085799990000&quot;, &quot;Jl. Diponegoro 3, Malang&quot;),
-    (&quot;CRM&quot;, &quot;UD Berkah Tani&quot;, &quot;0274-889911&quot;, &quot;Jl. Kaliurang Km 7, Sleman&quot;),
-]
-def norm_nama(n):
-    n = n.lower().replace(&quot;.&quot;, &quot; &quot;)
-    n = re.sub(r&quot;\b(pt|cv|ud|toko|tbk)\b&quot;, &quot; &quot;, n)
-    return &quot; &quot;.join(n.split())
-def norm_hp(h):
-    d = re.sub(r&quot;\D&quot;, &quot;&quot;, h)
-    return &quot;0&quot; + d[2:] if d.startswith(&quot;62&quot;) else d
-def mirip(a, b):
-    s_nama = SequenceMatcher(None, norm_nama(a[1]), norm_nama(b[1])).ratio()
-    s_hp = 1.0 if norm_hp(a[2]) == norm_hp(b[2]) else 0.0
-    return 0.6 * s_nama + 0.4 * s_hp, s_nama, s_hp
-
-grup = list(range(len(DATA)))
-def akar(i):
-    while grup[i] != i: i = grup[i]
-    return i
-for i in range(len(DATA)):
-    for j in range(i + 1, len(DATA)):
-        skor, sn, sh = mirip(DATA[i], DATA[j])
-        if skor &gt;= 0.75:
-            grup[akar(j)] = akar(i)
-            print(f&quot;cocok {skor:.2f} (nama {sn:.2f}, hp {sh:.0f}): {DATA[i][0]}:{DATA[i][1]}  ~  {DATA[j][0]}:{DATA[j][1]}&quot;)
-klaster = {}
-for i in range(len(DATA)): klaster.setdefault(akar(i), []).append(DATA[i])
-print(f&quot;\n{len(DATA)} catatan -&gt; {len(klaster)} pelanggan unik (golden record)&quot;)
-PRIORITAS = {&quot;CRM&quot;: 0, &quot;POS&quot;: 1, &quot;WEB&quot;: 2}                      # aturan survivorship: CRM paling tepercaya
-for k in klaster.values():
-    terbaik = min(k, key=lambda x: PRIORITAS[x[0]])
-    print(f&quot;  {terbaik[1]:&lt;22} {norm_hp(terbaik[2]):&lt;14} sumber: {&#x27;, &#x27;.join(x[0] for x in k)}&quot;)
-</code></pre>
-<div class="lbl">KELUARAN</div><pre><code>cocok 1.00 (nama 1.00, hp 1): CRM:PT Maju Jaya Abadi  ~  POS:PT. MAJU JAYA ABADI
-cocok 1.00 (nama 1.00, hp 1): CRM:PT Maju Jaya Abadi  ~  WEB:Maju Jaya Abadi
-cocok 1.00 (nama 1.00, hp 1): POS:PT. MAJU JAYA ABADI  ~  WEB:Maju Jaya Abadi
-cocok 0.84 (nama 0.73, hp 1): CRM:CV Sinar Terang  ~  POS:CV Sinar Terang Elektrik
-
-7 catatan -&gt; 4 pelanggan unik (golden record)
-  PT Maju Jaya Abadi     0215550123     sumber: CRM, POS, WEB
-  CV Sinar Terang        081234567890   sumber: CRM, POS
-  Toko Sinar             085799990000   sumber: WEB
-  UD Berkah Tani         0274889911     sumber: CRM</code></pre>
-<h2>Poin penting</h2><ul><li>Proyek mini: Master data management: menggabungkan duplikat pelanggan.</li><li>Normalisasi nama badan usaha (PT, CV, UD, tanda baca) dan nomor telepon (+62/0)</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Poin penting</h2><ul><li>Proyek mini: Master data management: menggabungkan duplikat pelanggan.</li><li>Normalisasi nama badan usaha (PT, CV, UD, tanda baca) dan nomor telepon (+62/0)</li><li>Kerjakan dulu sendiri, lalu buka kode final untuk code review.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Apa itu golden record dalam master data management?</summary><p class="ok">Jawaban: Satu versi data terbaik untuk sebuah entitas (misalnya pelanggan) yang disusun dari beberapa sumber dengan aturan yang jelas</p><p>Single source of truth.</p></details>
 <a class="cta" href="/#proj-13-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-4-segmentasi-pelanggan-rfm-untuk-kampanye-pemasaran">Mini 4: Segmentasi pelanggan RFM untuk kampanye pemasaran</a></p><p>Berikutnya: <a href="/belajar/proj/mini-6-gap-assessment-keamanan-informasi-dan-register-risiko">Mini 6: Gap assessment keamanan informasi dan register risiko</a></p>
 </main>

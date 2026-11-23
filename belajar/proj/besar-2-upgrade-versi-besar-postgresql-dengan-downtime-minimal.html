@@ -24,38 +24,7 @@
 <p><b>Penyelesaian langkah demi langkah:</b><br>1. Audit kompatibilitas dan perbaiki tabel tanpa primary key.<br>2. Bangun server 16, salin skema, buat subscription, dan pantau sampai lag nol.<br>3. Jalankan validasi data otomatis dan uji beban baca di server baru.<br>4. Gladi bersih cutover di staging dengan stopwatch; susun runbook menit per menit.<br>5. Cutover produksi di jam sepi, pantau, dan pensiunkan server lama setelah masa aman.</p>
 <p><b>Standar industri yang dinilai:</b> downtime terukur sesuai target, data tervalidasi dengan checksum, sequence tersinkron, runbook dan rollback teruji di gladi bersih</p>
 <div class="tw"><table><caption>Arsitektur dan stack (PostgreSQL 12 → 16, logical replication (publication/subscription), pg_dump --schema-only, PgBouncer, pgBackRest, skrip validasi Python)</caption><thead><tr><th>Bagian</th><th>Isi</th></tr></thead><tbody><tr><td>Persiapan</td><td>wal_level = logical, replica identity semua tabel, uji aplikasi di 16 (staging)</td></tr><tr><td>Sinkronisasi</td><td>publication FOR ALL TABLES, subscription copy_data + streaming</td></tr><tr><td>Validasi</td><td>count + md5 per tabel/partisi, sampling query bisnis kritis di kedua sisi</td></tr><tr><td>Cutover</td><td>PAUSE pooler → lag 0 → setval sequence → ganti host → RESUME; target &lt; 5 menit</td></tr><tr><td>Pasca</td><td>ANALYZE penuh, pantau pg_stat_statements dan error 24 jam, server lama standby 7 hari</td></tr><tr><td>Risiko</td><td>DDL selama replikasi tidak ikut (freeze migrasi skema), sequence, large objects</td></tr></tbody></table></div>
-<div class="lbl">SQL</div><pre><code>-- Upgrade PostgreSQL 12 (EOL) -&gt; 16 dengan logical replication: downtime hanya beberapa detik saat cutover
--- ===== Di server LAMA (12) =====
-ALTER SYSTEM SET wal_level = logical;                     -- butuh restart terjadwal sekali
-CREATE ROLE replikator WITH LOGIN REPLICATION PASSWORD :&#x27;sandi&#x27;;
-GRANT SELECT ON ALL TABLES IN SCHEMA public TO replikator;
--- Semua tabel wajib punya primary key atau REPLICA IDENTITY agar UPDATE/DELETE bisa direplikasi
-SELECT c.relname FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
-WHERE n.nspname = &#x27;public&#x27; AND c.relkind = &#x27;r&#x27;
-  AND NOT EXISTS (SELECT 1 FROM pg_index i WHERE i.indrelid = c.oid AND i.indisprimary);
-CREATE PUBLICATION pub_upgrade FOR ALL TABLES;
-
--- ===== Di server BARU (16) =====
--- 1) Skema saja: pg_dump --schema-only -d toko_lama | psql -d toko
--- 2) Langganan: salinan awal + perubahan berjalan
-CREATE SUBSCRIPTION sub_upgrade
-  CONNECTION &#x27;host=db-lama.internal dbname=toko user=replikator sslmode=require&#x27;
-  PUBLICATION pub_upgrade WITH (copy_data = true, streaming = on);
-
--- 3) Pantau sampai lag ~0
-SELECT subname, received_lsn, latest_end_lsn, last_msg_receipt_time FROM pg_stat_subscription;
-
--- 4) Validasi data: jumlah baris dan checksum per tabel di kedua sisi
-SELECT &#x27;pesanan&#x27; AS tabel, count(*), md5(string_agg(id::text || total::text, &#x27;,&#x27; ORDER BY id)) FROM pesanan;
-
--- ===== Cutover (jendela 5 menit, diumumkan) =====
--- a) Aplikasi mode baca-saja / PgBouncer PAUSE
--- b) Pastikan lag 0, lalu SINKRONKAN SEQUENCE (logical replication tidak membawa nilai sequence):
-SELECT format(&#x27;SELECT setval(%L, %s, true);&#x27;, sequencename, last_value)
-FROM pg_sequences WHERE last_value IS NOT NULL;           -- jalankan di lama, eksekusi hasilnya di baru
--- c) DROP SUBSCRIPTION sub_upgrade;  arahkan PgBouncer ke server baru;  RESUME
--- d) ANALYZE semua tabel di server baru; pantau pg_stat_statements 24 jam; server lama dibiarkan 7 hari untuk rollback</code></pre>
-<h2>Poin penting</h2><ul><li>Proyek besar: Upgrade versi besar PostgreSQL dengan downtime minimal.</li><li>Stack: PostgreSQL 12 → 16, logical replication (publication/subscription), pg_dump --schema-only, PgBouncer, pgBackRest, skrip validasi Python.</li><li>Berkas inti penyelesaian ada di bawah; sisanya mengikuti pola yang sama.</li></ul>
+<h2>Poin penting</h2><ul><li>Proyek besar: Upgrade versi besar PostgreSQL dengan downtime minimal.</li><li>Stack: PostgreSQL 12 → 16, logical replication (publication/subscription), pg_dump --schema-only, PgBouncer, pgBackRest, skrip validasi Python.</li><li>Kerjakan dulu sendiri, lalu buka kode final untuk code review.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa nilai sequence harus disinkronkan manual saat cutover dengan logical replication?</summary><p class="ok">Jawaban: Logical replication menyalin baris tabel tetapi tidak menyalin posisi sequence, sehingga INSERT pertama di server baru bisa bentrok primary key</p><p>Langkah yang sering terlupa.</p></details>
 <a class="cta" href="/#proj-12-8">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/besar-1-postgresql-high-availability-di-kubernetes-dengan-backup-dan-p">Besar 1: PostgreSQL high availability di Kubernetes dengan backup dan PITR</a></p><p>Berikutnya: <a href="/belajar/proj/besar-3-tuning-dan-observability-database-fintech">Besar 3: Tuning dan observability database fintech</a></p>
 </main>

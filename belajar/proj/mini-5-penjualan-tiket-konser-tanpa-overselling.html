@@ -24,61 +24,7 @@
 <p><b>Penyelesaian langkah demi langkah:</b><br>1. <code>Executors.newVirtualThreadPerTaskExecutor()</code> untuk ribuan tugas ringan.<br>2. Loop <code>compareAndSet</code> pada <code>AtomicInteger</code>: kurangi hanya jika nilai belum berubah.<br>3. <code>ConcurrentHashMap.newKeySet()</code>; <code>add</code> mengembalikan false untuk ID yang sudah ada.<br>4. Di database nyata, gunakan <code>UPDATE ... WHERE sisa &gt;= 1</code> atau <code>SELECT ... FOR UPDATE</code>.</p>
 <p><b>Kembangkan sendiri:</b> ganti stok di memori dengan PostgreSQL dan uji dengan 2 instance aplikasi; bandingkan penguncian optimistik dan pesimistik.</p>
 <div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Simulasi 5.000 request bersamaan dengan virtual thread</td><td>Executors.newVirtualThreadPerTaskExecutor() untuk ribuan tugas ringan.</td></tr><tr><td>Pengurangan stok atomik (compare-and-set)</td><td>Loop compareAndSet pada AtomicInteger: kurangi hanya jika nilai belum berubah.</td></tr><tr><td>Idempotency key: request yang dikirim ulang tidak diproses dua kali</td><td>ConcurrentHashMap.newKeySet(); add mengembalikan false untuk ID yang sudah ada.</td></tr><tr><td>Laporan: terjual, sisa, request ganda, dan bukti tidak ada overselling</td><td>Di database nyata, gunakan UPDATE ... WHERE sisa &gt;= 1 atau SELECT ... FOR UPDATE.</td></tr></tbody></table></div>
-<div class="lbl">JAVA</div><pre><code>import java.util.*;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.*;
-
-public class Main {
-    /** Stok tiket tanpa overselling: compare-and-set atomik, bukan &quot;cek lalu kurangi&quot;. */
-    static class StokTiket {
-        private final AtomicInteger sisa;
-        StokTiket(int awal) { sisa = new AtomicInteger(awal); }
-        boolean pesan(int jumlah) {
-            while (true) {
-                int s = sisa.get();
-                if (s &lt; jumlah) return false;
-                if (sisa.compareAndSet(s, s - jumlah)) return true;
-            }
-        }
-        int sisa() { return sisa.get(); }
-    }
-
-    /** Versi salah untuk perbandingan: cek dan kurangi tidak atomik. */
-    static class StokNaif {
-        int sisa;
-        StokNaif(int awal) { sisa = awal; }
-        boolean pesan(int jumlah) {
-            if (sisa &gt;= jumlah) { Thread.yield(); sisa -= jumlah; return true; }
-            return false;
-        }
-    }
-
-    public static void main(String[] args) throws Exception {
-        int kuota = 1_000, pembeli = 5_000;
-        StokTiket stok = new StokTiket(kuota);
-        Set&lt;Integer&gt; idempoten = ConcurrentHashMap.newKeySet();
-        AtomicInteger berhasil = new AtomicInteger(), duplikat = new AtomicInteger();
-        try (ExecutorService ex = Executors.newVirtualThreadPerTaskExecutor()) {
-            for (int i = 0; i &lt; pembeli; i++) {
-                int idRequest = i % 4_500; // 500 request dikirim ulang (klik dua kali / retry)
-                ex.submit(() -&gt; {
-                    if (!idempoten.add(idRequest)) { duplikat.incrementAndGet(); return; }
-                    if (stok.pesan(1)) berhasil.incrementAndGet();
-                });
-            }
-        }
-        System.out.println(&quot;Tiket terjual : &quot; + berhasil.get() + &quot; dari kuota &quot; + kuota);
-        System.out.println(&quot;Sisa stok     : &quot; + stok.sisa());
-        System.out.println(&quot;Request ganda : &quot; + duplikat.get() + &quot; diabaikan (idempotency key)&quot;);
-        System.out.println(&quot;Overselling   : &quot; + (berhasil.get() &gt; kuota ? &quot;YA&quot; : &quot;tidak&quot;));
-    }
-}
-</code></pre>
-<div class="lbl">KELUARAN</div><pre><code>Tiket terjual : 1000 dari kuota 1000
-Sisa stok     : 0
-Request ganda : 500 diabaikan (idempotency key)
-Overselling   : tidak</code></pre>
-<h2>Poin penting</h2><ul><li>Proyek mini: Penjualan tiket konser tanpa overselling.</li><li>Simulasi 5.000 request bersamaan dengan virtual thread</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Poin penting</h2><ul><li>Proyek mini: Penjualan tiket konser tanpa overselling.</li><li>Simulasi 5.000 request bersamaan dengan virtual thread</li><li>Kerjakan dulu sendiri, lalu buka kode final untuk code review.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa pola &quot;if (sisa &gt;= 1) sisa--&quot; tidak aman di banyak thread?</summary><p class="ok">Jawaban: Dua thread bisa sama-sama lolos pengecekan sebelum salah satunya mengurangi stok</p><p>Check-then-act harus atomik.</p></details>
 <a class="cta" href="/#proj-7-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-4-rate-limiter-dan-cache-untuk-api-publik">Mini 4: Rate limiter dan cache untuk API publik</a></p><p>Berikutnya: <a href="/belajar/proj/mini-6-rute-tercepat-kurir-antar-kecamatan">Mini 6: Rute tercepat kurir antar kecamatan</a></p>
 </main>

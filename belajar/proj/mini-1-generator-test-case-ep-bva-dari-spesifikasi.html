@@ -24,67 +24,7 @@
 <p><b>Penyelesaian langkah demi langkah:</b><br>1. Tulis SPEK sebagai daftar dict agar mudah ditambah field baru.<br>2. Fungsi kasus(f) menghasilkan pasangan (nilai, seharusnya diterima?).<br>3. Untuk field berkelipatan, kasus yang bukan kelipatan harus ditolak.<br>4. Bandingkan hasil validator dengan harapan, beri nomor TC, dan kumpulkan yang gagal.</p>
 <p><b>Kembangkan sendiri:</b> baca spesifikasi dari OpenAPI (minimum, maximum, maxLength, multipleOf) dan ekspor test case ke CSV yang bisa diimpor ke Qase atau TestRail.</p>
 <div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Spesifikasi field sebagai data (tipe, min, max, kelipatan)</td><td>Tulis SPEK sebagai daftar dict agar mudah ditambah field baru.</td></tr><tr><td>Nilai batas min-1, min, min+1, tengah, max-1, max, max+1</td><td>Fungsi kasus(f) menghasilkan pasangan (nilai, seharusnya diterima?).</td></tr><tr><td>Kasus khusus: kelipatan nominal dan teks berisi spasi saja</td><td>Untuk field berkelipatan, kasus yang bukan kelipatan harus ditolak.</td></tr><tr><td>Eksekusi ke sistem dan laporan test case yang gagal</td><td>Bandingkan hasil validator dengan harapan, beri nomor TC, dan kumpulkan yang gagal.</td></tr></tbody></table></div>
-<div class="lbl">PYTHON</div><pre><code># Generator test case EP + BVA dari spesifikasi field formulir pendaftaran
-SPEK = [
-    {&quot;field&quot;: &quot;usia&quot;, &quot;tipe&quot;: &quot;int&quot;, &quot;min&quot;: 17, &quot;max&quot;: 65},
-    {&quot;field&quot;: &quot;nama&quot;, &quot;tipe&quot;: &quot;str&quot;, &quot;min&quot;: 2, &quot;max&quot;: 50},
-    {&quot;field&quot;: &quot;nominal_topup&quot;, &quot;tipe&quot;: &quot;int&quot;, &quot;min&quot;: 10_000, &quot;max&quot;: 2_000_000, &quot;kelipatan&quot;: 1_000},
-]
-
-def kasus(f):
-    lo, hi = f[&quot;min&quot;], f[&quot;max&quot;]
-    if f[&quot;tipe&quot;] == &quot;int&quot;:
-        nilai = [(lo - 1, False), (lo, True), (lo + 1, True), ((lo + hi) // 2, True), (hi - 1, True), (hi, True), (hi + 1, False)]
-        if &quot;kelipatan&quot; in f:
-            k = f[&quot;kelipatan&quot;]
-            nilai = [(v, ok and v % k == 0) for v, ok in nilai] + [(lo + k // 2, False)]
-        return [(str(v), ok) for v, ok in nilai]
-    panjang = [lo - 1, lo, hi, hi + 1]
-    return [(&quot;x&quot; * n, lo &lt;= n &lt;= hi) for n in panjang] + [(&quot;   &quot;, False)]
-
-def validasi(field, teks):            # sistem yang diuji (ada 1 bug)
-    if field == &quot;usia&quot;: return teks.isdigit() and 17 &lt;= int(teks) &lt;= 65
-    if field == &quot;nama&quot;: return 2 &lt;= len(teks.strip()) &lt;= 50
-    if field == &quot;nominal_topup&quot;:
-        v = int(teks); return 10_000 &lt;= v &lt;= 2_000_000          # lupa cek kelipatan 1.000
-
-no, bug = 0, []
-for f in SPEK:
-    print(f&quot;[{f[&#x27;field&#x27;]}]&quot;)
-    for v, harap in kasus(f):
-        no += 1
-        dapat = validasi(f[&quot;field&quot;], v)
-        tampil = v if v.isdigit() else repr(v) if len(v) &lt;= 12 else f&quot;&#x27;x&#x27;*{len(v)}&quot;
-        tanda = &quot;&quot; if dapat == harap else &quot;  &lt;-- BUG&quot;
-        if tanda: bug.append((f&quot;TC-{no:02}&quot;, f[&quot;field&quot;], v))
-        print(f&quot;  TC-{no:02} {tampil:&lt;12} harap {&#x27;terima&#x27; if harap else &#x27;tolak&#x27;:&lt;6} dapat {&#x27;terima&#x27; if dapat else &#x27;tolak&#x27;:&lt;6}{tanda}&quot;)
-print(f&quot;{no} test case, {len(bug)} gagal:&quot;, [b[0] for b in bug], &quot;-&gt; satu akar masalah: aturan kelipatan 1.000 tidak dicek&quot;)
-</code></pre>
-<div class="lbl">KELUARAN</div><pre><code>[usia]
-  TC-01 16           harap tolak  dapat tolak 
-  TC-02 17           harap terima dapat terima
-  TC-03 18           harap terima dapat terima
-  TC-04 41           harap terima dapat terima
-  TC-05 64           harap terima dapat terima
-  TC-06 65           harap terima dapat terima
-  TC-07 66           harap tolak  dapat tolak 
-[nama]
-  TC-08 &#x27;x&#x27;          harap tolak  dapat tolak 
-  TC-09 &#x27;xx&#x27;         harap terima dapat terima
-  TC-10 &#x27;x&#x27;*50       harap terima dapat terima
-  TC-11 &#x27;x&#x27;*51       harap tolak  dapat tolak 
-  TC-12 &#x27;   &#x27;        harap tolak  dapat tolak 
-[nominal_topup]
-  TC-13 9999         harap tolak  dapat tolak 
-  TC-14 10000        harap terima dapat terima
-  TC-15 10001        harap tolak  dapat terima  &lt;-- BUG
-  TC-16 1005000      harap terima dapat terima
-  TC-17 1999999      harap tolak  dapat terima  &lt;-- BUG
-  TC-18 2000000      harap terima dapat terima
-  TC-19 2000001      harap tolak  dapat tolak 
-  TC-20 10500        harap tolak  dapat terima  &lt;-- BUG
-20 test case, 3 gagal: [&#x27;TC-15&#x27;, &#x27;TC-17&#x27;, &#x27;TC-20&#x27;] -&gt; satu akar masalah: aturan kelipatan 1.000 tidak dicek</code></pre>
-<h2>Poin penting</h2><ul><li>Proyek mini: Generator test case EP + BVA dari spesifikasi.</li><li>Spesifikasi field sebagai data (tipe, min, max, kelipatan)</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Poin penting</h2><ul><li>Proyek mini: Generator test case EP + BVA dari spesifikasi.</li><li>Spesifikasi field sebagai data (tipe, min, max, kelipatan)</li><li>Kerjakan dulu sendiri, lalu buka kode final untuk code review.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Untuk rentang 10.000-2.000.000, nilai mana yang paling penting diuji menurut BVA?</summary><p class="ok">Jawaban: 9.999, 10.000, 2.000.000, 2.000.001</p><p>Bug sering berada di batas.</p></details>
 <a class="cta" href="/#proj-11-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/besar-4-ux-fitur-asisten-ai-di-aplikasi-perbankan">Besar 4: UX fitur asisten AI di aplikasi perbankan</a></p><p>Berikutnya: <a href="/belajar/proj/mini-2-mutation-testing-mengukur-kekuatan-suite-tes">Mini 2: Mutation testing: mengukur kekuatan suite tes</a></p>
 </main>

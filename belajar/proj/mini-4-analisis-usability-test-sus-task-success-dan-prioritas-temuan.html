@@ -24,51 +24,7 @@
 <p><b>Penyelesaian langkah demi langkah:</b><br>1. SUS: butir ganjil (skor-1), butir genap (5-skor), jumlahkan lalu kali 2,5.<br>2. Bandingkan rata-rata dengan patokan 68 dan grade kurva Sauro-Lewis.<br>3. Hitung sukses/8, median waktu, dan rata-rata SEQ untuk tiap tugas.<br>4. Urutkan temuan dengan skor severity × frekuensi dan tulis rekomendasinya.</p>
 <p><b>Kembangkan sendiri:</b> tambahkan interval kepercayaan (adjusted Wald) untuk task success, dan buat grafik before-after setelah redesign.</p>
 <div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Skor SUS per partisipan dan rata-rata dengan grade</td><td>SUS: butir ganjil (skor-1), butir genap (5-skor), jumlahkan lalu kali 2,5.</td></tr><tr><td>Task success rate, median waktu, dan SEQ per tugas</td><td>Bandingkan rata-rata dengan patokan 68 dan grade kurva Sauro-Lewis.</td></tr><tr><td>Prioritas temuan berdasarkan severity Nielsen × frekuensi</td><td>Hitung sukses/8, median waktu, dan rata-rata SEQ untuk tiap tugas.</td></tr><tr><td>Keluaran siap ditempel ke laporan</td><td>Urutkan temuan dengan skor severity × frekuensi dan tulis rekomendasinya.</td></tr></tbody></table></div>
-<div class="lbl">PYTHON</div><pre><code>import statistics as st
-
-# Hasil usability test aplikasi bank digital: 8 partisipan, 3 tugas, + kuesioner SUS (10 butir, skala 1-5)
-SUS = [
-    [4, 2, 4, 1, 4, 2, 5, 2, 4, 2], [5, 1, 4, 2, 5, 1, 4, 1, 5, 2], [3, 3, 3, 3, 3, 3, 3, 2, 3, 3],
-    [4, 2, 5, 1, 4, 2, 4, 2, 4, 1], [2, 4, 2, 4, 3, 4, 2, 4, 2, 4], [4, 1, 4, 2, 4, 2, 5, 1, 4, 2],
-    [5, 2, 4, 1, 4, 1, 4, 2, 5, 1], [3, 2, 4, 2, 3, 2, 4, 3, 3, 2],
-]
-def skor_sus(j):
-    ganjil = sum(j[i] - 1 for i in range(0, 10, 2))
-    genap = sum(5 - j[i] for i in range(1, 10, 2))
-    return (ganjil + genap) * 2.5
-
-skor = [skor_sus(j) for j in SUS]
-rata = st.mean(skor)
-grade = &quot;A&quot; if rata &gt;= 80.3 else &quot;B&quot; if rata &gt;= 74 else &quot;C&quot; if rata &gt;= 68 else &quot;D&quot; if rata &gt;= 51 else &quot;F&quot;
-print(&quot;SUS per partisipan:&quot;, skor)
-print(f&quot;SUS rata-rata {rata:.1f} (grade {grade}; rata-rata industri 68)&quot;)
-
-# Tugas: (nama, berhasil dari 8, median detik, SEQ rata-rata 1-7)
-TUGAS = [(&quot;Transfer ke rekening baru&quot;, 7, 74, 5.9), (&quot;Bayar QRIS&quot;, 8, 21, 6.6), (&quot;Ubah limit kartu&quot;, 4, 168, 3.4)]
-print()
-for nama, ok, dtk, seq in TUGAS:
-    print(f&quot;{nama:&lt;27} sukses {ok}/8 ({ok/8:&gt;4.0%})  median {dtk:&gt;3}s  SEQ {seq}&quot;)
-
-# Temuan diprioritaskan: severity Nielsen (0-4) x frekuensi
-TEMUAN = [(&quot;Menu limit kartu tersembunyi di Profil &gt; Keamanan&quot;, 4, 4), (&quot;Label &#x27;Rekening tujuan&#x27; vs &#x27;Penerima&#x27; tidak konsisten&quot;, 2, 3),
-          (&quot;Tombol konfirmasi transfer di bawah lipatan pada HP 360px&quot;, 3, 5), (&quot;Ikon QRIS tanpa label&quot;, 1, 2)]
-print(&quot;\nPRIORITAS PERBAIKAN&quot;)
-for t, sev, frek in sorted(TEMUAN, key=lambda x: -(x[1] * x[2])):
-    print(f&quot;  skor {sev * frek:&gt;2}  sev {sev}  {frek}/8 partisipan  {t}&quot;)
-</code></pre>
-<div class="lbl">KELUARAN</div><pre><code>SUS per partisipan: [80.0, 90.0, 52.5, 82.5, 27.5, 82.5, 87.5, 65.0]
-SUS rata-rata 70.9 (grade C; rata-rata industri 68)
-
-Transfer ke rekening baru   sukses 7/8 ( 88%)  median  74s  SEQ 5.9
-Bayar QRIS                  sukses 8/8 (100%)  median  21s  SEQ 6.6
-Ubah limit kartu            sukses 4/8 ( 50%)  median 168s  SEQ 3.4
-
-PRIORITAS PERBAIKAN
-  skor 16  sev 4  4/8 partisipan  Menu limit kartu tersembunyi di Profil &gt; Keamanan
-  skor 15  sev 3  5/8 partisipan  Tombol konfirmasi transfer di bawah lipatan pada HP 360px
-  skor  6  sev 2  3/8 partisipan  Label &#x27;Rekening tujuan&#x27; vs &#x27;Penerima&#x27; tidak konsisten
-  skor  2  sev 1  2/8 partisipan  Ikon QRIS tanpa label</code></pre>
-<h2>Poin penting</h2><ul><li>Proyek mini: Analisis usability test: SUS, task success, dan prioritas temuan.</li><li>Skor SUS per partisipan dan rata-rata dengan grade</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Poin penting</h2><ul><li>Proyek mini: Analisis usability test: SUS, task success, dan prioritas temuan.</li><li>Skor SUS per partisipan dan rata-rata dengan grade</li><li>Kerjakan dulu sendiri, lalu buka kode final untuk code review.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Dengan 8 partisipan, apa keterbatasan angka task success 4/8 (50%)?</summary><p class="ok">Jawaban: Interval kepercayaannya lebar, jadi angka itu menunjukkan masalah serius tetapi bukan estimasi persis untuk seluruh pengguna</p><p>Sampel kecil cocok untuk menemukan masalah, bukan mengukur presisi.</p></details>
 <a class="cta" href="/#proj-10-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-3-type-scale-modular-dan-aturan-panjang-baris">Mini 3: Type scale modular dan aturan panjang baris</a></p><p>Berikutnya: <a href="/belajar/proj/mini-5-audit-aksesibilitas-otomatis-hasil-slicing">Mini 5: Audit aksesibilitas otomatis hasil slicing</a></p>
 </main>

@@ -24,34 +24,7 @@
 <p><b>Penyelesaian langkah demi langkah:</b><br>1. Wawancarai pengguna dashboard: keputusan apa yang diambil dari angka ini?<br>2. Tulis definisi tunggal untuk setiap metrik dan simpan di repo/wiki sebagai sumber kebenaran.<br>3. Buat measure DAX yang memakai definisi tersebut; jangan menghitung ulang di setiap visual.<br>4. Uji angka dashboard dengan query SQL independen sebelum dibagikan.</p>
 <p><b>Kembangkan sendiri:</b> atur refresh otomatis harian, row-level security per wilayah, dan peringatan email saat KPI di bawah target.</p>
 <div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Kamus metrik: nama, definisi, rumus, sumber tabel, pemilik</td><td>Wawancarai pengguna dashboard: keputusan apa yang diambil dari angka ini?</td></tr><tr><td>Empat KPI utama dengan target dan pembanding periode lalu</td><td>Tulis definisi tunggal untuk setiap metrik dan simpan di repo/wiki sebagai sumber kebenaran.</td></tr><tr><td>Tata letak satu halaman: KPI di atas, tren di tengah, rincian di bawah</td><td>Buat measure DAX yang memakai definisi tersebut; jangan menghitung ulang di setiap visual.</td></tr><tr><td>Rumus siap pakai di SQL dan DAX (Power BI)</td><td>Uji angka dashboard dengan query SQL independen sebelum dibagikan.</td></tr></tbody></table></div>
-<div class="lbl">CONTOH</div><pre><code>KAMUS METRIK (versi 1.2, pemilik: Tim Data)
-
-Pelanggan aktif (MAU)
-  Definisi : pelanggan unik dengan ≥ 1 pesanan berstatus DIBAYAR dalam 30 hari terakhir
-  SQL      : SELECT COUNT(DISTINCT pelanggan) FROM pesanan
-             WHERE status = &#x27;DIBAYAR&#x27; AND tanggal &gt;= CURRENT_DATE - INTERVAL &#x27;30 days&#x27;;
-  DAX      : MAU = CALCULATE(DISTINCTCOUNT(Pesanan[pelanggan]),
-                 Pesanan[status] = &quot;DIBAYAR&quot;,
-                 DATESINPERIOD(Kalender[Tanggal], MAX(Kalender[Tanggal]), -30, DAY))
-
-Omzet bersih
-  Definisi : total nilai pesanan DIBAYAR dikurangi retur, tanpa ongkos kirim
-  DAX      : Omzet Bersih = SUM(Pesanan[nilai]) - SUM(Retur[nilai])
-             Omzet MoM % = DIVIDE([Omzet Bersih] - CALCULATE([Omzet Bersih], DATEADD(Kalender[Tanggal], -1, MONTH)),
-                                  CALCULATE([Omzet Bersih], DATEADD(Kalender[Tanggal], -1, MONTH)))
-
-AOV (average order value)
-  Definisi : Omzet bersih / jumlah pesanan DIBAYAR
-  DAX      : AOV = DIVIDE([Omzet Bersih], CALCULATE(COUNTROWS(Pesanan), Pesanan[status] = &quot;DIBAYAR&quot;))
-
-Tingkat repeat order
-  Definisi : % pelanggan periode ini yang juga membeli di periode sebelumnya
-
-TATA LETAK DASHBOARD (1 halaman, dibaca dari kiri atas)
-  [ MAU ] [ Omzet bersih ] [ AOV ] [ Repeat % ]   &lt;- angka + target + panah vs bulan lalu
-  [ Tren omzet 12 bulan (garis)      ] [ Omzet per kota (batang) ]
-  [ Tabel 10 produk teratas dengan filter kategori dan tanggal   ]</code></pre>
-<h2>Poin penting</h2><ul><li>Proyek mini: Kamus metrik dan dashboard KPI satu halaman.</li><li>Kamus metrik: nama, definisi, rumus, sumber tabel, pemilik</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Poin penting</h2><ul><li>Proyek mini: Kamus metrik dan dashboard KPI satu halaman.</li><li>Kamus metrik: nama, definisi, rumus, sumber tabel, pemilik</li><li>Kerjakan dulu sendiri, lalu buka kode final untuk code review.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Masalah utama yang diselesaikan kamus metrik?</summary><p class="ok">Jawaban: Setiap divisi memakai definisi yang sama sehingga angka tidak bertabrakan</p><p>Satu sumber kebenaran definisi.</p></details>
 <a class="cta" href="/#proj-5-6">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-5-segmentasi-pelanggan-rfm">Mini 5: Segmentasi pelanggan RFM</a></p><p>Berikutnya: <a href="/belajar/proj/besar-1-analisis-churn-dan-retensi-aplikasi-langganan">Besar 1: Analisis churn dan retensi aplikasi langganan</a></p>
 </main>

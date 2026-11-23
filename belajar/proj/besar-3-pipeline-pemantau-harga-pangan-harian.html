@@ -24,67 +24,7 @@
 <p><b>Penyelesaian langkah demi langkah:</b><br>1. Petakan sumber data, ketentuan penggunaannya, dan jadwal pembaruannya.<br>2. Bangun pengambil async dengan retry; uji dengan server tiruan yang sengaja gagal.<br>3. Tambahkan validasi dan upsert; jalankan dua kali untuk membuktikan idempoten.<br>4. Kalibrasi ambang anomali dengan data historis bersama ahli pangan.<br>5. Jadwalkan pipeline, buat dashboard dan notifikasi, lalu pantau kualitas datanya.</p>
 <p><b>Standar industri yang dinilai:</b> pengambilan data sopan dan legal, idempoten, validasi eksplisit, anomali dengan statistik yang tahan outlier, observability kualitas data, dan dokumentasi sumber</p>
 <div class="tw"><table><caption>Arsitektur dan stack (Python 3.12, asyncio, httpx, Pydantic, PostgreSQL/SQLite, Airflow atau GitHub Actions cron, Metabase)</caption><thead><tr><th>Bagian</th><th>Isi</th></tr></thead><tbody><tr><td>Ingest</td><td>httpx AsyncClient, Semaphore(5), backoff + jitter, User-Agent jelas</td></tr><tr><td>Validasi</td><td>Pydantic: komoditas dikenal, rentang harga wajar, tanggal valid</td></tr><tr><td>Storage</td><td>tabel harga dengan kunci unik (tanggal, provinsi, komoditas), upsert</td></tr><tr><td>Analitik</td><td>median &amp; MAD 30 hari, modified z-score &gt; 3,5 = anomali</td></tr><tr><td>Orkestrasi</td><td>DAG: ambil -&gt; validasi -&gt; simpan -&gt; anomali -&gt; laporan/notifikasi/dashboard</td></tr><tr><td>Observability</td><td>freshness, jumlah baris, provinsi gagal, durasi tiap tugas</td></tr></tbody></table></div>
-<div class="lbl">PYTHON</div><pre><code># Pipeline pemantau harga pangan harian: ambil -&gt; validasi -&gt; simpan -&gt; deteksi anomali -&gt; laporan
-# Dijalankan terjadwal (cron/GitHub Actions/Airflow) pukul 10.00 WIB
-# ---- pipeline/ambil.py
-import asyncio, random
-import httpx
-from pydantic import BaseModel, Field, field_validator
-
-class Harga(BaseModel):
-    tanggal: str
-    provinsi: str
-    komoditas: str
-    harga: int = Field(gt=0, lt=1_000_000)
-    @field_validator(&quot;komoditas&quot;)
-    @classmethod
-    def kenal(cls, v):
-        if v not in KOMODITAS: raise ValueError(f&quot;komoditas tidak dikenal: {v}&quot;)
-        return v
-
-KOMODITAS = {&quot;beras medium&quot;, &quot;beras premium&quot;, &quot;cabai merah&quot;, &quot;bawang merah&quot;, &quot;telur ayam&quot;, &quot;minyak goreng&quot;, &quot;gula pasir&quot;}
-SEM = asyncio.Semaphore(5)                                  # sopan ke server sumber
-
-async def ambil(client: httpx.AsyncClient, prov: str, tanggal: str, coba=5) -&gt; list[Harga]:
-    for i in range(coba):
-        try:
-            async with SEM:
-                r = await client.get(f&quot;{SUMBER_API}/harga&quot;, params={&quot;prov&quot;: prov, &quot;tgl&quot;: tanggal}, timeout=15)
-            if r.status_code == 429 or r.status_code &gt;= 500: raise httpx.HTTPStatusError(&quot;retry&quot;, request=r.request, response=r)
-            r.raise_for_status()
-            return [Harga(**x) for x in r.json()[&quot;data&quot;]]
-        except (httpx.TransportError, httpx.HTTPStatusError):
-            await asyncio.sleep(min(60, 2 ** i) + random.random())     # exponential backoff + jitter
-    raise RuntimeError(f&quot;gagal ambil {prov} setelah {coba} percobaan&quot;)
-
-async def ambil_semua(tanggal):
-    async with httpx.AsyncClient(headers={&quot;User-Agent&quot;: &quot;pemantau-harga/1.0&quot;}) as c:
-        hasil = await asyncio.gather(*(ambil(c, p, tanggal) for p in PROVINSI), return_exceptions=True)
-    gagal = [p for p, h in zip(PROVINSI, hasil) if isinstance(h, Exception)]
-    return [x for h in hasil if not isinstance(h, Exception) for x in h], gagal
-
-# ---- pipeline/anomali.py
-from statistics import median
-def anomali(riwayat: list[int], hari_ini: int, k=3.5):
-    &quot;&quot;&quot;Modified z-score berbasis median &amp; MAD: tahan outlier, cocok untuk harga yang melonjak musiman.&quot;&quot;&quot;
-    med = median(riwayat); mad = median(abs(x - med) for x in riwayat) or 1
-    z = 0.6745 * (hari_ini - med) / mad
-    return z if abs(z) &gt; k else None
-
-# ---- pipeline/dag.py  (urutan tugas = topological sort; tugas gagal menghentikan turunannya saja)
-TUGAS = {&quot;ambil&quot;: [], &quot;validasi&quot;: [&quot;ambil&quot;], &quot;simpan&quot;: [&quot;validasi&quot;], &quot;anomali&quot;: [&quot;simpan&quot;],
-         &quot;laporan_pdf&quot;: [&quot;anomali&quot;], &quot;notifikasi&quot;: [&quot;anomali&quot;], &quot;dashboard&quot;: [&quot;simpan&quot;]}
-
-# ---- pipeline/simpan.py: upsert idempoten (aman dijalankan ulang untuk tanggal yang sama)
-UPSERT = &quot;&quot;&quot;INSERT INTO harga (tanggal, provinsi, komoditas, harga) VALUES (?, ?, ?, ?)
-            ON CONFLICT (tanggal, provinsi, komoditas) DO UPDATE SET harga = excluded.harga&quot;&quot;&quot;
-
-# ---- keluaran
-# 1. tabel harga per provinsi + perubahan vs minggu lalu, 2. daftar anomali (cabai merah Papua +38%, z=5.1)
-# 3. notifikasi ke kanal tim jika ada anomali atau provinsi gagal diambil
-# 4. data quality report: baris ditolak validasi, provinsi hilang, freshness (data terakhir &lt; 26 jam)
-# Etika &amp; legal: patuhi robots.txt dan ketentuan sumber data, cantumkan atribusi, jangan membebani server.</code></pre>
-<h2>Poin penting</h2><ul><li>Proyek besar: Pipeline pemantau harga pangan harian.</li><li>Stack: Python 3.12, asyncio, httpx, Pydantic, PostgreSQL/SQLite, Airflow atau GitHub Actions cron, Metabase.</li><li>Berkas inti penyelesaian ada di bawah; sisanya mengikuti pola yang sama.</li></ul>
+<h2>Poin penting</h2><ul><li>Proyek besar: Pipeline pemantau harga pangan harian.</li><li>Stack: Python 3.12, asyncio, httpx, Pydantic, PostgreSQL/SQLite, Airflow atau GitHub Actions cron, Metabase.</li><li>Kerjakan dulu sendiri, lalu buka kode final untuk code review.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa penyimpanan dibuat idempoten dengan upsert?</summary><p class="ok">Jawaban: Agar pipeline bisa dijalankan ulang untuk tanggal yang sama setelah gagal tanpa membuat data ganda</p><p>Idempotensi membuat pemulihan aman.</p></details>
 <a class="cta" href="/#proj-14-9">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/besar-2-mesin-pencarian-produk-dengan-bm25-sebagai-api">Besar 2: Mesin pencarian produk dengan BM25 sebagai API</a></p><p>Berikutnya: <a href="/belajar/proj/besar-4-mesin-deteksi-fraud-transaksi-real-time">Besar 4: Mesin deteksi fraud transaksi real-time</a></p>
 </main>

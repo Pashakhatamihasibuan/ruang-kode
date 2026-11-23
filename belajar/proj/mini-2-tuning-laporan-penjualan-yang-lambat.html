@@ -24,73 +24,7 @@
 <p><b>Penyelesaian langkah demi langkah:</b><br>1. Jalankan EXPLAIN (ANALYZE) dan cari "Rows Removed by Filter" yang besar.<br>2. Ganti to_char(dibuat) = ... dengan dibuat >= awal AND dibuat &lt; awal bulan berikutnya.<br>3. Buat indeks pada (dibuat) WHERE status = selesai, sertakan pelanggan_id dan total.<br>4. VACUUM ANALYZE, ulangi EXPLAIN, dan jalankan query final.</p>
 <p><b>Kembangkan sendiri:</b> aktifkan pg_stat_statements dan auto_explain (log_min_duration 500 ms) agar query lambat berikutnya ketahuan otomatis.</p>
 <div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Baca rencana awal dan temukan penyebab (fungsi pada kolom tanggal, scan seluruh tabel)</td><td>Jalankan EXPLAIN (ANALYZE) dan cari &quot;Rows Removed by Filter&quot; yang besar.</td></tr><tr><td>Tulis ulang kondisi tanggal menjadi rentang yang sargable</td><td>Ganti to_char(dibuat) = ... dengan dibuat &gt;= awal AND dibuat &lt; awal bulan berikutnya.</td></tr><tr><td>Buat indeks parsial sesuai pola laporan dengan INCLUDE</td><td>Buat indeks pada (dibuat) WHERE status = selesai, sertakan pelanggan_id dan total.</td></tr><tr><td>Bandingkan rencana sebelum dan sesudah, dan pastikan hasilnya sama</td><td>VACUUM ANALYZE, ulangi EXPLAIN, dan jalankan query final.</td></tr></tbody></table></div>
-<div class="lbl">SQL</div><pre><code>-- Laporan &quot;omzet per kota bulan Oktober untuk pesanan selesai&quot; dikeluhkan lambat
-\timing off
-EXPLAIN (ANALYZE, COSTS OFF, TIMING OFF, SUMMARY OFF)
-SELECT pl.kota, count(*) AS pesanan, sum(p.total) AS omzet
-FROM pesanan p JOIN pelanggan pl ON pl.id = p.pelanggan_id
-WHERE p.status = &#x27;selesai&#x27; AND to_char(p.dibuat, &#x27;YYYY-MM&#x27;) = &#x27;2026-10&#x27;
-GROUP BY pl.kota;
-
--- Perbaikan 1: kondisi tanggal dibuat sargable (rentang setengah terbuka, bukan fungsi pada kolom)
--- Perbaikan 2: indeks parsial sesuai pola laporan, INCLUDE kolom yang dibaca
-CREATE INDEX pesanan_selesai_dibuat ON pesanan (dibuat) INCLUDE (pelanggan_id, total) WHERE status = &#x27;selesai&#x27;;
-VACUUM ANALYZE pesanan;
-
-EXPLAIN (ANALYZE, COSTS OFF, TIMING OFF, SUMMARY OFF)
-SELECT pl.kota, count(*) AS pesanan, sum(p.total) AS omzet
-FROM pesanan p JOIN pelanggan pl ON pl.id = p.pelanggan_id
-WHERE p.status = &#x27;selesai&#x27; AND p.dibuat &gt;= &#x27;2026-10-01 00:00+07&#x27; AND p.dibuat &lt; &#x27;2026-11-01 00:00+07&#x27;
-GROUP BY pl.kota;
-
-SELECT pl.kota, count(*) AS pesanan, sum(p.total) AS omzet
-FROM pesanan p JOIN pelanggan pl ON pl.id = p.pelanggan_id
-WHERE p.status = &#x27;selesai&#x27; AND p.dibuat &gt;= &#x27;2026-10-01 00:00+07&#x27; AND p.dibuat &lt; &#x27;2026-11-01 00:00+07&#x27;
-GROUP BY pl.kota ORDER BY omzet DESC;</code></pre>
-<div class="lbl">KELUARAN</div><pre><code>                                                          QUERY PLAN
--------------------------------------------------------------------------------------------------------------------------------
- Finalize GroupAggregate (actual rows=3 loops=1)
-   Group Key: pl.kota
-   -&gt;  Gather Merge (actual rows=9 loops=1)
-         Workers Planned: 2
-         Workers Launched: 2
-         -&gt;  Partial GroupAggregate (actual rows=3 loops=3)
-               Group Key: pl.kota
-               -&gt;  Sort (actual rows=2917 loops=3)
-                     Sort Key: pl.kota
-                     Sort Method: quicksort  Memory: 373kB
-                     Worker 0:  Sort Method: quicksort  Memory: 101kB
-                     Worker 1:  Sort Method: quicksort  Memory: 205kB
-                     -&gt;  Nested Loop (actual rows=2917 loops=3)
-                           -&gt;  Parallel Seq Scan on pesanan p (actual rows=2917 loops=3)
-                                 Filter: ((status = &#x27;selesai&#x27;::text) AND (to_char(dibuat, &#x27;YYYY-MM&#x27;::text) = &#x27;2026-10&#x27;::text))
-                                 Rows Removed by Filter: 130417
-                           -&gt;  Index Scan using pelanggan_pkey on pelanggan pl (actual rows=1 loops=8750)
-                                 Index Cond: (id = p.pelanggan_id)
-(18 rows)
-
-                                                                          QUERY PLAN
---------------------------------------------------------------------------------------------------------------------------------------------------------------
- HashAggregate (actual rows=3 loops=1)
-   Group Key: pl.kota
-   Batches: 1  Memory Usage: 24kB
-   -&gt;  Hash Join (actual rows=8750 loops=1)
-         Hash Cond: (p.pelanggan_id = pl.id)
-         -&gt;  Index Only Scan using pesanan_selesai_dibuat on pesanan p (actual rows=8750 loops=1)
-               Index Cond: ((dibuat &gt;= &#x27;2026-10-01 00:00:00+07&#x27;::timestamp with time zone) AND (dibuat &lt; &#x27;2026-11-01 00:00:00+07&#x27;::timestamp with time zone))
-               Heap Fetches: 0
-         -&gt;  Hash (actual rows=50000 loops=1)
-               Buckets: 65536  Batches: 1  Memory Usage: 3091kB
-               -&gt;  Seq Scan on pelanggan pl (actual rows=50000 loops=1)
-(11 rows)
-
-   kota   | pesanan |   omzet
-----------+---------+------------
- Bandung  |    2918 | 1471482688
- Surabaya |    2916 | 1468070706
- Denpasar |    2916 | 1466226606
-(3 rows)</code></pre>
-<h2>Poin penting</h2><ul><li>Proyek mini: Tuning laporan penjualan yang lambat.</li><li>Baca rencana awal dan temukan penyebab (fungsi pada kolom tanggal, scan seluruh tabel)</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Poin penting</h2><ul><li>Proyek mini: Tuning laporan penjualan yang lambat.</li><li>Baca rencana awal dan temukan penyebab (fungsi pada kolom tanggal, scan seluruh tabel)</li><li>Kerjakan dulu sendiri, lalu buka kode final untuk code review.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa to_char(dibuat, &#x27;YYYY-MM&#x27;) = &#x27;2026-10&#x27; tidak bisa memakai indeks pada kolom dibuat?</summary><p class="ok">Jawaban: Indeks menyimpan nilai dibuat, bukan hasil fungsi; planner harus menghitung fungsi untuk setiap baris</p><p>Tulis kondisi yang sargable.</p></details>
 <a class="cta" href="/#proj-12-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-1-skema-toko-dengan-constraint-dan-audit-trail-harga">Mini 1: Skema toko dengan constraint dan audit trail harga</a></p><p>Berikutnya: <a href="/belajar/proj/mini-3-isolasi-data-multi-tenant-dengan-row-level-security">Mini 3: Isolasi data multi-tenant dengan Row-Level Security</a></p>
 </main>

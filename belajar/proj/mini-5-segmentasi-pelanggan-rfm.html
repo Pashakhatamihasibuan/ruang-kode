@@ -24,50 +24,7 @@
 <p><b>Penyelesaian langkah demi langkah:</b><br>1. Agregasi per pelanggan dengan <code>groupby().agg()</code>, tanggal acuan = sehari setelah transaksi terakhir.<br>2. <code>pd.qcut(..., 5, labels=...)</code>; untuk recency labelnya dibalik (makin baru makin tinggi). Pakai <code>rank(method="first")</code> agar nilai kembar tidak membuat qcut gagal.<br>3. Aturan segmen sederhana berbasis skor R dan F, mudah dijelaskan ke tim marketing.<br>4. Tabel segmen: jumlah pelanggan, rata-rata belanja, porsi omzet.</p>
 <p><b>Kembangkan sendiri:</b> simpan hasil segmen ke tabel database dan pantau perpindahan segmen tiap bulan.</p>
 <div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Hitung Recency (hari sejak beli terakhir), Frequency (jumlah pesanan), Monetary (total belanja)</td><td>Agregasi per pelanggan dengan groupby().agg(), tanggal acuan = sehari setelah transaksi terakhir.</td></tr><tr><td>Skor 1–5 untuk setiap dimensi dengan kuantil</td><td>pd.qcut(..., 5, labels=...); untuk recency labelnya dibalik (makin baru makin tinggi). Pakai rank(method=&quot;first&quot;) agar nilai kembar tidak membuat qcut gagal.</td></tr><tr><td>Petakan skor ke segmen bernama: Juara, Setia, Berisiko, Hampir Hilang, Baru</td><td>Aturan segmen sederhana berbasis skor R dan F, mudah dijelaskan ke tim marketing.</td></tr><tr><td>Ringkasan ukuran dan nilai tiap segmen beserta aksi yang disarankan</td><td>Tabel segmen: jumlah pelanggan, rata-rata belanja, porsi omzet.</td></tr></tbody></table></div>
-<div class="lbl">PYTHON</div><pre><code>import sqlite3, numpy as np, pandas as pd
-rng = np.random.default_rng(11)
-n = 1200
-df = pd.DataFrame({
-    &#x27;id_pesanan&#x27;: range(1, n + 1),
-    &#x27;tanggal&#x27;: pd.to_datetime(&#x27;2026-01-01&#x27;) + pd.to_timedelta(rng.integers(0, 181, n), unit=&#x27;D&#x27;),
-    &#x27;pelanggan&#x27;: rng.integers(1, 301, n),
-    &#x27;kota&#x27;: rng.choice([&#x27;Jakarta&#x27;, &#x27;Bandung&#x27;, &#x27;Surabaya&#x27;, &#x27;Medan&#x27;, &#x27;Makassar&#x27;], n, p=[.35, .2, .2, .15, .1]),
-    &#x27;kategori&#x27;: rng.choice([&#x27;Kopi&#x27;, &#x27;Teh&#x27;, &#x27;Camilan&#x27;, &#x27;Alat Seduh&#x27;], n, p=[.45, .2, .25, .1]),
-})
-harga = {&#x27;Kopi&#x27;: 65000, &#x27;Teh&#x27;: 40000, &#x27;Camilan&#x27;: 25000, &#x27;Alat Seduh&#x27;: 210000}
-df[&#x27;jumlah&#x27;] = rng.integers(1, 4, n)
-df[&#x27;nilai&#x27;] = df[&#x27;kategori&#x27;].map(harga) * df[&#x27;jumlah&#x27;]
-acuan = df[&#x27;tanggal&#x27;].max() + pd.Timedelta(days=1)
-rfm = df.groupby(&#x27;pelanggan&#x27;).agg(R=(&#x27;tanggal&#x27;, lambda t: (acuan - t.max()).days), F=(&#x27;id_pesanan&#x27;, &#x27;count&#x27;), M=(&#x27;nilai&#x27;, &#x27;sum&#x27;))
-rfm[&#x27;r&#x27;] = pd.qcut(rfm[&#x27;R&#x27;].rank(method=&#x27;first&#x27;), 5, labels=[5, 4, 3, 2, 1]).astype(int)
-rfm[&#x27;f&#x27;] = pd.qcut(rfm[&#x27;F&#x27;].rank(method=&#x27;first&#x27;), 5, labels=[1, 2, 3, 4, 5]).astype(int)
-
-def segmen(x):
-    if x.r &gt;= 4 and x.f &gt;= 4: return &#x27;Juara&#x27;
-    if x.f &gt;= 4: return &#x27;Setia&#x27;
-    if x.r &gt;= 4 and x.f &lt;= 2: return &#x27;Baru&#x27;
-    if x.r &lt;= 2 and x.f &gt;= 3: return &#x27;Berisiko&#x27;
-    if x.r &lt;= 2: return &#x27;Hampir Hilang&#x27;
-    return &#x27;Perlu Perhatian&#x27;
-
-rfm[&#x27;segmen&#x27;] = rfm.apply(segmen, axis=1)
-ring = rfm.groupby(&#x27;segmen&#x27;).agg(pelanggan=(&#x27;M&#x27;, &#x27;size&#x27;), rata_belanja=(&#x27;M&#x27;, &#x27;mean&#x27;), omzet=(&#x27;M&#x27;, &#x27;sum&#x27;))
-ring[&#x27;porsi_omzet_%&#x27;] = (100 * ring[&#x27;omzet&#x27;] / ring[&#x27;omzet&#x27;].sum()).round(1)
-print(ring.sort_values(&#x27;omzet&#x27;, ascending=False).round(0))
-AKSI = {&#x27;Juara&#x27;: &#x27;program loyalitas, akses produk baru&#x27;, &#x27;Berisiko&#x27;: &#x27;voucher personal + survei alasan&#x27;, &#x27;Hampir Hilang&#x27;: &#x27;kampanye win-back murah&#x27;}
-for s, a in AKSI.items(): print(f&#x27;{s:13}: {a}&#x27;)</code></pre>
-<div class="lbl">KELUARAN</div><pre><code>                 pelanggan  rata_belanja     omzet  porsi_omzet_%
-segmen                                                           
-Juara                   63      736587.0  46405000           31.0
-Setia                   57      754211.0  42990000           29.0
-Perlu Perhatian         58      383017.0  22215000           15.0
-Hampir Hilang           63      290952.0  18330000           12.0
-Baru                    36      261111.0   9400000            6.0
-Berisiko                22      406591.0   8945000            6.0
-Juara        : program loyalitas, akses produk baru
-Berisiko     : voucher personal + survei alasan
-Hampir Hilang: kampanye win-back murah</code></pre>
-<h2>Poin penting</h2><ul><li>Proyek mini: Segmentasi pelanggan RFM.</li><li>Hitung Recency (hari sejak beli terakhir), Frequency (jumlah pesanan), Monetary (total belanja)</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Poin penting</h2><ul><li>Proyek mini: Segmentasi pelanggan RFM.</li><li>Hitung Recency (hari sejak beli terakhir), Frequency (jumlah pesanan), Monetary (total belanja)</li><li>Kerjakan dulu sendiri, lalu buka kode final untuk code review.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa skor recency dibalik (5 untuk hari paling sedikit)?</summary><p class="ok">Jawaban: Pelanggan yang baru saja belanja lebih berharga</p><p>Recency kecil = baik.</p></details>
 <a class="cta" href="/#proj-5-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-4-membaca-hasil-a-b-test-halaman-checkout">Mini 4: Membaca hasil A/B test halaman checkout</a></p><p>Berikutnya: <a href="/belajar/proj/mini-6-kamus-metrik-dan-dashboard-kpi-satu-halaman">Mini 6: Kamus metrik dan dashboard KPI satu halaman</a></p>
 </main>

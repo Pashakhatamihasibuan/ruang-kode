@@ -139,8 +139,32 @@ function conceptHTML(l,t){
    ${l.out!=null?(l.run===false?`<div><div class="eyebrow">Contoh keluaran</div><div class="console">${esc(l.out)}</div>${figHTML(l.fig)}</div>`
      :`<details class="guess" id="guess"><summary>🤔 Tebak keluarannya dulu sebelum menjalankan</summary><textarea class="bk" id="gIn" placeholder="Tulis keluaran yang kamu perkirakan, satu baris per baris"></textarea><div class="sl-act"><button class="btn" id="gChk">Periksa tebakan</button></div><div id="gFb" aria-live="polite"></div></details>
       <div class="runbox"><button class="btn primary" id="runBtn">▶ Jalankan</button>${trBtn(l)}${py?'<button class="btn" id="pyReset">Kembalikan kode</button>':''}<span class="rb-hint">${py?'Ubah kodenya lalu jalankan. Kode asli menampilkan keluaran yang sudah diuji; kode yang diubah dijalankan dengan Python di browser (Pyodide).':`Keluaran kode ini sudah diuji dengan ${({java:'Java 21',ts:'Node 22 (TypeScript)',js:'Node 22',sql:'mesin SQL Ruang Kode',bash:'Bash'})[lang]||'Python 3.13'}.`}</span></div><div class="console run" id="runOut" hidden></div><div class="figs" id="figOut" hidden></div>${tracerHTML(l,lang)}`):''}</section>`:''}
-  ${hpHTML(l)}${soHTML(l,lang)}${practiceHTML(l,lang)}${ptsHTML(l)}${qHTML(l)}`;
+  ${hpHTML(l)}${finHTML(l,x0(l))}${soHTML(l,lang)}${practiceHTML(l,lang)}${ptsHTML(l)}${qHTML(l)}`;
 }
+/* kode final standar industri: fin:{n,tree,files:[[path,lang,code]],prev,vp,cek:[[aspek,kriteria]],run} — dibuka setelah pelajar mengerjakan */
+const x0=l=>l.t;
+const finHTML=(l)=>{const f=l.fin;if(!f||!f.files||!f.files.length)return'';
+  return `<section class="section fin-sec" id="final"><div class="eyebrow">Untuk review setelah kamu selesai</div><h2>Kode final standar industri</h2>
+   <p class="muted">Kerjakan proyeknya sendiri dulu sampai jalan. Setelah itu buka kode final ini dan bandingkan baris demi baris memakai checklist review di bawahnya, seperti code review di tim developer.</p>
+   <div class="fin-gate" id="finGate"><button class="btn primary" id="finOpen" aria-controls="finBody" aria-expanded="false">🔓 Saya sudah mengerjakan, tampilkan kode final</button><span class="muted">${f.files.length} berkas${f.prev?' · ada pratinjau':''}</span></div>
+   <div id="finBody" hidden>
+    ${f.n?`<p>${f.n}</p>`:''}
+    ${f.tree?`<div class="eyebrow">Struktur proyek</div>${pane('text',f.tree,{label:'Struktur folder'})}`:''}
+    <div class="eyebrow" style="margin-top:12px">Berkas</div>
+    <div class="fin-tabs" role="tablist" aria-label="Berkas kode final">${f.files.map((x,i)=>`<button role="tab" data-ff="${i}" aria-selected="${i===0}">${esc(x[0])}</button>`).join('')}</div>
+    ${f.files.map((x,i)=>`<div class="fin-file" data-ff="${i}" ${i?'hidden':''}>${pane(x[1],x[2],{label:esc(x[0])})}</div>`).join('')}
+    ${f.run?`<div><div class="eyebrow">Cara menjalankan</div>${pane('bash',f.run,{label:'Terminal'})}</div>`:''}
+    ${f.prev?`<div class="fin-prev"><div class="w-prevh"><span>Pratinjau kode final</span><span class="w-vp" role="group" aria-label="Lebar layar pratinjau">${[[360,'HP 360'],[768,'Tablet 768'],[1280,'Desktop 1280']].map(([w,n])=>`<button type="button" data-fvp="${w}" aria-pressed="${w===(f.vp||1280)}">${n}</button>`).join('')}</span></div><div class="w-stage" id="finStage"><iframe class="w-frame" id="finFrame" sandbox="allow-scripts" title="Pratinjau kode final"></iframe><span class="w-vpl" id="finVpl"></span></div></div>`:''}
+    ${f.cek&&f.cek.length?`<div class="lt-wrap" tabindex="0" role="region" aria-label="Checklist code review"><table class="lt"><caption>Checklist code review (centang yang sudah sesuai di kodemu)</caption><thead><tr><th scope="col">Aspek</th><th scope="col">Standar industri</th><th scope="col">Kodemu</th></tr></thead><tbody>${f.cek.map((r,i)=>`<tr><th scope="row">${esc(r[0])}</th><td>${esc(r[1])}</td><td><input type="checkbox" aria-label="Kodemu sudah memenuhi: ${esc(r[0])}"></td></tr>`).join('')}</tbody></table></div>`:''}
+   </div></section>`};
+function wireFin(l){const f=l.fin,o=$('#finOpen');if(!f||!o)return;
+  let siap=false;
+  o.onclick=()=>{const b=$('#finBody'),buka=b.hidden;b.hidden=!buka;o.setAttribute('aria-expanded',String(buka));o.textContent=buka?'🙈 Sembunyikan kode final':'🔓 Saya sudah mengerjakan, tampilkan kode final';if(!buka||siap)return;siap=true;
+    document.querySelectorAll('.fin-tabs [data-ff]').forEach(t=>t.onclick=()=>{document.querySelectorAll('.fin-tabs [data-ff]').forEach(z=>z.setAttribute('aria-selected',z===t));document.querySelectorAll('.fin-file').forEach(z=>z.hidden=z.dataset.ff!==t.dataset.ff)});
+    const st=$('#finStage');if(st){const fr=$('#finFrame');fr.srcdoc=f.prev;let vw=f.vp||1280;
+      const fit=()=>{const sw=st.clientWidth,sh=st.clientHeight;if(!sw)return;const k=Math.min(1,sw/vw);fr.style.width=vw+'px';fr.style.height=Math.round(sh/k)+'px';fr.style.transform=`scale(${k})`;fr.style.left=Math.max(0,(sw-vw*k)/2)+'px';$('#finVpl').textContent=`${vw} px${k<1?' · skala '+Math.round(k*100)+'%':''}`};
+      document.querySelectorAll('[data-fvp]').forEach(b2=>b2.onclick=()=>{vw=+b2.dataset.fvp;document.querySelectorAll('[data-fvp]').forEach(z=>z.setAttribute('aria-pressed',z===b2));fit()});
+      if(window.ResizeObserver)new ResizeObserver(fit).observe(st);fit()}}}
 /* pratinjau visual hasil kode mobile (Flutter/Compose): hp:{c:judul,n:catatan,s:[{t:label,w:lebar,h:tinggi,d:html lengkap}]} */
 const hpHTML=l=>{const v=l.hp;if(!v||!v.s||!v.s.length)return'';
   return `<section class="section hp-sec" id="hasil"><h2>${esc(v.c||'Hasil di layar')}</h2>${v.n?`<p class="muted">${v.n}</p>`:''}<div class="hp-row">${v.s.map(x=>`<figure class="hp-fig"><div class="hp-dev${x.w>500?' tab':''}" style="--w:${x.w||360};--h:${x.h||760}"><iframe sandbox="" loading="lazy" title="${esc(x.t)}" srcdoc="${esc(x.d)}"></iframe></div><figcaption>${esc(x.t)}</figcaption></figure>`).join('')}</div></section>`};
@@ -179,6 +203,7 @@ async function runPy(code,onOut){
 }
 const normOut=s=>s.replace(/\r/g,'').split('\n').map(x=>x.replace(/\s+$/,'')).join('\n').trim();
 function wireConcept(l,t,x){
+  wireFin(l);
   if(l.viz&&VIZ2[l.viz])VIZ2[l.viz]($('#vizHost'),{lang:t.lang,lesson:l});
   const rb=$('#runBtn'),box=$('#runOut'),ed=$('#pyEd')?wireEditor($('#pyEd'),()=>rb&&rb.click()):null;
   const typeOut=(txt,done)=>{box.hidden=false;box.classList.remove('err');box.textContent='';const lines=txt.split('\n');let k=0;

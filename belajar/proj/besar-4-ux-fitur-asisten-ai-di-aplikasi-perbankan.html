@@ -24,69 +24,7 @@
 <p><b>Penyelesaian langkah demi langkah:</b><br>1. Petakan pertanyaan nasabah dari data CS dan pilih kasus di mana AI benar-benar menambah nilai.<br>2. Rancang pola percakapan, label, dan state (memuat, tidak yakin, gagal, offline).<br>3. Uji prototype dengan nasabah termasuk skenario jawaban salah untuk mengukur kepercayaan berlebihan.<br>4. Rancang alur aksi berisiko dengan pratinjau dan verifikasi; review bersama tim risiko dan legal.<br>5. Rilis bertahap ke 5% pengguna, pantau metrik kualitas dan keselamatan, iterasi.</p>
 <p><b>Standar industri yang dinilai:</b> pengguna tahu sedang berinteraksi dengan AI, jawaban bersumber, aksi keuangan selalu dikonfirmasi manusia, persetujuan data sesuai UU PDP, kualitas dan keselamatan diukur sebelum dan sesudah rilis</p>
 <div class="tw"><table><caption>Arsitektur dan stack (Figma, prototyping percakapan (Voiceflow/Figma), React/React Native, Claude API dengan tool use, analitik event, Google PAIR Guidebook, Microsoft HAX Toolkit)</caption><thead><tr><th>Bagian</th><th>Isi</th></tr></thead><tbody><tr><td>Ekspektasi</td><td>onboarding singkat: apa yang bisa dan tidak bisa, contoh pertanyaan, tautan cara kerja</td></tr><tr><td>Transparansi</td><td>label AI, sumber per jawaban, keyakinan memengaruhi apakah sumber dibuka otomatis</td></tr><tr><td>Kontrol</td><td>terima/edit/tolak usulan, batalkan, riwayat tindakan, eskalasi ke manusia selalu tersedia</td></tr><tr><td>Keamanan</td><td>AI hanya mengusulkan; eksekusi tetap lewat alur transaksi biasa dengan verifikasi</td></tr><tr><td>Privasi</td><td>izin granular, data minimum, retensi percakapan dijelaskan, log persetujuan</td></tr><tr><td>Evaluasi</td><td>golden set 200 pertanyaan, rasio jawaban dengan sumber benar, tingkat eskalasi, CSAT, insiden aksi salah = 0</td></tr></tbody></table></div>
-<div class="lbl">KODE</div><pre><code>// components/AsistenJawaban.tsx — pola UX fitur AI di aplikasi bank (transparansi, kontrol, human-in-the-loop)
-type Sumber = { judul: string; url: string };
-type Jawaban = { teks: string; sumber: Sumber[]; yakin: &#x27;tinggi&#x27; | &#x27;sedang&#x27; | &#x27;rendah&#x27;; aksi?: AksiUsulan };
-type AksiUsulan = { jenis: &#x27;transfer&#x27; | &#x27;blokir_kartu&#x27;; ringkasan: string; payload: unknown };
-
-export function AsistenJawaban({ j, onUmpanBalik, onEskalasi }: Props) {
-  return (
-    &lt;article className=&quot;jawaban-ai&quot; aria-live=&quot;polite&quot;&gt;
-      &lt;header className=&quot;label-ai&quot;&gt;
-        &lt;IkonAI aria-hidden /&gt; Dibuat oleh AI · bisa keliru · &lt;a href=&quot;/bantuan/asisten&quot;&gt;Cara kerja asisten&lt;/a&gt;
-      &lt;/header&gt;
-
-      &lt;Markdown&gt;{j.teks}&lt;/Markdown&gt;
-
-      {j.sumber.length &gt; 0 &amp;&amp; (
-        &lt;details open={j.yakin !== &#x27;tinggi&#x27;}&gt;
-          &lt;summary&gt;Sumber ({j.sumber.length})&lt;/summary&gt;
-          &lt;ul&gt;{j.sumber.map(s =&gt; &lt;li key={s.url}&gt;&lt;a href={s.url}&gt;{s.judul}&lt;/a&gt;&lt;/li&gt;)}&lt;/ul&gt;
-        &lt;/details&gt;
-      )}
-
-      {j.yakin === &#x27;rendah&#x27; &amp;&amp; (
-        &lt;p className=&quot;peringatan&quot;&gt;Asisten belum yakin. &lt;button onClick={onEskalasi}&gt;Hubungi petugas&lt;/button&gt;&lt;/p&gt;
-      )}
-
-      {j.aksi &amp;&amp; &lt;PratinjauAksi aksi={j.aksi} /&gt;}
-
-      &lt;footer className=&quot;umpan-balik&quot;&gt;
-        &lt;span id=&quot;ub&quot;&gt;Apakah jawaban ini membantu?&lt;/span&gt;
-        &lt;button aria-describedby=&quot;ub&quot; onClick={() =&gt; onUmpanBalik(&#x27;ya&#x27;)}&gt;Ya&lt;/button&gt;
-        &lt;button aria-describedby=&quot;ub&quot; onClick={() =&gt; onUmpanBalik(&#x27;tidak&#x27;)}&gt;Tidak&lt;/button&gt;
-      &lt;/footer&gt;
-    &lt;/article&gt;
-  );
-}
-
-// Aksi berisiko tidak pernah dieksekusi otomatis: pratinjau -&gt; konfirmasi eksplisit -&gt; PIN/biometrik -&gt; bisa dibatalkan
-function PratinjauAksi({ aksi }: { aksi: AksiUsulan }) {
-  const [tahap, setTahap] = useState&lt;&#x27;pratinjau&#x27; | &#x27;verifikasi&#x27; | &#x27;selesai&#x27;&gt;(&#x27;pratinjau&#x27;);
-  if (tahap === &#x27;pratinjau&#x27;) return (
-    &lt;section className=&quot;pratinjau&quot; aria-label=&quot;Usulan tindakan&quot;&gt;
-      &lt;h3&gt;Periksa sebelum dijalankan&lt;/h3&gt;
-      &lt;p&gt;{aksi.ringkasan}&lt;/p&gt;
-      &lt;button className=&quot;utama&quot; onClick={() =&gt; setTahap(&#x27;verifikasi&#x27;)}&gt;Lanjutkan&lt;/button&gt;
-      &lt;button onClick={() =&gt; track(&#x27;ai_aksi_ditolak&#x27;, { jenis: aksi.jenis })}&gt;Batalkan&lt;/button&gt;
-    &lt;/section&gt;
-  );
-  if (tahap === &#x27;verifikasi&#x27;) return &lt;VerifikasiPIN onSukses={() =&gt; setTahap(&#x27;selesai&#x27;)} /&gt;;
-  return &lt;p role=&quot;status&quot;&gt;Selesai. &lt;a href=&quot;/riwayat&quot;&gt;Lihat di riwayat&lt;/a&gt;&lt;/p&gt;;
-}
-
-// Persetujuan data (UU PDP + peraturan pelaksana): terpisah dari S&amp;K, tidak dicentang otomatis, bisa ditarik
-export function PersetujuanAI() {
-  return (
-    &lt;fieldset&gt;
-      &lt;legend&gt;Izin penggunaan data untuk asisten&lt;/legend&gt;
-      &lt;label&gt;&lt;input type=&quot;checkbox&quot; name=&quot;riwayat_transaksi&quot; /&gt; Pakai riwayat transaksi 90 hari untuk menjawab pertanyaan saya&lt;/label&gt;
-      &lt;label&gt;&lt;input type=&quot;checkbox&quot; name=&quot;perbaikan_model&quot; /&gt; Izinkan percakapan saya (tanpa nama &amp; nomor) dipakai memperbaiki layanan&lt;/label&gt;
-      &lt;p&gt;Izin bisa dicabut kapan saja di &lt;a href=&quot;/profil/privasi&quot;&gt;Profil &amp;gt; Privasi&lt;/a&gt;.&lt;/p&gt;
-    &lt;/fieldset&gt;
-  );
-}</code></pre>
-<h2>Poin penting</h2><ul><li>Proyek besar: UX fitur asisten AI di aplikasi perbankan.</li><li>Stack: Figma, prototyping percakapan (Voiceflow/Figma), React/React Native, Claude API dengan tool use, analitik event, Google PAIR Guidebook, Microsoft HAX Toolkit.</li><li>Berkas inti penyelesaian ada di bawah; sisanya mengikuti pola yang sama.</li></ul>
+<h2>Poin penting</h2><ul><li>Proyek besar: UX fitur asisten AI di aplikasi perbankan.</li><li>Stack: Figma, prototyping percakapan (Voiceflow/Figma), React/React Native, Claude API dengan tool use, analitik event, Google PAIR Guidebook, Microsoft HAX Toolkit.</li><li>Kerjakan dulu sendiri, lalu buka kode final untuk code review.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa asisten AI di aplikasi bank sebaiknya hanya mengusulkan transfer, bukan langsung mengeksekusinya?</summary><p class="ok">Jawaban: Karena aksi keuangan sulit dibatalkan; pengguna harus melihat pratinjau dan mengonfirmasi dengan verifikasi agar kesalahan AI tidak merugikan</p><p>Human-in-the-loop untuk aksi berisiko.</p></details>
 <a class="cta" href="/#proj-10-10">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/besar-3-portal-layanan-publik-yang-aksesibel-wcag-2-2-aa-untuk-semua-w">Besar 3: Portal layanan publik yang aksesibel (WCAG 2.2 AA) untuk semua warga</a></p><p>Berikutnya: <a href="/belajar/proj/mini-1-generator-test-case-ep-bva-dari-spesifikasi">Mini 1: Generator test case EP + BVA dari spesifikasi</a></p>
 </main>

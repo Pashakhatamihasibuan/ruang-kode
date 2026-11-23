@@ -24,61 +24,7 @@
 <p><b>Penyelesaian langkah demi langkah:</b><br>1. <code>SELECT ... WHERE updated_at &gt; :watermark ORDER BY updated_at</code>.<br>2. Simpan watermark = updated_at terbesar yang berhasil diproses, di transaksi yang sama.<br>3. Jika atribut berubah: tutup versi lama (valid_to, is_current=0) lalu sisipkan versi baru.<br>4. Bandingkan atribut versi aktif dengan baris sumber sebelum menulis.<br>5. <code>WHERE waktu &gt;= valid_from AND waktu &lt; valid_to</code>.</p>
 <p><b>Kembangkan sendiri:</b> tangani penghapusan (soft delete) dan ganti metode watermark dengan CDC berbasis log (Debezium) untuk menangkap perubahan yang tidak memperbarui updated_at.</p>
 <div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Hanya baca baris yang berubah sejak run terakhir (kolom updated_at)</td><td>SELECT ... WHERE updated_at &gt; :watermark ORDER BY updated_at.</td></tr><tr><td>Watermark tersimpan di warehouse dan maju setelah run sukses</td><td>Simpan watermark = updated_at terbesar yang berhasil diproses, di transaksi yang sama.</td></tr><tr><td>Dimensi pelanggan SCD tipe 2: valid_from, valid_to, is_current</td><td>Jika atribut berubah: tutup versi lama (valid_to, is_current=0) lalu sisipkan versi baru.</td></tr><tr><td>Run tanpa perubahan tidak menulis apa pun</td><td>Bandingkan atribut versi aktif dengan baris sumber sebelum menulis.</td></tr><tr><td>Query point-in-time: atribut pelanggan pada waktu tertentu</td><td>WHERE waktu &gt;= valid_from AND waktu &lt; valid_to.</td></tr></tbody></table></div>
-<div class="lbl">PYTHON</div><pre><code>import sqlite3
-
-src = sqlite3.connect(&quot;:memory:&quot;)          # database aplikasi (OLTP)
-dwh = sqlite3.connect(&quot;:memory:&quot;)          # warehouse
-src.executescript(&quot;&quot;&quot;
-CREATE TABLE pelanggan (id INT PRIMARY KEY, nama TEXT, kota TEXT, updated_at TEXT);
-INSERT INTO pelanggan VALUES (1,&#x27;Rina&#x27;,&#x27;Medan&#x27;,&#x27;2026-11-17 09:00&#x27;), (2,&#x27;Dodi&#x27;,&#x27;Bandung&#x27;,&#x27;2026-11-17 10:00&#x27;);
-&quot;&quot;&quot;)
-dwh.executescript(&quot;&quot;&quot;
-CREATE TABLE dim_pelanggan (sk INTEGER PRIMARY KEY AUTOINCREMENT, id INT, nama TEXT, kota TEXT,
-                            valid_from TEXT, valid_to TEXT DEFAULT &#x27;9999-12-31&#x27;, is_current INT DEFAULT 1);
-CREATE TABLE watermark (tabel TEXT PRIMARY KEY, nilai TEXT);
-INSERT INTO watermark VALUES (&#x27;pelanggan&#x27;, &#x27;1970-01-01 00:00&#x27;);
-&quot;&quot;&quot;)
-
-def sinkron():
-    wm = dwh.execute(&quot;SELECT nilai FROM watermark WHERE tabel=&#x27;pelanggan&#x27;&quot;).fetchone()[0]
-    berubah = src.execute(&quot;SELECT id, nama, kota, updated_at FROM pelanggan WHERE updated_at &gt; ? ORDER BY updated_at&quot;, (wm,)).fetchall()
-    with dwh:
-        for id_, nama, kota, ts in berubah:
-            kini = dwh.execute(&quot;SELECT nama, kota FROM dim_pelanggan WHERE id=? AND is_current=1&quot;, (id_,)).fetchone()
-            if kini == (nama, kota):
-                continue                                          # tidak ada perubahan atribut
-            if kini:
-                dwh.execute(&quot;UPDATE dim_pelanggan SET valid_to=?, is_current=0 WHERE id=? AND is_current=1&quot;, (ts, id_))
-            dwh.execute(&quot;INSERT INTO dim_pelanggan (id, nama, kota, valid_from) VALUES (?,?,?,?)&quot;, (id_, nama, kota, ts))
-        if berubah:
-            dwh.execute(&quot;UPDATE watermark SET nilai=? WHERE tabel=&#x27;pelanggan&#x27;&quot;, (berubah[-1][3],))
-    return len(berubah)
-
-print(&quot;run 1 membaca&quot;, sinkron(), &quot;baris&quot;)
-src.executescript(&quot;&quot;&quot;
-UPDATE pelanggan SET kota=&#x27;Jakarta&#x27;, updated_at=&#x27;2026-11-18 08:00&#x27; WHERE id=1;
-INSERT INTO pelanggan VALUES (3,&#x27;Sari&#x27;,&#x27;Makassar&#x27;,&#x27;2026-11-18 09:30&#x27;);
-&quot;&quot;&quot;)
-print(&quot;run 2 membaca&quot;, sinkron(), &quot;baris (hanya yang berubah)&quot;)
-print(&quot;run 3 membaca&quot;, sinkron(), &quot;baris&quot;)
-print(&quot;\nsk | id | nama | kota     | valid_from       | valid_to         | current&quot;)
-for r in dwh.execute(&quot;SELECT * FROM dim_pelanggan ORDER BY id, sk&quot;):
-    print(f&quot;{r[0]:&gt;2} | {r[1]:&gt;2} | {r[2]:4} | {r[3]:8} | {r[4]} | {r[5]:16} | {r[6]}&quot;)
-print(&quot;\nKota Rina pada 2026-11-17 12:00:&quot;,
-      dwh.execute(&quot;SELECT kota FROM dim_pelanggan WHERE id=1 AND &#x27;2026-11-17 12:00&#x27; &gt;= valid_from AND &#x27;2026-11-17 12:00&#x27; &lt; valid_to&quot;).fetchone()[0])
-</code></pre>
-<div class="lbl">KELUARAN</div><pre><code>run 1 membaca 2 baris
-run 2 membaca 2 baris (hanya yang berubah)
-run 3 membaca 0 baris
-
-sk | id | nama | kota     | valid_from       | valid_to         | current
- 1 |  1 | Rina | Medan    | 2026-11-17 09:00 | 2026-11-18 08:00 | 0
- 3 |  1 | Rina | Jakarta  | 2026-11-18 08:00 | 9999-12-31       | 1
- 2 |  2 | Dodi | Bandung  | 2026-11-17 10:00 | 9999-12-31       | 1
- 4 |  3 | Sari | Makassar | 2026-11-18 09:30 | 9999-12-31       | 1
-
-Kota Rina pada 2026-11-17 12:00: Medan</code></pre>
-<h2>Poin penting</h2><ul><li>Proyek mini: Incremental load dengan watermark dan SCD tipe 2.</li><li>Hanya baca baris yang berubah sejak run terakhir (kolom updated_at)</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Poin penting</h2><ul><li>Proyek mini: Incremental load dengan watermark dan SCD tipe 2.</li><li>Hanya baca baris yang berubah sejak run terakhir (kolom updated_at)</li><li>Kerjakan dulu sendiri, lalu buka kode final untuk code review.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kelemahan utama incremental load berbasis kolom updated_at?</summary><p class="ok">Jawaban: Baris yang dihapus atau diubah tanpa memperbarui updated_at tidak terdeteksi</p><p>Karena itu CDC berbasis log lebih andal.</p></details>
 <a class="cta" href="/#proj-9-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-1-pipeline-etl-harian-yang-idempoten-dengan-karantina">Mini 1: Pipeline ETL harian yang idempoten dengan karantina</a></p><p>Berikutnya: <a href="/belajar/proj/mini-3-penjaga-kualitas-data-dengan-kontrak-dan-laporan">Mini 3: Penjaga kualitas data dengan kontrak dan laporan</a></p>
 </main>

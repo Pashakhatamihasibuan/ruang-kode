@@ -24,58 +24,7 @@
 <p><b>Penyelesaian langkah demi langkah:</b><br>1. Buka berkas dengan Pillow dan cek <code>img.format</code>; berkas teks yang diganti namanya menjadi .jpg akan gagal dibuka.<br>2. Koreksi orientasi EXIF dari kamera HP dengan <code>ImageOps.exif_transpose</code>, lalu hapus metadata lokasi.<br>3. Simpan ke <code>uuid4().hex</code> + ekstensi; di produksi gunakan storage S3-compatible (django-storages).<br>4. Kirim tugas Celery <code>buat_thumbnail.delay(id)</code> setelah transaksi commit.</p>
 <p><b>Kembangkan sendiri:</b> URL bertanda tangan (presigned) agar HP mengunggah langsung ke storage tanpa melewati server.</p>
 <div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Hanya JPEG/PNG/WebP, maksimal 5 MB, diperiksa dari isi berkas (bukan nama)</td><td>Buka berkas dengan Pillow dan cek img.format; berkas teks yang diganti namanya menjadi .jpg akan gagal dibuka.</td></tr><tr><td>Simpan versi asli dan thumbnail 400 px dalam WebP</td><td>Koreksi orientasi EXIF dari kamera HP dengan ImageOps.exif_transpose, lalu hapus metadata lokasi.</td></tr><tr><td>Nama berkas acak agar tidak menimpa dan tidak bisa ditebak</td><td>Simpan ke uuid4().hex + ekstensi; di produksi gunakan storage S3-compatible (django-storages).</td></tr><tr><td>Pembuatan thumbnail di latar belakang agar respons cepat</td><td>Kirim tugas Celery buat_thumbnail.delay(id) setelah transaksi commit.</td></tr></tbody></table></div>
-<div class="lbl">PYTHON</div><pre><code># produk/validators.py
-from PIL import Image, ImageOps, UnidentifiedImageError
-from django.core.exceptions import ValidationError
-
-MAKS = 5 * 1024 * 1024
-FORMAT = {&#x27;JPEG&#x27;, &#x27;PNG&#x27;, &#x27;WEBP&#x27;}
-
-def validasi_foto(berkas):
-    if berkas.size &gt; MAKS:
-        raise ValidationError(&#x27;Ukuran foto maksimal 5 MB.&#x27;)
-    try:
-        with Image.open(berkas) as img:
-            img.verify()                       # cek isi berkas benar-benar gambar
-            if img.format not in FORMAT:
-                raise ValidationError(&#x27;Format harus JPEG, PNG, atau WebP.&#x27;)
-    except UnidentifiedImageError:
-        raise ValidationError(&#x27;Berkas bukan gambar yang valid.&#x27;)
-    berkas.seek(0)
-
-# produk/models.py
-import uuid
-from django.db import models, transaction
-
-def jalur_foto(obj, nama):
-    return f&#x27;produk/{uuid.uuid4().hex}.{nama.rsplit(&quot;.&quot;, 1)[-1].lower()}&#x27;
-
-class FotoProduk(models.Model):
-    produk = models.ForeignKey(&#x27;Produk&#x27;, on_delete=models.CASCADE, related_name=&#x27;foto&#x27;)
-    asli = models.ImageField(upload_to=jalur_foto, validators=[validasi_foto])
-    thumb = models.ImageField(upload_to=&#x27;produk/thumb/&#x27;, blank=True)
-
-    def save(self, *a, **kw):
-        baru = self.pk is None
-        super().save(*a, **kw)
-        if baru:
-            transaction.on_commit(lambda: buat_thumbnail.delay(self.pk))
-
-# produk/tasks.py
-from io import BytesIO
-from celery import shared_task
-from django.core.files.base import ContentFile
-
-@shared_task(autoretry_for=(OSError,), retry_backoff=True, max_retries=3)
-def buat_thumbnail(pk):
-    f = FotoProduk.objects.get(pk=pk)
-    with Image.open(f.asli) as img:
-        img = ImageOps.exif_transpose(img).convert(&#x27;RGB&#x27;)     # putar sesuai kamera, buang EXIF
-        img.thumbnail((400, 400))
-        buf = BytesIO()
-        img.save(buf, &#x27;WEBP&#x27;, quality=80)
-    f.thumb.save(f&#x27;{uuid.uuid4().hex}.webp&#x27;, ContentFile(buf.getvalue()), save=True)</code></pre>
-<h2>Poin penting</h2><ul><li>Proyek mini: Unggah foto produk dengan validasi dan thumbnail.</li><li>Hanya JPEG/PNG/WebP, maksimal 5 MB, diperiksa dari isi berkas (bukan nama)</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Poin penting</h2><ul><li>Proyek mini: Unggah foto produk dengan validasi dan thumbnail.</li><li>Hanya JPEG/PNG/WebP, maksimal 5 MB, diperiksa dari isi berkas (bukan nama)</li><li>Kerjakan dulu sendiri, lalu buka kode final untuk code review.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa tipe berkas dicek dengan membuka isinya, bukan dari ekstensi?</summary><p class="ok">Jawaban: Ekstensi bisa diganti sembarangan oleh penyerang</p><p>Selalu periksa isi.</p></details>
 <a class="cta" href="/#proj-4-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-3-pembatas-request-rate-limiter-token-bucket">Mini 3: Pembatas request (rate limiter) token bucket</a></p><p>Berikutnya: <a href="/belajar/proj/mini-5-pencarian-full-text-bahasa-indonesia-di-postgresql">Mini 5: Pencarian full-text bahasa Indonesia di PostgreSQL</a></p>
 </main>

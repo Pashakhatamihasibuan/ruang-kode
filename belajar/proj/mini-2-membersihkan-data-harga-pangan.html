@@ -24,48 +24,7 @@
 <p><b>Penyelesaian langkah demi langkah:</b><br>1. Tulis fungsi <code>ke_angka()</code> yang menangani titik ribuan, "rb", dan teks kosong.<br>2. Normalisasi teks: <code>str.strip().str.title()</code> lalu peta singkatan dengan kamus.<br>3. Hapus hanya duplikat yang persis sama setelah dinormalisasi; baris dengan kunci sama tetapi harga berbeda dibiarkan dan diperiksa lewat aturan pencilan. Pencilan dengan aturan median ± 3 × MAD per komoditas.<br>4. Simpan log perbaikan agar proses bisa diaudit dan diulang (reproducible).</p>
 <p><b>Kembangkan sendiri:</b> jadikan fungsi pembersihan modul Python dengan test pytest, lalu jalankan otomatis setiap ada berkas baru.</p>
 <div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Ubah &quot;Rp 45.000&quot;, &quot;45000&quot;, &quot;45rb&quot; menjadi angka</td><td>Tulis fungsi ke_angka() yang menangani titik ribuan, &quot;rb&quot;, dan teks kosong.</td></tr><tr><td>Seragamkan nama pasar (spasi, huruf besar-kecil, singkatan)</td><td>Normalisasi teks: str.strip().str.title() lalu peta singkatan dengan kamus.</td></tr><tr><td>Hapus duplikat dan tandai pencilan (harga ≤ 0 atau terlalu jauh dari median)</td><td>Hapus hanya duplikat yang persis sama setelah dinormalisasi; baris dengan kunci sama tetapi harga berbeda dibiarkan dan diperiksa lewat aturan pencilan. Pencilan dengan aturan median ± 3 × MAD per komoditas.</td></tr><tr><td>Laporan sebelum/sesudah: jumlah baris dan masalah yang diperbaiki</td><td>Simpan log perbaikan agar proses bisa diaudit dan diulang (reproducible).</td></tr></tbody></table></div>
-<div class="lbl">PYTHON</div><pre><code>import numpy as np, pandas as pd
-
-mentah = pd.DataFrame({
-    &#x27;tanggal&#x27;: [&#x27;2026-11-01&#x27;, &#x27;2026-11-01&#x27;, &#x27;2026-11-01&#x27;, &#x27;2026-11-02&#x27;, &#x27;2026-11-02&#x27;, &#x27;2026-11-02&#x27;, &#x27;2026-11-02&#x27;, &#x27;2026-11-03&#x27;],
-    &#x27;pasar&#x27;: [&#x27;Pasar Petisah&#x27;, &#x27;pasar petisah &#x27;, &#x27;Psr. Sukaramai&#x27;, &#x27;Pasar Sukaramai&#x27;, &#x27;Pasar Petisah&#x27;, &#x27;Pasar Petisah&#x27;, &#x27;Pasar Sukaramai&#x27;, &#x27;Pasar Petisah&#x27;],
-    &#x27;komoditas&#x27;: [&#x27;Cabai Merah&#x27;] * 8,
-    &#x27;harga&#x27;: [&#x27;Rp 45.000&#x27;, &#x27;Rp 45.000&#x27;, &#x27;47rb&#x27;, &#x27;46500&#x27;, &#x27;450000&#x27;, &#x27;44.000&#x27;, &#x27;&#x27;, &#x27;0&#x27;],
-})
-
-def ke_angka(x):
-    x = str(x).lower().replace(&#x27;rp&#x27;, &#x27;&#x27;).replace(&#x27; &#x27;, &#x27;&#x27;)
-    if not x: return np.nan
-    if x.endswith(&#x27;rb&#x27;): return float(x[:-2].replace(&#x27;,&#x27;, &#x27;.&#x27;)) * 1000
-    return float(x.replace(&#x27;.&#x27;, &#x27;&#x27;))
-
-PETA = {&#x27;Psr. Sukaramai&#x27;: &#x27;Pasar Sukaramai&#x27;}
-log = []
-df = mentah.copy()
-df[&#x27;harga&#x27;] = df[&#x27;harga&#x27;].map(ke_angka)
-df[&#x27;pasar&#x27;] = df[&#x27;pasar&#x27;].str.strip().str.title().replace(PETA)
-n = len(df); df = df.drop_duplicates(); log.append(f&#x27;duplikat persis dihapus: {n - len(df)}&#x27;)
-n = len(df); df = df.dropna(subset=[&#x27;harga&#x27;]); log.append(f&#x27;harga kosong dihapus: {n - len(df)}&#x27;)
-
-med = df.groupby(&#x27;komoditas&#x27;)[&#x27;harga&#x27;].transform(&#x27;median&#x27;)
-mad = (df[&#x27;harga&#x27;] - med).abs().groupby(df[&#x27;komoditas&#x27;]).transform(&#x27;median&#x27;)
-df[&#x27;pencilan&#x27;] = (df[&#x27;harga&#x27;] &lt;= 0) | ((df[&#x27;harga&#x27;] - med).abs() &gt; 3 * mad.clip(lower=1000))
-log.append(f&quot;pencilan ditandai: {int(df[&#x27;pencilan&#x27;].sum())} -&gt; {df.loc[df[&#x27;pencilan&#x27;], &#x27;harga&#x27;].tolist()}&quot;)
-
-print(&#x27;baris mentah:&#x27;, len(mentah), &#x27;| baris bersih:&#x27;, int((~df[&#x27;pencilan&#x27;]).sum()))
-print(*log, sep=&#x27;\n&#x27;)
-print(df[~df[&#x27;pencilan&#x27;]].groupby([&#x27;tanggal&#x27;, &#x27;pasar&#x27;])[&#x27;harga&#x27;].mean())</code></pre>
-<div class="lbl">KELUARAN</div><pre><code>baris mentah: 8 | baris bersih: 4
-duplikat persis dihapus: 1
-harga kosong dihapus: 1
-pencilan ditandai: 2 -&gt; [450000.0, 0.0]
-tanggal     pasar          
-2026-11-01  Pasar Petisah      45000.0
-            Pasar Sukaramai    47000.0
-2026-11-02  Pasar Petisah      44000.0
-            Pasar Sukaramai    46500.0
-Name: harga, dtype: float64</code></pre>
-<h2>Poin penting</h2><ul><li>Proyek mini: Membersihkan data harga pangan.</li><li>Ubah "Rp 45.000", "45000", "45rb" menjadi angka</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Poin penting</h2><ul><li>Proyek mini: Membersihkan data harga pangan.</li><li>Ubah "Rp 45.000", "45000", "45rb" menjadi angka</li><li>Kerjakan dulu sendiri, lalu buka kode final untuk code review.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa pencilan ditandai, bukan langsung dihapus?</summary><p class="ok">Jawaban: Agar bisa diperiksa dulu; bisa jadi salah ketik atau kejadian nyata</p><p>Keputusan menghapus perlu alasan.</p></details>
 <a class="cta" href="/#proj-5-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-1-menjawab-pertanyaan-bisnis-dengan-sql">Mini 1: Menjawab pertanyaan bisnis dengan SQL</a></p><p>Berikutnya: <a href="/belajar/proj/mini-3-analisis-kohort-retensi-pelanggan">Mini 3: Analisis kohort retensi pelanggan</a></p>
 </main>

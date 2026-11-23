@@ -24,53 +24,7 @@
 <p><b>Penyelesaian langkah demi langkah:</b><br>1. Petakan sumber dokumen, pemilik, dan model hak aksesnya.<br>2. Bangun parser + masking PII dan uji pada 50 dokumen beragam (PDF scan, tabel tarif).<br>3. Implementasikan chunking dan sinkronisasi inkremental berbasis hash.<br>4. Buat indeks dengan filter akses dan uji dengan akun cabang vs direksi.<br>5. Siapkan evaluasi harian dan dashboard kualitas; libatkan pemilik SOP untuk memperbaiki dokumen yang sering salah dijawab.</p>
 <p><b>Standar industri yang dinilai:</b> dokumen usang tidak pernah dijawab, nol PII di indeks, hak akses dihormati di setiap query, indeks segar ≤ 30 menit, kualitas pencarian diukur dengan golden set</p>
 <div class="tw"><table><caption>Arsitektur dan stack (Python, Airflow/Dagster, Unstructured/Docling untuk parsing, PostgreSQL + pgvector (atau Qdrant/Weaviate), model embedding multibahasa, Claude/LLM API, OpenLineage, Grafana)</caption><thead><tr><th>Bagian</th><th>Isi</th></tr></thead><tbody><tr><td>Ingest</td><td>webhook/perubahan dokumen → antrean → parsing (PDF, DOCX, tabel) → teks terstruktur</td></tr><tr><td>Transformasi</td><td>masking PII, chunking per bagian 800 karakter + tumpang 120, metadata (versi, akses, tanggal berlaku)</td></tr><tr><td>Indeks</td><td>hash per potongan; hanya potongan baru yang di-embed; potongan versi lama dihapus</td></tr><tr><td>Keamanan</td><td>filter akses di query (row-level), audit siapa bertanya apa, retensi log</td></tr><tr><td>Evaluasi</td><td>golden set 120 pertanyaan, recall@8 ≥ 0,9, jawaban wajib mengutip sumber</td></tr><tr><td>Biaya</td><td>embedding inkremental, cache, batas token per pengguna</td></tr></tbody></table></div>
-<div class="lbl">PYTHON</div><pre><code># pipeline/dokumen_ke_vektor.py  — data pipeline untuk aplikasi GenAI (asisten internal SOP perusahaan)
-from dataclasses import dataclass
-import hashlib, re
-
-@dataclass
-class Potongan:
-    doc_id: str; versi: str; urutan: int; teks: str; judul: str; akses: list[str]; hash: str
-
-def bersihkan(teks: str) -&gt; str:
-    teks = re.sub(r&quot;\b\d{16}\b&quot;, &quot;[NIK]&quot;, teks)                          # PII tidak boleh masuk indeks
-    teks = re.sub(r&quot;(\+62|0)8\d{8,11}&quot;, &quot;[HP]&quot;, teks)
-    return re.sub(r&quot;\s+&quot;, &quot; &quot;, teks).strip()
-
-def potong(doc, ukuran=800, tumpang=120):
-    &quot;&quot;&quot;Potong per judul bagian dulu, baru per jumlah karakter, dengan tumpang tindih agar konteks tidak terputus.&quot;&quot;&quot;
-    for b, bagian in enumerate(doc.bagian):
-        teks = bersihkan(bagian.isi)
-        for i in range(0, max(len(teks) - tumpang, 1), ukuran - tumpang):
-            isi = teks[i:i + ukuran]
-            yield Potongan(doc.id, doc.versi, b * 1000 + i // (ukuran - tumpang), isi, bagian.judul,
-                           doc.akses, hashlib.sha256(isi.encode()).hexdigest())
-
-def sinkron_indeks(dokumen_berubah, db, embed):
-    &quot;&quot;&quot;Inkremental: hanya potongan yang hash-nya berubah yang di-embed ulang (hemat biaya API).&quot;&quot;&quot;
-    for doc in dokumen_berubah:
-        lama = {r.hash for r in db.potongan_milik(doc.id)}
-        baru = list(potong(doc))
-        perlu = [p for p in baru if p.hash not in lama]
-        vektor = embed([p.teks for p in perlu]) if perlu else []
-        with db.transaksi():
-            db.hapus_potongan_selain(doc.id, {p.hash for p in baru})       # versi lama tidak boleh dijawab lagi
-            db.simpan(perlu, vektor)
-
--- pgvector: pencarian hybrid dengan filter hak akses (row-level)
-SELECT id, judul, teks, 1 - (embedding &lt;=&gt; :q) AS skor
-FROM potongan
-WHERE akses &amp;&amp; :grup_pengguna                       -- pengguna hanya melihat dokumen yang boleh dibaca
-  AND berlaku = true
-ORDER BY embedding &lt;=&gt; :q
-LIMIT 8;
-
-# eval/harian.py — kualitas data untuk AI
-# - freshness: dokumen SOP yang diubah di Drive/Confluence harus masuk indeks &lt;= 30 menit
-# - coverage: % dokumen aktif yang punya potongan di indeks (target 100%)
-# - golden set 120 pertanyaan: recall@8 sumber yang benar &gt;= 0,9; jawaban mengutip sumber
-# - audit PII: 0 kecocokan pola NIK/HP di tabel potongan</code></pre>
-<h2>Poin penting</h2><ul><li>Proyek besar: Pipeline data untuk aplikasi AI: dari dokumen ke indeks vektor.</li><li>Stack: Python, Airflow/Dagster, Unstructured/Docling untuk parsing, PostgreSQL + pgvector (atau Qdrant/Weaviate), model embedding multibahasa, Claude/LLM API, OpenLineage, Grafana.</li><li>Berkas inti penyelesaian ada di bawah; sisanya mengikuti pola yang sama.</li></ul>
+<h2>Poin penting</h2><ul><li>Proyek besar: Pipeline data untuk aplikasi AI: dari dokumen ke indeks vektor.</li><li>Stack: Python, Airflow/Dagster, Unstructured/Docling untuk parsing, PostgreSQL + pgvector (atau Qdrant/Weaviate), model embedding multibahasa, Claude/LLM API, OpenLineage, Grafana.</li><li>Kerjakan dulu sendiri, lalu buka kode final untuk code review.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa potongan dari versi dokumen lama harus dihapus dari indeks saat dokumen diperbarui?</summary><p class="ok">Jawaban: Agar asisten tidak menjawab dengan aturan yang sudah tidak berlaku</p><p>Freshness adalah kualitas data AI.</p></details>
 <a class="cta" href="/#proj-9-10">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/besar-3-platform-data-dengan-infrastructure-as-code-dan-ci-cd">Besar 3: Platform data dengan Infrastructure as Code dan CI/CD</a></p><p>Berikutnya: <a href="/belajar/proj/mini-1-linter-kontras-token-warna-wcag-2-2">Mini 1: Linter kontras token warna (WCAG 2.2)</a></p>
 </main>

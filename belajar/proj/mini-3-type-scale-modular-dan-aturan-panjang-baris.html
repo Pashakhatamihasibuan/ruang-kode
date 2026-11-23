@@ -24,41 +24,7 @@
 <p><b>Penyelesaian langkah demi langkah:</b><br>1. Hitung ukuran = dasar × rasio^langkah untuk setiap peran teks.<br>2. Bulatkan ke kelipatan 4 untuk ukuran ≥ 20px agar ritme vertikal rapi.<br>3. Pilih line-height 1,6 untuk body dan 1,2 untuk display.<br>4. Perkirakan karakter per baris dari lebar wadah dan lebar rata-rata huruf.</p>
 <p><b>Kembangkan sendiri:</b> tambahkan fluid typography dengan clamp() antara 360px dan 1440px, dan uji dengan teks berbahasa Jerman yang 30% lebih panjang.</p>
 <div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Skala modular dengan rasio yang bisa diganti</td><td>Hitung ukuran = dasar × rasio^langkah untuk setiap peran teks.</td></tr><tr><td>Pembulatan ke grid 4pt dan nilai rem</td><td>Bulatkan ke kelipatan 4 untuk ukuran ≥ 20px agar ritme vertikal rapi.</td></tr><tr><td>Tinggi baris menurun untuk ukuran besar</td><td>Pilih line-height 1,6 untuk body dan 1,2 untuk display.</td></tr><tr><td>Cek 45-80 karakter per baris di beberapa lebar wadah</td><td>Perkirakan karakter per baris dari lebar wadah dan lebar rata-rata huruf.</td></tr></tbody></table></div>
-<div class="lbl">PYTHON</div><pre><code># Type scale modular + cek panjang baris dan tinggi baris untuk handoff
-DASAR, RASIO = 16, 1.25          # Major Third
-LANGKAH = {&quot;caption&quot;: -1, &quot;body&quot;: 0, &quot;h4&quot;: 1, &quot;h3&quot;: 2, &quot;h2&quot;: 3, &quot;h1&quot;: 4, &quot;display&quot;: 5}
-
-def bulat4(px):                  # jaga grid 4pt
-    return int(round(px / 4) * 4) if px &gt;= 20 else round(px)
-
-print(f&quot;{&#x27;token&#x27;:&lt;9}{&#x27;px&#x27;:&gt;5}{&#x27;rem&#x27;:&gt;8}{&#x27;line-height&#x27;:&gt;13}&quot;)
-for nama, n in LANGKAH.items():
-    px = bulat4(DASAR * RASIO ** n)
-    lh = 1.6 if px &lt;= 18 else 1.4 if px &lt;= 28 else 1.2
-    tinggi = bulat4(px * lh)
-    print(f&quot;{nama:&lt;9}{px:&gt;5}{px/16:&gt;8.3f}{tinggi:&gt;9}px ({tinggi/px:.2f})&quot;)
-
-# Panjang baris: rata-rata lebar karakter Inter ~0,5em
-print()
-for wadah in (320, 600, 720, 960):
-    ch = wadah / (DASAR * 0.5)
-    status = &quot;nyaman&quot; if 45 &lt;= ch &lt;= 80 else &quot;pendek, wajar di HP (cukup &gt;= 35)&quot; if ch &lt; 45 else &quot;terlalu panjang -&gt; batasi max-width: 65ch&quot;
-    print(f&quot;wadah {wadah:&gt;4}px ~ {ch:&gt;4.0f} karakter/baris : {status}&quot;)
-</code></pre>
-<div class="lbl">KELUARAN</div><pre><code>token       px     rem  line-height
-caption     13   0.812       20px (1.54)
-body        16   1.000       24px (1.50)
-h4          20   1.250       28px (1.40)
-h3          24   1.500       32px (1.33)
-h2          32   2.000       40px (1.25)
-h1          40   2.500       48px (1.20)
-display     48   3.000       56px (1.17)
-
-wadah  320px ~   40 karakter/baris : pendek, wajar di HP (cukup &gt;= 35)
-wadah  600px ~   75 karakter/baris : nyaman
-wadah  720px ~   90 karakter/baris : terlalu panjang -&gt; batasi max-width: 65ch
-wadah  960px ~  120 karakter/baris : terlalu panjang -&gt; batasi max-width: 65ch</code></pre>
-<h2>Poin penting</h2><ul><li>Proyek mini: Type scale modular dan aturan panjang baris.</li><li>Skala modular dengan rasio yang bisa diganti</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Poin penting</h2><ul><li>Proyek mini: Type scale modular dan aturan panjang baris.</li><li>Skala modular dengan rasio yang bisa diganti</li><li>Kerjakan dulu sendiri, lalu buka kode final untuk code review.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Panjang baris yang nyaman untuk teks isi berada di kisaran berapa karakter?</summary><p class="ok">Jawaban: 45-80 karakter</p><p>Sering dibatasi dengan max-width: 65ch.</p></details>
 <a class="cta" href="/#proj-10-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-2-generator-design-token-dtcg-ke-css-terang-gelap">Mini 2: Generator design token DTCG ke CSS (terang &amp; gelap)</a></p><p>Berikutnya: <a href="/belajar/proj/mini-4-analisis-usability-test-sus-task-success-dan-prioritas-temuan">Mini 4: Analisis usability test: SUS, task success, dan prioritas temuan</a></p>
 </main>

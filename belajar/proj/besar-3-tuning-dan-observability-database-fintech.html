@@ -24,41 +24,7 @@
 <p><b>Penyelesaian langkah demi langkah:</b><br>1. Kumpulkan baseline 1 minggu termasuk tanggal gajian sebelumnya.<br>2. Urutkan query berdasarkan total waktu; perbaiki 3 teratas bersama developer dan ukur ulang.<br>3. Pasang PgBouncer dan sesuaikan konfigurasi; uji dengan pgbench dan replay beban.<br>4. Bangun dashboard + alert dan laporan mingguan otomatis.<br>5. Bandingkan metrik sebelum dan sesudah di tanggal gajian berikutnya; dokumentasikan.</p>
 <p><b>Standar industri yang dinilai:</b> keputusan berbasis metrik sebelum/sesudah, query terberat ditangani di akar masalah, koneksi dikendalikan pooler, observability berkelanjutan dan bisa dibaca developer</p>
 <div class="tw"><table><caption>Arsitektur dan stack (PostgreSQL 16, pg_stat_statements, auto_explain, PgBouncer, postgres_exporter + Prometheus + Grafana, pganalyze/pgBadger, pgbench untuk uji beban)</caption><thead><tr><th>Bagian</th><th>Isi</th></tr></thead><tbody><tr><td>Diagnosis</td><td>korelasikan lonjakan dengan pg_stat_statements per jam; cari query dengan persen beban tertinggi</td></tr><tr><td>Query</td><td>indeks yang tepat, hapus N+1 dari ORM, batasi kolom, keyset pagination</td></tr><tr><td>Koneksi</td><td>8.000 klien → 60 koneksi server per pool; query_wait_timeout untuk gagal cepat</td></tr><tr><td>Konfigurasi</td><td>shared_buffers 25%, random_page_cost 1.1 (NVMe), checkpoint diratakan, autovacuum agresif</td></tr><tr><td>Observability</td><td>Grafana: TPS, p95/p99, lock waits, replikasi, bloat; log query &gt; 500 ms</td></tr><tr><td>Proses</td><td>review indeks di setiap PR yang mengubah query; laporan Top-10 setiap Senin</td></tr></tbody></table></div>
-<div class="lbl">KODE</div><pre><code># postgresql.conf — server OLTP fintech: 32 vCPU, 128 GB RAM, NVMe; titik awal lalu disesuaikan dengan data
-shared_buffers = 32GB                    # ~25% RAM
-effective_cache_size = 96GB              # ~75% RAM: petunjuk untuk planner
-work_mem = 16MB                          # per operasi sort/hash; laporan berat pakai role khusus dengan nilai lebih besar
-maintenance_work_mem = 2GB               # VACUUM, CREATE INDEX lebih cepat
-max_connections = 300                    # ribuan koneksi aplikasi lewat PgBouncer, bukan langsung
-random_page_cost = 1.1                   # NVMe: akses acak hampir semurah berurutan
-effective_io_concurrency = 200
-wal_compression = zstd
-max_wal_size = 32GB                      # checkpoint lebih jarang, I/O lebih rata
-checkpoint_completion_target = 0.9
-autovacuum_max_workers = 6
-autovacuum_vacuum_cost_limit = 2000      # autovacuum cukup agresif untuk tabel transaksi
-log_min_duration_statement = 500ms       # catat query &gt; 0,5 detik
-log_lock_waits = on
-shared_preload_libraries = &#x27;pg_stat_statements,auto_explain&#x27;
-auto_explain.log_min_duration = &#x27;2s&#x27;
-auto_explain.log_analyze = on
-
-# pgbouncer.ini
-[databases]
-ledger = host=10.10.1.10 port=5432 dbname=ledger
-[pgbouncer]
-pool_mode = transaction
-max_client_conn = 8000
-default_pool_size = 60
-server_idle_timeout = 60
-query_wait_timeout = 15
-
--- Laporan mingguan &quot;Top 10 query&quot; untuk tim engineering (dari pg_stat_statements)
-SELECT queryid, calls, round(total_exec_time / 1000) AS total_detik, round(mean_exec_time, 1) AS rata_ms,
-       round(100 * total_exec_time / sum(total_exec_time) OVER (), 1) AS persen_beban,
-       shared_blks_read, temp_blks_written, left(query, 80) AS query
-FROM pg_stat_statements ORDER BY total_exec_time DESC LIMIT 10;</code></pre>
-<h2>Poin penting</h2><ul><li>Proyek besar: Tuning dan observability database fintech.</li><li>Stack: PostgreSQL 16, pg_stat_statements, auto_explain, PgBouncer, postgres_exporter + Prometheus + Grafana, pganalyze/pgBadger, pgbench untuk uji beban.</li><li>Berkas inti penyelesaian ada di bawah; sisanya mengikuti pola yang sama.</li></ul>
+<h2>Poin penting</h2><ul><li>Proyek besar: Tuning dan observability database fintech.</li><li>Stack: PostgreSQL 16, pg_stat_statements, auto_explain, PgBouncer, postgres_exporter + Prometheus + Grafana, pganalyze/pgBadger, pgbench untuk uji beban.</li><li>Kerjakan dulu sendiri, lalu buka kode final untuk code review.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa query diurutkan berdasarkan total_exec_time, bukan mean_exec_time, saat mencari prioritas tuning?</summary><p class="ok">Jawaban: Query cepat yang dipanggil jutaan kali bisa memakan beban server lebih besar daripada query lambat yang jarang dipanggil</p><p>Dampak total = waktu × jumlah panggilan.</p></details>
 <a class="cta" href="/#proj-12-9">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/besar-2-upgrade-versi-besar-postgresql-dengan-downtime-minimal">Besar 2: Upgrade versi besar PostgreSQL dengan downtime minimal</a></p><p>Berikutnya: <a href="/belajar/proj/besar-4-keamanan-dan-kepatuhan-database-data-sensitif">Besar 4: Keamanan dan kepatuhan database data sensitif</a></p>
 </main>

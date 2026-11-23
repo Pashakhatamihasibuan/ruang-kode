@@ -24,50 +24,7 @@
 <p><b>Penyelesaian langkah demi langkah:</b><br>1. Loop atas aliran event; state disimpan per merchant.<br>2. Himpunan <code>sudah</code>; di produksi Redis SET ber-TTL atau state store Flink.<br>3. <code>deque</code> per merchant; buang dari kiri selama event lebih tua dari t − 60.<br>4. Hitung jumlah dan total jendela setiap event masuk.<br>5. Kirim alert ke topik <code>risk.alerts</code> dan kanal tim risiko.</p>
 <p><b>Kembangkan sendiri:</b> implementasikan ulang dengan Kafka + Flink SQL (HOP window) atau Spark Structured Streaming, termasuk watermark untuk event terlambat.</p>
 <div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Proses event satu per satu, bukan per batch harian</td><td>Loop atas aliran event; state disimpan per merchant.</td></tr><tr><td>Deduplikasi event_id (at-least-once delivery)</td><td>Himpunan sudah; di produksi Redis SET ber-TTL atau state store Flink.</td></tr><tr><td>Sliding window 60 detik per merchant</td><td>deque per merchant; buang dari kiri selama event lebih tua dari t − 60.</td></tr><tr><td>Alert saat lebih dari 4 transaksi atau total lebih dari Rp5 juta dalam jendela</td><td>Hitung jumlah dan total jendela setiap event masuk.</td></tr><tr><td>Jendela otomatis membuang event lama</td><td>Kirim alert ke topik risk.alerts dan kanal tim risiko.</td></tr></tbody></table></div>
-<div class="lbl">PYTHON</div><pre><code>from collections import defaultdict, deque
-
-# Event pembayaran dari Kafka (at-least-once: bisa duplikat), urutan waktu tidak selalu rapi
-event = [
-    (&quot;e1&quot;, &quot;M-07&quot;, 0, 50_000), (&quot;e2&quot;, &quot;M-07&quot;, 12, 75_000), (&quot;e3&quot;, &quot;M-11&quot;, 15, 20_000), (&quot;e2&quot;, &quot;M-07&quot;, 12, 75_000),
-    (&quot;e4&quot;, &quot;M-07&quot;, 30, 1_200_000), (&quot;e5&quot;, &quot;M-07&quot;, 41, 1_500_000), (&quot;e6&quot;, &quot;M-07&quot;, 44, 1_350_000),
-    (&quot;e7&quot;, &quot;M-11&quot;, 50, 25_000), (&quot;e8&quot;, &quot;M-07&quot;, 58, 1_800_000), (&quot;e9&quot;, &quot;M-07&quot;, 140, 60_000), (&quot;e10&quot;, &quot;M-11&quot;, 150, 22_000),
-]
-JENDELA, BATAS_JUMLAH, BATAS_NOMINAL = 60, 4, 5_000_000      # &gt;4 trx atau &gt;5 juta dalam 60 detik
-
-sudah = set()                                               # di produksi: Redis SET dengan TTL / state store Flink
-jendela = defaultdict(deque)
-alert = []
-for eid, merchant, t, nominal in event:
-    if eid in sudah:
-        print(f&quot;t={t:&gt;3}s {eid} duplikat diabaikan&quot;); continue
-    sudah.add(eid)
-    w = jendela[merchant]
-    w.append((t, nominal))
-    while w and w[0][0] &lt;= t - JENDELA:                      # buang event di luar jendela geser
-        w.popleft()
-    jumlah, total = len(w), sum(n for _, n in w)
-    status = &quot;&quot;
-    if jumlah &gt; BATAS_JUMLAH or total &gt; BATAS_NOMINAL:
-        status = &quot;  &lt;-- ALERT&quot;
-        alert.append((t, merchant, jumlah, total))
-    rp = f&quot;{total:&gt;9,}&quot;.replace(&quot;,&quot;, &quot;.&quot;)
-    print(f&quot;t={t:&gt;3}s {merchant} jendela: {jumlah} trx, Rp{rp}{status}&quot;)
-print(&quot;\nALERT dikirim ke tim risiko:&quot;, [(t, m) for t, m, *_ in alert])
-</code></pre>
-<div class="lbl">KELUARAN</div><pre><code>t=  0s M-07 jendela: 1 trx, Rp   50.000
-t= 12s M-07 jendela: 2 trx, Rp  125.000
-t= 15s M-11 jendela: 1 trx, Rp   20.000
-t= 12s e2 duplikat diabaikan
-t= 30s M-07 jendela: 3 trx, Rp1.325.000
-t= 41s M-07 jendela: 4 trx, Rp2.825.000
-t= 44s M-07 jendela: 5 trx, Rp4.175.000  &lt;-- ALERT
-t= 50s M-11 jendela: 2 trx, Rp   45.000
-t= 58s M-07 jendela: 6 trx, Rp5.975.000  &lt;-- ALERT
-t=140s M-07 jendela: 1 trx, Rp   60.000
-t=150s M-11 jendela: 1 trx, Rp   22.000
-
-ALERT dikirim ke tim risiko: [(44, &#x27;M-07&#x27;), (58, &#x27;M-07&#x27;)]</code></pre>
-<h2>Poin penting</h2><ul><li>Proyek mini: Deteksi lonjakan transaksi real-time dengan sliding window.</li><li>Proses event satu per satu, bukan per batch harian</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Poin penting</h2><ul><li>Proyek mini: Deteksi lonjakan transaksi real-time dengan sliding window.</li><li>Proses event satu per satu, bukan per batch harian</li><li>Kerjakan dulu sendiri, lalu buka kode final untuk code review.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa deduplikasi event_id diperlukan di konsumen streaming?</summary><p class="ok">Jawaban: Sistem at-least-once bisa mengirim ulang pesan; tanpa dedup transaksi terhitung dua kali dan memicu alert palsu</p><p>Idempotent consumer.</p></details>
 <a class="cta" href="/#proj-9-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-3-penjaga-kualitas-data-dengan-kontrak-dan-laporan">Mini 3: Penjaga kualitas data dengan kontrak dan laporan</a></p><p>Berikutnya: <a href="/belajar/proj/mini-5-orkestrator-mini-dag-retry-dan-backfill">Mini 5: Orkestrator mini: DAG, retry, dan backfill</a></p>
 </main>

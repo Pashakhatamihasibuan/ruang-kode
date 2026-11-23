@@ -24,46 +24,7 @@
 <p><b>Penyelesaian langkah demi langkah:</b><br>1. Buat kolom <code>umur = 2026 - tahun_bangun</code>; jangan membuat fitur dari harga.<br>2. <code>KFold(5, shuffle=True)</code> + <code>cross_val_score</code> dengan MAE.<br>3. Kecamatan di-one-hot di dalam pipeline agar tiap fold dilatih dengan benar.<br>4. Pilih model dengan MAE terkecil dan sebutkan variasinya antar fold.</p>
 <p><b>Kembangkan sendiri:</b> buat interval prediksi dengan quantile regression agar agen tahu rentang harga, bukan satu angka.</p>
 <div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Rekayasa fitur yang masuk akal (umur bangunan) tanpa memakai target</td><td>Buat kolom umur = 2026 - tahun_bangun; jangan membuat fitur dari harga.</td></tr><tr><td>K-Fold cross-validation, bukan sekali split</td><td>KFold(5, shuffle=True) + cross_val_score dengan MAE.</td></tr><tr><td>Bandingkan baseline median, Ridge, dan Random Forest</td><td>Kecamatan di-one-hot di dalam pipeline agar tiap fold dilatih dengan benar.</td></tr><tr><td>Laporkan galat dalam rupiah dan persen agar dipahami agen</td><td>Pilih model dengan MAE terkecil dan sebutkan variasinya antar fold.</td></tr></tbody></table></div>
-<div class="lbl">PYTHON</div><pre><code>import numpy as np, pandas as pd
-from sklearn.model_selection import KFold, cross_val_score
-from sklearn.pipeline import make_pipeline
-from sklearn.compose import make_column_transformer
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.linear_model import RidgeCV
-from sklearn.ensemble import RandomForestRegressor
-
-rng = np.random.default_rng(3)
-n = 800
-df = pd.DataFrame({
-    &#x27;luas_tanah&#x27;: rng.uniform(60, 300, n).round(),
-    &#x27;kamar&#x27;: rng.integers(1, 6, n),
-    &#x27;jarak_tol_km&#x27;: rng.uniform(0.5, 20, n).round(1),
-    &#x27;kecamatan&#x27;: rng.choice([&#x27;Cibubur&#x27;, &#x27;Bekasi Barat&#x27;, &#x27;Serpong&#x27;, &#x27;Depok&#x27;], n),
-    &#x27;tahun_bangun&#x27;: rng.integers(1995, 2026, n),
-})
-premi = df.kecamatan.map({&#x27;Cibubur&#x27;: 1.15, &#x27;Bekasi Barat&#x27;: 0.95, &#x27;Serpong&#x27;: 1.35, &#x27;Depok&#x27;: 1.0})
-df[&#x27;harga_juta&#x27;] = (6.5 * df.luas_tanah + 90 * df.kamar - 25 * df.jarak_tol_km + 8 * (df.tahun_bangun - 1995)) * premi + rng.normal(0, 120, n)
-
-# rekayasa fitur: umur bangunan dan harga per m2 tidak boleh memakai target
-df[&#x27;umur&#x27;] = 2026 - df[&#x27;tahun_bangun&#x27;]
-X, y = df.drop(columns=[&#x27;harga_juta&#x27;, &#x27;tahun_bangun&#x27;]), df[&#x27;harga_juta&#x27;]
-prep = make_column_transformer((OneHotEncoder(), [&#x27;kecamatan&#x27;]), remainder=&#x27;passthrough&#x27;)
-cv = KFold(5, shuffle=True, random_state=0)
-
-hasil = {&#x27;Baseline (median)&#x27;: np.mean(np.abs(y - y.median()))}
-for nama, m in [(&#x27;Ridge&#x27;, RidgeCV(alphas=np.logspace(-2, 3, 20))), (&#x27;Random Forest&#x27;, RandomForestRegressor(200, min_samples_leaf=3, random_state=0))]:
-    s = -cross_val_score(make_pipeline(prep, m), X, y, cv=cv, scoring=&#x27;neg_mean_absolute_error&#x27;)
-    hasil[nama] = s.mean()
-    print(f&#x27;{nama:14} MAE {s.mean():6.0f} juta  (± {s.std():.0f} antar fold)&#x27;)
-print(f&#x27;Baseline       MAE {hasil[&quot;Baseline (median)&quot;]:6.0f} juta&#x27;)
-terbaik = min(hasil, key=hasil.get)
-print(f&#x27;Model dipilih: {terbaik}; rata-rata meleset Rp{hasil[terbaik] / 1000:.2f} miliar dari harga rata-rata Rp{y.mean() / 1000:.2f} miliar ({hasil[terbaik] / y.mean():.1%}).&#x27;)
-</code></pre>
-<div class="lbl">KELUARAN</div><pre><code>Ridge          MAE    117 juta  (± 6 antar fold)
-Random Forest  MAE    140 juta  (± 4 antar fold)
-Baseline       MAE    521 juta
-Model dipilih: Ridge; rata-rata meleset Rp0.12 miliar dari harga rata-rata Rp1.45 miliar (8.0%).</code></pre>
-<h2>Poin penting</h2><ul><li>Proyek mini: Estimasi harga rumah dengan validasi silang.</li><li>Rekayasa fitur yang masuk akal (umur bangunan) tanpa memakai target</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Poin penting</h2><ul><li>Proyek mini: Estimasi harga rumah dengan validasi silang.</li><li>Rekayasa fitur yang masuk akal (umur bangunan) tanpa memakai target</li><li>Kerjakan dulu sendiri, lalu buka kode final untuk code review.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa validasi silang lebih bisa dipercaya daripada satu kali train/test split?</summary><p class="ok">Jawaban: Hasilnya dirata-rata dari beberapa pembagian sehingga tidak bergantung keberuntungan satu split</p><p>Variansi estimasi lebih kecil.</p></details>
 <a class="cta" href="/#proj-6-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-1-prediksi-pelanggan-yang-akan-berhenti-churn">Mini 1: Prediksi pelanggan yang akan berhenti (churn)</a></p><p>Berikutnya: <a href="/belajar/proj/mini-3-klasifikasi-sentimen-ulasan-marketplace">Mini 3: Klasifikasi sentimen ulasan marketplace</a></p>
 </main>

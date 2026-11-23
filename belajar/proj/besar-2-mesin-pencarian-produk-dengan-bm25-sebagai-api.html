@@ -24,71 +24,7 @@
 <p><b>Penyelesaian langkah demi langkah:</b><br>1. Kumpulkan 300 kueri nyata dari log dan beri label hasil yang relevan.<br>2. Bangun inverted index dan BM25; ukur NDCG sebagai baseline.<br>3. Tambahkan sinonim, bobot judul, koreksi typo; pertahankan hanya yang menaikkan metrik.<br>4. Bungkus sebagai API dengan cache dan rate limit; uji beban dengan k6.<br>5. Rilis bertahap (10% trafik) dan bandingkan konversi dengan pencarian lama.</p>
 <p><b>Standar industri yang dinilai:</b> relevansi diukur dengan metrik offline yang menjadi gerbang CI, latensi p95 terukur di bawah target, API terlindungi rate limit, perubahan ranking dirilis bertahap dengan A/B</p>
 <div class="tw"><table><caption>Arsitektur dan stack (Python 3.12, FastAPI, Uvicorn, Pydantic, cachetools, PostgreSQL (sumber), k6, py-spy)</caption><thead><tr><th>Bagian</th><th>Isi</th></tr></thead><tbody><tr><td>Indeks</td><td>posting list token -&gt; {doc: tf}; dibangun streaming dari database saat startup, dibangun ulang tiap malam</td></tr><tr><td>Ranking</td><td>BM25 (k1=1,2, b=0,75), judul bobot 3x, log popularitas</td></tr><tr><td>Toleransi</td><td>normalisasi Unicode, sinonim, Levenshtein &lt;= 2 dengan BK-tree</td></tr><tr><td>API</td><td>/cari dengan validasi query, pagination, cache 60 detik, 429 saat melewati limit</td></tr><tr><td>Kualitas</td><td>set kueri berlabel; NDCG@10, MRR, recall@20 sebagai gate CI</td></tr><tr><td>Kinerja</td><td>CPU-bound dipindah ke thread, profil py-spy, target p95</td></tr></tbody></table></div>
-<div class="lbl">PYTHON</div><pre><code># Mesin pencarian produk: inverted index + BM25 + koreksi typo, disajikan lewat FastAPI async dengan cache dan rate limit
-# ---- app/index.py
-import math, re, unicodedata
-from collections import Counter, defaultdict
-
-def token(teks: str) -&gt; list[str]:
-    teks = unicodedata.normalize(&quot;NFKD&quot;, teks.lower())
-    return [t for t in re.findall(r&quot;[a-z0-9]+&quot;, teks) if t not in STOPWORDS]
-STOPWORDS = {&quot;dan&quot;, &quot;yang&quot;, &quot;untuk&quot;, &quot;di&quot;, &quot;dengan&quot;, &quot;isi&quot;}
-SINONIM = {&quot;hp&quot;: &quot;ponsel&quot;, &quot;handphone&quot;: &quot;ponsel&quot;, &quot;milk&quot;: &quot;susu&quot;}
-
-class Indeks:
-    def __init__(self, k1=1.2, b=0.75):
-        self.post = defaultdict(dict)          # token -&gt; {doc_id: tf}
-        self.panjang, self.doc, self.k1, self.b = {}, {}, k1, b
-    def tambah(self, doc_id: int, judul: str, deskripsi: str, popularitas: float):
-        tok = [SINONIM.get(t, t) for t in token(judul) * 3 + token(deskripsi)]   # judul diberi bobot 3x
-        for t, tf in Counter(tok).items(): self.post[t][doc_id] = tf
-        self.panjang[doc_id] = len(tok); self.doc[doc_id] = (judul, popularitas)
-    def cari(self, q: str, k: int = 20) -&gt; list[tuple[int, float]]:
-        N, avg = len(self.doc), sum(self.panjang.values()) / len(self.doc)
-        skor = Counter()
-        for t in (SINONIM.get(x, x) for x in token(q)):
-            t = t if t in self.post else koreksi(t, self.post.keys())
-            if not t: continue
-            df = len(self.post[t]); idf = math.log(1 + (N - df + 0.5) / (df + 0.5))
-            for d, tf in self.post[t].items():
-                skor[d] += idf * tf * (self.k1 + 1) / (tf + self.k1 * (1 - self.b + self.b * self.panjang[d] / avg))
-        for d in skor: skor[d] *= 1 + 0.1 * math.log1p(self.doc[d][1])        # sedikit dorongan popularitas
-        return skor.most_common(k)
-
-# koreksi(): Levenshtein dibatasi 1-2 edit + kandidat dari BK-tree agar tidak membandingkan semua token
-
-# ---- app/main.py
-import asyncio, time
-from fastapi import FastAPI, Query, Request, HTTPException
-from cachetools import TTLCache
-
-app = FastAPI(title=&quot;Search API&quot;)
-INDEKS = Indeks(); CACHE = TTLCache(maxsize=10_000, ttl=60); EMBER: dict[str, list[float]] = {}
-
-@app.on_event(&quot;startup&quot;)
-async def muat():
-    async for p in stream_produk_dari_db():            # batch 5.000 baris, tidak memuat semua sekaligus
-        INDEKS.tambah(p.id, p.nama, p.deskripsi, p.terjual_30h)
-
-def rate_limit(ip: str, maks=30, per=10.0):            # token bucket per IP
-    sisa, t = EMBER.get(ip, [maks, time.monotonic()])
-    sekarang = time.monotonic(); sisa = min(maks, sisa + (sekarang - t) * maks / per)
-    if sisa &lt; 1: raise HTTPException(429, &quot;terlalu banyak permintaan&quot;)
-    EMBER[ip] = [sisa - 1, sekarang]
-
-@app.get(&quot;/cari&quot;)
-async def cari(request: Request, q: str = Query(min_length=1, max_length=80), hal: int = Query(1, ge=1, le=50)):
-    rate_limit(request.client.host)
-    kunci = (q.lower().strip(), hal)
-    if kunci not in CACHE:
-        hasil = await asyncio.to_thread(INDEKS.cari, q, hal * 20)     # CPU-bound keluar dari event loop
-        CACHE[kunci] = hasil[(hal - 1) * 20: hal * 20]
-    return {&quot;q&quot;: q, &quot;hasil&quot;: [{&quot;id&quot;: d, &quot;judul&quot;: INDEKS.doc[d][0], &quot;skor&quot;: round(s, 3)} for d, s in CACHE[kunci]]}
-
-# ---- evaluasi kualitas (offline), dijalankan di CI setiap perubahan ranking
-# 300 kueri nyata dari log + jawaban relevan berlabel -&gt; NDCG@10, MRR, recall@20; gagal jika NDCG turun &gt; 2 poin
-# ---- beban: k6 200 VU, target p95 &lt; 120 ms pada 500.000 produk; profil dengan py-spy bila melambat</code></pre>
-<h2>Poin penting</h2><ul><li>Proyek besar: Mesin pencarian produk dengan BM25 sebagai API.</li><li>Stack: Python 3.12, FastAPI, Uvicorn, Pydantic, cachetools, PostgreSQL (sumber), k6, py-spy.</li><li>Berkas inti penyelesaian ada di bawah; sisanya mengikuti pola yang sama.</li></ul>
+<h2>Poin penting</h2><ul><li>Proyek besar: Mesin pencarian produk dengan BM25 sebagai API.</li><li>Stack: Python 3.12, FastAPI, Uvicorn, Pydantic, cachetools, PostgreSQL (sumber), k6, py-spy.</li><li>Kerjakan dulu sendiri, lalu buka kode final untuk code review.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa perubahan ranking diuji dengan NDCG pada kueri berlabel sebelum dirilis?</summary><p class="ok">Jawaban: Agar perbaikan untuk satu kueri tidak diam-diam merusak relevansi kueri lain; metrik memberi bukti objektif</p><p>Kualitas pencarian harus terukur.</p></details>
 <a class="cta" href="/#proj-14-8">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/besar-1-paket-cli-pencatat-keuangan-umkm-yang-siap-rilis">Besar 1: Paket CLI pencatat keuangan UMKM yang siap rilis</a></p><p>Berikutnya: <a href="/belajar/proj/besar-3-pipeline-pemantau-harga-pangan-harian">Besar 3: Pipeline pemantau harga pangan harian</a></p>
 </main>

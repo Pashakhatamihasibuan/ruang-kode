@@ -24,77 +24,7 @@
 <p><b>Penyelesaian langkah demi langkah:</b><br>1. Model <code>Catatan</code> dengan <code>pemilik</code> (FK ke User) dan <code>tags</code> (ManyToMany ke Tag).<br>2. Batasi queryset di <code>get_queryset()</code> ke <code>pemilik=request.user</code>; data orang lain otomatis 404, bukan 403, sehingga keberadaannya tidak bocor.<br>3. Serializer menerima daftar nama tag lalu <code>get_or_create</code> setiap tag.<br>4. Test dengan dua pengguna: A tidak bisa membaca catatan B.</p>
 <p><b>Kembangkan sendiri:</b> pencarian full-text dan berbagi catatan ke pengguna lain dengan izin baca saja.</p>
 <div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>CRUD catatan lewat REST API</td><td>Model Catatan dengan pemilik (FK ke User) dan tags (ManyToMany ke Tag).</td></tr><tr><td>Catatan hanya terlihat oleh pemiliknya (pengguna lain mendapat 404)</td><td>Batasi queryset di get_queryset() ke pemilik=request.user; data orang lain otomatis 404, bukan 403, sehingga keberadaannya tidak bocor.</td></tr><tr><td>Tag banyak-ke-banyak dan filter ?tag=kuliah</td><td>Serializer menerima daftar nama tag lalu get_or_create setiap tag.</td></tr><tr><td>Test untuk aturan kepemilikan</td><td>Test dengan dua pengguna: A tidak bisa membaca catatan B.</td></tr></tbody></table></div>
-<div class="lbl">PYTHON</div><pre><code># catatan/models.py
-from django.conf import settings
-from django.db import models
-
-class Tag(models.Model):
-    nama = models.SlugField(max_length=30, unique=True)
-
-class Catatan(models.Model):
-    pemilik = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name=&#x27;catatan&#x27;)
-    judul = models.CharField(max_length=120)
-    isi = models.TextField(blank=True)
-    tags = models.ManyToManyField(Tag, blank=True)
-    diubah = models.DateTimeField(auto_now=True)
-
-# catatan/serializers.py
-from rest_framework import serializers
-
-class CatatanSerializer(serializers.ModelSerializer):
-    tags = serializers.ListField(child=serializers.SlugField(), required=False)
-
-    class Meta:
-        model = Catatan
-        fields = [&#x27;id&#x27;, &#x27;judul&#x27;, &#x27;isi&#x27;, &#x27;tags&#x27;, &#x27;diubah&#x27;]
-
-    def to_representation(self, obj):
-        d = super().to_representation(obj)
-        d[&#x27;tags&#x27;] = [t.nama for t in obj.tags.all()]
-        return d
-
-    def _set_tags(self, obj, nama):
-        obj.tags.set([Tag.objects.get_or_create(nama=n.lower())[0] for n in nama])
-
-    def create(self, data):
-        nama = data.pop(&#x27;tags&#x27;, [])
-        obj = Catatan.objects.create(**data)
-        self._set_tags(obj, nama)
-        return obj
-
-    def update(self, obj, data):
-        nama = data.pop(&#x27;tags&#x27;, None)
-        obj = super().update(obj, data)
-        if nama is not None:
-            self._set_tags(obj, nama)
-        return obj
-
-# catatan/views.py
-from rest_framework import viewsets
-
-class CatatanViewSet(viewsets.ModelViewSet):
-    serializer_class = CatatanSerializer
-
-    def get_queryset(self):
-        qs = Catatan.objects.filter(pemilik=self.request.user).prefetch_related(&#x27;tags&#x27;).order_by(&#x27;-diubah&#x27;)
-        tag = self.request.query_params.get(&#x27;tag&#x27;)
-        return qs.filter(tags__nama=tag) if tag else qs
-
-    def perform_create(self, serializer):
-        serializer.save(pemilik=self.request.user)
-
-# catatan/tests.py
-import pytest
-from django.contrib.auth.models import User
-from rest_framework.test import APIClient
-
-@pytest.mark.django_db
-def test_tidak_bisa_baca_catatan_orang_lain():
-    a, b = User.objects.create_user(&#x27;a&#x27;), User.objects.create_user(&#x27;b&#x27;)
-    c = Catatan.objects.create(pemilik=b, judul=&#x27;Rahasia B&#x27;)
-    api = APIClient(); api.force_authenticate(a)
-    assert api.get(f&#x27;/api/catatan/{c.id}/&#x27;).status_code == 404</code></pre>
-<h2>Poin penting</h2><ul><li>Proyek mini: API catatan pribadi dengan tag.</li><li>CRUD catatan lewat REST API</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Poin penting</h2><ul><li>Proyek mini: API catatan pribadi dengan tag.</li><li>CRUD catatan lewat REST API</li><li>Kerjakan dulu sendiri, lalu buka kode final untuk code review.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa catatan milik orang lain mengembalikan 404, bukan 403?</summary><p class="ok">Jawaban: Agar keberadaan data orang lain tidak bocor</p><p>Queryset sudah dibatasi ke pemilik.</p></details>
 <a class="cta" href="/#proj-4-1">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/besar-4-pwa-offline-first-untuk-kas-koperasi-desa">Besar 4: PWA offline-first untuk kas koperasi desa</a></p><p>Berikutnya: <a href="/belajar/proj/mini-2-penerima-webhook-pembayaran-yang-aman-dan-idempoten">Mini 2: Penerima webhook pembayaran yang aman dan idempoten</a></p>
 </main>

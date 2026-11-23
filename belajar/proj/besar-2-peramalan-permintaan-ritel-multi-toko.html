@@ -24,45 +24,7 @@
 <p><b>Penyelesaian langkah demi langkah:</b><br>1. Bangun tabel harian lengkap (isi 0 untuk hari tanpa penjualan) dan tandai stok habis agar tidak dikira permintaan nol.<br>2. Buat fitur dengan lag ≥ horizon (14 hari) agar tidak bocor.<br>3. Latih model global LightGBM dengan objektif tweedie untuk data banyak nol.<br>4. Backtest bergulir; bandingkan dengan seasonal naive dan rata-rata 4 minggu.<br>5. Latih model kuantil P90 untuk stok pengaman; cek coverage mendekati 90%.<br>6. Jadwalkan flow harian dan sajikan akurasi per kategori untuk tim supply chain.</p>
 <p><b>Standar industri yang dinilai:</b> backtest bergulir, baseline naif dikalahkan, WAPE dan bias per kategori, coverage kuantil dicek, stok habis ditangani</p>
 <div class="tw"><table><caption>Arsitektur dan stack (Python, LightGBM, pandas/Polars, DuckDB atau BigQuery, Prefect/Airflow, Streamlit)</caption><thead><tr><th>Bagian</th><th>Isi</th></tr></thead><tbody><tr><td>Data</td><td>penjualan_harian(toko, sku, tanggal, unit, harga, promo), kalender_libur, master_toko</td></tr><tr><td>Fitur</td><td>lag 14/21/28, rata-rata bergulir, harga relatif, promo, libur, Ramadan, toko &amp; kategori</td></tr><tr><td>Model</td><td>LightGBM objektif tweedie (P50) dan quantile (P90), satu model per kategori besar</td></tr><tr><td>Evaluasi</td><td>backtest 4 lipatan × 14 hari; WAPE, bias, coverage P90</td></tr><tr><td>Orkestrasi</td><td>Prefect flow harian: ekstrak → fitur → prediksi → tulis tabel prediksi</td></tr><tr><td>Konsumen</td><td>sistem pemesanan otomatis + dashboard Streamlit</td></tr></tbody></table></div>
-<div class="lbl">PYTHON</div><pre><code>import polars as pl, lightgbm as lgb, numpy as np
-
-H = 14  # horizon hari
-d = pl.read_parquet(&#x27;penjualan_harian.parquet&#x27;).sort([&#x27;toko&#x27;, &#x27;sku&#x27;, &#x27;tanggal&#x27;])
-kal = pl.read_parquet(&#x27;kalender_id.parquet&#x27;)  # libur_nasional, cuti_bersama, ramadan_hari_ke, gajian
-
-d = (d.join(kal, on=&#x27;tanggal&#x27;, how=&#x27;left&#x27;)
-      .with_columns([pl.col(&#x27;unit&#x27;).shift(l).over([&#x27;toko&#x27;, &#x27;sku&#x27;]).alias(f&#x27;lag{l}&#x27;) for l in (14, 21, 28)])
-      .with_columns(pl.col(&#x27;unit&#x27;).shift(H).rolling_mean(28).over([&#x27;toko&#x27;, &#x27;sku&#x27;]).alias(&#x27;rata28&#x27;),
-                    (pl.col(&#x27;harga&#x27;) / pl.col(&#x27;harga&#x27;).mean().over(&#x27;sku&#x27;)).alias(&#x27;harga_rel&#x27;),
-                    pl.col(&#x27;tanggal&#x27;).dt.weekday().alias(&#x27;hari&#x27;))
-      .filter(pl.col(&#x27;stok_habis&#x27;) == 0)
-      .drop_nulls([&#x27;lag28&#x27;, &#x27;rata28&#x27;]))
-
-FITUR = [&#x27;lag14&#x27;, &#x27;lag21&#x27;, &#x27;lag28&#x27;, &#x27;rata28&#x27;, &#x27;harga_rel&#x27;, &#x27;promo&#x27;, &#x27;hari&#x27;, &#x27;libur_nasional&#x27;, &#x27;cuti_bersama&#x27;, &#x27;ramadan_hari_ke&#x27;, &#x27;gajian&#x27;, &#x27;toko_cat&#x27;, &#x27;kategori_cat&#x27;]
-
-def wape(y, p): return np.abs(y - p).sum() / y.sum()
-
-hasil = []
-for potong in [&#x27;2026-07-31&#x27;, &#x27;2026-08-31&#x27;, &#x27;2026-09-30&#x27;, &#x27;2026-10-31&#x27;]:
-    latih = d.filter(pl.col(&#x27;tanggal&#x27;) &lt;= pl.lit(potong).str.to_date()).to_pandas()
-    uji = d.filter((pl.col(&#x27;tanggal&#x27;) &gt; pl.lit(potong).str.to_date()) &amp; (pl.col(&#x27;tanggal&#x27;) &lt;= pl.lit(potong).str.to_date() + pl.duration(days=H))).to_pandas()
-    p50 = lgb.LGBMRegressor(objective=&#x27;tweedie&#x27;, n_estimators=800, learning_rate=0.05, num_leaves=255).fit(latih[FITUR], latih.unit)
-    p90 = lgb.LGBMRegressor(objective=&#x27;quantile&#x27;, alpha=0.9, n_estimators=600, learning_rate=0.05).fit(latih[FITUR], latih.unit)
-    uji[&#x27;p50&#x27;], uji[&#x27;p90&#x27;] = p50.predict(uji[FITUR]), p90.predict(uji[FITUR])
-    hasil.append(dict(potong=potong, wape=wape(uji.unit, uji.p50), wape_naif=wape(uji.unit, uji.lag14),
-                      bias=(uji.p50.sum() - uji.unit.sum()) / uji.unit.sum(), coverage_p90=(uji.unit &lt;= uji.p90).mean()))
-print(pl.DataFrame(hasil))
-
-# flow.py (Prefect)
-from prefect import flow, task
-@task(retries=2)
-def ekstrak(): ...
-@task
-def prediksi(): ...
-@flow(name=&#x27;forecast-harian&#x27;)
-def harian():
-    ekstrak(); prediksi()</code></pre>
-<h2>Poin penting</h2><ul><li>Proyek besar: Peramalan permintaan ritel multi-toko.</li><li>Stack: Python, LightGBM, pandas/Polars, DuckDB atau BigQuery, Prefect/Airflow, Streamlit.</li><li>Berkas inti penyelesaian ada di bawah; sisanya mengikuti pola yang sama.</li></ul>
+<h2>Poin penting</h2><ul><li>Proyek besar: Peramalan permintaan ritel multi-toko.</li><li>Stack: Python, LightGBM, pandas/Polars, DuckDB atau BigQuery, Prefect/Airflow, Streamlit.</li><li>Kerjakan dulu sendiri, lalu buka kode final untuk code review.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa hari ketika stok habis dikeluarkan dari data latih?</summary><p class="ok">Jawaban: Penjualan nol saat stok habis bukan berarti permintaan nol</p><p>Censored demand.</p></details>
 <a class="cta" href="/#proj-6-8">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/besar-1-platform-prediksi-churn-sampai-produksi-mlops">Besar 1: Platform prediksi churn sampai produksi (MLOps)</a></p><p>Berikutnya: <a href="/belajar/proj/besar-3-asisten-tanya-jawab-dokumen-dengan-evaluasi-rag-llm">Besar 3: Asisten tanya-jawab dokumen dengan evaluasi (RAG + LLM)</a></p>
 </main>

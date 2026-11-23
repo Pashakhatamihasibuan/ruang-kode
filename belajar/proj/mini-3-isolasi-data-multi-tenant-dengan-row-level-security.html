@@ -24,55 +24,7 @@
 <p><b>Penyelesaian langkah demi langkah:</b><br>1. Tambahkan tenant_id NOT NULL + indeks agar filter RLS tetap cepat.<br>2. Aktifkan dan paksa RLS, lalu buat policy dengan current_setting(..., true) agar gagal aman.<br>3. Aplikasi memanggil SET LOCAL app.tenant_id di awal setiap transaksi.<br>4. Uji tiga skenario: tanpa tenant, tenant 1 (update dan sisipan jahat), tenant 2.</p>
 <p><b>Kembangkan sendiri:</b> uji performa dengan 10.000 tenant, dan pastikan pooler PgBouncer mode transaction tetap aman karena memakai SET LOCAL.</p>
 <div class="tw"><table><caption>Fitur wajib dan cara penyelesaiannya</caption><thead><tr><th>Fitur</th><th>Penyelesaian</th></tr></thead><tbody><tr><td>Kolom tenant_id di setiap tabel bisnis dan indeksnya</td><td>Tambahkan tenant_id NOT NULL + indeks agar filter RLS tetap cepat.</td></tr><tr><td>Policy USING dan WITH CHECK berbasis setelan sesi app.tenant_id</td><td>Aktifkan dan paksa RLS, lalu buat policy dengan current_setting(..., true) agar gagal aman.</td></tr><tr><td>FORCE ROW LEVEL SECURITY dan role aplikasi tanpa hak BYPASSRLS</td><td>Aplikasi memanggil SET LOCAL app.tenant_id di awal setiap transaksi.</td></tr><tr><td>Bukti: tanpa konteks tidak melihat apa pun, tidak bisa menyisipkan data ke tenant lain</td><td>Uji tiga skenario: tanpa tenant, tenant 1 (update dan sisipan jahat), tenant 2.</td></tr></tbody></table></div>
-<div class="lbl">SQL</div><pre><code>-- SaaS kasir: banyak toko (tenant) dalam satu database, data tidak boleh bocor antar-tenant
-CREATE TABLE tenant (id int PRIMARY KEY, nama text);
-CREATE TABLE penjualan (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, tenant_id int NOT NULL REFERENCES tenant,
-                        produk text, total numeric NOT NULL);
-CREATE INDEX ON penjualan (tenant_id);
-INSERT INTO tenant VALUES (1, &#x27;Kopi Senja Medan&#x27;), (2, &#x27;Warung Bu Tini Bandung&#x27;);
-INSERT INTO penjualan (tenant_id, produk, total) VALUES (1, &#x27;Kopi susu&#x27;, 25000), (1, &#x27;Croissant&#x27;, 30000), (2, &#x27;Nasi rames&#x27;, 18000);
-
-ALTER TABLE penjualan ENABLE ROW LEVEL SECURITY;
-ALTER TABLE penjualan FORCE ROW LEVEL SECURITY;             -- pemilik tabel pun tunduk pada policy
-CREATE POLICY isolasi_tenant ON penjualan
-  USING (tenant_id = current_setting(&#x27;app.tenant_id&#x27;, true)::int)
-  WITH CHECK (tenant_id = current_setting(&#x27;app.tenant_id&#x27;, true)::int);
-
-CREATE ROLE tenant_app NOLOGIN;
-GRANT SELECT, INSERT, UPDATE ON penjualan TO tenant_app;
-GRANT USAGE ON SEQUENCE penjualan_id_seq TO tenant_app;
-
-SET ROLE tenant_app;
--- 1) Tanpa konteks tenant: tidak melihat apa pun (gagal aman)
-SELECT count(*) AS terlihat_tanpa_tenant FROM penjualan;
--- 2) Aplikasi menyetel tenant dari token login, per transaksi
-BEGIN; SET LOCAL app.tenant_id = &#x27;1&#x27;;
-SELECT tenant_id, produk, total FROM penjualan;
-UPDATE penjualan SET total = 0;                              -- hanya baris tenant 1 yang tersentuh
-INSERT INTO penjualan (tenant_id, produk, total) VALUES (2, &#x27;Sisipan jahat&#x27;, 1);
-ROLLBACK;
--- 3) Tenant 2 melihat datanya sendiri dan tidak terpengaruh
-BEGIN; SET LOCAL app.tenant_id = &#x27;2&#x27;;
-SELECT tenant_id, produk, total FROM penjualan;
-COMMIT;
-RESET ROLE;</code></pre>
-<div class="lbl">KELUARAN</div><pre><code> terlihat_tanpa_tenant
------------------------
-                     0
-(1 row)
-
- tenant_id |  produk   | total
------------+-----------+-------
-         1 | Kopi susu | 25000
-         1 | Croissant | 30000
-(2 rows)
-
-ERROR:  new row violates row-level security policy for table &quot;penjualan&quot;
- tenant_id |   produk   | total
------------+------------+-------
-         2 | Nasi rames | 18000
-(1 row)</code></pre>
-<h2>Poin penting</h2><ul><li>Proyek mini: Isolasi data multi-tenant dengan Row-Level Security.</li><li>Kolom tenant_id di setiap tabel bisnis dan indeksnya</li><li>Kode penyelesaian lengkap ada di bawah; ketik ulang, jangan disalin.</li></ul>
+<h2>Poin penting</h2><ul><li>Proyek mini: Isolasi data multi-tenant dengan Row-Level Security.</li><li>Kolom tenant_id di setiap tabel bisnis dan indeksnya</li><li>Kerjakan dulu sendiri, lalu buka kode final untuk code review.</li></ul>
 <h2>Cek pemahaman</h2><details><summary>Kenapa memakai SET LOCAL, bukan SET, untuk app.tenant_id di balik connection pooler?</summary><p class="ok">Jawaban: SET LOCAL hanya berlaku sampai transaksi selesai, sehingga koneksi yang dipakai ulang tidak membawa tenant pengguna sebelumnya</p><p>Konteks bocor antar-request adalah bug klasik pooler.</p></details>
 <a class="cta" href="/#proj-12-3">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/proj/mini-2-tuning-laporan-penjualan-yang-lambat">Mini 2: Tuning laporan penjualan yang lambat</a></p><p>Berikutnya: <a href="/belajar/proj/mini-4-partisi-tabel-log-per-bulan-dengan-retensi">Mini 4: Partisi tabel log per bulan dengan retensi</a></p>
 </main>
