@@ -121,8 +121,9 @@ section.cat-row{display:flex;flex-direction:column;gap:16px;margin-top:36px}
    Diagram 3D isometrik jadi pusat pelajaran: penunjuk nilai (HUD) di atas, garis waktu langkah di bawah,
    dan panel panduan di kanan (atau di bawah pada layar sempit) berisi penjelasan langkah dan tombolnya. */
 /* halaman pelajaran memakai lebar penuh layar */
-body:has(#view:is([data-page="lesson"],[data-page="home"])) :is(.shell,.gnav-in,.mega-in,.sfoot>div){max-width:none}
-#view[data-page="lesson"]{max-width:none;padding-inline:clamp(16px,3vw,48px)}
+/* Semua halaman full width (beranda, kursus, pelajaran, jalur, glosarium, kuis, profil, dst.) */
+:is(.shell,.gnav-in,.mega-in,.sfoot>div,.wrap){max-width:none}
+#view,#view[data-page]{max-width:none;padding-inline:clamp(16px,3vw,48px)}
 #view[data-page="home"]{max-width:none;padding-inline:clamp(0px,2vw,32px)}
 #view[data-page="lesson"] .sekilas{max-width:none}
 #view[data-page="lesson"] :is(.prose p,.prose li,.sekilas p,.l-head .lead){max-width:100ch}
