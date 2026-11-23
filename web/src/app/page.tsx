@@ -30,10 +30,10 @@ export default function Home() {
           </div>
         </div>
         <div className="hero-art" aria-label="Ringkasan isi">
-          <div className="tile" style={{ background: "var(--lilac)" }}><b>{tracks.length}</b><span>jalur belajar</span></div>
-          <div className="tile" style={{ background: "var(--mint)" }}><b>{total.toLocaleString("id-ID")}</b><span>pelajaran</span></div>
-          <div className="tile" style={{ background: "var(--peach)" }}><b>{paths.length}</b><span>rute karier</span></div>
-          <div className="tile" style={{ background: "var(--sky)" }}><b>0</b><span>biaya dan iklan</span></div>
+          <div className="tile t1"><b>{tracks.length}</b><span>jalur belajar</span></div>
+          <div className="tile t2"><b>{total.toLocaleString("id-ID")}</b><span>pelajaran</span></div>
+          <div className="tile t3"><b>{paths.length}</b><span>rute karier</span></div>
+          <div className="tile t4"><b>0</b><span>biaya dan iklan</span></div>
         </div>
       </section>
 

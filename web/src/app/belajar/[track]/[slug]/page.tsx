@@ -148,7 +148,7 @@ export default async function LessonPage({ params }: P) {
         <article className="lmain" aria-labelledby="l-h">
           <header className="card lhead">
             <div className="meta">
-              <span className="blob" aria-hidden="true" style={{ width: 40, height: 40, borderRadius: 14, fontSize: "0.75rem" }}>{t.mark}</span>
+              <span className="blob" aria-hidden="true" style={{ width: 40, height: 40, borderRadius: "50%", fontSize: "0.75rem" }}>{t.mark}</span>
               <span className="chip lilac">{t.name}</span>
               {mod.lvl && <span className="chip mint">{mod.lvl}</span>}
               <span className="chip peach">{kindChip}</span>
@@ -370,7 +370,7 @@ export default async function LessonPage({ params }: P) {
                   {l.dl.map((d) => KIT[d.k] && (
                     <div className="card" key={d.k + d.p} style={{ background: "var(--surface-2)" }}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={`/desain/thumb/${d.p}.webp`} alt={`Pratinjau desain ${KIT[d.k].j}`} loading="lazy" style={{ borderRadius: 16, aspectRatio: "4/3", objectFit: "cover", width: "100%" }} />
+                      <img src={`/desain/thumb/${d.p}.webp`} alt={`Pratinjau desain ${KIT[d.k].j}`} loading="lazy" style={{ borderRadius: 0, aspectRatio: "4/3", objectFit: "cover", width: "100%" }} />
                       <h3 style={{ marginTop: 12 }}>{KIT[d.k].j}</h3>
                       <p className="small muted">{KIT[d.k].b} · {KIT[d.k].g}</p>
                       <a className="btn primary sm" href={`/desain/${d.k}.zip`} download>⬇ Unduh ZIP · {Math.round(KIT[d.k].kb)} KB</a>
@@ -386,7 +386,7 @@ export default async function LessonPage({ params }: P) {
                 <div className="grid g3">
                   {l.hp.s.map((x, i) => (
                     <figure key={i} style={{ margin: 0 }}>
-                      <iframe srcDoc={x.d} sandbox="" title={x.t} loading="lazy" style={{ width: "100%", height: 560, border: 0, borderRadius: 24, boxShadow: "var(--clay-sm)", background: "#fff" }} />
+                      <iframe srcDoc={x.d} sandbox="" title={x.t} loading="lazy" style={{ width: "100%", height: 560, border: 0, borderRadius: 0, boxShadow: "var(--clay-sm)", background: "#fff" }} />
                       <figcaption className="small muted" style={{ textAlign: "center", marginTop: 8 }}>{x.t}</figcaption>
                     </figure>
                   ))}

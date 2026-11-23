@@ -1,6 +1,6 @@
 # Ruang Kode · versi Next.js
 
-Situs Ruang Kode yang dibangun ulang dengan **Next.js 16 (App Router) + React 19 + TypeScript**, gaya **Claymorphism**, dan diekspor sebagai situs statis (`output: "export"`).
+Situs Ruang Kode yang dibangun ulang dengan **Next.js 16 (App Router) + React 19 + TypeScript**, gaya **Bauhaus**, dan diekspor sebagai situs statis (`output: "export"`).
 
 ## Menjalankan
 

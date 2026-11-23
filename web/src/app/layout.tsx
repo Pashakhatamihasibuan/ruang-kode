@@ -1,11 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Nunito, JetBrains_Mono } from "next/font/google";
+import { Jost, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Header, MobileNav, Footer } from "@/components/Chrome";
 import { Toaster } from "@/components/Toaster";
 import { SITE_URL } from "@/lib/data";
 
-const sans = Nunito({ subsets: ["latin"], variable: "--f-sans", display: "swap", weight: ["400", "600", "700", "800"] });
+const sans = Jost({ subsets: ["latin"], variable: "--f-sans", display: "swap", weight: ["400", "600", "700", "800"] });
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--f-mono", display: "swap", weight: ["400", "600"], preload: false });
 
 const DESC = "Akademi coding, data, dan desain berbahasa Indonesia: 39 jalur belajar dari dasar sampai siap kerja, studi kasus industri, proyek portofolio, Python dan SQL langsung di browser.";
@@ -26,8 +26,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#eceffa" },
-    { media: "(prefers-color-scheme: dark)", color: "#1a1c2b" },
+    { media: "(prefers-color-scheme: light)", color: "#f3eee3" },
+    { media: "(prefers-color-scheme: dark)", color: "#141414" },
   ],
   width: "device-width",
   initialScale: 1,
