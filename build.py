@@ -15,7 +15,7 @@ import shutil
 import subprocess
 from pathlib import Path
 
-from tools.build import site
+from tools.build import site, webdata
 
 ROOT = Path(__file__).parent
 SRC = ROOT / "src"
@@ -177,6 +177,8 @@ def build():
     version = hashlib.sha256((web + "".join(chunks.values())).encode()).hexdigest()[:10]
     site.write_pwa(ROOT, version, ["/", *("/" + c for c in chunks.values())])
     pages = site.write_static(ROOT, SITE_URL, tracks, data)
+    nt, nl = webdata.export(ROOT, read("js", "app.js"), data, keys, deep)
+    print(f"web/src/data: {nt} jalur, {nl} pelajaran")
     print(f"index.html {len(web):,} byte · {len(chunks)} bagian materi · {pages} halaman statis · "
           f"artifact {len(page):,} byte")
 

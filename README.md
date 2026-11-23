@@ -51,6 +51,10 @@ Lima jalur karier menyusun jalur di atas dalam urutan yang disarankan: Frontend 
 
 Progres tersimpan di `localStorage` browser.
 
+## Versi Next.js (web/)
+
+Situs dibangun ulang dengan Next.js 16, React 19, dan TypeScript bergaya Claymorphism di folder `web/`. Jalankan `python3 build.py` untuk menyiapkan data, lalu `cd web && npm install && npm run build`. Detailnya ada di [web/README.md](web/README.md).
+
 ## Struktur kode
 
 Semua berkas hasil dibuat oleh `python3 build.py` (butuh Python 3 dan Node) dari folder `src/`:
