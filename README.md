@@ -53,7 +53,7 @@ Progres tersimpan di `localStorage` browser.
 
 ## Versi Next.js (web/)
 
-Situs dibangun ulang dengan Next.js 16, React 19, dan TypeScript bergaya Claymorphism di folder `web/`. Jalankan `python3 build.py` untuk menyiapkan data, lalu `cd web && npm install && npm run build`. Detailnya ada di [web/README.md](web/README.md).
+Situs dibangun ulang dengan Next.js 16, React 19, dan TypeScript bergaya Bauhaus di folder `web/`. Jalankan `python3 build.py` untuk menyiapkan data, lalu `cd web && npm install && npm run build`. Detailnya ada di [web/README.md](web/README.md).
 
 ## Struktur kode
 
