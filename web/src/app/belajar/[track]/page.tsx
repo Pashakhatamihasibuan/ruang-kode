@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { catalog, track, lessonHref, lessonCount, groupName, strip, clip, SITE_URL } from "@/lib/data";
 import { DoneMarks, TrackProgress } from "@/components/ProgressMarks";
 import { ResumeTrack } from "@/components/ResumeTrack";
+import { OfflineSave } from "@/components/Offline";
 
 export const dynamicParams = false;
 export function generateStaticParams() {
@@ -28,6 +29,7 @@ const KC: Record<string, string> = { c: "lilac", lab: "sky", topic: "mint", s: "
 export default async function TrackPage({ params }: P) {
   const t = track((await params).track);
   if (!t) notFound();
+  const offlineUrls = [`/belajar/${t.k}`, ...new Set(t.mods.flatMap((m) => m.lessons.map((l) => lessonHref(t, l))))];
   const ids = t.mods.flatMap((m) => m.lessons.map((l) => (l.k === "see" ? l.srcId! : l.id)));
   const first = t.mods[0]?.lessons[0];
   const ld = {
@@ -51,7 +53,7 @@ export default async function TrackPage({ params }: P) {
             <h1 id="t-h">{t.name}</h1>
             <p>{t.h}</p>
           </div>
-          <div className="tact"><TrackProgress ids={ids} /></div>
+          <div className="tact stack-sm"><TrackProgress ids={ids} /><OfflineSave urls={offlineUrls} name={t.name} /></div>
         </div>
         <p className="muted" style={{ marginTop: 16 }} dangerouslySetInnerHTML={{ __html: t.d }} />
         <div className="stats">

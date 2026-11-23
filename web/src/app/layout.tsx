@@ -3,6 +3,7 @@ import { Jost, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Header, MobileNav, Footer } from "@/components/Chrome";
 import { Toaster } from "@/components/Toaster";
+import { SwRegister } from "@/components/Offline";
 import { SITE_URL } from "@/lib/data";
 
 const sans = Jost({ subsets: ["latin"], variable: "--f-sans", display: "swap", weight: ["400", "600", "700", "800"] });
@@ -49,6 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Footer />
         <MobileNav />
         <Toaster />
+        <SwRegister />
       </body>
     </html>
   );

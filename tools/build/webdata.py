@@ -103,6 +103,7 @@ def export(root, app_js, data, keys, deep):
         catalog.append({"k": t["k"], "g": t["g"], "name": t["name"], "lang": t["lang"], "h": site.text(t["h"]), "d": site.text(t["d"]),
                         "mark": marks.get(t["k"], t["k"][:2].upper()).replace("&lt;", "<").replace("&gt;", ">"),
                         "c": light.get(t["k"], "#C9D2F0"), "cd": dark.get(t["k"], "#C9D2F0"), "mods": mods_meta})
+        _v3(root, t, bodies)
         (out / "t" / f"{t['k']}.json").write_text(json.dumps(bodies, ensure_ascii=False, separators=(",", ":")))
 
     paths = _eval_js(re.search(r"const PATHS=\[.*?\}\];", app_js, re.S).group(0), "PATHS")
@@ -120,8 +121,22 @@ def export(root, app_js, data, keys, deep):
     return len(catalog), n
 
 
+def _v3(root, t, bodies):
+    """Adegan visual 3D per pelajaran, dipilih dengan aturan yang sama seperti situs lama (viz3d.js):
+    v3 di pelajaran menang, selain itu judul pelajaran dicocokkan dengan pola adegan."""
+    items = [{"s": slug, "t": b["title"], "v3": b.get("v3", False) if "v3" in b else None, "p": b.get("v3p")} for slug, b in bodies.items()]
+    src = (root / "src" / "js" / "viz3d.js").read_text()
+    js = ("var window=globalThis;" + src + "\n;const T=" + json.dumps({"k": t["k"], "lang": t["lang"]}) + ";const L=" + json.dumps(items)
+          + ";process.stdout.write(JSON.stringify(L.map(x=>{const k=x.v3!==null?x.v3:v3dOf(T,x.t);"
+          + "return k&&V3DT(k)?[x.s,k,V3DT(k),x.p||v3dInit(k,x.t)||null]:null}).filter(Boolean)));")
+    r = subprocess.run(["node", "-"], input=js, capture_output=True, text=True, check=True)
+    for slug, k, title, init in json.loads(r.stdout):
+        bodies[slug]["v3"] = {"k": k, "t": title, "p": init}
+        bodies[slug].pop("v3p", None)
+
+
 LAB_CSS = ["base.css", "lms.css", "v4.css", "tema-jalur.css", "v5.css", "nb.css"]
-LAB_JS = ["util.js", "viz.js", "sqlengine.js", "sqldata.js", "sqldata-bi.js", "viz2.js", "viz3.js", "viz-msi.js", "viz-var.js", "viz-fc.js"]
+LAB_JS = ["util.js", "viz.js", "sqlengine.js", "sqldata.js", "sqldata-bi.js", "viz2.js", "viz3.js", "viz-msi.js", "viz-var.js", "viz-fc.js", "viz3d.js"]
 
 
 def _legacy(root):
