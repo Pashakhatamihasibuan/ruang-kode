@@ -481,7 +481,7 @@ for level, teks in re.findall(r"<h([1-6])>(.*?)</h\\1>", html):
 .kartu-menu.skeleton * { color: transparent; background: linear-gradient(90deg, #eee, #f6f6f6, #eee); border-radius: 6px; }
 ''')]),
 
-'Langkah 6: breakpoint desktop': dict(
+'Langkah 6: layout desktop untuk kontainer, navbar, dan hero': dict(
   ist=[('Layout shift at breakpoint', 'Perubahan tata letak besar di breakpoint; uji transisinya di lebar tepat batas.'),
        ('Max-width container', 'Konten desktop tidak melebar penuh di monitor 1920px.'),
        ('Hover-only features', 'Interaksi hover harus punya padanan untuk sentuh dan keyboard; cek @media (hover: hover).'),
@@ -496,7 +496,24 @@ for level, teks in re.findall(r"<h([1-6])>(.*?)</h\\1>", html):
 @media (hover: hover) { .kartu-menu:hover { transform: translateY(-2px); } }
 ''')]),
 
-'Langkah 7: state, aksesibilitas, dan QA pixel-perfect': dict(
+'Langkah 7: layout desktop untuk produk, CTA, dan footer': dict(
+  ist=[('Container width', 'Batas lebar isi (misal 1120 px) agar baris teks dan kartu tidak melebar di monitor besar.'),
+       ('Gutter', 'Jarak antar kolom grid; di desain ini 16 di HP dan 24 di desktop.'),
+       ('Minor breakpoint', 'Breakpoint kecil yang hanya menyempurnakan ukuran, bukan susunan.'),
+       ('Visual regression', 'Membandingkan tangkapan layar tiap lebar dengan frame desain secara otomatis.')],
+  cx=[C('Tangkapan layar tiga lebar untuk dibandingkan dengan frame Figma (Playwright)', '''
+// npx playwright test qa-lebar.spec.js
+import { test, expect } from '@playwright/test';
+for (const lebar of [360, 768, 1440]) {
+  test(`landing ${lebar}px sesuai desain`, async ({ page }) => {
+    await page.setViewportSize({ width: lebar, height: 900 });
+    await page.goto('http://localhost:5173/');
+    await expect(page).toHaveScreenshot(`landing-${lebar}.png`, { fullPage: true, maxDiffPixelRatio: 0.01 });
+  });
+}
+''', lang='js')]),
+
+'Langkah 8: state, aksesibilitas, dan QA pixel-perfect': dict(
   ist=[('Interactive states', 'hover, focus-visible, active, disabled untuk semua elemen interaktif.'),
        ('Focus order', 'Urutan Tab mengikuti urutan visual dan logis.'),
        ('Reduced motion', 'Animasi dimatikan/dikurangi untuk pengguna yang memintanya.'),

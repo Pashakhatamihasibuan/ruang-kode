@@ -22,7 +22,48 @@
 <p><b>Brief.</b> Toko online kerajinan: beranda, katalog dengan filter, detail produk, keranjang, checkout QRIS. Core Web Vitals hijau, SEO produk, aksesibel.</p>
 <p>Kit berisi desain hi-fi (Beranda, Checkout QRIS), wireframe lo-fi, variasi 3 gaya lain, prototype beranimasi, <code>tokens.json</code>, ikon, dan <code>BRIEF.md</code> berisi kriteria penerimaan. Gaya utama: <b>Modern minimal</b>.</p>
 <p>Cara mengerjakan: impor ke Figma, periksa ukuran dengan Dev Mode, ubah token menjadi CSS custom properties, lalu slicing per komponen dari yang terkecil (tombol, input, kartu) sebelum menyusun halaman.</p>
+<p><b>Peta slicing.</b> Tabel di bawah memetakan setiap blok di frame desain ke elemen HTML dan susunannya di HP dan desktop. Kode contoh adalah titik awal: token sudah diambil dari <code>tokens.json</code> kit ini, kerangka HTML mengikuti urutan blok di frame, dan CSS sudah dipisah menjadi gaya HP (dasar) dan desktop (media query 768 px). Isi setiap bagian sampai sama dengan frame web, lalu periksa di lebar 360, 768, dan 1440.</p>
+<div class="tw"><table><caption>Peta slicing: setiap blok di frame desain</caption><thead><tr><th>Blok desain</th><th>Elemen HTML</th><th>Di HP (360)</th><th>Di desktop (1440)</th></tr></thead><tbody><tr><td>navbar</td><td>&lt;header&gt; + &lt;nav&gt;</td><td>logo + tombol, menu di balik tombol ☰</td><td>logo · menu flex gap 24 · CTA</td></tr><tr><td>hero</td><td>&lt;section class=&quot;hero&quot;&gt; + &lt;h1&gt;</td><td>1 kolom, gambar di bawah teks</td><td>grid 2 kolom 1fr 1fr, gap 48</td></tr><tr><td>kartu</td><td>&lt;section&gt; + &lt;article&gt; per kartu</td><td>1 kolom (atau 2 jika kartu kecil)</td><td>grid repeat(4, 1fr) atau auto-fill minmax(240px,1fr)</td></tr><tr><td>langkah</td><td>&lt;ol&gt; langkah</td><td>vertikal</td><td>horizontal 4 kolom</td></tr><tr><td>footer</td><td>&lt;footer&gt; + &lt;nav&gt; per kolom</td><td>kolom bertumpuk</td><td>grid 4 kolom</td></tr></tbody></table></div>
 <div class="tw"><table><caption>Kriteria selesai</caption><thead><tr><th>Aspek</th><th>Target</th></tr></thead><tbody><tr><td>Kemiripan visual</td><td>Selisih maksimal 2px di breakpoint utama</td></tr><tr><td>State</td><td>default, hover, fokus, tekan, nonaktif, memuat, kosong, error</td></tr><tr><td>Responsif</td><td>360 - 1440</td></tr><tr><td>Aksesibilitas</td><td>WCAG 2.2 AA, target sentuh 48</td></tr><tr><td>Animasi</td><td>Sesuai prototype, hormati reduced motion</td></tr><tr><td>Portofolio</td><td>Studi kasus: masalah, keputusan, hasil</td></tr></tbody></table></div>
+<div class="lbl">HTML</div><pre><code>&lt;!-- index.html: kerangka semantik dari frame desain --&gt;
+  &lt;header class=&quot;navbar&quot;&gt;… &lt;/header&gt;
+&lt;main&gt;
+    &lt;section class=&quot;hero&quot;&gt;&lt;h1&gt;Kerajinan asli, langsung dari pengrajin&lt;/h1&gt; … &lt;/section&gt;
+    &lt;section class=&quot;kartu&quot;&gt;&lt;h2&gt;Paling dicari minggu ini&lt;/h2&gt; … &lt;/section&gt;
+    &lt;section class=&quot;langkah&quot;&gt;&lt;h2&gt;Belanja dalam 3 langkah&lt;/h2&gt; … &lt;/section&gt;
+&lt;/main&gt;
+  &lt;footer class=&quot;footer&quot;&gt;… &lt;/footer&gt;
+
+/* style.css: token dari tokens.json + kerangka responsif */
+:root {
+  --primer: #0F766E;
+  --primer2: #115E59;
+  --aksen: #F59E0B;
+  --latar: #FAFAF9;
+  --permukaan: #FFFFFF;
+  --teks: #1A1A1A;
+  --teks2: #5C5C66;
+  --garis: #E3E3E8;
+  --lembut: #ECFDF5;
+  --bahaya: #C8102E;
+  --sukses: #1E7A4C;
+  --radius: 12px;
+  --ruang-1: 8px; --ruang-2: 16px; --ruang-3: 24px; --ruang-4: 32px; --ruang-5: 48px;
+}
+
+/* 1. MOBILE dulu (tanpa media query): semua bagian 1 kolom, padding samping 16 */
+.wadah, main &gt; section, header, footer { padding-inline: var(--ruang-2); }
+
+/* 2. DESKTOP sesuai frame web: isi maks 1200 di tengah */
+@media (min-width: 768px) {
+  main &gt; section, header, footer { padding-inline: max(var(--ruang-4), calc((100% - 1200px) / 2)); }
+  .navbar { /* desktop: logo · menu flex gap 24 · CTA */ }
+  .hero { /* desktop: grid 2 kolom 1fr 1fr, gap 48 */ }
+  .kartu { /* desktop: grid repeat(4, 1fr) atau auto-fill minmax(240px,1fr) */ }
+  .langkah { /* desktop: horizontal 4 kolom */ }
+  .footer { /* desktop: grid 4 kolom */ }
+}
+</code></pre>
 <h2>Poin penting</h2><ul><li>Proyek besar: Storefront UMKM dengan pembayaran QRIS.</li><li>Gaya visual: Modern minimal.</li><li>Ambil nilai dari tokens.json, jangan menebak dari gambar.</li></ul>
 <a class="cta" href="/#slw-7-7">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/slw/mini-6-pencarian-instan-katalog-perpustakaan">Mini 6: Pencarian instan katalog perpustakaan</a></p><p>Berikutnya: <a href="/belajar/slw/besar-2-dashboard-operasional-real-time">Besar 2: Dashboard operasional real-time</a></p>
 </main>

@@ -139,8 +139,11 @@ function conceptHTML(l,t){
    ${l.out!=null?(l.run===false?`<div><div class="eyebrow">Contoh keluaran</div><div class="console">${esc(l.out)}</div>${figHTML(l.fig)}</div>`
      :`<details class="guess" id="guess"><summary>🤔 Tebak keluarannya dulu sebelum menjalankan</summary><textarea class="bk" id="gIn" placeholder="Tulis keluaran yang kamu perkirakan, satu baris per baris"></textarea><div class="sl-act"><button class="btn" id="gChk">Periksa tebakan</button></div><div id="gFb" aria-live="polite"></div></details>
       <div class="runbox"><button class="btn primary" id="runBtn">▶ Jalankan</button>${trBtn(l)}${py?'<button class="btn" id="pyReset">Kembalikan kode</button>':''}<span class="rb-hint">${py?'Ubah kodenya lalu jalankan. Kode asli menampilkan keluaran yang sudah diuji; kode yang diubah dijalankan dengan Python di browser (Pyodide).':`Keluaran kode ini sudah diuji dengan ${({java:'Java 21',ts:'Node 22 (TypeScript)',js:'Node 22',sql:'mesin SQL Ruang Kode',bash:'Bash'})[lang]||'Python 3.13'}.`}</span></div><div class="console run" id="runOut" hidden></div><div class="figs" id="figOut" hidden></div>${tracerHTML(l,lang)}`):''}</section>`:''}
-  ${soHTML(l,lang)}${practiceHTML(l,lang)}${ptsHTML(l)}${qHTML(l)}`;
+  ${hpHTML(l)}${soHTML(l,lang)}${practiceHTML(l,lang)}${ptsHTML(l)}${qHTML(l)}`;
 }
+/* pratinjau visual hasil kode mobile (Flutter/Compose): hp:{c:judul,n:catatan,s:[{t:label,w:lebar,h:tinggi,d:html lengkap}]} */
+const hpHTML=l=>{const v=l.hp;if(!v||!v.s||!v.s.length)return'';
+  return `<section class="section hp-sec" id="hasil"><h2>${esc(v.c||'Hasil di layar')}</h2>${v.n?`<p class="muted">${v.n}</p>`:''}<div class="hp-row">${v.s.map(x=>`<figure class="hp-fig"><div class="hp-dev${x.w>500?' tab':''}" style="--w:${x.w||360};--h:${x.h||760}"><iframe sandbox="" loading="lazy" title="${esc(x.t)}" srcdoc="${esc(x.d)}"></iframe></div><figcaption>${esc(x.t)}</figcaption></figure>`).join('')}</div></section>`};
 /* kit desain Figma yang bisa diunduh: dl:[{k:id kit,p:kunci pratinjau}] — katalog di desain-kit.js */
 const KIT_URL='https://ruang-kode-nine.vercel.app/desain/';
 const ukuranKB=kb=>kb>=1000?(kb/1024).toFixed(1).replace('.',',')+' MB':kb+' KB';
@@ -243,7 +246,7 @@ function webHTML(l){
   <section class="wlab" id="wlab"><div class="w-head"><div class="w-tabs" role="tablist">${tabs.map(([k,n],i)=>`<button role="tab" data-t="${k}" aria-selected="${i===0}">${n}</button>`).join('')}</div>
     <div class="w-act"><button class="btn primary" id="wRun">▶ Jalankan <kbd>Ctrl</kbd><kbd>Enter</kbd></button><button class="btn" id="wReset">Reset</button></div></div>
    <div class="w-grid"><div class="w-eds">${tabs.map(([k,n,lang],i)=>`<div class="w-ed" data-t="${k}" ${i?'hidden':''}>${editorHTML('wEd-'+k,l[k],'Editor '+n,lang)}</div>`).join('')}</div>
-    <div class="w-out"><div class="w-prevh"><span>Pratinjau</span>${l.react?'<small>React 18</small>':l.tw?'<small>Tailwind CSS 3.4</small>':l.bs?'<small>Bootstrap 5.3</small>':''}</div><iframe class="w-frame" id="wFrame" sandbox="allow-scripts allow-modals" title="Pratinjau hasil kode"></iframe>
+    <div class="w-out"><div class="w-prevh"><span>Pratinjau</span>${l.vp?`<span class="w-vp" role="group" aria-label="Lebar layar pratinjau">${[[360,'HP 360'],[768,'Tablet 768'],[1280,'Desktop 1280']].map(([w,n])=>`<button type="button" data-vp="${w}" aria-pressed="${w===l.vp}">${n}</button>`).join('')}</span>`:''}${l.react?'<small>React 18</small>':l.tw?'<small>Tailwind CSS 3.4</small>':l.bs?'<small>Bootstrap 5.3</small>':''}</div>${l.vp?'<div class="w-stage" id="wStage"><iframe class="w-frame" id="wFrame" sandbox="allow-scripts allow-modals" title="Pratinjau hasil kode"></iframe><span class="w-vpl" id="wVpl"></span></div>':'<iframe class="w-frame" id="wFrame" sandbox="allow-scripts allow-modals" title="Pratinjau hasil kode"></iframe>'}
      <div class="w-con" id="wCon" ${l.console||l.react?'':'hidden'}><div class="w-conh">Konsol</div><pre id="wLog"></pre></div></div></div></section>
   ${l.task?`<section class="task" id="task"><div class="eyebrow">Tantangan · diperiksa otomatis</div><h3>${l.task.q}</h3>
     <div class="sl-act"><button class="btn primary" id="wChk">Periksa</button>${l.task.hint?'<button class="btn" id="wHint" aria-expanded="false">Petunjuk</button>':''}</div>
@@ -289,6 +292,10 @@ function wireWeb(l,x){
       else fb.innerHTML='<div class="tk-fb bad"><b>Belum.</b> Hasil di pratinjau belum sesuai tantangan. Baca lagi soalnya atau buka petunjuk.</div>'};
     fr.contentWindow.postMessage({rkTest:id},'*')};
   const hb=$('#wHint');if(hb)hb.onclick=()=>{const h=$('#wHintT');h.hidden=!h.hidden;hb.setAttribute('aria-expanded',!h.hidden)};
+  const st=$('#wStage');if(st){let vw=l.vp;
+    const fit=()=>{const sw=st.clientWidth,sh=st.clientHeight;if(!sw)return;const k=Math.min(1,sw/vw);fr.style.width=vw+'px';fr.style.height=Math.round(sh/k)+'px';fr.style.transform=`scale(${k})`;fr.style.left=Math.max(0,(sw-vw*k)/2)+'px';$('#wVpl').textContent=`${vw} px${k<1?' · skala '+Math.round(k*100)+'%':''}`};
+    document.querySelectorAll('.w-vp [data-vp]').forEach(b=>b.onclick=()=>{vw=+b.dataset.vp;document.querySelectorAll('.w-vp [data-vp]').forEach(z=>z.setAttribute('aria-pressed',z===b));fit()});
+    if(window.ResizeObserver)new ResizeObserver(fit).observe(st);fit()}
   run();wireQ(l);
 }
 

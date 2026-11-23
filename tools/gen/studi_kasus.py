@@ -3,6 +3,7 @@ Semua modul ditambahkan di akhir jalur agar alamat pelajaran lama tidak bergeser
 from mobile_lib import W, C, M, q
 from mobile_dart_x import S
 from uidesign import L, H, X, T, G, RULES
+import hp_mock as HM
 
 
 def D(soal, petunjuk, jawab):
@@ -56,7 +57,8 @@ NAV = '''<a class="logo" href="#">Kopi Kita</a>
     <nav class="menu" aria-label="Utama"><a href="#">Menu</a><a href="#">Cerita</a><a href="#">Lokasi</a></nav>
     <a class="btn btn-primer" href="#">Pesan</a>'''
 
-KAKI = '<p>© 2026 Kopi Kita · Jl. Gatot Subroto 12, Medan</p>'
+KAKI = '''<p>© 2026 Kopi Kita · Jl. Gatot Subroto 12, Medan</p>
+    <nav class="sosial" aria-label="Media sosial"><a href="#">Instagram</a><a href="#">WhatsApp</a><a href="#">Tokopedia</a></nav>'''
 
 HALAMAN = f'''<header class="nav">
     {NAV}
@@ -119,79 +121,116 @@ KARTUCSS = '''.produk { padding: var(--ruang-4) var(--ruang-2); }
 .cta h2 { margin-bottom: var(--ruang-2); }
 .cta-form { display: flex; flex-wrap: wrap; gap: var(--ruang-1); }
 .cta-form input { flex: 1 1 180px; height: 44px; padding: 0 12px; border-radius: var(--radius); border: 0; font-size: 16px; }
-.kaki { padding: var(--ruang-3) var(--ruang-2); font-size: 14px; color: var(--teks-2); border-top: 1px solid var(--garis); }
+.kaki { display: grid; gap: var(--ruang-1); padding: var(--ruang-3) var(--ruang-2); font-size: 14px; color: var(--teks-2); border-top: 1px solid var(--garis); }
+.sosial { display: flex; gap: var(--ruang-2); }
 '''
-DESKTOP = '''@media (min-width: 768px) {
+# Desktop dibagi dua langkah: (A) kontainer, navbar, hero; (B) produk, CTA, footer, dan layar lebar 1200+
+WADAH = 'max(var(--ruang-4), calc((100% - 1120px) / 2))'   # isi maksimal 1120 px di tengah
+DESKTOP_A = '''@media (min-width: 768px) {
+  .nav, .hero, .produk, .kaki { padding-inline: ''' + WADAH + '''; }
+  .nav { padding-block: 20px; }
   .menu { display: flex; }
-  .hero { grid-template-columns: 1fr 1fr; align-items: center; padding: var(--ruang-5) var(--ruang-4); }
+  .hero { grid-template-columns: 1fr 1fr; align-items: center; gap: var(--ruang-5); padding-block: var(--ruang-5); }
   .hero h1 { font-size: 40px; }
-  .produk { padding: var(--ruang-5) var(--ruang-4); }
-  .grid { grid-template-columns: repeat(3, 1fr); }
-  .cta { margin: 0 var(--ruang-4) var(--ruang-5); }
 }
 '''
+DESKTOP_B = '''@media (min-width: 768px) {
+  .produk { padding-block: var(--ruang-5); }
+  .grid { grid-template-columns: repeat(3, 1fr); gap: var(--ruang-3); }
+  .cta { display: grid; grid-template-columns: 1fr minmax(280px, 420px); align-items: center; gap: var(--ruang-4);
+         padding: var(--ruang-5); margin: 0 ''' + WADAH + ''' var(--ruang-5); }
+  .cta h2 { margin-bottom: 0; }
+  .kaki { display: flex; justify-content: space-between; align-items: center; }
+}
+@media (min-width: 1200px) {
+  .hero { padding-block: 80px; }
+  .hero h1 { font-size: 48px; }
+  .lead { font-size: 18px; }
+  .produk h2, .cta h2 { font-size: 28px; }
+}
+'''
+DESKTOP = DESKTOP_A + DESKTOP_B
 STATE = '''.btn:hover { filter: brightness(1.08); }
 .btn:focus-visible, .menu a:focus-visible, input:focus-visible { outline: 3px solid var(--warna-aksen); outline-offset: 2px; }
 .btn:active { transform: translateY(1px); }
 '''
 FINAL_CSS = TOKEN + DASAR + NAVHERO + KARTUCSS + DESKTOP + STATE
 
-# papan desain ala Figma: frame mobile + desktop, redline, token
+# papan desain ala Figma: frame DESKTOP 1440 (desain utama situs web) + frame MOBILE 360 (versi responsif).
+# Frame dirender dengan container query supaya tiap frame tampil sesuai lebarnya sendiri, apa pun lebar pratinjau.
+RL = lambda x, y, w, v: f'<span class="rl" style="left:{x}px;top:{y}px;width:{w}px" data-v="{v}"></span>'
+RLV = lambda x, y, h, v: f'<span class="rl v" style="left:{x}px;top:{y}px;height:{h}px" data-v="{v}"></span>'
+TAG = lambda x, y, t, sisi='left': f'<span class="tag" style="{sisi}:{x}px;top:{y}px">{t}</span>'
+ANOT_D = ('<span class="kolom" style="left:160px;width:1120px"></span>' + RL(0, 104, 160, '160 · isi maks 1120') + TAG(632, 64, 'Menu · gap 24')
+          + TAG(1150, 70, 'Tombol 44 · r12') + RLV(1000, 86, 80, '80') + TAG(160, 190, 'H1 48/1.2 · 800') + RL(696, 330, 48, '48')
+          + TAG(160, 474, 'Lead 18/1.5') + RL(517, 900, 24, '24') + TAG(160, 1276, 'Grid 3 kolom · gap 24 · kartu r12 · padding 16')
+          + TAG(812, 1424, 'Form maks 420 · tinggi 44') + RLV(1300, 1318, 156, 'padding 48'))
+ANOT_M = (RL(0, 62, 16, '16') + RLV(120, 64, 32, '32') + TAG(6, 150, 'H1 28/34 · 800', 'right') + TAG(6, 352, 'Tombol 44 · r12', 'right'))
 PAPAN_HTML = '''<div class="papan">
-  <p class="label">Frame · Mobile 360 × 1280 · Landing Kopi Kita (Ready for dev)</p>
-  <div class="frame m">
-    <div class="halaman">''' + HALAMAN + '''</div>
-    <span class="rl" style="top:62px;left:0;width:16px" data-v="16"></span>
-    <span class="rl v" style="top:64px;left:120px;height:32px" data-v="32"></span>
-    <span class="tag" style="top:150px;right:6px">H1 28/34 · 800</span>
-    <span class="tag" style="top:286px;right:6px">Tombol 44 · r12</span>
-  </div>
+  <p class="label"><b>Frame 1 · Desktop 1440</b> · Landing Kopi Kita · <i>Ready for dev</i> · ini desain utama situs web</p>
+  <div class="gulir"><div class="frame d"><div class="halaman">''' + HALAMAN + '''</div>''' + ANOT_D + '''</div></div>
+  <p class="label"><b>Frame 2 · Mobile 360</b> · halaman yang sama di layar HP (responsif, breakpoint di bawah 768 px)</p>
+  <div class="frame m"><div class="halaman">''' + HALAMAN + '''</div>''' + ANOT_M + '''</div>
   <p class="label">Token</p>
   <div class="token">
     <span style="--c:#8A4B2A">primer<br>#8A4B2A</span><span style="--c:#6B3A20">primer-gelap<br>#6B3A20</span>
     <span style="--c:#E9B872">aksen<br>#E9B872</span><span style="--c:#FBF7F2">latar<br>#FBF7F2</span>
     <span style="--c:#2B2724">teks<br>#2B2724</span><span style="--c:#6B625B">teks-2<br>#6B625B</span>
   </div>
-  <p class="label">Tipografi dan jarak</p>
-  <table class="spek"><tr><th>Gaya</th><th>Mobile</th><th>Desktop</th></tr>
-    <tr><td>H1</td><td>28 / 1.2 · 800</td><td>40 / 1.2 · 800</td></tr>
-    <tr><td>H2</td><td>22 · 700</td><td>22 · 700</td></tr>
-    <tr><td>Body</td><td>16 / 1.5</td><td>16 / 1.5</td></tr>
-    <tr><td>Jarak</td><td colspan="2">8 · 16 · 24 · 32 · 48 (grid 8 poin)</td></tr>
-    <tr><td>Breakpoint</td><td colspan="2">768 px: menu tampil, hero 2 kolom, produk 3 kolom</td></tr></table>
+  <p class="label">Spesifikasi per lebar layar</p>
+  <div class="gulir"><table class="spek"><tr><th>Bagian</th><th>Mobile 360</th><th>Tablet 768</th><th>Desktop 1440</th></tr>
+    <tr><td>Lebar isi</td><td>penuh, padding 16</td><td>padding 32</td><td>maks 1120 di tengah</td></tr>
+    <tr><td>Navbar</td><td>logo + Pesan, menu disembunyikan</td><td colspan="2">logo · menu (gap 24) · Pesan, padding atas-bawah 20</td></tr>
+    <tr><td>Hero</td><td>1 kolom, H1 28/1.2</td><td>2 kolom gap 48, H1 40</td><td>2 kolom, H1 48, lead 18, padding 80</td></tr>
+    <tr><td>Produk</td><td>1 kolom, gap 16</td><td colspan="2">3 kolom, gap 24, H2 22 → 28 di 1200+</td></tr>
+    <tr><td>CTA</td><td>judul di atas form</td><td colspan="2">judul kiri, form kanan (maks 420), padding 48</td></tr>
+    <tr><td>Footer</td><td>bertumpuk</td><td colspan="2">alamat kiri, media sosial kanan</td></tr>
+    <tr><td>Jarak</td><td colspan="3">8 · 16 · 24 · 32 · 48 · 80 (grid 8 poin), radius 12, tombol tinggi 44</td></tr></table></div>
 </div>'''
-PAPAN_CSS = FINAL_CSS.replace('body {', '.halaman {') + '''
+PAPAN_CSS = ('/* CSS ini hanya untuk MENGGAMBAR papan desain (tiruan Figma).\n   Kode slicing yang sebenarnya kita tulis bertahap mulai Langkah 2. */\n'
+             + FINAL_CSS.replace('body {', '.halaman {').replace('@media (min-width', '@container (min-width') + '''
+.halaman { container-type: inline-size; }
 body { margin: 0; background: #2C2C2C; font-family: system-ui, sans-serif; }
 .papan { padding: 16px; color: #EDEDED; }
-.label { font-size: 12px; color: #B5B5B5; margin: 16px 0 8px; }
-.frame { position: relative; width: 360px; max-width: 100%; background: var(--latar); box-shadow: 0 0 0 1px #4A90E2; }
+.label { font-size: 12px; color: #B5B5B5; margin: 18px 0 8px; }
+.label b { color: #fff; }
+.gulir { overflow-x: auto; max-width: 100%; }
+.frame { position: relative; background: var(--latar); box-shadow: 0 0 0 1px #4A90E2; }
+.frame.m { width: 360px; max-width: 100%; }
+.frame.d { width: 1440px; zoom: .44; }
+.frame.d .rl::after, .frame.d .tag { font-size: 22px; padding: 4px 8px; }
+.frame.d .rl::after { top: -16px; }
 .rl { position: absolute; border-top: 1px solid #F24E1E; }
+.frame.d .rl { border-width: 2px; }
 .rl.v { border-top: 0; border-left: 1px solid #F24E1E; }
-.rl::after { content: attr(data-v); position: absolute; background: #F24E1E; color: #fff; font: 600 10px/1 system-ui; padding: 2px 4px; border-radius: 3px; top: -8px; left: 4px; }
-.tag { position: absolute; background: #7B61FF; color: #fff; font: 600 10px/1 system-ui; padding: 3px 6px; border-radius: 3px; }
+.frame.d .rl.v { border-left-width: 2px; }
+.rl::after { content: attr(data-v); position: absolute; background: #F24E1E; color: #fff; font: 600 10px/1 system-ui; padding: 2px 4px; border-radius: 3px; top: -8px; left: 4px; white-space: nowrap; }
+.tag { position: absolute; background: #7B61FF; color: #fff; font: 600 10px/1 system-ui; padding: 3px 6px; border-radius: 3px; white-space: nowrap; }
+.kolom { position: absolute; top: 0; bottom: 0; border-inline: 2px dashed #F24E1E66; pointer-events: none; }
 .token { display: flex; flex-wrap: wrap; gap: 8px; }
 .token span { font-size: 11px; line-height: 1.3; width: 96px; }
 .token span::before { content: ""; display: block; height: 40px; border-radius: 6px; background: var(--c); margin-bottom: 4px; box-shadow: inset 0 0 0 1px #555; }
 .spek { border-collapse: collapse; font-size: 12px; color: #EDEDED; }
-.spek td, .spek th { border: 1px solid #555; padding: 4px 8px; text-align: left; }
-'''
+.spek td, .spek th { border: 1px solid #555; padding: 4px 8px; text-align: left; vertical-align: top; }
+''')
 
 SLW_KASUS = [
 M('Studi kasus: slicing landing page step by step', 'Menengah',
-  'Satu desain utuh, landing page roastery "Kopi Kita", di-slicing dari nol mengikuti alur kerja slicer profesional: audit desain, token, HTML semantik, layout mobile-first, komponen, breakpoint, state dan aksesibilitas, lalu QA dan serah terima.',
+  'Satu desain website utuh, landing page roastery "Kopi Kita" (frame Desktop 1440 dan versi Mobile 360), di-slicing dari nol mengikuti alur kerja slicer profesional: audit desain, token, HTML semantik, layout mobile, layout desktop, state dan aksesibilitas, lalu QA dan serah terima.',
   ['Design handoff', 'Design tokens', 'Semantic HTML', 'Mobile-first', 'Components', 'Breakpoints', 'Pixel-perfect QA'], [
   W('Contoh desain: papan Figma "Kopi Kita"',
-    ['Ini contoh desain yang akan kita slicing sampai jadi. Pratinjau menampilkan tiruan papan <b>Figma Dev Mode</b>: frame mobile 360 px yang sudah ditandai <b>Ready for dev</b>, garis merah <b>redline</b> berisi jarak dalam px, label ungu berisi spesifikasi komponen, palet <b>token warna</b>, dan tabel tipografi serta breakpoint.',
-     'Di proyek nyata, desainer menyerahkan file Figma berisi frame mobile dan desktop, halaman komponen, dan halaman style guide. Tugas slicer adalah mengubahnya menjadi HTML dan CSS yang <b>setia pada desain</b> (pixel-perfect), <b>responsif</b>, <b>aksesibel</b>, dan <b>mudah dirawat</b>.',
-     'Perhatikan baik-baik sebelum menulis kode: berapa section yang ada, komponen apa yang berulang, berapa ukuran jarak yang dipakai, dan apa yang berubah di layar lebar. Pelajaran berikutnya mengikuti tujuh langkah standar industri, satu langkah per pelajaran.'],
+    ['Ini contoh desain <b>situs web</b> yang akan kita slicing sampai jadi. Pratinjau menampilkan tiruan papan <b>Figma Dev Mode</b> dengan dua frame: <b>Frame 1 Desktop 1440</b> (desain utama, tampilan di monitor) dan <b>Frame 2 Mobile 360</b> (halaman yang sama di HP). Garis merah <b>redline</b> berisi jarak dalam px, label ungu berisi spesifikasi komponen, lalu ada palet <b>token warna</b> dan tabel spesifikasi per lebar layar.',
+     'Situs web harus <b>responsif</b>: satu HTML, satu CSS, tetapi susunannya berubah sesuai lebar layar. Di desktop isi dibatasi 1120 px di tengah, menu tampil, hero dua kolom, dan produk tiga kolom. Di HP semuanya bertumpuk satu kolom dan menu disembunyikan. Tugas slicer adalah membuat <b>keduanya</b> setia pada desain (pixel-perfect), aksesibel, dan mudah dirawat.',
+     'Kita menulis CSS secara <b>mobile-first</b>: Langkah 4 dan 5 membentuk Frame 2 (HP), Langkah 6 dan 7 membentuk Frame 1 (desktop) dengan media query. Setiap pelajaran praktik punya tombol <b>HP 360 / Tablet 768 / Desktop 1280</b> di atas pratinjau, jadi kamu bisa membandingkan hasil dengan frame yang tepat. CSS di tab pelajaran ini hanya untuk menggambar papan, bukan kode slicing.'],
     PAPAN_HTML, css=PAPAN_CSS,
-    pts=['Desain lengkap: frame mobile dan desktop, komponen, style guide.', 'Redline memberi jarak, label memberi spesifikasi.', 'Amati dulu sebelum menulis kode.'],
-    qs=[q('Frame yang boleh mulai di-slicing biasanya ditandai?', ['Ready for dev', 'Draft', 'Archive'], 0, 'Frame lain mungkin masih eksplorasi.')]),
+    pts=['Situs web: Frame Desktop 1440 adalah desain utama, Frame Mobile 360 versi responsifnya.', 'Redline memberi jarak, label memberi spesifikasi.', 'Catat apa yang berubah antara HP dan desktop sebelum menulis kode.'],
+    qs=[q('Frame yang boleh mulai di-slicing biasanya ditandai?', ['Ready for dev', 'Draft', 'Archive'], 0, 'Frame lain mungkin masih eksplorasi.'),
+        q('Berapa lebar maksimal isi halaman di Frame Desktop 1440?', ['1120 px di tengah', '1440 px penuh', '360 px'], 0, 'Redline 160 px di kiri dan kanan: 1440 - 2 × 160 = 1120.')]),
   C('Langkah 1: audit desain dan inventaris komponen',
     ['Slicer profesional tidak langsung menulis CSS. Langkah pertama adalah <b>audit desain</b> selama 15 sampai 30 menit: buka semua frame (mobile, tablet, desktop), catat section, komponen berulang, token, aset, dan hal yang belum jelas.',
      'Hasil audit berupa <b>inventaris</b>: daftar section, daftar komponen beserta variannya (tombol primer, tombol garis, tombol aksen), daftar token, daftar aset yang harus diekspor, dan daftar <b>pertanyaan untuk desainer</b>. Pertanyaan yang ditanyakan di awal jauh lebih murah daripada revisi di akhir.',
      'Yang sering terlewat dan wajib ditanyakan: state hover, fokus, nonaktif, dan error; perilaku teks yang sangat panjang; tampilan saat data kosong; dan apa yang terjadi di antara dua breakpoint (misalnya lebar 600 px).'],
-    "INVENTARIS · Landing Kopi Kita\n\nSection  : nav, hero, produk (3 kartu), cta langganan, footer\nKomponen : Tombol (primer, garis, aksen) tinggi 44, radius 12\n           Kartu produk: foto 1:1, nama, asal, harga, tombol\n           Input email + tombol (form satu baris, membungkus di layar sempit)\nToken    : 6 warna, radius 12, jarak 8/16/24/32/48, H1 28->40\nAset     : logo SVG, 3 foto produk WebP (2x), foto hero WebP\nBreakpoint: 768 px (menu tampil, hero 2 kolom, produk 3 kolom)\n\nPERTANYAAN UNTUK DESAINER\n1. State hover dan fokus tombol belum ada di file. Boleh pakai brightness +8% dan outline aksen?\n2. Di mobile, menu disembunyikan. Apakah perlu tombol hamburger?\n3. Nama produk yang panjang (2 baris) dipotong atau dibiarkan membungkus?",
+    "INVENTARIS · Landing Kopi Kita\n\nSection  : nav, hero, produk (3 kartu), cta langganan, footer\nKomponen : Tombol (primer, garis, aksen) tinggi 44, radius 12\n           Kartu produk: foto 1:1, nama, asal, harga, tombol\n           Input email + tombol (form satu baris, membungkus di layar sempit)\nToken    : 6 warna, radius 12, jarak 8/16/24/32/48, H1 28->40\nAset     : logo SVG, 3 foto produk WebP (2x), foto hero WebP\nFrame    : Desktop 1440 (utama) + Mobile 360\nBreakpoint: 768 px (menu tampil, hero 2 kolom, produk 3 kolom, CTA 2 kolom)\n            1200 px (H1 48, lead 18, padding hero 80); isi maks 1120 di tengah\n\nPERTANYAAN UNTUK DESAINER\n1. State hover dan fokus tombol belum ada di file. Boleh pakai brightness +8% dan outline aksen?\n2. Di mobile, menu disembunyikan. Apakah perlu tombol hamburger?\n3. Nama produk yang panjang (2 baris) dipotong atau dibiarkan membungkus?",
     None, 'text',
     tb=[{'c': 'Checklist audit desain', 'h': ['Periksa', 'Pertanyaan'], 'r': [
       ['Frame', 'Ada versi mobile, tablet, desktop? Mana yang Ready for dev?'], ['Komponen', 'Apa saja yang berulang? Berapa varian?'],
@@ -211,7 +250,7 @@ M('Studi kasus: slicing landing page step by step', 'Menengah',
      'hint': 'Salin blok :root dari tabel token papan desain: :root { --warna-primer: #8A4B2A; --latar: #FBF7F2; --teks: #2B2724; --radius: 12px; --ruang-2: 16px; ... }'},
     ['Token di :root, komponen memakai var().', 'Nama semantik sama dengan Figma.', 'Ganti brand cukup satu baris.'],
     [q('Nama token yang paling baik?', ['--warna-primer', '--coklat-tua', '--c1'], 0, 'Semantik, sesuai peran.')],
-    {'css': TOKEN}),
+    {'css': TOKEN}) | {'vp': 360},
   L('Langkah 3: kerangka HTML semantik',
     ['Sebelum mengatur tampilan, susun <b>struktur</b> yang benar. Setiap section desain menjadi elemen semantik: <code>&lt;header&gt;</code> untuk navbar, <code>&lt;nav&gt;</code> untuk menu, <code>&lt;main&gt;</code> untuk isi utama (hanya satu per halaman), <code>&lt;section&gt;</code> untuk tiap bagian dengan judul, <code>&lt;article&gt;</code> untuk kartu yang berdiri sendiri, dan <code>&lt;footer&gt;</code>.',
      'Struktur semantik membantu pembaca layar (pengguna tunanetra bisa melompat antar landmark), mesin pencari, dan rekan developer. Urutan heading juga harus runtut: satu <code>h1</code>, lalu <code>h2</code> untuk tiap section, <code>h3</code> untuk judul kartu.',
@@ -222,7 +261,7 @@ M('Studi kasus: slicing landing page step by step', 'Menengah',
      'hint': '<div class="nav"> menjadi <header class="nav">, <div class="menu"> menjadi <nav class="menu">, <div class="isi"> menjadi <main>, setiap <div class="hero|produk|cta"> menjadi <section>, <div class="kaki"> menjadi <footer>.'},
     ['header, nav, main, section, article, footer.', 'Satu h1, lalu h2 per section.', 'Landmark membantu pembaca layar dan SEO.'],
     [q('Berapa elemen main yang boleh ada di satu halaman?', ['Satu', 'Satu per section', 'Bebas'], 0, 'Landmark isi utama.')],
-    {'html': HALAMAN}),
+    {'html': HALAMAN}) | {'vp': 360},
   L('Langkah 4: layout mobile-first untuk navbar dan hero',
     ['Tulis CSS untuk layar <b>terkecil dulu</b> (360 px), tanpa media query. Navbar: logo kiri, tombol kanan, sejajar vertikal, dengan <b>flexbox</b>. Menu disembunyikan di mobile sesuai desain. Hero: satu kolom, judul 28 px, jarak sesuai redline.',
      'Salin angka dari redline, bukan dari perkiraan mata: padding 16 px di sisi, 32 px di atas dan bawah hero, jarak antar tombol 8 px. Semua angka itu ada di skala token (<code>--ruang-1</code> sampai <code>--ruang-5</code>), jadi pakai variabelnya.',
@@ -233,7 +272,7 @@ M('Studi kasus: slicing landing page step by step', 'Menengah',
      'hint': '.nav { display: flex; justify-content: space-between; align-items: center; padding: var(--ruang-2) } .hero h1 { font-size: 28px } .menu { display: none }'},
     ['Mobile dulu, tanpa media query.', 'Angka dari redline, ditulis dengan token.', 'Flexbox untuk navbar.'],
     [q('Kenapa menulis CSS mobile lebih dulu?', ['Gaya dasar sederhana lalu ditambah untuk layar lebar', 'Desktop tidak penting', 'Media query lebih cepat'], 0, 'Min-width menambah, bukan membatalkan.')],
-    {'css': NAVHERO}),
+    {'css': NAVHERO}) | {'vp': 360},
   L('Langkah 5: komponen kartu produk dan grid',
     ['Kartu produk muncul tiga kali: tulis <b>satu komponen</b> <code>.kartu</code>, bukan tiga gaya terpisah. Anatominya dari desain: foto rasio 1:1, nama 18 px, asal 14 px abu-abu, harga 18 px tebal, tombol penuh. Jarak di dalam kartu 8 px, padding 16 px, radius 12 px, garis tepi 1 px.',
      'Susun kartu dengan <b>CSS Grid</b> dan <code>gap</code>, bukan margin di tiap kartu. Di mobile cukup satu kolom; nanti di breakpoint desktop tinggal mengubah jumlah kolom.',
@@ -244,19 +283,30 @@ M('Studi kasus: slicing landing page step by step', 'Menengah',
      'hint': '.grid { display: grid; gap: var(--ruang-2) } .kartu { background: var(--permukaan); border: 1px solid var(--garis); border-radius: var(--radius); padding: var(--ruang-2); display: grid; gap: var(--ruang-1) }'},
     ['Satu komponen untuk elemen berulang.', 'Grid + gap, bukan margin per kartu.', 'Uji dengan konten yang lebih panjang.'],
     [q('Tiga kartu produk sebaiknya ditata dengan?', ['Satu kelas .kartu + grid dengan gap', 'Tiga kelas berbeda', 'Tabel HTML'], 0, 'Komponen dipakai ulang.')],
-    {'css': '.grid { display: grid; gap: var(--ruang-2); }\n.kartu { background: var(--permukaan); border: 1px solid var(--garis); border-radius: var(--radius); padding: var(--ruang-2); display: grid; gap: var(--ruang-1); }\n.kartu-foto { aspect-ratio: 1; border-radius: 8px; background: var(--foto); }\n.kartu h3 { font-size: 18px; }\n.asal { font-size: 14px; color: var(--teks-2); }\n.harga { font-weight: 700; font-size: 18px; }\n'}),
-  L('Langkah 6: breakpoint desktop',
-    ['Setelah mobile rapi, tambahkan <b>satu media query</b> <code>@media (min-width: 768px)</code> sesuai catatan desain: menu tampil, hero dua kolom, judul 40 px, produk tiga kolom, padding sisi 32 px.',
-     'Jangan menyalin semua gaya ke dalam media query; tulis hanya yang <b>berubah</b>. Periksa juga lebar di antara breakpoint (600, 900, 1200 px) dengan menyeret lebar jendela browser atau memakai mode responsif DevTools (Ctrl + Shift + M).',
-     'Di layar sangat lebar (1440 px ke atas), batasi lebar isi dengan <code>max-width</code> dan <code>margin-inline: auto</code> agar baris teks tidak terlalu panjang.'],
+    {'css': '.grid { display: grid; gap: var(--ruang-2); }\n.kartu { background: var(--permukaan); border: 1px solid var(--garis); border-radius: var(--radius); padding: var(--ruang-2); display: grid; gap: var(--ruang-1); }\n.kartu-foto { aspect-ratio: 1; border-radius: 8px; background: var(--foto); }\n.kartu h3 { font-size: 18px; }\n.asal { font-size: 14px; color: var(--teks-2); }\n.harga { font-weight: 700; font-size: 18px; }\n'}) | {'vp': 360},
+  L('Langkah 6: layout desktop untuk kontainer, navbar, dan hero',
+    ['Sekarang bentuk <b>versi website</b> sesuai Frame 1 (Desktop 1440). Gaya mobile sudah jadi, jadi kita hanya <b>menambah</b> aturan di dalam <code>@media (min-width: 768px)</code>. Tekan tombol <b>Desktop 1280</b> di atas pratinjau untuk melihat hasilnya seperti di monitor, lalu <b>HP 360</b> untuk memastikan versi mobile tidak rusak.',
+     '<b>Kontainer 1120.</b> Di desain, isi halaman tidak pernah lebih lebar dari 1120 px dan selalu di tengah (redline 160 px di kiri dan kanan pada frame 1440). Caranya tanpa div pembungkus: <code>padding-inline: max(var(--ruang-4), calc((100% - 1120px) / 2))</code>. Di tablet hasilnya 32 px, di 1440 hasilnya 160 px.',
+     '<b>Navbar</b>: menu yang tadi disembunyikan ditampilkan (<code>display: flex</code>), padding atas-bawah 20. <b>Hero</b>: dua kolom sama lebar (teks kiri, gambar kanan) dengan jarak 48 dan judul 40 px.'],
     HALAMAN, TOKEN + DASAR + NAVHERO + KARTUCSS + STATE,
-    {'q': 'Tambahkan <code>@media (min-width: 768px)</code> yang membuat <code>.grid</code> menjadi 3 kolom (<code>repeat(3, 1fr)</code>) dan <code>.menu</code> tampil sebagai flex.',
-     'test': f"{RULES}.some(r=>r.media&&/min-width/.test(r.conditionText)&&[...r.cssRules].some(x=>x.selectorText==='.grid'&&/repeat\\(3|1fr 1fr 1fr/.test(x.style.gridTemplateColumns))&&[...r.cssRules].some(x=>x.selectorText==='.menu'&&x.style.display==='flex'))",
-     'hint': '@media (min-width: 768px) { .menu { display: flex } .grid { grid-template-columns: repeat(3, 1fr) } .hero { grid-template-columns: 1fr 1fr } .hero h1 { font-size: 40px } }'},
-    ['Satu media query min-width, hanya yang berubah.', 'Uji lebar di antara breakpoint.', 'Batasi lebar isi di layar sangat lebar.'],
-    [q('Isi media query desktop sebaiknya?', ['Hanya gaya yang berubah dari mobile', 'Salinan semua gaya', 'Gaya mobile yang dibatalkan'], 0, 'Lebih ringkas dan mudah dirawat.')],
-    {'css': DESKTOP}),
-  L('Langkah 7: state, aksesibilitas, dan QA pixel-perfect',
+    {'q': 'Tulis <code>@media (min-width: 768px)</code> yang: menampilkan <code>.menu</code> sebagai flex, membuat <code>.hero</code> dua kolom (<code>1fr 1fr</code>), dan memberi <code>.nav</code> padding samping dengan batas isi 1120px.',
+     'test': f"{RULES}.some(r=>r.media&&/min-width/.test(r.conditionText)&&[...r.cssRules].some(x=>x.selectorText==='.menu'&&x.style.display==='flex')&&[...r.cssRules].some(x=>/(^|, ?)\\.hero$|^\\.hero(,|$)/.test(x.selectorText)&&/1fr 1fr|repeat\\(2/.test(x.style.gridTemplateColumns))&&[...r.cssRules].some(x=>/\\.nav/.test(x.selectorText)&&/1120/.test(x.style.cssText)))",
+     'hint': '@media (min-width: 768px) { .nav, .hero, .produk, .kaki { padding-inline: max(var(--ruang-4), calc((100% - 1120px) / 2)); } .nav { padding-block: 20px } .menu { display: flex } .hero { grid-template-columns: 1fr 1fr; align-items: center; gap: var(--ruang-5); padding-block: var(--ruang-5) } .hero h1 { font-size: 40px } }'},
+    ['Desktop ditambahkan di media query min-width, bukan menulis ulang.', 'Kontainer 1120 dengan padding-inline max().', 'Cek di Desktop 1280 dan HP 360 bergantian.'],
+    [q('Kenapa memakai max(var(--ruang-4), calc((100% - 1120px) / 2))?', ['Isi maksimal 1120 px di tengah, tetapi tetap ada jarak minimal 32 px di tablet', 'Agar font membesar', 'Supaya menu tersembunyi'], 0, 'Di layar sempit nilai kedua negatif, jadi max() memilih 32 px.')],
+    {'css': DESKTOP_A}) | {'vp': 1280},
+  L('Langkah 7: layout desktop untuk produk, CTA, dan footer',
+    ['Lanjutkan bagian bawah Frame 1. <b>Produk</b>: tiga kartu berdampingan dengan jarak 24 (di mobile 16). <b>CTA</b>: judul di kiri dan form di kanan, form maksimal 420 px, padding 48. <b>Footer</b>: alamat di kiri, tautan media sosial di kanan.',
+     'Tambahkan breakpoint kedua <code>@media (min-width: 1200px)</code> untuk detail yang hanya ada di frame 1440: judul hero 48 px, lead 18 px, padding hero 80, dan judul section 28 px. Breakpoint ini kecil, hanya mengubah ukuran, bukan susunan.',
+     'Setelah selesai, bandingkan pratinjau <b>Desktop 1280</b> dengan Frame 1 dan pratinjau <b>HP 360</b> dengan Frame 2 di pelajaran Contoh desain. Keduanya harus sama susunannya.'],
+    HALAMAN, TOKEN + DASAR + NAVHERO + KARTUCSS + DESKTOP_A + STATE,
+    {'q': 'Di <code>@media (min-width: 768px)</code>: jadikan <code>.grid</code> 3 kolom, <code>.cta</code> grid dua kolom, dan <code>.kaki</code> flex. Lalu tambahkan <code>@media (min-width: 1200px)</code> yang membuat <code>.hero h1</code> 48px.',
+     'test': f"(R=>R.some(r=>r.media&&/768/.test(r.conditionText)&&[...r.cssRules].some(x=>x.selectorText==='.grid'&&/repeat\\(3|1fr 1fr 1fr/.test(x.style.gridTemplateColumns))&&[...r.cssRules].some(x=>x.selectorText==='.cta'&&x.style.display==='grid')&&[...r.cssRules].some(x=>x.selectorText==='.kaki'&&x.style.display==='flex'))&&R.some(r=>r.media&&/1200/.test(r.conditionText)&&[...r.cssRules].some(x=>x.selectorText==='.hero h1'&&x.style.fontSize==='48px')))({RULES})",
+     'hint': '@media (min-width: 768px) { .grid { grid-template-columns: repeat(3, 1fr); gap: var(--ruang-3) } .cta { display: grid; grid-template-columns: 1fr minmax(280px, 420px); align-items: center; padding: var(--ruang-5) } .kaki { display: flex; justify-content: space-between } }  @media (min-width: 1200px) { .hero h1 { font-size: 48px } .lead { font-size: 18px } }'},
+    ['Grid 3 kolom gap 24 untuk kartu.', 'CTA dua kolom, footer satu baris.', 'Breakpoint 1200 hanya untuk ukuran di frame 1440.'],
+    [q('Apa yang sebaiknya berubah di breakpoint 1200 pada desain ini?', ['Ukuran judul, lead, dan padding', 'Seluruh susunan halaman', 'Warna brand'], 0, 'Susunan sudah diatur di 768; 1200 hanya menyempurnakan ukuran.')],
+    {'css': DESKTOP_B}) | {'vp': 1280},
+  L('Langkah 8: state, aksesibilitas, dan QA pixel-perfect',
     ['Desain statis hanya menampilkan satu keadaan. Lengkapi <b>state interaktif</b>: hover, <b>fokus keyboard</b> (<code>:focus-visible</code> dengan outline yang kontras), aktif, dan nonaktif. Pastikan target sentuh minimal 44 px dan setiap input punya label (boleh disembunyikan secara visual dengan kelas <code>.sr</code>).',
      '<b>QA pixel-perfect</b>: tumpuk tangkapan layar hasil di atas desain (ekstensi PerfectPixel atau fitur overlay di Figma) pada 360 px dan 1440 px. Periksa jarak, ukuran font, warna, dan perataan. Lalu uji di perangkat nyata, mode gelap sistem, zoom 200%, navigasi dengan Tab saja, dan Lighthouse (target aksesibilitas 95+).',
      'Terakhir, <b>serah terima</b>: kirim tautan pratinjau (Vercel, Netlify), daftar perbedaan yang disengaja beserta alasannya, dan jawaban atas pertanyaan audit. Desainer meninjau, lalu pull request digabungkan.'],
@@ -267,14 +317,14 @@ M('Studi kasus: slicing landing page step by step', 'Menengah',
     ['Lengkapi hover, fokus, aktif, nonaktif.', 'Overlay hasil di atas desain pada 360 dan 1440 px.', 'Serah terima: tautan pratinjau, catatan perbedaan, review desainer.'],
     [q('Alat untuk memeriksa pixel-perfect?', ['Overlay tangkapan layar di atas desain', 'Menebak dengan mata', 'Hanya Lighthouse'], 0, 'Perbedaan langsung terlihat.'),
      q('Kenapa memakai :focus-visible, bukan menghapus outline?', ['Pengguna keyboard harus tahu posisi fokus', 'Agar lebih cantik', 'Wajib oleh Figma'], 0, 'WCAG 2.4.7 Focus Visible.')],
-    {'css': STATE}),
+    {'css': STATE}) | {'vp': 1280},
   W('Hasil akhir dan checklist serah terima',
-    ['Inilah hasil slicing lengkap: token, HTML semantik, layout mobile-first, komponen kartu, breakpoint 768 px, serta state fokus. Ubah lebar pratinjau (di layar lebar) untuk melihat perubahan layout, dan tekan Tab untuk melihat fokus keyboard.',
+    ['Inilah hasil slicing lengkap: token, HTML semantik, layout mobile, komponen kartu, layout desktop (768 dan 1200 px), serta state fokus. Ganti tombol <b>HP 360</b>, <b>Tablet 768</b>, dan <b>Desktop 1280</b> di atas pratinjau: versi HP harus sama dengan Frame 2 dan versi desktop sama dengan Frame 1. Tekan Tab untuk melihat fokus keyboard.',
      'Bandingkan dengan papan desain di pelajaran pertama. Perbedaan yang tersisa harus disengaja dan dicatat, misalnya state hover yang ditambahkan karena tidak ada di file desain.',
      'Pakai checklist di bawah setiap kali menyerahkan hasil slicing. Checklist ini mencakup standar yang biasa diperiksa reviewer di agensi dan tim produk.'],
     HALAMAN, css=FINAL_CSS,
     pts=['Token, semantik, mobile-first, komponen, breakpoint, state.', 'Perbedaan dengan desain harus disengaja dan dicatat.', 'Pakai checklist yang sama setiap proyek.'],
-    qs=[q('Yang wajib ada saat menyerahkan hasil slicing?', ['Tautan pratinjau dan catatan perbedaan', 'Hanya file ZIP', 'Tangkapan layar desktop saja'], 0, 'Desainer bisa meninjau langsung.')]),
+    qs=[q('Yang wajib ada saat menyerahkan hasil slicing?', ['Tautan pratinjau dan catatan perbedaan', 'Hanya file ZIP', 'Tangkapan layar desktop saja'], 0, 'Desainer bisa meninjau langsung.')]) | {'vp': 1280},
 ]),
 ]
 SLW_KASUS[0]['lessons'][-1]['tb'] = [{'c': 'Checklist serah terima slicing', 'h': ['Area', 'Kriteria lulus'], 'r': [
@@ -412,6 +462,34 @@ M('Studi kasus: slicing layar Masuk step by step', 'Menengah',
     qs=[q('Alat Flutter untuk mengunci tampilan layar dari perubahan tak sengaja?', ['Golden test', 'Hot reload', 'pub get'], 0, 'Membandingkan gambar piksel.')]),
 ]),
 ]
+
+
+# pratinjau visual hasil Flutter/Compose untuk setiap langkah slicing mobile
+_N = 'Tiruan layar Android 360 × 800 dp yang dihasilkan kode di atas (Material 3). Gulir ke samping untuk melihat semua keadaan.'
+_HP = {
+  'Langkah 1': dict(c='Layar dipecah menjadi blok', n='Kotak merah putus-putus menunjukkan blok yang akan menjadi widget. Urutannya sama dengan pohon di atas.',
+                    s=[HM.s('Desain asli', HM.masuk()), HM.s('Dipecah menjadi blok widget', HM.masuk(overlay=True))]),
+  'Langkah 2': dict(c='Efek tema pada komponen', n='Kode layar sama persis; yang berbeda hanya ThemeData. Bandingkan dengan frame desain di pelajaran pertama.',
+                    s=[HM.s('Tanpa tema: warna bawaan Material (ungu)', HM.masuk(tema='default')), HM.s('Dengan temaKopi: sesuai token desain', HM.masuk())]),
+  'Langkah 3': dict(c='Hasil kerangka layar', n=_N,
+                    s=[HM.s('Kerangka: SafeArea, padding 24, header', HM.masuk(tahap='kerangka')),
+                       HM.s('Keyboard muncul: isi tetap bisa digulir', HM.masuk(fokus='email', keyboard=True, scroll=150)),
+                       HM.s('Tablet 800 dp: isi maks 480 di tengah', HM.masuk(w=800, h=1100), w=800, h=1100)]),
+  'Langkah 4': dict(c='Hasil komponen form', n=_N,
+                    s=[HM.s('Form lengkap, sama dengan desain', HM.masuk()), HM.s('Field email sedang fokus', HM.masuk(email='', fokus='email')),
+                       HM.s('Ikon mata ditekan: sandi terlihat', HM.masuk(lihat=True, fokus='sandi'))]),
+  'Langkah 5': dict(c='Hasil setiap state', n='State ini tidak ada di gambar desain statis, tetapi wajib dibuat dan ditunjukkan ke desainer.',
+                    s=[HM.s('Error validasi email', HM.masuk(email='rina@', err_email='Format email belum benar, contoh: nama@contoh.id')),
+                       HM.s('Memuat: tombol nonaktif + spinner', HM.masuk(memuat=True)),
+                       HM.s('Gagal: snackbar dari server', HM.masuk(snack='Email atau kata sandi salah'))]),
+  'Langkah 6': dict(c='Review visual QA', n='Empat tangkapan yang wajib dibandingkan sebelum serah terima. Golden test menyimpan versi pertama sebagai acuan.',
+                    s=[HM.s('Acuan golden 360 × 800', HM.masuk()), HM.s('Mode gelap: kontras tetap AA', HM.masuk(tema='gelap')),
+                       HM.s('Huruf sistem 200%: tetap bisa digulir', HM.masuk(fs=1.6, scroll=40)), HM.s('Layar kecil 320 × 640 dp', HM.masuk(w=320, h=640), w=320, h=640)]),
+}
+for _l in SLM_KASUS[0]['lessons']:
+    for _k, _v in _HP.items():
+        if _l['t'].startswith(_k):
+            _l['hp'] = _v
 
 
 # ===================================================================

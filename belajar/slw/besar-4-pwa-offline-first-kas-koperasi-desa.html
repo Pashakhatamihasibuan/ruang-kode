@@ -22,7 +22,51 @@
 <p><b>Brief.</b> PWA untuk bendahara koperasi: catat setoran dan pinjaman tanpa sinyal, sinkron otomatis saat online, indikator status sinkron yang jelas.</p>
 <p>Kit berisi desain hi-fi (Dashboard kas), wireframe lo-fi, variasi 3 gaya lain, prototype beranimasi, <code>tokens.json</code>, ikon, dan <code>BRIEF.md</code> berisi kriteria penerimaan. Gaya utama: <b>Material 3 Expressive</b>.</p>
 <p>Cara mengerjakan: impor ke Figma, periksa ukuran dengan Dev Mode, ubah token menjadi CSS custom properties, lalu slicing per komponen dari yang terkecil (tombol, input, kartu) sebelum menyusun halaman.</p>
+<p><b>Peta slicing.</b> Tabel di bawah memetakan setiap blok di frame desain ke elemen HTML dan susunannya di HP dan desktop. Kode contoh adalah titik awal: token sudah diambil dari <code>tokens.json</code> kit ini, kerangka HTML mengikuti urutan blok di frame, dan CSS sudah dipisah menjadi gaya HP (dasar) dan desktop (media query 768 px). Isi setiap bagian sampai sama dengan frame web, lalu periksa di lebar 360, 768, dan 1440.</p>
+<div class="tw"><table><caption>Peta slicing: setiap blok di frame desain</caption><thead><tr><th>Blok desain</th><th>Elemen HTML</th><th>Di HP (360)</th><th>Di desktop (1440)</th></tr></thead><tbody><tr><td>topbar</td><td>&lt;header&gt; judul halaman</td><td>judul + tombol bertumpuk</td><td>flex space-between</td></tr><tr><td>statistik</td><td>&lt;section&gt; + &lt;dl&gt;</td><td>grid 2 kolom</td><td>grid 4 kolom</td></tr><tr><td>tabel</td><td>&lt;table&gt; dengan &lt;caption&gt;, &lt;th scope&gt;</td><td>bungkus overflow-x:auto atau ubah jadi kartu</td><td>tabel penuh</td></tr></tbody></table></div>
 <div class="tw"><table><caption>Kriteria selesai</caption><thead><tr><th>Aspek</th><th>Target</th></tr></thead><tbody><tr><td>Kemiripan visual</td><td>Selisih maksimal 2px di breakpoint utama</td></tr><tr><td>State</td><td>default, hover, fokus, tekan, nonaktif, memuat, kosong, error</td></tr><tr><td>Responsif</td><td>360 - 1440</td></tr><tr><td>Aksesibilitas</td><td>WCAG 2.2 AA, target sentuh 48</td></tr><tr><td>Animasi</td><td>Sesuai prototype, hormati reduced motion</td></tr><tr><td>Portofolio</td><td>Studi kasus: masalah, keputusan, hasil</td></tr></tbody></table></div>
+<div class="lbl">HTML</div><pre><code>&lt;!-- index.html: kerangka semantik dari frame desain --&gt;
+  &lt;header class=&quot;topbar&quot;&gt;&lt;h2&gt;Koperasi Tani Makmur&lt;/h2&gt; … &lt;/header&gt;
+&lt;div class=&quot;app&quot;&gt;
+  &lt;aside class=&quot;sidebar&quot; aria-label=&quot;Navigasi&quot;&gt;…&lt;/aside&gt;
+  &lt;main&gt;
+    &lt;section class=&quot;statistik&quot;&gt;… &lt;/section&gt;
+    &lt;section class=&quot;tabel&quot;&gt;&lt;h2&gt;Transaksi terbaru&lt;/h2&gt; … &lt;/section&gt;
+  &lt;/main&gt;
+&lt;/div&gt;
+
+/* style.css: token dari tokens.json + kerangka responsif */
+:root {
+  --primer: #386A20;
+  --primer2: #255214;
+  --aksen: #B8F397;
+  --latar: #FFFFFF;
+  --permukaan: #FFFFFF;
+  --teks: #1A1A1A;
+  --teks2: #5C5C66;
+  --garis: #E3E3E8;
+  --lembut: #F2F2F5;
+  --bahaya: #C8102E;
+  --sukses: #1E7A4C;
+  --radius: 24px;
+  --ruang-1: 8px; --ruang-2: 16px; --ruang-3: 24px; --ruang-4: 32px; --ruang-5: 48px;
+}
+
+/* 1. MOBILE dulu (tanpa media query): semua bagian 1 kolom, padding samping 16 */
+.wadah, main &gt; section, header, footer { padding-inline: var(--ruang-2); }
+.app { display: block; }
+.sidebar { display: none; }  /* di HP: ganti dengan tab bar bawah atau menu ☰ */
+
+/* 2. DESKTOP sesuai frame web: isi maks 1200 di tengah */
+@media (min-width: 768px) {
+  main &gt; section, header, footer { padding-inline: max(var(--ruang-4), calc((100% - 1200px) / 2)); }
+  .app { display: grid; grid-template-columns: 240px 1fr; }
+  .sidebar { display: block; }
+  .topbar { /* desktop: flex space-between */ }
+  .statistik { /* desktop: grid 4 kolom */ }
+  .tabel { /* desktop: tabel penuh */ }
+}
+</code></pre>
 <h2>Poin penting</h2><ul><li>Proyek besar: PWA offline-first kas koperasi desa.</li><li>Gaya visual: Material 3 Expressive.</li><li>Ambil nilai dari tokens.json, jangan menebak dari gambar.</li></ul>
 <a class="cta" href="/#slw-7-10">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/slw/besar-3-asisten-belajar-ai-dengan-sumber-rag">Besar 3: Asisten belajar AI dengan sumber (RAG)</a></p>
 </main>

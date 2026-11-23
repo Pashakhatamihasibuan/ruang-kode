@@ -22,7 +22,45 @@
 <p><b>Brief.</b> Booking dokter: cari dokter/poli, pilih jadwal, konfirmasi, antrean live, dan rekam kunjungan. Desain Liquid Glass dengan fallback kontras.</p>
 <p>Kit berisi desain hi-fi (Pilih jadwal, Antrean), wireframe lo-fi, variasi 3 gaya lain, prototype beranimasi, <code>tokens.json</code>, ikon, dan <code>BRIEF.md</code> berisi kriteria penerimaan. Gaya utama: <b>Liquid Glass</b>.</p>
 <p>Cara mengerjakan: impor ke Figma, periksa ukuran dengan Dev Mode, ubah token menjadi CSS custom properties atau ThemeData/MaterialTheme, lalu slicing per komponen dari yang terkecil (tombol, input, kartu) sebelum menyusun halaman.</p>
+<p><b>Peta slicing.</b> Tabel di bawah memetakan setiap blok di frame desain ke widget Flutter atau Compose. Kode contoh sudah berisi ThemeData dari <code>tokens.json</code> kit ini dan urutan widget sesuai frame. Gambar pratinjau kit adalah review visualnya: jalankan di emulator 360 × 800 dp lalu bandingkan dengan gambar itu.</p>
+<div class="tw"><table><caption>Peta slicing: setiap blok di frame desain</caption><thead><tr><th>Blok desain</th><th>Widget Flutter / Compose</th></tr></thead><tbody><tr><td>appbar</td><td>AppBar / TopAppBar (Compose)</td></tr><tr><td>banner</td><td>Card dengan gradien + FilledButton</td></tr><tr><td>slot</td><td>Wrap(ChoiceChip) jam tersedia</td></tr><tr><td>ringkas</td><td>Card(Column(Row label-nilai))</td></tr></tbody></table></div>
 <div class="tw"><table><caption>Kriteria selesai</caption><thead><tr><th>Aspek</th><th>Target</th></tr></thead><tbody><tr><td>Kemiripan visual</td><td>Selisih maksimal 2px di breakpoint utama</td></tr><tr><td>State</td><td>default, hover, fokus, tekan, nonaktif, memuat, kosong, error</td></tr><tr><td>Responsif</td><td>360 - 430 lebar HP, aman di notch &amp; gesture bar</td></tr><tr><td>Aksesibilitas</td><td>WCAG 2.2 AA, target sentuh 48</td></tr><tr><td>Animasi</td><td>Sesuai prototype, hormati reduced motion</td></tr><tr><td>Portofolio</td><td>Studi kasus: masalah, keputusan, hasil</td></tr></tbody></table></div>
+<div class="lbl">KODE</div><pre><code>final tema = ThemeData(
+  useMaterial3: true,
+  colorScheme: ColorScheme.fromSeed(
+    seedColor: const Color(0xFF0284C7),
+    primary: const Color(0xFF0284C7),
+    secondary: const Color(0xFF34D399),
+    surface: const Color(0xFFFFFFFF),
+    error: const Color(0xFFC8102E),
+  ),
+  cardTheme: CardThemeData(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22))),
+  filledButtonTheme: FilledButtonThemeData(style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(48),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)))),
+);
+
+class LayarPilihJadwal extends StatelessWidget {
+  const LayarPilihJadwal({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text(&#x27;Pilih jadwal&#x27;)),
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+          // banner: Card dengan gradien + FilledButton
+          const SizedBox(height: 16),
+          // slot: Wrap(ChoiceChip) jam tersedia
+          const SizedBox(height: 16),
+          // ringkas: Card(Column(Row label-nilai))
+          const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
+  }
+}</code></pre>
 <h2>Poin penting</h2><ul><li>Proyek besar: Reservasi klinik Android dan iOS.</li><li>Gaya visual: Liquid Glass.</li><li>Ambil nilai dari tokens.json, jangan menebak dari gambar.</li></ul>
 <a class="cta" href="/#slm-6-9">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/slm/besar-2-e-commerce-android-native">Besar 2: E-commerce Android native</a></p><p>Berikutnya: <a href="/belajar/slm/besar-4-asisten-keuangan-dengan-ai">Besar 4: Asisten keuangan dengan AI</a></p>
 </main>

@@ -135,13 +135,95 @@ DS_KIT = [M('Kit Figma: design system Kopi Kita dan multi-brand', 'Menengah',
   ])]
 
 
+# ====================================================================== Peta slicing per proyek
+# blok desain -> elemen HTML, susunan di HP, susunan di desktop (web) / widget Flutter (mobile)
+PETA_WEB = {
+  'navbar': ('<header> + <nav>', 'logo + tombol, menu di balik tombol ☰', 'logo · menu flex gap 24 · CTA'),
+  'topbar': ('<header> judul halaman', 'judul + tombol bertumpuk', 'flex space-between'),
+  'hero': ('<section class="hero"> + <h1>', '1 kolom, gambar di bawah teks', 'grid 2 kolom 1fr 1fr, gap 48'),
+  'fitur': ('<section> + <ul> kartu', '1 kolom', 'grid 3 kolom'),
+  'kartu': ('<section> + <article> per kartu', '1 kolom (atau 2 jika kartu kecil)', 'grid repeat(4, 1fr) atau auto-fill minmax(240px,1fr)'),
+  'testimoni': ('<section> + <blockquote>', '1 kolom / scroll-snap horizontal', 'grid 3 kolom'),
+  'cta': ('<section class="cta">', 'judul di atas tombol', 'judul kiri, tombol kanan'),
+  'footer': ('<footer> + <nav> per kolom', 'kolom bertumpuk', 'grid 4 kolom'),
+  'form': ('<form> + <label> + pesan error', 'form penuh, ringkasan di bawah', 'grid form 2fr + ringkasan 1fr (sticky)'),
+  'statistik': ('<section> + <dl>', 'grid 2 kolom', 'grid 4 kolom'),
+  'grafik': ('<figure> + <svg>/<canvas> + <figcaption>', 'lebar penuh, tinggi 220', 'lebar penuh, tinggi 320'),
+  'tabel': ('<table> dengan <caption>, <th scope>', 'bungkus overflow-x:auto atau ubah jadi kartu', 'tabel penuh'),
+  'kanban': ('<section> per kolom + <ul role="list">', 'kolom scroll horizontal (scroll-snap)', 'grid 4 kolom'),
+  'langkah': ('<ol> langkah', 'vertikal', 'horizontal 4 kolom'),
+  'chat': ('<section> + <ol> pesan + <form>', 'percakapan penuh, input menempel bawah', 'daftar kiri 320 + percakapan kanan'),
+}
+PETA_HP = {
+  'appbar': 'AppBar / TopAppBar (Compose)', 'sapaan': 'Row(Avatar, Column(Text, Text))', 'judul': 'Text(style: headlineSmall)',
+  'bagian': 'Text(style: titleMedium) + jarak 16', 'saldo': 'Card(Column(Text nilai, Row(aksi IconButton)))', 'cari': 'SearchBar',
+  'chips': 'Wrap / LazyRow(FilterChip)', 'banner': 'Card dengan gradien + FilledButton', 'list': 'ListView / LazyColumn(ListTile)',
+  'grid': 'GridView.count(2) / LazyVerticalGrid', 'form': 'Form + TextFormField + FilledButton', 'langkah': 'Stepper / Row(progress)',
+  'peta': 'Stack(Peta, Card info di bawah)', 'chat': 'ListView(reverse: true) gelembung', 'masukan_chat': 'Row(TextField, IconButton kirim) + imePadding',
+  'ringkas': 'Card(Column(Row label-nilai))', 'grafik': 'CustomPaint / fl_chart', 'slot': 'Wrap(ChoiceChip) jam tersedia',
+  'segmen': 'SegmentedButton', 'kosong': 'Column(ikon, teks, FilledButton) di tengah', 'spasi': 'SizedBox(height)',
+}
+
+
+def _css_token(t):
+    return (':root {\n' + ''.join(f'  --{k}: {t[k]};\n' for k in ('primer', 'primer2', 'aksen', 'latar', 'permukaan', 'teks', 'teks2', 'garis', 'lembut', 'bahaya', 'sukses'))
+            + f'  --radius: {t["radius"]}px;\n  --ruang-1: 8px; --ruang-2: 16px; --ruang-3: 24px; --ruang-4: 32px; --ruang-5: 48px;\n}}\n')
+
+
+def _kerangka_web(spec):
+    blok = [b for b in spec['layar'][0][1] if b[0] != 'spasi']
+    tag = {'navbar': 'header', 'topbar': 'header', 'footer': 'footer'}
+    html, css_hp, css_dt = [], [], []
+    for jenis, d in blok:
+        el = tag.get(jenis, 'section')
+        jd = d.get('jd') if isinstance(d, dict) else None
+        isi = f'<h2>{jd}</h2> … ' if jd and jenis not in ('hero',) else ('<h1>' + d.get('jd', '') + '</h1> … ' if jenis == 'hero' else '… ')
+        html.append(f'  <{el} class="{jenis}">{isi}</{el}>')
+        css_dt.append(f'  .{jenis} {{ /* desktop: {PETA_WEB.get(jenis, ("", "", "sesuai frame"))[2]} */ }}')
+    sb = spec.get('sidebar')
+    awal = '<div class="app">\n  <aside class="sidebar" aria-label="Navigasi">…</aside>\n  <main>\n' if sb else '<main>\n'
+    akhir = '\n  </main>\n</div>' if sb else '\n</main>'
+    h = '\n'.join(x for x in html if 'header' in x.split('>')[0]) + '\n' + awal + '\n'.join('  ' + x for x in html if 'header' not in x.split('>')[0] and 'footer' not in x.split('>')[0]) + akhir + '\n' + '\n'.join(x for x in html if x.strip().startswith('<footer'))
+    c = (_css_token(spec['token']) + '\n/* 1. MOBILE dulu (tanpa media query): semua bagian 1 kolom, padding samping 16 */\n'
+         + '.wadah, main > section, header, footer { padding-inline: var(--ruang-2); }\n'
+         + ('.app { display: block; }\n.sidebar { display: none; }  /* di HP: ganti dengan tab bar bawah atau menu ☰ */\n' if sb else '')
+         + '\n/* 2. DESKTOP sesuai frame web: isi maks 1200 di tengah */\n@media (min-width: 768px) {\n'
+         + '  main > section, header, footer { padding-inline: max(var(--ruang-4), calc((100% - 1200px) / 2)); }\n'
+         + ('  .app { display: grid; grid-template-columns: 240px 1fr; }\n  .sidebar { display: block; }\n' if sb else '')
+         + '\n'.join(css_dt) + '\n}\n')
+    return h.strip('\n'), c
+
+
+def _tema_flutter(t):
+    hx = lambda v: '0xFF' + v.lstrip('#').upper()
+    return (f"final tema = ThemeData(\n  useMaterial3: true,\n  colorScheme: ColorScheme.fromSeed(\n    seedColor: const Color({hx(t['primer'])}),\n"
+            f"    primary: const Color({hx(t['primer'])}),\n    secondary: const Color({hx(t['aksen'])}),\n    surface: const Color({hx(t['latar'])}),\n    error: const Color({hx(t['bahaya'])}),\n  ),\n"
+            f"  cardTheme: CardThemeData(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular({t['radius']}))),\n"
+            f"  filledButtonTheme: FilledButtonThemeData(style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(48),\n"
+            f"      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular({t['radius']})))),\n);\n")
+
+
+def _kerangka_flutter(spec):
+    nm, blok = spec['layar'][0][:2]
+    kelas = 'Layar' + ''.join(w.capitalize() for w in nm.replace('/', ' ').split()[:2])
+    anak = []
+    for jenis, d in blok:
+        if jenis == 'appbar':
+            continue
+        anak.append(f'          // {jenis}: {PETA_HP.get(jenis, "widget sesuai frame")}\n          const SizedBox(height: 16),')
+    ab = any(j == 'appbar' for j, _ in blok)
+    return (_tema_flutter(spec['token']) + f"\nclass {kelas} extends StatelessWidget {{\n  const {kelas}({{super.key}});\n  @override\n  Widget build(BuildContext context) {{\n    return Scaffold(\n"
+            + ("      appBar: AppBar(title: const Text('" + nm + "')),\n" if ab else '')
+            + "      body: SafeArea(\n        child: ListView(\n          padding: const EdgeInsets.all(16),\n          children: [\n" + '\n'.join(anak) + "\n          ],\n        ),\n      ),\n    );\n  }\n}")
+
+
 # ====================================================================== Slicing: 6 mini + 4 besar
 def _proyek(spec, jalur):
     s = spec
     jenis = 'mini' if s['tipe'] == 'mini' else 'besar'
     no = s['id'].split('-')[2]
     layar = ', '.join(x[0] for x in s.get('layar', []))
-    return C(f'{"Mini" if jenis == "mini" else "Besar"} {no}: {s["judul"]}',
+    d = C(f'{"Mini" if jenis == "mini" else "Besar"} {no}: {s["judul"]}',
              [f'<b>Brief.</b> {s["brief"]}',
               f'Kit berisi desain hi-fi ({layar}), wireframe lo-fi, variasi 3 gaya lain, prototype beranimasi, <code>tokens.json</code>, ikon, dan <code>BRIEF.md</code> berisi kriteria penerimaan. Gaya utama: <b>{GAYA[s["gaya"]]["label"]}</b>.',
               'Cara mengerjakan: impor ke Figma, periksa ukuran dengan Dev Mode, ubah token menjadi CSS custom properties' + (' atau ThemeData/MaterialTheme' if jalur == 'slm' else '') + ', lalu slicing per komponen dari yang terkecil (tombol, input, kartu) sebelum menyusun halaman.'],
@@ -149,6 +231,31 @@ def _proyek(spec, jalur):
                                                                          ['Responsif', '360 - 1440' if jalur == 'slw' else '360 - 430 lebar HP, aman di notch & gesture bar'], ['Aksesibilitas', 'WCAG 2.2 AA, target sentuh 48'],
                                                                          ['Animasi', 'Sesuai prototype, hormati reduced motion'], ['Portofolio', 'Studi kasus: masalah, keputusan, hasil']]}],
              pts=[f'Proyek {jenis}: {s["judul"]}.', f'Gaya visual: {GAYA[s["gaya"]]["label"]}.', 'Ambil nilai dari tokens.json, jangan menebak dari gambar.']) | {'dl': [dl(s['id'])]}
+    return _gabung(d, _peta(s, jalur), jalur)
+
+
+def _gabung(d, p, jalur):
+    if not p:
+        return d
+    d['tb'] = p.pop('tb2') + d.get('tb', [])
+    d['b'] = d['b'] + ['<b>Peta slicing.</b> Tabel di bawah memetakan setiap blok di frame desain ke ' + ('elemen HTML dan susunannya di HP dan desktop. Kode contoh adalah titik awal: token sudah diambil dari <code>tokens.json</code> kit ini, kerangka HTML mengikuti urutan blok di frame, dan CSS sudah dipisah menjadi gaya HP (dasar) dan desktop (media query 768 px). Isi setiap bagian sampai sama dengan frame web, lalu periksa di lebar 360, 768, dan 1440.' if jalur == 'slw' else 'widget Flutter atau Compose. Kode contoh sudah berisi ThemeData dari <code>tokens.json</code> kit ini dan urutan widget sesuai frame. Gambar pratinjau kit adalah review visualnya: jalankan di emulator 360 × 800 dp lalu bandingkan dengan gambar itu.')]
+    d.update(p)
+    return d
+
+
+def _peta(s, jalur):
+    """Peta slicing + kode awal agar desain di kit bisa langsung dikerjakan sampai sama."""
+    blok = [b[0] for b in s['layar'][0][1] if b[0] != 'spasi'] if s.get('layar') else []
+    if jalur == 'slw':
+        h, c = _kerangka_web(s)
+        return {'tb2': [{'c': 'Peta slicing: setiap blok di frame desain', 'h': ['Blok desain', 'Elemen HTML', 'Di HP (360)', 'Di desktop (1440)'],
+                         'r': [[b] + list(PETA_WEB.get(b, ('<section>', '1 kolom', 'sesuai frame'))) for b in dict.fromkeys(blok)]}],
+                'code': '<!-- index.html: kerangka semantik dari frame desain -->\n' + h + '\n\n/* style.css: token dari tokens.json + kerangka responsif */\n' + c, 'lang': 'html'}
+    if jalur == 'slm':
+        return {'tb2': [{'c': 'Peta slicing: setiap blok di frame desain', 'h': ['Blok desain', 'Widget Flutter / Compose'],
+                         'r': [[b, PETA_HP.get(b, 'sesuai frame')] for b in dict.fromkeys(blok)]}],
+                'code': _kerangka_flutter(s), 'lang': 'dart'}
+    return {}
 
 
 SLW_KIT = [M('Proyek slicing website: 6 mini + 4 besar', 'Menengah',

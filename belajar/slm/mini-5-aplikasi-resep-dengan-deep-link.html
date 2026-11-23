@@ -22,7 +22,46 @@
 <p><b>Brief.</b> Resep masakan Nusantara: beranda, detail resep (bahan, langkah), favorit, dan deep link "dapurnusantara://resep/rendang".</p>
 <p>Kit berisi desain hi-fi (Beranda resep), wireframe lo-fi, variasi 3 gaya lain, prototype beranimasi, <code>tokens.json</code>, ikon, dan <code>BRIEF.md</code> berisi kriteria penerimaan. Gaya utama: <b>Retro Y2K</b>.</p>
 <p>Cara mengerjakan: impor ke Figma, periksa ukuran dengan Dev Mode, ubah token menjadi CSS custom properties atau ThemeData/MaterialTheme, lalu slicing per komponen dari yang terkecil (tombol, input, kartu) sebelum menyusun halaman.</p>
+<p><b>Peta slicing.</b> Tabel di bawah memetakan setiap blok di frame desain ke widget Flutter atau Compose. Kode contoh sudah berisi ThemeData dari <code>tokens.json</code> kit ini dan urutan widget sesuai frame. Gambar pratinjau kit adalah review visualnya: jalankan di emulator 360 × 800 dp lalu bandingkan dengan gambar itu.</p>
+<div class="tw"><table><caption>Peta slicing: setiap blok di frame desain</caption><thead><tr><th>Blok desain</th><th>Widget Flutter / Compose</th></tr></thead><tbody><tr><td>judul</td><td>Text(style: headlineSmall)</td></tr><tr><td>cari</td><td>SearchBar</td></tr><tr><td>chips</td><td>Wrap / LazyRow(FilterChip)</td></tr><tr><td>grid</td><td>GridView.count(2) / LazyVerticalGrid</td></tr></tbody></table></div>
 <div class="tw"><table><caption>Kriteria selesai</caption><thead><tr><th>Aspek</th><th>Target</th></tr></thead><tbody><tr><td>Kemiripan visual</td><td>Selisih maksimal 2px di breakpoint utama</td></tr><tr><td>State</td><td>default, hover, fokus, tekan, nonaktif, memuat, kosong, error</td></tr><tr><td>Responsif</td><td>360 - 430 lebar HP, aman di notch &amp; gesture bar</td></tr><tr><td>Aksesibilitas</td><td>WCAG 2.2 AA, target sentuh 48</td></tr><tr><td>Animasi</td><td>Sesuai prototype, hormati reduced motion</td></tr><tr><td>Portofolio</td><td>Studi kasus: masalah, keputusan, hasil</td></tr></tbody></table></div>
+<div class="lbl">KODE</div><pre><code>final tema = ThemeData(
+  useMaterial3: true,
+  colorScheme: ColorScheme.fromSeed(
+    seedColor: const Color(0xFFD62828),
+    primary: const Color(0xFFD62828),
+    secondary: const Color(0xFFFCBF49),
+    surface: const Color(0xFFFFF8E7),
+    error: const Color(0xFFC8102E),
+  ),
+  cardTheme: CardThemeData(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14))),
+  filledButtonTheme: FilledButtonThemeData(style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(48),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)))),
+);
+
+class LayarBerandaResep extends StatelessWidget {
+  const LayarBerandaResep({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+          // judul: Text(style: headlineSmall)
+          const SizedBox(height: 16),
+          // cari: SearchBar
+          const SizedBox(height: 16),
+          // chips: Wrap / LazyRow(FilterChip)
+          const SizedBox(height: 16),
+          // grid: GridView.count(2) / LazyVerticalGrid
+          const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
+  }
+}</code></pre>
 <h2>Poin penting</h2><ul><li>Proyek mini: Aplikasi resep dengan deep link.</li><li>Gaya visual: Retro Y2K.</li><li>Ambil nilai dari tokens.json, jangan menebak dari gambar.</li></ul>
 <a class="cta" href="/#slm-6-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/slm/mini-4-formulir-pendaftaran-multi-langkah">Mini 4: Formulir pendaftaran multi-langkah</a></p><p>Berikutnya: <a href="/belajar/slm/mini-6-konverter-kurs-lintas-platform">Mini 6: Konverter kurs lintas platform</a></p>
 </main>
