@@ -227,13 +227,30 @@ export default async function LessonPage({ params }: P) {
             )}
 
             {l.code && l.k !== "w" && (
-              <Section id="kode" ic="{ }" bg="var(--mint)" title="Contoh kode">
+              <Section id="kode" ic="{ }" bg="var(--mint)" title={l.exs && l.exs.length ? "Contoh 1" : "Contoh kode"}>
                 {l.out != null || l.fig ? (
                   <Runner code={l.code} out={l.out ?? null} fig={l.fig} lang={lang}>
                     <Code code={l.code} lang={lang} />
                   </Runner>
                 ) : <Code code={l.code} lang={lang} />}
                 {l.trc && <div style={{ marginTop: 14 }}><Tracer code={l.code} trace={l.trc.s} cut={l.trc.cut} /></div>}
+              </Section>
+            )}
+
+            {l.exs && l.exs.length > 0 && (
+              <Section id="contoh-lain" ic="✚" bg="var(--sky)" title={l.code ? `Contoh lain (${l.exs.length})` : `Contoh (${l.exs.length})`}>
+                <p className="muted small">Konsep yang sama dipakai di kasus berbeda. Semua contoh hanya memakai materi yang sudah dipelajari sampai pelajaran ini.</p>
+                <div style={{ display: "grid", gap: 22 }}>
+                  {l.exs.map((e, i) => (
+                    <div key={i} className="ex">
+                      <h3 className="ex-h"><span className="ex-n">{i + (l.code ? 2 : 1)}</span>{e.t}</h3>
+                      {e.d && <p className="small" style={{ marginTop: 0 }}>{e.d}</p>}
+                      {e.out != null ? (
+                        <Runner code={e.code} out={e.out} lang={lang}><Code code={e.code} lang={lang} /></Runner>
+                      ) : <Code code={e.code} lang={lang} />}
+                    </div>
+                  ))}
+                </div>
               </Section>
             )}
 

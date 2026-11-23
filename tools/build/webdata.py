@@ -12,6 +12,7 @@ import subprocess
 from pathlib import Path
 
 from . import site
+from .contoh import muat, terapkan
 
 KIND = site.KIND
 
@@ -103,6 +104,7 @@ def export(root, app_js, data, keys, deep):
         catalog.append({"k": t["k"], "g": t["g"], "name": t["name"], "lang": t["lang"], "h": site.text(t["h"]), "d": site.text(t["d"]),
                         "mark": marks.get(t["k"], t["k"][:2].upper()).replace("&lt;", "<").replace("&gt;", ">"),
                         "c": light.get(t["k"], "#C9D2F0"), "cd": dark.get(t["k"], "#C9D2F0"), "mods": mods_meta})
+        _contoh(root, t, bodies)
         _v3(root, t, bodies)
         (out / "t" / f"{t['k']}.json").write_text(json.dumps(bodies, ensure_ascii=False, separators=(",", ":")))
 
@@ -119,6 +121,11 @@ def export(root, app_js, data, keys, deep):
     (out / "kit.json").write_text(json.dumps(kit, ensure_ascii=False, separators=(",", ":")))
     n = sum(len(m["lessons"]) for t in catalog for m in t["mods"])
     return len(catalog), n
+
+
+def _contoh(root, t, bodies):
+    """Contoh bertahap dari src/contoh/<jalur>.json (lihat tools/build/contoh.py)."""
+    terapkan(muat(root, t["k"]), bodies, f"src/contoh/{t['k']}.json")
 
 
 def _v3(root, t, bodies):
