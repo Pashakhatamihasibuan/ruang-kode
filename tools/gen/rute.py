@@ -26,10 +26,12 @@ except ImportError:
 
 try:
     from studi_kasus import SLW_KASUS, SLM_KASUS, UI_PROYEK, UX_DS
-    tambah = {'UI': UI_PROYEK, 'SLW': SLW_KASUS, 'SLM': SLM_KASUS}
+    from kit_desain import UX_KIT, UI_KIT, DS_KIT, SLW_KIT, SLM_KIT
+    tambah = {'UI': UI_PROYEK + UI_KIT, 'SLW': SLW_KASUS + SLW_KIT, 'SLM': SLM_KASUS + SLM_KIT}
     for nama, mods, so in JALUR:
         mods += tambah.get(nama, [])
-    JALUR.append(('UX+', UX_DS, {}))  # ditambahkan ke UX_MODULES yang ditulis tangan
+    JALUR.append(('UX+', UX_DS + UX_KIT, {}))  # ditambahkan ke UX_MODULES yang ditulis tangan
+    JALUR.append(('DS+', DS_KIT, {}))       # ditambahkan ke DS_MODULES (track-ds.js dimuat lebih dulu)
 except ImportError:
     pass
 

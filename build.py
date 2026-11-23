@@ -20,17 +20,17 @@ from tools.build import site
 ROOT = Path(__file__).parent
 SRC = ROOT / "src"
 SITE_URL = "https://ruang-kode-nine.vercel.app"
-CSS = ["base.css", "lms.css", "v4.css", "tema-jalur.css", "v5.css", "nb.css"]
+CSS = ["base.css", "lms.css", "v4.css", "tema-jalur.css", "v5.css", "nb.css", "manga.css"]
 TRACK_JS = ["track-java.js", "track-python.js", "track-sql.js", "track-sql-extra.js",
             "track-html.js", "track-css.js", "track-fe0.js", "track-fe.js", "track-react.js",
             "track-ts.js", "track-git.js", "track-pda.js", "track-da.js", "track-bi.js",
             "track-de.js", "track-ux.js", "track-ds.js", "track-msi.js", "track-sim.js", "track-logika.js", "track-mobile.js", "track-cssfw.js", "track-more.js", "track-algo.js", "track-rute.js", "track-loop.js", "track-acak.js", "track-so.js", "tips.js", "bugs.js", "traces.js"]
 RT_JS = ["viz.js", "sqlengine.js", "sqldata.js", "sqldata-bi.js", "viz2.js", "viz3.js", "viz-msi.js", "viz-var.js", "viz-fc.js"]
 BOOK_JS = ["data.js", "lang-only.js", "app-javapy.js", "app-extra.js"]
-CORE_JS = ["gl.js", "app.js", "app-pages.js", "app-lesson.js", "sekilas.js", "viz3d.js", "codeanim.js", "practice.js", "tracer.js", "setup.js", "app-nav.js"]
+CORE_JS = ["gl.js", "desain-kit.js", "app.js", "app-pages.js", "app-lesson.js", "sekilas.js", "viz3d.js", "codeanim.js", "practice.js", "tracer.js", "setup.js", "app-nav.js"]
 # urutan versi satu file (sama dengan urutan sebelum materi dipecah)
 ALL_JS = (["data.js", "lang-only.js", "util.js", "gl.js", "viz.js", "sqlengine.js", "sqldata.js", "sqldata-bi.js"] + TRACK_JS
-          + ["viz2.js", "viz3.js", "viz-msi.js", "viz-var.js", "viz-fc.js", "bs-css.js", "app.js", "app-pages.js", "app-lesson.js", "sekilas.js", "viz3d.js", "codeanim.js", "app-javapy.js",
+          + ["viz2.js", "viz3.js", "viz-msi.js", "viz-var.js", "viz-fc.js", "bs-css.js", "desain-kit.js", "desain-img.js", "app.js", "app-pages.js", "app-lesson.js", "sekilas.js", "viz3d.js", "codeanim.js", "app-javapy.js",
              "app-extra.js", "practice.js", "tracer.js", "setup.js", "app-nav.js"])
 
 DESC = ("Akademi coding, data, dan desain berbahasa Indonesia: 36 jalur termasuk Struktur Data & Algoritma, PostgreSQL DBA, QA Engineer, Django, Next.js, Vue.js, UI Design, Slicing Website, Slicing Mobile, Dart, Flutter, Kotlin, Jetpack Compose, Kotlin Multiplatform, Tailwind CSS, Bootstrap 5, Pseudocode, Flowgorithm, dan Sistem Informasi, "
@@ -38,7 +38,7 @@ DESC = ("Akademi coding, data, dan desain berbahasa Indonesia: 36 jalur termasuk
         "Dikembangkan oleh Pasha Khatami Hasibuan.")
 FONTS = """<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,400..700,0..100;1,9..144,400..700,0..100&family=Plus+Jakarta+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@500..700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,400..700,0..100;1,9..144,400..700,0..100&family=Plus+Jakarta+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@500..700&family=Dela+Gothic+One&display=swap">
 """
 HEAD = f"""<title>Ruang Kode</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -49,8 +49,8 @@ WEB_HEAD = f"""<link rel="canonical" href="{SITE_URL}/">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" href="/icons/icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
-<meta name="theme-color" content="#F2F4F8" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0C121B" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#FBF9F3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F0F11" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Ruang Kode">
 <meta property="og:title" content="Ruang Kode · Akademi coding, data & desain">

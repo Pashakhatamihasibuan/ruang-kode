@@ -26,7 +26,7 @@ function renderHome(){
     ${rs.length>1?`<section class="section"><div class="sec-h row"><h2>Jalur yang sedang kamu ikuti</h2><a class="tlink" href="#saya">Lihat semua progres</a></div><div class="resume">${rs.slice(1,5).map(t=>{const x=resumeOf(t.k),p=prog(t.k);return `<a class="rcard ${tcls(t)}" href="#${x.id}"><span class="tmark">${t.mark}</span><span class="rc-t"><small>${t.name} · Modul ${x.mi+1}</small><b>${esc(x.title)}</b></span><span class="rc-p">${pct(p.p)}</span></a>`}).join('')}</div></section>`:''}`
    :`<section class="h-hero"><div class="h-copy">
       <div class="eyebrow">Akademi teknologi berbahasa Indonesia · kurikulum mengikuti roadmap.sh</div>
-      <h1>Belajar <em>coding</em>, <em>data</em>, dan <em>desain</em> sambil melihat semuanya bekerja.</h1>
+      <h1>Belajar <span class="nw"><em>coding</em>,</span> <span class="nw"><em>data</em>,</span> dan <em>desain</em> sambil melihat semuanya bekerja.</h1>
       <p class="lead">${TRACKS.length} jalur belajar dan ${nLessons} pelajaran, dari HTML pertamamu sampai pipeline data. Visual yang bergerak, editor yang langsung jalan, konsol SQL di browser, dan proyek akhir di setiap jalur.</p>
       <div class="cta"><button class="btn primary lg" data-to="#karier">Pilih tujuan karier ▼</button><a class="btn lg" href="#katalog">Lihat semua jalur</a></div></div>
     <div class="h-stage" id="hStage" aria-label="Contoh visual interaktif"><div class="hs-tabs" role="group" aria-label="Pilih konsep">${HSTAGE.map((h,i)=>`<button type="button" data-hs="${i}" aria-pressed="${i===0}">${h[1]}</button>`).join('')}</div><div class="hs-host vizhost v3host"></div>

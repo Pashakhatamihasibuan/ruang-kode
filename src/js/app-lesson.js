@@ -132,7 +132,7 @@ const figHTML=f=>f&&f.length?`<div class="figs">${f.map((s,i)=>`<figure class="m
 function conceptHTML(l,t){
   const lang=l.lang||t.lang,live=l.code&&l.out!=null&&l.run!==false,py=live&&lang==='python';
   return `<section class="prose">${l.b.map(p=>`<p>${p}</p>`).join('')}</section>
-  ${tbHTML(l)}
+  ${tbHTML(l)}${dlHTML(l)}
   ${vizHTML(l,'Coba kontrolnya atau tekan Berikutnya, lalu perhatikan apa yang berubah.')}
   ${l.code?`<section class="section" id="prog"><h2>${lang==='text'?'Contoh':'Contoh kode'}</h2>
    ${py?`<div class="pane python"><div class="pane-h"><span>PYTHON · bisa diedit</span><button class="copy" data-copyed>Salin</button></div>${editorHTML('pyEd',l.code,'Editor Python','python')}</div>`:pane(lang,l.code)}
@@ -141,6 +141,15 @@ function conceptHTML(l,t){
       <div class="runbox"><button class="btn primary" id="runBtn">▶ Jalankan</button>${trBtn(l)}${py?'<button class="btn" id="pyReset">Kembalikan kode</button>':''}<span class="rb-hint">${py?'Ubah kodenya lalu jalankan. Kode asli menampilkan keluaran yang sudah diuji; kode yang diubah dijalankan dengan Python di browser (Pyodide).':`Keluaran kode ini sudah diuji dengan ${({java:'Java 21',ts:'Node 22 (TypeScript)',js:'Node 22',sql:'mesin SQL Ruang Kode',bash:'Bash'})[lang]||'Python 3.13'}.`}</span></div><div class="console run" id="runOut" hidden></div><div class="figs" id="figOut" hidden></div>${tracerHTML(l,lang)}`):''}</section>`:''}
   ${soHTML(l,lang)}${practiceHTML(l,lang)}${ptsHTML(l)}${qHTML(l)}`;
 }
+/* kit desain Figma yang bisa diunduh: dl:[{k:id kit,p:kunci pratinjau}] — katalog di desain-kit.js */
+const KIT_URL='https://ruang-kode-nine.vercel.app/desain/';
+const ukuranKB=kb=>kb>=1000?(kb/1024).toFixed(1).replace('.',',')+' MB':kb+' KB';
+const dlHTML=l=>{if(!l.dl||!l.dl.length||typeof KIT_DESAIN==='undefined')return'';
+  const img=p=>(typeof KIT_IMG!=='undefined'&&KIT_IMG[p])||('/desain/thumb/'+p+'.webp');
+  const kartu=l.dl.map(d=>{const k=KIT_DESAIN[d.k];if(!k)return'';
+    return `<article class="dl-card"><div class="dl-img"><img src="${img(d.p)}" alt="Pratinjau desain ${esc(k.j)}" loading="lazy"></div><div class="dl-b"><b>${esc(k.j)}</b><span class="dl-m">${esc(k.b)} · ${esc(k.g)} · ${k.pf==='hp'?'Aplikasi HP':k.pf==='web'?'Web':k.pf==='papan'?'Papan desain':'HP + web'}</span><a class="btn primary dl-a" href="${k.u}" target="_blank" rel="noopener">⬇ Unduh ZIP · ${ukuranKB(k.kb)}</a></div></article>`}).join('');
+  return `<section class="section dl-sec" id="unduh"><h2>Unduh desain untuk Figma</h2><p class="muted">ZIP berisi SVG berlayer (teks bisa diedit), PNG pratinjau, <code>tokens.json</code> (DTCG), prototype beranimasi, dan README. Tautan dibuka di tab baru.</p><div class="dl-grid">${kartu}</div>
+  <details class="so-d"><summary>Cara impor ke Figma</summary><ol class="dl-ol"><li>Ekstrak ZIP dan pasang font Google yang disebut di README.</li><li>Seret file <code>.svg</code> ke kanvas Figma (atau Ctrl/Cmd+Shift+K).</li><li>Klik kanan grup &gt; <b>Frame selection</b> (Ctrl/Cmd+Alt+G).</li><li>Buat komponen (Ctrl/Cmd+Alt+K) dan auto layout (Shift+A) dari layer yang sudah bernama.</li><li>Impor <code>tokens.json</code> lewat Tokens Studio atau Variables Import.</li><li>Buka <code>prototype/index.html</code>, lalu tiru sambungannya di tab Prototype dengan Smart Animate.</li></ol></details></section>`};
 /* soal latihan: so:[{q,h,a,out}] — jawaban tersembunyi sampai dibuka */
 const soHTML=(l,lang)=>l.so&&l.so.length?`<section class="section so-sec" id="soal"><h2>Soal latihan</h2><p class="muted">Kerjakan dulu di editor atau kertasmu sendiri. Buka petunjuk jika buntu, dan buka jawaban hanya untuk mencocokkan.</p><ol class="so-list">${l.so.map(s=>`<li><p class="so-q">${s.q}</p><details class="so-d"><summary>Petunjuk</summary><p>${s.h}</p></details>${s.a?`<details class="so-d"><summary>Lihat jawaban</summary>${pane(s.lang||lang,s.a)}${s.out!=null?`<div class="eyebrow">Keluaran</div><div class="console">${esc(s.out)}</div>`:''}</details>`:''}</li>`).join('')}</ol></section>`:'';
 let PY=null,PYFAIL=false,FIGS=[];

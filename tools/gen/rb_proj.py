@@ -14,6 +14,8 @@ from rb_pj_qa import PJ_QA
 from rb_pj_dba import PJ_DBA
 from rb_pj_si import PJ_SI
 from rb_pj_logika import PJ_LOGIKA
+from kit_desain import pasang_proyek
+pasang_proyek(PJ_FE, PJ_MOBILE, PJ_UIUX)  # kit desain Figma untuk proyek FE, mobile, UI/UX
 
 PROJ = [STANDAR, FULLSTACK, PJ_FE, PJ_PY, PJ_DA, PJ_DS, PJ_JAVA, PJ_MOBILE, PJ_DE, PJ_UIUX, PJ_QA, PJ_DBA, PJ_SI, PJ_LOGIKA, MINI, BESAR, LAMAR]
 PROJ_SO = {}
