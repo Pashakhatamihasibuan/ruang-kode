@@ -61,6 +61,13 @@ for nama, mods, so in JALUR:
     else:
         out.append(f'const {nama}_MODULES={json.dumps(mods, ensure_ascii=False)};\n')
 
+# proyek portofolio di akhir setiap jalur (pelajaran "see" ke jalur Proyek Portofolio)
+from portofolio_jalur import modul_portofolio
+_proj = next(m for n, m, _ in JALUR if n == 'PROJ')
+for konst, mod in modul_portofolio(_proj).items():
+    out.append(f'{konst}.push({json.dumps(mod, ensure_ascii=False)});\n')
+print('portofolio:', len(modul_portofolio(_proj)), 'jalur')
+
 (root / 'src/js/track-rute.js').write_text('/* ===================== JALUR TAMBAHAN =====================\n   Dibuat oleh tools/gen/rute.py. Jangan diedit langsung. */\n' + ''.join(out))
 import os
 if os.environ.get('CEK'): Path(os.environ['CEK']).write_text(json.dumps(cek, ensure_ascii=False))

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Uji hipotesis langkah demi langkah: statistik uji dan nilai kritis · Data Science &amp; AI · Ruang Kode</title>
+<meta name="description" content="Setiap uji hipotesis mengikuti lima langkah yang sama. (1) Tulis H0 (status quo, &quot;tidak ada perubahan&quot;) dan H1 (klaim yang ingin dibuktikan). (2) Pilih…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsci/uji-hipotesis-langkah-demi-langkah-statistik-uji-dan-nilai-kritis">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Uji hipotesis langkah demi langkah: statistik uji dan nilai kritis · Data Science &amp; AI · Ruang Kode"><meta property="og:description" content="Setiap uji hipotesis mengikuti lima langkah yang sama. (1) Tulis H0 (status quo, &quot;tidak ada perubahan&quot;) dan H1 (klaim yang ingin dibuktikan). (2) Pilih…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsci/uji-hipotesis-langkah-demi-langkah-statistik-uji-dan-nilai-kritis"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Uji hipotesis langkah demi langkah: statistik uji dan nilai kritis", "description": "Setiap uji hipotesis mengikuti lima langkah yang sama. (1) Tulis H0 (status quo, \"tidak ada perubahan\") dan H1 (klaim yang ingin dibuktikan). (2) Pilih…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci/uji-hipotesis-langkah-demi-langkah-statistik-uji-dan-nilai-kritis", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Science & AI", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Science & AI", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, {"@type": "ListItem", "position": 3, "name": "Uji hipotesis langkah demi langkah: statistik uji dan nilai kritis", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci/uji-hipotesis-langkah-demi-langkah-statistik-uji-dan-nilai-kritis"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsci">Data Science &amp; AI</a> / Modul 3</nav>
+<div class="eyebrow">Data Science &amp; AI · Modul 3 · Konsep &amp; kode</div><h1>Uji hipotesis langkah demi langkah: statistik uji dan nilai kritis</h1><a class="cta" href="/#dsci-3-5">Buka versi interaktif</a>
+<p>Setiap uji hipotesis mengikuti lima langkah yang sama. <b>(1)</b> Tulis <b>H0</b> (status quo, "tidak ada perubahan") dan <b>H1</b> (klaim yang ingin dibuktikan). <b>(2)</b> Pilih <b>tingkat kepercayaan</b>, misalnya 95%, yang berarti <b>α = 0,05</b>: risiko menolak H0 padahal H0 benar. <b>(3)</b> Hitung <b>statistik uji</b>, misalnya <code>t = (rata-rata sampel − nilai H0) / (s / √n)</code>. <b>(4)</b> Bandingkan dengan <b>nilai kritis</b> atau p-value. <b>(5)</b> Simpulkan dalam bahasa bisnis.</p>
+<p><b>Satu sisi atau dua sisi?</b> Jika H1 hanya peduli satu arah ("waktu antar lebih <i>lama</i> dari janji 30 menit"), pakai uji satu sisi: seluruh α diletakkan di satu ekor, nilai kritisnya <code>t(1−α, df)</code>. Jika H1 "berbeda" ke arah mana pun, pakai dua sisi: α dibagi ke dua ekor, nilai kritisnya <code>±t(1−α/2, df)</code>. Tentukan sebelum melihat data, bukan setelahnya.</p>
+<p><b>Daerah kritis</b> (daerah penolakan) adalah nilai statistik uji yang terlalu ekstrem jika H0 benar. Dulu nilai kritis dibaca dari <b>tabel t</b> berdasarkan derajat bebas (df = n − 1); sekarang cukup <code>scipy.stats.t.ppf</code>, yang hasilnya sama dengan tabel. Dua cara menyimpulkan selalu sepakat: |t| melewati nilai kritis ⇔ p-value &lt; α.</p>
+<div class="tw"><table><caption>Lima langkah uji hipotesis</caption><thead><tr><th>Langkah</th><th>Isi</th><th>Contoh waktu antar</th></tr></thead><tbody><tr><td>1. Hipotesis</td><td>H0 status quo, H1 klaim</td><td>H0: μ = 30; H1: μ &gt; 30</td></tr><tr><td>2. α</td><td>1 − tingkat kepercayaan</td><td>α = 0,05 (95%)</td></tr><tr><td>3. Statistik uji</td><td>t = (x̄ − μ0) / (s/√n)</td><td>t hitung dari 16 pengiriman</td></tr><tr><td>4. Keputusan</td><td>t melewati nilai kritis atau p &lt; α</td><td>bandingkan dengan t(0,95; 15)</td></tr><tr><td>5. Kesimpulan</td><td>Bahasa bisnis + besar efek</td><td>Janji waktu antar perlu dikoreksi</td></tr></tbody></table></div>
+<div class="lbl">PYTHON</div><pre><code>import numpy as np
+from scipy import stats
+
+# Klaim: rata-rata waktu antar 30 menit. Tim operasional curiga lebih lama.
+waktu = np.array([31.5, 29.0, 34.2, 33.1, 30.8, 35.6, 28.9, 32.4, 33.8, 31.1,
+                  36.0, 30.2, 32.9, 29.7, 34.5, 31.8])
+mu0, alpha = 30, 0.05
+n, rata, s = len(waktu), waktu.mean(), waktu.std(ddof=1)
+t_hitung = (rata - mu0) / (s / np.sqrt(n))
+df = n - 1
+print(f&#x27;n={n}, rata-rata={rata:.2f}, s={s:.2f}, t={t_hitung:.3f}, df={df}&#x27;)
+
+# &#x27;tabel t&#x27; versi kode
+print(&#x27;df  | satu sisi 0,05 | dua sisi 0,05&#x27;)
+for d in [5, 10, 15, 30]:
+    print(f&#x27;{d:3} | {stats.t.ppf(0.95, d):14.3f} | {stats.t.ppf(0.975, d):13.3f}&#x27;)
+
+kritis_1 = stats.t.ppf(1 - alpha, df)
+kritis_2 = stats.t.ppf(1 - alpha / 2, df)
+p_1 = 1 - stats.t.cdf(t_hitung, df)
+p_2 = 2 * (1 - stats.t.cdf(abs(t_hitung), df))
+print(f&#x27;satu sisi: kritis {kritis_1:.3f}, p={p_1:.5f} -&gt; {&quot;tolak H0&quot; if t_hitung &gt; kritis_1 else &quot;gagal tolak H0&quot;}&#x27;)
+print(f&#x27;dua sisi : kritis ±{kritis_2:.3f}, p={p_2:.5f} -&gt; {&quot;tolak H0&quot; if abs(t_hitung) &gt; kritis_2 else &quot;gagal tolak H0&quot;}&#x27;)
+
+cek = stats.ttest_1samp(waktu, mu0, alternative=&#x27;greater&#x27;)
+print(f&#x27;scipy: t={cek.statistic:.3f}, p={cek.pvalue:.5f}&#x27;)
+print(&#x27;Kesimpulan: rata-rata waktu antar lebih lama dari 30 menit; janji di aplikasi perlu dikoreksi.&#x27;)</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>n=16, rata-rata=32.22, s=2.23, t=3.985, df=15
+df  | satu sisi 0,05 | dua sisi 0,05
+  5 |          2.015 |         2.571
+ 10 |          1.812 |         2.228
+ 15 |          1.753 |         2.131
+ 30 |          1.697 |         2.042
+satu sisi: kritis 1.753, p=0.00060 -&gt; tolak H0
+dua sisi : kritis ±2.131, p=0.00119 -&gt; tolak H0
+scipy: t=3.985, p=0.00060
+Kesimpulan: rata-rata waktu antar lebih lama dari 30 menit; janji di aplikasi perlu dikoreksi.</code></pre>
+<h2>Soal latihan</h2><ol><li><p>Hitung nilai kritis t dua sisi untuk α = 0,01 dan df = 20, lalu nilai kritis satu sisi untuk α = 0,01 dan df yang sama.</p><details><summary>Petunjuk</summary><p>stats.t.ppf(1 - α/2, df) dan stats.t.ppf(1 - α, df).</p></details><details><summary>Lihat jawaban</summary><div class="lbl">PYTHON</div><pre><code>from scipy import stats
+print(round(stats.t.ppf(1 - 0.01 / 2, 20), 3), round(stats.t.ppf(1 - 0.01, 20), 3))</code></pre><div class="lbl">KELUARAN</div><pre><code>2.845 2.528</code></pre></details></li></ol>
+<h2>Poin penting</h2><ul><li>H0 status quo, H1 klaim; α = 1 − tingkat kepercayaan.</li><li>Satu sisi: α di satu ekor. Dua sisi: α/2 di tiap ekor.</li><li>Nilai kritis dari tabel t = stats.t.ppf.</li><li>|t| > nilai kritis ⇔ p-value &lt; α.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>H1: &quot;rata-rata berbeda dari 30&quot; (lebih besar atau lebih kecil). Uji yang tepat?</summary><p class="ok">Jawaban: Dua sisi</p><p>Kedua arah dianggap penting.</p></details><details><summary>Pada α = 0,05 dan df = 15, nilai kritis satu sisi lebih kecil dari dua sisi. Akibatnya?</summary><p class="ok">Jawaban: Uji satu sisi lebih mudah menolak H0 ke arah yang dipilih</p><p>Seluruh α berada di satu ekor.</p></details><details><summary>Tingkat kepercayaan 99% berarti α sebesar?</summary><p class="ok">Jawaban: 0,01</p><p>α = 1 − 0,99.</p></details>
+<a class="cta" href="/#dsci-3-5">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsci/a-b-test-ukuran-sampel-sensitivitas-dan-metrik-rasio">A/B test: ukuran sampel, sensitivitas, dan metrik rasio</a></p><p>Berikutnya: <a href="/belajar/dsci/studi-kasus-t-test-apakah-program-voucher-menaikkan-belanja">Studi kasus t-test: apakah program voucher menaikkan belanja?</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

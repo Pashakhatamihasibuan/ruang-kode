@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Menyampaikan hasil model ke pengambil keputusan · Data Science &amp; AI · Ruang Kode</title>
+<meta name="description" content="Hasil model baru bernilai jika dipahami dan dipakai. Struktur satu halaman yang umum dipakai di industri: (1) keputusan yang diminta, (2) temuan utama…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsci/menyampaikan-hasil-model-ke-pengambil-keputusan">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Menyampaikan hasil model ke pengambil keputusan · Data Science &amp; AI · Ruang Kode"><meta property="og:description" content="Hasil model baru bernilai jika dipahami dan dipakai. Struktur satu halaman yang umum dipakai di industri: (1) keputusan yang diminta, (2) temuan utama…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsci/menyampaikan-hasil-model-ke-pengambil-keputusan"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Menyampaikan hasil model ke pengambil keputusan", "description": "Hasil model baru bernilai jika dipahami dan dipakai. Struktur satu halaman yang umum dipakai di industri: (1) keputusan yang diminta, (2) temuan utama…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci/menyampaikan-hasil-model-ke-pengambil-keputusan", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Science & AI", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Science & AI", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, {"@type": "ListItem", "position": 3, "name": "Menyampaikan hasil model ke pengambil keputusan", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci/menyampaikan-hasil-model-ke-pengambil-keputusan"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsci">Data Science &amp; AI</a> / Modul 12</nav>
+<div class="eyebrow">Data Science &amp; AI · Modul 12 · Konsep &amp; kode</div><h1>Menyampaikan hasil model ke pengambil keputusan</h1><a class="cta" href="/#dsci-12-4">Buka versi interaktif</a>
+<p>Hasil model baru bernilai jika dipahami dan dipakai. Struktur satu halaman yang umum dipakai di industri: <b>(1) keputusan yang diminta</b>, <b>(2) temuan utama dalam angka bisnis</b>, <b>(3) bagaimana model bekerja dalam satu kalimat</b>, <b>(4) faktor yang paling berpengaruh</b>, <b>(5) risiko dan batasan</b>, <b>(6) langkah berikutnya</b>. Mulai dari kesimpulan, bukan dari proses.</p>
+<p>Untuk menjelaskan faktor berpengaruh, <b>permutation importance</b> adalah cara yang jujur dan bisa dipakai untuk model apa pun: acak satu kolom di data uji, lalu lihat seberapa besar skor model turun. Untuk penjelasan per orang ("kenapa pelanggan ini dinilai berisiko"), tim biasanya memakai SHAP.</p>
+<p>Hindari jargon (ROC-AUC, log loss) di slide utama; taruh di lampiran. Sebutkan ketidakpastian dengan jujur ("perkiraan laba Rp120–180 juta"), dan sepakati cara memantau keberhasilan setelah model dipakai.</p>
+<div class="lbl">PYTHON</div><pre><code>import numpy as np
+import pandas as pd
+
+rng = np.random.default_rng(7)
+n = 300
+df = pd.DataFrame({
+    &#x27;umur&#x27;: rng.integers(18, 60, n),
+    &#x27;lama_bulan&#x27;: rng.integers(1, 48, n),
+    &#x27;belanja_bln&#x27;: rng.normal(350, 120, n).round(0).clip(50),
+    &#x27;keluhan&#x27;: rng.poisson(1.2, n),
+    &#x27;kota&#x27;: rng.choice([&#x27;Jakarta&#x27;, &#x27;Bandung&#x27;, &#x27;Surabaya&#x27;, &#x27;Medan&#x27;], n),
+})
+skor = -1.2 + 0.9 * df[&#x27;keluhan&#x27;] - 0.06 * df[&#x27;lama_bulan&#x27;] - 0.003 * (df[&#x27;belanja_bln&#x27;] - 350)
+df[&#x27;churn&#x27;] = (rng.random(n) &lt; 1 / (1 + np.exp(-skor))).astype(int)
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.inspection import permutation_importance
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import roc_auc_score
+
+X = df[[&#x27;umur&#x27;, &#x27;lama_bulan&#x27;, &#x27;belanja_bln&#x27;, &#x27;keluhan&#x27;]]; y = df[&#x27;churn&#x27;]
+X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.3, stratify=y, random_state=0)
+m = RandomForestClassifier(n_estimators=200, min_samples_leaf=5, random_state=0).fit(X_tr, y_tr)
+imp = permutation_importance(m, X_te, y_te, scoring=&#x27;roc_auc&#x27;, n_repeats=20, random_state=0)
+urut = sorted(zip(X.columns, imp.importances_mean), key=lambda x: -x[1])
+
+nama = {&#x27;keluhan&#x27;: &#x27;jumlah keluhan&#x27;, &#x27;lama_bulan&#x27;: &#x27;lama berlangganan&#x27;, &#x27;belanja_bln&#x27;: &#x27;belanja bulanan&#x27;, &#x27;umur&#x27;: &#x27;umur&#x27;}
+p = m.predict_proba(X_te)[:, 1]
+atas = np.argsort(-p)[:int(len(p) * 0.2)]
+tangkap = y_te.iloc[atas].sum() / y_te.sum()
+
+print(&#x27;RINGKASAN UNTUK TIM RETENSI&#x27;)
+print(&#x27;1. Keputusan: siapa yang dihubungi dalam kampanye bulan depan.&#x27;)
+print(f&#x27;2. Temuan: menghubungi 20% pelanggan teratas menangkap {tangkap:.0%} pelanggan yang akan berhenti (acak: 20%).&#x27;)
+print(&#x27;3. Cara kerja: model belajar dari riwayat pelanggan yang pernah berhenti.&#x27;)
+print(&#x27;4. Faktor terkuat: &#x27; + &#x27;, &#x27;.join(nama[f] for f, v in urut[:2] if v &gt; 0) + &#x27;.&#x27;)
+print(&#x27;5. Risiko: data hanya 300 pelanggan; pantau hasil kampanye sebelum diperluas.&#x27;)
+print(&#x27;6. Berikutnya: uji coba A/B kampanye pada 2 kota selama 4 minggu.&#x27;)
+print(f&#x27;[lampiran] ROC-AUC uji = {roc_auc_score(y_te, p):.3f}; importance:&#x27;, {f: round(float(v), 3) for f, v in urut})</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>RINGKASAN UNTUK TIM RETENSI
+1. Keputusan: siapa yang dihubungi dalam kampanye bulan depan.
+2. Temuan: menghubungi 20% pelanggan teratas menangkap 36% pelanggan yang akan berhenti (acak: 20%).
+3. Cara kerja: model belajar dari riwayat pelanggan yang pernah berhenti.
+4. Faktor terkuat: jumlah keluhan, lama berlangganan.
+5. Risiko: data hanya 300 pelanggan; pantau hasil kampanye sebelum diperluas.
+6. Berikutnya: uji coba A/B kampanye pada 2 kota selama 4 minggu.
+[lampiran] ROC-AUC uji = 0.786; importance: {&#x27;keluhan&#x27;: 0.215, &#x27;lama_bulan&#x27;: 0.107, &#x27;belanja_bln&#x27;: 0.014, &#x27;umur&#x27;: 0.002}</code></pre>
+<h2>Poin penting</h2><ul><li>Mulai dari keputusan dan angka bisnis.</li><li>Permutation importance untuk faktor berpengaruh.</li><li>Jargon teknis masuk lampiran.</li><li>Sampaikan ketidakpastian dan rencana pemantauan.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Kalimat pembuka presentasi model yang paling efektif?</summary><p class="ok">Jawaban: &quot;Menghubungi 20% pelanggan teratas menangkap separuh calon churn&quot;</p><p>Mulai dari dampak bisnis.</p></details><details><summary>Permutation importance mengukur?</summary><p class="ok">Jawaban: Seberapa besar skor turun jika satu kolom diacak</p><p>Semakin turun, semakin penting.</p></details>
+<a class="cta" href="/#dsci-12-4">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsci/kasus-kredit-menentukan-ambang-persetujuan-pinjaman">Kasus kredit: menentukan ambang persetujuan pinjaman</a></p><p>Berikutnya: <a href="/belajar/dsci/karier-data-scientist-2026-2030-peran-portofolio-dan-wawancara">Karier data scientist 2026-2030: peran, portofolio, dan wawancara</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

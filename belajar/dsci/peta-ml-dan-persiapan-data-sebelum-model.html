@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Peta ML dan persiapan data sebelum model · Data Science &amp; AI · Ruang Kode</title>
+<meta name="description" content="Dua pertanyaan menentukan jenis masalah. Ada target (label) atau tidak? Jika ada, itu supervised learning; jika tidak (misalnya mengelompokkan…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsci/peta-ml-dan-persiapan-data-sebelum-model">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Peta ML dan persiapan data sebelum model · Data Science &amp; AI · Ruang Kode"><meta property="og:description" content="Dua pertanyaan menentukan jenis masalah. Ada target (label) atau tidak? Jika ada, itu supervised learning; jika tidak (misalnya mengelompokkan…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsci/peta-ml-dan-persiapan-data-sebelum-model"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Peta ML dan persiapan data sebelum model", "description": "Dua pertanyaan menentukan jenis masalah. Ada target (label) atau tidak? Jika ada, itu supervised learning; jika tidak (misalnya mengelompokkan…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci/peta-ml-dan-persiapan-data-sebelum-model", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Science & AI", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Science & AI", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, {"@type": "ListItem", "position": 3, "name": "Peta ML dan persiapan data sebelum model", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci/peta-ml-dan-persiapan-data-sebelum-model"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsci">Data Science &amp; AI</a> / Modul 6</nav>
+<div class="eyebrow">Data Science &amp; AI · Modul 6 · Konsep &amp; kode</div><h1>Peta ML dan persiapan data sebelum model</h1><a class="cta" href="/#dsci-6-7">Buka versi interaktif</a>
+<p>Dua pertanyaan menentukan jenis masalah. <b>Ada target (label) atau tidak?</b> Jika ada, itu <b>supervised learning</b>; jika tidak (misalnya mengelompokkan pelanggan), itu <b>unsupervised</b>. <b>Targetnya angka atau kelas?</b> Angka (harga, jumlah) berarti <b>regresi</b>; kelas (churn ya/tidak, jenis penyakit) berarti <b>klasifikasi</b>.</p>
+<p>Persiapan sebelum model: kategori diubah menjadi angka (<b>one-hot</b> untuk kategori tanpa urutan seperti kota, <b>ordinal</b> untuk yang berurutan seperti Basic &lt; Standar &lt; Premium), fitur angka diskalakan untuk model berbasis jarak atau gradien (logistic regression, KNN, SVM), lalu data dibagi latih dan uji.</p>
+<p>Urutannya penting: <b>bagi data dulu, baru pelajari skala dan encoding dari data latih saja</b>. Jika <code>StandardScaler</code> di-fit pada seluruh data, statistik data uji ikut bocor ke model. Cara aman dan standar industri adalah memasukkan semua langkah ke dalam <code>Pipeline</code>.</p>
+<div class="lbl">PYTHON</div><pre><code>import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder, StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.linear_model import LogisticRegression
+
+masalah = {&#x27;Tebak harga rumah&#x27;: (&#x27;supervised&#x27;, &#x27;regresi&#x27;),
+           &#x27;Tebak pelanggan churn&#x27;: (&#x27;supervised&#x27;, &#x27;klasifikasi&#x27;),
+           &#x27;Kelompokkan pelanggan&#x27;: (&#x27;unsupervised&#x27;, &#x27;clustering&#x27;)}
+for m, (a, b) in masalah.items():
+    print(f&#x27;{m:22} -&gt; {a:12} | {b}&#x27;)
+
+rng = np.random.default_rng(0)
+n = 400
+df = pd.DataFrame({&#x27;kota&#x27;: rng.choice([&#x27;Medan&#x27;, &#x27;Bandung&#x27;, &#x27;Jakarta&#x27;], n),
+                   &#x27;paket&#x27;: rng.choice([&#x27;Basic&#x27;, &#x27;Standar&#x27;, &#x27;Premium&#x27;], n),
+                   &#x27;lama_bulan&#x27;: rng.integers(1, 48, n), &#x27;keluhan&#x27;: rng.poisson(1.2, n)})
+df[&#x27;churn&#x27;] = (rng.random(n) &lt; 0.15 + 0.1 * df[&#x27;keluhan&#x27;].clip(0, 4) - 0.003 * df[&#x27;lama_bulan&#x27;]).astype(int)
+
+X, y = df.drop(columns=&#x27;churn&#x27;), df[&#x27;churn&#x27;]
+X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.25, stratify=y, random_state=0)
+pra = ColumnTransformer([
+    (&#x27;kota&#x27;, OneHotEncoder(handle_unknown=&#x27;ignore&#x27;), [&#x27;kota&#x27;]),
+    (&#x27;paket&#x27;, OrdinalEncoder(categories=[[&#x27;Basic&#x27;, &#x27;Standar&#x27;, &#x27;Premium&#x27;]]), [&#x27;paket&#x27;]),
+    (&#x27;angka&#x27;, StandardScaler(), [&#x27;lama_bulan&#x27;, &#x27;keluhan&#x27;]),
+])
+pipe = Pipeline([(&#x27;pra&#x27;, pra), (&#x27;model&#x27;, LogisticRegression(max_iter=1000))]).fit(X_tr, y_tr)
+print(&#x27;kolom setelah praproses:&#x27;, list(pipe.named_steps[&#x27;pra&#x27;].get_feature_names_out()))
+print(&#x27;akurasi uji:&#x27;, round(pipe.score(X_te, y_te), 3))</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>Tebak harga rumah      -&gt; supervised   | regresi
+Tebak pelanggan churn  -&gt; supervised   | klasifikasi
+Kelompokkan pelanggan  -&gt; unsupervised | clustering
+kolom setelah praproses: [&#x27;kota__kota_Bandung&#x27;, &#x27;kota__kota_Jakarta&#x27;, &#x27;kota__kota_Medan&#x27;, &#x27;paket__paket&#x27;, &#x27;angka__lama_bulan&#x27;, &#x27;angka__keluhan&#x27;]
+akurasi uji: 0.78</code></pre>
+<h2>Poin penting</h2><ul><li>Ada target → supervised; tidak ada → unsupervised.</li><li>Target angka → regresi; kelas → klasifikasi.</li><li>One-hot untuk kategori tanpa urutan, ordinal untuk yang berurutan.</li><li>Split dulu, fit praproses di data latih (Pipeline).</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Memprediksi lama (hari) pasien dirawat termasuk?</summary><p class="ok">Jawaban: Supervised, regresi</p><p>Target berupa angka.</p></details><details><summary>Kenapa StandardScaler tidak boleh di-fit pada seluruh data sebelum split?</summary><p class="ok">Jawaban: Statistik data uji bocor ke model sehingga skor uji terlalu optimis</p><p>Kebocoran data.</p></details>
+<a class="cta" href="/#dsci-6-7">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsci/validasi-silang-dan-mencegah-overfitting">Validasi silang dan mencegah overfitting</a></p><p>Berikutnya: <a href="/belajar/dsci/data-tidak-seimbang-class-weight-oversampling-dan-metrik-yang-jujur">Data tidak seimbang: class_weight, oversampling, dan metrik yang jujur</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

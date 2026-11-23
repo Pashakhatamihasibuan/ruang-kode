@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kasus churn: dari peluang ke rupiah · Data Science &amp; AI · Ruang Kode</title>
+<meta name="description" content="Tim retensi punya anggaran kampanye: setiap pelanggan yang dihubungi diberi voucher Rp50.000. Jika pelanggan yang hampir churn berhasil ditahan,…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsci/kasus-churn-dari-peluang-ke-rupiah">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Kasus churn: dari peluang ke rupiah · Data Science &amp; AI · Ruang Kode"><meta property="og:description" content="Tim retensi punya anggaran kampanye: setiap pelanggan yang dihubungi diberi voucher Rp50.000. Jika pelanggan yang hampir churn berhasil ditahan,…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsci/kasus-churn-dari-peluang-ke-rupiah"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Kasus churn: dari peluang ke rupiah", "description": "Tim retensi punya anggaran kampanye: setiap pelanggan yang dihubungi diberi voucher Rp50.000. Jika pelanggan yang hampir churn berhasil ditahan,…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci/kasus-churn-dari-peluang-ke-rupiah", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Science & AI", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Science & AI", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, {"@type": "ListItem", "position": 3, "name": "Kasus churn: dari peluang ke rupiah", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci/kasus-churn-dari-peluang-ke-rupiah"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsci">Data Science &amp; AI</a> / Modul 12</nav>
+<div class="eyebrow">Data Science &amp; AI · Modul 12 · Konsep &amp; kode</div><h1>Kasus churn: dari peluang ke rupiah</h1><a class="cta" href="/#dsci-12-2">Buka versi interaktif</a>
+<p>Tim retensi punya anggaran kampanye: setiap pelanggan yang dihubungi diberi voucher Rp50.000. Jika pelanggan yang hampir churn berhasil ditahan, perusahaan mempertahankan margin sekitar Rp600.000 per tahun, tetapi tidak semua yang dihubungi mau bertahan (misalnya 35% berhasil).</p>
+<p>Dengan peluang churn dari model, nilai harapan menghubungi satu pelanggan = <code>p_churn × tingkat_berhasil × nilai_pelanggan − biaya</code>. Urutkan pelanggan dari peluang tertinggi, lalu jumlahkan nilai harapan untuk setiap ukuran kampanye. Titik puncak <b>kurva laba</b> menunjukkan berapa banyak pelanggan yang layak dihubungi.</p>
+<p>Bandingkan dengan dua strategi patokan: menghubungi semua orang dan memilih acak. Angka yang dibawa ke rapat bukan "AUC 0,78", melainkan "menghubungi 25% pelanggan teratas memberi laba bersih Rp X, Y kali lipat dibanding acak".</p>
+<div class="lbl">PYTHON</div><pre><code>import numpy as np
+import pandas as pd
+
+rng = np.random.default_rng(7)
+n = 300
+df = pd.DataFrame({
+    &#x27;umur&#x27;: rng.integers(18, 60, n),
+    &#x27;lama_bulan&#x27;: rng.integers(1, 48, n),
+    &#x27;belanja_bln&#x27;: rng.normal(350, 120, n).round(0).clip(50),
+    &#x27;keluhan&#x27;: rng.poisson(1.2, n),
+    &#x27;kota&#x27;: rng.choice([&#x27;Jakarta&#x27;, &#x27;Bandung&#x27;, &#x27;Surabaya&#x27;, &#x27;Medan&#x27;], n),
+})
+skor = -1.2 + 0.9 * df[&#x27;keluhan&#x27;] - 0.06 * df[&#x27;lama_bulan&#x27;] - 0.003 * (df[&#x27;belanja_bln&#x27;] - 350)
+df[&#x27;churn&#x27;] = (rng.random(n) &lt; 1 / (1 + np.exp(-skor))).astype(int)
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import cross_val_predict
+
+X = df[[&#x27;umur&#x27;, &#x27;lama_bulan&#x27;, &#x27;belanja_bln&#x27;, &#x27;keluhan&#x27;]]
+p = cross_val_predict(LogisticRegression(max_iter=1000), X, df[&#x27;churn&#x27;], cv=5, method=&#x27;predict_proba&#x27;)[:, 1]
+
+biaya, berhasil, nilai = 50_000, 0.35, 600_000
+urut = np.sort(p)[::-1]
+laba_kum = np.cumsum(urut * berhasil * nilai - biaya)
+porsi = np.arange(1, len(urut) + 1) / len(urut)
+terbaik = laba_kum.argmax()
+acak = porsi * len(p) * (df[&#x27;churn&#x27;].mean() * berhasil * nilai - biaya)
+
+print(f&#x27;hubungi semua : Rp{laba_kum[-1]:,.0f}&#x27;)
+print(f&#x27;hubungi {porsi[terbaik]:.0%} teratas ({terbaik + 1} orang): Rp{laba_kum[terbaik]:,.0f}&#x27;)
+print(f&#x27;acak dengan jumlah sama: Rp{acak[terbaik]:,.0f}&#x27;)
+
+plt.figure(figsize=(6.2, 3.4))
+plt.plot(porsi, laba_kum / 1e6, label=&#x27;urut menurut model&#x27;)
+plt.plot(porsi, acak / 1e6, &#x27;--&#x27;, color=&#x27;gray&#x27;, label=&#x27;acak&#x27;)
+plt.axvline(porsi[terbaik], color=&#x27;tab:red&#x27;, linewidth=1)
+plt.xlabel(&#x27;porsi pelanggan dihubungi&#x27;); plt.ylabel(&#x27;laba bersih (juta Rp)&#x27;)
+plt.title(&#x27;Kurva laba kampanye retensi&#x27;); plt.legend()</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>hubungi semua : Rp908,920
+hubungi 40% teratas (121 orang): Rp6,604,691
+acak dengan jumlah sama: Rp302,500</code></pre>
+<h2>Poin penting</h2><ul><li>Nilai harapan = p × berhasil × nilai − biaya.</li><li>Kurva laba menunjukkan ukuran kampanye terbaik.</li><li>Selalu bandingkan dengan acak dan "hubungi semua".</li></ul>
+<h2>Cek pemahaman</h2><details><summary>p churn 0,4, tingkat berhasil 35%, nilai pelanggan Rp600.000, biaya Rp50.000. Nilai harapan menghubungi?</summary><p class="ok">Jawaban: Rp34.000</p><p>0,4 × 0,35 × 600.000 − 50.000 = 34.000.</p></details><details><summary>Kenapa laba turun jika semua pelanggan dihubungi?</summary><p class="ok">Jawaban: Pelanggan berpeluang churn rendah tetap memakan biaya voucher</p><p>Nilai harapan negatif di bagian bawah daftar.</p></details>
+<a class="cta" href="/#dsci-12-2">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsci/metrik-bisnis-per-industri-keuangan-pemasaran-kesehatan-logistik">Metrik bisnis per industri: keuangan, pemasaran, kesehatan, logistik</a></p><p>Berikutnya: <a href="/belajar/dsci/kasus-kredit-menentukan-ambang-persetujuan-pinjaman">Kasus kredit: menentukan ambang persetujuan pinjaman</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Studi kasus t-test: apakah program voucher menaikkan belanja? · Data Science &amp; AI · Ruang Kode</title>
+<meta name="description" content="Sebuah aplikasi kedai kopi menguji voucher &quot;beli 2 gratis 1&quot; selama dua minggu. Pelanggan dibagi acak: kontrol (tanpa voucher) dan perlakuan (mendapat…">
+<meta name="author" content="Pasha Khatami Hasibuan">
+<link rel="canonical" href="https://ruang-kode-nine.vercel.app/belajar/dsci/studi-kasus-t-test-apakah-program-voucher-menaikkan-belanja">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Ruang Kode">
+<meta property="og:title" content="Studi kasus t-test: apakah program voucher menaikkan belanja? · Data Science &amp; AI · Ruang Kode"><meta property="og:description" content="Sebuah aplikasi kedai kopi menguji voucher &quot;beli 2 gratis 1&quot; selama dua minggu. Pelanggan dibagi acak: kontrol (tanpa voucher) dan perlakuan (mendapat…">
+<meta property="og:url" content="https://ruang-kode-nine.vercel.app/belajar/dsci/studi-kasus-t-test-apakah-program-voucher-menaikkan-belanja"><meta property="og:image" content="https://ruang-kode-nine.vercel.app/icons/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icons/icon-192.png" type="image/png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/belajar/s.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "LearningResource", "name": "Studi kasus t-test: apakah program voucher menaikkan belanja?", "description": "Sebuah aplikasi kedai kopi menguji voucher \"beli 2 gratis 1\" selama dua minggu. Pelanggan dibagi acak: kontrol (tanpa voucher) dan perlakuan (mendapat…", "inLanguage": "id", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci/studi-kasus-t-test-apakah-program-voucher-menaikkan-belanja", "learningResourceType": "Konsep & kode", "isPartOf": {"@type": "Course", "name": "Data Science & AI", "url": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, "provider": {"@type": "Organization", "name": "Ruang Kode", "url": "https://ruang-kode-nine.vercel.app/"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Materi", "item": "https://ruang-kode-nine.vercel.app/belajar"}, {"@type": "ListItem", "position": 2, "name": "Data Science & AI", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci"}, {"@type": "ListItem", "position": 3, "name": "Studi kasus t-test: apakah program voucher menaikkan belanja?", "item": "https://ruang-kode-nine.vercel.app/belajar/dsci/studi-kasus-t-test-apakah-program-voucher-menaikkan-belanja"}]}]}</script>
+</head>
+<body>
+<header><a class="brand" href="/"><i>RK</i>Ruang Kode</a><a href="/belajar">Semua materi</a></header>
+<main><nav class="crumb" aria-label="Lokasi"><a href="/belajar">Materi</a> / <a href="/belajar/dsci">Data Science &amp; AI</a> / Modul 3</nav>
+<div class="eyebrow">Data Science &amp; AI · Modul 3 · Konsep &amp; kode</div><h1>Studi kasus t-test: apakah program voucher menaikkan belanja?</h1><a class="cta" href="/#dsci-3-6">Buka versi interaktif</a>
+<p>Sebuah aplikasi kedai kopi menguji voucher "beli 2 gratis 1" selama dua minggu. Pelanggan dibagi acak: <b>kontrol</b> (tanpa voucher) dan <b>perlakuan</b> (mendapat voucher). Pertanyaan bisnis: apakah belanja per pelanggan naik cukup besar untuk menutup biaya voucher?</p>
+<p>Karena dua kelompok berisi orang yang berbeda, kita memakai <b>t-test dua sampel independen</b>. Varians dua kelompok tidak dijamin sama, jadi pakai versi <b>Welch</b> (<code>equal_var=False</code>), yang menjadi pilihan aman di industri. H1 satu arah: perlakuan &gt; kontrol, sehingga <code>alternative="greater"</code>. Jika pelanggan yang sama diukur sebelum dan sesudah, pakai <b>t-test berpasangan</b> (<code>ttest_rel</code>).</p>
+<p>Signifikan secara statistik belum tentu menguntungkan. Hitung <b>selang kepercayaan</b> selisih rata-rata dan bandingkan dengan <b>biaya voucher per pelanggan</b>. Keputusan diambil dari angka rupiah, bukan dari p-value saja.</p>
+<div class="lbl">PYTHON</div><pre><code>import numpy as np
+import matplotlib.pyplot as plt
+from scipy import stats
+
+rng = np.random.default_rng(21)
+kontrol = rng.gamma(4, 18_000, 420).round(-2)       # belanja 2 minggu (rupiah)
+voucher = rng.gamma(4, 21_000, 410).round(-2)
+biaya_voucher = 4_500                               # rata-rata biaya per pelanggan perlakuan
+
+hasil = stats.ttest_ind(voucher, kontrol, equal_var=False, alternative=&#x27;greater&#x27;)
+selisih = voucher.mean() - kontrol.mean()
+se = np.sqrt(voucher.var(ddof=1) / len(voucher) + kontrol.var(ddof=1) / len(kontrol))
+ci = stats.t.interval(0.95, df=min(len(voucher), len(kontrol)) - 1, loc=selisih, scale=se)
+
+print(f&#x27;kontrol : Rp{kontrol.mean():,.0f} (n={len(kontrol)})&#x27;)
+print(f&#x27;voucher : Rp{voucher.mean():,.0f} (n={len(voucher)})&#x27;)
+print(f&#x27;selisih : Rp{selisih:,.0f}, 95% CI Rp{ci[0]:,.0f} s.d. Rp{ci[1]:,.0f}&#x27;)
+print(f&#x27;Welch t = {hasil.statistic:.2f}, p (satu sisi) = {hasil.pvalue:.4f}&#x27;)
+margin = 0.35                                        # margin kotor kedai
+untung = selisih * margin - biaya_voucher
+print(f&#x27;tambahan laba kotor per pelanggan: Rp{selisih * margin:,.0f} - biaya Rp{biaya_voucher:,} = Rp{untung:,.0f}&#x27;)
+print(&#x27;Keputusan:&#x27;, &#x27;lanjutkan voucher&#x27; if hasil.pvalue &lt; 0.05 and untung &gt; 0 else &#x27;jangan diperluas dulu&#x27;)
+
+plt.figure(figsize=(6.4, 3.2))
+bins = np.linspace(0, 250_000, 40)
+plt.hist(kontrol, bins=bins, alpha=0.6, label=&#x27;kontrol&#x27;)
+plt.hist(voucher, bins=bins, alpha=0.6, label=&#x27;voucher&#x27;)
+plt.axvline(kontrol.mean(), color=&#x27;tab:blue&#x27;, linestyle=&#x27;--&#x27;)
+plt.axvline(voucher.mean(), color=&#x27;tab:orange&#x27;, linestyle=&#x27;--&#x27;)
+plt.xlabel(&#x27;belanja 2 minggu (Rp)&#x27;); plt.title(&#x27;Sebaran belanja: kontrol vs voucher&#x27;); plt.legend()</code></pre>
+<div class="lbl">KELUARAN</div><pre><code>kontrol : Rp72,993 (n=420)
+voucher : Rp81,516 (n=410)
+selisih : Rp8,523, 95% CI Rp3,441 s.d. Rp13,605
+Welch t = 3.30, p (satu sisi) = 0.0005
+tambahan laba kotor per pelanggan: Rp2,983 - biaya Rp4,500 = Rp-1,517
+Keputusan: jangan diperluas dulu</code></pre>
+<h2>Poin penting</h2><ul><li>Dua kelompok berbeda: t-test independen (Welch).</li><li>Orang yang sama sebelum-sesudah: t-test berpasangan.</li><li>Laporkan selang kepercayaan selisih, bukan hanya p-value.</li><li>Keputusan akhir memakai laba setelah biaya.</li></ul>
+<h2>Cek pemahaman</h2><details><summary>Data belanja pelanggan yang sama sebelum dan sesudah mendapat voucher. Uji yang tepat?</summary><p class="ok">Jawaban: t-test berpasangan (ttest_rel)</p><p>Pengamatan berpasangan per orang.</p></details><details><summary>Hasil signifikan (p &amp;lt; 0,05) tetapi tambahan laba lebih kecil dari biaya voucher. Keputusan?</summary><p class="ok">Jawaban: Jangan diperluas, efeknya nyata tetapi tidak menguntungkan</p><p>Signifikansi statistik ≠ manfaat bisnis.</p></details>
+<a class="cta" href="/#dsci-3-6">Kerjakan latihannya di aplikasi</a><p>Sebelumnya: <a href="/belajar/dsci/uji-hipotesis-langkah-demi-langkah-statistik-uji-dan-nilai-kritis">Uji hipotesis langkah demi langkah: statistik uji dan nilai kritis</a></p><p>Berikutnya: <a href="/belajar/dsci/regresi-linear-menarik-garis-terbaik">Regresi linear: menarik garis terbaik</a></p>
+</main>
+<footer>Ruang Kode · dikembangkan oleh Pasha Khatami Hasibuan · kurikulum mengikuti <a href="https://roadmap.sh">roadmap.sh</a></footer>
+</body>
+</html>
