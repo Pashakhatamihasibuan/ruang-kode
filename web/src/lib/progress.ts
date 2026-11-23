@@ -97,3 +97,31 @@ export function streak(s: Lms): number {
 export function toast(msg: string) {
   window.dispatchEvent(new CustomEvent("rk-toast", { detail: msg }));
 }
+
+/** Menghapus progres satu jalur. Mengembalikan salinan data sebelum dihapus agar bisa diurungkan. */
+export function resetTrack(k: string, ids: string[]): Lms {
+  const s = load();
+  const before = JSON.parse(JSON.stringify(s)) as Lms;
+  const own = new Set(ids);
+  let xp = 0;
+  for (const id of ids) if (s.done[id]) { delete s.done[id]; xp += 10; }
+  for (const [bucket, pts] of [["qok", 2], ["task", 5]] as const)
+    for (const key of Object.keys(s[bucket])) if (own.has(key.split("#")[0])) { delete s[bucket][key]; xp += pts; }
+  delete s.last[k];
+  delete s.lastAt[k];
+  s.xp = Math.max(0, s.xp - xp);
+  save(s);
+  return before;
+}
+
+/** Menghapus seluruh progres di browser ini. Mengembalikan salinan data sebelum dihapus. */
+export function resetAll(): Lms {
+  const before = load();
+  save({ done: {}, last: {}, lastAt: {}, days: {}, act: {}, task: {}, qok: {}, xp: 0 });
+  return before;
+}
+
+/** Memulihkan data yang tadi dihapus. */
+export function restore(s: Lms) {
+  save(s);
+}
