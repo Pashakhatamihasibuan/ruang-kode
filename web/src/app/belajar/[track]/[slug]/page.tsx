@@ -169,6 +169,13 @@ export default async function LessonPage({ params }: P) {
               </section>
             )}
 
+            {l.v3 && (
+              <Section id="v3d" ic="◆" bg="var(--butter)" title={l.v3.t}>
+                <p className="muted small">Visual interaktif 3D. Ikuti langkahnya satu per satu, lalu seret panggung untuk melihat dari sudut lain.</p>
+                <VizFrame v3={l.v3.k} v3p={l.v3.p} lang={lang} lesson={vizLesson} title={l.v3.t} />
+              </Section>
+            )}
+
             {l.k === "proj" ? (
               <>
                 <Section id="brief" ic="◎" bg="var(--peach)" title="Ringkasan proyek">

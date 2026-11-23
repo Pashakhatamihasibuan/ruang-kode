@@ -53,3 +53,10 @@ for (const d of ["desain", "mini-project"]) {
   catch { console.warn(`lewati: ${d}/ tidak ditemukan`); }
 }
 for (const f of await readdir(ROOT)) if (/^google[\w]+\.html$/.test(f)) await cp(path.join(ROOT, f), path.join(OUT, f));
+
+// versi service worker = waktu build, agar cache aset lama dibuang setelah rilis baru
+{
+  const f = path.join(OUT, "sw.js");
+  await writeFile(f, (await readFile(f, "utf8")).replace("__BUILD__", Date.now().toString(36)));
+  console.log("sw.js: versi build dipasang");
+}

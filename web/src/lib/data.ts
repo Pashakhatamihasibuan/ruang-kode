@@ -36,7 +36,7 @@ export interface Body {
   trc?: { s: [number, string, Record<string, unknown>, string, number?][]; cut?: boolean };
   fin?: { n: string; tree: string; files: [string, string, string][]; run: string; cek: string[] };
   deep?: { ist: [string, string][]; cx: { t: string; b?: string; code: string; lang?: string; out?: string }[] };
-  an?: string; viz?: string; nodes?: string[]; trs?: [string, string][];
+  an?: string; viz?: string; v3?: { k: string; t: string; p: Record<string, unknown> | null }; nodes?: string[]; trs?: [string, string][];
   html?: string; css?: string; js?: string; react?: boolean; tw?: boolean; bs?: boolean; console?: boolean; vp?: number;
   task?: Task; tasks?: Task[]; ex?: [string, string][]; db?: string; syn?: [string, string];
   brief?: string; stack?: string; feats?: string[]; steps?: string[]; files?: [string, string, string][];

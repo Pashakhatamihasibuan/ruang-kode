@@ -92,7 +92,7 @@ export function WebLab({ init, react, tw, bs, showConsole, task, lid, track }: {
         <div className="runner">
           <div className="tabs" role="tablist" aria-label="Berkas">
             {tabs.map((k) => (
-              <button key={k} type="button" role="tab" id={`tab-${uid}-${k}`} aria-controls={`pan-${uid}`} aria-selected={tab === k} className="btn sm" aria-pressed={tab === k} onClick={() => setTab(k)}>{names[k]}</button>
+              <button key={k} type="button" role="tab" id={`tab-${uid}-${k}`} aria-controls={`pan-${uid}`} aria-selected={tab === k} className="btn sm" onClick={() => setTab(k)}>{names[k]}</button>
             ))}
           </div>
           <div role="tabpanel" id={`pan-${uid}`} aria-labelledby={`tab-${uid}-${tab}`}>
