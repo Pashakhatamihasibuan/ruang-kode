@@ -1,0 +1,166 @@
+{
+ "kmp-1-1": {
+  "cx": [
+   {
+    "t": "Satu fungsi validasi untuk kedua platform",
+    "b": "Aturan bisnis seperti validasi nomor HP cukup ditulis sekali dalam Kotlin biasa. Kode ini tidak memakai apa pun yang khusus Android atau iOS, jadi bisa dipakai di keduanya, dan bisa dicoba langsung di JVM seperti di bawah.",
+    "code": "object Validasi {\n    private val polaHp = Regex(\"^(\\\\+62|0)8\\\\d{8,11}$\")\n    fun nomorHp(input: String): Boolean = polaHp.matches(input.replace(\" \", \"\").replace(\"-\", \"\"))\n}\n\nfun main() {\n    // Android memanggil Validasi.nomorHp(teks)\n    // iOS (Swift) memanggil Validasi.shared.nomorHp(input: teks)\n    for (nomor in listOf(\"0812-3456-7890\", \"+62 857 1111 2222\", \"021-555-1234\", \"08123\")) {\n        println(\"$nomor -> ${Validasi.nomorHp(nomor)}\")\n    }\n}",
+    "out": "0812-3456-7890 -> true\n+62 857 1111 2222 -> true\n021-555-1234 -> false\n08123 -> false"
+   }
+  ]
+ },
+ "kmp-1-2": {
+  "exs": [
+   {
+    "t": "Kasus: membuat ID unik di setiap platform",
+    "d": "expect menyatakan kebutuhan di commonMain; actual memakai pustaka bawaan tiap platform.",
+    "code": "// commonMain\nexpect fun buatId(): String\n\nclass Pesanan(val barang: String) {\n    val id: String = buatId()\n}\n\n// androidMain\nactual fun buatId(): String = java.util.UUID.randomUUID().toString()\n\n// iosMain\nactual fun buatId(): String = platform.Foundation.NSUUID().UUIDString()"
+   },
+   {
+    "t": "Kasus: format rupiah dengan pustaka tiap platform",
+    "d": "expect class bisa punya beberapa fungsi; setiap platform mengisinya dengan formatter bawaan.",
+    "code": "// commonMain\nexpect class FormatUang() {\n    fun rupiah(nilai: Long): String\n}\n\n// androidMain\nactual class FormatUang actual constructor() {\n    actual fun rupiah(nilai: Long): String =\n        java.text.NumberFormat.getCurrencyInstance(java.util.Locale.forLanguageTag(\"id-ID\")).format(nilai)\n}\n\n// iosMain\nactual class FormatUang actual constructor() {\n    actual fun rupiah(nilai: Long): String {\n        val f = platform.Foundation.NSNumberFormatter()\n        f.numberStyle = platform.Foundation.NSNumberFormatterCurrencyStyle\n        f.locale = platform.Foundation.NSLocale(\"id_ID\")\n        return f.stringFromNumber(platform.Foundation.NSNumber(nilai)) ?: \"Rp$nilai\"\n    }\n}"
+   },
+   {
+    "t": "Kasus: logika commonMain yang tidak butuh expect",
+    "d": "Sebagian besar kode bersama adalah Kotlin biasa, jadi bisa diuji di JVM tanpa emulator.",
+    "code": "// shared/src/commonMain/kotlin/Ongkir.kt\nfun ongkir(beratGram: Int, kota: String): Int {\n    val dasar = if (kota == \"Jakarta\") 9_000 else 15_000\n    val tambahanKg = if (beratGram > 1000) (beratGram - 1) / 1000 else 0\n    return dasar + tambahanKg * 4_000\n}\n\nfun main() {\n    println(ongkir(800, \"Jakarta\"))\n    println(ongkir(2500, \"Jakarta\"))\n    println(ongkir(2500, \"Makassar\"))\n}",
+    "out": "9000\n17000\n23000"
+   }
+  ]
+ },
+ "kmp-2-1": {
+  "exs": [
+   {
+    "t": "Kasus: mengirim pesanan dengan POST",
+    "d": "setBody mengubah objek @Serializable menjadi JSON secara otomatis.",
+    "code": "@Serializable\ndata class PesananBaru(val produkId: Int, val jumlah: Int, val alamat: String)\n\n@Serializable\ndata class NomorPesanan(val nomor: String)\n\nclass PesananApi(private val client: HttpClient) {\n    suspend fun buat(p: PesananBaru): NomorPesanan =\n        client.post(\"https://api.contoh.id/pesanan\") {\n            contentType(ContentType.Application.Json)\n            setBody(p)\n        }.body()\n}"
+   },
+   {
+    "t": "Kasus: membaca JSON dengan nama kolom berbeda",
+    "d": "@SerialName memetakan nama kolom API; nilai bawaan dipakai jika kolom tidak ada.",
+    "code": "@Serializable\ndata class Cuaca(\n    @SerialName(\"nama_kota\") val kota: String,\n    @SerialName(\"suhu_c\") val suhu: Double,\n    val hujan: Boolean = false,\n)\n\nval json = Json { ignoreUnknownKeys = true }\n\nfun bacaCuaca(teks: String): Cuaca = json.decodeFromString<Cuaca>(teks)\n\n// bacaCuaca(\"\"\"{\"nama_kota\":\"Bogor\",\"suhu_c\":24.5,\"kelembapan\":90}\"\"\")\n// -> Cuaca(kota=Bogor, suhu=24.5, hujan=false)"
+   },
+   {
+    "t": "Kasus: menangani error jaringan di repository bersama",
+    "d": "expectSuccess membuat status 4xx/5xx menjadi exception, lalu runCatching membungkusnya.",
+    "code": "fun buatClient() = HttpClient {\n    expectSuccess = true\n    install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }\n    install(HttpTimeout) { requestTimeoutMillis = 10_000 }\n}\n\nclass ProdukRepository(private val client: HttpClient) {\n    suspend fun semua(): Result<List<Produk>> = runCatching {\n        client.get(\"https://api.contoh.id/produk\").body<List<Produk>>()\n    }\n}\n\n// pemakaian (Android dan iOS sama):\n// repo.semua().onSuccess { tampilkan(it) }.onFailure { tampilkanPesan(\"Gagal memuat produk\") }"
+   }
+  ]
+ },
+ "kmp-2-2": {
+  "exs": [
+   {
+    "t": "Kasus: kartu kurs yang dipakai di semua platform",
+    "d": "Composable di commonMain memakai Material 3 yang sama untuk Android, iOS, dan desktop.",
+    "code": "// composeApp/src/commonMain/kotlin/KartuKurs.kt\n@Composable\nfun KartuKurs(kode: String, nilai: String, onKlik: () -> Unit) {\n    Card(onClick = onKlik, modifier = Modifier.fillMaxWidth()) {\n        Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {\n            Text(kode, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))\n            Text(nilai, style = MaterialTheme.typography.bodyLarge)\n        }\n    }\n}"
+   },
+   {
+    "t": "Kasus: gambar dan teks dari composeResources",
+    "d": "Res dibuat otomatis dari folder composeResources, sehingga sumber daya juga dibagi.",
+    "code": "// composeApp/src/commonMain/composeResources/drawable/logo.png\n// composeApp/src/commonMain/composeResources/values/strings.xml\n//   <string name=\"judul_aplikasi\">Kurs Hari Ini</string>\n\n@Composable\nfun Kepala() {\n    Row(verticalAlignment = Alignment.CenterVertically) {\n        Image(painterResource(Res.drawable.logo), contentDescription = null, modifier = Modifier.size(40.dp))\n        Spacer(Modifier.width(12.dp))\n        Text(stringResource(Res.string.judul_aplikasi), style = MaterialTheme.typography.headlineSmall)\n    }\n}"
+   },
+   {
+    "t": "Kasus: satu App untuk Android, iOS, dan desktop",
+    "d": "Setiap platform hanya punya titik masuk kecil yang memanggil App() yang sama.",
+    "code": "// androidMain\nclass MainActivity : ComponentActivity() {\n    override fun onCreate(savedInstanceState: Bundle?) {\n        super.onCreate(savedInstanceState)\n        setContent { App() }\n    }\n}\n\n// iosMain\nfun MainViewController() = ComposeUIViewController { App() }\n\n// desktopMain\nfun main() = application {\n    Window(onCloseRequest = ::exitApplication, title = \"Kurs Hari Ini\") { App() }\n}"
+   }
+  ]
+ },
+ "kmp-3-1": {
+  "exs": [
+   {
+    "t": "Kasus: mengenali struktur folder hasil wizard",
+    "d": "Perintah tree memperlihatkan di mana kode bersama dan kode tiap platform disimpan.",
+    "code": "$ tree -L 4 -d KursApp\nKursApp\n├── composeApp\n│   └── src\n│       ├── androidMain     # MainActivity, kode khusus Android\n│       ├── commonMain      # App(), layar, logika bersama\n│       ├── desktopMain     # main() untuk desktop\n│       └── iosMain         # MainViewController untuk iOS\n├── gradle                  # libs.versions.toml\n└── iosApp                  # proyek Xcode\n    └── iosApp"
+   },
+   {
+    "t": "Kasus: membangun dan menguji per target",
+    "d": "Nama tugas Gradle mengikuti modul dan target, jadi tiap platform bisa dibangun terpisah.",
+    "code": "# daftar semua tugas yang tersedia di modul composeApp\n./gradlew :composeApp:tasks --group build\n\n# APK debug Android\n./gradlew :composeApp:assembleDebug\n\n# tes kode bersama di JVM saja (paling cepat)\n./gradlew :composeApp:desktopTest\n\n# tes untuk simulator iOS (butuh Mac)\n./gradlew :composeApp:iosSimulatorArm64Test"
+   },
+   {
+    "t": "Kasus: memeriksa lingkungan sebelum membuka proyek",
+    "d": "Cek versi JDK dan Xcode lebih dulu agar error build tidak membingungkan.",
+    "code": "java -version            # butuh JDK 17 atau lebih baru\nxcodebuild -version      # hanya di Mac, untuk target iOS\nkdoctor                  # merangkum semua pemeriksaan KMP\n\n# setelah wizard diunduh dan diekstrak\ncd KursApp\n./gradlew --version"
+   }
+  ]
+ },
+ "kmp-3-2": {
+  "exs": [
+   {
+    "t": "Kasus: bedanya single dan factory",
+    "d": "single memberi objek yang sama setiap kali diminta, factory selalu membuat objek baru.",
+    "code": "class PenghitungKlik { var total = 0 }\nclass FormulirPesanan { val dibuat = Clock.System.now() }\n\nval modulContoh = module {\n    single { PenghitungKlik() }       // satu untuk seluruh aplikasi\n    factory { FormulirPesanan() }     // baru setiap kali get()\n}\n\n// val a: PenghitungKlik = get(); val b: PenghitungKlik = get()   -> a === b\n// val f1: FormulirPesanan = get(); val f2: FormulirPesanan = get() -> f1 !== f2"
+   },
+   {
+    "t": "Kasus: modul khusus platform dengan expect/actual",
+    "d": "Dependensi yang butuh Context Android disediakan oleh modul platform.",
+    "code": "// commonMain\nexpect val modulPlatform: Module\n\nval modulBersama = module {\n    single { SesiRepository(get()) }\n}\n\n// androidMain\nactual val modulPlatform = module {\n    single<PenyimpananToken> { PenyimpananAndroid(androidContext()) }  // SharedPreferences terenkripsi\n}\n\n// iosMain\nactual val modulPlatform = module {\n    single<PenyimpananToken> { PenyimpananIos() }                     // Keychain\n}\n\nfun initKoin() = startKoin { modules(modulBersama, modulPlatform) }"
+   },
+   {
+    "t": "Kasus: memastikan semua dependensi terdaftar lewat tes",
+    "d": "verify() memeriksa modul Koin saat tes, sebelum aplikasi gagal di tangan pengguna.",
+    "code": "class ModulKoinTest {\n    @Test\n    fun semuaDefinisiLengkap() {\n        modulData.verify(extraTypes = listOf(HttpClientEngine::class))\n        modulUi.verify()\n    }\n}"
+   }
+  ]
+ },
+ "kmp-3-3": {
+  "exs": [
+   {
+    "t": "Kasus: query dengan parameter dan hapus data lama",
+    "d": "Tanda ? dan :nama menjadi parameter fungsi Kotlin yang dibuat SQLDelight.",
+    "code": "-- Kurs.sq (lanjutan)\ncariKode:\nSELECT * FROM kurs WHERE kode = :kode;\n\nhapusLama:\nDELETE FROM kurs WHERE diperbarui < :batasWaktu;\n\njumlah:\nSELECT COUNT(*) FROM kurs;\n\n-- Kotlin: q.cariKode(\"USD\").executeAsOneOrNull()\n-- Kotlin: q.hapusLama(batasWaktu = sekarang - 7 * 24 * 3600)"
+   },
+   {
+    "t": "Kasus: menambah kolom dengan migrasi",
+    "d": "Perubahan skema ditulis di file .sqm bernomor agar database lama di ponsel pengguna ikut diperbarui.",
+    "code": "-- src/commonMain/sqldelight/migrations/1.sqm\nALTER TABLE kurs ADD COLUMN favorit INTEGER NOT NULL DEFAULT 0;\n\n-- Kurs.sq: query baru yang memakai kolom tersebut\nsemuaFavorit:\nSELECT * FROM kurs WHERE favorit = 1 ORDER BY kode;\n\ntandaiFavorit:\nUPDATE kurs SET favorit = :favorit WHERE kode = :kode;"
+   },
+   {
+    "t": "Kasus: riwayat konversi dengan agregasi",
+    "d": "Tabel kedua menyimpan riwayat, lalu GROUP BY merangkum mata uang yang paling sering dipakai.",
+    "code": "CREATE TABLE riwayat (\n  id INTEGER PRIMARY KEY AUTOINCREMENT,\n  kode TEXT NOT NULL REFERENCES kurs(kode),\n  jumlahRupiah INTEGER NOT NULL,\n  waktu INTEGER NOT NULL\n);\n\ncatat:\nINSERT INTO riwayat(kode, jumlahRupiah, waktu) VALUES (?, ?, ?);\n\npalingSering:\nSELECT kode, COUNT(*) AS kali, SUM(jumlahRupiah) AS total\nFROM riwayat\nGROUP BY kode\nORDER BY kali DESC\nLIMIT 3;"
+   }
+  ]
+ },
+ "kmp-3-4": {
+  "exs": [
+   {
+    "t": "Kasus: object dan fungsi tingkat atas dari Swift",
+    "d": "object Kotlin diakses lewat .shared; fungsi tingkat atas lewat nama file + Kt.",
+    "code": "// Kotlin, commonMain/kotlin/Format.kt\nobject Konfigurasi {\n    val mataUangDasar = \"IDR\"\n}\n\nfun formatRupiah(nilai: Long): String = \"Rp\" + nilai.toString().reversed().chunked(3).joinToString(\".\").reversed()\n\n// Swift\nimport Shared\n\nlet dasar = Konfigurasi.shared.mataUangDasar     // \"IDR\"\nlet teks = FormatKt.formatRupiah(nilai: 1250000) // \"Rp1.250.000\""
+   },
+   {
+    "t": "Kasus: sealed class menjadi enum Swift dengan SKIE",
+    "d": "SKIE membuat onEnum(of:) sehingga switch di Swift memeriksa semua kasus.",
+    "code": "// Kotlin, commonMain\nsealed interface KursState {\n    data object Memuat : KursState\n    data class Ok(val daftar: List<Kurs>) : KursState\n    data class Gagal(val pesan: String) : KursState\n}\n\n// Swift (dengan SKIE)\nswitch onEnum(of: state) {\ncase .memuat:\n    ProgressView()\ncase .ok(let ok):\n    Text(\"\\(ok.daftar.count) mata uang\")\ncase .gagal(let g):\n    Text(g.pesan).foregroundStyle(.red)\n}"
+   },
+   {
+    "t": "Kasus: memanggil fungsi suspend dari Swift tanpa SKIE",
+    "d": "Tanpa SKIE, suspend fun tetap bisa dipanggil dengan async/await, tetapi error harus ditangkap dengan try.",
+    "code": "// Kotlin, commonMain\nclass KursService(private val api: KursApi) {\n    @Throws(Exception::class)\n    suspend fun nilai(kode: String): Double = api.kurs().rates[kode] ?: 0.0\n}\n\n// Swift\nfunc muatUsd(service: KursService) async -> String {\n    do {\n        let n = try await service.nilai(kode: \"USD\")\n        return \"1 IDR = \\(n) USD\"\n    } catch {\n        return \"Gagal: \\(error.localizedDescription)\"\n    }\n}"
+   }
+  ]
+ },
+ "kmp-3-5": {
+  "exs": [
+   {
+    "t": "Kasus: logika konversi kurs di commonMain",
+    "d": "Inti proyek adalah Kotlin biasa, jadi bisa dicoba dan diuji tanpa emulator.",
+    "code": "class Konverter(private val perRupiah: Map<String, Double>) {   // 1 IDR = ... mata uang lain\n    fun dariRupiah(rupiah: Long, kode: String): Double {\n        val kurs = perRupiah[kode] ?: error(\"Kurs $kode belum ada\")\n        return rupiah * kurs\n    }\n\n    fun keRupiah(nilai: Double, kode: String): Long {\n        val kurs = perRupiah[kode] ?: error(\"Kurs $kode belum ada\")\n        return Math.round(nilai / kurs)\n    }\n}\n\nfun main() {\n    val k = Konverter(mapOf(\"USD\" to 0.0000625, \"SGD\" to 0.0000842, \"MYR\" to 0.000294))\n    println(\"Rp1.000.000 = ${\"%.2f\".format(k.dariRupiah(1_000_000, \"USD\"))} USD\")\n    println(\"Rp1.000.000 = ${\"%.2f\".format(k.dariRupiah(1_000_000, \"MYR\"))} MYR\")\n    println(\"50 SGD = Rp${k.keRupiah(50.0, \"SGD\")}\")\n    println(runCatching { k.dariRupiah(10_000, \"JPY\") }.exceptionOrNull()?.message)\n}",
+    "out": "Rp1.000.000 = 62.50 USD\nRp1.000.000 = 294.00 MYR\n50 SGD = Rp593824\nKurs JPY belum ada"
+   },
+   {
+    "t": "Kasus: repository offline-first untuk kurs",
+    "d": "UI selalu membaca database; segarkan() mengambil dari API lalu menyimpannya.",
+    "code": "class KursRepository(private val api: KursApi, private val db: AppDb) {\n    private val q = db.kursQueries\n\n    val semua: Flow<List<Kurs>> = q.semua().asFlow().mapToList(Dispatchers.Default)\n\n    suspend fun segarkan() {\n        val respons = api.kurs(\"IDR\")\n        val waktu = Clock.System.now().epochSeconds\n        db.transaction {\n            respons.rates.forEach { (kode, nilai) -> q.simpan(kode, nilai, waktu) }\n        }\n    }\n}"
+   },
+   {
+    "t": "Kasus: merangkai proyek dengan Koin",
+    "d": "Semua bagian proyek (API, database, repository, ViewModel) didaftarkan di satu tempat.",
+    "code": "val modulKurs = module {\n    single { HttpClient { install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) } } }\n    single { KursApi(get()) }\n    single { AppDb(get()) }                 // SqlDriver dari modulPlatform\n    single { KursRepository(get(), get()) }\n    viewModel { KursViewModel(get()) }\n}\n\n@Composable\nfun App() {\n    KoinApplication(application = { modules(modulKurs, modulPlatform) }) {\n        MaterialTheme { LayarKurs(koinViewModel()) }\n    }\n}"
+   }
+  ]
+ }
+}

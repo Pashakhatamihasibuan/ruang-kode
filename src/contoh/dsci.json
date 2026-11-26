@@ -924,5 +924,244 @@
     "out": "entropy awal 0.971, sesudah dipisah hujan 0.361\ninformation gain = 0.610"
    }
   ]
+ },
+ "dsci-8-1": {
+  "exs": [
+   {
+    "t": "Kasus: fitur tanggal untuk pesanan makanan daring",
+    "d": "Jam, akhir pekan, dan jam makan siang diturunkan dari satu kolom waktu.",
+    "code": "import pandas as pd\n\nd = pd.DataFrame({'waktu': pd.to_datetime(['2026-07-04 12:10', '2026-07-06 19:45', '2026-07-08 07:30', '2026-07-11 12:40']),\n                  'total': [85_000, 132_000, 40_000, 210_000], 'item': [2, 3, 1, 5]})\nd['jam'] = d['waktu'].dt.hour\nd['akhir_pekan'] = (d['waktu'].dt.dayofweek >= 5).astype(int)\nd['makan_siang'] = d['jam'].between(11, 13).astype(int)\nd['harga_per_item'] = d['total'] / d['item']\nprint(d.drop(columns='waktu'))",
+    "out": "    total  item  jam  akhir_pekan  makan_siang  harga_per_item\n0   85000     2   12            1            1         42500.0\n1  132000     3   19            0            0         44000.0\n2   40000     1    7            0            0         40000.0\n3  210000     5   12            1            1         42000.0"
+   },
+   {
+    "t": "Kasus: Pipeline dengan kolom angka dan kategori untuk harga rumah",
+    "d": "ColumnTransformer menyiapkan setiap jenis kolom, lalu model regresi dilatih dalam satu objek.",
+    "code": "import numpy as np\nimport pandas as pd\nfrom sklearn.compose import ColumnTransformer\nfrom sklearn.pipeline import Pipeline\nfrom sklearn.preprocessing import OneHotEncoder, StandardScaler\nfrom sklearn.linear_model import Ridge\nfrom sklearn.model_selection import cross_val_score\n\nrng = np.random.default_rng(2)\nn = 300\ndf = pd.DataFrame({'luas': rng.uniform(30, 160, n), 'kamar': rng.integers(1, 5, n),\n                   'kota': rng.choice(['Depok', 'Bekasi', 'Tangerang'], n)})\ntambahan = df['kota'].map({'Depok': 0, 'Bekasi': -80, 'Tangerang': 60})\ndf['harga'] = 200 + 8 * df['luas'] + 30 * df['kamar'] + tambahan + rng.normal(0, 60, n)\n\npipe = Pipeline([('pra', ColumnTransformer([('angka', StandardScaler(), ['luas', 'kamar']),\n                                            ('kota', OneHotEncoder(handle_unknown='ignore'), ['kota'])])),\n                 ('model', Ridge(alpha=1.0))])\nfor nama, kolom in [('tanpa kota', ['luas', 'kamar']), ('dengan kota', ['luas', 'kamar', 'kota'])]:\n    if nama == 'tanpa kota':\n        p = Pipeline([('skala', StandardScaler()), ('model', Ridge(alpha=1.0))])\n    else:\n        p = pipe\n    s = cross_val_score(p, df[kolom], df['harga'], cv=5, scoring='r2')\n    print(f'{nama:12}: R2 cv = {s.mean():.3f}')",
+    "out": "tanpa kota  : R2 cv = 0.919\ndengan kota : R2 cv = 0.957"
+   },
+   {
+    "t": "Kasus: fungsi pembuat fitur yang dipakai ulang",
+    "d": "Fitur dibuat lewat satu fungsi agar data latih dan data baru diproses dengan cara yang sama.",
+    "code": "import pandas as pd\n\ndef buat_fitur(d):\n    hasil = d.copy()\n    hasil['keluhan_per_bln'] = (hasil['keluhan'] / hasil['lama_bulan']).round(3)\n    hasil['baru'] = (hasil['lama_bulan'] <= 6).astype(int)\n    hasil['belanja_tinggi'] = (hasil['belanja_bln'] >= 500).astype(int)\n    return hasil\n\nlatih = pd.DataFrame({'lama_bulan': [3, 24, 12], 'keluhan': [2, 1, 4], 'belanja_bln': [250, 620, 410]})\nbaru = pd.DataFrame({'lama_bulan': [5], 'keluhan': [3], 'belanja_bln': [700]})\nprint(buat_fitur(latih))\nprint(buat_fitur(baru))",
+    "out": "   lama_bulan  keluhan  belanja_bln  keluhan_per_bln  baru  belanja_tinggi\n0           3        2          250            0.667     1               0\n1          24        1          620            0.042     0               1\n2          12        4          410            0.333     0               0\n   lama_bulan  keluhan  belanja_bln  keluhan_per_bln  baru  belanja_tinggi\n0           5        3          700              0.6     1               1"
+   }
+  ]
+ },
+ "dsci-8-2": {
+  "exs": [
+   {
+    "t": "Kasus: gradient boosting regresi untuk durasi pengiriman",
+    "d": "HistGradientBoostingRegressor menangkap pola tidak lurus tanpa standardisasi.",
+    "code": "import numpy as np\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.ensemble import HistGradientBoostingRegressor\nfrom sklearn.linear_model import LinearRegression\nfrom sklearn.metrics import mean_absolute_error\n\nrng = np.random.default_rng(1)\nn = 1500\njarak = rng.uniform(1, 40, n); jam = rng.integers(0, 24, n)\nmacet = ((jam >= 7) & (jam <= 9)) | ((jam >= 16) & (jam <= 19))\ndurasi = 10 + 2.2 * jarak + 25 * macet + rng.normal(0, 6, n)      # menit\nX = np.column_stack([jarak, jam])\nX_tr, X_te, y_tr, y_te = train_test_split(X, durasi, random_state=0)\nfor nama, m in [('linear', LinearRegression()), ('boosting', HistGradientBoostingRegressor(random_state=0))]:\n    m.fit(X_tr, y_tr)\n    print(f'{nama:8}: MAE = {mean_absolute_error(y_te, m.predict(X_te)):.1f} menit')",
+    "out": "linear  : MAE = 10.6 menit\nboosting: MAE = 4.7 menit"
+   },
+   {
+    "t": "Kasus: RandomizedSearchCV untuk ruang pencarian yang besar",
+    "d": "Mencoba 8 kombinasi acak lebih hemat daripada semua kombinasi grid.",
+    "code": "from sklearn.datasets import make_classification\nfrom sklearn.ensemble import HistGradientBoostingClassifier\nfrom sklearn.model_selection import RandomizedSearchCV\n\nX, y = make_classification(1200, n_features=10, n_informative=5, random_state=0)\nruang = {'learning_rate': [0.01, 0.03, 0.1, 0.3], 'max_depth': [2, 3, 4, None],\n         'max_iter': [100, 200, 400], 'min_samples_leaf': [10, 20, 50]}\ncari = RandomizedSearchCV(HistGradientBoostingClassifier(random_state=0), ruang, n_iter=8,\n                          cv=3, scoring='roc_auc', random_state=0).fit(X, y)\nprint('kombinasi yang mungkin:', 4 * 4 * 3 * 3, '| dicoba:', len(cari.cv_results_['params']))\nprint('terbaik:', cari.best_params_)\nprint('AUC cv :', round(cari.best_score_, 3))",
+    "out": "kombinasi yang mungkin: 144 | dicoba: 8\nterbaik: {'min_samples_leaf': 20, 'max_iter': 400, 'max_depth': 4, 'learning_rate': 0.1}\nAUC cv : 0.973"
+   },
+   {
+    "t": "Kasus: learning rate dan jumlah pohon saling menukar",
+    "d": "Learning rate kecil butuh lebih banyak pohon untuk mencapai skor yang sama.",
+    "code": "from sklearn.datasets import make_classification\nfrom sklearn.ensemble import HistGradientBoostingClassifier\nfrom sklearn.model_selection import cross_val_score\n\nX, y = make_classification(1000, n_features=8, n_informative=4, random_state=3)\nfor lr, pohon in [(0.3, 30), (0.1, 30), (0.1, 100), (0.03, 300)]:\n    m = HistGradientBoostingClassifier(learning_rate=lr, max_iter=pohon, early_stopping=False, random_state=0)\n    print(f'lr={lr:<4} pohon={pohon:3}: AUC cv = {cross_val_score(m, X, y, cv=4, scoring=\"roc_auc\").mean():.3f}')",
+    "out": "lr=0.3  pohon= 30: AUC cv = 0.986\nlr=0.1  pohon= 30: AUC cv = 0.984\nlr=0.1  pohon=100: AUC cv = 0.985\nlr=0.03 pohon=300: AUC cv = 0.986"
+   }
+  ]
+ },
+ "dsci-8-3": {
+  "exs": [
+   {
+    "t": "Kasus: meringkas nilai lima mata pelajaran",
+    "d": "Nilai yang saling berkorelasi bisa diringkas menjadi dua komponen tanpa banyak kehilangan informasi.",
+    "code": "import numpy as np\nfrom sklearn.decomposition import PCA\nfrom sklearn.preprocessing import StandardScaler\n\nrng = np.random.default_rng(0)\neksakta = rng.normal(70, 10, 200); bahasa = rng.normal(75, 8, 200)\nnilai = np.column_stack([eksakta + rng.normal(0, 3, 200),      # matematika\n                         eksakta + rng.normal(0, 3, 200),      # fisika\n                         eksakta + rng.normal(0, 4, 200),      # kimia\n                         bahasa + rng.normal(0, 3, 200),       # b. Indonesia\n                         bahasa + rng.normal(0, 3, 200)])      # b. Inggris\npca = PCA().fit(StandardScaler().fit_transform(nilai))\nprint('variasi per komponen:', pca.explained_variance_ratio_.round(3))\nprint('dua komponen pertama:', round(pca.explained_variance_ratio_[:2].sum(), 3))",
+    "out": "variasi per komponen: [0.562 0.379 0.021 0.02  0.018]\ndua komponen pertama: 0.941"
+   },
+   {
+    "t": "Kasus: membaca loading komponen",
+    "d": "Loading menunjukkan kolom mana yang membentuk tiap komponen.",
+    "code": "import numpy as np\nfrom sklearn.decomposition import PCA\nfrom sklearn.preprocessing import StandardScaler\n\nrng = np.random.default_rng(0)\neksakta = rng.normal(70, 10, 200); bahasa = rng.normal(75, 8, 200)\nnilai = np.column_stack([eksakta + rng.normal(0, 3, 200), eksakta + rng.normal(0, 3, 200),\n                         eksakta + rng.normal(0, 4, 200), bahasa + rng.normal(0, 3, 200),\n                         bahasa + rng.normal(0, 3, 200)])\npca = PCA(n_components=2).fit(StandardScaler().fit_transform(nilai))\nmapel = ['mat', 'fis', 'kim', 'bind', 'bing']\nfor i, komp in enumerate(pca.components_):\n    print(f'komponen {i + 1}:', dict(zip(mapel, np.abs(komp).round(2).tolist())))",
+    "out": "komponen 1: {'mat': 0.58, 'fis': 0.58, 'kim': 0.58, 'bind': 0.03, 'bing': 0.02}\nkomponen 2: {'mat': 0.02, 'fis': 0.02, 'kim': 0.02, 'bind': 0.71, 'bing': 0.71}"
+   },
+   {
+    "t": "Kasus: PCA sebelum model untuk mempercepat",
+    "d": "Data 64 piksel diringkas menjadi 20 komponen; akurasinya hampir sama.",
+    "code": "from sklearn.datasets import load_digits\nfrom sklearn.decomposition import PCA\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import cross_val_score\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\n\nX, y = load_digits(return_X_y=True)\nfor nama, m in [('64 fitur asli', make_pipeline(StandardScaler(), LogisticRegression(max_iter=2000))),\n                ('20 komponen PCA', make_pipeline(StandardScaler(), PCA(20), LogisticRegression(max_iter=2000)))]:\n    print(f'{nama:16}: akurasi cv = {cross_val_score(m, X, y, cv=5).mean():.3f}')",
+    "out": "64 fitur asli   : akurasi cv = 0.920\n20 komponen PCA : akurasi cv = 0.899"
+   }
+  ]
+ },
+ "dsci-9-1": {
+  "exs": [
+   {
+    "t": "Kasus: SVM linear dan support vector",
+    "d": "Hanya titik di dekat garis batas (support vector) yang menentukan model.",
+    "code": "import numpy as np\nfrom sklearn.svm import SVC\n\n# skor tes tertulis dan wawancara pelamar; 1 = diterima\nX = np.array([[60, 55], [65, 60], [70, 52], [58, 70], [80, 85], [85, 78], [90, 88], [78, 90], [72, 75], [68, 72]])\ny = np.array([0, 0, 0, 0, 1, 1, 1, 1, 1, 0])\nm = SVC(kernel='linear', C=1).fit(X, y)\nprint('indeks support vector:', m.support_.tolist())\nprint('w =', m.coef_[0].round(3), ' b =', round(m.intercept_[0], 2))\nprint('pelamar [75, 70] ->', m.predict([[75, 70]])[0])",
+    "out": "indeks support vector: [9, 8]\nw = [0.32 0.24]  b = -40.04\npelamar [75, 70] -> 1"
+   },
+   {
+    "t": "Kasus: kernel RBF untuk pola melingkar",
+    "d": "Kelas yang mengelilingi kelas lain tidak bisa dipisah garis lurus, tetapi bisa dengan kernel.",
+    "code": "from sklearn.datasets import make_circles\nfrom sklearn.model_selection import cross_val_score\nfrom sklearn.svm import SVC\n\nX, y = make_circles(400, noise=0.1, factor=0.4, random_state=0)\nfor kernel in ['linear', 'poly', 'rbf']:\n    print(f'kernel {kernel:6}: akurasi cv = {cross_val_score(SVC(kernel=kernel), X, y, cv=5).mean():.3f}')",
+    "out": "kernel linear: akurasi cv = 0.547\nkernel poly  : akurasi cv = 0.637\nkernel rbf   : akurasi cv = 1.000"
+   },
+   {
+    "t": "Kasus: SVM wajib distandardisasi",
+    "d": "SVM berbasis jarak, jadi kolom berskala besar mendominasi tanpa StandardScaler.",
+    "code": "import numpy as np\nfrom sklearn.datasets import make_classification\nfrom sklearn.model_selection import cross_val_score\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.svm import SVC\n\nX, y = make_classification(500, n_features=4, n_informative=3, n_redundant=0, random_state=2)\nX = X * np.array([1, 1, 1, 10_000])            # satu kolom dalam rupiah, tidak informatif\nX[:, 3] = np.random.default_rng(0).normal(0, 10_000, 500)\nprint('tanpa skala :', cross_val_score(SVC(), X, y, cv=5).mean().round(3))\nprint('dengan skala:', cross_val_score(make_pipeline(StandardScaler(), SVC()), X, y, cv=5).mean().round(3))",
+    "out": "tanpa skala : 0.504\ndengan skala: 0.934"
+   }
+  ]
+ },
+ "dsci-9-2": {
+  "exs": [
+   {
+    "t": "Kasus: bagging menstabilkan pohon yang mudah berubah",
+    "d": "Simpangan baku skor antar lipatan turun setelah 100 pohon digabung.",
+    "code": "from sklearn.datasets import make_classification\nfrom sklearn.ensemble import BaggingClassifier\nfrom sklearn.model_selection import cross_val_score\nfrom sklearn.tree import DecisionTreeClassifier\n\nX, y = make_classification(500, n_features=10, n_informative=4, flip_y=0.1, random_state=7)\nfor nama, m in [('satu pohon', DecisionTreeClassifier(random_state=0)),\n                ('bagging 100', BaggingClassifier(DecisionTreeClassifier(), n_estimators=100, random_state=0))]:\n    s = cross_val_score(m, X, y, cv=10)\n    print(f'{nama:11}: rata-rata {s.mean():.3f}, simpangan baku {s.std():.3f}')",
+    "out": "satu pohon : rata-rata 0.774, simpangan baku 0.044\nbagging 100: rata-rata 0.848, simpangan baku 0.042"
+   },
+   {
+    "t": "Kasus: AdaBoost dengan pohon satu tingkat",
+    "d": "Setiap \"stump\" lemah, tetapi gabungan berbobotnya kuat.",
+    "code": "from sklearn.datasets import make_classification\nfrom sklearn.ensemble import AdaBoostClassifier\nfrom sklearn.model_selection import cross_val_score\nfrom sklearn.tree import DecisionTreeClassifier\n\nX, y = make_classification(800, n_features=8, n_informative=5, random_state=1)\nprint('1 stump   :', cross_val_score(DecisionTreeClassifier(max_depth=1), X, y, cv=5).mean().round(3))\nfor n in [10, 50, 200]:\n    m = AdaBoostClassifier(DecisionTreeClassifier(max_depth=1), n_estimators=n, random_state=0)\n    print(f'{n:3} stump :', cross_val_score(m, X, y, cv=5).mean().round(3))",
+    "out": "1 stump   : 0.614\n 10 stump : 0.696\n 50 stump : 0.7\n200 stump : 0.724"
+   },
+   {
+    "t": "Kasus: hard voting tiga model untuk deteksi pinjaman berisiko",
+    "d": "Suara terbanyak dari tiga model yang berbeda cara belajarnya.",
+    "code": "from sklearn.datasets import make_classification\nfrom sklearn.ensemble import VotingClassifier, RandomForestClassifier\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.neighbors import KNeighborsClassifier\nfrom sklearn.model_selection import cross_val_score\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\n\nX, y = make_classification(700, n_features=10, n_informative=4, random_state=5)\nmodel = [('lr', LogisticRegression(max_iter=1000)),\n         ('knn', make_pipeline(StandardScaler(), KNeighborsClassifier(11))),\n         ('rf', RandomForestClassifier(100, random_state=0))]\nfor nama, m in model + [('voting', VotingClassifier(model, voting='hard'))]:\n    print(f'{nama:6}: {cross_val_score(m, X, y, cv=5).mean():.3f}')",
+    "out": "lr    : 0.866\nknn   : 0.881\nrf    : 0.914\nvoting: 0.903"
+   }
+  ]
+ },
+ "dsci-9-3": {
+  "exs": [
+   {
+    "t": "Kasus: dua langkah boosting dengan tangan",
+    "d": "Tebakan awal rata-rata, lalu satu pohon kecil memperbaiki residualnya.",
+    "code": "import numpy as np\nfrom sklearn.tree import DecisionTreeRegressor\n\nluas = np.array([[30], [45], [60], [80], [100], [120]])\nharga = np.array([350, 480, 600, 760, 900, 1150])      # juta\n\ntebak = np.full(6, harga.mean())\nprint('tebakan awal :', tebak.round(0))\nfor langkah in range(1, 3):\n    residual = harga - tebak\n    pohon = DecisionTreeRegressor(max_depth=1).fit(luas, residual)\n    tebak = tebak + 0.5 * pohon.predict(luas)\n    print(f'langkah {langkah}    :', tebak.round(0), '| MAE', round(np.abs(harga - tebak).mean(), 1))",
+    "out": "tebakan awal : [707. 707. 707. 707. 707. 707.]\nlangkah 1    : [592. 592. 592. 822. 822. 822.] | MAE 138.3\nlangkah 2    : [559. 559. 559. 789. 789. 986.] | MAE 105.5"
+   },
+   {
+    "t": "Kasus: residual mengecil setiap pohon",
+    "d": "Simpan MAE setelah setiap pohon untuk melihat kapan perbaikan mulai melambat.",
+    "code": "import numpy as np\nfrom sklearn.tree import DecisionTreeRegressor\n\nrng = np.random.default_rng(2)\nx = rng.uniform(0, 24, 300)                     # jam\npesanan = 50 + 40 * np.exp(-((x - 12) ** 2) / 6) + 60 * np.exp(-((x - 19) ** 2) / 4) + rng.normal(0, 5, 300)\nX = x[:, None]\ntebak = np.full_like(pesanan, pesanan.mean())\nfor i in range(1, 51):\n    t = DecisionTreeRegressor(max_depth=2).fit(X, pesanan - tebak)\n    tebak = tebak + 0.2 * t.predict(X)\n    if i in (1, 5, 20, 50):\n        print(f'{i:2} pohon: MAE = {np.abs(pesanan - tebak).mean():.2f}')",
+    "out": " 1 pohon: MAE = 12.55\n 5 pohon: MAE = 8.47\n20 pohon: MAE = 3.92\n50 pohon: MAE = 3.04"
+   },
+   {
+    "t": "Kasus: buatan sendiri vs GradientBoostingRegressor",
+    "d": "Dengan pengaturan yang sama, hasilnya cocok dengan scikit-learn.",
+    "code": "import numpy as np\nfrom sklearn.tree import DecisionTreeRegressor\nfrom sklearn.ensemble import GradientBoostingRegressor\n\nrng = np.random.default_rng(9)\nX = rng.uniform(0, 10, (200, 1)); y = np.log1p(X[:, 0]) * 10 + rng.normal(0, 0.5, 200)\n\ntebak = np.full_like(y, y.mean())\nfor _ in range(50):\n    tebak = tebak + 0.1 * DecisionTreeRegressor(max_depth=3).fit(X, y - tebak).predict(X)\nsk = GradientBoostingRegressor(n_estimators=50, learning_rate=0.1, max_depth=3).fit(X, y)\nprint(f'buatan sendiri: MSE = {((y - tebak) ** 2).mean():.4f}')\nprint(f'scikit-learn  : MSE = {((y - sk.predict(X)) ** 2).mean():.4f}')",
+    "out": "buatan sendiri: MSE = 0.1194\nscikit-learn  : MSE = 0.1194"
+   }
+  ]
+ },
+ "dsci-9-4": {
+  "exs": [
+   {
+    "t": "Kasus: DBSCAN untuk titik kumpul ojek daring",
+    "d": "DBSCAN menemukan area padat tanpa harus menentukan jumlah kelompok, dan menandai titik terpencil.",
+    "code": "import numpy as np\nfrom sklearn.cluster import DBSCAN\n\nrng = np.random.default_rng(0)\nstasiun = rng.normal([0, 0], 0.15, (40, 2))\nmal = rng.normal([2, 1], 0.2, (40, 2))\nkampus = rng.normal([1, 3], 0.15, (30, 2))\nacak = np.array([[3.5, 3.5], [-1.5, 2.5], [4, -1]])\nX = np.vstack([stasiun, mal, kampus, acak])           # koordinat (km)\n\nlab = DBSCAN(eps=0.3, min_samples=5).fit_predict(X)\nprint('kelompok:', sorted(set(lab) - {-1}), '| noise:', (lab == -1).sum())\nfor k in sorted(set(lab) - {-1}):\n    print(f'titik kumpul {k}: {np.sum(lab == k)} penjemputan, pusat {X[lab == k].mean(axis=0).round(2)}')",
+    "out": "kelompok: [np.int64(0), np.int64(1), np.int64(2)] | noise: 3\ntitik kumpul 0: 40 penjemputan, pusat [0.01 0.03]\ntitik kumpul 1: 40 penjemputan, pusat [1.95 1.01]\ntitik kumpul 2: 30 penjemputan, pusat [0.98 3.03]"
+   },
+   {
+    "t": "Kasus: pengaruh eps pada DBSCAN",
+    "d": "eps terlalu kecil membuat banyak noise, terlalu besar menyatukan semua kelompok.",
+    "code": "import numpy as np\nfrom sklearn.cluster import DBSCAN\nfrom sklearn.datasets import make_blobs\n\nX, _ = make_blobs(300, centers=3, cluster_std=0.5, random_state=1)\nfor eps in [0.1, 0.3, 0.6, 3.0]:\n    lab = DBSCAN(eps=eps, min_samples=5).fit_predict(X)\n    print(f'eps={eps:3}: kelompok={len(set(lab) - {-1})}, noise={np.sum(lab == -1)}')",
+    "out": "eps=0.1: kelompok=6, noise=262\neps=0.3: kelompok=3, noise=33\neps=0.6: kelompok=3, noise=4\neps=3.0: kelompok=2, noise=0"
+   },
+   {
+    "t": "Kasus: clustering hierarki untuk mengelompokkan cabang toko",
+    "d": "AgglomerativeClustering menggabungkan cabang yang paling mirip sedikit demi sedikit.",
+    "code": "import numpy as np\nfrom sklearn.cluster import AgglomerativeClustering\nfrom sklearn.preprocessing import StandardScaler\n\ncabang = ['Medan', 'Binjai', 'Bandung', 'Cimahi', 'Surabaya', 'Sidoarjo', 'Makassar']\n# omzet harian (juta), pengunjung harian\nX = np.array([[42, 900], [18, 400], [55, 1200], [20, 450], [60, 1300], [22, 420], [40, 880]])\nZ = StandardScaler().fit_transform(X)\nfor k in [2, 3]:\n    lab = AgglomerativeClustering(n_clusters=k, linkage='ward').fit_predict(Z)\n    print(f'{k} kelompok:', {c: int(l) for c, l in zip(cabang, lab)})",
+    "out": "2 kelompok: {'Medan': 0, 'Binjai': 1, 'Bandung': 0, 'Cimahi': 1, 'Surabaya': 0, 'Sidoarjo': 1, 'Makassar': 0}\n3 kelompok: {'Medan': 2, 'Binjai': 1, 'Bandung': 0, 'Cimahi': 1, 'Surabaya': 0, 'Sidoarjo': 1, 'Makassar': 2}"
+   }
+  ]
+ },
+ "dsci-9-5": {
+  "exs": [
+   {
+    "t": "Kasus: pemakaian listrik pelanggan yang tidak wajar",
+    "d": "Isolation Forest menandai pola kWh siang dan malam yang jauh dari kebanyakan rumah.",
+    "code": "import numpy as np\nfrom sklearn.ensemble import IsolationForest\n\nrng = np.random.default_rng(3)\nrumah = np.column_stack([rng.normal(4, 1, 400), rng.normal(6, 1.5, 400)])     # kWh siang, kWh malam\ncuriga = np.array([[0.2, 0.3], [15, 2], [1, 18]])                             # meteran mati? pabrik? \nX = np.vstack([rumah, curiga])\niso = IsolationForest(contamination=0.01, random_state=0).fit(X)\nlab = iso.predict(X)\nprint('ditandai:', np.flatnonzero(lab == -1).tolist())\nprint('tiga sisipan ikut ditandai:', all(lab[400:] == -1))",
+    "out": "ditandai: [9, 163, 400, 401, 402]\ntiga sisipan ikut ditandai: True"
+   },
+   {
+    "t": "Kasus: skor anomali untuk mengurutkan transaksi yang dicek manual",
+    "d": "Tim audit hanya sanggup memeriksa 5 transaksi; ambil yang skornya paling rendah.",
+    "code": "import numpy as np\nfrom sklearn.ensemble import IsolationForest\n\nrng = np.random.default_rng(5)\nnominal = np.concatenate([rng.gamma(2, 120, 300), [5200, 4100, 3600]])     # ribu rupiah\njam = np.concatenate([rng.normal(14, 3, 300), [2, 3, 1]])\nX = np.column_stack([nominal, jam])\nskor = IsolationForest(random_state=0).fit(X).score_samples(X)\nfor i in np.argsort(skor)[:5]:\n    print(f'trx {i:3}: Rp{nominal[i]:7,.0f} ribu jam {jam[i]:4.1f} skor {skor[i]:.3f}')",
+    "out": "trx 300: Rp  5,200 ribu jam  2.0 skor -0.830\ntrx 302: Rp  3,600 ribu jam  1.0 skor -0.818\ntrx 301: Rp  4,100 ribu jam  3.0 skor -0.814\ntrx 265: Rp    495 ribu jam 22.9 skor -0.660\ntrx 170: Rp    433 ribu jam  5.8 skor -0.644"
+   },
+   {
+    "t": "Kasus: LOF untuk anomali lokal",
+    "d": "Titik yang dekat dengan kelompok padat tetapi sedikit di luarnya lebih mudah ditangkap LOF.",
+    "code": "import numpy as np\nfrom sklearn.neighbors import LocalOutlierFactor\n\nrng = np.random.default_rng(2)\npadat = rng.normal([0, 0], 0.2, (100, 2))\nrenggang = rng.normal([5, 5], 1.5, (100, 2))\nlokal = np.array([[0.9, 0.9]])                        # dekat kelompok padat, tapi aneh untuknya\nX = np.vstack([padat, renggang, lokal])\nlof = LocalOutlierFactor(n_neighbors=20)\nlab = lof.fit_predict(X)\nprint('titik lokal ditandai anomali:', lab[-1] == -1)\nprint('skor LOF titik lokal:', round(-lof.negative_outlier_factor_[-1], 2))",
+    "out": "titik lokal ditandai anomali: True\nskor LOF titik lokal: 5.43"
+   }
+  ]
+ },
+ "dsci-9-6": {
+  "exs": [
+   {
+    "t": "Kasus: perplexity mengubah peta t-SNE",
+    "d": "Perplexity kecil fokus pada tetangga dekat; besar melihat struktur yang lebih luas.",
+    "code": "from sklearn.datasets import load_digits\nfrom sklearn.manifold import TSNE, trustworthiness\n\nX = load_digits().data[:400]\nfor perp in [5, 30, 50]:\n    Z = TSNE(2, perplexity=perp, random_state=0, init='pca').fit_transform(X)\n    print(f'perplexity={perp:2}: trustworthiness={trustworthiness(X, Z, n_neighbors=10):.3f}')",
+    "out": "perplexity= 5: trustworthiness=0.989\nperplexity=30: trustworthiness=0.992\nperplexity=50: trustworthiness=0.991"
+   },
+   {
+    "t": "Kasus: t-SNE untuk melihat segmen pelanggan berdimensi banyak",
+    "d": "Delapan kolom perilaku diringkas ke 2D; jarak antar pusat kelompok di peta dicetak.",
+    "code": "import numpy as np\nfrom sklearn.datasets import make_blobs\nfrom sklearn.manifold import TSNE\nfrom sklearn.preprocessing import StandardScaler\n\nX, seg = make_blobs(300, n_features=8, centers=3, cluster_std=2.0, random_state=4)\nZ = TSNE(2, perplexity=30, random_state=0, init='pca').fit_transform(StandardScaler().fit_transform(X))\nprint('bentuk sebelum/sesudah:', X.shape, '->', Z.shape)\nfor k in range(3):\n    print(f'segmen {k}: pusat di peta {np.median(Z[seg == k], axis=0).round(1)}')",
+    "out": "bentuk sebelum/sesudah: (300, 8) -> (300, 2)\nsegmen 0: pusat di peta [-24.4   6.2]\nsegmen 1: pusat di peta [  0.5 -24. ]\nsegmen 2: pusat di peta [18.7  9. ]"
+   },
+   {
+    "t": "Kasus: PCA dulu, lalu t-SNE",
+    "d": "Praktik umum: kurangi ke 30 komponen dengan PCA agar t-SNE lebih cepat dan stabil.",
+    "code": "import time\nfrom sklearn.datasets import load_digits\nfrom sklearn.decomposition import PCA\nfrom sklearn.manifold import TSNE, trustworthiness\n\nX = load_digits().data[:500]\nX30 = PCA(30, random_state=0).fit_transform(X)\nZ = TSNE(2, perplexity=30, random_state=0, init='pca').fit_transform(X30)\nprint('64 fitur -> 30 komponen PCA -> 2 dimensi t-SNE')\nprint(f'trustworthiness terhadap data asli: {trustworthiness(X, Z, n_neighbors=10):.3f}')",
+    "out": "64 fitur -> 30 komponen PCA -> 2 dimensi t-SNE\ntrustworthiness terhadap data asli: 0.993"
+   }
+  ]
+ },
+ "dsci-9-7": {
+  "exs": [
+   {
+    "t": "Kasus: pengguna paling mirip dengan cosine similarity",
+    "d": "User-based filtering: cari pengguna dengan pola rating paling mirip.",
+    "code": "import numpy as np\n\nnama = ['Ani', 'Budi', 'Cici', 'Dedi']\n# rating kuliner: sate, rendang, gudeg, bakso, rawon\nR = np.array([[5, 4, 1, 4, 2],\n              [4, 5, 1, 5, 1],\n              [1, 2, 5, 1, 4],\n              [2, 1, 4, 2, 5]], dtype=float)\nN = R / np.linalg.norm(R, axis=1, keepdims=True)\nS = N @ N.T\nfor i, n in enumerate(nama):\n    j = [k for k in np.argsort(-S[i]) if k != i][0]\n    print(f'{n:4} paling mirip {nama[j]} (cos={S[i, j]:.2f})')",
+    "out": "Ani  paling mirip Budi (cos=0.97)\nBudi paling mirip Ani (cos=0.97)\nCici paling mirip Dedi (cos=0.95)\nDedi paling mirip Cici (cos=0.95)"
+   },
+   {
+    "t": "Kasus: menebak rating dari rata-rata tetangga berbobot",
+    "d": "Rating yang kosong ditebak dari pengguna lain, dibobot dengan kemiripannya.",
+    "code": "import numpy as np\n\nR = np.array([[5, 4, 0, 4],      # 0 = belum mencoba\n              [4, 5, 2, 5],\n              [1, 2, 5, 1],\n              [5, 5, 1, 4]], dtype=float)\nu, item = 0, 2                    # tebak rating pengguna 0 untuk item 2\nlain = [v for v in range(4) if v != u and R[v, item] > 0]\nkolom = [j for j in range(4) if j != item]\nsim = np.array([R[u, kolom] @ R[v, kolom] / (np.linalg.norm(R[u, kolom]) * np.linalg.norm(R[v, kolom])) for v in lain])\ntebak = (sim * R[lain, item]).sum() / sim.sum()\nprint('kemiripan:', sim.round(3))\nprint(f'tebakan rating: {tebak:.2f}')",
+    "out": "kemiripan: [0.978 0.919 0.995]\ntebakan rating: 2.61"
+   },
+   {
+    "t": "Kasus: produk populer sebagai patokan rekomendasi",
+    "d": "Model collaborative filtering harus mengalahkan patokan sederhana \"rekomendasikan yang paling laris\".",
+    "code": "import numpy as np\n\nproduk = ['Kopi', 'Teh', 'Roti', 'Susu', 'Gula']\nbeli = np.array([[1, 0, 1, 1, 0],\n                 [1, 1, 0, 0, 1],\n                 [1, 0, 1, 0, 0],\n                 [0, 1, 0, 1, 1],\n                 [1, 0, 1, 1, 0]])\npopuler = beli.sum(axis=0)\nurut = np.argsort(-populer)\nprint('jumlah pembeli:', dict(zip(produk, populer.tolist())))\nu = 1\nsaran = [produk[j] for j in urut if beli[u, j] == 0][:2]\nprint('patokan untuk pengguna 1:', saran)",
+    "out": "jumlah pembeli: {'Kopi': 4, 'Teh': 2, 'Roti': 3, 'Susu': 3, 'Gula': 2}\npatokan untuk pengguna 1: ['Roti', 'Susu']"
+   }
+  ]
+ },
+ "dsci-9-8": {
+  "exs": [
+   {
+    "t": "Kasus: deteksi penipuan transaksi kartu",
+    "d": "Contoh menelusuri peta untuk satu masalah nyata.",
+    "code": "Masalah: tandai transaksi kartu yang kemungkinan penipuan.\n\nTarget ada?           ya, label 0/1 dari laporan nasabah -> klasifikasi\nKelas seimbang?       tidak, penipuan < 1% -> PR-AUC, class_weight, ambang berbasis biaya\nPerlu dijelaskan?     ya, untuk tim risiko -> mulai dari Logistic Regression\nData tabel besar?     ya -> lanjut ke Gradient Boosting (HistGradientBoosting)\nLabel baru sedikit?   tambah Isolation Forest untuk pola yang belum pernah terlihat\nPatokan               DummyClassifier dan aturan lama (nominal > Rp10 juta di malam hari)"
+   },
+   {
+    "t": "Kasus: perkiraan permintaan stok minimarket",
+    "d": "Masalah regresi deret waktu dengan banyak toko.",
+    "code": "Masalah: berapa unit tiap produk terjual minggu depan per toko?\n\nTarget ada?           ya, angka -> regresi (deret waktu)\nPatokan wajib         naive (minggu lalu) dan rata-rata musiman 4 minggu\nFitur                 lag 1/7/28, rata-rata bergerak, hari libur, promo, gajian\nModel                 Ridge -> Random Forest -> Gradient Boosting\nValidasi              TimeSeriesSplit, bukan KFold acak\nMetrik                MAE per produk dan MAPE agregat"
+   },
+   {
+    "t": "Kasus: segmentasi pelanggan untuk kampanye",
+    "d": "Masalah tanpa label: kelompokkan dulu, lalu beri nama segmen bersama tim bisnis.",
+    "code": "Masalah: kelompok pelanggan seperti apa yang kita punya?\n\nTarget ada?           tidak -> unsupervised\nPersiapan             fitur RFM (recency, frequency, monetary), StandardScaler\nBentuk kelompok bulat K-Means, pilih k dengan silhouette\nBentuk tidak beraturan DBSCAN (sekaligus menandai pelanggan aneh)\nVisualisasi           PCA atau t-SNE ke 2D\nHasil                 profil tiap segmen + rencana promo yang berbeda"
+   }
+  ]
  }
 }

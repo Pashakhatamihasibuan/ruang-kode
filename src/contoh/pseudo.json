@@ -1,0 +1,171 @@
+{
+ "pseudo-1-1": {
+  "exs": [
+   {
+    "t": "Kasus: keliling taman berbentuk persegi",
+    "code": "DECLARE sisi, keliling : INTEGER\nINPUT sisi\nkeliling ← 4 * sisi\nOUTPUT \"Keliling taman = \", keliling, \" meter\"",
+    "out": "Masukan 12 → Keliling taman = 48 meter",
+    "d": "Input, proses, output: tiga bagian yang selalu ada di algoritma."
+   },
+   {
+    "t": "Kasus: uang saku seminggu",
+    "code": "DECLARE uangHarian, uangMingguan : INTEGER\nINPUT uangHarian\nuangMingguan ← uangHarian * 7\nOUTPUT \"Uang saku seminggu: Rp\", uangMingguan",
+    "out": "Masukan 15000 → Uang saku seminggu: Rp105000"
+   },
+   {
+    "t": "Kasus: dari kalimat biasa ke pseudocode",
+    "code": "// Kalimat biasa: \"Tanyakan tahun lahir, lalu kurangkan dari 2026\n//                 untuk mendapatkan umur, lalu sebutkan umurnya.\"\nDECLARE tahunLahir, umur : INTEGER\nINPUT tahunLahir\numur ← 2026 - tahunLahir\nOUTPUT \"Umurmu tahun ini: \", umur",
+    "out": "Masukan 2008 → Umurmu tahun ini: 18",
+    "d": "Setiap kalimat berubah menjadi satu langkah yang tidak bisa ditafsirkan ganda."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Satu aturan bisnis, dibaca semua tim",
+    "b": "Tim aplikasi ojek menulis aturan potongan komisi sekali dalam pseudocode. Developer Android, iOS, dan backend menerjemahkannya ke bahasa masing-masing tanpa salah paham.",
+    "code": "// ALGORITMA HitungPendapatanDriver\n// Input : tarif perjalanan (rupiah)\n// Output: komisi aplikasi dan pendapatan bersih driver\nDECLARE tarif, komisi, bersih : INTEGER\nINPUT tarif\nkomisi ← tarif * 20 / 100\nbersih ← tarif - komisi\nOUTPUT \"Komisi aplikasi: Rp\", komisi\nOUTPUT \"Diterima driver: Rp\", bersih",
+    "out": "Masukan 35000\nKomisi aplikasi: Rp7000\nDiterima driver: Rp28000"
+   }
+  ]
+ },
+ "pseudo-1-2": {
+  "exs": [
+   {
+    "t": "Kasus: gaya Inggris dan gaya Indonesia",
+    "code": "// Gaya Inggris (dipakai di Ruang Kode)\nINPUT km\nmeter ← km * 1000\nOUTPUT km, \" km = \", meter, \" m\"\n\n// Gaya Indonesia (sering di buku kampus), artinya sama persis\nBACA km\nmeter ← km * 1000\nTULIS km, \" km = \", meter, \" m\"",
+    "out": "Masukan 3 → 3 km = 3000 m (kedua gaya sama)"
+   },
+   {
+    "t": "Kasus: ← adalah perintah, bukan persamaan",
+    "code": "skor ← 10\nskor ← skor + 5      // hitung 10 + 5, simpan lagi ke skor\nskor ← skor * 2      // hitung 15 * 2, simpan lagi ke skor\nOUTPUT \"Skor akhir: \", skor",
+    "out": "Skor akhir: 30",
+    "d": "Di matematika skor = skor + 5 mustahil. Di pseudocode artinya \"ambil, hitung, simpan\"."
+   },
+   {
+    "t": "Kasus: satu baris satu langkah",
+    "code": "// Kurang baik: dua langkah dijejalkan dalam satu baris\n// INPUT harga, OUTPUT harga * 2\n\n// Lebih baik: satu baris satu langkah\nINPUT harga\nhargaDua ← harga * 2\nOUTPUT \"Harga 2 buah: \", hargaDua",
+    "out": "Masukan 4500 → Harga 2 buah: 9000"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Gaya yang konsisten vs tidak konsisten",
+    "b": "Tim yang mencampur huruf besar-kecil, = dan ←, serta print dan OUTPUT membuat pembaca ragu. Pilih satu gaya dan pakai di seluruh dokumen.",
+    "code": "TIDAK KONSISTEN                    KONSISTEN\n-----------------------------      ---------------------------------\ninput Harga                        INPUT harga\njml = 3                            jumlah ← 3\nTotal <- harga*jml                 total ← harga * jumlah\nprint \"total\", Total               OUTPUT \"Total: \", total"
+   }
+  ]
+ },
+ "pseudo-1-3": {
+  "exs": [
+   {
+    "t": "Kasus: data seorang siswa",
+    "code": "DECLARE nama : STRING\nDECLARE umur : INTEGER\nDECLARE tinggi : REAL\nDECLARE aktif : BOOLEAN\nDECLARE golDarah : CHAR\n\nnama ← \"Putri Ayu\"\numur ← 16\ntinggi ← 158.5\naktif ← TRUE\ngolDarah ← 'O'\nOUTPUT nama, \", \", umur, \" tahun, \", tinggi, \" cm\"",
+    "out": "Putri Ayu, 16 tahun, 158.5 cm",
+    "d": "Setiap data memakai tipe yang paling cocok dengan isinya."
+   },
+   {
+    "t": "Kasus: nilai lama tertimpa",
+    "code": "DECLARE stok : INTEGER\nstok ← 40          // stok awal di gudang\nstok ← stok - 12   // terjual 12\nstok ← stok + 25   // barang datang 25\nOUTPUT \"Stok sekarang: \", stok",
+    "out": "Stok sekarang: 53"
+   },
+   {
+    "t": "Kasus: menukar isi dua gelas",
+    "code": "DECLARE gelasA, gelasB, bantu : STRING\ngelasA ← \"teh\"\ngelasB ← \"kopi\"\nbantu ← gelasA     // simpan dulu isi gelasA\ngelasA ← gelasB\ngelasB ← bantu\nOUTPUT \"Gelas A: \", gelasA, \", Gelas B: \", gelasB",
+    "out": "Gelas A: kopi, Gelas B: teh",
+    "d": "Tanpa variabel bantu, isi gelasA hilang tertimpa."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Memilih tipe data untuk produk toko daring",
+    "b": "Saat merancang tabel produk, tim menentukan tipe setiap kolom lebih dulu. Harga rupiah memakai INTEGER agar tidak ada pecahan sen, rating memakai REAL.",
+    "code": "DECLARE namaProduk : STRING\nDECLARE harga, stok : INTEGER\nDECLARE rating : REAL\nDECLARE tersedia : BOOLEAN\nDECLARE nilaiStok : INTEGER\n\nnamaProduk ← \"Sepatu lari\"\nharga ← 450000\nstok ← 12\nrating ← 4.7\ntersedia ← TRUE\nnilaiStok ← harga * stok\nOUTPUT namaProduk, \" | rating \", rating, \" | nilai stok Rp\", nilaiStok",
+    "out": "Sepatu lari | rating 4.7 | nilai stok Rp5400000"
+   }
+  ]
+ },
+ "pseudo-1-4": {
+  "exs": [
+   {
+    "t": "Kasus: formulir pendaftaran ekskul",
+    "code": "DECLARE nama, ekskul : STRING\nOUTPUT \"Siapa namamu?\"\nINPUT nama\nOUTPUT \"Ekskul yang dipilih?\"\nINPUT ekskul\nOUTPUT nama, \" terdaftar di ekskul \", ekskul",
+    "out": "Siapa namamu?\n> Dimas\nEkskul yang dipilih?\n> Pramuka\nDimas terdaftar di ekskul Pramuka"
+   },
+   {
+    "t": "Kasus: teks atau isi variabel?",
+    "code": "DECLARE kota : STRING\nkota ← \"Makassar\"\nOUTPUT \"kota\"     // menampilkan tulisan kota\nOUTPUT kota       // menampilkan isi variabel",
+    "out": "kota\nMakassar",
+    "d": "Tanda kutip menentukan: teks apa adanya, atau isi variabel."
+   },
+   {
+    "t": "Kasus: beli pulsa dengan biaya admin",
+    "code": "DECLARE nominal, bayar : INTEGER\nOUTPUT \"Nominal pulsa:\"\nINPUT nominal\nbayar ← nominal + 2000\nOUTPUT \"Yang harus dibayar: Rp\", bayar",
+    "out": "Nominal pulsa:\n> 50000\nYang harus dibayar: Rp52000"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Ringkasan pesanan ojek daring",
+    "b": "Aplikasi meminta beberapa data, lalu menampilkan ringkasan sebelum pesanan dikirim. Semua langkahnya hanya INPUT, proses, dan OUTPUT.",
+    "code": "DECLARE nama, tujuan : STRING\nDECLARE jarak, tarif : INTEGER\nOUTPUT \"Nama penumpang:\"\nINPUT nama\nOUTPUT \"Tujuan:\"\nINPUT tujuan\nOUTPUT \"Jarak (km):\"\nINPUT jarak\ntarif ← 8000 + jarak * 2500\nOUTPUT \"Halo \", nama, \", perjalanan ke \", tujuan\nOUTPUT \"Jarak \", jarak, \" km, tarif Rp\", tarif",
+    "out": "Masukan Sinta, Stasiun Tugu, 6\nHalo Sinta, perjalanan ke Stasiun Tugu\nJarak 6 km, tarif Rp23000"
+   }
+  ]
+ },
+ "pseudo-1-5": {
+  "exs": [
+   {
+    "t": "Kasus: membagi permen dengan DIV dan MOD",
+    "code": "DECLARE permen, anak, bagian, sisa : INTEGER\npermen ← 47\nanak ← 6\nbagian ← permen DIV anak\nsisa ← permen MOD anak\nOUTPUT \"Tiap anak dapat \", bagian, \" permen, sisa \", sisa",
+    "out": "Tiap anak dapat 7 permen, sisa 5"
+   },
+   {
+    "t": "Kasus: jebakan urutan operator pada rata-rata",
+    "code": "DECLARE a, b, c : INTEGER\na ← 81\nb ← 90\nc ← 72\nOUTPUT \"Tanpa kurung: \", a + b + c / 3      // hanya c yang dibagi 3\nOUTPUT \"Dengan kurung: \", (a + b + c) / 3",
+    "out": "Tanpa kurung: 195\nDengan kurung: 81"
+   },
+   {
+    "t": "Kasus: memecah angka tahun",
+    "code": "DECLARE tahun, digitTerakhir, sisaDepan : INTEGER\ntahun ← 2026\ndigitTerakhir ← tahun MOD 10\nsisaDepan ← tahun DIV 10\nOUTPUT \"Digit terakhir: \", digitTerakhir\nOUTPUT \"Tanpa digit terakhir: \", sisaDepan",
+    "out": "Digit terakhir: 6\nTanpa digit terakhir: 202"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Pecahan uang kembalian di kasir",
+    "b": "Mesin kasir menghitung berapa lembar setiap pecahan yang harus diberikan. Pola DIV lalu MOD dipakai berulang: ambil lembarnya, sisanya diteruskan ke pecahan berikutnya.",
+    "code": "DECLARE kembali, lb50, lb20, lb10, lb5, lb2 : INTEGER\nkembali ← 87000\nlb50 ← kembali DIV 50000\nkembali ← kembali MOD 50000\nlb20 ← kembali DIV 20000\nkembali ← kembali MOD 20000\nlb10 ← kembali DIV 10000\nkembali ← kembali MOD 10000\nlb5 ← kembali DIV 5000\nkembali ← kembali MOD 5000\nlb2 ← kembali DIV 2000\nkembali ← kembali MOD 2000\nOUTPUT \"50rb:\", lb50, \" 20rb:\", lb20, \" 10rb:\", lb10, \" 5rb:\", lb5, \" 2rb:\", lb2\nOUTPUT \"Sisa receh: \", kembali",
+    "out": "50rb:1 20rb:1 10rb:1 5rb:1 2rb:1\nSisa receh: 0"
+   }
+  ]
+ },
+ "pseudo-1-6": {
+  "exs": [
+   {
+    "t": "Kasus: tarif ojek daring",
+    "code": "// Masalah : hitung tarif ojek\n// Input   : jarak (km)   Output: tarif (rupiah)\n// Rumus   : tarif = 10000 + jarak * 2500\nDECLARE jarak, tarif : INTEGER\nINPUT jarak\ntarif ← 10000 + jarak * 2500\nOUTPUT \"Tarif: Rp\", tarif",
+    "out": "Masukan 6 → Tarif: Rp25000",
+    "d": "Hitung manual dulu: 10.000 + 6 × 2.500 = 25.000."
+   },
+   {
+    "t": "Kasus: nilai rapor dari tiga komponen",
+    "code": "DECLARE tugas, uts, uas : INTEGER\nDECLARE akhir : REAL\nINPUT tugas\nINPUT uts\nINPUT uas\nakhir ← tugas * 0.3 + uts * 0.3 + uas * 0.4\nOUTPUT \"Nilai akhir: \", akhir",
+    "out": "Masukan 80, 75, 90 → Nilai akhir: 82.5"
+   },
+   {
+    "t": "Kasus: urutan langkah menentukan hasil",
+    "code": "DECLARE harga, diskon, bayar : INTEGER\nharga ← 200000\n// SALAH jika ditulis: bayar ← harga - diskon (diskon belum dihitung)\ndiskon ← harga * 15 / 100\nbayar ← harga - diskon\nOUTPUT \"Diskon: Rp\", diskon\nOUTPUT \"Bayar : Rp\", bayar",
+    "out": "Diskon: Rp30000\nBayar : Rp170000",
+    "d": "Setiap langkah hanya memakai nilai yang sudah dihitung di atasnya."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Menghitung cicilan motor (bunga flat)",
+    "b": "Dealer dan perusahaan pembiayaan memakai rumus runtunan ini untuk simulasi cicilan. Tidak ada percabangan: setiap langkah memakai hasil langkah sebelumnya.",
+    "code": "DECLARE harga, uangMuka, tenor, pokok, bunga, cicilan : INTEGER\nharga ← 18000000\nuangMuka ← 3000000\ntenor ← 12                         // bulan\npokok ← harga - uangMuka\nbunga ← pokok * 6 / 100 * tenor / 12   // 6% per tahun, flat\ncicilan ← (pokok + bunga) / tenor\nOUTPUT \"Pokok  : Rp\", pokok\nOUTPUT \"Bunga  : Rp\", bunga\nOUTPUT \"Cicilan: Rp\", cicilan, \" per bulan\"",
+    "out": "Pokok  : Rp15000000\nBunga  : Rp900000\nCicilan: Rp1325000 per bulan"
+   }
+  ]
+ }
+}
