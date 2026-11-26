@@ -1020,5 +1020,445 @@
     "out": "55 -> E\n70 -> C\n84 -> B\n90 -> A\n100 -> A"
    }
   ]
+ },
+ "python-11-1": {
+  "exs": [
+   {
+    "t": "Kasus: anotasi pada fungsi kasir sederhana",
+    "code": "def subtotal(harga: int, jumlah: int) -> int:\n    return harga * jumlah\n\ndef rupiah(n: int) -> str:\n    return f\"Rp{n:,}\".replace(\",\", \".\")\n\ndef kena_ongkir(total: int, batas: int = 100_000) -> bool:\n    return total < batas\n\nt: int = subtotal(18_500, 4)\nprint(rupiah(t), \"| kena ongkir:\", kena_ongkir(t))\nprint(subtotal.__annotations__)",
+    "d": "Anotasi menulis tipe parameter dan nilai kembalian; program tetap berjalan seperti biasa.",
+    "out": "Rp74.000 | kena ongkir: True\n{'harga': <class 'int'>, 'jumlah': <class 'int'>, 'return': <class 'int'>}"
+   },
+   {
+    "t": "Kasus: hasil yang mungkin None",
+    "code": "def cari_nis(data: dict[str, str], nama: str) -> str | None:\n    return data.get(nama)\n\nsiswa: dict[str, str] = {\"Rahmat\": \"2024017\", \"Laila\": \"2024031\"}\nfor nama in [\"Laila\", \"Yoga\"]:\n    nis = cari_nis(siswa, nama)\n    if nis is None:                  # tangani kemungkinan None lebih dulu\n        print(nama, \"tidak terdaftar\")\n    else:\n        print(nama, \"NIS\", nis)",
+    "d": "str | None memberi tahu pembaca dan pemeriksa tipe bahwa hasilnya bisa kosong.",
+    "out": "Laila NIS 2024031\nYoga tidak terdaftar"
+   },
+   {
+    "t": "Kasus: list, tuple, dan TypedDict untuk data pesanan",
+    "code": "from typing import TypedDict\n\nclass Item(TypedDict):\n    nama: str\n    harga: int\n    qty: int\n\ndef total(items: list[Item]) -> int:\n    jumlah = 0\n    for it in items:\n        jumlah += it[\"harga\"] * it[\"qty\"]\n    return jumlah\n\ndef termurah(items: list[Item]) -> tuple[str, int]:\n    it = min(items, key=lambda x: x[\"harga\"])\n    return it[\"nama\"], it[\"harga\"]\n\npesanan: list[Item] = [\n    {\"nama\": \"Nasi uduk\", \"harga\": 12_000, \"qty\": 2},\n    {\"nama\": \"Teh manis\", \"harga\": 4_000, \"qty\": 3},\n]\nprint(\"total:\", total(pesanan))\nprint(\"termurah:\", termurah(pesanan))",
+    "d": "TypedDict mendeskripsikan kunci dan tipe nilai sebuah dict.",
+    "out": "total: 36000\ntermurah: ('Teh manis', 4000)"
+   }
+  ]
+ },
+ "python-11-2": {
+  "exs": [
+   {
+    "t": "Kasus: mypy menangkap lupa memeriksa None",
+    "code": "# kurir.py\ndef cari_tarif(kota: str) -> int | None:\n    tarif = {\"Bandung\": 12000, \"Bogor\": 10000}\n    return tarif.get(kota)\n\ndef total_ongkir(kota: str, kg: int) -> int:\n    return cari_tarif(kota) * kg            # bug: tarif bisa None\n\n$ mypy kurir.py\nkurir.py:6: error: Unsupported operand types for * (\"None\" and \"int\")  [operator]\nkurir.py:6: note: Left operand is of type \"int | None\"\nFound 1 error in 1 file (checked 1 source file)\n\n# perbaikan: tangani None lebih dulu (narrowing)\ndef total_ongkir(kota: str, kg: int) -> int:\n    tarif = cari_tarif(kota)\n    if tarif is None:\n        raise ValueError(f\"kota {kota} belum dilayani\")\n    return tarif * kg",
+    "d": "Setelah if tarif is None, pemeriksa tipe tahu tarif pasti int.",
+    "out": null
+   },
+   {
+    "t": "Kasus: nilai kembalian salah tipe",
+    "code": "# nilai.py\ndef rata_rata(nilai: list[int]) -> int:\n    return sum(nilai) / len(nilai)          # hasil / selalu float\n\ndef predikat(n: int) -> str:\n    if n >= 80:\n        return \"A\"\n    # lupa return untuk kasus lain\n\n$ pyright nilai.py\nnilai.py:3:12 - error: Type \"float\" is not assignable to return type \"int\"\nnilai.py:5:24 - error: Function with declared return type \"str\" must return value on all code paths\n2 errors, 0 warnings, 0 informations",
+    "d": "Pemeriksa tipe juga menemukan return yang hilang di salah satu cabang.",
+    "out": null
+   },
+   {
+    "t": "Kasus: menjalankan pemeriksa di proyek",
+    "code": "$ pip install mypy pyright\n$ mypy src/                       # periksa seluruh folder\nSuccess: no issues found in 12 source files\n\n$ mypy --strict src/toko.py       # mode ketat: semua fungsi wajib beranotasi\nsrc/toko.py:4: error: Function is missing a return type annotation  [no-untyped-def]\n\n$ pyrefly check                   # pemeriksa berbasis Rust dari Meta",
+    "d": "Mode strict memaksa semua fungsi diberi anotasi, cocok untuk proyek baru.",
+    "out": null
+   }
+  ]
+ },
+ "python-11-3": {
+  "exs": [
+   {
+    "t": "Kasus: data formulir pendaftaran diubah ke tipe yang benar",
+    "code": "from pydantic import BaseModel\n\nclass Pendaftar(BaseModel):\n    nama: str\n    umur: int\n    ikut_beasiswa: bool\n\n# data dari formulir web selalu berupa teks\nform = {\"nama\": \"Siti Nurhaliza\", \"umur\": \"17\", \"ikut_beasiswa\": \"yes\"}\np = Pendaftar(**form)\nprint(p)\nprint(p.umur + 1, type(p.ikut_beasiswa).__name__)",
+    "d": "Pydantic mengonversi \"17\" menjadi 17 dan \"yes\" menjadi True sesuai anotasi.",
+    "out": "nama='Siti Nurhaliza' umur=17 ikut_beasiswa=True\n18 bool"
+   },
+   {
+    "t": "Kasus: menolak data stok yang tidak masuk akal",
+    "code": "from pydantic import BaseModel, Field, ValidationError\n\nclass Stok(BaseModel):\n    sku: str = Field(min_length=3)\n    jumlah: int = Field(ge=0)\n\nfor data in [{\"sku\": \"BRS-5\", \"jumlah\": 40}, {\"sku\": \"X\", \"jumlah\": -3}]:\n    try:\n        print(\"diterima:\", Stok(**data))\n    except ValidationError as e:\n        for err in e.errors():\n            print(\"ditolak:\", err[\"loc\"][0], \"-\", err[\"msg\"])",
+    "d": "Field menambahkan aturan seperti panjang minimal dan angka tidak boleh negatif.",
+    "out": "diterima: sku='BRS-5' jumlah=40\nditolak: sku - String should have at least 3 characters\nditolak: jumlah - Input should be greater than or equal to 0"
+   },
+   {
+    "t": "Kasus: model bersarang untuk pesanan dari JSON",
+    "code": "from pydantic import BaseModel\n\nclass Item(BaseModel):\n    nama: str\n    harga: int\n    qty: int = 1\n\nclass Pesanan(BaseModel):\n    id: int\n    pembeli: str\n    items: list[Item]\n\nteks = '{\"id\": 101, \"pembeli\": \"Gilang\", \"items\": [{\"nama\": \"Kaos\", \"harga\": 85000, \"qty\": 2}, {\"nama\": \"Topi\", \"harga\": 45000}]}'\np = Pesanan.model_validate_json(teks)\ntotal = 0\nfor it in p.items:\n    total += it.harga * it.qty\nprint(p.pembeli, \"membeli\", len(p.items), \"jenis barang, total\", total)\nprint(p.model_dump()[\"items\"][1])",
+    "d": "Model di dalam model memvalidasi data JSON bertingkat sekaligus.",
+    "out": "Gilang membeli 2 jenis barang, total 215000\n{'nama': 'Topi', 'harga': 45000, 'qty': 1}"
+   }
+  ]
+ },
+ "python-12-1": {
+  "exs": [
+   {
+    "t": "Kasus: black merapikan pemanggilan fungsi yang panjang",
+    "code": "# sebelum\ndata = {'nama':'Rina','kelas':\"XI-2\",'nilai':[80,90,85]}\ncetak_rapor(data['nama'],data['kelas'],rata_rata(data['nilai']),tampilkan_grafik=True,simpan_pdf=True)\n\n$ black rapor.py\nreformatted rapor.py\nAll done! 1 file reformatted.\n\n# sesudah\ndata = {\"nama\": \"Rina\", \"kelas\": \"XI-2\", \"nilai\": [80, 90, 85]}\ncetak_rapor(\n    data[\"nama\"],\n    data[\"kelas\"],\n    rata_rata(data[\"nilai\"]),\n    tampilkan_grafik=True,\n    simpan_pdf=True,\n)",
+    "d": "black menyeragamkan kutip, spasi, dan memecah baris panjang tanpa ditanya.",
+    "out": null
+   },
+   {
+    "t": "Kasus: ruff menemukan bug kecil, bukan hanya gaya",
+    "code": "# kas.py\nimport json\n\ndef total_kas(setoran):\n    total = 0\n    for s in setoran:\n        totl = total + s              # salah ketik nama variabel\n    return total\n\ndef cek(x):\n    if x == None:\n        return \"kosong\"\n\n$ ruff check kas.py\nkas.py:1:8: F401 [*] `json` imported but unused\nkas.py:6:9: F841 Local variable `totl` is assigned to but never used\nkas.py:10:10: E711 Comparison to `None` should be `cond is None`\nFound 3 errors.\n[*] 1 fixable with the `--fix` option.",
+    "d": "Linter menandai import tak terpakai, variabel yang tidak dipakai, dan perbandingan None yang keliru.",
+    "out": null
+   },
+   {
+    "t": "Kasus: memeriksa tanpa mengubah file di CI",
+    "code": "$ ruff format --check .\nWould reformat: src/toko/kasir.py\n1 file would be reformatted, 14 files already formatted\n\n$ black --check --diff src/toko/kasir.py\n--- src/toko/kasir.py\n+++ src/toko/kasir.py\n@@ -1,2 +1,2 @@\n-def diskon(h,p): return h-h*p//100\n+def diskon(h, p):\n+    return h - h * p // 100",
+    "d": "Mode --check gagal bila ada file yang belum rapi, sehingga CI bisa menolak kode berantakan.",
+    "out": null
+   }
+  ]
+ },
+ "python-12-2": {
+  "exs": [
+   {
+    "t": "Kasus: docstring satu baris dan help()",
+    "code": "def luas_sawah(panjang, lebar):\n    \"\"\"Menghitung luas sawah persegi panjang dalam meter persegi.\"\"\"\n    return panjang * lebar\n\nprint(luas_sawah(120, 45))\nprint(luas_sawah.__doc__)\nhelp(luas_sawah)",
+    "d": "Docstring tersimpan di __doc__ dan ditampilkan oleh help().",
+    "out": "5400\nMenghitung luas sawah persegi panjang dalam meter persegi.\nHelp on function luas_sawah in module __main__:\n\nluas_sawah(panjang, lebar)\n    Menghitung luas sawah persegi panjang dalam meter persegi."
+   },
+   {
+    "t": "Kasus: docstring kelas dan method gaya Google",
+    "code": "class Celengan:\n    \"\"\"Celengan digital yang mencatat setoran.\n\n    Attributes:\n        pemilik: Nama pemilik celengan.\n        isi: Jumlah uang saat ini dalam rupiah.\n    \"\"\"\n\n    def __init__(self, pemilik):\n        self.pemilik = pemilik\n        self.isi = 0\n\n    def setor(self, jumlah):\n        \"\"\"Menambah isi celengan.\n\n        Args:\n            jumlah: Uang yang dimasukkan, harus positif.\n\n        Returns:\n            Isi celengan setelah setoran.\n        \"\"\"\n        self.isi += jumlah\n        return self.isi\n\nprint(Celengan.__doc__.splitlines()[0])\nprint(Celengan.setor.__doc__.splitlines()[0])\nprint(Celengan(\"Dimas\").setor(20000))",
+    "d": "Kelas dan method juga punya docstring; bagian Args dan Returns dibaca oleh Sphinx.",
+    "out": "Celengan digital yang mencatat setoran.\nMenambah isi celengan.\n20000"
+   },
+   {
+    "t": "Kasus: komentar menjelaskan kenapa, bukan apa",
+    "code": "harga = 47_350\n\n# kurang bagus: komentar mengulang isi kode\n# bagi 100, bulatkan ke atas, kali 100\n# lebih bagus: komentar menjelaskan alasan bisnisnya\n# kasir tidak punya uang receh di bawah Rp100, jadi harga dibulatkan ke atas\ndibulatkan = -(-harga // 100) * 100\nprint(dibulatkan)",
+    "d": "Kode sudah menunjukkan apa yang dilakukan; komentar yang berguna menjelaskan alasannya.",
+    "out": "47400"
+   }
+  ]
+ },
+ "python-12-3": {
+  "exs": [
+   {
+    "t": "Kasus: menguji fungsi predikat nilai",
+    "code": "# rapor.py\ndef predikat(n):\n    if not 0 <= n <= 100:\n        raise ValueError(\"nilai harus 0..100\")\n    if n >= 90:\n        return \"A\"\n    if n >= 75:\n        return \"B\"\n    return \"C\"\n\n# test_rapor.py\nimport pytest\nfrom rapor import predikat\n\ndef test_nilai_tinggi_dapat_a():\n    assert predikat(95) == \"A\"\n\ndef test_batas_b_tepat_75():\n    assert predikat(75) == \"B\"\n\ndef test_nilai_di_luar_rentang_ditolak():\n    with pytest.raises(ValueError):\n        predikat(101)\n\n# $ pytest -q\n# ...                                                  [100%]\n# 3 passed",
+    "d": "Setiap test fokus pada satu perilaku dan diberi nama yang menjelaskan perilaku itu.",
+    "out": null
+   },
+   {
+    "t": "Kasus: parametrize untuk banyak kasus ongkir",
+    "code": "# test_ongkir.py\nimport pytest\nfrom ongkir import hitung_ongkir\n\n@pytest.mark.parametrize(\"kg, kota, harapan\", [\n    (1, \"Jakarta\", 9_000),\n    (3, \"Jakarta\", 27_000),\n    (1, \"Jayapura\", 45_000),\n    (2.5, \"Medan\", 54_000),\n])\ndef test_hitung_ongkir(kg, kota, harapan):\n    assert hitung_ongkir(kg, kota) == harapan\n\n# $ pytest -v test_ongkir.py\n# test_ongkir.py::test_hitung_ongkir[1-Jakarta-9000] PASSED\n# test_ongkir.py::test_hitung_ongkir[3-Jakarta-27000] PASSED\n# test_ongkir.py::test_hitung_ongkir[1-Jayapura-45000] PASSED\n# test_ongkir.py::test_hitung_ongkir[2.5-Medan-54000] PASSED",
+    "d": "Satu fungsi test dijalankan untuk setiap baris data.",
+    "out": null
+   },
+   {
+    "t": "Kasus: fixture dan tmp_path untuk menguji penyimpanan file",
+    "code": "# test_catatan.py\nimport pytest\nfrom catatan import simpan, muat\n\n@pytest.fixture\ndef berkas(tmp_path):                 # tmp_path: folder sementara dari pytest\n    return tmp_path / \"kas.txt\"\n\ndef test_simpan_lalu_muat(berkas):\n    simpan(berkas, [5000, 12000])\n    assert muat(berkas) == [5000, 12000]\n\ndef test_file_belum_ada_dianggap_kosong(berkas):\n    assert muat(berkas) == []\n\n# $ pytest -q test_catatan.py\n# ..                                                   [100%]\n# 2 passed",
+    "d": "Fixture menyiapkan bahan test; tmp_path membuat setiap test memakai folder bersih.",
+    "out": null
+   }
+  ]
+ },
+ "python-12-4": {
+  "exs": [
+   {
+    "t": "Kasus: unittest untuk kelas Rekening",
+    "code": "import unittest, io\n\nclass Rekening:\n    def __init__(self):\n        self.saldo = 0\n    def setor(self, n):\n        if n <= 0:\n            raise ValueError(\"setoran harus positif\")\n        self.saldo += n\n\nclass TesRekening(unittest.TestCase):\n    def setUp(self):                  # dijalankan sebelum setiap test\n        self.r = Rekening()\n\n    def test_setor_menambah_saldo(self):\n        self.r.setor(50_000)\n        self.assertEqual(self.r.saldo, 50_000)\n\n    def test_setor_negatif_ditolak(self):\n        with self.assertRaises(ValueError):\n            self.r.setor(-1)\n\nsuite = unittest.defaultTestLoader.loadTestsFromTestCase(TesRekening)\nhasil = unittest.TextTestRunner(stream=io.StringIO()).run(suite)\nprint(\"jalan:\", hasil.testsRun, \"| gagal:\", len(hasil.failures), \"| sukses:\", hasil.wasSuccessful())",
+    "d": "setUp menyiapkan objek baru untuk setiap test agar test tidak saling memengaruhi.",
+    "out": "jalan: 2 | gagal: 0 | sukses: True"
+   },
+   {
+    "t": "Kasus: doctest menjaga contoh di dokumentasi tetap benar",
+    "code": "import doctest\n\ndef nilai_huruf(n):\n    \"\"\"Ubah nilai angka menjadi huruf.\n\n    >>> nilai_huruf(92)\n    'A'\n    >>> nilai_huruf(78)\n    'B'\n    >>> nilai_huruf(50)\n    'C'\n    \"\"\"\n    if n >= 90:\n        return \"A\"\n    if n >= 75:\n        return \"B\"\n    return \"C\"\n\nhasil = doctest.testmod()\nprint(\"dicoba:\", hasil.attempted, \"| gagal:\", hasil.failed)",
+    "d": "Setiap baris >>> dijalankan dan hasilnya dibandingkan dengan baris di bawahnya; bila berbeda, doctest melaporkannya sebagai gagal.",
+    "out": "dicoba: 3 | gagal: 0"
+   },
+   {
+    "t": "Kasus: tox menjalankan test di beberapa versi Python",
+    "code": "# tox.ini\n[tox]\nenvlist = py311, py312, py313\n\n[testenv]\ndeps =\n    pytest\ncommands =\n    pytest -q\n    python -m doctest -v src/rapor.py\n\n$ tox -e py313\npy313: install_deps> python -I -m pip install pytest\npy313: commands[0]> pytest -q\n6 passed in 0.05s\n  py313: OK (3.10 seconds)\n  congratulations :)",
+    "d": "tox membuat virtual environment per versi Python lalu menjalankan perintah test di masing-masing.",
+    "out": null
+   }
+  ]
+ },
+ "python-13-1": {
+  "exs": [
+   {
+    "t": "Kasus: mengecek beberapa server sekaligus dengan Thread",
+    "code": "import threading, time\n\nhasil = {}\n\ndef cek_server(nama, jeda):\n    time.sleep(jeda)                   # pura-pura menunggu jawaban jaringan\n    hasil[nama] = \"aktif\"\n\nserver = [(\"web\", 0.3), (\"database\", 0.2), (\"email\", 0.1)]\nmulai = time.perf_counter()\nthread = []\nfor nama, jeda in server:\n    t = threading.Thread(target=cek_server, args=(nama, jeda))\n    t.start()\n    thread.append(t)\nfor t in thread:\n    t.join()                           # tunggu semua selesai\n\nprint(dict(sorted(hasil.items())))\nprint(\"selesai di bawah 0,5 detik (berurutan butuh 0,6):\", time.perf_counter() - mulai < 0.5)",
+    "d": "Tiga penantian berjalan bersamaan, jadi total waktunya mendekati penantian terlama saja.",
+    "out": "{'database': 'aktif', 'email': 'aktif', 'web': 'aktif'}\nselesai di bawah 0,5 detik (berurutan butuh 0,6): True"
+   },
+   {
+    "t": "Kasus: ThreadPoolExecutor mengunduh rapor per kelas",
+    "code": "import time\nfrom concurrent.futures import ThreadPoolExecutor\n\ndef unduh_rapor(kelas):\n    time.sleep(0.2)\n    return f\"rapor_{kelas}.pdf\"\n\nkelas = [\"X-1\", \"X-2\", \"X-3\", \"X-4\"]\nwith ThreadPoolExecutor(max_workers=4) as ex:\n    berkas = list(ex.map(unduh_rapor, kelas))\nprint(berkas)                          # urutan hasil sama dengan urutan input",
+    "d": "map pada executor mengembalikan hasil sesuai urutan input, walau selesainya bisa acak.",
+    "out": "['rapor_X-1.pdf', 'rapor_X-2.pdf', 'rapor_X-3.pdf', 'rapor_X-4.pdf']"
+   },
+   {
+    "t": "Kasus: Lock mencegah tiket konser terjual melebihi kuota",
+    "code": "import threading\n\nsisa_tiket = 100\nkunci = threading.Lock()\nterjual = []\n\ndef loket(nama):\n    global sisa_tiket\n    for _ in range(40):\n        with kunci:                    # cek dan kurangi harus satu kesatuan\n            if sisa_tiket > 0:\n                sisa_tiket -= 1\n                terjual.append(nama)\n\nts = [threading.Thread(target=loket, args=(f\"loket{i}\",)) for i in range(4)]\nfor t in ts:\n    t.start()\nfor t in ts:\n    t.join()\nprint(\"terjual:\", len(terjual), \"| sisa:\", sisa_tiket)",
+    "d": "Tanpa lock, dua thread bisa membaca sisa yang sama lalu sama-sama menjual tiket terakhir.",
+    "out": "terjual: 100 | sisa: 0"
+   }
+  ]
+ },
+ "python-13-2": {
+  "exs": [
+   {
+    "t": "Kasus: menghitung bilangan prima di beberapa proses",
+    "code": "from multiprocessing import Pool\n\ndef banyak_prima(batas):\n    jumlah = 0\n    for n in range(2, batas):\n        prima = True\n        for d in range(2, int(n ** 0.5) + 1):\n            if n % d == 0:\n                prima = False\n                break\n        if prima:\n            jumlah += 1\n    return jumlah\n\nif __name__ == \"__main__\":\n    with Pool(processes=2) as pool:\n        hasil = pool.map(banyak_prima, [10_000, 20_000, 30_000])\n    print(hasil)",
+    "d": "Pool membagi daftar tugas ke beberapa proses yang benar-benar berjalan paralel.",
+    "out": "[1229, 2262, 3245]"
+   },
+   {
+    "t": "Kasus: submit dan future untuk tugas berbeda ukuran",
+    "code": "from concurrent.futures import ProcessPoolExecutor\n\ndef jumlah_kuadrat(n):\n    total = 0\n    for i in range(n):\n        total += i * i\n    return total\n\nif __name__ == \"__main__\":\n    with ProcessPoolExecutor(max_workers=2) as ex:\n        kecil = ex.submit(jumlah_kuadrat, 1_000)\n        besar = ex.submit(jumlah_kuadrat, 2_000_000)\n        print(\"kecil:\", kecil.result())\n        print(\"besar:\", besar.result())",
+    "d": "submit langsung mengembalikan future; result() menunggu hasilnya dari proses lain.",
+    "out": "kecil: 332833500\nbesar: 2666664666667000000"
+   },
+   {
+    "t": "Kasus: proses tidak berbagi variabel global",
+    "code": "from multiprocessing import Process\n\nhitungan = 0\n\ndef tambah():\n    global hitungan\n    hitungan += 100\n    print(\"di proses anak:\", hitungan)\n\nif __name__ == \"__main__\":\n    p = Process(target=tambah)\n    p.start()\n    p.join()\n    print(\"di proses utama:\", hitungan)     # tetap 0",
+    "d": "Setiap proses punya memori sendiri, jadi hasil harus dikirim balik, bukan lewat variabel global.",
+    "out": "di proses anak: 100\ndi proses utama: 0"
+   }
+  ]
+ },
+ "python-13-3": {
+  "exs": [
+   {
+    "t": "Kasus: memesan makanan dari tiga warung sekaligus",
+    "code": "import asyncio\n\nasync def pesan(warung, menit):\n    await asyncio.sleep(menit / 10)          # 1 menit disimulasikan 0,1 detik\n    return f\"{warung} siap dalam {menit} menit\"\n\nasync def main():\n    hasil = await asyncio.gather(\n        pesan(\"Warung Bakso\", 3),\n        pesan(\"Warung Sate\", 2),\n        pesan(\"Warung Es\", 1),\n    )\n    for h in hasil:\n        print(h)\n\nasyncio.run(main())",
+    "d": "gather menunggu semua coroutine dan mengembalikan hasil sesuai urutan pemanggilan.",
+    "out": "Warung Bakso siap dalam 3 menit\nWarung Sate siap dalam 2 menit\nWarung Es siap dalam 1 menit"
+   },
+   {
+    "t": "Kasus: create_task untuk mulai lebih dulu, tunggu belakangan",
+    "code": "import asyncio\n\nasync def unduh(berkas, detik):\n    await asyncio.sleep(detik)\n    print(\"selesai\", berkas)\n    return berkas\n\nasync def main():\n    tugas_a = asyncio.create_task(unduh(\"materi.pdf\", 0.2))\n    tugas_b = asyncio.create_task(unduh(\"video.mp4\", 0.1))\n    print(\"dua unduhan sudah berjalan\")\n    print(\"hasil:\", await tugas_a, await tugas_b)\n\nasyncio.run(main())",
+    "d": "create_task menjadwalkan coroutine segera; await mengambil hasilnya saat dibutuhkan.",
+    "out": "dua unduhan sudah berjalan\nselesai video.mp4\nselesai materi.pdf\nhasil: materi.pdf video.mp4"
+   },
+   {
+    "t": "Kasus: batas waktu untuk API yang lambat",
+    "code": "import asyncio\n\nasync def cek_kurs(bank, detik):\n    await asyncio.sleep(detik)\n    return f\"{bank}: 16.250\"\n\nasync def main():\n    for bank, detik in [(\"Bank A\", 0.1), (\"Bank B\", 1.0)]:\n        try:\n            print(await asyncio.wait_for(cek_kurs(bank, detik), timeout=0.3))\n        except TimeoutError:\n            print(f\"{bank}: terlalu lama, pakai data kemarin\")\n\nasyncio.run(main())",
+    "d": "wait_for membatalkan coroutine yang melewati batas waktu dan melempar TimeoutError.",
+    "out": "Bank A: 16.250\nBank B: terlalu lama, pakai data kemarin"
+   }
+  ]
+ },
+ "python-14-1": {
+  "exs": [
+   {
+    "t": "Kasus: halaman sambutan dengan Flask",
+    "code": "# app.py\nfrom flask import Flask\n\napp = Flask(__name__)\n\n@app.get(\"/\")\ndef beranda():\n    return \"<h1>Selamat datang di Koperasi Sekolah</h1>\"\n\n# $ flask --app app run\n# buka http://127.0.0.1:5000",
+    "d": "Flask: satu file, satu fungsi per URL, cocok untuk mulai kecil.",
+    "out": null
+   },
+   {
+    "t": "Kasus: endpoint JSON yang sama dengan FastAPI",
+    "code": "# main.py\nfrom fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get(\"/jadwal/{kelas}\")\nasync def jadwal(kelas: str, hari: str = \"senin\"):\n    return {\"kelas\": kelas, \"hari\": hari, \"mapel\": [\"Matematika\", \"IPA\", \"Olahraga\"]}\n\n# $ uvicorn main:app --reload\n# GET http://127.0.0.1:8000/jadwal/X-2?hari=selasa\n# dokumentasi otomatis: http://127.0.0.1:8000/docs",
+    "d": "FastAPI memakai type hint untuk validasi dan membuat dokumentasi API otomatis.",
+    "out": null
+   },
+   {
+    "t": "Kasus: dashboard data dengan Streamlit",
+    "code": "# dashboard.py\nimport streamlit as st\n\npenjualan = {\"Senin\": 120, \"Selasa\": 150, \"Rabu\": 90, \"Kamis\": 170}\n\nst.title(\"Penjualan Kantin Minggu Ini\")\nhari = st.selectbox(\"Pilih hari\", list(penjualan))\nst.metric(\"Porsi terjual\", penjualan[hari])\nst.bar_chart(penjualan)\n\n# $ streamlit run dashboard.py",
+    "d": "Streamlit mengubah skrip Python biasa menjadi dashboard interaktif tanpa HTML.",
+    "out": null
+   }
+  ]
+ },
+ "python-14-2": {
+  "exs": [
+   {
+    "t": "Kasus: Flask menerima data POST dan memvalidasinya",
+    "code": "from flask import Flask, request\n\napp = Flask(__name__)\nSISWA = []\n\n@app.post(\"/siswa\")\ndef tambah_siswa():\n    data = request.get_json()\n    if not data or not data.get(\"nama\"):\n        return {\"error\": \"nama wajib diisi\"}, 400\n    siswa = {\"id\": len(SISWA) + 1, \"nama\": data[\"nama\"], \"kelas\": data.get(\"kelas\", \"-\")}\n    SISWA.append(siswa)\n    return siswa, 201\n\n@app.get(\"/siswa\")\ndef daftar_siswa():\n    return {\"jumlah\": len(SISWA), \"data\": SISWA}\n\n# $ curl -X POST localhost:5000/siswa -H \"Content-Type: application/json\" -d '{\"nama\": \"Ayu\", \"kelas\": \"X-1\"}'\n# {\"id\": 1, \"kelas\": \"X-1\", \"nama\": \"Ayu\"}",
+    "d": "Di Flask, validasi data request ditulis sendiri lalu dikembalikan bersama kode status.",
+    "out": null
+   },
+   {
+    "t": "Kasus: FastAPI dengan query parameter dan model respons",
+    "code": "from fastapi import FastAPI, Query\nfrom pydantic import BaseModel\n\napp = FastAPI()\n\nclass Buku(BaseModel):\n    judul: str\n    penulis: str\n    tahun: int\n\nKATALOG = [\n    Buku(judul=\"Laskar Pelangi\", penulis=\"Andrea Hirata\", tahun=2005),\n    Buku(judul=\"Ronggeng Dukuh Paruk\", penulis=\"Ahmad Tohari\", tahun=1982),\n]\n\n@app.get(\"/buku\", response_model=list[Buku])\nasync def cari_buku(sejak: int = Query(1900, ge=1900), q: str = \"\"):\n    hasil = [b for b in KATALOG if b.tahun >= sejak and q.lower() in b.judul.lower()]\n    return hasil\n\n# GET /buku?sejak=2000          -> [{\"judul\": \"Laskar Pelangi\", ...}]\n# GET /buku?sejak=1800          -> 422: Input should be greater than or equal to 1900",
+    "d": "Query parameter langsung divalidasi dari anotasi tipe dan Query(...).",
+    "out": null
+   },
+   {
+    "t": "Kasus: menguji API FastAPI dengan TestClient",
+    "code": "# test_api.py\nfrom fastapi.testclient import TestClient\nfrom main import app\n\nklien = TestClient(app)\n\ndef test_ambil_produk_ada():\n    r = klien.get(\"/produk/1\")\n    assert r.status_code == 200\n    assert r.json()[\"nama\"] == \"Kopi Gayo\"\n\ndef test_tambah_produk_harga_negatif_ditolak():\n    r = klien.post(\"/produk\", json={\"nama\": \"Teh\", \"harga\": -5})\n    assert r.status_code == 422\n\n# $ pytest -q test_api.py\n# ..                                                   [100%]\n# 2 passed",
+    "d": "TestClient memanggil API tanpa menjalankan server sungguhan, cocok dipadukan dengan pytest.",
+    "out": null
+   }
+  ]
+ },
+ "python-14-3": {
+  "exs": [
+   {
+    "t": "Kasus: query ORM Django untuk data perpustakaan",
+    "code": "# python manage.py shell\n>>> from perpus.models import Buku\n>>> Buku.objects.create(judul=\"Bumi\", penulis=\"Tere Liye\", stok=3)\n<Buku: Bumi>\n>>> Buku.objects.filter(stok__gt=0).count()\n12\n>>> Buku.objects.filter(penulis__icontains=\"tere\").order_by(\"judul\")[:3]\n<QuerySet [<Buku: Bulan>, <Buku: Bumi>, <Buku: Hujan>]>\n>>> b = Buku.objects.get(judul=\"Bumi\")\n>>> b.stok -= 1\n>>> b.save()                          # UPDATE ke database",
+    "d": "ORM menerjemahkan method Python seperti filter dan order_by menjadi SQL.",
+    "out": null
+   },
+   {
+    "t": "Kasus: template Django menampilkan daftar produk",
+    "code": "<!-- toko/templates/toko/daftar.html -->\n<h1>Produk Mahal</h1>\n<ul>\n  {% for p in produk %}\n    <li>{{ p.nama }} - Rp{{ p.harga }}</li>\n  {% empty %}\n    <li>Belum ada produk.</li>\n  {% endfor %}\n</ul>\n<p>Total: {{ produk|length }} produk</p>",
+    "d": "Template mengisi HTML dengan data dari view; {% for %} dan {{ }} adalah bahasa template Django.",
+    "out": null
+   },
+   {
+    "t": "Kasus: form Django dengan validasi bawaan",
+    "code": "# toko/forms.py\nfrom django import forms\nfrom .models import Produk\n\nclass ProdukForm(forms.ModelForm):\n    class Meta:\n        model = Produk\n        fields = [\"nama\", \"kategori\", \"harga\"]\n\n# toko/views.py\nfrom django.shortcuts import render, redirect\nfrom .forms import ProdukForm\n\ndef tambah_produk(request):\n    form = ProdukForm(request.POST or None)\n    if form.is_valid():                # cek tipe dan aturan dari model\n        form.save()\n        return redirect(\"daftar-produk\")\n    return render(request, \"toko/tambah.html\", {\"form\": form})",
+    "d": "ModelForm membuat form dan validasinya langsung dari definisi model.",
+    "out": null
+   }
+  ]
+ },
+ "python-15-1": {
+  "exs": [
+   {
+    "t": "Kasus: tabel nilai rapor yang rata",
+    "code": "rapor = [(\"Matematika\", 87.5), (\"Bahasa Indonesia\", 91.25), (\"IPA\", 78.0), (\"Seni Budaya\", 95.333)]\n\nprint(f\"{'Mata pelajaran':<18}|{'Nilai':>7}\")\nprint(\"-\" * 26)\nfor mapel, nilai in rapor:\n    print(f\"{mapel:<18}|{nilai:>7.1f}\")",
+    "d": "Lebar kolom :<18 dan :>7.1f membuat teks rata kiri dan angka rata kanan dengan satu desimal.",
+    "out": "Mata pelajaran    |  Nilai\n--------------------------\nMatematika        |   87.5\nBahasa Indonesia  |   91.2\nIPA               |   78.0\nSeni Budaya       |   95.3"
+   },
+   {
+    "t": "Kasus: nomor invoice dan jam dengan nol di depan",
+    "code": "for nomor in [7, 42, 1305]:\n    print(f\"INV/2026/{nomor:05d}\")\n\njam, menit = 7, 5\nprint(f\"Kereta berangkat pukul {jam:02d}:{menit:02d}\")",
+    "d": "Format 05d dan 02d menambah nol di depan sampai panjangnya pas.",
+    "out": "INV/2026/00007\nINV/2026/00042\nINV/2026/01305\nKereta berangkat pukul 07:05"
+   },
+   {
+    "t": "Kasus: persentase kehadiran dan rupiah gaya Indonesia",
+    "code": "hadir, total = 172, 180\nprint(f\"Kehadiran: {hadir / total:.1%}\")\n\nsaldo = 12_750_000.5\nteks = f\"{saldo:,.2f}\"                       # 12,750,000.50 (gaya Inggris)\nteks = teks.replace(\",\", \"_\").replace(\".\", \",\").replace(\"_\", \".\")\nprint(f\"Saldo: Rp{teks}\")",
+    "d": "Format :.1% mengubah pecahan menjadi persen; pemisah ribuan ditukar agar sesuai kebiasaan Indonesia.",
+    "out": "Kehadiran: 95.6%\nSaldo: Rp12.750.000,50"
+   }
+  ]
+ },
+ "python-15-2": {
+  "exs": [
+   {
+    "t": "Kasus: for untuk daftar piket seminggu",
+    "code": "anggota = [\"Ani\", \"Bayu\", \"Cindy\"]\nfor hari in range(1, 8):                     # jumlah hari pasti: pakai for\n    petugas = anggota[(hari - 1) % len(anggota)]\n    print(f\"hari {hari}: {petugas}\")",
+    "d": "Jumlah putaran sudah diketahui sejak awal, jadi for paling jujur menggambarkan niatnya.",
+    "out": "hari 1: Ani\nhari 2: Bayu\nhari 3: Cindy\nhari 4: Ani\nhari 5: Bayu\nhari 6: Cindy\nhari 7: Ani"
+   },
+   {
+    "t": "Kasus: while untuk menabung sampai cukup membeli sepeda",
+    "code": "harga_sepeda = 1_500_000\ntabungan = 200_000\nbulan = 0\nwhile tabungan < harga_sepeda:               # jumlah bulan belum diketahui\n    tabungan += 250_000\n    bulan += 1\nprint(f\"butuh {bulan} bulan, tabungan akhir Rp{tabungan:,}\".replace(\",\", \".\"))",
+    "d": "Yang diketahui hanya kondisi berhentinya, maka while adalah pilihan yang tepat.",
+    "out": "butuh 6 bulan. tabungan akhir Rp1.700.000"
+   },
+   {
+    "t": "Kasus: gaya do-while untuk meminta PIN sampai benar",
+    "code": "PIN_BENAR = \"4821\"\nmasukan = [\"1111\", \"4812\", \"4821\"]           # simulasi ketikan pengguna\npercobaan = 0\nwhile True:                                  # minta PIN minimal sekali\n    pin = masukan[percobaan]\n    percobaan += 1\n    if pin == PIN_BENAR:\n        print(f\"PIN benar setelah {percobaan} percobaan\")\n        break\n    print(\"PIN salah, coba lagi\")",
+    "d": "Python tidak punya do-while, jadi polanya while True dengan break di akhir.",
+    "out": "PIN salah, coba lagi\nPIN salah, coba lagi\nPIN benar setelah 3 percobaan"
+   }
+  ]
+ },
+ "python-15-3": {
+  "exs": [
+   {
+    "t": "Kasus: populasi kelinci dengan for",
+    "code": "bulan = 12\na, b = 1, 1                                  # pasangan kelinci bulan 1 dan 2\nfor i in range(1, bulan + 1):\n    print(f\"bulan {i:>2}: {a} pasang\")\n    a, b = b, a + b",
+    "d": "Soal kelinci Fibonacci: jumlah bulan diketahui, jadi pakai for.",
+    "out": "bulan  1: 1 pasang\nbulan  2: 1 pasang\nbulan  3: 2 pasang\nbulan  4: 3 pasang\nbulan  5: 5 pasang\nbulan  6: 8 pasang\nbulan  7: 13 pasang\nbulan  8: 21 pasang\nbulan  9: 34 pasang\nbulan 10: 55 pasang\nbulan 11: 89 pasang\nbulan 12: 144 pasang"
+   },
+   {
+    "t": "Kasus: suku Fibonacci pertama yang lebih dari sejuta",
+    "code": "a, b = 0, 1\nke = 0\nwhile a <= 1_000_000:\n    a, b = b, a + b\n    ke += 1\nprint(f\"suku ke-{ke} adalah {a:,}\".replace(\",\", \".\"))",
+    "d": "Kita tidak tahu suku keberapa, jadi pakai while sampai kondisi terpenuhi.",
+    "out": "suku ke-31 adalah 1.346.269"
+   },
+   {
+    "t": "Kasus: menjumlah suku genap Fibonacci di bawah 4 juta",
+    "code": "a, b = 0, 1\ntotal = 0\nwhile a < 4_000_000:\n    if a % 2 == 0:\n        total += a\n    a, b = b, a + b\nprint(\"jumlah suku genap:\", total)",
+    "d": "Soal Project Euler nomor 2: geser a dan b sambil menyaring suku genap.",
+    "out": "jumlah suku genap: 4613732"
+   }
+  ]
+ },
+ "python-15-4": {
+  "exs": [
+   {
+    "t": "Kasus: mengurutkan tinggi badan untuk barisan upacara",
+    "code": "tinggi = [160, 152, 171, 158, 149, 165]\nn = len(tinggi)\nfor i in range(n - 1):                       # putaran luar\n    for j in range(n - 1 - i):               # pasangan bersebelahan\n        if tinggi[j] > tinggi[j + 1]:\n            tinggi[j], tinggi[j + 1] = tinggi[j + 1], tinggi[j]\nprint(tinggi)",
+    "d": "Setiap putaran, nilai terbesar yang tersisa menggelembung ke ujung kanan.",
+    "out": "[149, 152, 158, 160, 165, 171]"
+   },
+   {
+    "t": "Kasus: urutan menurun untuk peringkat lomba",
+    "code": "peserta = [(\"Dewa\", 82), (\"Eli\", 95), (\"Fani\", 77), (\"Gusti\", 90)]\nn = len(peserta)\nfor i in range(n - 1):\n    for j in range(n - 1 - i):\n        if peserta[j][1] < peserta[j + 1][1]:   # tukar bila skor kiri lebih kecil\n            peserta[j], peserta[j + 1] = peserta[j + 1], peserta[j]\nfor juara, (nama, skor) in enumerate(peserta, start=1):\n    print(f\"juara {juara}: {nama} ({skor})\")",
+    "d": "Membalik perbandingan menghasilkan urutan dari besar ke kecil.",
+    "out": "juara 1: Eli (95)\njuara 2: Gusti (90)\njuara 3: Dewa (82)\njuara 4: Fani (77)"
+   },
+   {
+    "t": "Kasus: menghitung pertukaran pada data hampir terurut",
+    "code": "data = [1, 2, 3, 5, 4, 6, 7]\nputaran = 0\nada_tukar = True\ntukar = 0\nwhile ada_tukar:\n    ada_tukar = False\n    putaran += 1\n    for j in range(len(data) - putaran):\n        if data[j] > data[j + 1]:\n            data[j], data[j + 1] = data[j + 1], data[j]\n            ada_tukar = True\n            tukar += 1\nprint(data, \"| putaran:\", putaran, \"| pertukaran:\", tukar)",
+    "d": "Berkat penanda ada_tukar, data yang hampir terurut selesai hanya dalam dua putaran.",
+    "out": "[1, 2, 3, 4, 5, 6, 7] | putaran: 2 | pertukaran: 1"
+   }
+  ]
+ },
+ "python-15-5": {
+  "exs": [
+   {
+    "t": "Kasus: FizzBuzz versi sekolah: Pra, Muka, PraMuka",
+    "code": "for i in range(1, 21):\n    if i % 3 == 0 and i % 4 == 0:\n        print(\"PraMuka\", end=\" \")\n    elif i % 3 == 0:\n        print(\"Pra\", end=\" \")\n    elif i % 4 == 0:\n        print(\"Muka\", end=\" \")\n    else:\n        print(i, end=\" \")\nprint()",
+    "d": "Syarat gabungan selalu dicek lebih dulu agar tidak tertimpa syarat tunggal.",
+    "out": "1 2 Pra Muka 5 Pra 7 Muka Pra 10 11 PraMuka 13 14 Pra Muka 17 Pra 19 Muka "
+   },
+   {
+    "t": "Kasus: mengecek satu angka prima dengan break",
+    "code": "for n in [97, 91, 2]:\n    prima = n >= 2\n    for d in range(2, int(n ** 0.5) + 1):\n        if n % d == 0:\n            prima = False\n            print(f\"{n} habis dibagi {d}\")\n            break                            # cukup satu pembagi\n    print(f\"{n} prima? {prima}\")",
+    "d": "Begitu ada satu pembagi, break menghentikan loop dalam.",
+    "out": "97 prima? True\n91 habis dibagi 7\n91 prima? False\n2 prima? True"
+   },
+   {
+    "t": "Kasus: pasangan prima kembar di bawah 50",
+    "code": "prima = []\nfor x in range(2, 50):\n    for d in range(2, int(x ** 0.5) + 1):\n        if x % d == 0:\n            break\n    else:\n        prima.append(x)\n\nfor i in range(len(prima) - 1):\n    if prima[i + 1] - prima[i] == 2:\n        print(prima[i], prima[i + 1])",
+    "d": "for-else mengumpulkan bilangan prima, lalu loop kedua mencari pasangan yang selisihnya 2.",
+    "out": "3 5\n5 7\n11 13\n17 19\n29 31\n41 43"
+   }
+  ]
+ },
+ "python-15-6": {
+  "exs": [
+   {
+    "t": "Kasus: banyak cara menyusun barisan foto",
+    "code": "siswa = 6\ncara = 1\nfor i in range(2, siswa + 1):\n    cara *= i\nprint(f\"{siswa} siswa bisa difoto berjajar dalam {cara} susunan\")",
+    "d": "Banyak susunan n orang berjajar adalah n faktorial.",
+    "out": "6 siswa bisa difoto berjajar dalam 720 susunan"
+   },
+   {
+    "t": "Kasus: akar digital nomor rumah",
+    "code": "n = 98765\nwhile n >= 10:                               # ulangi sampai tinggal satu digit\n    jumlah = 0\n    while n > 0:\n        jumlah += n % 10\n        n //= 10\n    print(\"jumlah digit:\", jumlah)\n    n = jumlah\nprint(\"akar digital:\", n)",
+    "d": "Jumlah digit diulang terus sampai hasilnya satu digit.",
+    "out": "jumlah digit: 35\njumlah digit: 8\nakar digital: 8"
+   },
+   {
+    "t": "Kasus: palindrom kalimat dengan dua penunjuk",
+    "code": "kalimat = \"Ibu Ratna antar ubi\"\nhuruf = \"\"\nfor c in kalimat.lower():\n    if c.isalpha():\n        huruf += c\n\nkiri, kanan = 0, len(huruf) - 1\npalindrom = True\nwhile kiri < kanan:\n    if huruf[kiri] != huruf[kanan]:\n        palindrom = False\n        break\n    kiri += 1\n    kanan -= 1\nprint(f\"'{kalimat}' palindrom? {palindrom}\")",
+    "d": "Spasi dan huruf besar dibuang dulu, lalu dua penunjuk bergerak ke tengah.",
+    "out": "'Ibu Ratna antar ubi' palindrom? True"
+   }
+  ]
+ },
+ "python-15-7": {
+  "exs": [
+   {
+    "t": "Kasus: mencari nomor rumah di daftar terurut",
+    "code": "rumah = [2, 5, 9, 14, 18, 23, 31, 40, 47]\ncari = 31\nkiri, kanan = 0, len(rumah) - 1\nwhile kiri <= kanan:\n    tengah = (kiri + kanan) // 2\n    if rumah[tengah] == cari:\n        print(f\"rumah {cari} ada di urutan ke-{tengah + 1}\")\n        break\n    elif rumah[tengah] < cari:\n        kiri = tengah + 1\n    else:\n        kanan = tengah - 1\nelse:\n    print(\"tidak ditemukan\")",
+    "d": "while-else menjalankan blok else hanya bila loop selesai tanpa break.",
+    "out": "rumah 31 ada di urutan ke-7"
+   },
+   {
+    "t": "Kasus: target tidak ada, laporkan posisi sisipnya",
+    "code": "harga = [5000, 8000, 12000, 15000, 20000]\ncari = 13000\nkiri, kanan = 0, len(harga) - 1\nwhile kiri <= kanan:\n    tengah = (kiri + kanan) // 2\n    if harga[tengah] < cari:\n        kiri = tengah + 1\n    else:\n        kanan = tengah - 1\nprint(f\"{cari} tidak ada; sisipkan di indeks {kiri} agar tetap terurut\")",
+    "d": "Saat loop berhenti, kiri menunjuk tempat target seharusnya berada.",
+    "out": "13000 tidak ada; sisipkan di indeks 3 agar tetap terurut"
+   },
+   {
+    "t": "Kasus: membandingkan langkah linear dan binary",
+    "code": "data = list(range(1, 1001))            # 1..1000 terurut\ncari = 777\n\nlinear = 0\nfor x in data:\n    linear += 1\n    if x == cari:\n        break\n\nbiner = 0\nkiri, kanan = 0, len(data) - 1\nwhile kiri <= kanan:\n    biner += 1\n    t = (kiri + kanan) // 2\n    if data[t] == cari:\n        break\n    elif data[t] < cari:\n        kiri = t + 1\n    else:\n        kanan = t - 1\nprint(f\"linear: {linear} langkah | binary: {biner} langkah\")",
+    "d": "Untuk 1.000 data, binary search cukup sekitar 10 langkah.",
+    "out": "linear: 777 langkah | binary: 8 langkah"
+   }
+  ]
  }
 }

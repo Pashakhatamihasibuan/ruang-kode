@@ -433,15 +433,179 @@
    },
    {
     "t": "Kasus: menandai method usang dengan @Deprecated",
-    "code": "import java.lang.reflect.Method;\nimport java.util.Arrays;\nimport java.util.Comparator;\n\npublic class Main {\n    static class Kalkulator {\n        @Deprecated(since = \"2.0\")\n        static int ongkirLama(int kg) { return kg * 9000; }\n\n        static int ongkir(int kg) { return 9000 + (kg - 1) * 7000; }\n    }\n\n    public static void main(String[] args) {\n        Method[] daftar = Kalkulator.class.getDeclaredMethods();\n        Arrays.sort(daftar, Comparator.comparing(Method::getName));\n        for (Method m : daftar) {\n            String status = m.isAnnotationPresent(Deprecated.class) ? \"usang\" : \"aktif\";\n            System.out.println(m.getName() + \": \" + status);\n        }\n    }\n}\n",
+    "code": "import java.lang.reflect.Method;\nimport java.util.Map;\nimport java.util.TreeMap;\n\npublic class Main {\n    static class Kalkulator {\n        @Deprecated(since = \"2.0\")\n        static int ongkirLama(int kg) { return kg * 9000; }\n\n        static int ongkir(int kg) { return 9000 + (kg - 1) * 7000; }\n    }\n\n    public static void main(String[] args) {\n        Map<String, String> status = new TreeMap<>();   // diurutkan menurut nama\n        for (Method m : Kalkulator.class.getDeclaredMethods()) {\n            status.put(m.getName(), m.isAnnotationPresent(Deprecated.class) ? \"usang\" : \"aktif\");\n        }\n        System.out.println(status);\n    }\n}\n",
     "d": "Alat bantu dan framework bisa membaca anotasi lewat reflection.",
-    "out": "ongkir: aktif\nongkirLama: usang"
+    "out": "{ongkir=aktif, ongkirLama=usang}"
    },
    {
     "t": "Kasus: anotasi buatan sendiri untuk versi API",
     "code": "import java.lang.annotation.*;\n\npublic class Main {\n    @Retention(RetentionPolicy.RUNTIME)\n    @Target(ElementType.TYPE)\n    @interface Versi {\n        String nomor();\n        String tim() default \"backend\";\n    }\n\n    @Versi(nomor = \"1.4\")\n    static class LayananPesanan {}\n\n    @Versi(nomor = \"0.9\", tim = \"growth\")\n    static class LayananPromo {}\n\n    public static void main(String[] args) {\n        for (Class<?> c : new Class<?>[]{LayananPesanan.class, LayananPromo.class}) {\n            Versi v = c.getAnnotation(Versi.class);\n            System.out.println(c.getSimpleName() + \" versi \" + v.nomor() + \" oleh \" + v.tim());\n        }\n    }\n}\n",
     "d": "Nilai default dipakai bila atribut tidak diisi.",
     "out": "LayananPesanan versi 1.4 oleh backend\nLayananPromo versi 0.9 oleh growth"
+   }
+  ]
+ },
+ "java-9-1": {
+  "exs": [
+   {
+    "t": "Kasus: hitung mundur peluncuran roket",
+    "code": "public class Main {\n    static void hitungMundur(int n) {\n        if (n == 0) {\n            System.out.println(\"Meluncur!\");      // base case\n            return;\n        }\n        System.out.println(n);\n        hitungMundur(n - 1);                       // recursive case\n    }\n\n    public static void main(String[] args) {\n        hitungMundur(5);\n    }\n}\n",
+    "d": "Setiap panggilan mengerjakan satu angka lalu menyerahkan sisanya ke panggilan berikutnya.",
+    "out": "5\n4\n3\n2\n1\nMeluncur!"
+   },
+   {
+    "t": "Kasus: bunga tabungan berlipat setiap tahun",
+    "code": "public class Main {\n    // saldo bertambah 5% per tahun\n    static long saldo(long awal, int tahun) {\n        if (tahun == 0) {\n            return awal;\n        }\n        return saldo(awal, tahun - 1) * 105 / 100;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(\"Saldo setelah 3 tahun: Rp\" + saldo(1_000_000, 3));\n    }\n}\n",
+    "d": "Saldo tahun ke-n dihitung dari saldo tahun ke-(n-1).",
+    "out": "Saldo setelah 3 tahun: Rp1157625"
+   },
+   {
+    "t": "Kasus: menjumlahkan isi array dari indeks tertentu",
+    "code": "public class Main {\n    static int jumlah(int[] a, int i) {\n        if (i == a.length) {\n            return 0;                      // tidak ada elemen lagi\n        }\n        return a[i] + jumlah(a, i + 1);    // elemen ini + jumlah sisanya\n    }\n\n    public static void main(String[] args) {\n        int[] belanja = {12000, 8500, 23000, 4000};\n        System.out.println(\"Total: Rp\" + jumlah(belanja, 0));\n    }\n}\n",
+    "d": "Masalah mengecil dengan menggeser indeks awal satu langkah ke kanan.",
+    "out": "Total: Rp47500"
+   }
+  ]
+ },
+ "java-9-2": {
+  "exs": [
+   {
+    "t": "Kasus: jumlah 1 sampai n",
+    "code": "public class Main {\n    static int jumlahSampai(int n) {\n        if (n == 1) {\n            return 1;                       // base case\n        }\n        return n + jumlahSampai(n - 1);     // recursive case\n    }\n\n    public static void main(String[] args) {\n        System.out.println(\"1 + 2 + ... + 10 = \" + jumlahSampai(10));\n    }\n}\n",
+    "out": "1 + 2 + ... + 10 = 55"
+   },
+   {
+    "t": "Kasus: mencetak segitiga bintang",
+    "code": "public class Main {\n    static void segitiga(int n) {\n        if (n == 0) {\n            return;                         // base case: tidak mencetak apa pun\n        }\n        segitiga(n - 1);                    // cetak segitiga yang lebih kecil dulu\n        System.out.println(\"*\".repeat(n));\n    }\n\n    public static void main(String[] args) {\n        segitiga(4);\n    }\n}\n",
+    "d": "Baris terpanjang dicetak paling akhir karena dicetak setelah panggilan rekursif selesai.",
+    "out": "*\n**\n***\n****"
+   },
+   {
+    "t": "Kasus: memeriksa palindrom secara rekursif",
+    "code": "public class Main {\n    static boolean palindrom(String s) {\n        if (s.length() <= 1) {\n            return true;                                    // base case\n        }\n        if (s.charAt(0) != s.charAt(s.length() - 1)) {\n            return false;                                   // base case kedua\n        }\n        return palindrom(s.substring(1, s.length() - 1));   // buang ujung kiri dan kanan\n    }\n\n    public static void main(String[] args) {\n        String[] kata = {\"kodok\", \"radar\", \"rumah\"};\n        for (String k : kata) {\n            System.out.println(k + \" -> \" + palindrom(k));\n        }\n    }\n}\n",
+    "d": "Rekursi boleh punya lebih dari satu base case.",
+    "out": "kodok -> true\nradar -> true\nrumah -> false"
+   }
+  ]
+ },
+ "java-9-3": {
+  "exs": [
+   {
+    "t": "Kasus: jumlah digit nomor undian",
+    "code": "public class Main {\n    static int jumlahDigit(int n) {\n        if (n < 10) {\n            return n;\n        }\n        return n % 10 + jumlahDigit(n / 10);\n    }\n\n    public static void main(String[] args) {\n        int nomor = 472;\n        System.out.println(\"Jumlah digit \" + nomor + \" = \" + jumlahDigit(nomor));\n    }\n}\n",
+    "out": "Jumlah digit 472 = 13"
+   },
+   {
+    "t": "Kasus: FPB untuk membagi kue sama rata",
+    "code": "public class Main {\n    static int fpb(int a, int b) {\n        if (b == 0) {\n            return a;\n        }\n        return fpb(b, a % b);   // algoritma Euclid\n    }\n\n    public static void main(String[] args) {\n        // 84 kue cokelat dan 36 kue keju dibagi ke kotak sebanyak mungkin, isi tiap kotak sama\n        int kotak = fpb(84, 36);\n        System.out.println(\"Jumlah kotak: \" + kotak);\n        System.out.println(\"Isi per kotak: \" + 84 / kotak + \" cokelat, \" + 36 / kotak + \" keju\");\n    }\n}\n",
+    "out": "Jumlah kotak: 12\nIsi per kotak: 7 cokelat, 3 keju"
+   },
+   {
+    "t": "Kasus: desimal ke biner secara rekursif",
+    "code": "public class Main {\n    static String biner(int n) {\n        if (n < 2) {\n            return String.valueOf(n);\n        }\n        return biner(n / 2) + (n % 2);\n    }\n\n    public static void main(String[] args) {\n        int[] angka = {5, 10, 255};\n        for (int a : angka) {\n            System.out.println(a + \" = \" + biner(a));\n        }\n    }\n}\n",
+    "d": "Digit paling kanan adalah n % 2, sisanya adalah biner dari n / 2.",
+    "out": "5 = 101\n10 = 1010\n255 = 11111111"
+   }
+  ]
+ },
+ "java-9-4": {
+  "exs": [
+   {
+    "t": "Kasus: linear search nama di daftar hadir",
+    "code": "public class Main {\n    static int cariLinear(String[] a, String target) {\n        for (int i = 0; i < a.length; i++) {\n            if (a[i].equals(target)) {\n                return i;\n            }\n        }\n        return -1;\n    }\n\n    public static void main(String[] args) {\n        String[] hadir = {\"Rani\", \"Yoga\", \"Putri\", \"Fajar\", \"Lina\"};\n        System.out.println(\"Fajar di posisi \" + cariLinear(hadir, \"Fajar\"));\n        System.out.println(\"Tono di posisi \" + cariLinear(hadir, \"Tono\"));\n    }\n}\n",
+    "d": "Data tidak perlu terurut, tetapi setiap elemen mungkin harus diperiksa.",
+    "out": "Fajar di posisi 3\nTono di posisi -1"
+   },
+   {
+    "t": "Kasus: binary search harga yang sudah terurut",
+    "code": "public class Main {\n    static int cariBiner(int[] a, int target) {\n        int kiri = 0, kanan = a.length - 1;\n        while (kiri <= kanan) {\n            int tengah = (kiri + kanan) / 2;\n            if (a[tengah] == target) {\n                return tengah;\n            } else if (a[tengah] < target) {\n                kiri = tengah + 1;\n            } else {\n                kanan = tengah - 1;\n            }\n        }\n        return -1;\n    }\n\n    public static void main(String[] args) {\n        int[] harga = {2000, 3500, 5000, 7500, 10000, 12000, 15000, 20000};\n        System.out.println(\"7500 di indeks \" + cariBiner(harga, 7500));\n        System.out.println(\"9000 di indeks \" + cariBiner(harga, 9000));\n    }\n}\n",
+    "out": "7500 di indeks 3\n9000 di indeks -1"
+   },
+   {
+    "t": "Kasus: selection sort lalu binary search",
+    "code": "import java.util.Arrays;\n\npublic class Main {\n    static void selectionSort(int[] a) {\n        for (int i = 0; i < a.length - 1; i++) {\n            int min = i;\n            for (int j = i + 1; j < a.length; j++) {\n                if (a[j] < a[min]) {\n                    min = j;\n                }\n            }\n            int tmp = a[i];\n            a[i] = a[min];\n            a[min] = tmp;\n        }\n    }\n\n    public static void main(String[] args) {\n        int[] nilai = {78, 92, 65, 88, 70};\n        selectionSort(nilai);\n        System.out.println(\"Terurut: \" + Arrays.toString(nilai));\n        System.out.println(\"Nilai 88 di indeks \" + Arrays.binarySearch(nilai, 88));\n    }\n}\n",
+    "d": "Binary search hanya benar setelah data diurutkan.",
+    "out": "Terurut: [65, 70, 78, 88, 92]\nNilai 88 di indeks 3"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Urut multi-kunci dengan Comparable",
+    "b": "Katalog toko daring biasanya diurutkan dengan lebih dari satu kunci. Comparable menyimpan aturan urutan itu di dalam kelasnya.",
+    "code": "import java.util.*;\n\npublic class Main {\n    // urut kategori A-Z, lalu harga dari yang termahal\n    record Produk(String nama, String kategori, int harga) implements Comparable<Produk> {\n        public int compareTo(Produk lain) {\n            int k = kategori.compareTo(lain.kategori);\n            if (k != 0) {\n                return k;\n            }\n            return lain.harga - harga;\n        }\n    }\n\n    public static void main(String[] args) {\n        List<Produk> ps = new ArrayList<>();\n        ps.add(new Produk(\"Gayo\", \"Kopi\", 85));\n        ps.add(new Produk(\"Melati\", \"Teh\", 35));\n        ps.add(new Produk(\"Toraja\", \"Kopi\", 92));\n        ps.add(new Produk(\"Hijau\", \"Teh\", 42));\n        Collections.sort(ps);\n        for (Produk p : ps) {\n            System.out.println(p.kategori() + \" \" + p.nama() + \" \" + p.harga());\n        }\n    }\n}\n",
+    "out": "Kopi Toraja 92\nKopi Gayo 85\nTeh Hijau 42\nTeh Melati 35"
+   }
+  ]
+ },
+ "java-9-5": {
+  "exs": [
+   {
+    "t": "Kasus: mencari halaman di buku tebal",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        int[] halamanBab = {1, 15, 42, 77, 103, 150, 198, 240};\n        int cari = 150;\n        int kiri = 0, kanan = halamanBab.length - 1, langkah = 0;\n        int posisi = -1;\n        while (kiri <= kanan && posisi == -1) {\n            langkah++;\n            int t = (kiri + kanan) / 2;\n            if (halamanBab[t] == cari) {\n                posisi = t;\n            } else if (halamanBab[t] < cari) {\n                kiri = t + 1;\n            } else {\n                kanan = t - 1;\n            }\n        }\n        System.out.println(\"Halaman \" + cari + \" adalah awal bab ke-\" + (posisi + 1) + \" (\" + langkah + \" langkah)\");\n    }\n}\n",
+    "out": "Halaman 150 adalah awal bab ke-6 (2 langkah)"
+   },
+   {
+    "t": "Kasus: mencari nama di daftar terurut abjad",
+    "code": "public class Main {\n    static int cari(String[] a, String x) {\n        int kiri = 0, kanan = a.length - 1;\n        while (kiri <= kanan) {\n            int t = (kiri + kanan) / 2;\n            int banding = a[t].compareTo(x);   // negatif: a[t] sebelum x\n            if (banding == 0) return t;\n            else if (banding < 0) kiri = t + 1;\n            else kanan = t - 1;\n        }\n        return -1;\n    }\n\n    public static void main(String[] args) {\n        String[] nama = {\"Agus\", \"Bella\", \"Dewi\", \"Hendra\", \"Nadia\", \"Rahmat\", \"Wayan\"};\n        System.out.println(\"Nadia: \" + cari(nama, \"Nadia\"));\n        System.out.println(\"Joko : \" + cari(nama, \"Joko\"));\n    }\n}\n",
+    "d": "Untuk teks, perbandingan memakai compareTo, bukan < atau >.",
+    "out": "Nadia: 4\nJoko : -1"
+   },
+   {
+    "t": "Kasus: berapa langkah untuk sejuta data?",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        int[] ukuran = {10, 1000, 1000000};\n        for (int n : ukuran) {\n            int langkah = 0;\n            int sisa = n;\n            while (sisa > 0) {      // setiap langkah membuang separuh data\n                sisa /= 2;\n                langkah++;\n            }\n            System.out.println(n + \" data: paling banyak \" + langkah + \" langkah\");\n        }\n    }\n}\n",
+    "d": "Itulah sebabnya binary search disebut O(log n).",
+    "out": "10 data: paling banyak 4 langkah\n1000 data: paling banyak 10 langkah\n1000000 data: paling banyak 20 langkah"
+   }
+  ]
+ },
+ "java-9-6": {
+  "exs": [
+   {
+    "t": "Kasus: mengurutkan tinggi badan untuk barisan upacara",
+    "code": "import java.util.Arrays;\n\npublic class Main {\n    public static void main(String[] args) {\n        int[] tinggi = {165, 150, 172, 158, 160};\n        for (int i = 0; i < tinggi.length - 1; i++) {\n            int m = i;\n            for (int j = i + 1; j < tinggi.length; j++) {\n                if (tinggi[j] < tinggi[m]) m = j;\n            }\n            int tmp = tinggi[i]; tinggi[i] = tinggi[m]; tinggi[m] = tmp;\n            System.out.println(\"Putaran \" + (i + 1) + \": \" + Arrays.toString(tinggi));\n        }\n    }\n}\n",
+    "d": "Setiap putaran mengunci satu posisi dari depan.",
+    "out": "Putaran 1: [150, 165, 172, 158, 160]\nPutaran 2: [150, 158, 172, 165, 160]\nPutaran 3: [150, 158, 160, 165, 172]\nPutaran 4: [150, 158, 160, 165, 172]"
+   },
+   {
+    "t": "Kasus: mengurutkan nama siswa",
+    "code": "import java.util.Arrays;\n\npublic class Main {\n    public static void main(String[] args) {\n        String[] nama = {\"Joko\", \"Ani\", \"Wati\", \"Bayu\", \"Citra\"};\n        for (int i = 0; i < nama.length - 1; i++) {\n            int m = i;\n            for (int j = i + 1; j < nama.length; j++) {\n                if (nama[j].compareTo(nama[m]) < 0) m = j;\n            }\n            String tmp = nama[i]; nama[i] = nama[m]; nama[m] = tmp;\n        }\n        System.out.println(Arrays.toString(nama));\n    }\n}\n",
+    "out": "[Ani, Bayu, Citra, Joko, Wati]"
+   },
+   {
+    "t": "Kasus: harga termahal di depan",
+    "code": "import java.util.Arrays;\n\npublic class Main {\n    public static void main(String[] args) {\n        int[] harga = {45000, 120000, 15000, 87000};\n        for (int i = 0; i < harga.length - 1; i++) {\n            int m = i;\n            for (int j = i + 1; j < harga.length; j++) {\n                if (harga[j] > harga[m]) m = j;     // cari yang TERBESAR\n            }\n            int tmp = harga[i]; harga[i] = harga[m]; harga[m] = tmp;\n        }\n        System.out.println(\"Dari termahal: \" + Arrays.toString(harga));\n    }\n}\n",
+    "d": "Cukup ubah tanda < menjadi > untuk urutan menurun.",
+    "out": "Dari termahal: [120000, 87000, 45000, 15000]"
+   }
+  ]
+ },
+ "java-9-7": {
+  "exs": [
+   {
+    "t": "Kasus: O(n), memeriksa setiap transaksi sekali",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        int[] ukuran = {10, 100, 1000};\n        for (int n : ukuran) {\n            int langkah = 0;\n            for (int i = 0; i < n; i++) {\n                langkah++;\n            }\n            System.out.println(\"n = \" + n + \" -> \" + langkah + \" langkah\");\n        }\n    }\n}\n",
+    "d": "Data 10 kali lebih banyak, langkah juga 10 kali lebih banyak.",
+    "out": "n = 10 -> 10 langkah\nn = 100 -> 100 langkah\nn = 1000 -> 1000 langkah"
+   },
+   {
+    "t": "Kasus: O(n²), membandingkan setiap pasangan siswa",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        int[] ukuran = {10, 100, 1000};\n        for (int n : ukuran) {\n            int langkah = 0;\n            for (int i = 0; i < n; i++) {\n                for (int j = i + 1; j < n; j++) {\n                    langkah++;\n                }\n            }\n            System.out.println(\"n = \" + n + \" -> \" + langkah + \" pasangan\");\n        }\n    }\n}\n",
+    "d": "Kira-kira n²/2 langkah; konstanta 1/2 diabaikan, jadi tetap O(n²).",
+    "out": "n = 10 -> 45 pasangan\nn = 100 -> 4950 pasangan\nn = 1000 -> 499500 pasangan"
+   },
+   {
+    "t": "Kasus: O(log n), membagi dua sampai habis",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        int[] ukuran = {16, 1024, 1048576};\n        for (int n : ukuran) {\n            int langkah = 0;\n            for (int i = n; i > 1; i /= 2) {\n                langkah++;\n            }\n            System.out.println(\"n = \" + n + \" -> \" + langkah + \" langkah\");\n        }\n    }\n}\n",
+    "d": "Data bertambah sejuta kali lipat, langkah hanya bertambah sedikit.",
+    "out": "n = 16 -> 4 langkah\nn = 1024 -> 10 langkah\nn = 1048576 -> 20 langkah"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Jumlah langkah O(n), O(n log n), O(n²)",
+    "b": "Untuk 100.000 data, algoritma O(n²) butuh sekitar 6.000 kali lebih banyak langkah daripada O(n log n). Inilah alasan pengurutan bawaan memakai algoritma O(n log n).",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        int[] ukuran = {10, 1_000, 100_000};\n        for (int n : ukuran) {\n            double lg = Math.log(n) / Math.log(2);\n            long nLogN = Math.round(n * lg);\n            long kuadrat = (long) n * n;\n            System.out.println(\"n = \" + n + \" | log n = \" + Math.round(lg) + \" | n log n = \" + nLogN + \" | n^2 = \" + kuadrat);\n        }\n    }\n}\n",
+    "out": "n = 10 | log n = 3 | n log n = 33 | n^2 = 100\nn = 1000 | log n = 10 | n log n = 9966 | n^2 = 1000000\nn = 100000 | log n = 17 | n log n = 1660964 | n^2 = 10000000000"
    }
   ]
  }

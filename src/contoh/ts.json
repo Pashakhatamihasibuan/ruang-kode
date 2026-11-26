@@ -1,0 +1,146 @@
+{
+ "ts-1-1": {
+  "exs": [
+   {
+    "t": "Kasus: total belanja di warung",
+    "d": "Anotasi number pada parameter mencegah harga dikirim sebagai teks.",
+    "code": "function totalBelanja(hargaSatuan: number, jumlah: number): number {\n  return hargaSatuan * jumlah;\n}\n\nconst namaBarang: string = \"Gula pasir 1 kg\";\nconsole.log(namaBarang, totalBelanja(16500, 3));\n// totalBelanja(16500, \"3\");\n//   ^ error: Argument of type 'string' is not assignable to parameter of type 'number'.",
+    "out": "Gula pasir 1 kg 49500"
+   },
+   {
+    "t": "Kasus: salah ketik nama properti",
+    "d": "Editor langsung menandai properti yang tidak ada, bukan diam-diam menghasilkan undefined.",
+    "code": "const siswa = { nama: \"Dewi Lestari\", kelas: \"XI IPA 2\", nilai: 88 };\n\nconsole.log(siswa.nama, \"nilai\", siswa.nilai);\nconsole.log(siswa.nilai >= 75 ? \"Tuntas\" : \"Remedial\");\n// console.log(siswa.nilia);\n//   ^ error: Property 'nilia' does not exist. Did you mean 'nilai'?\n// Di JavaScript murni, siswa.nilia hanya menghasilkan undefined tanpa peringatan.",
+    "out": "Dewi Lestari nilai 88\nTuntas"
+   },
+   {
+    "t": "Kasus: angka dari form masih berupa teks",
+    "d": "Nilai dari form selalu string; TypeScript memaksa kita mengubahnya dulu.",
+    "code": "function hitungOngkir(jarakKm: number): number {\n  return 5000 + jarakKm * 2500;\n}\n\nconst inputJarak: string = \"4\";          // isi form selalu berupa teks\nconst jarak: number = Number(inputJarak);\nconsole.log(\"Ongkir ojek:\", hitungOngkir(jarak));\n// hitungOngkir(inputJarak);\n//   ^ error: Argument of type 'string' is not assignable to parameter of type 'number'.",
+    "out": "Ongkir ojek: 15000"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Bug yang ditangkap sebelum produksi",
+    "b": "Data stok gudang kadang berisi harga berupa teks. Di JavaScript, kesalahan ini baru ketahuan saat laporan menampilkan angka aneh. Dengan anotasi tipe, baris yang salah ditolak sebelum program dijalankan.",
+    "code": "function nilaiStok(harga: number, stok: number): number {\n  return harga * stok;\n}\n\nconst kopi = { nama: \"Kopi 250g\", harga: 45000, stok: 12 };\nconst teh = { nama: \"Teh hijau\", harga: 28000, stok: 30 };\nconst gula = { nama: \"Gula\", harga: \"15000\", stok: 5 };   // data salah: harga berupa teks\n\nconst total: number = nilaiStok(kopi.harga, kopi.stok) + nilaiStok(teh.harga, teh.stok);\nconsole.log(\"Nilai stok:\", \"Rp\" + total.toLocaleString(\"id-ID\"));\n// nilaiStok(gula.harga, gula.stok);\n//   ^ error TS2345: Argument of type 'string' is not assignable to parameter of type 'number'.\n// Tanpa pemeriksaan tipe, operator + menyambung teks, bukan menjumlah:\nconsole.log(\"Teks + angka di JavaScript:\", gula.harga + gula.stok);",
+    "out": "Nilai stok: Rp1.380.000\nTeks + angka di JavaScript: 150005",
+    "lang": "ts"
+   }
+  ]
+ },
+ "ts-1-2": {
+  "exs": [
+   {
+    "t": "Kasus: hanya memeriksa tipe tanpa membuat file",
+    "d": "Opsi --noEmit dipakai di CI untuk menolak kode yang salah tipe.",
+    "code": "$ npx tsc --noEmit\nsrc/kasir.ts:4:22 - error TS2345: Argument of type 'string' is not assignable to parameter of type 'number'.\n\n4 console.log(totalHarga(\"85000\", 2));\n                       ~~~~~~~\n\nFound 1 error in src/kasir.ts:4"
+   },
+   {
+    "t": "Kasus: menjalankan file .ts langsung dengan Node 22",
+    "code": "$ cat halo.ts\nconst nama: string = \"Bayu\";\nconst umur: number = 17;\nconsole.log(\"Halo, \" + nama + \". Umurmu \" + umur + \" tahun.\");\n\n$ node --experimental-strip-types halo.ts\nHalo, Bayu. Umurmu 17 tahun."
+   },
+   {
+    "t": "Kasus: skrip npm untuk proyek tugas sekolah",
+    "d": "Simpan perintah yang sering dipakai di package.json agar satu tim memakai perintah yang sama.",
+    "code": "# package.json (potongan)\n{\n  \"scripts\": {\n    \"cek\": \"tsc --noEmit\",\n    \"build\": \"tsc\",\n    \"mulai\": \"node dist/main.js\"\n  }\n}\n\n$ npm run cek      # periksa tipe saja\n$ npm run build    # hasilkan dist/main.js\n$ npm run mulai    # jalankan hasil kompilasi"
+   }
+  ]
+ },
+ "ts-2-1": {
+  "exs": [
+   {
+    "t": "Kasus: data siswa dengan type inference",
+    "d": "Tanpa anotasi pun, TypeScript menebak tipe dari nilai awal.",
+    "code": "let nama = \"Putu Ayu\";     // ditebak: string\nlet umur = 16;             // ditebak: number\nlet lulus = false;         // ditebak: boolean\n\numur = umur + 1;\nlulus = true;\nconsole.log(nama, umur, lulus);\n// umur = \"tujuh belas\";   // error: Type 'string' is not assignable to type 'number'.",
+    "out": "Putu Ayu 17 true"
+   },
+   {
+    "t": "Kasus: daftar nilai ulangan (number[])",
+    "code": "const nilai: number[] = [78, 85, 92, 70];\nnilai.push(88);\nconst total = nilai.reduce((a, b) => a + b, 0);\nconsole.log(\"Banyak nilai:\", nilai.length);\nconsole.log(\"Rata-rata:\", total / nilai.length);\n\nconst mapel: Array<string> = [\"Matematika\", \"Fisika\"];   // penulisan lain untuk string[]\nconsole.log(mapel.join(\", \"));\n// nilai.push(\"A\");   // error: Argument of type 'string' is not assignable to parameter of type 'number'.",
+    "out": "Banyak nilai: 5\nRata-rata: 82.6\nMatematika, Fisika"
+   },
+   {
+    "t": "Kasus: tuple pasangan kota dan ongkir",
+    "d": "Setiap tuple berisi tepat dua posisi: nama kota (string) lalu biaya (number).",
+    "code": "const ongkir: [string, number][] = [[\"Bandung\", 12000], [\"Surabaya\", 18000], [\"Makassar\", 32000]];\n\nfor (const [kota, biaya] of ongkir) {\n  console.log(kota.padEnd(9), \"Rp\" + biaya.toLocaleString(\"id-ID\"));\n}\nconst pertama: [string, number] = ongkir[0];\nconsole.log(\"Kota pertama:\", pertama[0]);\n// const salah: [string, number] = [12000, \"Bandung\"];   // error: urutan tipe tertukar",
+    "out": "Bandung   Rp12.000\nSurabaya  Rp18.000\nMakassar  Rp32.000\nKota pertama: Bandung"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Tuple untuk koordinat dan hasil fungsi",
+    "b": "Tuple cocok untuk nilai yang selalu berpasangan, seperti lintang-bujur atau nilai minimum-maksimum. Fungsi bisa mengembalikan tuple, lalu hasilnya langsung di-destructure. bigint dipakai untuk bilangan bulat yang melewati batas aman number.",
+    "code": "const kantor: [number, number] = [-6.2088, 106.8456];\n\nfunction minMax(nilai: number[]): [number, number] {\n  return [Math.min(...nilai), Math.max(...nilai)];\n}\n\nconst suhu: number[] = [27.5, 31.2, 29.8, 33.1, 26.4];\nconst [rendah, tinggi] = minMax(suhu);\nconsole.log(`Kantor di ${kantor[0]}, ${kantor[1]}`);\nconsole.log(`Suhu minggu ini: ${rendah}°C sampai ${tinggi}°C`);\nconst besar: bigint = 2n ** 64n;\nconsole.log(\"2^64 =\", besar.toString());",
+    "out": "Kantor di -6.2088, 106.8456\nSuhu minggu ini: 26.4°C sampai 33.1°C\n2^64 = 18446744073709551616",
+    "lang": "ts"
+   }
+  ]
+ },
+ "ts-2-2": {
+  "exs": [
+   {
+    "t": "Kasus: status pembayaran dengan literal type",
+    "d": "Variabel hanya boleh berisi salah satu teks yang sudah disebutkan.",
+    "code": "type StatusBayar = \"belum\" | \"lunas\" | \"refund\";\n\nlet status: StatusBayar = \"belum\";\nconsole.log(\"Status awal:\", status);\nstatus = \"lunas\";\nconsole.log(\"Setelah transfer:\", status);\n// status = \"LUNAS\";   // error: Type '\"LUNAS\"' is not assignable to type 'StatusBayar'.",
+    "out": "Status awal: belum\nSetelah transfer: lunas"
+   },
+   {
+    "t": "Kasus: profil siswa dengan properti opsional dan readonly",
+    "code": "type Siswa = {\n  readonly nis: string;\n  nama: string;\n  kelas: string;\n  ekskul?: string;\n};\n\nconst s1: Siswa = { nis: \"2024001\", nama: \"Rizky Pratama\", kelas: \"X-1\" };\nconst s2: Siswa = { nis: \"2024002\", nama: \"Nur Aini\", kelas: \"X-2\", ekskul: \"Pramuka\" };\ns1.kelas = \"X-3\";   // boleh diubah\nconsole.log(s1.nama, s1.kelas, s1.ekskul ?? \"belum ikut ekskul\");\nconsole.log(s2.nama, s2.kelas, s2.ekskul ?? \"belum ikut ekskul\");\n// s1.nis = \"999\";   // error: Cannot assign to 'nis' because it is a read-only property.",
+    "out": "Rizky Pratama X-3 belum ikut ekskul\nNur Aini X-2 Pramuka"
+   },
+   {
+    "t": "Kasus: enum untuk ukuran gelas minuman",
+    "d": "Enum menghasilkan objek sungguhan di JavaScript, jadi perlu dikompilasi dengan tsc (Node --experimental-strip-types belum mendukungnya).",
+    "code": "enum Ukuran { Kecil = \"S\", Sedang = \"M\", Besar = \"L\" }\n\nconst pesanan: { menu: string; ukuran: Ukuran } = { menu: \"Es teh\", ukuran: Ukuran.Besar };\nconsole.log(pesanan.menu, pesanan.ukuran);   // Es teh L\nconsole.log(Object.values(Ukuran));          // [ 'S', 'M', 'L' ]\n// pesanan.ukuran = \"XL\";   // error: Type '\"XL\"' is not assignable to type 'Ukuran'."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Union literal vs enum untuk status pesanan",
+    "b": "Status pesanan ditulis sebagai union literal (tidak menghasilkan kode JavaScript), sedangkan prioritas memakai enum angka yang bisa dibaca balik namanya. Contoh ini memakai enum, jadi jalankan setelah dikompilasi tsc; keluarannya ditulis di komentar.",
+    "code": "type Status = \"baru\" | \"dibayar\" | \"dikirim\" | \"selesai\";\nenum Prioritas { Rendah = 1, Normal = 2, Tinggi = 3 }\n\ntype Pesanan = { id: string; status: Status; prioritas: Prioritas; catatan?: string };\n\nconst daftar: Pesanan[] = [\n  { id: \"INV-001\", status: \"dikirim\", prioritas: Prioritas.Normal },\n  { id: \"INV-002\", status: \"baru\", prioritas: Prioritas.Tinggi, catatan: \"kirim pagi\" },\n];\nfor (const p of daftar) {\n  console.log(p.id, p.status.padEnd(8), Prioritas[p.prioritas], p.catatan ?? \"-\");\n}\n// INV-001 dikirim  Normal -\n// INV-002 baru     Tinggi kirim pagi\n// const salah: Status = \"batal\";   // error: \"batal\" bukan bagian dari Status",
+    "lang": "ts"
+   }
+  ]
+ },
+ "ts-2-3": {
+  "code": "function cetak(pesan: string): void {\n  console.log(\"LOG:\", pesan);\n}\n\nfunction gagal(pesan: string): never {\n  throw new Error(pesan);\n}\n\nfunction panjang(x: unknown): number {\n  if (typeof x === \"string\") return x.length;     // aman setelah diperiksa\n  if (Array.isArray(x)) return x.length;\n  return 0;\n}\n\ncetak(\"mulai\");\nconsole.log(panjang(\"halo\"), panjang([1, 2, 3]), panjang(42));\ntry {\n  gagal(\"stok habis\");\n} catch (e) {\n  if (e instanceof Error) console.log(e.message);   // e bertipe unknown, periksa dulu\n}",
+  "out": "LOG: mulai\n4 3 0\nstok habis",
+  "exs": [
+   {
+    "t": "Kasus: fungsi void untuk mencatat absensi",
+    "d": "Fungsi void hanya melakukan sesuatu; kalau hasilnya diambil, isinya undefined.",
+    "code": "function catatHadir(nama: string, jam: string): void {\n  console.log(`${jam} ${nama} hadir`);\n}\n\ncatatHadir(\"Fajar\", \"06.55\");\ncatatHadir(\"Melati\", \"07.02\");\nconst hasil = catatHadir(\"Yohanes\", \"07.10\");\nconsole.log(\"Nilai kembalian fungsi void:\", hasil);",
+    "out": "06.55 Fajar hadir\n07.02 Melati hadir\n07.10 Yohanes hadir\nNilai kembalian fungsi void: undefined"
+   },
+   {
+    "t": "Kasus: harga dari sumber yang belum jelas (unknown)",
+    "code": "function keRupiah(nilai: unknown): string {\n  if (typeof nilai === \"number\") return \"Rp\" + nilai.toLocaleString(\"id-ID\");\n  if (typeof nilai === \"string\" && nilai.trim() !== \"\" && !Number.isNaN(Number(nilai))) {\n    return \"Rp\" + Number(nilai).toLocaleString(\"id-ID\");\n  }\n  return \"format harga tidak dikenal\";\n}\n\nconsole.log(keRupiah(25000));\nconsole.log(keRupiah(\"17500\"));\nconsole.log(keRupiah(true));\n// nilai.toLocaleString() tanpa pemeriksaan -> error: 'nilai' is of type 'unknown'.",
+    "out": "Rp25.000\nRp17.500\nformat harga tidak dikenal"
+   },
+   {
+    "t": "Kasus: any mematikan pemeriksaan, unknown tidak",
+    "d": "Kesalahan pada any baru ketahuan saat program berjalan.",
+    "code": "const dataAny: any = \"85000\";\nconst dataUnknown: unknown = \"85000\";\n\nconsole.log(dataAny.toFixed);    // lolos kompilasi, padahal isinya undefined\n// dataUnknown.toFixed(2);       // error: 'dataUnknown' is of type 'unknown'.\nif (typeof dataUnknown === \"string\") console.log(Number(dataUnknown).toFixed(2));\ntry {\n  dataAny.toFixed(2);\n} catch (e) {\n  if (e instanceof Error) console.log(\"Error saat jalan:\", e.message);\n}",
+    "out": "undefined\n85000.00\nError saat jalan: dataAny.toFixed is not a function"
+   },
+   {
+    "t": "Kasus: never untuk penolakan transaksi",
+    "code": "function tolak(alasan: string): never {\n  throw new Error(\"Transaksi ditolak: \" + alasan);\n}\n\nfunction tarikTunai(saldo: number, jumlah: number): number {\n  if (jumlah > saldo) tolak(\"saldo tidak cukup\");\n  return saldo - jumlah;\n}\n\nconsole.log(\"Sisa saldo:\", tarikTunai(500000, 200000));\ntry {\n  tarikTunai(100000, 250000);\n} catch (e) {\n  if (e instanceof Error) console.log(e.message);\n}",
+    "out": "Sisa saldo: 300000\nTransaksi ditolak: saldo tidak cukup"
+   }
+  ],
+  "cx": [
+   {
+    "t": "unknown dari JSON.parse dan exhaustive check dengan never",
+    "b": "Hasil JSON.parse sebaiknya disimpan sebagai unknown, lalu diperiksa sebelum dipakai. Di sisi lain, variabel bertipe never di cabang default membuat compiler protes jika suatu hari ada jenis bentuk baru yang lupa ditangani.",
+    "code": "function bacaUmur(json: string): number {\n  const data: unknown = JSON.parse(json);\n  if (typeof data === \"object\" && data !== null && \"umur\" in data && typeof data.umur === \"number\") {\n    return data.umur;\n  }\n  throw new Error(\"format tidak valid\");\n}\n\ntype Bentuk = { jenis: \"persegi\"; sisi: number } | { jenis: \"lingkaran\"; r: number };\nfunction luas(b: Bentuk): number {\n  switch (b.jenis) {\n    case \"persegi\": return b.sisi ** 2;\n    case \"lingkaran\": return Math.PI * b.r ** 2;\n    default: { const mustahil: never = b; return mustahil; }  // error jika ada jenis baru belum ditangani\n  }\n}\nconst log = (pesan: string): void => console.log(\"[log]\", pesan);\n\nconsole.log(bacaUmur('{\"umur\": 24}'));\ntry { bacaUmur('{\"umur\": \"24\"}'); } catch (e) { if (e instanceof Error) log(e.message); }\nconsole.log(luas({ jenis: \"lingkaran\", r: 2 }).toFixed(2));",
+    "out": "24\n[log] format tidak valid\n12.57",
+    "lang": "ts"
+   }
+  ]
+ }
+}
