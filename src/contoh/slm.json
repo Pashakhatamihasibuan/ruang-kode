@@ -169,5 +169,264 @@
     "code": "testWidgets('layar Masuk memenuhi pedoman aksesibilitas', (tester) async {\n  final handle = tester.ensureSemantics();\n  await tester.pumpWidget(MaterialApp(theme: temaKopiNusa, home: const LayarMasuk()));\n\n  await expectLater(tester, meetsGuideline(androidTapTargetGuideline)); // minimal 48 x 48 dp\n  await expectLater(tester, meetsGuideline(textContrastGuideline));     // kontras 4.5:1\n  await expectLater(tester, meetsGuideline(labeledTapTargetGuideline)); // ikon punya label\n  handle.dispose();\n});"
    }
   ]
+ },
+ "slm-5-2": {
+  "exs": [
+   {
+    "t": "Kasus: memecah layar Daftar akun",
+    "d": "Layar lain dipecah dengan cara yang sama: blok dari atas ke bawah, ukuran, jarak, dan perilaku.",
+    "code": "Daftar (360 x 800 dp)\n├─ AppBar dengan tombol kembali (tinggi 64)\n├─ Judul \"Buat akun\" headlineSmall              jarak bawah 24\n├─ TextField Nama lengkap (56, r12)   keyboard teks, kapital tiap kata, aksi Next   jarak 16\n├─ TextField Email (56, r12)          keyboard email, aksi Next                     jarak 16\n├─ TextField Nomor HP (56, r12)       keyboard telepon, awalan +62, aksi Next       jarak 16\n├─ TextField Kata sandi (56, r12)     ikon mata, teks bantuan \"minimal 8 karakter\"  jarak 16\n├─ Checkbox \"Saya setuju dengan Syarat & Ketentuan\" (tautan)                        jarak 24\n└─ Tombol Daftar FilledButton 48, lebar penuh, nonaktif sampai checkbox dicentang"
+   },
+   {
+    "t": "Kasus: tabel perilaku setiap field",
+    "d": "Hal yang tidak terlihat di gambar statis dicatat sebelum menulis kode.",
+    "code": "Field        Keyboard   Aksi   Autofill   Validasi saat Masuk ditekan\nEmail        email      Next   email      wajib, format nama@domain\nKata sandi   teks       Done   password   wajib, minimal 8 karakter\n--------------------------------------------------------------------\nDone pada kata sandi = sama dengan menekan tombol Masuk\nKeyboard muncul      = isi bisa digulir, tombol Masuk tetap bisa dicapai\nKetuk di luar field  = keyboard ditutup"
+   },
+   {
+    "t": "Kasus: menandai komponen yang dipakai ulang",
+    "d": "Blok yang muncul di beberapa layar dijadikan komponen sekali saja.",
+    "code": "Komponen         Dipakai di                    Variasi\nFieldTeks        Masuk, Daftar, Lupa sandi     biasa, rahasia (ikon mata), error\nTombolUtama      Masuk, Daftar, Checkout       normal, nonaktif, memuat\nTombolGoogle     Masuk, Daftar                 -\nPemisahAtau      Masuk, Daftar                 -\nBarisTautan      Masuk (\"Daftar\"), Daftar (\"Masuk\")   teks dan tautan berbeda\n\nUrutan kerja: FieldTeks dan TombolUtama dulu, baru susun layar Masuk."
+   }
+  ]
+ },
+ "slm-5-3": {
+  "exs": [
+   {
+    "t": "Kasus: tema gelap dari token yang sama",
+    "d": "Skema gelap dibangkitkan dari benih yang sama, bentuk komponen disalin dengan copyWith.",
+    "code": "final temaKopiGelap = temaKopi.copyWith(\n  colorScheme: ColorScheme.fromSeed(\n    seedColor: const Color(0xFF8A4B2A),\n    brightness: Brightness.dark,\n  ),\n  inputDecorationTheme: InputDecorationTheme(\n    filled: true,\n    fillColor: const Color(0xFF2A211C), // token surface-container gelap\n    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),\n  ),\n);\n\n// MaterialApp(theme: temaKopi, darkTheme: temaKopiGelap, themeMode: ThemeMode.system, ...)"
+   },
+   {
+    "t": "Kasus: tombol Google dengan gaya outlined dari tema",
+    "d": "OutlinedButton diatur di tema agar tinggi dan radiusnya sama dengan tombol utama.",
+    "code": "final temaKopiLengkap = temaKopi.copyWith(\n  outlinedButtonTheme: OutlinedButtonThemeData(\n    style: OutlinedButton.styleFrom(\n      minimumSize: const Size.fromHeight(48),\n      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),\n      side: const BorderSide(color: Color(0xFFD9CFC7)), // token outline\n    ),\n  ),\n  textButtonTheme: TextButtonThemeData(\n    style: TextButton.styleFrom(minimumSize: const Size(48, 48)), // target sentuh\n  ),\n);"
+   },
+   {
+    "t": "Kasus: gaya teks lengkap layar Masuk",
+    "d": "Setiap gaya teks di spesifikasi dipetakan ke satu peran TextTheme.",
+    "code": "const teksMasuk = TextTheme(\n  headlineSmall: TextStyle(fontSize: 24, height: 32 / 24, fontWeight: FontWeight.w700), // judul\n  bodyMedium: TextStyle(fontSize: 14, height: 20 / 14),                               // subjudul\n  bodyLarge: TextStyle(fontSize: 16, height: 24 / 16),                                // isi field\n  labelLarge: TextStyle(fontSize: 14, height: 20 / 14, fontWeight: FontWeight.w600),  // tombol\n);\n\nfinal temaKopiTeks = temaKopi.copyWith(\n  textTheme: teksMasuk.apply(fontFamily: 'PlusJakartaSans'),\n);"
+   }
+  ]
+ },
+ "slm-5-4": {
+  "exs": [
+   {
+    "t": "Kasus: tombol yang menempel di bawah layar",
+    "d": "Tombol utama diletakkan di bottomNavigationBar Scaffold sehingga ikut naik di atas keyboard.",
+    "code": "Scaffold(\n  body: const SafeArea(\n    child: SingleChildScrollView(\n      padding: EdgeInsets.all(24),\n      child: FormDaftar(),\n    ),\n  ),\n  bottomNavigationBar: SafeArea(\n    child: Padding(\n      padding: EdgeInsets.fromLTRB(24, 8, 24, 16 + MediaQuery.viewInsetsOf(context).bottom),\n      child: FilledButton(onPressed: () {}, child: const Text('Daftar')),\n    ),\n  ),\n)"
+   },
+   {
+    "t": "Kasus: gambar sampul sampai ke status bar",
+    "d": "SafeArea bisa dimatikan sisi tertentu: gambar boleh di belakang status bar, teks tetap aman.",
+    "code": "Scaffold(\n  body: SafeArea(\n    top: false, // gambar sampul memenuhi area status bar\n    child: Column(\n      children: [\n        Image.asset('assets/images/sampul_kopi.jpg', height: 240, width: double.infinity, fit: BoxFit.cover),\n        const Padding(\n          padding: EdgeInsets.all(24),\n          child: Text('Selamat datang di KopiNusa'),\n        ),\n      ],\n    ),\n  ),\n)"
+   },
+   {
+    "t": "Kasus: komponen logo sesuai spesifikasi",
+    "d": "Ukuran 48 dan radius 12 dari Figma menjadi parameter komponen LogoKopi.",
+    "code": "class LogoKopi extends StatelessWidget {\n  const LogoKopi({super.key, this.ukuran = 48});\n  final double ukuran;\n\n  @override\n  Widget build(BuildContext context) {\n    return Semantics(\n      label: 'Logo KopiNusa',\n      child: ClipRRect(\n        borderRadius: BorderRadius.circular(ukuran / 4), // 48 -> radius 12\n        child: Image.asset('assets/images/logo.png', width: ukuran, height: ukuran),\n      ),\n    );\n  }\n}"
+   }
+  ]
+ },
+ "slm-5-5": {
+  "exs": [
+   {
+    "t": "Kasus: komponen FieldTeks yang dipakai ulang",
+    "d": "Satu komponen menangani field biasa dan field rahasia dengan ikon mata.",
+    "code": "class FieldTeks extends StatefulWidget {\n  const FieldTeks({super.key, required this.label, this.rahasia = false, this.keyboard, this.autofill});\n  final String label;\n  final bool rahasia;\n  final TextInputType? keyboard;\n  final String? autofill;\n\n  @override\n  State<FieldTeks> createState() => _FieldTeksState();\n}\n\nclass _FieldTeksState extends State<FieldTeks> {\n  late bool sembunyi = widget.rahasia;\n\n  @override\n  Widget build(BuildContext context) {\n    return TextFormField(\n      obscureText: sembunyi,\n      keyboardType: widget.keyboard,\n      autofillHints: widget.autofill == null ? null : [widget.autofill!],\n      decoration: InputDecoration(\n        labelText: widget.label,\n        suffixIcon: widget.rahasia\n            ? IconButton(\n                tooltip: sembunyi ? 'Tampilkan kata sandi' : 'Sembunyikan kata sandi',\n                icon: Icon(sembunyi ? Icons.visibility : Icons.visibility_off),\n                onPressed: () => setState(() => sembunyi = !sembunyi),\n              )\n            : null,\n      ),\n    );\n  }\n}"
+   },
+   {
+    "t": "Kasus: tombol Google dengan ikon SVG",
+    "d": "Ikon SVG hasil ekspor ditampilkan dengan flutter_svg, ukuran 20 dp dan jarak 8 dp.",
+    "code": "OutlinedButton.icon(\n  onPressed: () {},\n  icon: SvgPicture.asset('assets/icons/google.svg', width: 20, height: 20),\n  label: const Text('Lanjut dengan Google'),\n)"
+   },
+   {
+    "t": "Kasus: tautan \"Lupa kata sandi?\" rata kanan",
+    "d": "Align menaruh tombol teks di kanan tanpa membuat seluruh baris bisa diketuk.",
+    "code": "Align(\n  alignment: Alignment.centerRight,\n  child: TextButton(\n    style: TextButton.styleFrom(\n      minimumSize: const Size(48, 48),               // target sentuh\n      padding: const EdgeInsets.symmetric(horizontal: 8),\n    ),\n    onPressed: () => context.push('/lupa-sandi'),\n    child: const Text('Lupa kata sandi?'),\n  ),\n)"
+   }
+  ]
+ },
+ "slm-5-6": {
+  "exs": [
+   {
+    "t": "Kasus: validasi kata sandi dengan pesan yang membantu",
+    "d": "Setiap pesan menjelaskan apa yang harus diperbaiki.",
+    "code": "String? cekSandi(String? v) {\n  final sandi = v ?? '';\n  if (sandi.isEmpty) return 'Kata sandi wajib diisi';\n  if (sandi.length < 8) return 'Kata sandi minimal 8 karakter (sekarang ${sandi.length})';\n  return null;\n}\n\n// TextFormField(validator: cekSandi, obscureText: true, ...)"
+   },
+   {
+    "t": "Kasus: menampilkan error dari server di bawah field",
+    "d": "Jika server menjawab email belum terdaftar, pesan ditaruh di errorText field email.",
+    "code": "String? errorEmailServer;\n\nFuture<void> masuk() async {\n  setState(() => errorEmailServer = null);\n  if (!_form.currentState!.validate()) return;\n  final hasil = await auth.masuk(email.text.trim(), sandi.text);\n  if (hasil == HasilMasuk.emailTidakAda) {\n    setState(() => errorEmailServer = 'Email belum terdaftar. Daftar dulu?');\n  }\n}\n\n// TextFormField(\n//   controller: email,\n//   validator: cekEmail,\n//   decoration: InputDecoration(labelText: 'Email', errorText: errorEmailServer),\n// )"
+   },
+   {
+    "t": "Kasus: pindah fokus dengan Next dan kirim dengan Done",
+    "d": "FocusNode memindahkan kursor ke kata sandi, lalu Done langsung memanggil masuk().",
+    "code": "final fokusSandi = FocusNode();\n\n@override\nvoid dispose() {\n  fokusSandi.dispose();\n  super.dispose();\n}\n\n// field email\nTextFormField(\n  textInputAction: TextInputAction.next,\n  onFieldSubmitted: (_) => fokusSandi.requestFocus(),\n)\n\n// field kata sandi\nTextFormField(\n  focusNode: fokusSandi,\n  textInputAction: TextInputAction.done,\n  onFieldSubmitted: (_) => masuk(),\n)"
+   }
+  ]
+ },
+ "slm-5-7": {
+  "exs": [
+   {
+    "t": "Kasus: golden layar Masuk dengan huruf 200%",
+    "d": "Huruf sistem diperbesar untuk memastikan tidak ada teks terpotong.",
+    "code": "testWidgets('layar Masuk huruf 200%', (tester) async {\n  tester.view.physicalSize = const Size(1080, 2400);\n  tester.view.devicePixelRatio = 3;\n  addTearDown(tester.view.reset);\n  await tester.pumpWidget(MaterialApp(\n    theme: temaKopi,\n    home: const MediaQuery(data: MediaQueryData(textScaler: TextScaler.linear(2)), child: LayarMasuk()),\n  ));\n  await expectLater(find.byType(LayarMasuk), matchesGoldenFile('goldens/masuk_360_huruf2x.png'));\n});"
+   },
+   {
+    "t": "Kasus: golden layar Masuk mode gelap",
+    "d": "Satu golden untuk skema gelap memastikan kontras dan warna dari tema gelap.",
+    "code": "testWidgets('layar Masuk mode gelap', (tester) async {\n  tester.view.physicalSize = const Size(1080, 2400);\n  tester.view.devicePixelRatio = 3;\n  addTearDown(tester.view.reset);\n  await tester.pumpWidget(MaterialApp(\n    theme: temaKopi,\n    darkTheme: temaKopiGelap,\n    themeMode: ThemeMode.dark,\n    home: const LayarMasuk(),\n  ));\n  await expectLater(find.byType(LayarMasuk), matchesGoldenFile('goldens/masuk_360_gelap.png'));\n});"
+   },
+   {
+    "t": "Kasus: memastikan label untuk pembaca layar",
+    "d": "Tes mencari tooltip ikon mata dan label field agar TalkBack bisa membacanya.",
+    "code": "testWidgets('ikon mata punya label yang jelas', (tester) async {\n  await tester.pumpWidget(MaterialApp(theme: temaKopi, home: const LayarMasuk()));\n\n  expect(find.byTooltip('Tampilkan kata sandi'), findsOneWidget);\n  await tester.tap(find.byTooltip('Tampilkan kata sandi'));\n  await tester.pump();\n  expect(find.byTooltip('Sembunyikan kata sandi'), findsOneWidget);\n  expect(find.text('Email'), findsOneWidget);\n});"
+   }
+  ]
+ },
+ "slm-6-1": {
+  "exs": [
+   {
+    "t": "Komponen: kartu saldo di beranda",
+    "d": "Card dengan radius 24 dari tema; nilai saldo memakai gaya displaySmall.",
+    "code": "class KartuSaldo extends StatelessWidget {\n  const KartuSaldo({super.key, required this.saldo});\n  final String saldo; // sudah diformat, misalnya \"Rp2.450.000\"\n\n  @override\n  Widget build(BuildContext context) {\n    final t = Theme.of(context);\n    return Card(\n      color: t.colorScheme.primaryContainer,\n      child: Padding(\n        padding: const EdgeInsets.all(20),\n        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [\n          Text('Saldo bulan ini', style: t.textTheme.labelLarge),\n          const SizedBox(height: 8),\n          Text(saldo, style: t.textTheme.displaySmall),\n          const SizedBox(height: 16),\n          Row(children: [\n            IconButton.filledTonal(tooltip: 'Tambah pemasukan', onPressed: () {}, icon: const Icon(Icons.add)),\n            const SizedBox(width: 8),\n            IconButton.filledTonal(tooltip: 'Tambah pengeluaran', onPressed: () {}, icon: const Icon(Icons.remove)),\n          ]),\n        ]),\n      ),\n    );\n  }\n}"
+   },
+   {
+    "t": "Komponen: baris transaksi dengan warna pemasukan dan pengeluaran",
+    "d": "ListTile memetakan ikon kategori, judul, tanggal, dan nominal di kanan.",
+    "code": "class BarisTransaksi extends StatelessWidget {\n  const BarisTransaksi({super.key, required this.judul, required this.tanggal, required this.nominal});\n  final String judul, tanggal;\n  final int nominal;\n\n  @override\n  Widget build(BuildContext context) {\n    final skema = Theme.of(context).colorScheme;\n    final masuk = nominal > 0;\n    return ListTile(\n      leading: CircleAvatar(child: Icon(masuk ? Icons.south_west : Icons.north_east)),\n      title: Text(judul),\n      subtitle: Text(tanggal),\n      trailing: Text(\n        '${masuk ? '+' : '-'}Rp${nominal.abs()}',\n        style: TextStyle(color: masuk ? skema.secondary : skema.error, fontWeight: FontWeight.w600),\n      ),\n    );\n  }\n}"
+   }
+  ]
+ },
+ "slm-6-2": {
+  "exs": [
+   {
+    "t": "Komponen: kolom cari dengan debounce",
+    "d": "Timer menunggu 400 ms setelah pengguna berhenti mengetik sebelum mencari.",
+    "code": "class KolomCari extends StatefulWidget {\n  const KolomCari({super.key, required this.onCari});\n  final ValueChanged<String> onCari;\n  @override\n  State<KolomCari> createState() => _KolomCariState();\n}\n\nclass _KolomCariState extends State<KolomCari> {\n  Timer? _tunda;\n\n  @override\n  void dispose() {\n    _tunda?.cancel();\n    super.dispose();\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    return SearchBar(\n      hintText: 'Cari keripik, batik, kopi...',\n      leading: const Icon(Icons.search),\n      onChanged: (teks) {\n        _tunda?.cancel();\n        _tunda = Timer(const Duration(milliseconds: 400), () => widget.onCari(teks.trim()));\n      },\n    );\n  }\n}"
+   },
+   {
+    "t": "Komponen: state tidak ditemukan",
+    "d": "Ilustrasi, pesan, dan aksi untuk menghapus filter sesuai frame desain.",
+    "code": "class TidakDitemukan extends StatelessWidget {\n  const TidakDitemukan({super.key, required this.kata, required this.onReset});\n  final String kata;\n  final VoidCallback onReset;\n\n  @override\n  Widget build(BuildContext context) {\n    final t = Theme.of(context).textTheme;\n    return Center(\n      child: Padding(\n        padding: const EdgeInsets.all(32),\n        child: Column(mainAxisSize: MainAxisSize.min, children: [\n          Image.asset('assets/images/kosong.png', width: 160),\n          const SizedBox(height: 16),\n          Text('\"$kata\" tidak ditemukan', style: t.titleMedium, textAlign: TextAlign.center),\n          const SizedBox(height: 8),\n          const Text('Coba kata lain atau hapus filter kategori.', textAlign: TextAlign.center),\n          const SizedBox(height: 16),\n          OutlinedButton(onPressed: onReset, child: const Text('Hapus filter')),\n        ]),\n      ),\n    );\n  }\n}"
+   },
+   {
+    "t": "Komponen: filter kategori dengan FilterChip",
+    "d": "Wrap menyusun chip; beberapa kategori boleh dipilih sekaligus.",
+    "code": "Wrap(\n  spacing: 8,\n  runSpacing: 8,\n  children: [\n    for (final k in ['Makanan', 'Kerajinan', 'Fesyen', 'Minuman'])\n      FilterChip(\n        label: Text(k),\n        selected: terpilih.contains(k),\n        onSelected: (pilih) => setState(() => pilih ? terpilih.add(k) : terpilih.remove(k)),\n      ),\n  ],\n)"
+   }
+  ]
+ },
+ "slm-6-3": {
+  "exs": [
+   {
+    "t": "Komponen: kartu jadwal obat dengan teks besar",
+    "d": "Untuk lansia: teks minimal 18 sp, kontras tinggi, dan tombol setinggi 56 dp.",
+    "code": "class KartuJadwalObat extends StatelessWidget {\n  const KartuJadwalObat({super.key, required this.jam, required this.obat, required this.dosis, required this.sudah, required this.onMinum});\n  final String jam, obat, dosis;\n  final bool sudah;\n  final VoidCallback onMinum;\n\n  @override\n  Widget build(BuildContext context) {\n    final t = Theme.of(context);\n    return Card(\n      child: Padding(\n        padding: const EdgeInsets.all(16),\n        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [\n          Text(jam, style: t.textTheme.headlineSmall),\n          Text('$obat · $dosis', style: t.textTheme.titleLarge),\n          const SizedBox(height: 12),\n          FilledButton.icon(\n            style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(56)),\n            onPressed: sudah ? null : onMinum,\n            icon: Icon(sudah ? Icons.check_circle : Icons.medication),\n            label: Text(sudah ? 'Sudah diminum' : 'Tandai sudah minum', style: const TextStyle(fontSize: 18)),\n          ),\n        ]),\n      ),\n    );\n  }\n}"
+   },
+   {
+    "t": "Komponen: ringkasan kepatuhan hari ini",
+    "d": "LinearProgressIndicator dengan label teks agar tidak hanya mengandalkan warna.",
+    "code": "class RingkasanHariIni extends StatelessWidget {\n  const RingkasanHariIni({super.key, required this.diminum, required this.total});\n  final int diminum, total;\n\n  @override\n  Widget build(BuildContext context) {\n    return Semantics(\n      label: '$diminum dari $total obat sudah diminum hari ini',\n      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [\n        Text('$diminum dari $total obat', style: Theme.of(context).textTheme.titleLarge),\n        const SizedBox(height: 8),\n        LinearProgressIndicator(value: total == 0 ? 0 : diminum / total, minHeight: 12),\n      ]),\n    );\n  }\n}"
+   }
+  ]
+ },
+ "slm-6-4": {
+  "exs": [
+   {
+    "t": "Komponen: indikator langkah 1 dari 3",
+    "d": "Teks langkah dan progres dibuat terpisah agar pembaca layar tahu posisi pengguna.",
+    "code": "class IndikatorLangkah extends StatelessWidget {\n  const IndikatorLangkah({super.key, required this.langkah, required this.total, required this.judul});\n  final int langkah, total;\n  final String judul;\n\n  @override\n  Widget build(BuildContext context) {\n    final t = Theme.of(context).textTheme;\n    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [\n      Text('Langkah $langkah dari $total', style: t.labelLarge),\n      const SizedBox(height: 4),\n      Text(judul, style: t.headlineSmall),\n      const SizedBox(height: 12),\n      LinearProgressIndicator(value: langkah / total),\n    ]);\n  }\n}"
+   },
+   {
+    "t": "Komponen: persetujuan data terpisah (UU PDP)",
+    "d": "Setiap persetujuan punya checkbox sendiri; tombol Kirim aktif hanya bila persetujuan wajib dicentang.",
+    "code": "CheckboxListTile(\n  value: setujuRekamMedis,\n  onChanged: (v) => setState(() => setujuRekamMedis = v ?? false),\n  controlAffinity: ListTileControlAffinity.leading,\n  title: const Text('Saya setuju data rekam medis diproses untuk layanan klinik (wajib)'),\n),\nCheckboxListTile(\n  value: setujuPromosi,\n  onChanged: (v) => setState(() => setujuPromosi = v ?? false),\n  controlAffinity: ListTileControlAffinity.leading,\n  title: const Text('Kirimi saya info promo kesehatan (opsional)'),\n),\nFilledButton(\n  onPressed: setujuRekamMedis ? kirim : null,\n  child: const Text('Kirim pendaftaran'),\n),"
+   }
+  ]
+ },
+ "slm-6-5": {
+  "exs": [
+   {
+    "t": "Komponen: kartu resep dengan foto dan durasi",
+    "d": "Foto rasio 4:3, nama resep dua baris, dan info waktu masak dengan ikon.",
+    "code": "class KartuResep extends StatelessWidget {\n  const KartuResep({super.key, required this.nama, required this.foto, required this.menit});\n  final String nama, foto;\n  final int menit;\n\n  @override\n  Widget build(BuildContext context) {\n    return Card(\n      clipBehavior: Clip.antiAlias,\n      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [\n        AspectRatio(aspectRatio: 4 / 3, child: Image.asset(foto, fit: BoxFit.cover)),\n        Padding(\n          padding: const EdgeInsets.all(12),\n          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [\n            Text(nama, maxLines: 2, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.titleMedium),\n            const SizedBox(height: 4),\n            Row(children: [const Icon(Icons.timer_outlined, size: 16), const SizedBox(width: 4), Text('$menit menit')]),\n          ]),\n        ),\n      ]),\n    );\n  }\n}"
+   },
+   {
+    "t": "Komponen: langkah memasak bernomor",
+    "d": "Nomor dalam lingkaran dan teks langkah yang bisa panjang dibungkus Expanded.",
+    "code": "class LangkahMasak extends StatelessWidget {\n  const LangkahMasak({super.key, required this.langkah});\n  final List<String> langkah;\n\n  @override\n  Widget build(BuildContext context) {\n    return Column(children: [\n      for (var i = 0; i < langkah.length; i++)\n        Padding(\n          padding: const EdgeInsets.only(bottom: 16),\n          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [\n            CircleAvatar(radius: 14, child: Text('${i + 1}')),\n            const SizedBox(width: 12),\n            Expanded(child: Text(langkah[i])),\n          ]),\n        ),\n    ]);\n  }\n}"
+   }
+  ]
+ },
+ "slm-6-6": {
+  "exs": [
+   {
+    "t": "Komponen: field nominal dengan pilihan mata uang",
+    "d": "Field angka dan DropdownMenu berdampingan; field mengisi sisa lebar.",
+    "code": "Row(children: [\n  Expanded(\n    child: TextField(\n      keyboardType: const TextInputType.numberWithOptions(decimal: true),\n      decoration: const InputDecoration(labelText: 'Jumlah'),\n      onChanged: (v) => setState(() => jumlah = double.tryParse(v.replaceAll(',', '.')) ?? 0),\n    ),\n  ),\n  const SizedBox(width: 12),\n  DropdownMenu<String>(\n    initialSelection: 'USD',\n    onSelected: (v) => setState(() => mataUang = v ?? 'USD'),\n    dropdownMenuEntries: const [\n      DropdownMenuEntry(value: 'USD', label: 'USD'),\n      DropdownMenuEntry(value: 'SGD', label: 'SGD'),\n      DropdownMenuEntry(value: 'MYR', label: 'MYR'),\n    ],\n  ),\n])"
+   },
+   {
+    "t": "Komponen: keterangan waktu pembaruan yang jujur",
+    "d": "Saat offline, aplikasi menunjukkan kapan kurs terakhir diperbarui, bukan pura-pura terkini.",
+    "code": "class InfoPembaruan extends StatelessWidget {\n  const InfoPembaruan({super.key, required this.terakhir, required this.offline});\n  final DateTime terakhir;\n  final bool offline;\n\n  @override\n  Widget build(BuildContext context) {\n    final menit = DateTime.now().difference(terakhir).inMinutes;\n    final skema = Theme.of(context).colorScheme;\n    return Row(children: [\n      Icon(offline ? Icons.cloud_off : Icons.check_circle, size: 16, color: offline ? skema.error : skema.primary),\n      const SizedBox(width: 6),\n      Text(offline ? 'Offline · kurs $menit menit lalu' : 'Diperbarui $menit menit lalu'),\n    ]);\n  }\n}"
+   }
+  ]
+ },
+ "slm-6-7": {
+  "exs": [
+   {
+    "t": "Komponen: grid layanan di beranda",
+    "d": "Ikon layanan dalam kotak 56 dp dengan label di bawah, empat kolom.",
+    "code": "class GridLayanan extends StatelessWidget {\n  const GridLayanan({super.key});\n\n  static const layanan = [\n    (Icons.two_wheeler, 'Motor'),\n    (Icons.local_taxi, 'Mobil'),\n    (Icons.restaurant, 'Makanan'),\n    (Icons.inventory_2, 'Kirim'),\n  ];\n\n  @override\n  Widget build(BuildContext context) {\n    return GridView.count(\n      crossAxisCount: 4,\n      shrinkWrap: true,\n      physics: const NeverScrollableScrollPhysics(),\n      children: [\n        for (final (ikon, label) in layanan)\n          InkWell(\n            onTap: () {},\n            child: Column(mainAxisSize: MainAxisSize.min, children: [\n              Container(\n                width: 56,\n                height: 56,\n                decoration: BoxDecoration(border: Border.all(width: 2), borderRadius: BorderRadius.circular(8)),\n                child: Icon(ikon),\n              ),\n              const SizedBox(height: 4),\n              Text(label),\n            ]),\n          ),\n      ],\n    );\n  }\n}"
+   },
+   {
+    "t": "Komponen: panel bawah status driver",
+    "d": "DraggableScrollableSheet meniru panel yang bisa ditarik di atas peta.",
+    "code": "DraggableScrollableSheet(\n  initialChildSize: 0.3,\n  minChildSize: 0.2,\n  maxChildSize: 0.6,\n  builder: (context, gulir) => Material(\n    elevation: 8,\n    borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),\n    child: ListView(controller: gulir, padding: const EdgeInsets.all(16), children: const [\n      Text('Driver menuju lokasimu · 4 menit', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),\n      SizedBox(height: 12),\n      ListTile(\n        leading: CircleAvatar(child: Icon(Icons.person)),\n        title: Text('Bambang · Honda Beat'),\n        subtitle: Text('B 4321 XYZ'),\n      ),\n    ]),\n  ),\n)"
+   }
+  ]
+ },
+ "slm-6-8": {
+  "exs": [
+   {
+    "t": "Komponen: pilihan metode bayar",
+    "d": "RadioGroup dengan RadioListTile; logo bank di kanan sesuai desain checkout.",
+    "code": "RadioGroup<String>(\n  groupValue: metode,\n  onChanged: (v) => setState(() => metode = v!),\n  child: const Column(children: [\n    RadioListTile(value: 'qris', title: Text('QRIS'), subtitle: Text('Semua e-wallet dan m-banking')),\n    RadioListTile(value: 'va_bca', title: Text('Virtual Account BCA')),\n    RadioListTile(value: 'va_bri', title: Text('Virtual Account BRI')),\n  ]),\n)"
+   },
+   {
+    "t": "Komponen: ringkasan pembayaran di checkout",
+    "d": "Baris label dan nilai dengan spaceBetween; total dicetak lebih tebal.",
+    "code": "Widget baris(String label, String nilai, {bool tebal = false}) {\n  final gaya = TextStyle(fontWeight: tebal ? FontWeight.w700 : FontWeight.w400);\n  return Padding(\n    padding: const EdgeInsets.symmetric(vertical: 4),\n    child: Row(\n      mainAxisAlignment: MainAxisAlignment.spaceBetween,\n      children: [Text(label, style: gaya), Text(nilai, style: gaya)],\n    ),\n  );\n}\n\nCard(\n  child: Padding(\n    padding: const EdgeInsets.all(16),\n    child: Column(children: [\n      baris('Subtotal (3 barang)', 'Rp245.000'),\n      baris('Ongkos kirim', 'Rp12.000'),\n      baris('Diskon voucher', '-Rp20.000'),\n      const Divider(),\n      baris('Total bayar', 'Rp237.000', tebal: true),\n    ]),\n  ),\n)"
+   }
+  ]
+ },
+ "slm-6-9": {
+  "exs": [
+   {
+    "t": "Komponen: slot jam praktik dokter",
+    "d": "ChoiceChip untuk jam tersedia; jam penuh tampil nonaktif.",
+    "code": "Wrap(\n  spacing: 8,\n  runSpacing: 8,\n  children: [\n    for (final (jam, tersedia) in [('08.00', true), ('08.30', false), ('09.00', true), ('09.30', true)])\n      ChoiceChip(\n        label: Text(jam),\n        selected: jamTerpilih == jam,\n        onSelected: tersedia ? (_) => setState(() => jamTerpilih = jam) : null, // null = nonaktif\n      ),\n  ],\n)"
+   },
+   {
+    "t": "Komponen: kartu nomor antrean live",
+    "d": "Nomor besar dengan fallback kontras: latar padat bila efek kaca dimatikan.",
+    "code": "class KartuAntrean extends StatelessWidget {\n  const KartuAntrean({super.key, required this.nomorku, required this.dipanggil});\n  final int nomorku, dipanggil;\n\n  @override\n  Widget build(BuildContext context) {\n    final t = Theme.of(context);\n    final sisa = nomorku - dipanggil;\n    return Card(\n      color: t.colorScheme.surfaceContainerHighest, // fallback kontras tinggi\n      child: Padding(\n        padding: const EdgeInsets.all(20),\n        child: Column(children: [\n          Text('Nomor antreanmu', style: t.textTheme.labelLarge),\n          Text('A-$nomorku', style: t.textTheme.displayMedium),\n          Text(sisa > 0 ? '$sisa orang lagi' : 'Giliranmu sekarang', style: t.textTheme.titleMedium),\n        ]),\n      ),\n    );\n  }\n}"
+   }
+  ]
+ },
+ "slm-6-10": {
+  "exs": [
+   {
+    "t": "Komponen: gelembung chat asisten",
+    "d": "Pesan pengguna rata kanan, jawaban asisten rata kiri dengan warna berbeda; lebar maksimum 80%.",
+    "code": "class Gelembung extends StatelessWidget {\n  const Gelembung({super.key, required this.teks, required this.dariSaya});\n  final String teks;\n  final bool dariSaya;\n\n  @override\n  Widget build(BuildContext context) {\n    final skema = Theme.of(context).colorScheme;\n    return Align(\n      alignment: dariSaya ? Alignment.centerRight : Alignment.centerLeft,\n      child: ConstrainedBox(\n        constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width * 0.8),\n        child: Container(\n          margin: const EdgeInsets.symmetric(vertical: 4),\n          padding: const EdgeInsets.all(12),\n          decoration: BoxDecoration(\n            color: dariSaya ? skema.primaryContainer : skema.surfaceContainerHigh,\n            borderRadius: BorderRadius.circular(16),\n          ),\n          child: Text(teks),\n        ),\n      ),\n    );\n  }\n}"
+   },
+   {
+    "t": "Komponen: kartu saran anggaran dengan sumber data",
+    "d": "Saran bisa diterima atau ditolak, dan pengguna bisa melihat dari mana angka itu berasal.",
+    "code": "Card(\n  child: Padding(\n    padding: const EdgeInsets.all(16),\n    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [\n      const Text('Saran: batasi jajan kopi Rp300.000 per bulan'),\n      const SizedBox(height: 4),\n      TextButton(\n        onPressed: tampilkanSumber,\n        child: const Text('Berdasarkan 23 transaksi kopi, Agustus–Oktober'),\n      ),\n      Row(mainAxisAlignment: MainAxisAlignment.end, children: [\n        TextButton(onPressed: tolak, child: const Text('Tolak')),\n        const SizedBox(width: 8),\n        FilledButton(onPressed: terima, child: const Text('Terapkan')),\n      ]),\n    ]),\n  ),\n)"
+   }
+  ]
  }
 }
