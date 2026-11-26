@@ -1252,5 +1252,229 @@
     "out": "kopi susu 5"
    }
   ]
+ },
+ "java-6-1": {
+  "code": "public class Main {\n    public static void main(String[] args) {\n        Hewan[] kebun = { new Kucing(\"Tom\"), new Anjing(\"Spike\") };\n        for (Hewan h : kebun) {\n            System.out.println(h.kenalkan());   // polimorfisme\n        }\n    }\n}\n\ninterface Bersuara {\n    String suara();\n}\n\nclass Hewan implements Bersuara {\n    protected String nama;\n\n    public Hewan(String nama) {\n        this.nama = nama;\n    }\n\n    public String suara() {\n        return \"...\";\n    }\n\n    public String kenalkan() {\n        return nama + \" berkata \" + suara();\n    }\n}\n\nclass Kucing extends Hewan {\n    public Kucing(String n) {\n        super(n);                  // panggil konstruktor Hewan\n    }\n\n    @Override                      // penanda: method ini menimpa milik induk\n    public String suara() {\n        return \"Meong\";\n    }\n}\n\nclass Anjing extends Hewan {\n    public Anjing(String n) {\n        super(n);\n    }\n\n    @Override\n    public String suara() {\n        return \"Guk\";\n    }\n}\n",
+  "out": "Tom berkata Meong\nSpike berkata Guk",
+  "exs": [
+   {
+    "t": "Kasus: motor dan mobil mewarisi kendaraan",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Motor m = new Motor(\"B 1234 XYZ\");\n        Mobil c = new Mobil(\"D 5678 ABC\", 7);\n        System.out.println(m.info() + \", roda \" + m.roda());\n        System.out.println(c.info() + \", kursi \" + c.kursi);\n    }\n}\n\nclass Kendaraan {\n    protected String plat;\n\n    Kendaraan(String plat) {\n        this.plat = plat;\n    }\n\n    String info() {\n        return \"Kendaraan \" + plat;\n    }\n}\n\nclass Motor extends Kendaraan {\n    Motor(String plat) {\n        super(plat);\n    }\n\n    int roda() {\n        return 2;\n    }\n}\n\nclass Mobil extends Kendaraan {\n    int kursi;\n\n    Mobil(String plat, int kursi) {\n        super(plat);\n        this.kursi = kursi;\n    }\n}\n",
+    "d": "Subclass otomatis punya field dan method induknya, lalu menambah miliknya sendiri.",
+    "out": "Kendaraan B 1234 XYZ, roda 2\nKendaraan D 5678 ABC, kursi 7"
+   },
+   {
+    "t": "Kasus: interface untuk metode pembayaran",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Pembayaran[] pilihan = { new Qris(), new Tunai() };\n        for (Pembayaran p : pilihan) {\n            System.out.println(p.bayar(45_000));\n        }\n    }\n}\n\ninterface Pembayaran {\n    String bayar(int nominal);\n}\n\nclass Qris implements Pembayaran {\n    @Override\n    public String bayar(int nominal) {\n        return \"Pindai QRIS untuk Rp\" + nominal;\n    }\n}\n\nclass Tunai implements Pembayaran {\n    @Override\n    public String bayar(int nominal) {\n        return \"Siapkan uang tunai Rp\" + nominal;\n    }\n}\n",
+    "d": "Kelas yang implements wajib menyediakan semua method di interface.",
+    "out": "Pindai QRIS untuk Rp45000\nSiapkan uang tunai Rp45000"
+   },
+   {
+    "t": "Kasus: memakai versi induk dengan super",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Pesan biasa = new Pesan();\n        Pesan penting = new PesanPenting();\n        System.out.println(biasa.judul());\n        System.out.println(penting.judul());\n    }\n}\n\nclass Pesan {\n    String judul() {\n        return \"Rapat OSIS hari Jumat\";\n    }\n}\n\nclass PesanPenting extends Pesan {\n    @Override\n    String judul() {\n        return \"[PENTING] \" + super.judul();\n    }\n}\n",
+    "d": "super.method() menjalankan versi milik kelas induk dari dalam method yang menimpanya.",
+    "out": "Rapat OSIS hari Jumat\n[PENTING] Rapat OSIS hari Jumat"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Polimorfisme metode pembayaran",
+    "b": "Toko daring menambah metode pembayaran baru cukup dengan membuat kelas baru yang implements Pembayaran. Loop pemrosesnya tidak perlu diubah sama sekali.",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Pembayaran[] daftar = { new Qris(), new VirtualAccount(\"BCA\"), new Cod() };\n        for (Pembayaran p : daftar) {\n            System.out.println(p.proses(150_000));\n        }\n    }\n}\n\ninterface Pembayaran {\n    String proses(long nominal);\n}\n\nclass Qris implements Pembayaran {\n    @Override\n    public String proses(long n) {\n        return \"QRIS: tampilkan kode untuk Rp\" + n;\n    }\n}\n\nclass VirtualAccount implements Pembayaran {\n    private String bank;\n\n    VirtualAccount(String bank) {\n        this.bank = bank;\n    }\n\n    @Override\n    public String proses(long n) {\n        return \"VA \" + bank + \": 8808\" + n;\n    }\n}\n\nclass Cod implements Pembayaran {\n    @Override\n    public String proses(long n) {\n        return \"COD: siapkan uang tunai Rp\" + (n + 5_000) + \" (biaya COD)\";\n    }\n}\n",
+    "out": "QRIS: tampilkan kode untuk Rp150000\nVA BCA: 8808150000\nCOD: siapkan uang tunai Rp155000 (biaya COD)"
+   }
+  ]
+ },
+ "java-6-2": {
+  "exs": [
+   {
+    "t": "Kasus: tarif ojek reguler dan premium",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Ojek reguler = new Ojek();\n        Ojek premium = new OjekPremium();\n        System.out.println(\"Reguler 8 km: \" + reguler.tarif(8));\n        System.out.println(\"Premium 8 km: \" + premium.tarif(8));\n    }\n}\n\nclass Ojek {\n    int tarif(int km) {\n        return km * 2_500;\n    }\n}\n\nclass OjekPremium extends Ojek {\n    @Override\n    int tarif(int km) {\n        return km * 4_000;\n    }\n}\n",
+    "d": "Subclass mengganti cara menghitung tarif, sisanya diwarisi.",
+    "out": "Reguler 8 km: 20000\nPremium 8 km: 32000"
+   },
+   {
+    "t": "Kasus: toString yang ditimpa",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Tiket t = new Tiket(\"Jakarta\", \"Bandung\", 150_000);\n        System.out.println(t);\n    }\n}\n\nclass Tiket {\n    private String asal;\n    private String tujuan;\n    private int harga;\n\n    Tiket(String asal, String tujuan, int harga) {\n        this.asal = asal;\n        this.tujuan = tujuan;\n        this.harga = harga;\n    }\n\n    @Override\n    public String toString() {\n        return asal + \" -> \" + tujuan + \" Rp\" + harga;\n    }\n}\n",
+    "d": "Semua kelas mewarisi toString dari Object. Menimpanya membuat objek tercetak dengan rapi.",
+    "out": "Jakarta -> Bandung Rp150000"
+   },
+   {
+    "t": "Kasus: variabel induk, objek anak",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Karyawan k = new Satpam();\n        System.out.println(k.jamKerja());\n        k = new Karyawan();\n        System.out.println(k.jamKerja());\n    }\n}\n\nclass Karyawan {\n    String jamKerja() {\n        return \"08.00 - 16.00\";\n    }\n}\n\nclass Satpam extends Karyawan {\n    @Override\n    String jamKerja() {\n        return \"shift malam 22.00 - 06.00\";\n    }\n}\n",
+    "d": "Method yang dijalankan ditentukan oleh objek sebenarnya, bukan tipe variabelnya.",
+    "out": "shift malam 22.00 - 06.00\n08.00 - 16.00"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Gaji pokok dan tunjangan dengan super",
+    "b": "Manajer menambahkan tunjangan jabatan di atas perhitungan gaji induk dengan super.gaji(), sehingga aturan gaji pokok tetap ada di satu tempat.",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Pegawai[] semua = { new Pegawai(\"Sari\", 6_000_000), new Manajer(\"Budi\", 9_000_000) };\n        for (Pegawai p : semua) {\n            System.out.println(p.nama + \": \" + p.gaji());\n        }\n    }\n}\n\nclass Pegawai {\n    final String nama;\n    final long pokok;\n\n    Pegawai(String nama, long pokok) {\n        this.nama = nama;\n        this.pokok = pokok;\n    }\n\n    long gaji() {\n        return pokok;\n    }\n}\n\nclass Manajer extends Pegawai {\n    Manajer(String nama, long pokok) {\n        super(nama, pokok);\n    }\n\n    @Override\n    long gaji() {\n        return super.gaji() + pokok / 5; // tunjangan jabatan 20%\n    }\n}\n",
+    "out": "Sari: 6000000\nBudi: 10800000"
+   }
+  ]
+ },
+ "java-6-3": {
+  "code": "public class Main {\n    public static void main(String[] args) {\n        Bentuk[] semua = { new Lingkaran(1), new Persegi(3) };\n        for (Bentuk b : semua) {\n            System.out.println(b.info());\n        }\n        // new Bentuk(\"x\");  // error: Bentuk is abstract; cannot be instantiated\n    }\n}\n\nabstract class Bentuk {\n    private final String nama;\n\n    Bentuk(String nama) {\n        this.nama = nama;\n    }\n\n    abstract double luas();                 // wajib diisi subclass\n\n    String info() {                         // dipakai bersama\n        return nama + \": \" + Math.round(luas() * 100) / 100.0;\n    }\n}\n\nclass Lingkaran extends Bentuk {\n    double r;\n\n    Lingkaran(double r) {\n        super(\"Lingkaran\");\n        this.r = r;\n    }\n\n    @Override\n    double luas() {\n        return Math.PI * r * r;\n    }\n}\n\nclass Persegi extends Bentuk {\n    double s;\n\n    Persegi(double s) {\n        super(\"Persegi\");\n        this.s = s;\n    }\n\n    @Override\n    double luas() {\n        return s * s;\n    }\n}\n",
+  "out": "Lingkaran: 3.14\nPersegi: 9.0",
+  "exs": [
+   {
+    "t": "Kasus: gaji karyawan tetap dan kontrak",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Karyawan[] tim = { new Tetap(\"Wati\", 7_000_000), new Kontrak(\"Rudi\", 150, 50_000) };\n        for (Karyawan k : tim) {\n            System.out.println(k.slip());\n        }\n    }\n}\n\nabstract class Karyawan {\n    protected String nama;\n\n    Karyawan(String nama) {\n        this.nama = nama;\n    }\n\n    abstract long gaji();\n\n    String slip() {\n        return nama + \" menerima \" + gaji();\n    }\n}\n\nclass Tetap extends Karyawan {\n    private long bulanan;\n\n    Tetap(String nama, long bulanan) {\n        super(nama);\n        this.bulanan = bulanan;\n    }\n\n    @Override\n    long gaji() {\n        return bulanan;\n    }\n}\n\nclass Kontrak extends Karyawan {\n    private int jam;\n    private long upahPerJam;\n\n    Kontrak(String nama, int jam, long upahPerJam) {\n        super(nama);\n        this.jam = jam;\n        this.upahPerJam = upahPerJam;\n    }\n\n    @Override\n    long gaji() {\n        return jam * upahPerJam;\n    }\n}\n",
+    "d": "Kelas abstrak menyimpan bagian yang sama, method abstrak diisi tiap subclass.",
+    "out": "Wati menerima 7000000\nRudi menerima 7500000"
+   },
+   {
+    "t": "Kasus: ongkir berbagai kurir",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Kurir[] kurir = { new KurirReguler(), new KurirKilat() };\n        for (Kurir k : kurir) {\n            System.out.println(k.tagihan(3));\n        }\n    }\n}\n\nabstract class Kurir {\n    abstract String nama();\n    abstract int ongkir(int beratKg);\n\n    String tagihan(int beratKg) {\n        return nama() + \" \" + beratKg + \" kg: Rp\" + ongkir(beratKg);\n    }\n}\n\nclass KurirReguler extends Kurir {\n    @Override\n    String nama() { return \"Reguler\"; }\n\n    @Override\n    int ongkir(int beratKg) { return 9_000 * beratKg; }\n}\n\nclass KurirKilat extends Kurir {\n    @Override\n    String nama() { return \"Kilat\"; }\n\n    @Override\n    int ongkir(int beratKg) { return 15_000 + 10_000 * beratKg; }\n}\n",
+    "d": "Rumus ongkir berbeda per kurir, tetapi cara menampilkan tagihannya sama.",
+    "out": "Reguler 3 kg: Rp27000\nKilat 3 kg: Rp45000"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Template Method: alur ekspor laporan",
+    "b": "Urutan langkah dikunci di kelas abstrak dengan method final, sedangkan langkah yang berbeda diserahkan ke subclass. Pola ini dipakai luas di framework Java.",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        new EksporCsv().jalankan();\n        new EksporPdf().jalankan();\n    }\n}\n\nabstract class Ekspor {\n    final void jalankan() { // urutan tetap, tidak bisa ditimpa\n        System.out.println(\"1. Ambil data penjualan\");\n        System.out.println(\"2. \" + format());\n        System.out.println(\"3. Kirim ke email manajer\");\n        System.out.println();\n    }\n\n    abstract String format();\n}\n\nclass EksporCsv extends Ekspor {\n    @Override\n    String format() { return \"Tulis sebagai CSV\"; }\n}\n\nclass EksporPdf extends Ekspor {\n    @Override\n    String format() { return \"Render sebagai PDF\"; }\n}\n",
+    "out": "1. Ambil data penjualan\n2. Tulis sebagai CSV\n3. Kirim ke email manajer\n\n1. Ambil data penjualan\n2. Render sebagai PDF\n3. Kirim ke email manajer"
+   }
+  ]
+ },
+ "java-6-4": {
+  "exs": [
+   {
+    "t": "Kasus: satu kelas memenuhi dua kontrak",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Faktur f = new Faktur(\"INV-031\", 275_000);\n        System.out.println(f.cetak());\n        System.out.println(f.kirimKe(\"budi@contoh.id\"));\n    }\n}\n\ninterface BisaDicetak {\n    String cetak();\n}\n\ninterface BisaDikirim {\n    String kirimKe(String email);\n}\n\nclass Faktur implements BisaDicetak, BisaDikirim {\n    private String nomor;\n    private int total;\n\n    Faktur(String nomor, int total) {\n        this.nomor = nomor;\n        this.total = total;\n    }\n\n    @Override\n    public String cetak() {\n        return \"Faktur \" + nomor + \" total Rp\" + total;\n    }\n\n    @Override\n    public String kirimKe(String email) {\n        return \"Faktur \" + nomor + \" dikirim ke \" + email;\n    }\n}\n",
+    "d": "Sebuah kelas hanya boleh extends satu induk, tetapi boleh implements banyak interface.",
+    "out": "Faktur INV-031 total Rp275000\nFaktur INV-031 dikirim ke budi@contoh.id"
+   },
+   {
+    "t": "Kasus: interface sebagai tipe parameter",
+    "code": "public class Main {\n    static void umumkan(Pengumuman p, String isi) {\n        System.out.println(p.siarkan(isi));\n    }\n\n    public static void main(String[] args) {\n        umumkan(new PengerasSuara(), \"Upacara dimulai\");\n        umumkan(new GrupWa(), \"Besok libur\");\n    }\n}\n\ninterface Pengumuman {\n    String siarkan(String isi);\n}\n\nclass PengerasSuara implements Pengumuman {\n    @Override\n    public String siarkan(String isi) {\n        return \"(toa) \" + isi.toUpperCase() + \"!\";\n    }\n}\n\nclass GrupWa implements Pengumuman {\n    @Override\n    public String siarkan(String isi) {\n        return \"[WA Kelas] \" + isi;\n    }\n}\n",
+    "d": "Method yang menerima interface bisa dipakai oleh kelas apa pun yang memenuhi kontraknya.",
+    "out": "(toa) UPACARA DIMULAI!\n[WA Kelas] Besok libur"
+   },
+   {
+    "t": "Kasus: hitung luas berbagai bentuk lahan",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Bentuk[] lahan = { new PersegiPanjang(20, 15), new Segitiga(10, 8) };\n        double total = 0;\n        for (Bentuk b : lahan) {\n            total += b.luas();\n        }\n        System.out.println(\"Total luas lahan: \" + total + \" m2\");\n    }\n}\n\ninterface Bentuk {\n    double luas();\n}\n\nclass PersegiPanjang implements Bentuk {\n    private double p;\n    private double l;\n\n    PersegiPanjang(double p, double l) {\n        this.p = p;\n        this.l = l;\n    }\n\n    @Override\n    public double luas() { return p * l; }\n}\n\nclass Segitiga implements Bentuk {\n    private double alas;\n    private double tinggi;\n\n    Segitiga(double alas, double tinggi) {\n        this.alas = alas;\n        this.tinggi = tinggi;\n    }\n\n    @Override\n    public double luas() { return alas * tinggi / 2; }\n}\n",
+    "out": "Total luas lahan: 340.0 m2"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Interface dengan default method",
+    "b": "default method memberi isi bawaan di interface. Semua kelas yang implements langsung mendapatkannya tanpa menulis ulang, misalnya fitur log yang sama untuk semua kanal notifikasi.",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Notifikasi[] kanal = { new Email(), new WhatsApp() };\n        for (Notifikasi n : kanal) {\n            n.kirimDenganLog(\"Pesanan INV/0012 sudah dikirim\");\n        }\n    }\n}\n\ninterface Notifikasi {\n    void kirim(String pesan);\n\n    default void kirimDenganLog(String pesan) {\n        System.out.println(\"[log] kirim via \" + getClass().getSimpleName());\n        kirim(pesan);\n    }\n}\n\nclass Email implements Notifikasi {\n    @Override\n    public void kirim(String p) { System.out.println(\"  Email: \" + p); }\n}\n\nclass WhatsApp implements Notifikasi {\n    @Override\n    public void kirim(String p) { System.out.println(\"  WA: \" + p); }\n}\n",
+    "out": "[log] kirim via Email\n  Email: Pesanan INV/0012 sudah dikirim\n[log] kirim via WhatsApp\n  WA: Pesanan INV/0012 sudah dikirim"
+   }
+  ]
+ },
+ "java-6-5": {
+  "code": "public class Main {\n    static String jelaskan(Hewan h) { return \"Hewan\"; }\n    static String jelaskan(Kucing k) { return \"Kucing\"; }\n\n    static int tambah(int a, int b) { return a + b; }\n    static double tambah(double a, double b) { return a + b; }\n\n    public static void main(String[] args) {\n        Hewan h = new Kucing();\n        System.out.println(h.suara());       // dynamic: tipe objek\n        System.out.println(jelaskan(h));     // static: tipe variabel\n        System.out.println(tambah(2, 3));\n        System.out.println(tambah(2.5, 3));\n    }\n}\n\nclass Hewan {\n    String suara() { return \"...\"; }\n}\n\nclass Kucing extends Hewan {\n    @Override\n    String suara() { return \"Meong\"; }\n}\n",
+  "out": "Meong\nHewan\n5\n5.5",
+  "exs": [
+   {
+    "t": "Kasus: ongkir reguler dan ekspres (overloading)",
+    "code": "public class Main {\n    static int ongkir(int beratKg) {\n        return beratKg * 9_000;\n    }\n\n    static int ongkir(int beratKg, boolean ekspres) {\n        int dasar = ongkir(beratKg);\n        return ekspres ? dasar + 15_000 : dasar;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(ongkir(2));\n        System.out.println(ongkir(2, true));\n    }\n}\n",
+    "d": "Nama method sama, daftar parameter berbeda. Compiler memilih versi dari argumen yang diberikan.",
+    "out": "18000\n33000"
+   },
+   {
+    "t": "Kasus: konstruktor overloading",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Kopi a = new Kopi();\n        Kopi b = new Kopi(\"Latte\");\n        Kopi c = new Kopi(\"Kopi susu\", 2);\n        System.out.println(a.info());\n        System.out.println(b.info());\n        System.out.println(c.info());\n    }\n}\n\nclass Kopi {\n    private String jenis;\n    private int gula;\n\n    Kopi() {\n        this(\"Americano\", 0);\n    }\n\n    Kopi(String jenis) {\n        this(jenis, 1);\n    }\n\n    Kopi(String jenis, int gula) {\n        this.jenis = jenis;\n        this.gula = gula;\n    }\n\n    String info() {\n        return jenis + \" gula \" + gula + \" sendok\";\n    }\n}\n",
+    "d": "Beberapa konstruktor memberi cara berbeda untuk membuat objek. this(...) memanggil konstruktor lain.",
+    "out": "Americano gula 0 sendok\nLatte gula 1 sendok\nKopi susu gula 2 sendok"
+   },
+   {
+    "t": "Kasus: dynamic binding di dalam loop",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Diskon[] promo = { new Diskon(), new DiskonMember(), new DiskonGajian() };\n        for (Diskon d : promo) {\n            System.out.println(d.persen() + \"%\");\n        }\n    }\n}\n\nclass Diskon {\n    int persen() { return 0; }\n}\n\nclass DiskonMember extends Diskon {\n    @Override\n    int persen() { return 5; }\n}\n\nclass DiskonGajian extends DiskonMember {\n    @Override\n    int persen() { return super.persen() + 10; }\n}\n",
+    "d": "Untuk setiap objek, Java memilih versi override saat program berjalan.",
+    "out": "0%\n5%\n15%"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Overloading dipilih saat kompilasi, overriding saat runtime",
+    "b": "Variabel bertipe Hewan yang berisi Kucing tetap memanggil info(Hewan), karena overloading dipilih dari tipe variabel. Tetapi suara() memakai versi Kucing, karena overriding dipilih dari objek sebenarnya.",
+    "code": "public class Main {\n    static String info(Hewan h) { return \"info(Hewan)\"; }\n    static String info(Kucing k) { return \"info(Kucing)\"; }\n\n    public static void main(String[] args) {\n        Hewan h = new Kucing();\n        System.out.println(h.suara());\n        System.out.println(info(h));\n        System.out.println(info(new Kucing()));\n    }\n}\n\nclass Hewan {\n    String suara() { return \"...\"; }\n}\n\nclass Kucing extends Hewan {\n    @Override\n    String suara() { return \"meong\"; }\n}\n",
+    "out": "meong\ninfo(Hewan)\ninfo(Kucing)"
+   }
+  ]
+ },
+ "java-6-6": {
+  "code": "public class Main {\n    public static void main(String[] args) {\n        Pesanan p = new Pesanan(101, \"Kopi Gayo\", Status.DIKIRIM);\n        System.out.println(p);\n        System.out.println(p.barang() + \" - \" + p.status().label());\n        System.out.println(p.equals(new Pesanan(101, \"Kopi Gayo\", Status.DIKIRIM)));\n        StringBuilder sb = new StringBuilder();\n        for (Status s : Status.values()) {\n            sb.append(s).append(\"(\").append(s.ordinal()).append(\") \");\n        }\n        System.out.println(sb.toString().trim());\n        System.out.println(Status.valueOf(\"SELESAI\").label());\n    }\n}\n\nenum Status {\n    BARU(\"Menunggu\"), DIKIRIM(\"Dalam perjalanan\"), SELESAI(\"Diterima\");\n\n    private final String label;\n\n    Status(String label) { this.label = label; }\n\n    String label() { return label; }\n}\n\nrecord Pesanan(int id, String barang, Status status) {}\n",
+  "out": "Pesanan[id=101, barang=Kopi Gayo, status=DIKIRIM]\nKopi Gayo - Dalam perjalanan\ntrue\nBARU(0) DIKIRIM(1) SELESAI(2)\nDiterima",
+  "exs": [
+   {
+    "t": "Kasus: hari libur dengan enum dan switch",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Hari h = Hari.SABTU;\n        String jenis = switch (h) {\n            case SABTU, MINGGU -> \"akhir pekan\";\n            default -> \"hari sekolah\";\n        };\n        System.out.println(h + \": \" + jenis);\n    }\n}\n\nenum Hari {\n    SENIN, SELASA, RABU, KAMIS, JUMAT, SABTU, MINGGU\n}\n",
+    "d": "switch pada enum cukup menulis nama konstantanya.",
+    "out": "SABTU: akhir pekan"
+   },
+   {
+    "t": "Kasus: ukuran kaos dengan harga",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        for (Ukuran u : Ukuran.values()) {\n            System.out.println(u + \" -> Rp\" + u.harga());\n        }\n    }\n}\n\nenum Ukuran {\n    S(75_000), M(80_000), L(85_000), XL(95_000);\n\n    private final int harga;\n\n    Ukuran(int harga) { this.harga = harga; }\n\n    int harga() { return harga; }\n}\n",
+    "d": "Enum bisa menyimpan field. values() mengembalikan semua konstantanya.",
+    "out": "S -> Rp75000\nM -> Rp80000\nL -> Rp85000\nXL -> Rp95000"
+   },
+   {
+    "t": "Kasus: titik lokasi sebagai record",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Lokasi monas = new Lokasi(\"Monas\", -6.1754, 106.8272);\n        Lokasi salinan = new Lokasi(\"Monas\", -6.1754, 106.8272);\n        System.out.println(monas);\n        System.out.println(\"Lintang: \" + monas.lintang());\n        System.out.println(\"Sama? \" + monas.equals(salinan));\n    }\n}\n\nrecord Lokasi(String nama, double lintang, double bujur) {}\n",
+    "d": "Record otomatis punya konstruktor, accessor, equals, dan toString.",
+    "out": "Lokasi[nama=Monas, lintang=-6.1754, bujur=106.8272]\nLintang: -6.1754\nSama? true"
+   },
+   {
+    "t": "Kasus: record dengan method tambahan",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        ItemKeranjang item = new ItemKeranjang(\"Sambal botol\", 25_000, 3);\n        System.out.println(item.nama() + \" subtotal \" + item.subtotal());\n    }\n}\n\nrecord ItemKeranjang(String nama, int harga, int qty) {\n    int subtotal() {\n        return harga * qty;\n    }\n}\n",
+    "d": "Record boleh punya method biasa yang memakai field-nya.",
+    "out": "Sambal botol subtotal 75000"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Enum dengan perilaku dan record DTO",
+    "b": "Aturan bisnis \"pesanan apa yang boleh dibatalkan\" ditaruh di enum, bukan disebar ke banyak if. Record dipakai sebagai DTO, data yang dikirim antarbagian aplikasi tanpa diubah.",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        PesananDto p = new PesananDto(\"INV-7\", Status.DIKIRIM, 175_000);\n        System.out.println(p);\n        System.out.println(\"Bisa dibatalkan? \" + p.status().bisaDibatalkan());\n        System.out.println(p.equals(new PesananDto(\"INV-7\", Status.DIKIRIM, 175_000)));\n        System.out.println(\"BARU bisa dibatalkan? \" + Status.BARU.bisaDibatalkan());\n    }\n}\n\nenum Status {\n    BARU, DIBAYAR, DIKIRIM, SELESAI;\n\n    boolean bisaDibatalkan() {\n        return this == BARU || this == DIBAYAR;\n    }\n}\n\nrecord PesananDto(String nomor, Status status, long total) {}\n",
+    "out": "PesananDto[nomor=INV-7, status=DIKIRIM, total=175000]\nBisa dibatalkan? false\ntrue\nBARU bisa dibatalkan? true"
+   }
+  ]
+ },
+ "java-6-7": {
+  "code": "public class Luar {\n    static int dimuat;\n    int nomor;\n\n    static {                         // sekali, saat kelas dimuat\n        dimuat = 1;\n        System.out.println(\"static block\");\n    }\n\n    {                                // setiap objek dibuat, sebelum isi konstruktor\n        nomor = 7;\n        System.out.println(\"instance block\");\n    }\n\n    Luar() { System.out.println(\"konstruktor, nomor=\" + nomor); }\n\n    static class Pembantu {           // static nested\n        String sapa() { return \"halo dari Pembantu\"; }\n    }\n\n    class Dalam {                     // inner: butuh objek Luar\n        int ambil() { return nomor * 2; }\n    }\n\n    interface Sapaan {\n        void sapa();\n    }\n\n    public static void main(String[] args) {\n        Luar o = new Luar();\n        System.out.println(new Pembantu().sapa());\n        Luar.Dalam d = o.new Dalam();\n        System.out.println(d.ambil());\n        Sapaan s = new Sapaan() {     // anonymous class\n            @Override\n            public void sapa() { System.out.println(\"anonim jalan\"); }\n        };\n        s.sapa();\n    }\n}\n",
+  "out": "static block\ninstance block\nkonstruktor, nomor=7\nhalo dari Pembantu\n14\nanonim jalan",
+  "exs": [
+   {
+    "t": "Kasus: item sebagai static nested class",
+    "code": "public class Main {\n    static class Item {\n        String nama;\n        int harga;\n\n        Item(String nama, int harga) {\n            this.nama = nama;\n            this.harga = harga;\n        }\n    }\n\n    public static void main(String[] args) {\n        Item[] belanja = { new Item(\"Tempe\", 6_000), new Item(\"Tahu\", 5_000) };\n        int total = 0;\n        for (Item i : belanja) {\n            total += i.harga;\n        }\n        System.out.println(\"Total: \" + total);\n    }\n}\n",
+    "d": "Kelas pembantu yang hanya berarti bagi kelas luarnya ditaruh di dalamnya.",
+    "out": "Total: 11000"
+   },
+   {
+    "t": "Kasus: inner class membaca field objek luar",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Kelas xa = new Kelas(\"X-A\");\n        Kelas.Siswa s = xa.new Siswa(\"Nadia\");\n        System.out.println(s.kartu());\n    }\n}\n\nclass Kelas {\n    private String nama;\n\n    Kelas(String nama) {\n        this.nama = nama;\n    }\n\n    class Siswa {\n        private String namaSiswa;\n\n        Siswa(String namaSiswa) {\n            this.namaSiswa = namaSiswa;\n        }\n\n        String kartu() {\n            return namaSiswa + \" - kelas \" + nama;   // nama milik objek Kelas\n        }\n    }\n}\n",
+    "d": "Inner class terikat pada satu objek luar, sehingga bisa memakai field-nya langsung.",
+    "out": "Nadia - kelas X-A"
+   },
+   {
+    "t": "Kasus: static block menyiapkan tabel tarif",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        System.out.println(\"Program mulai\");\n        System.out.println(\"Tarif zona 2: \" + Tarif.zona(2));\n        System.out.println(\"Tarif zona 3: \" + Tarif.zona(3));\n    }\n}\n\nclass Tarif {\n    static int[] perZona = new int[4];\n\n    static {\n        System.out.println(\"Menyiapkan tabel tarif...\");\n        perZona[1] = 3_000;\n        perZona[2] = 5_000;\n        perZona[3] = 7_000;\n    }\n\n    static int zona(int z) {\n        return perZona[z];\n    }\n}\n",
+    "d": "static block berjalan sekali sebelum kelas dipakai pertama kali.",
+    "out": "Program mulai\nMenyiapkan tabel tarif...\nTarif zona 2: 5000\nTarif zona 3: 7000"
+   },
+   {
+    "t": "Kasus: aturan diskon sekali pakai dengan anonymous class",
+    "code": "public class Main {\n    interface Diskon {\n        int potong(int harga);\n    }\n\n    public static void main(String[] args) {\n        Diskon flashSale = new Diskon() {\n            @Override\n            public int potong(int harga) {\n                return harga / 2;\n            }\n        };\n        System.out.println(\"Harga flash sale: \" + flashSale.potong(80_000));\n    }\n}\n",
+    "out": "Harga flash sale: 40000"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Builder sebagai static nested class",
+    "b": "Pola Builder memudahkan membuat objek dengan banyak pilihan opsional. Builder ditaruh sebagai static nested class karena hanya berguna untuk membuat Pesan.",
+    "code": "public class Main {\n    static class Pesan {\n        private final String ke;\n        private final String subjek;\n        private final boolean penting;\n\n        private Pesan(Builder b) {\n            ke = b.ke;\n            subjek = b.subjek;\n            penting = b.penting;\n        }\n\n        @Override\n        public String toString() {\n            return (penting ? \"[PENTING] \" : \"\") + subjek + \" -> \" + ke;\n        }\n\n        static class Builder {\n            private final String ke;\n            private String subjek = \"(tanpa subjek)\";\n            private boolean penting;\n\n            Builder(String ke) { this.ke = ke; }\n            Builder subjek(String s) { subjek = s; return this; }\n            Builder prioritas(boolean p) { penting = p; return this; }\n            Pesan build() { return new Pesan(this); }\n        }\n    }\n\n    public static void main(String[] args) {\n        Pesan p = new Pesan.Builder(\"sari@contoh.id\").subjek(\"Invoice\").prioritas(true).build();\n        System.out.println(p);\n        System.out.println(new Pesan.Builder(\"budi@contoh.id\").build());\n    }\n}\n",
+    "out": "[PENTING] Invoice -> sari@contoh.id\n(tanpa subjek) -> budi@contoh.id"
+   }
+  ]
  }
 }

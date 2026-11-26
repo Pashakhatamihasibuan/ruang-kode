@@ -1,0 +1,448 @@
+{
+ "java-7-1": {
+  "exs": [
+   {
+    "t": "Kasus: daftar belanja ke warung",
+    "code": "import java.util.ArrayList;\n\npublic class Main {\n    public static void main(String[] args) {\n        ArrayList<String> belanja = new ArrayList<>();\n        belanja.add(\"beras\");\n        belanja.add(\"telur\");\n        belanja.add(\"minyak goreng\");\n        System.out.println(\"Daftar: \" + belanja);\n        System.out.println(\"Barang pertama: \" + belanja.get(0));\n        System.out.println(\"Jumlah barang: \" + belanja.size());\n\n        belanja.set(1, \"telur 1 kg\");     // ganti isi indeks 1\n        System.out.println(\"Setelah diubah: \" + belanja);\n        System.out.println(\"Ada gula? \" + belanja.contains(\"gula\"));\n    }\n}\n",
+    "d": "add menambah di akhir, get membaca, set mengganti, dan size menghitung isi.",
+    "out": "Daftar: [beras, telur, minyak goreng]\nBarang pertama: beras\nJumlah barang: 3\nSetelah diubah: [beras, telur 1 kg, minyak goreng]\nAda gula? false"
+   },
+   {
+    "t": "Kasus: rata-rata nilai ulangan",
+    "code": "import java.util.ArrayList;\n\npublic class Main {\n    public static void main(String[] args) {\n        ArrayList<Integer> nilai = new ArrayList<>();   // Integer, bukan int\n        nilai.add(80);\n        nilai.add(72);\n        nilai.add(95);\n        nilai.add(68);\n\n        int total = 0;\n        for (int n : nilai) {\n            total += n;\n        }\n        double rata = (double) total / nilai.size();\n        System.out.println(\"Nilai: \" + nilai);\n        System.out.println(\"Total \" + total + \", rata-rata \" + rata);\n    }\n}\n",
+    "d": "Angka disimpan sebagai Integer (autoboxing), lalu dibaca lagi dengan for-each.",
+    "out": "Nilai: [80, 72, 95, 68]\nTotal 315, rata-rata 78.75"
+   },
+   {
+    "t": "Kasus: pesanan kantin yang dibatalkan",
+    "code": "import java.util.ArrayList;\n\npublic class Main {\n    public static void main(String[] args) {\n        ArrayList<String> pesanan = new ArrayList<>();\n        pesanan.add(\"nasi goreng\");\n        pesanan.add(\"es teh\");\n        pesanan.add(\"bakso\");\n        pesanan.add(\"es jeruk\");\n\n        pesanan.remove(\"es teh\");          // hapus berdasarkan isi\n        System.out.println(pesanan);\n        pesanan.remove(0);                 // hapus berdasarkan indeks\n        System.out.println(pesanan);\n        System.out.println(\"Posisi es jeruk: \" + pesanan.indexOf(\"es jeruk\"));\n    }\n}\n",
+    "d": "remove bisa menerima isi atau indeks; elemen di belakangnya ikut bergeser.",
+    "out": "[nasi goreng, bakso, es jeruk]\n[bakso, es jeruk]\nPosisi es jeruk: 1"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Daftar tugas harian",
+    "b": "Daftar tugas tim berubah sepanjang hari: ada yang disisipkan, ada yang dihapus, lalu dikosongkan saat hari selesai.",
+    "code": "import java.util.ArrayList;\n\npublic class Main {\n    public static void main(String[] args) {\n        ArrayList<String> tugas = new ArrayList<>();\n        tugas.add(\"Rapat pagi\");\n        tugas.add(\"Review PR\");\n        tugas.add(\"Deploy\");\n        tugas.add(1, \"Balas email klien\");   // sisip di posisi 1\n        tugas.remove(\"Deploy\");               // ditunda ke besok\n        System.out.println(tugas + \" (\" + tugas.size() + \" tugas)\");\n\n        tugas.clear();                        // hari selesai, daftar dikosongkan\n        System.out.println(\"Kosong? \" + tugas.isEmpty());\n    }\n}\n",
+    "out": "[Rapat pagi, Balas email klien, Review PR] (3 tugas)\nKosong? true"
+   }
+  ]
+ },
+ "java-7-2": {
+  "code": "import java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.List;\n\npublic class Main {\n    public static void main(String[] args) {\n        // Array: ukuran tetap, ditentukan saat dibuat\n        int[] arr = new int[3];\n        arr[0] = 10;\n        System.out.println(arr.length + \" \" + Arrays.toString(arr));\n\n        // ArrayList: ukurannya mengikuti isi\n        List<Integer> list = new ArrayList<>();\n        list.add(10);\n        list.add(20);\n        list.add(0, 5);                    // sisip di depan\n        list.remove(Integer.valueOf(20));  // hapus nilai 20\n        System.out.println(list.size() + \" \" + list);\n        System.out.println(list.get(1) + \" \" + list.contains(10));\n\n        // List.of: daftar tetap yang tidak boleh diubah\n        List<String> hari = List.of(\"Senin\", \"Selasa\");\n        System.out.println(hari + \" berisi \" + hari.size() + \" hari\");\n    }\n}\n",
+  "exs": [
+   {
+    "t": "Kasus: suhu seminggu (array) dan tamu arisan (ArrayList)",
+    "code": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Main {\n    public static void main(String[] args) {\n        // Jumlah hari dalam seminggu pasti 7: cocok memakai array\n        double[] suhu = {31.5, 32.0, 30.8, 29.9, 31.2, 33.1, 32.4};\n        System.out.println(\"Suhu hari ke-3: \" + suhu[2] + \", banyak data: \" + suhu.length);\n\n        // Jumlah tamu belum pasti: cocok memakai ArrayList\n        List<String> tamu = new ArrayList<>();\n        tamu.add(\"Bu Rina\");\n        tamu.add(\"Bu Sari\");\n        tamu.add(\"Pak Yusuf\");\n        System.out.println(\"Tamu ke-3: \" + tamu.get(2) + \", banyak tamu: \" + tamu.size());\n    }\n}\n",
+    "d": "Array untuk jumlah data yang pasti, ArrayList untuk jumlah yang berubah-ubah.",
+    "out": "Suhu hari ke-3: 30.8, banyak data: 7\nTamu ke-3: Pak Yusuf, banyak tamu: 3"
+   },
+   {
+    "t": "Kasus: memindahkan isi array ke ArrayList dan sebaliknya",
+    "code": "import java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.List;\n\npublic class Main {\n    public static void main(String[] args) {\n        int[] stok = {12, 0, 7, 3};\n\n        // array -> ArrayList\n        List<Integer> daftar = new ArrayList<>();\n        for (int s : stok) {\n            daftar.add(s);\n        }\n        daftar.add(20);                  // ArrayList bisa ditambah\n        System.out.println(\"ArrayList: \" + daftar);\n\n        // ArrayList -> array baru seukuran list\n        int[] hasil = new int[daftar.size()];\n        for (int i = 0; i < daftar.size(); i++) {\n            hasil[i] = daftar.get(i);\n        }\n        System.out.println(\"Array: \" + Arrays.toString(hasil));\n    }\n}\n",
+    "d": "Perhatikan beda length dan size(), serta arr[i] dan get(i).",
+    "out": "ArrayList: [12, 0, 7, 3, 20]\nArray: [12, 0, 7, 3, 20]"
+   },
+   {
+    "t": "Kasus: nilai rapor dengan dua cara menulis",
+    "code": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Main {\n    public static void main(String[] args) {\n        int[] nilaiArray = {85, 90, 78};\n        List<Integer> nilaiList = new ArrayList<>();\n        nilaiList.add(85);\n        nilaiList.add(90);\n        nilaiList.add(78);\n\n        int totalA = 0;\n        for (int i = 0; i < nilaiArray.length; i++) {\n            totalA += nilaiArray[i];\n        }\n        int totalL = 0;\n        for (int i = 0; i < nilaiList.size(); i++) {\n            totalL += nilaiList.get(i);\n        }\n        System.out.println(\"Total dari array    : \" + totalA);\n        System.out.println(\"Total dari ArrayList: \" + totalL);\n    }\n}\n",
+    "d": "Logikanya sama persis, hanya cara mengakses elemennya yang berbeda.",
+    "out": "Total dari array    : 253\nTotal dari ArrayList: 253"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Konversi bolak-balik untuk menyaring nilai",
+    "b": "Di proyek nyata, data sering datang sebagai array dari satu bagian program dan perlu disaring sebagai list sebelum dikirim kembali.",
+    "code": "import java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.List;\n\npublic class Main {\n    public static void main(String[] args) {\n        int[] nilai = {70, 45, 88, 52, 91};\n\n        // array -> ArrayList, ambil yang lulus (>= 60)\n        List<Integer> lulus = new ArrayList<>();\n        for (int n : nilai) {\n            if (n >= 60) {\n                lulus.add(n);\n            }\n        }\n\n        // kembali ke array karena modul lain meminta int[]\n        int[] hasil = new int[lulus.size()];\n        for (int i = 0; i < hasil.length; i++) {\n            hasil[i] = lulus.get(i);\n        }\n        System.out.println(\"Lulus: \" + Arrays.toString(hasil));\n    }\n}\n",
+    "out": "Lulus: [70, 88, 91]"
+   }
+  ],
+  "out": "3 [10, 0, 0]\n2 [5, 10]\n10 true\n[Senin, Selasa] berisi 2 hari"
+ },
+ "java-7-3": {
+  "exs": [
+   {
+    "t": "Kasus: playlist lagu daerah",
+    "code": "import java.util.ArrayList;\n\npublic class Main {\n    public static void main(String[] args) {\n        ArrayList<String> playlist = new ArrayList<>();\n        playlist.add(\"Ampar-Ampar Pisang\");\n        playlist.add(\"Bengawan Solo\");\n        playlist.add(1, \"Apuse\");          // sisip di posisi 1\n        System.out.println(playlist);\n\n        playlist.remove(0);                // lagu pertama sudah diputar\n        System.out.println(\"Sisa \" + playlist.size() + \" lagu: \" + playlist);\n    }\n}\n",
+    "out": "[Ampar-Ampar Pisang, Apuse, Bengawan Solo]\nSisa 2 lagu: [Apuse, Bengawan Solo]"
+   },
+   {
+    "t": "Kasus: jadwal piket kelas",
+    "code": "import java.util.ArrayList;\n\npublic class Main {\n    public static void main(String[] args) {\n        ArrayList<String> piket = new ArrayList<>();\n        piket.add(\"Andi\");\n        piket.add(\"Bunga\");\n        piket.add(\"Citra\");\n\n        piket.set(1, \"Dimas\");             // Bunga sakit, diganti Dimas\n        piket.add(\"Eka\");                  // tambahan di akhir\n        piket.remove(\"Andi\");              // Andi pindah kelas\n        System.out.println(\"Piket hari ini: \" + piket);\n        System.out.println(\"Jumlah petugas: \" + piket.size());\n    }\n}\n",
+    "d": "set mengganti isi tanpa menggeser elemen lain.",
+    "out": "Piket hari ini: [Dimas, Citra, Eka]\nJumlah petugas: 3"
+   },
+   {
+    "t": "Kasus: keranjang belanja daring",
+    "code": "import java.util.ArrayList;\n\npublic class Main {\n    public static void main(String[] args) {\n        ArrayList<String> keranjang = new ArrayList<>();\n        keranjang.add(\"kaos\");\n        keranjang.add(\"sandal\");\n        keranjang.add(0, \"voucher ongkir\");   // selalu di paling atas\n        System.out.println(keranjang + \" (\" + keranjang.size() + \" item)\");\n\n        keranjang.remove(\"sandal\");\n        System.out.println(keranjang + \" (\" + keranjang.size() + \" item)\");\n\n        keranjang.clear();                    // setelah checkout\n        System.out.println(\"Keranjang kosong? \" + keranjang.isEmpty());\n    }\n}\n",
+    "out": "[voucher ongkir, kaos, sandal] (3 item)\n[voucher ongkir, kaos] (2 item)\nKeranjang kosong? true"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Jebakan remove pada List<Integer>",
+    "b": "",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        List<Integer> a = new ArrayList<>(List.of(5, 1, 7, 1));\n        a.remove(1);                    // indeks 1\n        System.out.println(a);\n        a.remove(Integer.valueOf(1));   // nilai 1\n        System.out.println(a);\n    }\n}\n",
+    "out": "[5, 7, 1]\n[5, 7]"
+   }
+  ]
+ },
+ "java-7-4": {
+  "exs": [
+   {
+    "t": "Kasus: membuang nilai di bawah KKM",
+    "code": "import java.util.ArrayList;\n\npublic class Main {\n    public static void main(String[] args) {\n        ArrayList<Integer> nilai = new ArrayList<>();\n        nilai.add(80);\n        nilai.add(60);\n        nilai.add(55);\n        nilai.add(90);\n        nilai.add(70);\n\n        // jalan dari belakang supaya pergeseran tidak melewatkan elemen\n        for (int i = nilai.size() - 1; i >= 0; i--) {\n            if (nilai.get(i) < 75) {\n                nilai.remove(i);\n            }\n        }\n        System.out.println(\"Nilai tuntas: \" + nilai);\n    }\n}\n",
+    "out": "Nilai tuntas: [80, 90]"
+   },
+   {
+    "t": "Kasus: menghapus produk yang stoknya habis",
+    "code": "import java.util.ArrayList;\n\npublic class Main {\n    public static void main(String[] args) {\n        ArrayList<String> produk = new ArrayList<>();\n        ArrayList<Integer> stok = new ArrayList<>();\n        produk.add(\"pulpen\"); stok.add(12);\n        produk.add(\"buku tulis\"); stok.add(0);\n        produk.add(\"penghapus\"); stok.add(0);\n        produk.add(\"penggaris\"); stok.add(5);\n\n        for (int i = produk.size() - 1; i >= 0; i--) {\n            if (stok.get(i) == 0) {\n                produk.remove(i);        // hapus dari kedua list di indeks yang sama\n                stok.remove(i);\n            }\n        }\n        System.out.println(produk + \" \" + stok);\n    }\n}\n",
+    "d": "Dua list sejajar tetap sejajar karena dihapus di indeks yang sama.",
+    "out": "[pulpen, penggaris] [12, 5]"
+   },
+   {
+    "t": "Kasus: kenapa harus mundur? Bandingkan dengan maju",
+    "code": "import java.util.ArrayList;\n\npublic class Main {\n    public static void main(String[] args) {\n        ArrayList<String> maju = new ArrayList<>();\n        maju.add(\"spam\"); maju.add(\"spam\"); maju.add(\"halo\"); maju.add(\"spam\");\n        for (int i = 0; i < maju.size(); i++) {\n            if (maju.get(i).equals(\"spam\")) {\n                maju.remove(i);          // elemen berikutnya bergeser ke indeks i lalu terlewat\n            }\n        }\n        System.out.println(\"Maju  : \" + maju);\n\n        ArrayList<String> mundur = new ArrayList<>();\n        mundur.add(\"spam\"); mundur.add(\"spam\"); mundur.add(\"halo\"); mundur.add(\"spam\");\n        for (int i = mundur.size() - 1; i >= 0; i--) {\n            if (mundur.get(i).equals(\"spam\")) {\n                mundur.remove(i);\n            }\n        }\n        System.out.println(\"Mundur: \" + mundur);\n    }\n}\n",
+    "d": "Loop maju melewatkan satu spam; loop mundur membersihkan semuanya.",
+    "out": "Maju  : [spam, halo]\nMundur: [halo]"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Tiga cara, satu bug",
+    "b": "Bug cara pertama sering lolos tes karena hanya muncul bila dua elemen yang dihapus berdekatan.",
+    "code": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Main {\n    public static void main(String[] args) {\n        // Cara 1: maju (bug: elemen setelah yang dihapus terlewat)\n        List<String> a = new ArrayList<>(List.of(\"x\", \"x\", \"y\", \"x\"));\n        for (int i = 0; i < a.size(); i++) {\n            if (a.get(i).equals(\"x\")) {\n                a.remove(i);\n            }\n        }\n        System.out.println(\"Maju (bug)  : \" + a);\n\n        // Cara 2: mundur dari belakang\n        List<String> b = new ArrayList<>(List.of(\"x\", \"x\", \"y\", \"x\"));\n        for (int i = b.size() - 1; i >= 0; i--) {\n            if (b.get(i).equals(\"x\")) {\n                b.remove(i);\n            }\n        }\n        System.out.println(\"Mundur      : \" + b);\n\n        // Cara 3: salin yang ingin disimpan ke list baru\n        List<String> c = new ArrayList<>();\n        for (String s : List.of(\"x\", \"x\", \"y\", \"x\")) {\n            if (!s.equals(\"x\")) {\n                c.add(s);\n            }\n        }\n        System.out.println(\"List baru   : \" + c);\n    }\n}\n",
+    "out": "Maju (bug)  : [x, y]\nMundur      : [y]\nList baru   : [y]"
+   }
+  ]
+ },
+ "java-7-5": {
+  "exs": [
+   {
+    "t": "Kasus: kota asal pelanggan tanpa duplikat",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Set<String> kota = new TreeSet<>();\n        kota.add(\"Medan\");\n        kota.add(\"Surabaya\");\n        kota.add(\"Medan\");          // duplikat, diabaikan\n        kota.add(\"Ambon\");\n        kota.add(\"Surabaya\");\n        System.out.println(kota.size() + \" kota: \" + kota);\n        System.out.println(\"Ada pelanggan dari Ambon? \" + kota.contains(\"Ambon\"));\n    }\n}\n",
+    "d": "Set otomatis menolak duplikat, dan TreeSet menjaga urutan abjad.",
+    "out": "3 kota: [Ambon, Medan, Surabaya]\nAda pelanggan dari Ambon? true"
+   },
+   {
+    "t": "Kasus: buku induk NIS ke nama siswa",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Map<String, String> siswa = new HashMap<>();\n        siswa.put(\"2401\", \"Ayu Lestari\");\n        siswa.put(\"2402\", \"Bagas Pratama\");\n        siswa.put(\"2403\", \"Citra Dewi\");\n\n        System.out.println(siswa.get(\"2402\"));\n        System.out.println(\"NIS 2409 terdaftar? \" + siswa.containsKey(\"2409\"));\n        siswa.put(\"2403\", \"Citra Dewi Anggraini\");   // kunci sama: nilainya diganti\n        System.out.println(siswa.get(\"2403\") + \", total \" + siswa.size() + \" siswa\");\n    }\n}\n",
+    "d": "Satu kunci hanya punya satu nilai; put dengan kunci lama menimpa nilainya.",
+    "out": "Bagas Pratama\nNIS 2409 terdaftar? false\nCitra Dewi Anggraini, total 3 siswa"
+   },
+   {
+    "t": "Kasus: menu kantin dan total pesanan",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Map<String, Integer> harga = new TreeMap<>();\n        harga.put(\"mie ayam\", 12000);\n        harga.put(\"es teh\", 4000);\n        harga.put(\"gorengan\", 2000);\n\n        List<String> pesanan = new ArrayList<>();\n        pesanan.add(\"mie ayam\");\n        pesanan.add(\"gorengan\");\n        pesanan.add(\"gorengan\");\n        pesanan.add(\"es teh\");\n\n        int total = 0;\n        for (String menu : pesanan) {\n            total += harga.get(menu);\n        }\n        System.out.println(\"Menu: \" + harga.keySet());\n        System.out.println(\"Total bayar: Rp\" + total);\n        System.out.println(\"Termahal: Rp\" + Collections.max(harga.values()));\n    }\n}\n",
+    "d": "Map sebagai tabel harga, List sebagai pesanan, dan Collections untuk mencari nilai terbesar.",
+    "out": "Menu: [es teh, gorengan, mie ayam]\nTotal bayar: Rp20000\nTermahal: Rp12000"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Urutan Set yang berbeda",
+    "b": "",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        List<String> masuk = List.of(\"Medan\", \"Aceh\", \"Padang\", \"Aceh\", \"Bandung\");\n        System.out.println(\"HashSet       : \" + new HashSet<>(masuk).size() + \" kota unik\");\n        System.out.println(\"LinkedHashSet : \" + new LinkedHashSet<>(masuk));\n        System.out.println(\"TreeSet       : \" + new TreeSet<>(masuk));\n    }\n}\n",
+    "out": "HashSet       : 4 kota unik\nLinkedHashSet : [Medan, Aceh, Padang, Bandung]\nTreeSet       : [Aceh, Bandung, Medan, Padang]"
+   }
+  ]
+ },
+ "java-7-6": {
+  "exs": [
+   {
+    "t": "Kasus: pendaftaran lomba 17 Agustus",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Set<String> peserta = new HashSet<>();\n        System.out.println(peserta.add(\"Rudi\"));    // true: berhasil masuk\n        System.out.println(peserta.add(\"Sinta\"));   // true\n        System.out.println(peserta.add(\"Rudi\"));    // false: sudah terdaftar\n        System.out.println(\"Jumlah peserta: \" + peserta.size());\n    }\n}\n",
+    "d": "add mengembalikan false bila nilainya sudah ada di dalam set.",
+    "out": "true\ntrue\nfalse\nJumlah peserta: 2"
+   },
+   {
+    "t": "Kasus: kode promo yang sudah dipakai",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Set<String> terpakai = new HashSet<>();\n        terpakai.add(\"HEMAT10\");\n        terpakai.add(\"ONGKIR0\");\n\n        String[] masukan = {\"MERDEKA45\", \"HEMAT10\", \"ONGKIR0\", \"BARU5\"};\n        for (String kode : masukan) {\n            if (terpakai.contains(kode)) {\n                System.out.println(kode + \": sudah dipakai\");\n            } else {\n                terpakai.add(kode);\n                System.out.println(kode + \": berhasil\");\n            }\n        }\n    }\n}\n",
+    "d": "contains pada Set sangat cepat, cocok untuk pengecekan seperti ini.",
+    "out": "MERDEKA45: berhasil\nHEMAT10: sudah dipakai\nONGKIR0: sudah dipakai\nBARU5: berhasil"
+   },
+   {
+    "t": "Kasus: huruf berbeda dalam sebuah kata",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        String kata = \"indonesia\";\n        Set<Character> huruf = new TreeSet<>();\n        for (char c : kata.toCharArray()) {\n            huruf.add(c);\n        }\n        System.out.println(kata + \" memakai \" + huruf.size() + \" huruf berbeda: \" + huruf);\n    }\n}\n",
+    "d": "TreeSet menyimpan huruf unik sekaligus mengurutkannya.",
+    "out": "indonesia memakai 7 huruf berbeda: [a, d, e, i, n, o, s]"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Irisan dan selisih pelanggan dua bulan",
+    "b": "",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Set<String> okt = new TreeSet<>(Set.of(\"sari\", \"budi\", \"ayu\", \"rizki\"));\n        Set<String> nov = new TreeSet<>(Set.of(\"sari\", \"ayu\", \"dewi\"));\n        Set<String> setia = new TreeSet<>(okt); setia.retainAll(nov);\n        Set<String> hilang = new TreeSet<>(okt); hilang.removeAll(nov);\n        Set<String> baru = new TreeSet<>(nov); baru.removeAll(okt);\n        System.out.println(\"Setia: \" + setia + \", hilang: \" + hilang + \", baru: \" + baru);\n    }\n}\n",
+    "out": "Setia: [ayu, sari], hilang: [budi, rizki], baru: [dewi]"
+   }
+  ]
+ },
+ "java-7-7": {
+  "exs": [
+   {
+    "t": "Kasus: menghitung suara pemilihan ketua kelas",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        String[] suara = {\"Dina\", \"Raka\", \"Dina\", \"Tegar\", \"Dina\", \"Raka\"};\n        Map<String, Integer> hasil = new TreeMap<>();\n        for (String calon : suara) {\n            hasil.put(calon, hasil.getOrDefault(calon, 0) + 1);\n        }\n        System.out.println(hasil);\n    }\n}\n",
+    "out": "{Dina=3, Raka=2, Tegar=1}"
+   },
+   {
+    "t": "Kasus: menghitung huruf vokal",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        String kalimat = \"selamat pagi ibu guru\";\n        Map<Character, Integer> vokal = new TreeMap<>();\n        for (char c : kalimat.toCharArray()) {\n            if (\"aiueo\".indexOf(c) >= 0) {\n                vokal.put(c, vokal.getOrDefault(c, 0) + 1);\n            }\n        }\n        System.out.println(vokal);\n    }\n}\n",
+    "d": "Kuncinya bisa berupa Character, tidak harus String.",
+    "out": "{a=3, e=1, i=2, u=3}"
+   },
+   {
+    "t": "Kasus: total penjualan per kategori",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        String[] kategori = {\"minuman\", \"makanan\", \"minuman\", \"camilan\", \"makanan\"};\n        int[] nilai = {8000, 15000, 5000, 3000, 12000};\n\n        Map<String, Integer> total = new TreeMap<>();\n        for (int i = 0; i < kategori.length; i++) {\n            String k = kategori[i];\n            total.put(k, total.getOrDefault(k, 0) + nilai[i]);   // bukan +1, tapi + nilai\n        }\n        System.out.println(total);\n    }\n}\n",
+    "d": "Pola yang sama, tetapi yang dijumlahkan adalah nilai penjualan.",
+    "out": "{camilan=3000, makanan=27000, minuman=13000}"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Kata yang paling sering muncul di ulasan",
+    "b": "Toko daring memakai hitungan kata seperti ini untuk meringkas ulasan pembeli.",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        String ulasan = \"kopi enak kopi wangi pengiriman cepat kopi enak\";\n        Map<String, Integer> hitung = new TreeMap<>();\n        for (String k : ulasan.split(\" \")) {\n            hitung.put(k, hitung.getOrDefault(k, 0) + 1);\n        }\n        System.out.println(hitung);\n\n        String teratas = \"\";\n        int terbanyak = 0;\n        for (String k : hitung.keySet()) {\n            if (hitung.get(k) > terbanyak) {\n                terbanyak = hitung.get(k);\n                teratas = k;\n            }\n        }\n        System.out.println(\"Terbanyak: \" + teratas + \" (\" + terbanyak + \" kali)\");\n    }\n}\n",
+    "out": "{cepat=1, enak=2, kopi=3, pengiriman=1, wangi=1}\nTerbanyak: kopi (3 kali)"
+   }
+  ]
+ },
+ "java-7-8": {
+  "exs": [
+   {
+    "t": "Kasus: tombol kembali di peramban",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Stack<String> riwayat = new Stack<>();\n        riwayat.push(\"beranda\");\n        riwayat.push(\"kategori sepatu\");\n        riwayat.push(\"sepatu lari\");\n        System.out.println(\"Sedang di: \" + riwayat.peek());\n\n        riwayat.pop();                         // tekan tombol kembali\n        System.out.println(\"Kembali ke: \" + riwayat.peek());\n    }\n}\n",
+    "d": "Halaman terakhir dibuka adalah yang pertama ditinggalkan: LIFO.",
+    "out": "Sedang di: sepatu lari\nKembali ke: kategori sepatu"
+   },
+   {
+    "t": "Kasus: antrean loket stasiun",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Queue<String> loket = new LinkedList<>();\n        loket.add(\"Pak Joko\");\n        loket.add(\"Bu Wati\");\n        loket.add(\"Mas Rian\");\n        System.out.println(\"Antrean: \" + loket);\n        System.out.println(\"Dilayani: \" + loket.poll());\n        System.out.println(\"Berikutnya: \" + loket.peek() + \", sisa \" + loket.size() + \" orang\");\n    }\n}\n",
+    "d": "Yang datang pertama dilayani pertama: FIFO.",
+    "out": "Antrean: [Pak Joko, Bu Wati, Mas Rian]\nDilayani: Pak Joko\nBerikutnya: Bu Wati, sisa 2 orang"
+   },
+   {
+    "t": "Kasus: membalik kata dengan stack",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        String kata = \"kasur\";\n        Stack<Character> tumpuk = new Stack<>();\n        for (char c : kata.toCharArray()) {\n            tumpuk.push(c);\n        }\n        StringBuilder balik = new StringBuilder();\n        while (!tumpuk.isEmpty()) {\n            balik.append(tumpuk.pop());\n        }\n        System.out.println(kata + \" -> \" + balik);\n    }\n}\n",
+    "d": "Huruf terakhir yang masuk keluar paling awal, sehingga urutannya terbalik.",
+    "out": "kasur -> rusak"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Undo dengan stack, layanan pelanggan dengan queue",
+    "b": "Editor teks menyimpan aksi di stack, sedangkan layanan pelanggan memproses tiket secara FIFO.",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Stack<String> undo = new Stack<>();\n        undo.push(\"ketik judul\");\n        undo.push(\"tebalkan\");\n        undo.push(\"hapus paragraf\");\n        System.out.println(\"Undo: \" + undo.pop() + \", lalu \" + undo.pop());\n\n        Queue<String> antre = new LinkedList<>();\n        antre.add(\"A001\");\n        antre.add(\"A002\");\n        antre.add(\"A003\");\n        System.out.println(\"Dilayani: \" + antre.poll() + \", sisa antre \" + antre);\n    }\n}\n",
+    "out": "Undo: hapus paragraf, lalu tebalkan\nDilayani: A001, sisa antre [A002, A003]"
+   }
+  ]
+ },
+ "java-7-9": {
+  "exs": [
+   {
+    "t": "Kasus: tumpukan buku di meja perpustakaan",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Stack<String> buku = new Stack<>();\n        buku.push(\"Laskar Pelangi\");\n        buku.push(\"Bumi Manusia\");\n        buku.push(\"Negeri 5 Menara\");\n        System.out.println(\"Paling atas: \" + buku.peek());\n        System.out.println(\"Diambil: \" + buku.pop());\n        System.out.println(\"Sekarang paling atas: \" + buku.peek());\n        System.out.println(\"Sisa \" + buku.size() + \" buku, kosong? \" + buku.isEmpty());\n    }\n}\n",
+    "out": "Paling atas: Negeri 5 Menara\nDiambil: Negeri 5 Menara\nSekarang paling atas: Bumi Manusia\nSisa 2 buku, kosong? false"
+   },
+   {
+    "t": "Kasus: undo di aplikasi catatan",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Stack<String> versi = new Stack<>();\n        versi.push(\"Belanja:\");\n        versi.push(\"Belanja: gula\");\n        versi.push(\"Belanja: gula, kopi\");\n        versi.push(\"Belanja: gula, kopi, tehh\");   // salah ketik\n\n        versi.pop();                                 // undo sekali\n        System.out.println(\"Isi catatan: \" + versi.peek());\n    }\n}\n",
+    "d": "Setiap perubahan disimpan di atas tumpukan; undo cukup membuang yang paling atas.",
+    "out": "Isi catatan: Belanja: gula, kopi"
+   },
+   {
+    "t": "Kasus: mengubah desimal ke biner",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        int angka = 13;\n        int n = angka;\n        Stack<Integer> sisa = new Stack<>();\n        while (n > 0) {\n            sisa.push(n % 2);      // sisa bagi dihasilkan dari digit paling kanan\n            n /= 2;\n        }\n        StringBuilder biner = new StringBuilder();\n        while (!sisa.isEmpty()) {\n            biner.append(sisa.pop());\n        }\n        System.out.println(angka + \" dalam biner = \" + biner);\n    }\n}\n",
+    "d": "Sisa bagi keluar dari belakang, stack membaliknya menjadi urutan yang benar.",
+    "out": "13 dalam biner = 1101"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Memeriksa kurung pada rumus",
+    "b": "Editor kode dan kalkulator memakai cara ini untuk menandai kurung yang tidak berpasangan.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static boolean seimbang(String s) {\n        Stack<Character> st = new Stack<>();\n        for (char c : s.toCharArray()) {\n            if (\"([{\".indexOf(c) >= 0) {\n                st.push(c);\n            } else if (\")]}\".indexOf(c) >= 0) {\n                if (st.isEmpty() || \"([{\".indexOf(st.pop()) != \")]}\".indexOf(c)) {\n                    return false;\n                }\n            }\n        }\n        return st.isEmpty();\n    }\n\n    public static void main(String[] args) {\n        String[] rumus = {\"(a+b)*[c-d]\", \"{[(])}\", \"((x)\"};\n        for (String s : rumus) {\n            System.out.println(s + \" -> \" + seimbang(s));\n        }\n    }\n}\n",
+    "out": "(a+b)*[c-d] -> true\n{[(])} -> false\n((x) -> false"
+   }
+  ]
+ },
+ "java-7-10": {
+  "exs": [
+   {
+    "t": "Kasus: antrean cetak di printer kantor",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Queue<String> cetak = new LinkedList<>();\n        cetak.add(\"laporan.pdf\");\n        cetak.add(\"undangan.docx\");\n        cetak.add(\"foto.jpg\");\n        while (!cetak.isEmpty()) {\n            System.out.println(\"Mencetak \" + cetak.remove() + \", sisa \" + cetak.size());\n        }\n    }\n}\n",
+    "out": "Mencetak laporan.pdf, sisa 2\nMencetak undangan.docx, sisa 1\nMencetak foto.jpg, sisa 0"
+   },
+   {
+    "t": "Kasus: antrean pengemudi ojek di pangkalan",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Queue<String> pangkalan = new LinkedList<>();\n        pangkalan.offer(\"Bang Ucok\");\n        pangkalan.offer(\"Mas Darto\");\n        System.out.println(\"Giliran berikut: \" + pangkalan.peek());\n\n        System.out.println(\"Berangkat: \" + pangkalan.poll());\n        pangkalan.offer(\"Kang Asep\");          // baru datang, antre di belakang\n        System.out.println(\"Antrean sekarang: \" + pangkalan);\n    }\n}\n",
+    "d": "offer menambah di belakang, poll mengambil dari depan, peek hanya melihat.",
+    "out": "Giliran berikut: Bang Ucok\nBerangkat: Bang Ucok\nAntrean sekarang: [Mas Darto, Kang Asep]"
+   },
+   {
+    "t": "Kasus: waktu tunggu di kasir minimarket",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Queue<Integer> lamaBayar = new LinkedList<>();   // menit per pelanggan\n        lamaBayar.add(3);\n        lamaBayar.add(5);\n        lamaBayar.add(2);\n        lamaBayar.add(4);\n\n        int menit = 0;\n        int ke = 1;\n        while (!lamaBayar.isEmpty()) {\n            System.out.println(\"Pelanggan \" + ke + \" mulai dilayani di menit \" + menit);\n            menit += lamaBayar.poll();\n            ke++;\n        }\n        System.out.println(\"Semua selesai di menit \" + menit);\n    }\n}\n",
+    "d": "Pelanggan dilayani urut kedatangan, jadi waktu tunggunya tinggal dijumlahkan.",
+    "out": "Pelanggan 1 mulai dilayani di menit 0\nPelanggan 2 mulai dilayani di menit 3\nPelanggan 3 mulai dilayani di menit 8\nPelanggan 4 mulai dilayani di menit 10\nSemua selesai di menit 14"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Antrean IGD: darurat didahulukan",
+    "b": "Dua queue terpisah menjaga urutan kedatangan di setiap kelompok, dan kelompok darurat selalu dilayani lebih dulu.",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Queue<String> darurat = new LinkedList<>();\n        Queue<String> biasa = new LinkedList<>();\n        String[] datang = {\"Budi:biasa\", \"Sari:darurat\", \"Ayu:biasa\", \"Dodi:darurat\"};\n        for (String d : datang) {\n            String[] bagian = d.split(\":\");\n            if (bagian[1].equals(\"darurat\")) {\n                darurat.add(bagian[0]);\n            } else {\n                biasa.add(bagian[0]);\n            }\n        }\n        while (!darurat.isEmpty() || !biasa.isEmpty()) {\n            String pasien = !darurat.isEmpty() ? darurat.poll() : biasa.poll();\n            System.out.println(\"Ditangani: \" + pasien);\n        }\n    }\n}\n",
+    "out": "Ditangani: Sari\nDitangani: Dodi\nDitangani: Budi\nDitangani: Ayu"
+   }
+  ]
+ },
+ "java-7-11": {
+  "exs": [
+   {
+    "t": "Kasus: cek palindrom dari dua ujung",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        String kata = \"malam\";\n        Deque<Character> dek = new ArrayDeque<>();\n        for (char c : kata.toCharArray()) {\n            dek.offerLast(c);\n        }\n        boolean palindrom = true;\n        while (dek.size() > 1) {\n            if (!dek.pollFirst().equals(dek.pollLast())) {   // Character dibandingkan dengan equals\n                palindrom = false;\n            }\n        }\n        System.out.println(kata + \" palindrom? \" + palindrom);\n    }\n}\n",
+    "d": "Deque bisa diambil dari depan dan belakang sekaligus.",
+    "out": "malam palindrom? true"
+   },
+   {
+    "t": "Kasus: membuang produk kedaluwarsa dengan Iterator",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        List<String> rak = new ArrayList<>(List.of(\"susu:kedaluwarsa\", \"roti:baik\", \"yogurt:kedaluwarsa\", \"keju:baik\"));\n        Iterator<String> it = rak.iterator();\n        while (it.hasNext()) {\n            String barang = it.next();\n            if (barang.endsWith(\"kedaluwarsa\")) {\n                it.remove();             // aman: menghapus lewat iterator\n            }\n        }\n        System.out.println(\"Isi rak: \" + rak);\n    }\n}\n",
+    "d": "Menghapus saat berjalan harus lewat it.remove(), bukan rak.remove().",
+    "out": "Isi rak: [roti:baik, keju:baik]"
+   },
+   {
+    "t": "Kasus: satu ArrayDeque untuk dua peran",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Deque<String> tumpukan = new ArrayDeque<>();   // peran stack\n        tumpukan.push(\"piring 1\");\n        tumpukan.push(\"piring 2\");\n        System.out.println(\"Ambil piring: \" + tumpukan.pop());\n\n        Deque<String> antre = new ArrayDeque<>();      // peran queue\n        antre.offer(\"tiket A1\");\n        antre.offer(\"tiket A2\");\n        antre.offerFirst(\"tiket prioritas\");          // menyela di depan\n        System.out.println(\"Dilayani: \" + antre.poll() + \", sisa \" + antre);\n    }\n}\n",
+    "d": "push/pop untuk stack, offer/poll untuk queue, offerFirst untuk menyela di depan.",
+    "out": "Ambil piring: piring 2\nDilayani: tiket prioritas, sisa [tiket A1, tiket A2]"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Riwayat 3 halaman terakhir yang dikunjungi",
+    "b": "",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Deque<String> riwayat = new ArrayDeque<>();\n        for (String h : List.of(\"/beranda\", \"/kopi\", \"/kopi/gayo\", \"/keranjang\", \"/checkout\")) {\n            riwayat.addFirst(h);\n            if (riwayat.size() > 3) riwayat.removeLast();\n        }\n        System.out.println(\"Terbaru dulu: \" + riwayat);\n        Iterator<String> it = riwayat.iterator();\n        while (it.hasNext()) if (it.next().startsWith(\"/kopi\")) it.remove();\n        System.out.println(\"Tanpa halaman kopi: \" + riwayat);\n    }\n}\n",
+    "out": "Terbaru dulu: [/checkout, /keranjang, /kopi/gayo]\nTanpa halaman kopi: [/checkout, /keranjang]"
+   }
+  ]
+ },
+ "java-8-1": {
+  "exs": [
+   {
+    "t": "Kasus: pasangan nama dan nilai",
+    "code": "public class Main {\n    static class Pasangan<A, B> {\n        private final A kiri;\n        private final B kanan;\n        Pasangan(A kiri, B kanan) {\n            this.kiri = kiri;\n            this.kanan = kanan;\n        }\n        A kiri() { return kiri; }\n        B kanan() { return kanan; }\n    }\n\n    public static void main(String[] args) {\n        Pasangan<String, Integer> rapor = new Pasangan<>(\"Matematika\", 88);\n        Pasangan<String, String> kontak = new Pasangan<>(\"Wulan\", \"0812-1111-2222\");\n        System.out.println(rapor.kiri() + \" -> \" + rapor.kanan());\n        System.out.println(kontak.kiri() + \" -> \" + kontak.kanan());\n\n        int nilai = rapor.kanan();        // sudah Integer, tanpa cast\n        System.out.println(\"Nilai + 2 = \" + (nilai + 2));\n    }\n}\n",
+    "d": "Satu kelas dengan dua parameter tipe bisa dipakai untuk berbagai pasangan data.",
+    "out": "Matematika -> 88\nWulan -> 0812-1111-2222\nNilai + 2 = 90"
+   },
+   {
+    "t": "Kasus: gudang yang hanya menerima satu jenis barang",
+    "code": "import java.util.*;\n\npublic class Main {\n    static class Gudang<T> {\n        private final List<T> daftar = new ArrayList<>();\n        void simpan(T barang) { daftar.add(barang); }\n        int jumlah() { return daftar.size(); }\n        List<T> isi() { return daftar; }\n    }\n\n    public static void main(String[] args) {\n        Gudang<String> gudangBuku = new Gudang<>();\n        gudangBuku.simpan(\"Atlas\");\n        gudangBuku.simpan(\"Kamus\");\n        // gudangBuku.simpan(25);   // ditolak compiler: bukan String\n\n        Gudang<Double> gudangBerat = new Gudang<>();\n        gudangBerat.simpan(2.5);\n        gudangBerat.simpan(1.25);\n\n        System.out.println(gudangBuku.isi() + \", \" + gudangBuku.jumlah() + \" barang\");\n        System.out.println(gudangBerat.isi() + \", \" + gudangBerat.jumlah() + \" barang\");\n    }\n}\n",
+    "d": "Kesalahan tipe ketahuan saat kompilasi, bukan saat program sudah berjalan.",
+    "out": "[Atlas, Kamus], 2 barang\n[2.5, 1.25], 2 barang"
+   },
+   {
+    "t": "Kasus: method generik dan batas Number",
+    "code": "import java.util.*;\n\npublic class Main {\n    static <T> T terakhir(List<T> data) {\n        return data.get(data.size() - 1);\n    }\n\n    static <T extends Number> double total(List<T> angka) {\n        double jumlah = 0;\n        for (T x : angka) {\n            jumlah += x.doubleValue();\n        }\n        return jumlah;\n    }\n\n    public static void main(String[] args) {\n        List<String> kota = List.of(\"Padang\", \"Palu\", \"Kupang\");\n        List<Integer> berat = List.of(3, 5, 2);\n        List<Double> harga = List.of(12.5, 7.25);\n\n        System.out.println(terakhir(kota));\n        System.out.println(terakhir(berat));\n        System.out.println(\"Total berat: \" + total(berat));\n        System.out.println(\"Total harga: \" + total(harga));\n    }\n}\n",
+    "d": "<T> bekerja untuk tipe apa pun; <T extends Number> hanya untuk angka.",
+    "out": "Kupang\n2\nTotal berat: 10.0\nTotal harga: 19.75"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Method generic dengan batas Comparable",
+    "b": "",
+    "code": "import java.util.*;\n\npublic class Main {\n    static <T extends Comparable<T>> T terbesar(List<T> xs) {\n        T m = xs.get(0);\n        for (T x : xs) if (x.compareTo(m) > 0) m = x;\n        return m;\n    }\n    record Hasil<T>(T nilai, String error) {\n        static <T> Hasil<T> ok(T v) { return new Hasil<>(v, null); }\n    }\n\n    public static void main(String[] args) {\n        System.out.println(terbesar(List.of(3, 9, 4)));\n        System.out.println(terbesar(List.of(\"apel\", \"jeruk\", \"mangga\")));\n        Hasil<Integer> h = Hasil.ok(42);\n        System.out.println(h);\n    }\n}\n",
+    "out": "9\nmangga\nHasil[nilai=42, error=null]"
+   }
+  ]
+ },
+ "java-8-2": {
+  "code": "public class Main {\n    public static void main(String[] args) {\n        String input = \"12a\";\n        try {\n            int jumlah = Integer.parseInt(input);\n            System.out.println(\"Jumlah: \" + jumlah);\n        } catch (NumberFormatException e) {\n            System.out.println(\"Input bukan angka: \" + input);\n        }\n        System.out.println(\"Program tetap berjalan\");\n    }\n}\n",
+  "trs": [
+   [
+    "Coba ubah teks menjadi angka",
+    "try { int jumlah = Integer.parseInt(input); ... }"
+   ],
+   [
+    "Kalau teksnya bukan angka, tampilkan pesan",
+    "catch (NumberFormatException e) { System.out.println(\"Input bukan angka: \" + input); }"
+   ],
+   [
+    "Lanjutkan program seperti biasa",
+    "System.out.println(\"Program tetap berjalan\");"
+   ]
+  ],
+  "exs": [
+   {
+    "t": "Kasus: patungan dibagi nol orang",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        int totalTagihan = 150000;\n        int[] jumlahOrang = {3, 0, 5};\n        for (int orang : jumlahOrang) {\n            try {\n                int per = totalTagihan / orang;\n                System.out.println(orang + \" orang: Rp\" + per + \" per orang\");\n            } catch (ArithmeticException e) {\n                System.out.println(orang + \" orang: tidak bisa dibagi (\" + e.getMessage() + \")\");\n            }\n        }\n    }\n}\n",
+    "d": "Pembagian bilangan bulat dengan nol memicu ArithmeticException.",
+    "out": "3 orang: Rp50000 per orang\n0 orang: tidak bisa dibagi (/ by zero)\n5 orang: Rp30000 per orang"
+   },
+   {
+    "t": "Kasus: nomor kursi bioskop di luar batas",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        String[] kursi = {\"A1\", \"A2\", \"A3\", \"A4\"};\n        int[] pilihan = {2, 7};\n        for (int p : pilihan) {\n            try {\n                System.out.println(\"Kursi nomor \" + p + \": \" + kursi[p - 1]);\n            } catch (ArrayIndexOutOfBoundsException e) {\n                System.out.println(\"Kursi nomor \" + p + \" tidak ada. \" + e.getMessage());\n            }\n        }\n    }\n}\n",
+    "d": "e.getMessage() memberi keterangan dari Java tentang apa yang salah.",
+    "out": "Kursi nomor 2: A2\nKursi nomor 7 tidak ada. Index 6 out of bounds for length 4"
+   },
+   {
+    "t": "Kasus: menolak umur pendaftar yang tidak masuk akal",
+    "code": "public class Main {\n    static void daftar(int umur) {\n        if (umur < 0 || umur > 120) {\n            throw new IllegalArgumentException(\"umur \" + umur + \" tidak valid\");\n        }\n        System.out.println(\"Pendaftar umur \" + umur + \" diterima\");\n    }\n\n    public static void main(String[] args) {\n        int[] umurMasuk = {17, -2, 130};\n        for (int umur : umurMasuk) {\n            try {\n                daftar(umur);\n            } catch (IllegalArgumentException e) {\n                System.out.println(\"Ditolak: \" + e.getMessage());\n            }\n        }\n    }\n}\n",
+    "d": "throw dipakai untuk melempar error sendiri saat data tidak memenuhi syarat.",
+    "out": "Pendaftar umur 17 diterima\nDitolak: umur -2 tidak valid\nDitolak: umur 130 tidak valid"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Fallback saat layanan kurs gagal",
+    "b": "",
+    "code": "public class Main {\n    static double kursDariApi() {\n        throw new IllegalStateException(\"timeout ke layanan kurs\");\n    }\n    static double hargaDalamUsd(long rupiah) {\n        double kurs;\n        try {\n            kurs = kursDariApi();\n        } catch (IllegalStateException e) {\n            System.out.println(\"[WARN] \" + e.getMessage() + \", pakai kurs cadangan\");\n            kurs = 15_500;\n        }\n        return rupiah / kurs;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(\"Harga USD: \" + hargaDalamUsd(1_550_000));\n    }\n}\n",
+    "out": "[WARN] timeout ke layanan kurs, pakai kurs cadangan\nHarga USD: 100.0"
+   }
+  ],
+  "out": "Input bukan angka: 12a\nProgram tetap berjalan"
+ },
+ "java-8-3": {
+  "exs": [
+   {
+    "t": "Kasus: finally selalu menutup loket",
+    "code": "public class Main {\n    static int sisaTiket = 5;\n\n    static void pesanTiket(int jumlah) {\n        System.out.println(\"Loket dibuka untuk pesanan \" + jumlah + \" tiket\");\n        try {\n            if (jumlah > sisaTiket) {\n                throw new IllegalStateException(\"tiket tinggal \" + sisaTiket);\n            }\n            sisaTiket -= jumlah;\n            System.out.println(\"Berhasil, sisa \" + sisaTiket);\n        } catch (IllegalStateException e) {\n            System.out.println(\"Gagal: \" + e.getMessage());\n        } finally {\n            System.out.println(\"Loket ditutup\");\n        }\n    }\n\n    public static void main(String[] args) {\n        pesanTiket(2);\n        pesanTiket(10);\n    }\n}\n",
+    "d": "Blok finally tetap jalan, baik pesanan berhasil maupun gagal.",
+    "out": "Loket dibuka untuk pesanan 2 tiket\nBerhasil, sisa 3\nLoket ditutup\nLoket dibuka untuk pesanan 10 tiket\nGagal: tiket tinggal 3\nLoket ditutup"
+   },
+   {
+    "t": "Kasus: exception unchecked buatan sendiri untuk stok",
+    "code": "import java.util.*;\n\npublic class Main {\n    static class StokHabisException extends RuntimeException {\n        StokHabisException(String barang, int sisa) {\n            super(barang + \" hanya tersisa \" + sisa);\n        }\n    }\n\n    static void ambil(Map<String, Integer> stok, String barang, int jumlah) {\n        int sisa = stok.get(barang);\n        if (jumlah > sisa) {\n            throw new StokHabisException(barang, sisa);\n        }\n        stok.put(barang, sisa - jumlah);\n        System.out.println(\"Ambil \" + jumlah + \" \" + barang + \", sisa \" + (sisa - jumlah));\n    }\n\n    public static void main(String[] args) {\n        Map<String, Integer> stok = new HashMap<>();\n        stok.put(\"beras 5 kg\", 3);\n        try {\n            ambil(stok, \"beras 5 kg\", 2);\n            ambil(stok, \"beras 5 kg\", 4);\n        } catch (StokHabisException e) {\n            System.out.println(\"Pesanan ditolak: \" + e.getMessage());\n        }\n    }\n}\n",
+    "d": "Turunan RuntimeException tidak wajib dideklarasikan dengan throws.",
+    "out": "Ambil 2 beras 5 kg, sisa 1\nPesanan ditolak: beras 5 kg hanya tersisa 1"
+   },
+   {
+    "t": "Kasus: try-with-resources menutup koneksi otomatis",
+    "code": "public class Main {\n    static class Koneksi implements AutoCloseable {\n        private final String nama;\n        Koneksi(String nama) {\n            this.nama = nama;\n            System.out.println(\"Membuka \" + nama);\n        }\n        void kirim(String data) throws Exception {\n            if (data.endsWith(\"22\")) {\n                throw new Exception(\"timeout saat \" + data);\n            }\n            System.out.println(\"Terkirim: \" + data);\n        }\n        @Override\n        public void close() {\n            System.out.println(\"Menutup \" + nama);\n        }\n    }\n\n    public static void main(String[] args) {\n        try (Koneksi k = new Koneksi(\"server-pembayaran\")) {\n            k.kirim(\"bayar INV-21\");\n            k.kirim(\"bayar INV-22\");\n        } catch (Exception e) {\n            System.out.println(\"Error: \" + e.getMessage());\n        }\n        System.out.println(\"Selesai\");\n    }\n}\n",
+    "d": "close() dipanggil otomatis sebelum catch, bahkan saat terjadi error.",
+    "out": "Membuka server-pembayaran\nTerkirim: bayar INV-21\nMenutup server-pembayaran\nError: timeout saat bayar INV-22\nSelesai"
+   }
+  ]
+ },
+ "java-8-4": {
+  "exs": [
+   {
+    "t": "Kasus: @Override menangkap salah ketik nama method",
+    "code": "public class Main {\n    static class Hewan {\n        public String suara() { return \"...\"; }\n    }\n\n    static class Kucing extends Hewan {\n        @Override\n        public String suara() { return \"meong\"; }\n    }\n\n    public static void main(String[] args) {\n        Hewan h = new Kucing();\n        System.out.println(h.suara());\n        // Bila di Kucing ditulis \"public String suaraa()\" dengan @Override,\n        // compiler langsung menolak karena tidak ada method yang ditimpa.\n    }\n}\n",
+    "d": "@Override meminta compiler memastikan method benar-benar menimpa method induk.",
+    "out": "meong"
+   },
+   {
+    "t": "Kasus: menandai method usang dengan @Deprecated",
+    "code": "import java.lang.reflect.Method;\nimport java.util.Arrays;\nimport java.util.Comparator;\n\npublic class Main {\n    static class Kalkulator {\n        @Deprecated(since = \"2.0\")\n        static int ongkirLama(int kg) { return kg * 9000; }\n\n        static int ongkir(int kg) { return 9000 + (kg - 1) * 7000; }\n    }\n\n    public static void main(String[] args) {\n        Method[] daftar = Kalkulator.class.getDeclaredMethods();\n        Arrays.sort(daftar, Comparator.comparing(Method::getName));\n        for (Method m : daftar) {\n            String status = m.isAnnotationPresent(Deprecated.class) ? \"usang\" : \"aktif\";\n            System.out.println(m.getName() + \": \" + status);\n        }\n    }\n}\n",
+    "d": "Alat bantu dan framework bisa membaca anotasi lewat reflection.",
+    "out": "ongkir: aktif\nongkirLama: usang"
+   },
+   {
+    "t": "Kasus: anotasi buatan sendiri untuk versi API",
+    "code": "import java.lang.annotation.*;\n\npublic class Main {\n    @Retention(RetentionPolicy.RUNTIME)\n    @Target(ElementType.TYPE)\n    @interface Versi {\n        String nomor();\n        String tim() default \"backend\";\n    }\n\n    @Versi(nomor = \"1.4\")\n    static class LayananPesanan {}\n\n    @Versi(nomor = \"0.9\", tim = \"growth\")\n    static class LayananPromo {}\n\n    public static void main(String[] args) {\n        for (Class<?> c : new Class<?>[]{LayananPesanan.class, LayananPromo.class}) {\n            Versi v = c.getAnnotation(Versi.class);\n            System.out.println(c.getSimpleName() + \" versi \" + v.nomor() + \" oleh \" + v.tim());\n        }\n    }\n}\n",
+    "d": "Nilai default dipakai bila atribut tidak diisi.",
+    "out": "LayananPesanan versi 1.4 oleh backend\nLayananPromo versi 0.9 oleh growth"
+   }
+  ]
+ }
+}
