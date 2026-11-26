@@ -34,7 +34,7 @@ def jalankan(lang, code):
             f = Path(d) / "contoh.dart"; f.write_text(code); cmd = [DART, "run", str(f)]
         elif lang == "kotlin" and Path(KT).exists():
             f = Path(d) / "Contoh.kt"; f.write_text(code)
-            std = f"{KT}/kotlin-stdlib-2.2.0.jar"
+            std = f"{KT}/kotlin-stdlib-2.2.0.jar:{KT}/kotlinx-coroutines-core-jvm-1.8.0.jar"  # coroutines & Flow ikut
             r = subprocess.run(["java", "-cp", f"{KT}/*", "org.jetbrains.kotlin.cli.jvm.K2JVMCompiler", "-no-stdlib", "-no-reflect",
                                 "-cp", std, str(f), "-d", f"{d}/out"], capture_output=True, text=True, timeout=120, cwd=d)
             if r.returncode:
