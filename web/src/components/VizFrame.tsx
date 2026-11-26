@@ -9,10 +9,10 @@ export function VizFrame({ viz, v3, v3p, lang, lesson, title }: { viz?: string; 
   const box = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // dimuat saat mendekati layar agar halaman awal tetap ringan
+    // dimuat saat mendekati layar agar halaman awal tetap ringan (3D memakai paket kecil /lab/v3d)
     const el = box.current;
     if (!el) return;
-    const io = new IntersectionObserver((es) => { if (es.some((x) => x.isIntersecting)) { setShow(true); io.disconnect(); } }, { rootMargin: "400px" });
+    const io = new IntersectionObserver((es) => { if (es.some((x) => x.isIntersecting)) { setShow(true); io.disconnect(); } }, { rootMargin: "1200px" });
     io.observe(el);
     return () => io.disconnect();
   }, []);
@@ -31,7 +31,7 @@ export function VizFrame({ viz, v3, v3p, lang, lesson, title }: { viz?: string; 
   return (
     <div ref={box} className="clay-in" style={{ padding: 6, minHeight: v3 ? 560 : 220 }}>
       {show
-        ? <iframe ref={ref} className="viz-frame" src="/lab/viz" sandbox="allow-scripts" title={`Visual interaktif${v3 ? " 3D" : ""}: ${title}`} style={{ height: h }} loading="lazy" />
+        ? <iframe ref={ref} className="viz-frame" src={v3 && !viz ? "/lab/v3d" : "/lab/viz"} sandbox="allow-scripts" title={`Visual interaktif${v3 ? " 3D" : ""}: ${title}`} style={{ height: h }} loading="lazy" />
         : <p className="muted" style={{ padding: 16 }}>Memuat visual…</p>}
     </div>
   );

@@ -27,6 +27,11 @@ export function DoneBar({ lid, track, last }: { lid: string; track: string; last
 export function SideToggle() {
   const [open, setOpen] = useState(false);
   useEffect(() => { document.getElementById("side")?.classList.toggle("open", open); }, [open]);
+  useEffect(() => {
+    // gulir daftar materi (bukan halaman) agar sub materi yang sedang dibuka terlihat
+    const side = document.getElementById("side"), cur = side?.querySelector<HTMLElement>('[aria-current="page"]');
+    if (side && cur && side.scrollHeight > side.clientHeight) side.scrollTop = cur.offsetTop - side.clientHeight / 3;
+  }, []);
   return (
     <button type="button" className="btn sm side-toggle" aria-expanded={open} aria-controls="side" onClick={() => setOpen(!open)}>
       ☰ {open ? "Tutup daftar pelajaran" : "Daftar pelajaran"}

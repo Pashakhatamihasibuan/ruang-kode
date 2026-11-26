@@ -881,9 +881,9 @@ window.V3D=function(host,key,init,opt){const sc=S[key];if(!sc)return;const mini=
         if(!fresh&&!rm&&(prevC!==o.c||prevT!==o.t)&&o.c!=='floor'){e.classList.add('pulse');setTimeout(()=>e.classList.remove('pulse'),950)}
         e._c=o.c;e._t=o.t}
       /* benda baru muncul bergiliran, bukan sekaligus */
-      if(fresh&&!rm){const d=Math.min(nf++,12)*70;e.style.transitionDelay=d+'ms';e.classList.add('in');
-        requestAnimationFrame(()=>requestAnimationFrame(()=>e.classList.remove('in')));setTimeout(()=>{e.style.transitionDelay=''},d+800)}});
-    els.forEach((e,id)=>{if(seen.has(id))return;els.delete(id);if(rm)e.remove();else{e.classList.add('out');setTimeout(()=>e.remove(),450)}});
+      if(fresh&&!rm){const d=Math.min(nf++,10)*30;e.style.transitionDelay=d+'ms';e.classList.add('in');
+        requestAnimationFrame(()=>requestAnimationFrame(()=>e.classList.remove('in')));setTimeout(()=>{e.style.transitionDelay=''},d+500)}});
+    els.forEach((e,id)=>{if(seen.has(id))return;els.delete(id);if(rm)e.remove();else{e.classList.add('out');setTimeout(()=>e.remove(),300)}});
     /* teks di sisi benda dikecilkan bila tidak muat (layar sempit) */
     w.querySelectorAll('.f3>b,.f3>i').forEach(t=>{const f=t.parentNode,cw=f.clientWidth-4,ch=f.clientHeight-2,sw=t.scrollWidth,sh=t.offsetHeight;
       const k=Math.min(1,cw/sw,ch/sh);t.style.transform=k<1?`scale(${Math.max(.35,k)})`:''});
