@@ -1,0 +1,228 @@
+{
+ "fe0-1-1": {
+  "cx": [
+   {
+    "t": "Satu hari kerja frontend developer",
+    "code": "09.00  Daily stand-up 15 menit: kemarin, hari ini, hambatan\n09.20  Ambil tiket FE-231 \"Form checkout menampilkan error per field\"\n       - baca acceptance criteria, buka desain di Figma (state default, error, loading, sukses)\n       - git switch -c feat/FE-231-checkout-error\n10.00  Koding komponen + panggilan API, cek di 360px, 768px, 1280px\n13.00  Tulis test (Vitest) untuk validasi, jalankan Lighthouse aksesibilitas\n14.30  Buka pull request: deskripsi, tangkapan layar, cara menguji\n15.00  Review PR rekan, balas komentar reviewer di PR sendiri\n16.30  PR di-merge -> CI deploy otomatis ke staging -> QA menguji\n       Tiket pindah ke kolom \"Ready for QA\"",
+    "lang": "text"
+   },
+   {
+    "t": "Kontrak data yang dibicarakan frontend dan backend",
+    "lang": "text",
+    "b": "Backend mengirim data mentah sesuai kontrak yang disepakati di awal sprint. Tugas frontend mengubahnya menjadi tampilan yang ramah pengguna: format rupiah, label stok, dan nomor halaman. Kode untuk melakukannya akan kamu tulis sendiri setelah belajar JavaScript dasar.",
+    "code": "Data dari API (backend)          Tampilan di layar (frontend)\n-----------------------          ----------------------------\nnama   : Kopi Gayo        ->     Kopi Gayo\nharga  : 85000            ->     Rp85.000\nstok   : 3                ->     Sisa 3 (label oranye)\nstok   : 0                ->     Habis (tombol Beli nonaktif)\nhalaman: 1, total: 42     ->     Halaman 1 dari 3 (20 produk per halaman)"
+   }
+  ]
+ },
+ "fe0-4-1": {
+  "cx": [
+   {
+    "t": "Tipe data dan jebakan angka besar",
+    "lang": "js",
+    "b": "ID dari database berukuran 64-bit sering dikirim sebagai string di JSON agar tidak rusak di JavaScript.",
+    "code": "const nama = \"Sari\";\nlet saldo = 150000;\nsaldo += 25000;\nconsole.log(typeof nama, typeof saldo, typeof true, typeof undefined, typeof null);\nconsole.log(\"0.1 + 0.2 =\", 0.1 + 0.2);\nconsole.log(\"batas aman:\", Number.MAX_SAFE_INTEGER);\nconst idTransaksi = 9007199254740993;            // lebih dari batas aman\nconsole.log(\"id rusak  :\", idTransaksi);\nconst idTeks = \"9007199254740993\";               // dikirim sebagai string: aman\nconsole.log(\"id string :\", idTeks, typeof idTeks);\nconsole.log(\"uang dalam sen:\", (1999 + 1) / 100, \"-> simpan rupiah/sen sebagai bilangan bulat\");",
+    "out": "string number boolean undefined object\n0.1 + 0.2 = 0.30000000000000004\nbatas aman: 9007199254740991\nid rusak  : 9007199254740992\nid string : 9007199254740993 string\nuang dalam sen: 20 -> simpan rupiah/sen sebagai bilangan bulat"
+   }
+  ]
+ },
+ "fe0-4-2": {
+  "cx": [
+   {
+    "t": "?? vs || pada nilai yang sah tetapi falsy",
+    "lang": "js",
+    "b": "Diskon 0 dan catatan kosong adalah nilai yang sah. Operator || menggantinya dengan nilai cadangan, sedangkan ?? hanya mengganti null dan undefined.",
+    "code": "console.log(\"0 == '0':\", 0 == \"0\", \"| 0 === '0':\", 0 === \"0\", \"| null == undefined:\", null == undefined);\nconst diskon = 0;\nconst alamat = null;\nconsole.log(\"diskon || 10 :\", diskon || 10, \"<- 0 yang sah hilang\");\nconsole.log(\"diskon ?? 10 :\", diskon ?? 10);\nconsole.log(\"alamat:\", alamat ?? \"(belum diisi)\");\nconst nilai = 78;\nlet status;\nif (nilai >= 85) status = \"A\";\nelse if (nilai >= 75) status = \"B\";\nelse if (nilai >= 60) status = \"C\";\nelse status = \"D\";\nconsole.log(\"nilai\", nilai, \"->\", status);",
+    "out": "0 == '0': true | 0 === '0': false | null == undefined: true\ndiskon || 10 : 10 <- 0 yang sah hilang\ndiskon ?? 10 : 0\nalamat: (belum diisi)\nnilai 78 -> B"
+   }
+  ]
+ },
+ "fe0-4-3": {
+  "cx": [
+   {
+    "t": "Fungsi kecil yang bisa digabung",
+    "lang": "js",
+    "b": "Fungsi kecil dengan satu tugas mudah diuji dan bisa disusun menjadi alur yang lebih besar, termasuk fungsi yang mengembalikan fungsi.",
+    "code": "const rupiah = (n) => \"Rp\" + n.toLocaleString(\"id-ID\");\nconst denganPpn = (n, tarif = 0.11) => Math.round(n * (1 + tarif));\nconst diskon = (persen) => (n) => n - Math.round(n * persen / 100);   // fungsi yang mengembalikan fungsi\nconst member = diskon(10);\n\nconsole.log(rupiah(denganPpn(member(45000))));\nconsole.log(rupiah(denganPpn(member(120000))));\nconsole.log(rupiah(denganPpn(18500, 0)));\nfunction sapa(nama = \"Tamu\") { return `Halo, ${nama}!`; }\nconsole.log(sapa(), sapa(\"Rina\"));",
+    "out": "Rp44.955\nRp119.880\nRp18.500\nHalo, Tamu! Halo, Rina!"
+   }
+  ]
+ },
+ "fe0-4-5": {
+  "cx": [
+   {
+    "t": "Event delegation untuk daftar yang dinamis",
+    "code": "<ul id=\"daftar\">\n  <li data-id=\"1\">Kopi <button data-aksi=\"hapus\">Hapus</button></li>\n  <li data-id=\"2\">Teh <button data-aksi=\"hapus\">Hapus</button></li>\n</ul>\n<script>\n  const daftar = document.querySelector(\"#daftar\");\n  // satu listener untuk semua tombol, termasuk item yang ditambahkan nanti\n  daftar.addEventListener(\"click\", (e) => {\n    const tombol = e.target.closest(\"[data-aksi='hapus']\");\n    if (!tombol) return;\n    const li = tombol.closest(\"li\");\n    console.log(\"hapus id\", li.dataset.id);\n    li.remove();\n  });\n  const baru = document.createElement(\"li\");\n  baru.dataset.id = \"3\";\n  baru.textContent = \"Susu \";                 // aman: teks, bukan HTML\n  daftar.append(baru);\n</script>",
+    "lang": "html"
+   },
+   {
+    "t": "Kenapa innerHTML berbahaya untuk data pengguna",
+    "lang": "js",
+    "b": "Di browser, gunakan textContent untuk teks dari pengguna. Fungsi escape di sini hanya untuk menunjukkan apa yang dilakukan browser.",
+    "code": "const komentar = '<img src=x onerror=\"alert(document.cookie)\">';\nconst viaInnerHTML = `<p>${komentar}</p>`;                       // browser akan menjalankan onerror\nconst escape = (s) => s\n  .replaceAll(\"&\", \"&amp;\").replaceAll(\"<\", \"&lt;\").replaceAll(\">\", \"&gt;\")\n  .replaceAll('\"', \"&quot;\").replaceAll(\"'\", \"&#39;\");\nconsole.log(\"berbahaya:\", viaInnerHTML);\nconsole.log(\"aman     :\", `<p>${escape(komentar)}</p>`);",
+    "out": "berbahaya: <p><img src=x onerror=\"alert(document.cookie)\"></p>\naman     : <p>&lt;img src=x onerror=&quot;alert(document.cookie)&quot;&gt;</p>"
+   }
+  ]
+ },
+ "fe0-4-6": {
+  "cx": [
+   {
+    "t": "fetch dengan timeout, cek status, dan Promise.all",
+    "lang": "js",
+    "b": "Server tiruan membalas seperti API sungguhan (ada yang 404 dan ada yang lambat). Polanya sama persis dengan fetch di browser.",
+    "code": "// server tiruan: path -> [status, data, lama ms]\nconst rute = { \"/produk\": [200, '[{\"id\":1,\"nama\":\"Kopi\"}]', 50], \"/stok\": [200, '{\"1\":12}', 80], \"/lambat\": [200, \"{}\", 2000] };\nconst fetchTiruan = (path, { signal } = {}) => new Promise((resolve, reject) => {\n  const [status, teks, ms] = rute[path] ?? [404, '{\"error\":\"tidak ada\"}', 30];\n  const t = setTimeout(() => resolve({ ok: status < 400, status, json: async () => JSON.parse(teks) }), ms);\n  signal?.addEventListener(\"abort\", () => { clearTimeout(t); reject(new DOMException(\"dibatalkan\", \"AbortError\")); });\n});\n\nasync function ambil(path, ms = 500) {\n  const ctrl = new AbortController();\n  const t = setTimeout(() => ctrl.abort(), ms);\n  try {\n    const res = await fetchTiruan(path, { signal: ctrl.signal });\n    if (!res.ok) throw new Error(`HTTP ${res.status} untuk ${path}`);\n    return await res.json();\n  } finally { clearTimeout(t); }\n}\nconst [produk, stok] = await Promise.all([ambil(\"/produk\"), ambil(\"/stok\")]);\nconsole.log(produk[0].nama, \"stok\", stok[produk[0].id]);\ntry { await ambil(\"/tidak-ada\"); } catch (e) { console.log(\"gagal:\", e.message); }\ntry { await ambil(\"/lambat\"); } catch (e) { console.log(\"gagal:\", e.name === \"AbortError\" ? \"timeout /lambat\" : e.message); }",
+    "out": "Kopi stok 12\ngagal: HTTP 404 untuk /tidak-ada\ngagal: timeout /lambat"
+   }
+  ]
+ },
+ "fe0-4-7": {
+  "code": "const keranjang = [\"kopi\", \"teh\", \"gula\"];\n\nfor (let i = 0; i < keranjang.length; i++) {\n  console.log(`${i + 1}. ${keranjang[i]}`);\n}\n\nfor (const barang of keranjang) {\n  if (barang !== \"teh\") console.log(\"dikemas:\", barang);\n}\n\nlet tabungan = 0;\nlet minggu = 0;\nwhile (tabungan < 100_000) {\n  tabungan += 30_000;\n  minggu++;\n}\nconsole.log(`Target tercapai di minggu ke-${minggu}: Rp${tabungan}`);",
+  "exs": [
+   {
+    "t": "Kasus: memanggil nomor absen",
+    "d": "for dengan indeks cocok saat nomor urut ikut ditampilkan.",
+    "code": "const siswa = [\"Adit\", \"Bunga\", \"Cahyo\", \"Dewi\"];\nfor (let i = 0; i < siswa.length; i++) {\n  console.log(`Absen ${i + 1}: ${siswa[i]} hadir`);\n}\nconsole.log(\"Jumlah siswa:\", siswa.length);",
+    "out": "Absen 1: Adit hadir\nAbsen 2: Bunga hadir\nAbsen 3: Cahyo hadir\nAbsen 4: Dewi hadir\nJumlah siswa: 4"
+   },
+   {
+    "t": "Kasus: menjumlah total belanja",
+    "d": "for...of mengambil setiap isi array tanpa perlu indeks.",
+    "code": "const belanja = [\n  { nama: \"Beras\", harga: 68000 },\n  { nama: \"Telur\", harga: 28000 },\n  { nama: \"Minyak\", harga: 36000 },\n];\nlet total = 0;\nfor (const item of belanja) {\n  total += item.harga;\n}\nconsole.log(\"Total:\", total.toLocaleString(\"id-ID\"));",
+    "out": "Total: 132.000"
+   },
+   {
+    "t": "Kasus: kuota internet sampai habis",
+    "d": "while mengulang selama kondisi masih benar; jumlah putarannya belum diketahui.",
+    "code": "let kuotaMb = 1000;\nlet hari = 0;\nwhile (kuotaMb > 0) {\n  kuotaMb -= 300;           // pemakaian per hari\n  hari++;\n}\nconsole.log(`Kuota habis di hari ke-${hari}, sisa ${kuotaMb} MB`);",
+    "out": "Kuota habis di hari ke-4, sisa -200 MB"
+   }
+  ],
+  "out": "1. kopi\n2. teh\n3. gula\ndikemas: kopi\ndikemas: gula\nTarget tercapai di minggu ke-4: Rp120000"
+ },
+ "fe0-4-8": {
+  "exs": [
+   {
+    "t": "Kasus: memeriksa umur pendaftar",
+    "d": "throw membuat error sendiri saat data tidak masuk akal.",
+    "code": "function cekUmur(teks) {\n  const umur = Number(teks);\n  if (Number.isNaN(umur)) throw new Error(`\"${teks}\" bukan angka`);\n  if (umur < 13) throw new Error(\"minimal 13 tahun\");\n  return umur;\n}\nfor (const isian of [\"17\", \"abc\", \"10\"]) {\n  try {\n    console.log(\"umur valid:\", cekUmur(isian));\n  } catch (err) {\n    console.log(\"ditolak:\", err.message);\n  }\n}",
+    "out": "umur valid: 17\nditolak: \"abc\" bukan angka\nditolak: minimal 13 tahun"
+   },
+   {
+    "t": "Kasus: data tersimpan yang rusak",
+    "d": "JSON.parse dibungkus try...catch agar aplikasi tetap jalan dengan nilai cadangan.",
+    "code": "function bacaPengaturan(teks) {\n  try {\n    return JSON.parse(teks);\n  } catch {\n    return { tema: \"terang\" };   // cadangan jika data rusak\n  }\n}\nconsole.log(bacaPengaturan('{\"tema\":\"gelap\"}'));\nconsole.log(bacaPengaturan(\"{tema: gelap\"));",
+    "out": "{ tema: 'gelap' }\n{ tema: 'terang' }"
+   },
+   {
+    "t": "Kasus: tombol kirim selalu aktif lagi",
+    "d": "finally berjalan baik berhasil maupun gagal, cocok untuk mematikan status loading.",
+    "code": "function kirimPesan(isi) {\n  let loading = true;\n  try {\n    if (isi.trim() === \"\") throw new Error(\"pesan kosong\");\n    console.log(\"terkirim:\", isi);\n  } catch (err) {\n    console.log(\"gagal:\", err.message);\n  } finally {\n    loading = false;\n    console.log(\"loading:\", loading);\n  }\n}\nkirimPesan(\"Halo kak\");\nkirimPesan(\"   \");",
+    "out": "terkirim: Halo kak\nloading: false\ngagal: pesan kosong\nloading: false"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Error validasi dan pesan yang ramah pengguna",
+    "lang": "js",
+    "b": "Error validasi diberi name dan field agar bisa ditampilkan di kolom yang tepat, sedangkan error tak terduga dilaporkan ke monitoring.",
+    "code": "function errorValidasi(field, pesan) {\n  const err = new Error(pesan);\n  err.name = \"ValidasiError\";\n  err.field = field;\n  return err;\n}\nfunction validasi(form) {\n  if (!form.email.includes(\"@\")) throw errorValidasi(\"email\", \"Format email belum benar\");\n  if (form.sandi.length < 8) throw errorValidasi(\"sandi\", \"Kata sandi minimal 8 karakter\");\n  return true;\n}\nfor (const form of [{ email: \"sari@x.id\", sandi: \"rahasia123\" }, { email: \"sari\", sandi: \"x\" }, null]) {\n  let loading = true;\n  try { validasi(form); console.log(\"terkirim\"); }\n  catch (e) {\n    if (e.name === \"ValidasiError\") console.log(`tampilkan di field ${e.field}: ${e.message}`);\n    else console.log(\"error tak terduga, laporkan ke monitoring:\", e.name);\n  } finally { loading = false; }\n}",
+    "out": "terkirim\ntampilkan di field email: Format email belum benar\nerror tak terduga, laporkan ke monitoring: TypeError"
+   }
+  ]
+ },
+ "fe0-4-9": {
+  "exs": [
+   {
+    "t": "Kasus: named export dan default export",
+    "d": "Satu berkas boleh punya banyak named export tetapi hanya satu default export.",
+    "code": "// berkas: tanggal.js\nexport const HARI = [\"Minggu\", \"Senin\", \"Selasa\", \"Rabu\", \"Kamis\", \"Jumat\", \"Sabtu\"];\nexport function namaHari(i) {\n  return HARI[i];\n}\nexport default function sapaan(jam) {\n  return jam < 12 ? \"Selamat pagi\" : \"Selamat siang\";\n}\n\n// berkas: main.js\nimport sapaan, { namaHari } from \"./tanggal.js\";\nconsole.log(sapaan(9), \"- hari ini\", namaHari(1));"
+   },
+   {
+    "t": "Kasus: mengimpor fungsi bawaan Node",
+    "d": "Modul bawaan diimpor dengan awalan node:.",
+    "code": "import { extname, basename } from \"node:path\";\n\nconst berkas = \"foto-profil.webp\";\nconsole.log(basename(berkas, extname(berkas)), extname(berkas));",
+    "out": "foto-profil .webp"
+   },
+   {
+    "t": "Kasus: import dinamis saat dibutuhkan",
+    "d": "import() memuat modul belakangan dan mengembalikan Promise.",
+    "code": "// modul dibuat dari teks agar contoh bisa dijalankan sendiri\nconst sumber = 'export const ONGKIR = 9000; export default (berat) => Math.ceil(berat) * 9000;';\nconst modul = await import(\"data:text/javascript,\" + encodeURIComponent(sumber));\nconsole.log(modul.ONGKIR, modul.default(2.3));",
+    "out": "9000 27000"
+   }
+  ]
+ },
+ "fe0-4-10": {
+  "exs": [
+   {
+    "t": "Kasus: menu kasir dengan do-while",
+    "d": "Menu tampil minimal sekali, lalu berulang sampai pengguna memilih keluar (0).",
+    "code": "const pilihanPengguna = [1, 2, 0];\nlet i = 0;\nlet pilihan;\ndo {\n  pilihan = pilihanPengguna[i];\n  i++;\n  console.log(\"Menu tampil, pengguna memilih\", pilihan);\n} while (pilihan !== 0);\nconsole.log(\"Kasir ditutup\");",
+    "out": "Menu tampil, pengguna memilih 1\nMenu tampil, pengguna memilih 2\nMenu tampil, pengguna memilih 0\nKasir ditutup"
+   },
+   {
+    "t": "Kasus: berhenti saat barang ditemukan",
+    "d": "break menghentikan loop begitu yang dicari sudah ketemu.",
+    "code": "const rak = [\"sabun\", \"sampo\", \"pasta gigi\", \"sikat gigi\", \"handuk\"];\nlet posisi = -1;\nfor (let i = 0; i < rak.length; i++) {\n  console.log(\"memeriksa rak\", i + 1);\n  if (rak[i] === \"pasta gigi\") {\n    posisi = i + 1;\n    break;\n  }\n}\nconsole.log(\"pasta gigi ada di rak\", posisi);",
+    "out": "memeriksa rak 1\nmemeriksa rak 2\nmemeriksa rak 3\npasta gigi ada di rak 3"
+   },
+   {
+    "t": "Kasus: melewati pesanan yang dibatalkan",
+    "d": "continue melewati sisa badan loop untuk satu putaran saja.",
+    "code": "const pesanan = [\n  { id: 1, status: \"lunas\", total: 50000 },\n  { id: 2, status: \"batal\", total: 75000 },\n  { id: 3, status: \"lunas\", total: 20000 },\n];\nlet omzet = 0;\nfor (const p of pesanan) {\n  if (p.status === \"batal\") continue;\n  omzet += p.total;\n}\nconsole.log(\"omzet:\", omzet);",
+    "out": "omzet: 70000"
+   }
+  ]
+ },
+ "fe0-4-11": {
+  "exs": [
+   {
+    "t": "Kasus: syarat gratis ongkir",
+    "d": "&& butuh semua syarat benar, || cukup salah satu.",
+    "code": "const total = 120000;\nconst member = false;\nconst pakaiVoucher = true;\nconst gratisOngkir = total >= 100000 && (member || pakaiVoucher);\nconsole.log(\"belanja cukup:\", total >= 100000);\nconsole.log(\"member atau voucher:\", member || pakaiVoucher);\nconsole.log(\"gratis ongkir:\", gratisOngkir);",
+    "out": "belanja cukup: true\nmember atau voucher: true\ngratis ongkir: true"
+   },
+   {
+    "t": "Kasus: tombol daftar nonaktif dengan De Morgan",
+    "d": "!(a && b) sama dengan !a || !b, jadi kondisi nonaktif bisa ditulis dua cara.",
+    "code": "const emailValid = true;\nconst setuju = false;\nconst nonaktif1 = !(emailValid && setuju);\nconst nonaktif2 = !emailValid || !setuju;\nconsole.log(nonaktif1, nonaktif2, nonaktif1 === nonaktif2);",
+    "out": "true true true"
+   },
+   {
+    "t": "Kasus: short-circuit melindungi dari data kosong",
+    "d": "Sisi kanan && tidak dihitung bila sisi kiri sudah false.",
+    "code": "const pengguna = null;\nconst sudahLogin = pengguna !== null && pengguna.nama !== \"\";\nconsole.log(\"sudah login:\", sudahLogin);   // pengguna.nama tidak pernah dibaca\nconst tamu = { nama: \"Rudi\" };\nconsole.log(\"tamu login:\", tamu !== null && tamu.nama !== \"\");",
+    "out": "sudah login: false\ntamu login: true"
+   }
+  ]
+ },
+ "fe0-4-12": {
+  "exs": [
+   {
+    "t": "Kasus: memeriksa rentang dadu",
+    "d": "Hasil acak berbeda setiap kali dijalankan, jadi yang dicetak adalah pemeriksaan rentangnya.",
+    "code": "function acakAntara(bawah, atas) {\n  return Math.floor(Math.random() * (atas - bawah + 1)) + bawah;\n}\nlet semuaDalamRentang = true;\nfor (let i = 0; i < 1000; i++) {\n  const d = acakAntara(1, 6);\n  if (d < 1 || d > 6) semuaDalamRentang = false;\n}\nconsole.log(\"1000 lemparan selalu 1..6?\", semuaDalamRentang);",
+    "out": "1000 lemparan selalu 1..6? true"
+   },
+   {
+    "t": "Kasus: memilih pemenang undian",
+    "d": "Indeks acak dari 0 sampai panjang array dikurangi 1.",
+    "code": "const peserta = [\"Ayu\", \"Bima\", \"Cici\", \"Doni\"];\nconst indeks = Math.floor(Math.random() * peserta.length);\nconst pemenang = peserta[indeks];\nconsole.log(\"indeks valid?\", indeks >= 0 && indeks < peserta.length);\nconsole.log(\"pemenang termasuk peserta?\", peserta.includes(pemenang));",
+    "out": "indeks valid? true\npemenang termasuk peserta? true"
+   },
+   {
+    "t": "Kasus: mengocok urutan presentasi",
+    "d": "Fisher-Yates mengubah urutan tanpa menambah atau menghilangkan isi.",
+    "code": "const kelompok = [\"A\", \"B\", \"C\", \"D\", \"E\"];\nconst urutan = [...kelompok];\nfor (let i = urutan.length - 1; i > 0; i--) {\n  const j = Math.floor(Math.random() * (i + 1));\n  [urutan[i], urutan[j]] = [urutan[j], urutan[i]];\n}\nconsole.log(\"jumlah tetap?\", urutan.length === kelompok.length);\nconsole.log(\"isi sama?\", [...urutan].sort().join(\"\") === kelompok.join(\"\"));",
+    "out": "jumlah tetap? true\nisi sama? true"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Acak yang bisa diulang (seed), mengocok adil, dan ID unik",
+    "lang": "js",
+    "b": "Untuk tes dan replay game, hasil acak perlu bisa diulang. Generator sederhana Park-Miller memakai seed sehingga urutannya selalu sama. Untuk ID, pakai crypto.randomUUID().",
+    "code": "function buatAcak(seed) {\n  let s = seed;\n  return () => {\n    s = (s * 16807) % 2147483647;      // Park-Miller: hasil selalu sama untuk seed yang sama\n    return (s - 1) / 2147483646;\n  };\n}\nconst rnd = buatAcak(2026);\nconst antara = (a, b) => a + Math.floor(rnd() * (b - a + 1));\nconsole.log(\"dadu:\", Array.from({ length: 6 }, () => antara(1, 6)));\nfunction kocok(arr) {\n  const a = [...arr];\n  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }\n  return a;\n}\nconsole.log(\"urutan presentasi:\", kocok([\"Ani\", \"Budi\", \"Citra\", \"Dedi\"]));\nconst id = crypto.randomUUID();\nconsole.log(\"UUID 36 karakter:\", id.length === 36);",
+    "out": "dadu: [ 1, 3, 6, 2, 3, 4 ]\nurutan presentasi: [ 'Citra', 'Ani', 'Dedi', 'Budi' ]\nUUID 36 karakter: true"
+   }
+  ]
+ }
+}

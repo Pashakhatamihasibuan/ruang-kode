@@ -867,5 +867,174 @@
     "out": "Panjang OTP: 6\nPemenang undian : 300 51 198\nDiulang auditor : 300 51 198"
    }
   ]
+ },
+ "java-4-1": {
+  "code": "public class Main {\n    public static void main(String[] args) {\n        int[] a = {3, 8, 1, 9, 4};\n        System.out.println(a[0]);         // 3\n        System.out.println(a.length);     // 5\n\n        int maks = a[0];\n        for (int x : a) {                 // for-each\n            if (x > maks) {\n                maks = x;\n            }\n        }\n        System.out.println(\"Maks: \" + maks);\n\n        int[] b = a;      // b menunjuk array yang SAMA\n        b[0] = 99;\n        System.out.println(\"a[0] sekarang: \" + a[0]);\n    }\n}\n",
+  "out": "3\n5\nMaks: 9\na[0] sekarang: 99",
+  "exs": [
+   {
+    "t": "Kasus: rata-rata nilai ulangan sekelas",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        int[] nilai = {78, 85, 92, 66, 88, 74};\n        int total = 0;\n        for (int n : nilai) {\n            total += n;\n        }\n        double rataRata = (double) total / nilai.length;\n        System.out.println(\"Jumlah siswa: \" + nilai.length);\n        System.out.println(\"Rata-rata   : \" + rataRata);\n    }\n}\n",
+    "d": "Satu array menggantikan banyak variabel nilai1, nilai2, dan seterusnya.",
+    "out": "Jumlah siswa: 6\nRata-rata   : 80.5"
+   },
+   {
+    "t": "Kasus: jadwal piket per hari",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        String[] piket = {\"Andi\", \"Bunga\", \"Cahyo\", \"Dina\", \"Eko\"};\n        System.out.println(\"Senin : \" + piket[0]);\n        System.out.println(\"Jumat : \" + piket[4]);\n        for (int i = 0; i < piket.length; i++) {\n            System.out.println(\"Hari ke-\" + (i + 1) + \": \" + piket[i]);\n        }\n    }\n}\n",
+    "d": "Indeks dimulai dari 0, jadi hari pertama ada di indeks 0.",
+    "out": "Senin : Andi\nJumat : Eko\nHari ke-1: Andi\nHari ke-2: Bunga\nHari ke-3: Cahyo\nHari ke-4: Dina\nHari ke-5: Eko"
+   },
+   {
+    "t": "Kasus: menghitung pesanan yang belum dikirim",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        boolean[] sudahDikirim = {true, false, true, false, false};\n        int belum = 0;\n        for (boolean status : sudahDikirim) {\n            if (!status) {\n                belum++;\n            }\n        }\n        System.out.println(\"Pesanan belum dikirim: \" + belum);\n    }\n}\n",
+    "d": "Array boolean menyimpan status ya/tidak untuk banyak data.",
+    "out": "Pesanan belum dikirim: 3"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Penjualan per jam dan jam tersibuk",
+    "b": "Indeks array bisa bermakna, misalnya jam 0 sampai 23. Dengan begitu pelanggan[12] langsung berarti jumlah pelanggan pukul 12.00.",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        int[] pelanggan = new int[24];   // indeks = jam, isi awal semuanya 0\n        pelanggan[7] = 12;\n        pelanggan[8] = 30;\n        pelanggan[12] = 45;\n        pelanggan[17] = 38;\n        pelanggan[19] = 22;\n\n        int jamSibuk = 0;\n        for (int jam = 1; jam < pelanggan.length; jam++) {\n            if (pelanggan[jam] > pelanggan[jamSibuk]) {\n                jamSibuk = jam;\n            }\n        }\n        System.out.println(\"Jam tersibuk: \" + jamSibuk + \".00 dengan \" + pelanggan[jamSibuk] + \" pelanggan\");\n    }\n}\n",
+    "out": "Jam tersibuk: 12.00 dengan 45 pelanggan"
+   }
+  ]
+ },
+ "java-4-2": {
+  "exs": [
+   {
+    "t": "Kasus: mengisi stok rak satu per satu",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        int[] stok = new int[5];\n        stok[0] = 12;\n        stok[1] = 7;\n        stok[4] = 20;\n        for (int i = 0; i < stok.length; i++) {\n            System.out.println(\"Rak \" + i + \": \" + stok[i]);\n        }\n    }\n}\n",
+    "d": "new int[5] membuat 5 slot berisi 0, lalu slot diisi lewat indeks.",
+    "out": "Rak 0: 12\nRak 1: 7\nRak 2: 0\nRak 3: 0\nRak 4: 20"
+   },
+   {
+    "t": "Kasus: nama bulan dari nomornya",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        String[] bulan = {\"Januari\", \"Februari\", \"Maret\", \"April\", \"Mei\", \"Juni\",\n                          \"Juli\", \"Agustus\", \"September\", \"Oktober\", \"November\", \"Desember\"};\n        int nomor = 8;\n        System.out.println(\"Bulan ke-\" + nomor + \" adalah \" + bulan[nomor - 1]);\n        System.out.println(\"Bulan terakhir: \" + bulan[bulan.length - 1]);\n    }\n}\n",
+    "d": "Bulan ke-n ada di indeks n - 1.",
+    "out": "Bulan ke-8 adalah Agustus\nBulan terakhir: Desember"
+   },
+   {
+    "t": "Kasus: memperbarui harga di daftar menu",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        int[] harga = {15_000, 12_000, 4_000};\n        System.out.println(\"Harga es teh lama: \" + harga[2]);\n        harga[2] = 5_000;\n        harga[0] += 2_000;   // nasi goreng naik Rp2.000\n        System.out.println(\"Harga es teh baru: \" + harga[2]);\n        System.out.println(\"Harga nasi goreng: \" + harga[0]);\n    }\n}\n",
+    "d": "Elemen array bisa diubah seperti variabel biasa.",
+    "out": "Harga es teh lama: 4000\nHarga es teh baru: 5000\nHarga nasi goreng: 17000"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Nilai bawaan array dan pengecekan batas",
+    "b": "Array baru otomatis terisi nilai bawaan: 0 untuk angka, false untuk boolean, dan null (kosong) untuk String. Sebelum memakai indeks dari luar, periksa dulu apakah indeks berada di antara 0 dan length - 1.",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        int[] angka = new int[3];\n        String[] nama = new String[2];\n        boolean[] hadir = new boolean[2];\n        System.out.println(\"angka[0] = \" + angka[0]);\n        System.out.println(\"nama[0]  = \" + nama[0]);\n        System.out.println(\"hadir[0] = \" + hadir[0]);\n\n        int indeks = 3;\n        if (indeks >= 0 && indeks < angka.length) {\n            angka[indeks] = 10;\n        } else {\n            System.out.println(\"Ditolak: indeks \" + indeks + \" di luar 0..\" + (angka.length - 1));\n        }\n    }\n}\n",
+    "out": "angka[0] = 0\nnama[0]  = null\nhadir[0] = false\nDitolak: indeks 3 di luar 0..2"
+   }
+  ]
+ },
+ "java-4-3": {
+  "exs": [
+   {
+    "t": "Kasus: harga termurah di marketplace",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        int[] harga = {125_000, 119_500, 132_000, 118_000, 121_000};\n        int termurah = harga[0];\n        for (int i = 1; i < harga.length; i++) {\n            if (harga[i] < termurah) {\n                termurah = harga[i];\n            }\n        }\n        System.out.println(\"Harga termurah: \" + termurah);\n    }\n}\n",
+    "d": "Mencari minimum: sama seperti maksimum, hanya tanda perbandingannya dibalik.",
+    "out": "Harga termurah: 118000"
+   },
+   {
+    "t": "Kasus: hari dengan curah hujan tertinggi",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        String[] hari = {\"Sen\", \"Sel\", \"Rab\", \"Kam\", \"Jum\", \"Sab\", \"Min\"};\n        int[] hujanMm = {12, 40, 8, 55, 30, 0, 21};\n        int indeksMaks = 0;\n        for (int i = 1; i < hujanMm.length; i++) {\n            if (hujanMm[i] > hujanMm[indeksMaks]) {\n                indeksMaks = i;\n            }\n        }\n        System.out.println(\"Paling deras: \" + hari[indeksMaks] + \" (\" + hujanMm[indeksMaks] + \" mm)\");\n    }\n}\n",
+    "d": "Simpan indeksnya juga, bukan hanya nilainya.",
+    "out": "Paling deras: Kam (55 mm)"
+   },
+   {
+    "t": "Kasus: nama kota terpanjang",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        String[] kota = {\"Bogor\", \"Pekanbaru\", \"Ambon\", \"Banjarmasin\", \"Palu\"};\n        String terpanjang = kota[0];\n        for (String k : kota) {\n            if (k.length() > terpanjang.length()) {\n                terpanjang = k;\n            }\n        }\n        System.out.println(\"Nama kota terpanjang: \" + terpanjang);\n    }\n}\n",
+    "d": "Yang dibandingkan boleh hasil method, misalnya panjang teks.",
+    "out": "Nama kota terpanjang: Banjarmasin"
+   },
+   {
+    "t": "Kasus: siswa di atas rata-rata kelas",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        int[] nilai = {70, 85, 90, 60, 95};\n        int total = 0;\n        for (int n : nilai) {\n            total += n;\n        }\n        double rataRata = (double) total / nilai.length;\n        int diAtas = 0;\n        for (int n : nilai) {\n            if (n > rataRata) {\n                diAtas++;\n            }\n        }\n        System.out.println(\"Rata-rata \" + rataRata + \", di atasnya \" + diAtas + \" siswa\");\n    }\n}\n",
+    "d": "Dua kali traversal: pertama menghitung rata-rata, kedua menghitung yang melampauinya.",
+    "out": "Rata-rata 80.0, di atasnya 3 siswa"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Suhu terendah: jebakan inisialisasi",
+    "b": "Memulai juara dari 0 terasa wajar, tetapi salah bila semua data negatif, misalnya suhu di freezer gudang. Selalu mulai dari elemen pertama.",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        int[] suhu = {-3, -7, -1, -12, -5};\n        int maksSalah = 0;\n        int maksBenar = suhu[0];\n        int minBenar = suhu[0];\n        for (int s : suhu) {\n            if (s > maksSalah) maksSalah = s;\n            if (s > maksBenar) maksBenar = s;\n            if (s < minBenar) minBenar = s;\n        }\n        System.out.println(\"Minimum: \" + minBenar);\n        System.out.println(\"Maks (mulai 0, SALAH): \" + maksSalah);\n        System.out.println(\"Maks (mulai elemen pertama): \" + maksBenar);\n    }\n}\n",
+    "out": "Minimum: -12\nMaks (mulai 0, SALAH): 0\nMaks (mulai elemen pertama): -1"
+   }
+  ]
+ },
+ "java-4-4": {
+  "exs": [
+   {
+    "t": "Kasus: dua wali kelas memegang daftar yang sama",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        String[] daftarPiket = {\"Rani\", \"Tono\", \"Wulan\"};\n        String[] catatanWali = daftarPiket;\n        catatanWali[1] = \"Yusuf\";   // Tono diganti lewat nama lain\n        System.out.println(\"daftarPiket[1] = \" + daftarPiket[1]);\n    }\n}\n",
+    "d": "int[] b = a tidak menyalin isi; keduanya menunjuk array yang sama.",
+    "out": "daftarPiket[1] = Yusuf"
+   },
+   {
+    "t": "Kasus: membuat salinan yang terpisah",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        int[] hargaAsli = {10_000, 20_000, 30_000};\n        int[] hargaPromo = new int[hargaAsli.length];\n        for (int i = 0; i < hargaAsli.length; i++) {\n            hargaPromo[i] = hargaAsli[i];\n        }\n        hargaPromo[0] = 7_500;\n        System.out.println(\"Asli : \" + hargaAsli[0]);\n        System.out.println(\"Promo: \" + hargaPromo[0]);\n    }\n}\n",
+    "d": "Buat array baru lalu salin isinya satu per satu.",
+    "out": "Asli : 10000\nPromo: 7500"
+   },
+   {
+    "t": "Kasus: method yang mengubah array kiriman",
+    "code": "public class Main {\n    public static void naikkanSemua(int[] harga, int kenaikan) {\n        for (int i = 0; i < harga.length; i++) {\n            harga[i] += kenaikan;\n        }\n    }\n\n    public static void main(String[] args) {\n        int[] harga = {5_000, 8_000, 12_000};\n        naikkanSemua(harga, 1_000);\n        for (int h : harga) {\n            System.out.println(h);\n        }\n    }\n}\n",
+    "d": "Method menerima referensi ke array yang sama, jadi perubahannya terlihat oleh pemanggil.",
+    "out": "6000\n9000\n13000"
+   },
+   {
+    "t": "Kasus: == membandingkan alamat, bukan isi",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        int[] a = {1, 2, 3};\n        int[] b = {1, 2, 3};\n        int[] c = a;\n        System.out.println(\"a == b : \" + (a == b));   // dua array berbeda\n        System.out.println(\"a == c : \" + (a == c));   // array yang sama\n    }\n}\n",
+    "out": "a == b : false\na == c : true"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Alias lawan salinan",
+    "b": "Bug klasik: mengubah daftar harga promo ternyata ikut mengubah harga asli karena keduanya alias. Salinan dibuat dengan array baru yang diisi lewat loop.",
+    "code": "public class Main {\n    public static void cetak(String label, int[] data) {\n        String isi = label + \":\";\n        for (int x : data) {\n            isi += \" \" + x;\n        }\n        System.out.println(isi);\n    }\n\n    public static void main(String[] args) {\n        int[] harga = {10, 20, 30};\n        int[] alias = harga;\n        int[] salinan = new int[harga.length];\n        for (int i = 0; i < harga.length; i++) {\n            salinan[i] = harga[i];\n        }\n        alias[0] = 99;\n        salinan[1] = 77;\n        cetak(\"harga  \", harga);\n        cetak(\"salinan\", salinan);\n    }\n}\n",
+    "out": "harga  : 99 20 30\nsalinan: 10 77 30"
+   }
+  ]
+ },
+ "java-4-5": {
+  "exs": [
+   {
+    "t": "Kasus: mengurutkan nama peserta lomba",
+    "code": "import java.util.Arrays;\n\npublic class Main {\n    public static void main(String[] args) {\n        String[] peserta = {\"Yogi\", \"Ani\", \"Mira\", \"Dedi\"};\n        Arrays.sort(peserta);\n        System.out.println(Arrays.toString(peserta));\n    }\n}\n",
+    "d": "Arrays.sort juga bisa mengurutkan String secara abjad.",
+    "out": "[Ani, Dedi, Mira, Yogi]"
+   },
+   {
+    "t": "Kasus: mengisi dan membandingkan array",
+    "code": "import java.util.Arrays;\n\npublic class Main {\n    public static void main(String[] args) {\n        int[] kuotaKelas = new int[4];\n        Arrays.fill(kuotaKelas, 32);\n        System.out.println(Arrays.toString(kuotaKelas));\n\n        int[] a = {1, 2, 3};\n        int[] b = {1, 2, 3};\n        System.out.println(\"a == b        : \" + (a == b));\n        System.out.println(\"Arrays.equals : \" + Arrays.equals(a, b));\n    }\n}\n",
+    "d": "Arrays.fill mengisi semua slot, Arrays.equals membandingkan isi.",
+    "out": "[32, 32, 32, 32]\na == b        : false\nArrays.equals : true"
+   },
+   {
+    "t": "Kasus: total nilai tiap siswa (array 2D)",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        String[] siswa = {\"Sari\", \"Budi\", \"Ayu\"};\n        int[][] nilai = {\n            {80, 92, 75},\n            {65, 70, 88},\n            {95, 90, 93}\n        };\n        for (int r = 0; r < nilai.length; r++) {\n            int total = 0;\n            for (int c = 0; c < nilai[r].length; c++) {\n                total += nilai[r][c];\n            }\n            System.out.println(siswa[r] + \": total \" + total);\n        }\n    }\n}\n",
+    "d": "Baris = siswa, kolom = mata pelajaran.",
+    "out": "Sari: total 247\nBudi: total 223\nAyu: total 278"
+   },
+   {
+    "t": "Kasus: papan tiket kereta berjumlah kursi berbeda",
+    "code": "import java.util.Arrays;\n\npublic class Main {\n    public static void main(String[] args) {\n        int[][] gerbong = new int[3][];\n        gerbong[0] = new int[4];   // gerbong eksekutif\n        gerbong[1] = new int[6];\n        gerbong[2] = new int[6];\n        gerbong[0][2] = 1;          // kursi terjual\n        System.out.println(Arrays.deepToString(gerbong));\n        System.out.println(\"Kursi gerbong 1: \" + gerbong[0].length);\n    }\n}\n",
+    "d": "Setiap baris array 2D boleh punya panjang berbeda.",
+    "out": "[[0, 0, 1, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]\nKursi gerbong 1: 4"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Rekap nilai kelas dengan array 2D",
+    "b": "Rata-rata dihitung dengan loop dalam, lalu dibulatkan ke satu desimal. Salinan dibuat dengan Arrays.copyOf agar pengurutan tidak merusak data asli.",
+    "code": "import java.util.Arrays;\n\npublic class Main {\n    public static void main(String[] args) {\n        String[] siswa = {\"Sari\", \"Budi\", \"Ayu\"};\n        int[][] nilai = {{80, 92, 75}, {65, 70, 88}, {95, 90, 93}};\n        for (int i = 0; i < siswa.length; i++) {\n            int total = 0;\n            for (int n : nilai[i]) {\n                total += n;\n            }\n            double rata = Math.round(total * 10.0 / nilai[i].length) / 10.0;\n            System.out.println(siswa[i] + \" \" + Arrays.toString(nilai[i]) + \" rata-rata \" + rata);\n        }\n        int[] urut = Arrays.copyOf(nilai[1], nilai[1].length);\n        Arrays.sort(urut);\n        System.out.println(\"Nilai Budi terurut: \" + Arrays.toString(urut));\n        System.out.println(\"Data asli Budi    : \" + Arrays.toString(nilai[1]));\n    }\n}\n",
+    "out": "Sari [80, 92, 75] rata-rata 82.3\nBudi [65, 70, 88] rata-rata 74.3\nAyu [95, 90, 93] rata-rata 92.7\nNilai Budi terurut: [65, 70, 88]\nData asli Budi    : [65, 70, 88]"
+   }
+  ]
  }
 }

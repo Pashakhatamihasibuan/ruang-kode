@@ -1338,5 +1338,205 @@
     "out": "efektif: {'debug': True, 'timeout': 10, 'db': 'postgres', 'bahasa': 'id'}\nkolom baru   : {'ukuran'}\nkolom dihapus: {'warna'}\nnilai berubah: {'harga': (18000, 19500)}"
    }
   ]
+ },
+ "python-5-1": {
+  "code": "def main():\n    # siapkan file contoh dulu (mode \"w\" = tulis, menimpa isi lama)\n    with open(\"nilai.txt\", \"w\") as file:\n        file.write(\"Budi 85 90\\n\")\n        file.write(\"Sari 80 90\\n\")\n\n    with open(\"nilai.txt\") as file:\n        for baris in file:                   # \"Budi 85 90\"\n            token = baris.split()\n            nama = token[0]\n            total = 0\n            for t in token[1:]:\n                total += int(t)\n            print(nama + \":\", total / (len(token) - 1))\n\nmain()",
+  "out": "Budi: 87.5\nSari: 85.0",
+  "exs": [
+   {
+    "t": "Kasus: menulis lalu membaca catatan harian",
+    "code": "with open(\"catatan.txt\", \"w\") as f:\n    f.write(\"Senin: belajar list\\n\")\n    f.write(\"Selasa: belajar dict\\n\")\n\nwith open(\"catatan.txt\") as f:\n    isi = f.read()              # baca seluruh isi sekaligus\nprint(isi)\nprint(\"Jumlah karakter:\", len(isi))",
+    "d": "Mode \"w\" menulis file baru, tanpa mode berarti membaca. with menutup file otomatis.",
+    "out": "Senin: belajar list\nSelasa: belajar dict\n\nJumlah karakter: 41"
+   },
+   {
+    "t": "Kasus: menambah transaksi ke buku kas",
+    "code": "with open(\"kas.txt\", \"w\") as f:\n    f.write(\"saldo awal 100000\\n\")\nwith open(\"kas.txt\", \"a\") as f:          # \"a\" = tambahkan di akhir\n    f.write(\"jual kopi 15000\\n\")\n    f.write(\"beli gula 12000\\n\")\nwith open(\"kas.txt\") as f:\n    for nomor, baris in enumerate(f, start=1):\n        print(nomor, baris.strip())",
+    "d": "Mode \"a\" (append) menambah baris tanpa menghapus isi lama.",
+    "out": "1 saldo awal 100000\n2 jual kopi 15000\n3 beli gula 12000"
+   },
+   {
+    "t": "Kasus: token dari setiap baris data stok",
+    "code": "with open(\"stok.txt\", \"w\") as f:\n    f.write(\"beras 25 kg\\n\")\n    f.write(\"gula 10 kg\\n\")\n    f.write(\"minyak 18 liter\\n\")\n\ntotal = 0\nwith open(\"stok.txt\") as f:\n    for baris in f:\n        nama, jumlah, satuan = baris.split()\n        total += int(jumlah)\n        print(f\"{nama:<7}{jumlah:>4} {satuan}\")\nprint(\"Total unit:\", total)",
+    "d": "Pola paling aman: baca per baris, lalu pecah baris menjadi token.",
+    "out": "beras    25 kg\ngula     10 kg\nminyak   18 liter\nTotal unit: 53"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Menulis dan membaca laporan penjualan CSV sederhana",
+    "b": "Laporan penjualan sering disimpan sebagai CSV: satu baris per transaksi, kolom dipisah koma, baris pertama berisi judul kolom. Memecah dengan split(\",\") cukup selama isi kolom tidak mengandung koma. Untuk data yang mungkin berisi koma, nanti dipakai modul csv.",
+    "code": "with open(\"penjualan.csv\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"tanggal,produk,qty,harga\\n\")\n    f.write(\"2026-11-01,Kopi gula aren,3,22000\\n\")\n    f.write(\"2026-11-01,Teh,5,12000\\n\")\n    f.write(\"2026-11-02,Kopi gula aren,4,22000\\n\")\n\nomzet = 0\nper_produk = {}\nwith open(\"penjualan.csv\", encoding=\"utf-8\") as f:\n    f.readline()                                  # lewati baris judul\n    for baris in f:\n        tanggal, produk, qty, harga = baris.strip().split(\",\")\n        nilai = int(qty) * int(harga)\n        omzet += nilai\n        per_produk[produk] = per_produk.get(produk, 0) + nilai\nprint(f\"omzet: Rp{omzet:,}\".replace(\",\", \".\"))\nfor produk, nilai in per_produk.items():\n    print(f\"  {produk:<15} Rp{nilai:>8,}\".replace(\",\", \".\"))",
+    "out": "omzet: Rp214.000\n  Kopi gula aren  Rp 154.000\n  Teh             Rp  60.000"
+   }
+  ]
+ },
+ "python-5-2": {
+  "exs": [
+   {
+    "t": "Kasus: rekap nilai dari file",
+    "code": "with open(\"nilai.txt\", \"w\") as f:\n    f.write(\"Rina 80 90\\nTegar 70 75\\nUmi 95 88\\n\")\n\nwith open(\"nilai.txt\") as f:\n    for baris in f:\n        t = baris.split()\n        nama = t[0]\n        total = int(t[1]) + int(t[2])\n        print(nama, total)",
+    "d": "Setiap putaran membaca satu baris, memecahnya, lalu menjumlah dua angka setelah nama.",
+    "out": "Rina 170\nTegar 145\nUmi 183"
+   },
+   {
+    "t": "Kasus: menghitung baris dan kata",
+    "code": "with open(\"pantun.txt\", \"w\") as f:\n    f.write(\"Ke pasar membeli ikan\\nIkan dibawa pulang ke rumah\\n\\nRajin belajar jangan bosan\\n\")\n\nbaris_isi = 0\nkata = 0\nwith open(\"pantun.txt\") as f:\n    for baris in f:\n        if baris.strip() == \"\":\n            continue                 # lewati baris kosong\n        baris_isi += 1\n        kata += len(baris.split())\nprint(\"Baris berisi:\", baris_isi, \"| kata:\", kata)",
+    "d": "Baris kosong dilewati dengan continue sebelum dihitung.",
+    "out": "Baris berisi: 3 | kata: 13"
+   },
+   {
+    "t": "Kasus: suhu tertinggi dari file sensor",
+    "code": "with open(\"sensor.txt\", \"w\") as f:\n    f.write(\"06:00 24.5\\n09:00 28.1\\n12:00 32.7\\n15:00 31.2\\n\")\n\njam_maks = \"\"\nsuhu_maks = -100.0\nwith open(\"sensor.txt\") as f:\n    for baris in f:\n        jam, suhu = baris.split()\n        if float(suhu) > suhu_maks:\n            suhu_maks = float(suhu)\n            jam_maks = jam\nprint(\"Tertinggi\", suhu_maks, \"pada\", jam_maks)",
+    "d": "Traversal mencari maksimum juga berlaku untuk baris-baris file.",
+    "out": "Tertinggi 32.7 pada 12:00"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Menghitung status HTTP dari access log baris demi baris",
+    "b": "File log server bisa berukuran gigabyte. Membacanya per baris dengan for membuat memori tetap kecil karena hanya satu baris yang dipegang pada satu waktu.",
+    "code": "with open(\"access.log\", \"w\") as f:\n    f.write('10.0.0.1 - - [19/Nov/2026:10:00:01] \"GET /produk HTTP/1.1\" 200 512\\n')\n    f.write('10.0.0.2 - - [19/Nov/2026:10:00:02] \"POST /checkout HTTP/1.1\" 500 87\\n')\n    f.write('10.0.0.1 - - [19/Nov/2026:10:00:05] \"GET /produk/7 HTTP/1.1\" 404 12\\n')\n    f.write('10.0.0.3 - - [19/Nov/2026:10:00:09] \"GET /produk HTTP/1.1\" 200 498\\n')\n    f.write('10.0.0.2 - - [19/Nov/2026:10:00:11] \"POST /checkout HTTP/1.1\" 500 91\\n')\n\nstatus = {}\nerror_path = {}\nwith open(\"access.log\") as log:\n    for baris in log:\n        bagian = baris.split()\n        kode = int(bagian[-2])\n        path = bagian[5]\n        status[kode] = status.get(kode, 0) + 1\n        if kode >= 500:\n            error_path[path] = error_path.get(path, 0) + 1\nprint(\"status:\", status)\nprint(\"endpoint error 5xx:\", error_path)",
+    "out": "status: {200: 2, 500: 2, 404: 1}\nendpoint error 5xx: {'/checkout': 2}"
+   }
+  ]
+ },
+ "python-5-3": {
+  "exs": [
+   {
+    "t": "Kasus: masukan umur yang bukan angka",
+    "code": "teks = \"tujuh belas\"\ntry:\n    umur = int(teks)\n    print(\"Umur:\", umur)\nexcept ValueError:\n    print(\"Masukan harus berupa angka, bukan:\", teks)",
+    "d": "int() melempar ValueError bila teksnya bukan bilangan bulat.",
+    "out": "Masukan harus berupa angka, bukan: tujuh belas"
+   },
+   {
+    "t": "Kasus: membagi hadiah ke nol pemenang",
+    "code": "hadiah = 1_000_000\npemenang = 0\ntry:\n    print(\"Tiap pemenang:\", hadiah // pemenang)\nexcept ZeroDivisionError:\n    print(\"Belum ada pemenang, hadiah disimpan\")",
+    "d": "Membagi dengan nol melempar ZeroDivisionError.",
+    "out": "Belum ada pemenang, hadiah disimpan"
+   },
+   {
+    "t": "Kasus: produk yang tidak ada di daftar harga",
+    "code": "harga = {\"kopi\": 18000, \"teh\": 8000}\nfor produk in [\"kopi\", \"susu\"]:\n    try:\n        print(produk, harga[produk])\n    except KeyError as e:\n        print(\"produk tidak ada:\", e)",
+    "d": "as e menyimpan objek error sehingga pesannya bisa ditampilkan.",
+    "out": "kopi 18000\nproduk tidak ada: 'susu'"
+   },
+   {
+    "t": "Kasus: file pengaturan yang belum dibuat",
+    "code": "try:\n    with open(\"pengaturan.txt\") as f:\n        tema = f.read().strip()\nexcept FileNotFoundError:\n    tema = \"terang\"                 # nilai cadangan\nprint(\"Tema:\", tema)",
+    "d": "Program tetap jalan dengan nilai cadangan saat file tidak ditemukan.",
+    "out": "Tema: terang"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Impor data dengan error yang ditangani per baris",
+    "b": "Satu baris rusak tidak boleh menggagalkan impor ribuan baris. Baris yang ditolak dicatat beserta alasannya untuk diperbaiki.",
+    "code": "data = [\"12500\", \"8.000\", \"\", \"abc\", \"15000\", None]\nvalid = []\nditolak = []\nfor i, x in enumerate(data, 1):\n    try:\n        valid.append(int(x))\n    except ValueError as e:\n        ditolak.append((i, f\"format salah: {e}\"))\n    except TypeError:\n        ditolak.append((i, \"nilai kosong (None)\"))\nprint(\"valid:\", valid)\nfor i, alasan in ditolak:\n    print(f\"  baris {i}: {alasan}\")\n\nharga = {\"kopi\": 18000}\ntry:\n    print(harga[\"teh\"])\nexcept KeyError as e:\n    print(\"produk tidak ada:\", e)",
+    "out": "valid: [12500, 15000]\n  baris 2: format salah: invalid literal for int() with base 10: '8.000'\n  baris 3: format salah: invalid literal for int() with base 10: ''\n  baris 4: format salah: invalid literal for int() with base 10: 'abc'\n  baris 6: nilai kosong (None)\nproduk tidak ada: 'teh'"
+   }
+  ]
+ },
+ "python-5-4": {
+  "code": "class SaldoKurang(Exception):\n    \"\"\"Dilempar saat penarikan melebihi saldo.\"\"\"\n\nsaldo = 50_000\n\ndef tarik(jumlah):\n    global saldo\n    if jumlah <= 0:\n        raise ValueError(\"jumlah harus positif\")\n    if jumlah > saldo:\n        raise SaldoKurang(f\"saldo kurang Rp{jumlah - saldo:,}\")\n    saldo -= jumlah\n\ndef layani(jumlah):\n    print(\"memproses\", jumlah)\n    tarik(jumlah)            # error dari tarik() naik ke sini, lalu ke pemanggil\n    print(\"berhasil\")\n\nfor j in [20_000, 80_000, -5]:\n    try:\n        layani(j)\n    except SaldoKurang as e:\n        print(\"gagal:\", e)\n    except ValueError as e:\n        print(\"input salah:\", e)\n    else:\n        print(\"transaksi tercatat\")\n    finally:\n        print(\"sisa\", saldo)",
+  "out": "memproses 20000\nberhasil\ntransaksi tercatat\nsisa 30000\nmemproses 80000\ngagal: saldo kurang Rp50,000\nsisa 30000\nmemproses -5\ninput salah: jumlah harus positif\nsisa 30000",
+  "exs": [
+   {
+    "t": "Kasus: menolak nilai rapor di luar 0-100",
+    "code": "def simpan_nilai(nilai):\n    if not 0 <= nilai <= 100:\n        raise ValueError(f\"nilai {nilai} di luar 0-100\")\n    print(\"tersimpan:\", nilai)\n\nfor n in [88, 105]:\n    try:\n        simpan_nilai(n)\n    except ValueError as e:\n        print(\"ditolak:\", e)",
+    "d": "raise menghentikan fungsi dan mengirim error ke pemanggil.",
+    "out": "tersimpan: 88\nditolak: nilai 105 di luar 0-100"
+   },
+   {
+    "t": "Kasus: exception khusus untuk stok habis",
+    "code": "class StokHabis(Exception):\n    pass\n\nstok = {\"pensil\": 3, \"penghapus\": 0}\n\ndef jual(barang):\n    if stok[barang] == 0:\n        raise StokHabis(barang)\n    stok[barang] -= 1\n    return \"terjual 1 \" + barang\n\nfor b in [\"pensil\", \"penghapus\"]:\n    try:\n        print(jual(b))\n    except StokHabis as e:\n        print(\"stok habis:\", e)",
+    "d": "Kelas exception sendiri membuat pemanggil bisa menangkap jenis kesalahan yang spesifik.",
+    "out": "terjual 1 pensil\nstok habis: penghapus"
+   },
+   {
+    "t": "Kasus: else dan finally saat membaca angka",
+    "code": "for teks in [\"25\", \"dua\"]:\n    try:\n        angka = int(teks)\n    except ValueError:\n        print(teks, \"-> bukan angka\")\n    else:\n        print(teks, \"-> kuadratnya\", angka ** 2)   # hanya bila tidak ada error\n    finally:\n        print(\"   selesai memeriksa\", teks)        # selalu dijalankan",
+    "d": "else jalan bila try sukses, finally jalan apa pun yang terjadi.",
+    "out": "25 -> kuadratnya 625\n   selesai memeriksa 25\ndua -> bukan angka\n   selesai memeriksa dua"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Error domain untuk dompet digital",
+    "b": "Aplikasi keuangan membuat keluarga exception sendiri. Semua turunan DompetError bisa ditangkap sekaligus, sementara SaldoTidakCukup bisa ditangani lebih khusus. raise ... from e menyimpan penyebab aslinya untuk penelusuran.",
+    "code": "class DompetError(Exception):\n    pass\n\nclass SaldoTidakCukup(DompetError):\n    pass\n\nclass AkunDibekukan(DompetError):\n    pass\n\ndef bayar(akun, jumlah):\n    if akun[\"beku\"]:\n        raise AkunDibekukan(akun[\"id\"])\n    if akun[\"saldo\"] < jumlah:\n        raise SaldoTidakCukup(f\"saldo {akun['saldo']:,} kurang dari {jumlah:,}\".replace(\",\", \".\"))\n    akun[\"saldo\"] -= jumlah\n\nfor akun, jml in [({\"id\": \"A1\", \"saldo\": 50_000, \"beku\": False}, 20_000),\n                  ({\"id\": \"A2\", \"saldo\": 10_000, \"beku\": False}, 35_000),\n                  ({\"id\": \"A3\", \"saldo\": 99_000, \"beku\": True}, 1_000)]:\n    try:\n        bayar(akun, jml)\n    except SaldoTidakCukup as e:\n        print(akun[\"id\"], \"gagal:\", e)\n    except DompetError as e:\n        print(akun[\"id\"], \"ditolak:\", type(e).__name__)\n    else:\n        print(akun[\"id\"], \"berhasil, sisa\", akun[\"saldo\"])\n    finally:\n        print(\"   (audit log ditulis)\")\n\ntry:\n    try:\n        int(\"x\")\n    except ValueError as e:\n        raise DompetError(\"format nominal salah\") from e\nexcept DompetError as e:\n    print(\"penyebab asli:\", repr(e.__cause__))",
+    "out": "A1 berhasil, sisa 30000\n   (audit log ditulis)\nA2 gagal: saldo 10.000 kurang dari 35.000\n   (audit log ditulis)\nA3 ditolak: AkunDibekukan\n   (audit log ditulis)\npenyebab asli: ValueError(\"invalid literal for int() with base 10: 'x'\")"
+   }
+  ]
+ },
+ "python-5-5": {
+  "code": "with open(\"catatan.txt\", \"w\") as f:\n    f.write(\"baris 1\\nbaris 2\\n\")\nprint(f.closed)                  # True: file ditutup otomatis saat blok selesai\n\n# dua context manager dalam satu with: baca satu file, tulis ke file lain\nwith open(\"catatan.txt\") as sumber, open(\"salinan.txt\", \"w\") as tujuan:\n    for baris in sumber:\n        tujuan.write(baris.upper())\n\nwith open(\"salinan.txt\") as f:\n    print(f.read().strip())\n\n# file tetap ditutup walaupun terjadi error di dalam blok\ntry:\n    with open(\"catatan.txt\") as f:\n        angka = int(f.readline())    # \"baris 1\" bukan angka -> ValueError\nexcept ValueError:\n    print(\"error tertangkap, file sudah ditutup:\", f.closed)",
+  "out": "True\nBARIS 1\nBARIS 2\nerror tertangkap, file sudah ditutup: True",
+  "exs": [
+   {
+    "t": "Kasus: tanpa with harus ingat close()",
+    "code": "f = open(\"absen.txt\", \"w\")\nf.write(\"Hadir: 30 siswa\\n\")\nf.close()                        # mudah terlupa, apalagi bila terjadi error\nprint(\"tanpa with, ditutup manual:\", f.closed)\n\nwith open(\"absen.txt\") as f:\n    print(f.read().strip())\nprint(\"dengan with, ditutup otomatis:\", f.closed)",
+    "d": "with menggantikan pasangan open() dan close() yang rawan lupa.",
+    "out": "tanpa with, ditutup manual: True\nHadir: 30 siswa\ndengan with, ditutup otomatis: True"
+   },
+   {
+    "t": "Kasus: menyaring baris log ke file lain",
+    "code": "with open(\"server.log\", \"w\") as f:\n    f.write(\"INFO mulai\\nERROR disk penuh\\nINFO selesai\\nERROR koneksi putus\\n\")\n\nwith open(\"server.log\") as masuk, open(\"error.log\", \"w\") as keluar:\n    for baris in masuk:\n        if baris.startswith(\"ERROR\"):\n            keluar.write(baris)\n\nwith open(\"error.log\") as f:\n    print(f.read().strip())",
+    "d": "Satu with membuka dua file sekaligus, dan keduanya ditutup bersamaan.",
+    "out": "ERROR disk penuh\nERROR koneksi putus"
+   },
+   {
+    "t": "Kasus: menambah catatan dengan mode append",
+    "code": "for kegiatan in [\"upacara\", \"ulangan IPA\", \"ekskul basket\"]:\n    with open(\"agenda.txt\", \"a\") as f:\n        f.write(kegiatan + \"\\n\")\n\nwith open(\"agenda.txt\") as f:\n    print(f.read().strip())",
+    "d": "Setiap putaran membuka, menulis, lalu menutup file dengan aman.",
+    "out": "upacara\nulangan IPA\nekskul basket"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Mengonversi data pelanggan dengan aman",
+    "b": "Pekerjaan konversi data membaca file sumber dan menulis file hasil. Dengan with, kedua file pasti tertutup dan isi hasil pasti tersimpan ke disk, bahkan bila konversi gagal di tengah jalan. Baris yang rusak dicatat, bukan menghentikan seluruh proses.",
+    "code": "with open(\"pelanggan.txt\", \"w\", encoding=\"utf-8\") as f:\n    f.write(\"budi santoso;081234567890\\n\")\n    f.write(\"siti aminah;08xx\\n\")\n    f.write(\"andi wijaya;085711112222\\n\")\n\nberhasil = 0\ngagal = 0\nwith open(\"pelanggan.txt\", encoding=\"utf-8\") as sumber, open(\"pelanggan.csv\", \"w\", encoding=\"utf-8\") as hasil:\n    hasil.write(\"nama,telepon\\n\")\n    for baris in sumber:\n        nama, telepon = baris.strip().split(\";\")\n        try:\n            int(telepon)\n        except ValueError:\n            print(\"dilewati, telepon tidak valid:\", nama)\n            gagal += 1\n            continue\n        hasil.write(f\"{nama.title()},+62{telepon[1:]}\\n\")\n        berhasil += 1\n\nprint(\"berhasil:\", berhasil, \"| gagal:\", gagal)\nwith open(\"pelanggan.csv\", encoding=\"utf-8\") as f:\n    print(f.read().strip())",
+    "out": "dilewati, telepon tidak valid: siti aminah\nberhasil: 2 | gagal: 1\nnama,telepon\nBudi Santoso,+6281234567890\nAndi Wijaya,+6285711112222"
+   }
+  ]
+ },
+ "python-5-6": {
+  "code": "from pathlib import Path\nimport glob\n\nfolder = Path(\"laporan\")\nfolder.mkdir(exist_ok=True)\nfor bulan in [\"jan\", \"feb\", \"mar\"]:\n    (folder / f\"penjualan_{bulan}.csv\").write_text(\"produk,jumlah\\nkopi,10\\n\")\n(folder / \"catatan.txt\").write_text(\"rahasia\")\n\ncsv = sorted(folder.glob(\"*.csv\"))\nfor p in csv:\n    print(p.name)\nprint(csv[0].stem, csv[0].suffix)\n\nprint(sorted(glob.glob(\"laporan/penjualan_?a?.csv\")))\n\ntotal = 0\nfor p in csv:\n    total += len(p.read_text().splitlines()) - 1     # kurangi baris judul\nprint(\"total baris data:\", total)\n\nfor p in folder.iterdir():\n    p.unlink()                   # hapus file\nfolder.rmdir()                   # hapus folder yang sudah kosong\nprint(folder.exists())",
+  "out": "penjualan_feb.csv\npenjualan_jan.csv\npenjualan_mar.csv\npenjualan_feb .csv\n['laporan/penjualan_jan.csv', 'laporan/penjualan_mar.csv']\ntotal baris data: 3\nFalse",
+  "exs": [
+   {
+    "t": "Kasus: membedah sebuah path",
+    "code": "from pathlib import Path\np = Path(\"dokumen\") / \"sekolah\" / \"rapor_semester1.pdf\"\nprint(p)\nprint(\"nama     :\", p.name)\nprint(\"tanpa ext:\", p.stem)\nprint(\"ekstensi :\", p.suffix)\nprint(\"folder   :\", p.parent)",
+    "d": "Operator / menggabung bagian path dengan pemisah yang benar untuk sistem operasimu.",
+    "out": "dokumen/sekolah/rapor_semester1.pdf\nnama     : rapor_semester1.pdf\ntanpa ext: rapor_semester1\nekstensi : .pdf\nfolder   : dokumen/sekolah"
+   },
+   {
+    "t": "Kasus: menulis dan membaca tanpa open()",
+    "code": "from pathlib import Path\ncatatan = Path(\"belanja.txt\")\ncatatan.write_text(\"beras\\ntelur\\nsabun\\n\")\nprint(\"ada:\", catatan.exists())\nfor barang in catatan.read_text().splitlines():\n    print(\"-\", barang)\ncatatan.unlink()\nprint(\"ada:\", catatan.exists())",
+    "d": "write_text dan read_text membuka dan menutup file sendiri.",
+    "out": "ada: True\n- beras\n- telur\n- sabun\nada: False"
+   },
+   {
+    "t": "Kasus: mengumpulkan foto dengan pola glob",
+    "code": "from pathlib import Path\nfolder = Path(\"foto\")\nfolder.mkdir(exist_ok=True)\nfor nama in [\"liburan1.jpg\", \"liburan2.jpg\", \"ktp.png\", \"catatan.txt\"]:\n    (folder / nama).write_text(\"x\")\n\nfor pola in [\"*.jpg\", \"liburan?.*\", \"*.*\"]:\n    cocok = []\n    for p in sorted(folder.glob(pola)):\n        cocok.append(p.name)\n    print(f\"{pola:<11} -> {cocok}\")",
+    "d": "* cocok dengan apa saja, ? cocok dengan tepat satu karakter.",
+    "out": "*.jpg       -> ['liburan1.jpg', 'liburan2.jpg']\nliburan?.*  -> ['liburan1.jpg', 'liburan2.jpg']\n*.*         -> ['catatan.txt', 'ktp.png', 'liburan1.jpg', 'liburan2.jpg']"
+   },
+   {
+    "t": "Kasus: mencari CSV di semua subfolder",
+    "code": "from pathlib import Path\nfor path in [\"arsip/2025/des.csv\", \"arsip/2026/jan.csv\", \"arsip/2026/feb.csv\", \"arsip/baca.txt\"]:\n    p = Path(path)\n    p.parent.mkdir(parents=True, exist_ok=True)\n    p.write_text(\"x\")\n\nakar = Path(\"arsip\")\nprint(\"di akar saja:\", len(list(akar.glob(\"*.csv\"))), \"file\")\nfor p in sorted(akar.rglob(\"*.csv\")):        # rglob = glob ke semua subfolder\n    print(p.relative_to(akar))",
+    "d": "glob hanya melihat satu folder, rglob (atau pola **) masuk ke semua subfolder.",
+    "out": "di akar saja: 0 file\n2025/des.csv\n2026/feb.csv\n2026/jan.csv"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Merapikan folder unduhan dan mencegah path traversal",
+    "b": "Skrip perapian mengelompokkan file per ekstensi. Nama file dari pengguna tidak boleh langsung dipakai sebagai path: \"../../etc/passwd\" bisa keluar dari folder unggahan. Selalu resolve() lalu pastikan hasilnya masih di dalam folder unggahan.",
+    "code": "from pathlib import Path\nroot = Path(\"unduhan\")\nfor n in [\"laporan_jan.csv\", \"laporan_feb.csv\", \"foto.JPG\", \"catatan.txt\", \"arsip/2025/laporan_des.csv\"]:\n    (root / n).parent.mkdir(parents=True, exist_ok=True)\n    (root / n).write_text(\"x\")\n\nper_ekstensi = {}\nfor p in root.rglob(\"*\"):\n    if p.is_file():\n        ext = p.suffix.lower()\n        per_ekstensi[ext] = per_ekstensi.get(ext, 0) + 1\nprint(\"per ekstensi:\", dict(sorted(per_ekstensi.items())))\n\nunggahan = root / \"unggahan\"\nunggahan.mkdir()\nfor nama in [\"cv.pdf\", \"../../etc/passwd\"]:\n    tujuan = (unggahan / nama).resolve()\n    print(f\"{nama:<18} aman: {tujuan.is_relative_to(unggahan.resolve())}\")",
+    "out": "per ekstensi: {'.csv': 3, '.jpg': 1, '.txt': 1}\ncv.pdf             aman: True\n../../etc/passwd   aman: False"
+   }
+  ]
  }
 }
