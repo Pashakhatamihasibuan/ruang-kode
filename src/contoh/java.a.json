@@ -1032,8 +1032,224 @@
    {
     "t": "Rekap nilai kelas dengan array 2D",
     "b": "Rata-rata dihitung dengan loop dalam, lalu dibulatkan ke satu desimal. Salinan dibuat dengan Arrays.copyOf agar pengurutan tidak merusak data asli.",
-    "code": "import java.util.Arrays;\n\npublic class Main {\n    public static void main(String[] args) {\n        String[] siswa = {\"Sari\", \"Budi\", \"Ayu\"};\n        int[][] nilai = {{80, 92, 75}, {65, 70, 88}, {95, 90, 93}};\n        for (int i = 0; i < siswa.length; i++) {\n            int total = 0;\n            for (int n : nilai[i]) {\n                total += n;\n            }\n            double rata = Math.round(total * 10.0 / nilai[i].length) / 10.0;\n            System.out.println(siswa[i] + \" \" + Arrays.toString(nilai[i]) + \" rata-rata \" + rata);\n        }\n        int[] urut = Arrays.copyOf(nilai[1], nilai[1].length);\n        Arrays.sort(urut);\n        System.out.println(\"Nilai Budi terurut: \" + Arrays.toString(urut));\n        System.out.println(\"Data asli Budi    : \" + Arrays.toString(nilai[1]));\n    }\n}\n",
-    "out": "Sari [80, 92, 75] rata-rata 82.3\nBudi [65, 70, 88] rata-rata 74.3\nAyu [95, 90, 93] rata-rata 92.7\nNilai Budi terurut: [65, 70, 88]\nData asli Budi    : [65, 70, 88]"
+    "code": "import java.util.Arrays;\n\npublic class Main {\n    public static void main(String[] args) {\n        String[] siswa = {\"Sari\", \"Budi\", \"Ayu\"};\n        int[][] nilai = {{80, 92, 75}, {88, 65, 70}, {95, 90, 93}};\n        for (int i = 0; i < siswa.length; i++) {\n            int total = 0;\n            for (int n : nilai[i]) {\n                total += n;\n            }\n            double rata = Math.round(total * 10.0 / nilai[i].length) / 10.0;\n            System.out.println(siswa[i] + \" \" + Arrays.toString(nilai[i]) + \" rata-rata \" + rata);\n        }\n        int[] urut = Arrays.copyOf(nilai[1], nilai[1].length);\n        Arrays.sort(urut);\n        System.out.println(\"Nilai Budi terurut: \" + Arrays.toString(urut));\n        System.out.println(\"Data asli Budi    : \" + Arrays.toString(nilai[1]));\n    }\n}\n",
+    "out": "Sari [80, 92, 75] rata-rata 82.3\nBudi [88, 65, 70] rata-rata 74.3\nAyu [95, 90, 93] rata-rata 92.7\nNilai Budi terurut: [65, 70, 88]\nData asli Budi    : [88, 65, 70]"
+   }
+  ]
+ },
+ "java-5-1": {
+  "exs": [
+   {
+    "t": "Kasus: buku di perpustakaan sekolah",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Buku b = new Buku(\"Laskar Pelangi\", \"Andrea Hirata\", 529);\n        System.out.println(b.info());\n        System.out.println(\"Tebal? \" + b.tebal());\n    }\n}\n\nclass Buku {\n    private String judul;\n    private String penulis;\n    private int halaman;\n\n    public Buku(String judul, String penulis, int halaman) {\n        this.judul = judul;\n        this.penulis = penulis;\n        this.halaman = halaman;\n    }\n\n    public String info() {\n        return judul + \" karya \" + penulis;\n    }\n\n    public boolean tebal() {\n        return halaman > 300;\n    }\n}\n",
+    "d": "Kelas Buku punya field dan method. Kelas Main cukup membuat objeknya. Kelas yang berisi main ditulis paling atas.",
+    "out": "Laskar Pelangi karya Andrea Hirata\nTebal? true"
+   },
+   {
+    "t": "Kasus: dua objek, dua isi berbeda",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Celengan milikAdi = new Celengan(\"Adi\");\n        Celengan milikRina = new Celengan(\"Rina\");\n        milikAdi.isi(10_000);\n        milikAdi.isi(5_000);\n        milikRina.isi(20_000);\n        System.out.println(milikAdi.laporan());\n        System.out.println(milikRina.laporan());\n    }\n}\n\nclass Celengan {\n    private String pemilik;\n    private int isi;\n\n    public Celengan(String pemilik) {\n        this.pemilik = pemilik;\n    }\n\n    public void isi(int uang) {\n        isi += uang;\n    }\n\n    public String laporan() {\n        return \"Celengan \" + pemilik + \": Rp\" + isi;\n    }\n}\n",
+    "d": "Setiap objek menyimpan field-nya sendiri.",
+    "out": "Celengan Adi: Rp15000\nCelengan Rina: Rp20000"
+   },
+   {
+    "t": "Kasus: toString menentukan tampilan objek",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Produk p = new Produk(\"Keripik Balado\", 18_000);\n        System.out.println(p);\n        System.out.println(\"Di keranjang: \" + p);\n    }\n}\n\nclass Produk {\n    private String nama;\n    private int harga;\n\n    public Produk(String nama, int harga) {\n        this.nama = nama;\n        this.harga = harga;\n    }\n\n    public String toString() {\n        return nama + \" (Rp\" + harga + \")\";\n    }\n}\n",
+    "d": "Saat objek dicetak, Java memanggil method toString milik objek itu.",
+    "out": "Keripik Balado (Rp18000)\nDi keranjang: Keripik Balado (Rp18000)"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Domain model keranjang belanja",
+    "b": "Di aplikasi toko daring, keranjang adalah objek yang menyimpan totalnya sendiri. Kode lain cukup memanggil tambah tanpa tahu cara total dihitung.",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Keranjang k = new Keranjang();\n        k.tambah(\"Kopi Gayo\", 85_000, 2);\n        k.tambah(\"Filter V60\", 145_000, 1);\n        System.out.println(\"Item: \" + k.jumlahItem() + \", total: \" + k.total());\n    }\n}\n\nclass Keranjang {\n    private long total;\n    private int item;\n\n    public void tambah(String nama, long harga, int qty) {\n        total += harga * qty;\n        item += qty;\n    }\n\n    public long total() {\n        return total;\n    }\n\n    public int jumlahItem() {\n        return item;\n    }\n}\n",
+    "out": "Item: 3, total: 315000"
+   }
+  ]
+ },
+ "java-5-2": {
+  "exs": [
+   {
+    "t": "Kasus: data mahasiswa baru",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Mahasiswa m = new Mahasiswa(\"Fajar\", \"2026010017\", \"Informatika\");\n        System.out.println(m.nama + \" (\" + m.nim + \") - \" + m.prodi);\n    }\n}\n\nclass Mahasiswa {\n    String nama;\n    String nim;\n    String prodi;\n\n    Mahasiswa(String nama, String nim, String prodi) {\n        this.nama = nama;\n        this.nim = nim;\n        this.prodi = prodi;\n    }\n}\n",
+    "d": "this.nama merujuk field, nama saja merujuk parameter.",
+    "out": "Fajar (2026010017) - Informatika"
+   },
+   {
+    "t": "Kasus: field tanpa konstruktor berisi nilai bawaan",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Lampu teras = new Lampu();\n        System.out.println(\"Watt   : \" + teras.watt);\n        System.out.println(\"Menyala: \" + teras.menyala);\n        teras.watt = 12;\n        teras.menyala = true;\n        System.out.println(\"Watt   : \" + teras.watt + \", menyala: \" + teras.menyala);\n    }\n}\n\nclass Lampu {\n    int watt;\n    boolean menyala;\n}\n",
+    "d": "Tanpa konstruktor yang mengisi, field angka bernilai 0 dan boolean bernilai false.",
+    "out": "Watt   : 0\nMenyala: false\nWatt   : 12, menyala: true"
+   },
+   {
+    "t": "Kasus: konstruktor menghitung field turunan",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Kamar k1 = new Kamar(\"Kamar tidur\", 3, 4);\n        Kamar k2 = new Kamar(\"Dapur\", 2.5, 3);\n        System.out.println(k1.nama + \": \" + k1.luas + \" m2\");\n        System.out.println(k2.nama + \": \" + k2.luas + \" m2\");\n    }\n}\n\nclass Kamar {\n    String nama;\n    double luas;\n\n    Kamar(String nama, double panjang, double lebar) {\n        this.nama = nama;\n        this.luas = panjang * lebar;\n    }\n}\n",
+    "d": "Konstruktor boleh menghitung nilai awal, bukan hanya menyalin parameter.",
+    "out": "Kamar tidur: 12.0 m2\nDapur: 7.5 m2"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Konstruktor yang menjaga data tetap masuk akal",
+    "b": "Objek sebaiknya tidak pernah lahir dengan data rusak. Konstruktor bisa memperbaiki atau menolak nilai yang tidak masuk akal sejak awal, misalnya stok negatif dari data impor.",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Barang a = new Barang(\"Kopi Gayo\", 25);\n        Barang b = new Barang(\"Teh Melati\", -3);\n        System.out.println(a.info());\n        System.out.println(b.info());\n    }\n}\n\nclass Barang {\n    private String nama;\n    private int stok;\n\n    Barang(String nama, int stok) {\n        this.nama = nama;\n        if (stok < 0) {\n            System.out.println(\"Peringatan: stok \" + nama + \" negatif, diset ke 0\");\n            this.stok = 0;\n        } else {\n            this.stok = stok;\n        }\n    }\n\n    String info() {\n        return nama + \" stok \" + stok;\n    }\n}\n",
+    "out": "Peringatan: stok Teh Melati negatif, diset ke 0\nKopi Gayo stok 25\nTeh Melati stok 0"
+   }
+  ]
+ },
+ "java-5-3": {
+  "exs": [
+   {
+    "t": "Kasus: rekening tabungan",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Rekening r = new Rekening();\n        r.setor(500_000);\n        System.out.println(\"Tarik 200 ribu: \" + r.tarik(200_000));\n        System.out.println(\"Tarik 900 ribu: \" + r.tarik(900_000));\n        System.out.println(\"Saldo akhir   : \" + r.getSaldo());\n    }\n}\n\nclass Rekening {\n    private long saldo = 0;\n\n    public void setor(long jumlah) {\n        if (jumlah > 0) saldo += jumlah;\n    }\n\n    public boolean tarik(long jumlah) {\n        if (jumlah > saldo) {\n            return false;\n        }\n        saldo -= jumlah;\n        return true;\n    }\n\n    public long getSaldo() {\n        return saldo;\n    }\n}\n",
+    "d": "Field saldo private; hanya method setor, tarik, dan getSaldo yang boleh menyentuhnya.",
+    "out": "Tarik 200 ribu: true\nTarik 900 ribu: false\nSaldo akhir   : 300000"
+   },
+   {
+    "t": "Kasus: setter yang menolak nilai rapor tidak valid",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Rapor r = new Rapor();\n        r.setNilai(88);\n        r.setNilai(150);   // ditolak\n        System.out.println(\"Nilai tersimpan: \" + r.getNilai());\n    }\n}\n\nclass Rapor {\n    private int nilai;\n\n    public void setNilai(int nilaiBaru) {\n        if (nilaiBaru < 0 || nilaiBaru > 100) {\n            System.out.println(\"Nilai \" + nilaiBaru + \" ditolak\");\n            return;\n        }\n        nilai = nilaiBaru;\n    }\n\n    public int getNilai() {\n        return nilai;\n    }\n}\n",
+    "out": "Nilai 150 ditolak\nNilai tersimpan: 88"
+   },
+   {
+    "t": "Kasus: penghitung pengunjung museum",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Penghitung pintuUtama = new Penghitung();\n        pintuUtama.masuk();\n        pintuUtama.masuk();\n        pintuUtama.masuk();\n        System.out.println(\"Pengunjung hari ini: \" + pintuUtama.getJumlah());\n    }\n}\n\nclass Penghitung {\n    private int jumlah;\n\n    public void masuk() {\n        jumlah++;\n    }\n\n    public int getJumlah() {\n        return jumlah;\n    }\n}\n",
+    "d": "Method mengubah keadaan objek; dari luar hanya bisa menambah, tidak bisa mengurangi.",
+    "out": "Pengunjung hari ini: 3"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Rekening yang menjaga saldonya sendiri",
+    "b": "Aturan bisnis (setoran harus positif, saldo tidak boleh minus) tinggal di dalam kelas. Kode pemanggil tidak bisa melanggarnya karena saldo private.",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Rekening r = new Rekening();\n        System.out.println(r.setor(500_000));\n        System.out.println(r.setor(-10_000));\n        System.out.println(r.tarik(200_000) + \", saldo \" + r.saldo());\n        System.out.println(r.tarik(900_000) + \", saldo \" + r.saldo());\n    }\n}\n\nclass Rekening {\n    private long saldo;\n\n    String setor(long n) {\n        if (n <= 0) {\n            return \"Gagal: setoran harus positif\";\n        }\n        saldo += n;\n        return \"Berhasil setor \" + n;\n    }\n\n    String tarik(long n) {\n        if (n > saldo) {\n            return \"Gagal: saldo tidak cukup\";\n        }\n        saldo -= n;\n        return \"Berhasil tarik \" + n;\n    }\n\n    long saldo() {\n        return saldo;\n    }\n}\n",
+    "out": "Berhasil setor 500000\nGagal: setoran harus positif\nBerhasil tarik 200000, saldo 300000\nGagal: saldo tidak cukup, saldo 300000"
+   }
+  ]
+ },
+ "java-5-4": {
+  "code": "public class Main {\n    public static void main(String[] args) {\n        Rekening r = new Rekening(\"Andi\");\n        r.setor(100_000);\n        System.out.println(r.tarik(250_000));\n        System.out.println(r.tarik(40_000));\n        System.out.println(r.getPemilik() + \": \" + r.getSaldo());\n        // r.saldo = 999_999;  // error: saldo has private access in Rekening\n    }\n}\n\nclass Rekening {\n    private long saldo;              // hanya kelas ini yang boleh mengubah\n    private String pemilik;\n\n    public Rekening(String pemilik) {\n        this.pemilik = pemilik;\n    }\n\n    public void setor(long jumlah) {\n        if (jumlah > 0) saldo += jumlah;\n    }\n\n    public boolean tarik(long jumlah) {\n        if (jumlah <= 0 || jumlah > saldo) return false;\n        saldo -= jumlah;\n        return true;\n    }\n\n    public long getSaldo() { return saldo; }\n    public String getPemilik() { return pemilik; }\n}\n",
+  "out": "false\ntrue\nAndi: 60000",
+  "exs": [
+   {
+    "t": "Kasus: data pasien yang dirahasiakan",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Pasien p = new Pasien(\"Lestari\", \"Alergi penisilin\");\n        System.out.println(\"Nama: \" + p.getNama());\n        System.out.println(p.ringkasanUntukApotek());\n        // System.out.println(p.riwayat);  // error: riwayat has private access\n    }\n}\n\nclass Pasien {\n    private String nama;\n    private String riwayat;\n\n    public Pasien(String nama, String riwayat) {\n        this.nama = nama;\n        this.riwayat = riwayat;\n    }\n\n    public String getNama() {\n        return nama;\n    }\n\n    public String ringkasanUntukApotek() {\n        return \"Catatan apotek: \" + riwayat;\n    }\n}\n",
+    "d": "Field private hanya bisa dibaca lewat method public yang memang disediakan.",
+    "out": "Nama: Lestari\nCatatan apotek: Alergi penisilin"
+   },
+   {
+    "t": "Kasus: method private sebagai pembantu internal",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Pendaftaran daftar = new Pendaftaran();\n        System.out.println(daftar.daftar(\"Gilang\", 15));\n        System.out.println(daftar.daftar(\"Hana\", 11));\n    }\n}\n\nclass Pendaftaran {\n    public String daftar(String nama, int umur) {\n        if (!cukupUmur(umur)) {\n            return nama + \" belum cukup umur\";\n        }\n        return nama + \" terdaftar di lomba\";\n    }\n\n    private boolean cukupUmur(int umur) {\n        return umur >= 13;\n    }\n}\n",
+    "d": "Method private hanya dipakai di dalam kelas; dari luar cukup kenal method public-nya.",
+    "out": "Gilang terdaftar di lomba\nHana belum cukup umur"
+   },
+   {
+    "t": "Kasus: tanpa kata kunci (package-private)",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Termometer t = new Termometer();\n        t.celsius = 31.5;                 // boleh: satu paket\n        System.out.println(t.keFahrenheit());\n    }\n}\n\nclass Termometer {\n    double celsius;                       // package-private\n\n    double keFahrenheit() {               // package-private\n        return celsius * 9 / 5 + 32;\n    }\n}\n",
+    "d": "Anggota tanpa access specifier bisa dipakai kelas lain di paket yang sama, misalnya di file yang sama ini.",
+    "out": "88.7"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Mengubah implementasi tanpa merusak pengguna",
+    "b": "Field disimpan dalam Kelvin dan bersifat private. Pengguna hanya melihat method public, jadi cara penyimpanan bisa diganti kapan saja tanpa mengubah kode pemakainya.",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Suhu s = new Suhu(30);\n        System.out.println(s.celsius() + \" C = \" + s.fahrenheit() + \" F\");\n    }\n}\n\nclass Suhu {\n    private double kelvin; // detail tersembunyi\n\n    public Suhu(double celsius) {\n        this.kelvin = celsius + 273.15;\n    }\n\n    public double celsius() {\n        return Math.round((kelvin - 273.15) * 100) / 100.0;\n    }\n\n    public double fahrenheit() {\n        return celsius() * 9 / 5 + 32;\n    }\n}\n",
+    "out": "30.0 C = 86.0 F"
+   }
+  ]
+ },
+ "java-5-5": {
+  "code": "public class Main {\n    public static void main(String[] args) {\n        new Siswa(\"001\", \"Rina\");\n        new Siswa(\"002\", \"Sandi\");\n        Siswa s = new Siswa(\"003\", \"Tari\");\n        s.nama = \"Tari A.\";          // boleh: bukan final\n        // s.nis = \"999\";            // error: cannot assign a value to final variable nis\n        System.out.println(Siswa.jumlah);\n        System.out.println(Siswa.kelasPenuh());\n        System.out.println(s.nis + \" \" + s.nama);\n    }\n}\n\nclass Siswa {\n    static int jumlah = 0;          // satu untuk semua objek\n    static final int MAKS = 30;     // konstanta\n    final String nis;               // diisi sekali di konstruktor\n    String nama;\n\n    Siswa(String nis, String nama) {\n        this.nis = nis;\n        this.nama = nama;\n        jumlah++;\n    }\n\n    static boolean kelasPenuh() {\n        return jumlah >= MAKS;\n    }\n}\n",
+  "out": "3\nfalse\n003 Tari A.",
+  "exs": [
+   {
+    "t": "Kasus: kelas utilitas pajak",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        System.out.println(\"Tarif PPN: \" + Pajak.TARIF_PPN_PERSEN + \"%\");\n        System.out.println(\"PPN dari 200000: \" + Pajak.ppn(200_000));\n        System.out.println(\"PPN dari 75000 : \" + Pajak.ppn(75_000));\n    }\n}\n\nclass Pajak {\n    static final int TARIF_PPN_PERSEN = 12;\n\n    static long ppn(long harga) {\n        return harga * TARIF_PPN_PERSEN / 100;\n    }\n}\n",
+    "d": "Konstanta static final dan method static dipakai tanpa membuat objek, seperti Math.max.",
+    "out": "Tarif PPN: 12%\nPPN dari 200000: 24000\nPPN dari 75000 : 9000"
+   },
+   {
+    "t": "Kasus: nomor antrean otomatis",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Antrean a = new Antrean(\"Bu Yati\");\n        Antrean b = new Antrean(\"Pak Joko\");\n        Antrean c = new Antrean(\"Mbak Lina\");\n        System.out.println(a.info());\n        System.out.println(b.info());\n        System.out.println(c.info());\n        System.out.println(\"Total antrean: \" + Antrean.terakhir);\n    }\n}\n\nclass Antrean {\n    static int terakhir = 0;\n    final int nomor;\n    final String nama;\n\n    Antrean(String nama) {\n        terakhir++;\n        this.nomor = terakhir;\n        this.nama = nama;\n    }\n\n    String info() {\n        return \"No. \" + nomor + \" - \" + nama;\n    }\n}\n",
+    "d": "Field static dipakai bersama semua objek, jadi cocok untuk penomoran berurutan.",
+    "out": "No. 1 - Bu Yati\nNo. 2 - Pak Joko\nNo. 3 - Mbak Lina\nTotal antrean: 3"
+   },
+   {
+    "t": "Kasus: variabel lokal final",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        final int hariDalamSeminggu = 7;\n        final double DISKON_LEBARAN = 0.2;\n        int hargaBaju = 150_000;\n        // hariDalamSeminggu = 8;  // error: cannot assign a value to final variable\n        System.out.println(\"Minggu ini \" + hariDalamSeminggu + \" hari\");\n        System.out.println(\"Harga setelah diskon: \" + (hargaBaju - hargaBaju * DISKON_LEBARAN));\n    }\n}\n",
+    "d": "final juga berlaku untuk variabel lokal: sekali diisi, tidak bisa diganti.",
+    "out": "Minggu ini 7 hari\nHarga setelah diskon: 120000.0"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Penghitung instance dan nomor invoice",
+    "b": "Konstruktor dibuat private agar invoice hanya bisa dibuat lewat method static buat(), yang sekaligus memberi nomor urut. Nomor diberi nol di depan dengan substring.",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Invoice a = Invoice.buat();\n        Invoice b = Invoice.buat();\n        System.out.println(a.nomor + \", \" + b.nomor + \", total dibuat: \" + Invoice.dibuat);\n    }\n}\n\nclass Invoice {\n    static int dibuat = 0;\n    final String nomor;\n\n    private Invoice(String nomor) {\n        this.nomor = nomor;\n    }\n\n    static Invoice buat() {\n        dibuat++;\n        String angka = \"0000\" + dibuat;\n        return new Invoice(\"INV/2026/11/\" + angka.substring(angka.length() - 4));\n    }\n}\n",
+    "out": "INV/2026/11/0001, INV/2026/11/0002, total dibuat: 2"
+   }
+  ]
+ },
+ "java-5-6": {
+  "code": "public class Main {\n    public static void main(String[] args) {\n        Kotak a = new Kotak(\"A\");\n        Kotak b = new Kotak(\"B\");\n        Kotak c = a;          // dua referensi ke objek A\n        a = null;             // A masih dijangkau lewat c\n        b = null;             // B tidak terjangkau lagi, calon dibersihkan GC\n        System.out.println(c.label);\n        c = new Kotak(\"C\");   // A kini juga tidak terjangkau\n        System.out.println(c.label);\n    }\n}\n\nclass Kotak {\n    String label;\n\n    Kotak(String label) {\n        this.label = label;\n        System.out.println(\"Dibuat: \" + label);\n    }\n}\n",
+  "out": "Dibuat: A\nDibuat: B\nA\nDibuat: C\nC",
+  "exs": [
+   {
+    "t": "Kasus: mengganti pesanan aktif",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Pesanan aktif = new Pesanan(\"Ayam geprek\");\n        aktif = new Pesanan(\"Soto Lamongan\");   // pesanan ayam geprek tak terjangkau\n        System.out.println(\"Pesanan aktif: \" + aktif.menu);\n        System.out.println(\"Total objek dibuat: \" + Pesanan.dibuat);\n    }\n}\n\nclass Pesanan {\n    static int dibuat = 0;\n    String menu;\n\n    Pesanan(String menu) {\n        this.menu = menu;\n        dibuat++;\n    }\n}\n",
+    "d": "Saat variabel menunjuk objek baru, objek lama kehilangan referensinya.",
+    "out": "Pesanan aktif: Soto Lamongan\nTotal objek dibuat: 2"
+   },
+   {
+    "t": "Kasus: memeriksa null sebelum dipakai",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        Pengemudi ojek = null;   // belum ada pengemudi yang menerima\n        if (ojek == null) {\n            System.out.println(\"Mencari pengemudi...\");\n        }\n        ojek = new Pengemudi(\"Pak Darto\");\n        if (ojek != null) {\n            System.out.println(\"Pengemudi: \" + ojek.nama);\n        }\n    }\n}\n\nclass Pengemudi {\n    String nama;\n\n    Pengemudi(String nama) {\n        this.nama = nama;\n    }\n}\n",
+    "d": "Variabel bernilai null tidak menunjuk objek apa pun. Memanggil method lewat null menyebabkan error.",
+    "out": "Mencari pengemudi...\nPengemudi: Pak Darto"
+   },
+   {
+    "t": "Kasus: objek lokal di dalam method",
+    "code": "public class Main {\n    public static Struk buatStruk(int total) {\n        Struk sementara = new Struk(total);   // akan dibuang setelah method selesai\n        Struk hasil = new Struk(total + 2_000);\n        return hasil;                         // hanya objek ini yang tetap terjangkau\n    }\n\n    public static void main(String[] args) {\n        Struk s = buatStruk(48_000);\n        System.out.println(\"Struk dipegang main: \" + s.total);\n    }\n}\n\nclass Struk {\n    int total;\n\n    Struk(int total) {\n        this.total = total;\n        System.out.println(\"Struk dibuat: \" + total);\n    }\n}\n",
+    "d": "Objek yang hanya dirujuk variabel lokal menjadi tak terjangkau setelah method selesai, kecuali dikembalikan dengan return.",
+    "out": "Struk dibuat: 48000\nStruk dibuat: 50000\nStruk dipegang main: 50000"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Objek tanpa referensi boleh dibersihkan GC",
+    "b": "Cache yang terus diisi tanpa pernah dilepas adalah penyebab memory leak paling umum di aplikasi Java. Mengisi slot dengan null melepas referensinya sehingga GC boleh membersihkan array besar itu.",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        int[][] cache = new int[5][];\n        for (int i = 0; i < cache.length; i++) {\n            cache[i] = new int[1_000_000];   // sekitar 4 MB per array\n        }\n        System.out.println(\"Array di cache: \" + cache.length + \" (sekitar \" + cache.length * 4 + \" MB tertahan)\");\n\n        int dilepas = 0;\n        for (int i = 0; i < cache.length; i++) {\n            cache[i] = null;                 // referensi dilepas, GC boleh membersihkan\n            dilepas++;\n        }\n        System.out.println(\"Referensi dilepas: \" + dilepas);\n        System.out.println(\"Batas heap diatur dengan -Xmx, misalnya java -Xmx512m App\");\n    }\n}\n",
+    "out": "Array di cache: 5 (sekitar 20 MB tertahan)\nReferensi dilepas: 5\nBatas heap diatur dengan -Xmx, misalnya java -Xmx512m App"
+   }
+  ]
+ },
+ "java-5-7": {
+  "code": "public class Main {\n    static void ubahAngka(int x) { x = 99; }\n    static void ubahIsi(int[] d) { d[0] = 99; }\n    static void gantiArray(int[] d) {\n        d = new int[] {7, 7, 7};   // hanya salinan referensi yang diganti\n        d[0] = 1;\n    }\n\n    public static void main(String[] args) {\n        int n = 5;\n        ubahAngka(n);\n        System.out.println(n);\n\n        int[] data = {1, 2, 3};\n        ubahIsi(data);\n        System.out.println(data[0]);\n        gantiArray(data);\n        System.out.println(data[0]);\n    }\n}\n",
+  "out": "5\n99\n99",
+  "exs": [
+   {
+    "t": "Kasus: objek dompet dikirim ke method",
+    "code": "public class Main {\n    static void bayarParkir(Dompet d) {\n        d.saldo -= 5_000;\n    }\n\n    public static void main(String[] args) {\n        Dompet milikNina = new Dompet(50_000);\n        bayarParkir(milikNina);\n        System.out.println(\"Saldo Nina: \" + milikNina.saldo);\n    }\n}\n\nclass Dompet {\n    int saldo;\n\n    Dompet(int saldo) {\n        this.saldo = saldo;\n    }\n}\n",
+    "d": "Method menerima salinan referensi ke objek yang sama, jadi perubahan isinya terlihat di luar.",
+    "out": "Saldo Nina: 45000"
+   },
+   {
+    "t": "Kasus: mengganti objek di dalam method tidak berpengaruh",
+    "code": "public class Main {\n    static void gantiDompet(Dompet d) {\n        d = new Dompet(1_000_000);   // parameter menunjuk objek baru\n        System.out.println(\"Di dalam method: \" + d.saldo);\n    }\n\n    public static void main(String[] args) {\n        Dompet milikNina = new Dompet(50_000);\n        gantiDompet(milikNina);\n        System.out.println(\"Di main        : \" + milikNina.saldo);\n    }\n}\n\nclass Dompet {\n    int saldo;\n\n    Dompet(int saldo) {\n        this.saldo = saldo;\n    }\n}\n",
+    "out": "Di dalam method: 1000000\nDi main        : 50000"
+   },
+   {
+    "t": "Kasus: method tukar yang gagal",
+    "code": "public class Main {\n    static void tukar(Pemain a, Pemain b) {\n        Pemain titip = a;\n        a = b;\n        b = titip;\n    }\n\n    public static void main(String[] args) {\n        Pemain kiper = new Pemain(\"Nadeo\");\n        Pemain striker = new Pemain(\"Dimas\");\n        tukar(kiper, striker);\n        System.out.println(\"kiper  : \" + kiper.nama);\n        System.out.println(\"striker: \" + striker.nama);\n    }\n}\n\nclass Pemain {\n    String nama;\n\n    Pemain(String nama) {\n        this.nama = nama;\n    }\n}\n",
+    "d": "Menukar dua parameter hanya menukar salinan referensi; variabel pemanggil tetap.",
+    "out": "kiper  : Nadeo\nstriker: Dimas"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Mutasi terlihat, penggantian tidak",
+    "b": "Bug ini sering muncul di kode tim: seseorang mengira mengganti parameter akan mengubah objek pemanggil. Yang berpengaruh hanya perubahan isi objek.",
+    "code": "public class Main {\n    static void ubah(StringBuilder s, int x) {\n        s.append(\" susu\");            // mengubah objek yang sama\n        s = new StringBuilder(\"teh\"); // hanya mengganti salinan referensi\n        x = 100;                      // hanya mengganti salinan nilai\n    }\n\n    public static void main(String[] args) {\n        StringBuilder sb = new StringBuilder(\"kopi\");\n        int n = 5;\n        ubah(sb, n);\n        System.out.println(sb + \" \" + n);\n    }\n}\n",
+    "out": "kopi susu 5"
    }
   ]
  }

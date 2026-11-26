@@ -92,8 +92,8 @@
    {
     "t": "Kasus: kuota internet sampai habis",
     "d": "while mengulang selama kondisi masih benar; jumlah putarannya belum diketahui.",
-    "code": "let kuotaMb = 1000;\nlet hari = 0;\nwhile (kuotaMb > 0) {\n  kuotaMb -= 300;           // pemakaian per hari\n  hari++;\n}\nconsole.log(`Kuota habis di hari ke-${hari}, sisa ${kuotaMb} MB`);",
-    "out": "Kuota habis di hari ke-4, sisa -200 MB"
+    "code": "let kuotaMb = 1000;\nlet hari = 0;\nwhile (kuotaMb > 0) {\n  kuotaMb -= 250;           // pemakaian per hari\n  hari++;\n}\nconsole.log(`Kuota habis di hari ke-${hari}, sisa ${kuotaMb} MB`);",
+    "out": "Kuota habis di hari ke-4, sisa 0 MB"
    }
   ],
   "out": "1. kopi\n2. teh\n3. gula\ndikemas: kopi\ndikemas: gula\nTarget tercapai di minggu ke-4: Rp120000"
@@ -222,6 +222,282 @@
     "b": "Untuk tes dan replay game, hasil acak perlu bisa diulang. Generator sederhana Park-Miller memakai seed sehingga urutannya selalu sama. Untuk ID, pakai crypto.randomUUID().",
     "code": "function buatAcak(seed) {\n  let s = seed;\n  return () => {\n    s = (s * 16807) % 2147483647;      // Park-Miller: hasil selalu sama untuk seed yang sama\n    return (s - 1) / 2147483646;\n  };\n}\nconst rnd = buatAcak(2026);\nconst antara = (a, b) => a + Math.floor(rnd() * (b - a + 1));\nconsole.log(\"dadu:\", Array.from({ length: 6 }, () => antara(1, 6)));\nfunction kocok(arr) {\n  const a = [...arr];\n  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }\n  return a;\n}\nconsole.log(\"urutan presentasi:\", kocok([\"Ani\", \"Budi\", \"Citra\", \"Dedi\"]));\nconst id = crypto.randomUUID();\nconsole.log(\"UUID 36 karakter:\", id.length === 36);",
     "out": "dadu: [ 1, 3, 6, 2, 3, 4 ]\nurutan presentasi: [ 'Citra', 'Ani', 'Dedi', 'Budi' ]\nUUID 36 karakter: true"
+   }
+  ]
+ },
+ "fe0-6-1": {
+  "exs": [
+   {
+    "t": "Kasus: memasang pustaka format tanggal",
+    "d": "npm install menambah paket ke dependencies dan mencatat versinya di package-lock.json.",
+    "code": "$ npm install dayjs\nadded 1 package in 2s\n$ npm ls dayjs\ntoko-nusantara@0.0.0\n└── dayjs@1.11.13\n$ npm uninstall dayjs      # menghapus paket dan entrinya di package.json"
+   },
+   {
+    "t": "Kasus: menjalankan skrip dari package.json",
+    "d": "Perintah di bagian scripts dijalankan dengan npm run nama-skrip.",
+    "code": "# isi package.json (bagian scripts)\n#   \"scripts\": { \"dev\": \"vite\", \"build\": \"vite build\", \"test\": \"vitest run\" }\n$ npm run build\n$ npm test                 # singkatan dari npm run test\n$ npm run                  # menampilkan daftar semua skrip"
+   },
+   {
+    "t": "Kasus: memasang ulang proyek dari GitHub",
+    "d": "Folder node_modules tidak ikut di-commit; npm ci memasang persis sesuai package-lock.json.",
+    "code": "$ git clone https://github.com/rina/toko-nusantara.git\n$ cd toko-nusantara\n$ npm ci                   # cepat dan sama persis dengan lock file, cocok untuk CI\n$ npm run dev"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Membaca package.json dan memahami rentang versi",
+    "lang": "js",
+    "b": "Versi MAJOR baru boleh merusak API lama. Karena itu ^ tidak pernah menaikkan MAJOR secara otomatis, dan ~ hanya menerima PATCH baru.",
+    "code": "const pkg = {\n  name: \"toko-kopi\", version: \"1.2.0\", type: \"module\",\n  scripts: { dev: \"vite\", build: \"vite build\", test: \"vitest run\", lint: \"eslint .\" },\n  dependencies: { react: \"^19.0.0\", \"react-dom\": \"^19.0.0\" },\n  devDependencies: { vite: \"^6.0.0\", vitest: \"^3.0.0\", eslint: \"~9.17.0\" },\n};\nfunction cocok(rentang, versi) {\n  const op = rentang[0];                                   // \"^\", \"~\", atau angka\n  const dasar = op === \"^\" || op === \"~\" ? rentang.slice(1) : rentang;\n  const [M, m, p] = dasar.split(\".\").map(Number);\n  const [maj, min, pat] = versi.split(\".\").map(Number);\n  if (op === \"^\") return maj === M && (min > m || (min === m && pat >= p));\n  if (op === \"~\") return maj === M && min === m && pat >= p;\n  return versi === dasar;\n}\nconst uji = [[\"^19.0.0\", \"19.2.1\"], [\"^19.0.0\", \"20.0.0\"], [\"~9.17.0\", \"9.17.3\"], [\"~9.17.0\", \"9.18.0\"]];\nfor (const [rentang, v] of uji) console.log(`${rentang} menerima ${v}?`, cocok(rentang, v));\nconsole.log(\"skrip:\", Object.keys(pkg.scripts).map((s) => `npm run ${s}`).join(\", \"));",
+    "out": "^19.0.0 menerima 19.2.1? true\n^19.0.0 menerima 20.0.0? false\n~9.17.0 menerima 9.17.3? true\n~9.17.0 menerima 9.18.0? false\nskrip: npm run dev, npm run build, npm run test, npm run lint"
+   }
+  ]
+ },
+ "fe0-7-1": {
+  "exs": [
+   {
+    "t": "Kasus: menguji fungsi ongkir",
+    "d": "Setiap it menguji satu perilaku; toBe membandingkan nilai primitif.",
+    "code": "// ongkir.js\nexport const ongkir = (berat) => (berat <= 0 ? 0 : Math.ceil(berat) * 9000);\n\n// ongkir.test.js\nimport { describe, it, expect } from \"vitest\";\nimport { ongkir } from \"./ongkir.js\";\n\ndescribe(\"ongkir\", () => {\n  it(\"berat dibulatkan ke atas\", () => expect(ongkir(1.2)).toBe(18000));\n  it(\"berat 0 gratis\", () => expect(ongkir(0)).toBe(0));\n});"
+   },
+   {
+    "t": "Kasus: membandingkan array dan object dengan toEqual",
+    "d": "toBe memeriksa referensi; untuk isi array/object pakai toEqual.",
+    "code": "import { it, expect } from \"vitest\";\nconst tersedia = (produk) => produk.filter((p) => p.stok > 0).map((p) => p.nama);\n\nit(\"hanya produk yang ada stoknya\", () => {\n  const data = [{ nama: \"Kopi\", stok: 3 }, { nama: \"Teh\", stok: 0 }];\n  expect(tersedia(data)).toEqual([\"Kopi\"]);\n});"
+   },
+   {
+    "t": "Kasus: memastikan fungsi menolak input salah",
+    "d": "toThrow memeriksa bahwa fungsi melempar error dengan pesan tertentu.",
+    "code": "import { it, expect } from \"vitest\";\nfunction bagiTagihan(total, orang) {\n  if (orang <= 0) throw new Error(\"jumlah orang minimal 1\");\n  return Math.ceil(total / orang);\n}\nit(\"membagi rata dan membulatkan ke atas\", () => expect(bagiTagihan(100000, 3)).toBe(33334));\nit(\"menolak 0 orang\", () => expect(() => bagiTagihan(100000, 0)).toThrow(\"minimal 1\"));"
+   }
+  ]
+ },
+ "fe0-7-2": {
+  "exs": [
+   {
+    "t": "Kasus: cek hasil build sebelum terbit",
+    "d": "Folder dist berisi file statis yang siap diunggah ke hosting.",
+    "code": "$ npm run build\n$ npx serve dist\n   Serving!  Local: http://localhost:3000\n# buka di browser, cek semua halaman dan tombol sebelum di-push"
+   },
+   {
+    "t": "Kasus: terbit lewat Vercel CLI",
+    "d": "Tanpa menghubungkan GitHub, situs bisa diterbitkan langsung dari terminal.",
+    "code": "$ npx vercel            # pertama kali: login lalu pilih pengaturan proyek\n  Preview: https://toko-nusantara-abc123.vercel.app\n$ npx vercel --prod     # terbitkan ke alamat produksi\n  Production: https://toko-nusantara.vercel.app"
+   },
+   {
+    "t": "Kasus: terbit ke GitHub Pages",
+    "d": "Situs proyek di GitHub Pages berada di sub-path nama repo, jadi base Vite perlu diatur.",
+    "code": "# vite.config.js -> base: \"/toko-nusantara/\"\n$ npm run build\n$ npx gh-pages -d dist\n  Published\n# situs: https://rina.github.io/toko-nusantara/"
+   }
+  ]
+ },
+ "fe0-8-1": {
+  "cx": [
+   {
+    "t": "Logika daftar belanja dipisah dari DOM (bisa diuji)",
+    "lang": "js",
+    "b": "State dan aturan disimpan di satu fungsi; DOM hanya mendengarkan perubahan. Bagian logika ini bisa diuji tanpa browser.",
+    "code": "function buatToko(awal = []) {\n  let state = { item: awal, filter: \"semua\" };\n  const pendengar = [];\n  const ubah = (fn) => { state = fn(state); pendengar.forEach((f) => f(state)); };\n  return {\n    tambah: (nama, qty = 1) => ubah((s) => ({ ...s, item: [...s.item, { id: s.item.length + 1, nama: nama.trim(), qty, beli: false }] })),\n    centang: (id) => ubah((s) => ({ ...s, item: s.item.map((i) => (i.id === id ? { ...i, beli: !i.beli } : i)) })),\n    hapus: (id) => ubah((s) => ({ ...s, item: s.item.filter((i) => i.id !== id) })),\n    saring: (filter) => ubah((s) => ({ ...s, filter })),\n    terlihat: () => state.item.filter((i) => state.filter === \"semua\" || (state.filter === \"belum\" ? !i.beli : i.beli)),\n    pantau: (f) => pendengar.push(f),\n  };\n}\nconst toko = buatToko();\ntoko.pantau((s) => console.log(`render: ${s.item.length} item, ${s.item.filter((i) => i.beli).length} dibeli`)); // di browser: render DOM + localStorage\ntoko.tambah(\"Beras 5 kg\"); toko.tambah(\"Telur\", 2); toko.tambah(\"  Minyak goreng \");\ntoko.centang(2); toko.saring(\"belum\");\nconsole.log(\"belum dibeli:\", toko.terlihat().map((i) => i.nama));",
+    "out": "render: 1 item, 0 dibeli\nrender: 2 item, 0 dibeli\nrender: 3 item, 0 dibeli\nrender: 3 item, 1 dibeli\nrender: 3 item, 1 dibeli\nbelum dibeli: [ 'Beras 5 kg', 'Minyak goreng' ]"
+   }
+  ]
+ },
+ "fe0-9-1": {
+  "exs": [
+   {
+    "t": "Kasus: kartu nilai rapor yang rata",
+    "d": "padEnd untuk teks rata kiri, padStart untuk angka rata kanan.",
+    "code": "const mapel = [\"Matematika\", \"IPA\", \"Bahasa Indonesia\"];\nconst nilai = [88.5, 92, 79.25];\nfor (let i = 0; i < mapel.length; i++) {\n  console.log(`${mapel[i].padEnd(18, \".\")}${nilai[i].toFixed(1).padStart(6)}`);\n}",
+    "out": "Matematika........  88.5\nIPA...............  92.0\nBahasa Indonesia..  79.3"
+   },
+   {
+    "t": "Kasus: nomor faktur dengan nol di depan",
+    "d": "padStart dengan karakter '0' membuat panjang nomor selalu sama.",
+    "code": "const tahun = 2026;\nfor (const urut of [7, 42, 315]) {\n  console.log(`INV/${tahun}/${String(urut).padStart(5, \"0\")}`);\n}",
+    "out": "INV/2026/00007\nINV/2026/00042\nINV/2026/00315"
+   },
+   {
+    "t": "Kasus: persentase dan rupiah untuk laporan",
+    "d": "toFixed mengatur jumlah angka desimal, toLocaleString memberi pemisah ribuan.",
+    "code": "const target = 2_500_000;\nconst tercapai = 1_837_500;\nconst persen = (tercapai / target) * 100;\nconsole.log(`Tercapai Rp${tercapai.toLocaleString(\"id-ID\")} dari Rp${target.toLocaleString(\"id-ID\")}`);\nconsole.log(`Progres: ${persen.toFixed(1)}%`);\nconsole.log(\"Progres dibulatkan: %d%%\", Math.round(persen));",
+    "out": "Tercapai Rp1.837.500 dari Rp2.500.000\nProgres: 73.5%\nProgres dibulatkan: 74%"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Struk dan laporan dengan Intl",
+    "lang": "js",
+    "b": "Intl.NumberFormat dan Intl.DateTimeFormat memformat uang, persen, dan tanggal sesuai kebiasaan Indonesia tanpa pustaka tambahan.",
+    "code": "const rp = new Intl.NumberFormat(\"id-ID\", { style: \"currency\", currency: \"IDR\", maximumFractionDigits: 0 });\nconst pct = new Intl.NumberFormat(\"id-ID\", { style: \"percent\", maximumFractionDigits: 1 });\nconst tgl = new Intl.DateTimeFormat(\"id-ID\", { dateStyle: \"full\", timeStyle: \"short\", timeZone: \"Asia/Jakarta\" });\nconst item = [[\"Kopi Gayo\", 2, 85000], [\"Gula aren\", 1, 32500], [\"Susu oat\", 3, 29900]];\nfor (const [n, q, h] of item) console.log(n.padEnd(12), String(q).padStart(2), \"x\", rp.format(h).padStart(10), rp.format(q * h).padStart(12));\nconsole.log(\"diskon member\", pct.format(0.075), \"| rata-rata\", (247.3456).toFixed(2));\nconsole.log(tgl.format(new Date(\"2026-11-19T02:30:00Z\")).replaceAll(\" \", \" \"));",
+    "out": "Kopi Gayo     2 x  Rp 85.000   Rp 170.000\nGula aren     1 x  Rp 32.500    Rp 32.500\nSusu oat      3 x  Rp 29.900    Rp 89.700\ndiskon member 7,5% | rata-rata 247.35\nKamis, 19 November 2026 pukul 09.30"
+   }
+  ]
+ },
+ "fe0-9-2": {
+  "exs": [
+   {
+    "t": "Kasus: cicilan 6 bulan (for)",
+    "d": "Jumlah bulan sudah pasti, jadi for paling jelas.",
+    "code": "const harga = 3_000_000;\nconst bulan = 6;\nlet terbayar = 0;\nfor (let b = 1; b <= bulan; b++) {\n  terbayar += harga / bulan;\n  console.log(`Bulan ${b}: terbayar Rp${terbayar.toLocaleString(\"id-ID\")}`);\n}",
+    "out": "Bulan 1: terbayar Rp500.000\nBulan 2: terbayar Rp1.000.000\nBulan 3: terbayar Rp1.500.000\nBulan 4: terbayar Rp2.000.000\nBulan 5: terbayar Rp2.500.000\nBulan 6: terbayar Rp3.000.000"
+   },
+   {
+    "t": "Kasus: mengisi bak mandi sampai penuh (while)",
+    "d": "Banyaknya ember belum diketahui, berhenti saat kondisi tercapai.",
+    "code": "const kapasitas = 100;   // liter\nlet isi = 0;\nlet ember = 0;\nwhile (isi < kapasitas) {\n  isi += 12;\n  ember++;\n}\nconsole.log(`Butuh ${ember} ember, isi akhir ${isi} liter`);",
+    "out": "Butuh 9 ember, isi akhir 108 liter"
+   },
+   {
+    "t": "Kasus: meminta PIN minimal sekali (do-while)",
+    "d": "Pertanyaan harus muncul dulu sebelum jawabannya bisa diperiksa.",
+    "code": "const percobaanPin = [\"1111\", \"2580\"];\nconst pinBenar = \"2580\";\nlet ke = 0;\nlet pin;\ndo {\n  pin = percobaanPin[ke];\n  ke++;\n  console.log(`Percobaan ${ke}: ${pin === pinBenar ? \"benar\" : \"salah\"}`);\n} while (pin !== pinBenar && ke < 3);",
+    "out": "Percobaan 1: salah\nPercobaan 2: benar"
+   }
+  ]
+ },
+ "fe0-9-3": {
+  "exs": [
+   {
+    "t": "Kasus: suku Fibonacci ke-n saja",
+    "d": "Tidak perlu menyimpan semua suku; cukup dua angka terakhir.",
+    "code": "const n = 20;\nlet a = 0, b = 1;\nfor (let i = 0; i < n; i++) {\n  const berikut = a + b;\n  a = b;\n  b = berikut;\n}\nconsole.log(`F(${n}) = ${a}`);",
+    "out": "F(20) = 6765"
+   },
+   {
+    "t": "Kasus: suku pertama yang melewati 1000",
+    "d": "Jumlah putaran belum diketahui, jadi pakai while.",
+    "code": "let a = 0, b = 1, ke = 0;\nwhile (a <= 1000) {\n  const berikut = a + b;\n  a = b;\n  b = berikut;\n  ke++;\n}\nconsole.log(`Suku ke-${ke} adalah ${a}, yang pertama di atas 1000`);",
+    "out": "Suku ke-17 adalah 1597, yang pertama di atas 1000"
+   },
+   {
+    "t": "Kasus: perbandingan suku mendekati rasio emas",
+    "d": "Pembagian dua suku berurutan makin dekat ke 1,618.",
+    "code": "let a = 1, b = 1;\nfor (let i = 1; i <= 10; i++) {\n  const berikut = a + b;\n  a = b;\n  b = berikut;\n  console.log(`${b} / ${a} = ${(b / a).toFixed(4)}`);\n}",
+    "out": "2 / 1 = 2.0000\n3 / 2 = 1.5000\n5 / 3 = 1.6667\n8 / 5 = 1.6000\n13 / 8 = 1.6250\n21 / 13 = 1.6154\n34 / 21 = 1.6190\n55 / 34 = 1.6176\n89 / 55 = 1.6182\n144 / 89 = 1.6180"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Fibonacci besar dan batas angka aman JavaScript",
+    "lang": "js",
+    "b": "Number hanya tepat sampai Number.MAX_SAFE_INTEGER. Suku Fibonacci tumbuh sangat cepat, jadi aplikasi nyata perlu tahu kapan hasilnya mulai tidak tepat.",
+    "code": "function fib(n) {\n  let a = 0, b = 1;\n  for (let i = 0; i < n; i++) [a, b] = [b, a + b];\n  return a;\n}\nconst sepuluh = [];\nlet i = 0;\nwhile (sepuluh.length < 10) sepuluh.push(fib(i++));\nconsole.log(sepuluh.join(\" \"));\n\nlet n = 0;\nwhile (Number.isSafeInteger(fib(n + 1))) n++;\nconsole.log(`F(${n}) = ${fib(n)} masih tepat`);\nconsole.log(`F(${n + 1}) sudah melewati batas aman ${Number.MAX_SAFE_INTEGER}`);",
+    "out": "0 1 1 2 3 5 8 13 21 34\nF(78) = 8944394323791464 masih tepat\nF(79) sudah melewati batas aman 9007199254740991"
+   }
+  ]
+ },
+ "fe0-9-4": {
+  "exs": [
+   {
+    "t": "Kasus: mengurutkan tinggi badan siswa",
+    "d": "Loop luar menghitung putaran, loop dalam membandingkan pasangan bersebelahan.",
+    "code": "const tinggi = [158, 149, 165, 152];\nfor (let putaran = 1; putaran < tinggi.length; putaran++) {\n  for (let j = 0; j < tinggi.length - putaran; j++) {\n    if (tinggi[j] > tinggi[j + 1]) {\n      [tinggi[j], tinggi[j + 1]] = [tinggi[j + 1], tinggi[j]];\n    }\n  }\n}\nconsole.log(tinggi);",
+    "out": "[ 149, 152, 158, 165 ]"
+   },
+   {
+    "t": "Kasus: urutan harga termahal dulu",
+    "d": "Membalik tanda perbandingan mengubah urutan menjadi menurun.",
+    "code": "const harga = [12000, 45000, 8000, 30000];\nfor (let putaran = 1; putaran < harga.length; putaran++) {\n  for (let j = 0; j < harga.length - putaran; j++) {\n    if (harga[j] < harga[j + 1]) {\n      [harga[j], harga[j + 1]] = [harga[j + 1], harga[j]];\n    }\n  }\n}\nconsole.log(harga);",
+    "out": "[ 45000, 30000, 12000, 8000 ]"
+   },
+   {
+    "t": "Kasus: menghitung jumlah pertukaran",
+    "d": "Data yang hampir urut butuh sedikit pertukaran.",
+    "code": "function hitungTukar(data) {\n  const a = [...data];\n  let tukar = 0;\n  for (let p = 1; p < a.length; p++) {\n    for (let j = 0; j < a.length - p; j++) {\n      if (a[j] > a[j + 1]) { [a[j], a[j + 1]] = [a[j + 1], a[j]]; tukar++; }\n    }\n  }\n  return tukar;\n}\nconsole.log(\"hampir urut :\", hitungTukar([1, 2, 4, 3, 5]));\nconsole.log(\"terbalik    :\", hitungTukar([5, 4, 3, 2, 1]));",
+    "out": "hampir urut : 1\nterbalik    : 10"
+   }
+  ]
+ },
+ "fe0-9-5": {
+  "exs": [
+   {
+    "t": "Kasus: bilangan prima pertama di atas 100",
+    "d": "Loop luar berhenti (break) begitu prima pertama ditemukan.",
+    "code": "let x = 101;\nwhile (true) {\n  let prima = true;\n  for (let d = 2; d * d <= x; d++) {\n    if (x % d === 0) { prima = false; break; }\n  }\n  if (prima) break;\n  x++;\n}\nconsole.log(\"Prima pertama di atas 100:\", x);",
+    "out": "Prima pertama di atas 100: 101"
+   },
+   {
+    "t": "Kasus: FizzBuzz versi kelas olahraga",
+    "d": "Kelipatan 4 lari, kelipatan 6 lompat, kelipatan keduanya lari dan lompat.",
+    "code": "const hasil = [];\nfor (let i = 1; i <= 12; i++) {\n  if (i % 4 === 0 && i % 6 === 0) hasil.push(\"LariLompat\");\n  else if (i % 4 === 0) hasil.push(\"Lari\");\n  else if (i % 6 === 0) hasil.push(\"Lompat\");\n  else hasil.push(i);\n}\nconsole.log(hasil.join(\" \"));",
+    "out": "1 2 3 Lari 5 Lompat 7 Lari 9 10 11 LariLompat"
+   },
+   {
+    "t": "Kasus: pasangan meja yang jumlahnya 10",
+    "d": "Loop bersarang mencoba semua pasangan; label keluar dari kedua loop sekaligus.",
+    "code": "const nomor = [3, 8, 4, 6, 7];\nlet pasangan = \"tidak ada\";\ncari: for (let i = 0; i < nomor.length; i++) {\n  for (let j = i + 1; j < nomor.length; j++) {\n    if (nomor[i] + nomor[j] === 10) {\n      pasangan = `${nomor[i]} + ${nomor[j]}`;\n      break cari;\n    }\n  }\n}\nconsole.log(\"pasangan pertama:\", pasangan);",
+    "out": "pasangan pertama: 3 + 7"
+   }
+  ],
+  "cx": [
+   {
+    "t": "FizzBuzz berbasis aturan dan saringan prima Eratosthenes",
+    "lang": "js",
+    "b": "Aturan FizzBuzz disimpan di array agar mudah ditambah tanpa mengubah loop. Saringan Eratosthenes mencoret kelipatan sehingga jauh lebih cepat untuk mencari banyak bilangan prima.",
+    "code": "const aturan = [[3, \"Fizz\"], [5, \"Buzz\"]];\nconst keluaran = [];\nfor (let i = 1; i <= 15; i++) {\n  let teks = \"\";\n  for (const [d, kata] of aturan) if (i % d === 0) teks += kata;\n  keluaran.push(teks || i);\n}\nconsole.log(keluaran.join(\" \"));\n\nfunction prima(n) {\n  const coret = new Array(n + 1).fill(false);\n  for (let i = 2; i * i <= n; i++) {\n    if (coret[i]) continue;\n    for (let j = i * i; j <= n; j += i) coret[j] = true;\n  }\n  const hasil = [];\n  for (let i = 2; i <= n; i++) if (!coret[i]) hasil.push(i);\n  return hasil;\n}\nconsole.log(\"prima < 40:\", prima(40).join(\", \"));\nconsole.log(\"jumlah prima < 1 juta:\", prima(1_000_000).length);",
+    "out": "1 2 Fizz 4 Buzz Fizz 7 8 Fizz Buzz 11 Fizz 13 14 FizzBuzz\nprima < 40: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37\njumlah prima < 1 juta: 78498"
+   }
+  ]
+ },
+ "fe0-9-6": {
+  "exs": [
+   {
+    "t": "Kasus: banyak cara menyusun barisan",
+    "d": "Faktorial menghitung banyak susunan berbeda dari n orang.",
+    "code": "for (const n of [3, 5, 8]) {\n  let susunan = 1;\n  for (let i = 2; i <= n; i++) susunan *= i;\n  console.log(`${n} orang bisa berbaris dalam ${susunan.toLocaleString(\"id-ID\")} cara`);\n}",
+    "out": "3 orang bisa berbaris dalam 6 cara\n5 orang bisa berbaris dalam 120 cara\n8 orang bisa berbaris dalam 40.320 cara"
+   },
+   {
+    "t": "Kasus: digit pemeriksa nomor anggota",
+    "d": "Jumlah digit dipakai sebagai angka pemeriksa sederhana.",
+    "code": "const nomorAnggota = 482913;\nlet sisa = nomorAnggota;\nlet jumlah = 0;\nwhile (sisa > 0) {\n  jumlah += sisa % 10;\n  sisa = Math.floor(sisa / 10);\n}\nconsole.log(`Jumlah digit ${nomorAnggota} = ${jumlah}, digit pemeriksa ${jumlah % 10}`);",
+    "out": "Jumlah digit 482913 = 27, digit pemeriksa 7"
+   },
+   {
+    "t": "Kasus: memeriksa banyak kata palindrom",
+    "d": "Dua penunjuk bergerak ke tengah; huruf dibuat kecil dulu.",
+    "code": "for (const kata of [\"Kodok\", \"malam\", \"makan\"]) {\n  const t = kata.toLowerCase();\n  let kiri = 0, kanan = t.length - 1, palindrom = true;\n  while (kiri < kanan) {\n    if (t[kiri] !== t[kanan]) { palindrom = false; break; }\n    kiri++;\n    kanan--;\n  }\n  console.log(kata, palindrom ? \"palindrom\" : \"bukan palindrom\");\n}",
+    "out": "Kodok palindrom\nmalam palindrom\nmakan bukan palindrom"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Palindrom kalimat, faktorial besar, dan algoritma Luhn",
+    "lang": "js",
+    "b": "Palindrom kalimat mengabaikan spasi dan tanda baca. Faktorial cepat melewati batas angka aman. Algoritma Luhn memakai jumlah digit untuk memeriksa nomor kartu.",
+    "code": "const HURUF = \"abcdefghijklmnopqrstuvwxyz0123456789\";\nfunction palindrom(kalimat) {\n  let t = \"\";\n  for (const h of kalimat.toLowerCase()) if (HURUF.includes(h)) t += h;\n  return t === [...t].reverse().join(\"\");\n}\nconsole.log([\"Kasur ini rusak\", \"Malam\", \"Ada apa\"].map(palindrom));\n\nlet f = 1, n = 1;\nwhile (Number.isSafeInteger(f * (n + 1))) { n++; f *= n; }\nconsole.log(`${n}! = ${f} adalah faktorial terbesar yang masih tepat`);\n\nfunction luhn(nomor) {\n  let total = 0, posisi = 0;\n  for (let i = nomor.length - 1; i >= 0; i--) {\n    if (nomor[i] === \" \") continue;\n    let d = Number(nomor[i]);\n    if (posisi % 2 === 1) { d *= 2; if (d > 9) d -= 9; }\n    total += d;\n    posisi++;\n  }\n  return total % 10 === 0;\n}\nconsole.log(\"4111 1111 1111 1111:\", luhn(\"4111 1111 1111 1111\"), \"| ...1112:\", luhn(\"4111 1111 1111 1112\"));",
+    "out": "[ true, true, false ]\n18! = 6402373705728000 adalah faktorial terbesar yang masih tepat\n4111 1111 1111 1111: true | ...1112: false"
+   }
+  ]
+ },
+ "fe0-9-7": {
+  "exs": [
+   {
+    "t": "Kasus: mencari nomor kursi di daftar terurut",
+    "d": "Setiap langkah membuang separuh daftar yang tidak mungkin berisi jawaban.",
+    "code": "const kursiTerjual = [3, 8, 15, 21, 34, 40, 52, 67];\nconst dicari = 52;\nlet kiri = 0, kanan = kursiTerjual.length - 1, langkah = 0, ketemu = false;\nwhile (kiri <= kanan) {\n  langkah++;\n  const tengah = Math.floor((kiri + kanan) / 2);\n  if (kursiTerjual[tengah] === dicari) { ketemu = true; break; }\n  if (kursiTerjual[tengah] < dicari) kiri = tengah + 1;\n  else kanan = tengah - 1;\n}\nconsole.log(`Kursi ${dicari} terjual? ${ketemu} (${langkah} langkah)`);",
+    "out": "Kursi 52 terjual? true (3 langkah)"
+   },
+   {
+    "t": "Kasus: data yang tidak ada",
+    "d": "Pencarian berhenti saat kiri melewati kanan.",
+    "code": "const nis = [1001, 1004, 1009, 1015, 1020];\nconst dicari = 1010;\nlet kiri = 0, kanan = nis.length - 1, langkah = 0;\nwhile (kiri <= kanan) {\n  langkah++;\n  const tengah = Math.floor((kiri + kanan) / 2);\n  console.log(`cek ${nis[tengah]} (kiri ${kiri}, kanan ${kanan})`);\n  if (nis[tengah] === dicari) break;\n  if (nis[tengah] < dicari) kiri = tengah + 1;\n  else kanan = tengah - 1;\n}\nconsole.log(kiri > kanan ? `NIS ${dicari} tidak ada` : \"ketemu\", `setelah ${langkah} langkah`);",
+    "out": "cek 1009 (kiri 0, kanan 4)\ncek 1015 (kiri 3, kanan 4)\nNIS 1010 tidak ada setelah 2 langkah"
+   },
+   {
+    "t": "Kasus: tebak angka 1 sampai 100",
+    "d": "Dengan strategi membagi dua, angka apa pun tertebak paling lama 7 langkah.",
+    "code": "const rahasia = 73;\nlet bawah = 1, atas = 100, tebakan, langkah = 0;\ndo {\n  tebakan = Math.floor((bawah + atas) / 2);\n  langkah++;\n  if (tebakan < rahasia) bawah = tebakan + 1;\n  else if (tebakan > rahasia) atas = tebakan - 1;\n  console.log(`tebakan ${langkah}: ${tebakan}`);\n} while (tebakan !== rahasia);",
+    "out": "tebakan 1: 50\ntebakan 2: 75\ntebakan 3: 62\ntebakan 4: 68\ntebakan 5: 71\ntebakan 6: 73"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Binary search dan lower bound untuk filter harga",
+    "lang": "js",
+    "b": "Lower bound mencari posisi pertama yang nilainya tidak lebih kecil dari x. Dua lower bound memberi rentang harga tanpa memeriksa setiap produk.",
+    "code": "const harga = [5000, 12000, 18000, 25000, 40000, 55000, 90000];\nfunction cari(a, x) {\n  let lo = 0, hi = a.length - 1, langkah = 0;\n  while (lo <= hi) {\n    const mid = Math.floor((lo + hi) / 2);\n    langkah++;\n    if (a[mid] === x) return [mid, langkah];\n    if (a[mid] < x) lo = mid + 1; else hi = mid - 1;\n  }\n  return [-1, langkah];\n}\nfunction lowerBound(a, x) {\n  let lo = 0, hi = a.length;\n  while (lo < hi) {\n    const m = Math.floor((lo + hi) / 2);\n    if (a[m] < x) lo = m + 1; else hi = m;\n  }\n  return lo;\n}\nconsole.log(\"cari 40000:\", cari(harga, 40000), \"| cari 41000:\", cari(harga, 41000));\nconst [min, max] = [15000, 50000];\nconsole.log(\"produk Rp15rb-50rb:\", harga.slice(lowerBound(harga, min), lowerBound(harga, max + 1)));\nconsole.log(\"1 juta data butuh paling banyak\", Math.ceil(Math.log2(1_000_001)), \"langkah\");",
+    "out": "cari 40000: [ 4, 3 ] | cari 41000: [ -1, 3 ]\nproduk Rp15rb-50rb: [ 18000, 25000, 40000 ]\n1 juta data butuh paling banyak 20 langkah"
    }
   ]
  }

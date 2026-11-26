@@ -1,0 +1,92 @@
+{
+ "python-6-1": {
+  "exs": [
+   {
+    "t": "Kasus: tiga gaya import untuk menghitung luas taman",
+    "code": "import math\nfrom math import sqrt\nimport statistics as st\n\n# gaya 1: import modul, pakai dengan awalan nama modul\nluas_kolam = math.pi * 3 ** 2\nprint(\"luas kolam bundar:\", round(luas_kolam, 2), \"m2\")\n\n# gaya 2: ambil satu nama saja, pakai tanpa awalan\nsisi = sqrt(144)\nprint(\"sisi taman persegi:\", sisi, \"m\")\n\n# gaya 3: nama alias yang lebih pendek\nprint(\"rata-rata lebar petak:\", st.mean([4, 5, 6]), \"m\")",
+    "d": "Pilih gaya import sesuai kebutuhan: math.pi, sqrt, atau alias st.",
+    "out": "luas kolam bundar: 28.27 m2\nsisi taman persegi: 12.0 m\nrata-rata lebar petak: 5 m"
+   },
+   {
+    "t": "Kasus: membuat modul nilai.py lalu mengimpornya",
+    "code": "import sys\n\n# tulis modul kecil ke file nilai.py (biasanya kamu membuatnya di editor)\nwith open(\"nilai.py\", \"w\") as f:\n    f.write(\"KKM = 75\\n\")\n    f.write(\"\\n\")\n    f.write(\"def predikat(n):\\n\")\n    f.write(\"    if n >= 90:\\n\")\n    f.write(\"        return 'A'\\n\")\n    f.write(\"    if n >= KKM:\\n\")\n    f.write(\"        return 'B'\\n\")\n    f.write(\"    return 'C'\\n\")\n\nsys.path.insert(0, \".\")          # cari modul di folder kerja\nimport nilai\nfrom nilai import predikat\n\nprint(\"KKM sekolah:\", nilai.KKM)\nprint(\"Rani 92 ->\", predikat(92))\nprint(\"Joko 70 ->\", nilai.predikat(70))",
+    "d": "Setiap file .py bisa diimpor; isinya dipakai lewat nama_modul.nama.",
+    "out": "KKM sekolah: 75\nRani 92 -> A\nJoko 70 -> C"
+   },
+   {
+    "t": "Kasus: kode uji di bawah if __name__ == \"__main__\"",
+    "code": "import sys\n\nwith open(\"ongkir.py\", \"w\") as f:\n    f.write(\"def ongkir(kg):\\n\")\n    f.write(\"    return 9000 * kg\\n\")\n    f.write(\"\\n\")\n    f.write(\"print('nama modul ongkir:', __name__)\\n\")\n    f.write(\"if __name__ == '__main__':\\n\")\n    f.write(\"    print('uji coba: 2 kg =', ongkir(2))\\n\")\n\nsys.path.insert(0, \".\")\nimport ongkir                    # kode uji di dalam if tidak ikut berjalan\n\nprint(\"nama file ini:\", __name__)\nprint(\"ongkir 3 kg:\", ongkir.ongkir(3))",
+    "d": "Saat diimpor, __name__ berisi nama modul, jadi blok uji coba dilewati.",
+    "out": "nama modul ongkir: ongkir\nnama file ini: __main__\nongkir 3 kg: 27000"
+   }
+  ]
+ },
+ "python-6-2": {
+  "code": "import math, random, json, statistics, itertools\nfrom datetime import date, timedelta\n\nprint(math.sqrt(144), round(math.pi, 4), math.factorial(5))\n\nrandom.seed(42)\nprint(random.randint(1, 6), random.choice([\"kopi\", \"teh\", \"jus\"]))\n\nhari_ini = date(2024, 10, 28)\nprint(hari_ini + timedelta(days=5), hari_ini.strftime(\"%d/%m/%Y\"))\n\ndata = {\"nama\": \"Rina\", \"nilai\": [80, 92]}\nteks = json.dumps(data)\nprint(teks, json.loads(teks)[\"nilai\"][1])\n\nprint(statistics.mean([80, 92, 75]), statistics.median([80, 92, 75]))\nprint(list(itertools.combinations(\"ABC\", 2)))",
+  "out": "12.0 3.1416 120\n6 kopi\n2024-11-02 28/10/2024\n{\"nama\": \"Rina\", \"nilai\": [80, 92]} 92\n82.33333333333333 80\n[('A', 'B'), ('A', 'C'), ('B', 'C')]",
+  "exs": [
+   {
+    "t": "Kasus: jatuh tempo pinjaman buku perpustakaan",
+    "code": "from datetime import date, timedelta\n\npinjam = date(2026, 11, 2)\njatuh_tempo = pinjam + timedelta(days=14)\nkembali = date(2026, 11, 20)\n\nprint(\"dipinjam   :\", pinjam.strftime(\"%d/%m/%Y\"))\nprint(\"jatuh tempo:\", jatuh_tempo.strftime(\"%d/%m/%Y\"))\n\nterlambat = (kembali - jatuh_tempo).days\nif terlambat > 0:\n    print(\"terlambat\", terlambat, \"hari, denda Rp\", terlambat * 1000)\nelse:\n    print(\"tepat waktu\")",
+    "d": "Modul datetime menghitung selisih tanggal tanpa perlu menghitung hari per bulan.",
+    "out": "dipinjam   : 02/11/2026\njatuh tempo: 16/11/2026\nterlambat 4 hari, denda Rp 4000"
+   },
+   {
+    "t": "Kasus: menghitung suara pemilihan ketua OSIS",
+    "code": "from collections import Counter\nimport statistics\n\nsuara = [\"Dewi\", \"Bima\", \"Dewi\", \"Putu\", \"Bima\", \"Dewi\", \"Dewi\", \"Putu\"]\nhasil = Counter(suara)\nprint(hasil.most_common())\nprint(\"pemenang:\", hasil.most_common(1)[0][0])\n\numur_pemilih = [15, 16, 16, 17, 15, 16, 17, 16]\nprint(\"umur terbanyak:\", statistics.mode(umur_pemilih))",
+    "d": "Counter dan statistics menggantikan banyak loop hitung manual.",
+    "out": "[('Dewi', 4), ('Bima', 2), ('Putu', 2)]\npemenang: Dewi\numur terbanyak: 16"
+   },
+   {
+    "t": "Kasus: menyimpan data siswa ke file JSON",
+    "code": "import json\n\nsiswa = {\"nama\": \"Andi Saputra\", \"kelas\": \"XI IPA 2\", \"nilai\": [88, 79, 93]}\n\nwith open(\"siswa.json\", \"w\") as f:\n    json.dump(siswa, f)\n\nwith open(\"siswa.json\") as f:\n    dibaca = json.load(f)\n\nprint(dibaca[\"nama\"], \"-\", dibaca[\"kelas\"])\nprint(\"nilai tertinggi:\", max(dibaca[\"nilai\"]))",
+    "d": "json.dump menulis dict ke file dan json.load membacanya kembali.",
+    "out": "Andi Saputra - XI IPA 2\nnilai tertinggi: 93"
+   }
+  ]
+ },
+ "python-6-3": {
+  "exs": [
+   {
+    "t": "Kasus: proyek bot Telegram sekolah dengan requirements.txt",
+    "code": "# requirements.txt (dibuat dengan: pip freeze > requirements.txt)\npython-telegram-bot==21.6\nrequests==2.32.3\npython-dotenv==1.0.1\n\n# langkah memasang di laptop teman satu tim\n$ git clone https://github.com/contoh/bot-sekolah.git\n$ cd bot-sekolah\n$ python -m venv .venv\n$ source .venv/bin/activate          # Windows: .venv\\Scripts\\activate\n(.venv) $ pip install -r requirements.txt\n(.venv) $ python bot.py",
+    "d": "Dengan requirements.txt, semua anggota tim memasang versi paket yang sama.",
+    "out": null
+   },
+   {
+    "t": "Kasus: dua proyek dengan versi Django berbeda",
+    "code": "# proyek lama: aplikasi koperasi\n$ cd ~/kode/koperasi\n$ python -m venv .venv && source .venv/bin/activate\n(.venv) $ pip install \"django==4.2.*\"\n(.venv) $ python -m django --version\n4.2.16\n(.venv) $ deactivate\n\n# proyek baru: toko daring\n$ cd ~/kode/toko\n$ python -m venv .venv && source .venv/bin/activate\n(.venv) $ pip install \"django==5.1.*\"\n(.venv) $ python -m django --version\n5.1.3",
+    "d": "Setiap venv punya folder paketnya sendiri, jadi dua versi Django bisa hidup berdampingan.",
+    "out": null
+   },
+   {
+    "t": "Kasus: alur yang sama dengan uv",
+    "code": "$ uv init kas-kelas          # buat proyek baru beserta pyproject.toml\n$ cd kas-kelas\n$ uv add requests rich       # pasang paket dan catat di pyproject.toml\n$ uv run main.py             # uv membuat .venv otomatis lalu menjalankan program\n$ uv pip list                # lihat paket yang terpasang",
+    "d": "uv menggabungkan venv dan pip dalam satu alat yang jauh lebih cepat.",
+    "out": null
+   }
+  ]
+ },
+ "python-6-4": {
+  "exs": [
+   {
+    "t": "Kasus: memulai proyek kasir dengan Poetry",
+    "code": "$ poetry new kasir-warung\n$ cd kasir-warung\n$ poetry add rich                  # dependensi aplikasi\n$ poetry add --group dev pytest    # hanya untuk pengembangan\n$ poetry install                   # pasang sesuai poetry.lock\n$ poetry run pytest\n\n# potongan pyproject.toml yang ditulis Poetry\n[project]\nname = \"kasir-warung\"\nversion = \"0.1.0\"\nrequires-python = \">=3.11\"\ndependencies = [\"rich (>=13.9,<14.0)\"]\n\n[tool.poetry.group.dev.dependencies]\npytest = \"^8.3\"",
+    "d": "Poetry mencatat dependensi di pyproject.toml dan mengunci versi persisnya di poetry.lock.",
+    "out": null
+   },
+   {
+    "t": "Kasus: dua versi Python dengan pyenv",
+    "code": "$ pyenv install 3.11.10\n$ pyenv install 3.13.0\n$ cd ~/kode/aplikasi-lama\n$ pyenv local 3.11.10        # menulis file .python-version\n$ python --version\nPython 3.11.10\n$ cd ~/kode/aplikasi-baru\n$ pyenv local 3.13.0\n$ python --version\nPython 3.13.0",
+    "d": "pyenv memilih versi Python otomatis sesuai folder proyek.",
+    "out": null
+   },
+   {
+    "t": "Kasus: lingkungan data science dengan Conda",
+    "code": "# environment.yml\nname: analisis-panen\nchannels:\n  - conda-forge\ndependencies:\n  - python=3.12\n  - pandas\n  - matplotlib\n  - gdal                     # pustaka non-Python, mudah dipasang lewat conda\n\n$ conda env create -f environment.yml\n$ conda activate analisis-panen\n(analisis-panen) $ python olah_data.py",
+    "d": "Conda cocok bila proyek butuh pustaka non-Python seperti GDAL atau CUDA.",
+    "out": null
+   }
+  ]
+ }
+}
