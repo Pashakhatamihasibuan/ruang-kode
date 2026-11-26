@@ -1932,9 +1932,9 @@ button.gt:focus-visible{outline:2px solid var(--acc,var(--py));outline-offset:2p
 .s3.grab{cursor:grabbing}.s3:focus-visible{outline:3px solid var(--acc,var(--py));outline-offset:2px}
 .s3cam{position:absolute;left:50%;top:54%;width:0;height:0;transform-style:preserve-3d}
 .w3{transform-style:preserve-3d;transition:transform .25s ease-out}
-.b3{position:absolute;left:0;top:0;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.3,.8,.25,1),opacity .45s}
+.b3{position:absolute;left:0;top:0;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.3,.8,.25,1),opacity .3s}
 .s3tags{position:absolute;inset:0;pointer-events:none}
-.t3{position:absolute;transform:translate(-50%,-50%);transition:left .7s cubic-bezier(.3,.8,.25,1),top .7s cubic-bezier(.3,.8,.25,1),opacity .45s}
+.t3{position:absolute;transform:translate(-50%,-50%);transition:left .5s cubic-bezier(.3,.8,.25,1),top .5s cubic-bezier(.3,.8,.25,1),opacity .3s}
 .s3.grab .t3{transition:opacity .45s}.s3.grab .w3{transition:none}
 .b3.in,.t3.in{opacity:0}.b3.out,.t3.out{opacity:0}
 .b3.in{transform:translate3d(0,-160px,0) scale(.3)!important}
@@ -2192,7 +2192,7 @@ kbd{font:600 .7rem/1 var(--f-mono);padding:3px 6px;border-radius:5px;border:1px 
 .s3 .b3:not(.rod):not(.c-floor) .f-u{box-shadow:0 0 18px 6px rgb(0 0 0/.12)}
 @media (prefers-reduced-motion:reduce){.s3 .rod .f-f::before,.s3 .rod .f-f::after{display:none}.s3 .b3.ball,.s3 .b3.pulse .f3,.s3 .t3.pop,.stage.pl-flash{animation:none}}
 /* gerakan benda sedikit lebih lambat agar perpindahannya mudah diikuti mata */
-.s3 .b3{transition:transform .95s cubic-bezier(.3,.8,.25,1),opacity .5s}
+.s3 .b3{transition:transform .5s cubic-bezier(.3,.8,.25,1),opacity .3s}
 .s3 .t3{transition:left .95s cubic-bezier(.3,.8,.25,1),top .95s cubic-bezier(.3,.8,.25,1),opacity .5s}
 .s3.grab .t3{transition:opacity .45s}
 
@@ -4874,9 +4874,9 @@ window.V3D=function(host,key,init,opt){const sc=S[key];if(!sc)return;const mini=
         if(!fresh&&!rm&&(prevC!==o.c||prevT!==o.t)&&o.c!=='floor'){e.classList.add('pulse');setTimeout(()=>e.classList.remove('pulse'),950)}
         e._c=o.c;e._t=o.t}
       /* benda baru muncul bergiliran, bukan sekaligus */
-      if(fresh&&!rm){const d=Math.min(nf++,12)*70;e.style.transitionDelay=d+'ms';e.classList.add('in');
-        requestAnimationFrame(()=>requestAnimationFrame(()=>e.classList.remove('in')));setTimeout(()=>{e.style.transitionDelay=''},d+800)}});
-    els.forEach((e,id)=>{if(seen.has(id))return;els.delete(id);if(rm)e.remove();else{e.classList.add('out');setTimeout(()=>e.remove(),450)}});
+      if(fresh&&!rm){const d=Math.min(nf++,10)*30;e.style.transitionDelay=d+'ms';e.classList.add('in');
+        requestAnimationFrame(()=>requestAnimationFrame(()=>e.classList.remove('in')));setTimeout(()=>{e.style.transitionDelay=''},d+500)}});
+    els.forEach((e,id)=>{if(seen.has(id))return;els.delete(id);if(rm)e.remove();else{e.classList.add('out');setTimeout(()=>e.remove(),300)}});
     /* teks di sisi benda dikecilkan bila tidak muat (layar sempit) */
     w.querySelectorAll('.f3>b,.f3>i').forEach(t=>{const f=t.parentNode,cw=f.clientWidth-4,ch=f.clientHeight-2,sw=t.scrollWidth,sh=t.offsetHeight;
       const k=Math.min(1,cw/sw,ch/sh);t.style.transform=k<1?`scale(${Math.max(.35,k)})`:''});

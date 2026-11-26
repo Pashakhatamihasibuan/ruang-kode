@@ -9,6 +9,7 @@ const STATIC = "rk-static";
 const MISC = "rk-misc-" + VER;
 const KEEP = [PAGES, STATIC, MISC];
 const CORE = ["/", "/belajar", "/saya", "/glosarium", "/offline", "/manifest.webmanifest", "/icons/icon-192.png"];
+const LAB = ["/lab/v3d", "/lab/v3d.js", "/lab/v3d.css", "/lab/lab.css", "/lab/viz-boot.js", "/lab/viz", "/lab/legacy-viz.js", "/lab/legacy.css"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil((async () => {
@@ -91,6 +92,9 @@ self.addEventListener("message", (e) => {
       if (port) port.postMessage({ done, total: d.urls.length, fail });
     }
     for (const a of assets) if (!(await st.match(a))) await fetch(a).then((r) => r.ok && st.put(a, r)).catch(() => {});
+    // visual interaktif dan 3D ikut disimpan agar tetap jalan saat offline
+    const misc = await caches.open(MISC);
+    for (const u of LAB) if (!(await misc.match(u, { ignoreSearch: true }))) await fetch(u).then((r) => r.ok && misc.put(u, r)).catch(() => {});
     if (port) port.postMessage({ done, total: d.urls.length, fail, end: true });
   })());
 });

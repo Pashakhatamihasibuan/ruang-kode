@@ -139,6 +139,48 @@ LAB_CSS = ["base.css", "lms.css", "v4.css", "tema-jalur.css", "v5.css", "nb.css"
 LAB_JS = ["util.js", "viz.js", "sqlengine.js", "sqldata.js", "sqldata-bi.js", "viz2.js", "viz3.js", "viz-msi.js", "viz-var.js", "viz-fc.js", "viz3d.js"]
 
 
+def _css_subset(css, src):
+    """Ambil aturan CSS yang semua kelasnya muncul di src (termasuk kelas dinamis berawalan pendek seperti c-*, f-*, s-*).
+    Aturan tanpa kelas (elemen, :root, tema) dan @keyframes/@font-face selalu ikut."""
+    tok = set(re.findall(r"[A-Za-z][\w-]*", src))
+    css = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
+
+    def ok(cls):
+        m = re.match(r"^[a-z0-9]{1,3}-(.+)$", cls)  # kelas dinamis seperti c-${warna}, f-${sisi}, s-${bentuk}
+        return cls in tok or bool(m and m.group(1) in tok)
+
+    def blocks(s):
+        i, n = 0, len(s)
+        while i < n:
+            j = s.find("{", i)
+            if j < 0:
+                return
+            d, k = 1, j + 1
+            while d and k < n:
+                d += {"{": 1, "}": -1}.get(s[k], 0)
+                k += 1
+            yield s[i:j].strip(), s[j + 1:k - 1]
+            i = k
+
+    def walk(s):
+        out = []
+        for sel, body in blocks(s):
+            if sel.startswith(("@media", "@supports", "@container")):
+                inner = walk(body)
+                if inner:
+                    out.append(sel + "{" + inner + "}")
+            elif sel.startswith("@"):
+                out.append(sel + "{" + body + "}")
+            else:
+                keep = [p.strip() for p in sel.split(",") if all(ok(c) for c in re.findall(r"\.([\w-]+)", p))]
+                if keep:
+                    out.append(",".join(keep) + "{" + body.strip() + "}")
+        return "\n".join(out)
+
+    imports = re.findall(r"@import[^;]+;", css)
+    return "\n".join(imports) + "\n" + walk(re.sub(r"@import[^;]+;", "", css))
+
+
 def _legacy(root):
     """Visual interaktif lama dipakai ulang di dalam iframe terisolasi (web/public/lab),
     dan mesin SQL dijadikan modul ES untuk konsol SQL React."""
@@ -148,6 +190,10 @@ def _legacy(root):
     (lab / "legacy.css").write_text("\n".join((root / "src" / "css" / f).read_text() for f in LAB_CSS))
     (lab / "legacy-viz.js").write_text("\n;".join((js / f).read_text() for f in LAB_JS)
                                        + "\n;window.VIZ2=VIZ2;window.VIZ2T=VIZ2T;\n")
+    # paket khusus visual 3D: hanya viz3d.js dan aturan CSS yang dipakainya (±5x lebih kecil dari paket lengkap)
+    v3 = (js / "viz3d.js").read_text()
+    (lab / "v3d.js").write_text(v3)
+    (lab / "v3d.css").write_text(_css_subset((lab / "legacy.css").read_text(), v3 + (lab / "v3d.html").read_text()))
     sq = "\n".join((js / f).read_text() for f in ["sqlengine.js", "sqldata.js", "sqldata-bi.js"])
     sq = sq.replace("if(typeof module!=='undefined')module.exports=SQLE;", "")
     (root / "web" / "src" / "lib" / "sqle.js").write_text("// Dibuat otomatis oleh tools/build/webdata.py dari src/js. Jangan diedit.\n/* eslint-disable */\n" + sq + "\nexport { SQLE, SEED };\n")
