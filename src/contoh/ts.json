@@ -142,5 +142,650 @@
     "lang": "ts"
    }
   ]
+ },
+ "ts-3-1": {
+  "exs": [
+   {
+    "t": "Kasus: parameter opsional untuk kode kupon",
+    "code": "function hargaAkhir(harga: number, kupon?: string): number {\n  if (kupon === \"HEMAT5\") return harga - 5000;\n  return harga;\n}\n\nconsole.log(hargaAkhir(45000));\nconsole.log(hargaAkhir(45000, \"HEMAT5\"));\nconsole.log(hargaAkhir(45000, \"SALAH\"));",
+    "out": "45000\n40000\n45000"
+   },
+   {
+    "t": "Kasus: parameter bawaan untuk tarif parkir",
+    "d": "Jika argumen tidak dikirim, nilai bawaan yang dipakai.",
+    "code": "function tarifParkir(jam: number, tarifPerJam: number = 3000, tarifAwal = 5000): number {\n  if (jam <= 1) return tarifAwal;\n  return tarifAwal + (Math.ceil(jam) - 1) * tarifPerJam;\n}\n\nconsole.log(\"Motor 1 jam  :\", tarifParkir(1, 2000, 2000));\nconsole.log(\"Motor 4 jam  :\", tarifParkir(4, 2000, 2000));\nconsole.log(\"Mobil 3,5 jam:\", tarifParkir(3.5));",
+    "out": "Motor 1 jam  : 2000\nMotor 4 jam  : 8000\nMobil 3,5 jam: 14000"
+   },
+   {
+    "t": "Kasus: rest parameter untuk iuran kas kelas",
+    "code": "function totalIuran(bendahara: string, ...setoran: number[]): string {\n  const total = setoran.reduce((a, b) => a + b, 0);\n  return `${bendahara} menerima ${setoran.length} setoran, total Rp${total.toLocaleString(\"id-ID\")}`;\n}\n\nconsole.log(totalIuran(\"Sinta\", 10000, 10000, 5000));\nconsole.log(totalIuran(\"Sinta\"));",
+    "out": "Sinta menerima 3 setoran, total Rp25.000\nSinta menerima 0 setoran, total Rp0"
+   },
+   {
+    "t": "Kasus: alias tipe fungsi untuk konversi suhu",
+    "code": "type Konversi = (celsius: number) => number;\n\nconst keFahrenheit: Konversi = (c) => c * 9 / 5 + 32;\nconst keKelvin: Konversi = (c) => c + 273.15;\n\nfunction tampilkan(celsius: number, ubah: Konversi, satuan: string): void {\n  console.log(`${celsius}°C = ${ubah(celsius).toFixed(1)} ${satuan}`);\n}\ntampilkan(30, keFahrenheit, \"°F\");\ntampilkan(30, keKelvin, \"K\");",
+    "out": "30°C = 86.0 °F\n30°C = 303.1 K"
+   }
+  ]
+ },
+ "ts-3-2": {
+  "exs": [
+   {
+    "t": "Kasus: cari siswa lewat NIS atau kelas",
+    "d": "Argumen number menghasilkan satu nama, argumen string menghasilkan daftar nama.",
+    "code": "const dataSiswa: [number, string, string][] = [[101, \"Andi\", \"X-1\"], [102, \"Siti\", \"X-2\"], [103, \"Bima\", \"X-1\"]];\n\nfunction cari(nis: number): string;\nfunction cari(kelas: string): string[];\nfunction cari(kunci: number | string): string | string[] {\n  if (typeof kunci === \"number\") {\n    const ketemu = dataSiswa.find(([n]) => n === kunci);\n    return ketemu ? ketemu[1] : \"tidak ada\";\n  }\n  return dataSiswa.filter(([, , k]) => k === kunci).map(([, nama]) => nama);\n}\n\nconst nama = cari(102);          // bertipe string\nconst kelasX1 = cari(\"X-1\");     // bertipe string[]\nconsole.log(nama.toUpperCase());\nconsole.log(kelasX1.join(\", \"), \"-\", kelasX1.length, \"siswa\");",
+    "out": "SITI\nAndi, Bima - 2 siswa"
+   },
+   {
+    "t": "Kasus: format berat satu barang atau satu daftar",
+    "code": "function formatBerat(gram: number): string;\nfunction formatBerat(gram: number[]): string[];\nfunction formatBerat(gram: number | number[]): string | string[] {\n  if (Array.isArray(gram)) return gram.map((g) => formatBerat(g));\n  return gram >= 1000 ? `${gram / 1000} kg` : `${gram} g`;\n}\n\nconsole.log(formatBerat(750));\nconsole.log(formatBerat([250, 1000, 2500]).join(\" | \"));",
+    "out": "750 g\n250 g | 1 kg | 2.5 kg"
+   },
+   {
+    "t": "Kasus: membuat tanggal dari teks atau tiga angka",
+    "d": "Overload juga bisa membedakan jumlah parameter.",
+    "code": "function buatTanggal(iso: string): Date;\nfunction buatTanggal(tahun: number, bulan: number, hari: number): Date;\nfunction buatTanggal(a: string | number, bulan?: number, hari?: number): Date {\n  if (typeof a === \"string\") return new Date(a + \"T00:00:00Z\");\n  return new Date(Date.UTC(a, (bulan ?? 1) - 1, hari ?? 1));\n}\n\nconst fmt = (d: Date): string => d.toISOString().slice(0, 10);\nconsole.log(fmt(buatTanggal(\"2026-08-17\")));\nconsole.log(fmt(buatTanggal(2026, 10, 28)));\n// buatTanggal(2026, 10);   // error: No overload expects 2 arguments.",
+    "out": "2026-08-17\n2026-10-28"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Satu fungsi, hasil berbeda sesuai input",
+    "b": "Pola ini sering ada di pustaka: format menerima angka atau tanggal, dan ambil menerima satu id atau daftar id. Berkat overload, pemanggil langsung mendapat tipe yang tepat tanpa pemeriksaan tambahan.",
+    "code": "function format(nilai: number): string;\nfunction format(nilai: Date): string;\nfunction format(nilai: number | Date): string {\n  if (typeof nilai === \"number\") return nilai.toLocaleString(\"id-ID\");\n  const p = (x: number) => String(x).padStart(2, \"0\");\n  return `${p(nilai.getDate())}/${p(nilai.getMonth() + 1)}/${nilai.getFullYear()}`;\n}\n\nfunction ambil(id: number): { id: number; nama: string };\nfunction ambil(id: number[]): { id: number; nama: string }[];\nfunction ambil(id: number | number[]) {\n  const db: string[] = [\"\", \"Andi\", \"Sari\", \"Budi\"];\n  return Array.isArray(id) ? id.map((i) => ({ id: i, nama: db[i] })) : { id, nama: db[id] };\n}\n\nconsole.log(format(1250000));\nconsole.log(format(new Date(2026, 7, 17)));\nconsole.log(ambil(2).nama);\nconsole.log(ambil([1, 3]).map((u) => u.nama).join(\", \"));",
+    "out": "1.250.000\n17/08/2026\nSari\nAndi, Budi",
+    "lang": "ts"
+   }
+  ]
+ },
+ "ts-3-3": {
+  "exs": [
+   {
+    "t": "Kasus: menyaring harga dengan callback bertipe",
+    "code": "type Syarat = (harga: number) => boolean;\n\nconst murah: Syarat = (h) => h < 20000;\nconst premium: Syarat = (h) => h >= 50000;\n\nfunction saring(daftar: number[], syarat: Syarat): number[] {\n  return daftar.filter(syarat);\n}\n\nconst harga = [12000, 45000, 8000, 75000, 19500];\nconsole.log(\"Murah  :\", saring(harga, murah));\nconsole.log(\"Premium:\", saring(harga, premium));",
+    "out": "Murah  : [ 12000, 8000, 19500 ]\nPremium: [ 75000 ]"
+   },
+   {
+    "t": "Kasus: fungsi yang membuat fungsi pajak",
+    "d": "buatPajak mengembalikan fungsi baru sesuai persentase yang diberikan.",
+    "code": "type Hitung = (harga: number) => number;\n\nfunction buatPajak(persen: number): Hitung {\n  return (harga) => Math.round(harga * (1 + persen / 100));\n}\n\nconst ppn = buatPajak(11);\nconst pajakResto = buatPajak(10);\nconsole.log(\"Laptop + PPN 11%  :\", ppn(7_500_000));\nconsole.log(\"Makan + pajak 10% :\", pajakResto(85_000));",
+    "out": "Laptop + PPN 11%  : 8325000\nMakan + pajak 10% : 93500"
+   },
+   {
+    "t": "Kasus: callback untuk notifikasi pesanan",
+    "code": "type Notifikasi = (pesan: string) => void;\n\nfunction prosesPesanan(id: string, total: number, kabari: Notifikasi): void {\n  kabari(`Pesanan ${id} diterima`);\n  kabari(`Total bayar Rp${total.toLocaleString(\"id-ID\")}`);\n}\n\nconst viaSms: Notifikasi = (p) => console.log(\"[SMS]\", p);\nconst viaEmail: Notifikasi = (p) => console.log(\"[Email]\", p);\nprosesPesanan(\"INV-031\", 128000, viaSms);\nprosesPesanan(\"INV-032\", 56000, viaEmail);",
+    "out": "[SMS] Pesanan INV-031 diterima\n[SMS] Total bayar Rp128.000\n[Email] Pesanan INV-032 diterima\n[Email] Total bayar Rp56.000"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Membuat middleware dan memoize bertipe",
+    "b": "Framework web menyusun middleware sebagai fungsi yang membungkus fungsi lain. Memoize membungkus fungsi agar hasil perhitungan yang sama cukup dihitung sekali. Keduanya hanya butuh tipe fungsi dan fungsi orde tinggi.",
+    "code": "type Handler = (path: string) => string;\ntype Middleware = (next: Handler) => Handler;\n\nconst catat: Middleware = (next) => (path) => {\n  console.log(\"->\", path);\n  return next(path);\n};\nconst wajibLogin = (masuk: boolean): Middleware => (next) => (path) =>\n  masuk || !path.startsWith(\"/akun\") ? next(path) : \"302 ke /masuk\";\nconst halaman: Handler = (path) => `200 halaman ${path}`;\n\nconst app = catat(wajibLogin(false)(halaman));\nconsole.log(app(\"/produk\"));\nconsole.log(app(\"/akun\"));\n\ntype HitungOngkir = (kota: string) => number;\nfunction memoize(fn: HitungOngkir): HitungOngkir {\n  const cache: [string, number][] = [];\n  return (kota) => {\n    const ada = cache.find(([k]) => k === kota);\n    if (ada) return ada[1];\n    console.log(\"  hitung\", kota);\n    const hasil = fn(kota);\n    cache.push([kota, hasil]);\n    return hasil;\n  };\n}\nconst tarif: [string, number][] = [[\"Jakarta\", 9000], [\"Bandung\", 12000]];\nconst ongkir = memoize((kota) => tarif.find(([k]) => k === kota)?.[1] ?? 25000);\nconsole.log(ongkir(\"Bandung\"), ongkir(\"Bandung\"), ongkir(\"Medan\"));",
+    "out": "-> /produk\n200 halaman /produk\n-> /akun\n302 ke /masuk\n  hitung Bandung\n  hitung Medan\n12000 12000 25000",
+    "lang": "ts"
+   }
+  ]
+ },
+ "ts-4-1": {
+  "exs": [
+   {
+    "t": "Kasus: data buku perpustakaan sekolah",
+    "code": "interface Buku {\n  judul: string;\n  penulis: string;\n  tahun: number;\n  dipinjam: boolean;\n}\n\nconst koleksi: Buku[] = [\n  { judul: \"Laskar Pelangi\", penulis: \"Andrea Hirata\", tahun: 2005, dipinjam: true },\n  { judul: \"Bumi\", penulis: \"Tere Liye\", tahun: 2014, dipinjam: false },\n];\nfor (const b of koleksi) {\n  console.log(`${b.judul} (${b.tahun}) - ${b.dipinjam ? \"dipinjam\" : \"tersedia\"}`);\n}\n// koleksi.push({ judul: \"Negeri 5 Menara\", tahun: 2009 });\n//   ^ error: properti penulis dan dipinjam belum ada",
+    "out": "Laskar Pelangi (2005) - dipinjam\nBumi (2014) - tersedia"
+   },
+   {
+    "t": "Kasus: extends untuk kendaraan sewaan",
+    "d": "Mobil dan Motor mewarisi plat dan tarif dari Kendaraan.",
+    "code": "interface Kendaraan { plat: string; tarifHarian: number }\ninterface Mobil extends Kendaraan { kursi: number }\ninterface Motor extends Kendaraan { helm: number }\n\nconst avanza: Mobil = { plat: \"B 1234 KJA\", tarifHarian: 350000, kursi: 7 };\nconst beat: Motor = { plat: \"DK 4521 AB\", tarifHarian: 75000, helm: 2 };\n\nfunction biayaSewa(k: Kendaraan, hari: number): number {\n  return k.tarifHarian * hari;\n}\nconsole.log(avanza.plat, avanza.kursi, \"kursi, 3 hari:\", biayaSewa(avanza, 3));\nconsole.log(beat.plat, beat.helm, \"helm, 2 hari:\", biayaSewa(beat, 2));",
+    "out": "B 1234 KJA 7 kursi, 3 hari: 1050000\nDK 4521 AB 2 helm, 2 hari: 150000"
+   },
+   {
+    "t": "Kasus: interface dengan method untuk tabungan",
+    "code": "interface Tabungan {\n  pemilik: string;\n  saldo: number;\n  setor(jumlah: number): void;\n  bungaBulanan(persenTahunan: number): number;\n}\n\nconst tabunganRina: Tabungan = {\n  pemilik: \"Rina\",\n  saldo: 1_000_000,\n  setor(jumlah) { this.saldo += jumlah; },\n  bungaBulanan(p) { return Math.round(this.saldo * p / 100 / 12); },\n};\ntabunganRina.setor(250_000);\nconsole.log(tabunganRina.pemilik, tabunganRina.saldo);\nconsole.log(\"Bunga sebulan (3% per tahun):\", tabunganRina.bungaBulanan(3));",
+    "out": "Rina 1250000\nBunga sebulan (3% per tahun): 3125"
+   },
+   {
+    "t": "Kasus: structural typing pada lokasi ojek",
+    "d": "Objek diterima karena bentuknya cocok, walau tidak pernah menyebut nama interface.",
+    "code": "interface Titik { x: number; y: number }\n\nfunction jarakKeAsal(t: Titik): number {\n  return Math.hypot(t.x, t.y);\n}\n\nconst lokasiOjek = { x: 3, y: 4, pengemudi: \"Pak Darto\" };\nconsole.log(lokasiOjek.pengemudi, \"berjarak\", jarakKeAsal(lokasiOjek), \"km dari pangkalan\");",
+    "out": "Pak Darto berjarak 5 km dari pangkalan"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Hierarki pengguna: Pengguna, Pelanggan, Admin",
+    "b": "Aplikasi toko punya beberapa jenis pengguna dengan data dasar yang sama. Interface dasar Pengguna diperluas dengan extends, dan fungsi yang menerima Pengguna otomatis menerima semua turunannya.",
+    "code": "interface Pengguna { id: number; nama: string; email: string }\ninterface Pelanggan extends Pengguna { poin: number; alamat?: string }\ninterface Admin extends Pengguna { hak: (\"baca\" | \"tulis\" | \"hapus\")[] }\n\nconst ana: Pelanggan = { id: 1, nama: \"Ana\", email: \"ana@contoh.id\", poin: 1200 };\nconst dodi: Admin = { id: 2, nama: \"Dodi\", email: \"dodi@contoh.id\", hak: [\"baca\", \"tulis\"] };\n\nconst bolehHapus = (u: Pengguna | Admin) => \"hak\" in u && u.hak.includes(\"hapus\");\nconst kirimEmail = (u: Pengguna) => `email ke ${u.email}`;\n\nconsole.log(ana.nama, \"poin\", ana.poin);\nconsole.log(dodi.nama, \"boleh hapus?\", bolehHapus(dodi));\nconsole.log(kirimEmail(ana), \"|\", kirimEmail(dodi));",
+    "out": "Ana poin 1200\nDodi boleh hapus? false\nemail ke ana@contoh.id | email ke dodi@contoh.id",
+    "lang": "ts"
+   }
+  ]
+ },
+ "ts-4-2": {
+  "exs": [
+   {
+    "t": "Kasus: sisa pulsa berupa angka atau \"habis\"",
+    "code": "type SisaPulsa = number | \"habis\";\n\nfunction infoPulsa(operator: string, sisa: SisaPulsa): string {\n  if (sisa === \"habis\") return `${operator}: pulsa habis, segera isi ulang`;\n  return `${operator}: sisa pulsa Rp${sisa.toLocaleString(\"id-ID\")}`;\n}\n\nconsole.log(infoPulsa(\"Telkomsel\", 12500));\nconsole.log(infoPulsa(\"XL\", \"habis\"));",
+    "out": "Telkomsel: sisa pulsa Rp12.500\nXL: pulsa habis, segera isi ulang"
+   },
+   {
+    "t": "Kasus: intersection untuk data karyawan",
+    "d": "Karyawan wajib punya semua properti dari ketiga bagian.",
+    "code": "type Orang = { nama: string; umur: number };\ntype Alamat = { kota: string; kodePos: string };\ntype Karyawan = Orang & Alamat & { jabatan: string };\n\nconst k: Karyawan = { nama: \"Agus Salim\", umur: 29, kota: \"Semarang\", kodePos: \"50241\", jabatan: \"Kasir\" };\nconsole.log(`${k.nama} (${k.umur}) - ${k.jabatan} di ${k.kota} ${k.kodePos}`);\n// const kurang: Karyawan = { nama: \"Lina\", umur: 25, jabatan: \"Admin\" };\n//   ^ error: kota dan kodePos belum ada",
+    "out": "Agus Salim (29) - Kasir di Semarang 50241"
+   },
+   {
+    "t": "Kasus: alias untuk tuple dan fungsi",
+    "code": "type Koordinat = [lat: number, lng: number];\ntype HitungJarak = (a: Koordinat, b: Koordinat) => number;\n\nconst jarakKasar: HitungJarak = ([lat1, lng1], [lat2, lng2]) =>\n  Math.round(Math.hypot(lat2 - lat1, lng2 - lng1) * 111);   // 1 derajat sekitar 111 km\n\nconst monas: Koordinat = [-6.1754, 106.8272];\nconst bogor: Koordinat = [-6.5971, 106.806];\nconsole.log(\"Monas ke Bogor sekitar\", jarakKasar(monas, bogor), \"km\");",
+    "out": "Monas ke Bogor sekitar 47 km"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Menyusun tipe respons API dengan union dan intersection",
+    "b": "Respons API bisa sukses atau gagal. Union menggabungkan kedua kemungkinan, properti ok menjadi penanda, dan intersection menambahkan stempel waktu ke setiap artikel.",
+    "code": "type Timestamp = { dibuat: string; diubah: string };\ntype Artikel = { id: number; judul: string } & Timestamp;\n\ntype Sukses = { ok: true; data: Artikel[] };\ntype Gagal = { ok: false; kode: number; pesan: string };\ntype Respons = Sukses | Gagal;\n\nfunction tampil(r: Respons): void {\n  if (r.ok) r.data.forEach((a) => console.log(`#${a.id} ${a.judul} (diubah ${a.diubah})`));\n  else console.log(`Gagal ${r.kode}: ${r.pesan}`);\n}\ntampil({ ok: true, data: [{ id: 7, judul: \"Belajar TypeScript\", dibuat: \"2026-01-02\", diubah: \"2026-03-10\" }] });\ntampil({ ok: false, kode: 503, pesan: \"server sedang pemeliharaan\" });",
+    "out": "#7 Belajar TypeScript (diubah 2026-03-10)\nGagal 503: server sedang pemeliharaan",
+    "lang": "ts"
+   }
+  ]
+ },
+ "ts-5-1": {
+  "code": "type Bayar =\n  | { jenis: \"qris\"; merchant: string }\n  | { jenis: \"va\"; bank: string; nomor: string }\n  | { jenis: \"cod\" };\n\nfunction keterangan(b: Bayar): string {\n  switch (b.jenis) {\n    case \"qris\": return \"QRIS \" + b.merchant;\n    case \"va\": return `VA ${b.bank} ${b.nomor}`;\n    case \"cod\": return \"Bayar di tempat\";\n    default: { const cek: never = b; return cek; }\n  }\n}\n\ntype BayarVA = { jenis: \"va\"; bank: string; nomor: string };\nconst adalahVA = (b: Bayar): b is BayarVA => b.jenis === \"va\";\n\nconst daftar: Bayar[] = [{ jenis: \"qris\", merchant: \"Toko Nusantara\" }, { jenis: \"va\", bank: \"BCA\", nomor: \"8808\" }, { jenis: \"cod\" }];\ndaftar.forEach(b => console.log(keterangan(b)));\nconsole.log(daftar.filter(adalahVA).map(b => b.bank));",
+  "out": "QRIS Toko Nusantara\nVA BCA 8808\nBayar di tempat\n[ 'BCA' ]",
+  "exs": [
+   {
+    "t": "Kasus: nilai rapor berupa angka atau huruf (typeof)",
+    "code": "function tampilNilai(n: number | string): string {\n  if (typeof n === \"number\") {\n    return n >= 75 ? `${n} (tuntas)` : `${n} (remedial)`;   // di sini n pasti number\n  }\n  return `predikat ${n.toUpperCase()}`;                     // di sini n pasti string\n}\n\nconsole.log(tampilNilai(82));\nconsole.log(tampilNilai(60));\nconsole.log(tampilNilai(\"b\"));",
+    "out": "82 (tuntas)\n60 (remedial)\npredikat B"
+   },
+   {
+    "t": "Kasus: pembayaran transfer atau tunai (in dan instanceof)",
+    "code": "type Transfer = { bank: string; rekening: string };\ntype Tunai = { uangDiterima: number };\n\nfunction catat(b: Transfer | Tunai, total: number): string {\n  if (\"bank\" in b) return `Transfer ${b.bank} ke ${b.rekening}`;\n  return `Tunai, kembalian Rp${(b.uangDiterima - total).toLocaleString(\"id-ID\")}`;\n}\nconsole.log(catat({ bank: \"BRI\", rekening: \"0123-01-000123-30-1\" }, 85000));\nconsole.log(catat({ uangDiterima: 100000 }, 85000));\n\nfunction tanggalTeks(t: Date | string): string {\n  return t instanceof Date ? t.toISOString().slice(0, 10) : t;\n}\nconsole.log(tanggalTeks(new Date(Date.UTC(2026, 0, 5))), \"|\", tanggalTeks(\"besok\"));",
+    "out": "Transfer BRI ke 0123-01-000123-30-1\nTunai, kembalian Rp15.000\n2026-01-05 | besok"
+   },
+   {
+    "t": "Kasus: discriminated union untuk notifikasi aplikasi",
+    "code": "type Notif =\n  | { jenis: \"pesan\"; dari: string; isi: string }\n  | { jenis: \"promo\"; diskon: number }\n  | { jenis: \"pengiriman\"; resi: string; posisi: string };\n\nfunction teks(n: Notif): string {\n  switch (n.jenis) {\n    case \"pesan\": return `${n.dari}: ${n.isi}`;\n    case \"promo\": return `Diskon ${n.diskon}% hari ini!`;\n    case \"pengiriman\": return `Paket ${n.resi} sedang di ${n.posisi}`;\n  }\n}\n\nconst masuk: Notif[] = [\n  { jenis: \"pesan\", dari: \"Bu Ratna\", isi: \"Jangan lupa PR halaman 45\" },\n  { jenis: \"promo\", diskon: 30 },\n  { jenis: \"pengiriman\", resi: \"JNE0042\", posisi: \"Gudang Cikarang\" },\n];\nfor (const n of masuk) console.log(teks(n));",
+    "out": "Bu Ratna: Jangan lupa PR halaman 45\nDiskon 30% hari ini!\nPaket JNE0042 sedang di Gudang Cikarang"
+   },
+   {
+    "t": "Kasus: type predicate untuk memisahkan guru dari siswa",
+    "code": "type Siswa = { peran: \"siswa\"; nama: string; kelas: string };\ntype Guru = { peran: \"guru\"; nama: string; mapel: string };\n\nconst isGuru = (o: Siswa | Guru): o is Guru => o.peran === \"guru\";\n\nconst warga: (Siswa | Guru)[] = [\n  { peran: \"siswa\", nama: \"Raka\", kelas: \"VIII-A\" },\n  { peran: \"guru\", nama: \"Pak Hendra\", mapel: \"IPA\" },\n  { peran: \"guru\", nama: \"Bu Sri\", mapel: \"Bahasa Indonesia\" },\n];\nconst guru = warga.filter(isGuru);   // bertipe Guru[]\nconsole.log(guru.map((g) => `${g.nama} (${g.mapel})`).join(\", \"));",
+    "out": "Pak Hendra (IPA), Bu Sri (Bahasa Indonesia)"
+   }
+  ],
+  "cx": [
+   {
+    "t": "State pemuatan data seperti di aplikasi React",
+    "b": "Dengan pola ini tidak mungkin ada data dan error sekaligus, sehingga UI tidak pernah berada di keadaan yang mustahil.",
+    "code": "type State =\n  | { status: \"idle\" }\n  | { status: \"loading\" }\n  | { status: \"success\"; data: string[] }\n  | { status: \"error\"; error: string };\n\nfunction render(s: State): string {\n  switch (s.status) {\n    case \"idle\": return \"Tekan tombol untuk memuat\";\n    case \"loading\": return \"Memuat...\";\n    case \"success\": return `${s.data.length} produk: ${s.data.join(\", \")}`;\n    case \"error\": return `Terjadi kesalahan: ${s.error}`;\n  }\n}\nconst urutan: State[] = [\n  { status: \"idle\" }, { status: \"loading\" },\n  { status: \"success\", data: [\"Kopi\", \"Teh\"] }, { status: \"error\", error: \"timeout 5s\" },\n];\nurutan.forEach((s) => console.log(render(s)));",
+    "out": "Tekan tombol untuk memuat\nMemuat...\n2 produk: Kopi, Teh\nTerjadi kesalahan: timeout 5s",
+    "lang": "ts"
+   }
+  ]
+ },
+ "ts-5-2": {
+  "code": "const KATEGORI = [\"Minuman\", \"Camilan\", \"Bumbu\"] as const;\ntype Kategori = typeof KATEGORI[number];          // \"Minuman\" | \"Camilan\" | \"Bumbu\"\n\nconst warna = {\n  Minuman: \"#2E5E8C\",\n  Camilan: \"#B4532A\",\n  Bumbu: \"#2F7A52\",\n} satisfies { Minuman: string; Camilan: string; Bumbu: string };\n\nconst k: Kategori = \"Camilan\";\nconsole.log(k, warna[k], KATEGORI.length);\nconst data = JSON.parse('{\"nama\":\"Kopi\"}') as { nama: string };\nconsole.log(data.nama.toUpperCase());",
+  "out": "Camilan #B4532A 3\nKOPI",
+  "exs": [
+   {
+    "t": "Kasus: as pada JSON.parse dan bahayanya",
+    "d": "as hanya menenangkan compiler; data yang salah tetap lolos.",
+    "code": "const json = '{\"nama\":\"Teh Botol\",\"harga\":\"5000\"}';\nconst produk = JSON.parse(json) as { nama: string; harga: number };\n\nconsole.log(produk.nama);\nconsole.log(produk.harga + 1000);    // compiler mengira number, ternyata teks\nconsole.log(typeof produk.harga);",
+    "out": "Teh Botol\n50001000\nstring"
+   },
+   {
+    "t": "Kasus: as const untuk daftar hari sekolah",
+    "code": "const HARI = [\"Senin\", \"Selasa\", \"Rabu\", \"Kamis\", \"Jumat\"] as const;\ntype Hari = typeof HARI[number];      // \"Senin\" | \"Selasa\" | ... | \"Jumat\"\n\nconst piket: [Hari, string][] = [[\"Senin\", \"Bagas\"], [\"Rabu\", \"Citra\"]];\nfor (const [hari, nama] of piket) console.log(`${hari}: ${nama}`);\nconsole.log(\"Hari sekolah:\", HARI.length);\n// HARI.push(\"Sabtu\");             // error: Property 'push' does not exist on type 'readonly [...]'.\n// const libur: Hari = \"Minggu\";   // error: \"Minggu\" bukan Hari",
+    "out": "Senin: Bagas\nRabu: Citra\nHari sekolah: 5"
+   },
+   {
+    "t": "Kasus: tanda ! saat yakin nilai ada",
+    "d": "! hanya janji kepada compiler; kalau janjinya salah, hasilnya keliru saat berjalan.",
+    "code": "const stok = new Map([[\"kopi\", 12], [\"teh\", 0]]);\n\nconst jumlahKopi = stok.get(\"kopi\")!;    // kita baru saja memasukkannya\nconsole.log(\"Stok kopi + 3:\", jumlahKopi + 3);\nconst gula = stok.get(\"gula\");\nconsole.log(\"Stok gula:\", gula ?? \"belum terdaftar\");\nconst salahJanji = stok.get(\"gula\")!;    // janji keliru\nconsole.log(\"Hasil janji keliru:\", salahJanji + 1);",
+    "out": "Stok kopi + 3: 15\nStok gula: belum terdaftar\nHasil janji keliru: NaN"
+   },
+   {
+    "t": "Kasus: satisfies untuk palet warna",
+    "d": "Nilai diperiksa terhadap tipe, tapi tipe aslinya (string atau tuple) tetap diingat.",
+    "code": "type Warna = string | [number, number, number];\n\nconst palet = {\n  merah: [220, 38, 38],\n  hijau: \"#16a34a\",\n} satisfies { merah: Warna; hijau: Warna };\n\nconsole.log(palet.hijau.toUpperCase());           // tetap dikenal sebagai string\nconsole.log(`rgb(${palet.merah.join(\", \")})`);    // tetap dikenal sebagai array\n// dengan anotasi biasa (palet: { merah: Warna; hijau: Warna }) baris di atas butuh pemeriksaan dulu",
+    "out": "#16A34A\nrgb(220, 38, 38)"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Konfigurasi rute dengan as const dan satisfies",
+    "b": "Konfigurasi rute diperiksa dengan satisfies agar setiap rute punya path dan auth, sementara daftar peran dibuat dengan as const sehingga menjadi union literal.",
+    "code": "type Rute = { path: string; auth: boolean };\n\nconst RUTE = {\n  beranda: { path: \"/\", auth: false },\n  profil: { path: \"/profil\", auth: true },\n  admin: { path: \"/admin\", auth: true },\n} satisfies { beranda: Rute; profil: Rute; admin: Rute };\n\nconst PERAN = [\"tamu\", \"anggota\", \"admin\"] as const;\ntype Peran = (typeof PERAN)[number];   // \"tamu\" | \"anggota\" | \"admin\"\n\nconst butuhPeran: [string, Peran][] = [[\"admin\", \"admin\"], [\"profil\", \"anggota\"]];\nconst peranAdmin = butuhPeran.find(([r]) => r === \"admin\")!;   // kita tahu datanya ada\nconst NAMA_RUTE = [\"beranda\", \"profil\", \"admin\"] as const;\nfor (const n of NAMA_RUTE) {\n  console.log(n.padEnd(8), RUTE[n].path.padEnd(8), RUTE[n].auth ? \"login\" : \"publik\");\n}\nconsole.log(\"peran untuk /admin:\", peranAdmin[1], \"| semua peran:\", PERAN.join(\", \"));",
+    "out": "beranda  /        publik\nprofil   /profil  login\nadmin    /admin   login\nperan untuk /admin: admin | semua peran: tamu, anggota, admin",
+    "lang": "ts"
+   }
+  ]
+ },
+ "ts-5-3": {
+  "exs": [
+   {
+    "t": "Kasus: memvalidasi data nilai siswa",
+    "code": "type Siswa = { nama: string; kelas: string; nilai: number };\n\nfunction isSiswa(x: unknown): x is Siswa {\n  if (typeof x !== \"object\" || x === null) return false;\n  const o = x as { nama?: unknown; kelas?: unknown; nilai?: unknown };\n  return typeof o.nama === \"string\" && typeof o.kelas === \"string\"\n    && typeof o.nilai === \"number\" && o.nilai >= 0 && o.nilai <= 100;\n}\n\nconst kiriman: unknown = JSON.parse(\n  '[{\"nama\":\"Lia\",\"kelas\":\"XII-1\",\"nilai\":91},{\"nama\":\"Tono\",\"kelas\":\"XII-1\",\"nilai\":120},{\"nama\":\"Ayu\",\"kelas\":\"XII-2\"}]'\n);\nconst daftar = Array.isArray(kiriman) ? kiriman : [];\nconst valid = daftar.filter(isSiswa);\nfor (const s of valid) console.log(s.nama, s.kelas, s.nilai);\nconsole.log(\"Ditolak:\", daftar.length - valid.length, \"baris\");",
+    "out": "Lia XII-1 91\nDitolak: 2 baris"
+   },
+   {
+    "t": "Kasus: satu respons cuaca",
+    "code": "type Cuaca = { kota: string; suhu: number; hujan: boolean };\n\nfunction isCuaca(x: unknown): x is Cuaca {\n  if (typeof x !== \"object\" || x === null) return false;\n  const o = x as { kota?: unknown; suhu?: unknown; hujan?: unknown };\n  return typeof o.kota === \"string\" && typeof o.suhu === \"number\" && typeof o.hujan === \"boolean\";\n}\n\nfunction tampilkan(json: string): string {\n  const data: unknown = JSON.parse(json);\n  if (!isCuaca(data)) return \"Data cuaca rusak, tampilkan pesan cadangan\";\n  return `${data.kota}: ${data.suhu}°C, ${data.hujan ? \"bawa payung\" : \"cerah\"}`;\n}\nconsole.log(tampilkan('{\"kota\":\"Bogor\",\"suhu\":24,\"hujan\":true}'));\nconsole.log(tampilkan('{\"kota\":\"Bogor\",\"suhu\":\"24\"}'));",
+    "out": "Bogor: 24°C, bawa payung\nData cuaca rusak, tampilkan pesan cadangan"
+   },
+   {
+    "t": "Kasus: kenapa as saja tidak cukup",
+    "d": "Dengan as, harga null diam-diam menjadi 0; dengan type predicate, data ditolak.",
+    "code": "type Produk = { nama: string; harga: number };\n\nfunction isProduk(x: unknown): x is Produk {\n  return typeof x === \"object\" && x !== null\n    && typeof (x as Produk).nama === \"string\"\n    && typeof (x as Produk).harga === \"number\";\n}\n\nconst mentah: unknown = JSON.parse('{\"nama\":\"Keripik\",\"harga\":null}');\nconst p = mentah as Produk;                    // compiler percaya begitu saja\nconsole.log(\"Dengan as  :\", p.harga * 2);\nconsole.log(\"Dengan cek :\", isProduk(mentah) ? mentah.harga * 2 : \"data ditolak\");",
+    "out": "Dengan as  : 0\nDengan cek : data ditolak"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Memvalidasi respons API tanpa pustaka",
+    "b": "Respons server bisa berisi baris rusak. Fungsi pemeriksa memastikan setiap baris berbentuk Produk; hasil filter langsung bertipe Produk[], dan baris yang ditolak bisa dicatat.",
+    "code": "interface Produk { sku: string; nama: string; harga: number }\n\nfunction isProduk(x: unknown): x is Produk {\n  if (typeof x !== \"object\" || x === null) return false;\n  const o = x as { sku?: unknown; nama?: unknown; harga?: unknown };\n  return typeof o.sku === \"string\" && typeof o.nama === \"string\"\n    && typeof o.harga === \"number\" && o.harga >= 0;\n}\n\nconst mentah: unknown = JSON.parse(`[\n  {\"sku\":\"KP-250\",\"nama\":\"Kopi\",\"harga\":45000},\n  {\"sku\":\"TH-100\",\"nama\":\"Teh\",\"harga\":\"28000\"},\n  {\"sku\":\"GL-1K\",\"nama\":\"Gula\",\"harga\":16500},\n  null\n]`);\nconst daftar = Array.isArray(mentah) ? mentah : [];\nconst valid = daftar.filter(isProduk);              // bertipe Produk[]\nconst ditolak = daftar.length - valid.length;\nvalid.forEach((p) => console.log(p.sku, p.nama, p.harga.toLocaleString(\"id-ID\")));\nconsole.log(`${ditolak} baris ditolak dan dicatat ke log`);",
+    "out": "KP-250 Kopi 45.000\nGL-1K Gula 16.500\n2 baris ditolak dan dicatat ke log",
+    "lang": "ts"
+   },
+   {
+    "t": "Versi produksi dengan Zod",
+    "b": "Untuk skema besar, pustaka seperti Zod menulis pemeriksaan sekaligus tipe dari satu definisi. Contoh ini butuh paket zod dan respons fetch, jadi tidak dijalankan di sini.",
+    "code": "import { z } from \"zod\";\n\nconst ProdukSchema = z.object({\n  sku: z.string().regex(/^[A-Z]{2}-\\w+$/),\n  nama: z.string().min(1),\n  harga: z.number().int().nonnegative(),\n});\ntype Produk = z.infer<typeof ProdukSchema>;   // tipe otomatis dari skema\n\nconst hasil = ProdukSchema.array().safeParse(await res.json());\nif (!hasil.success) console.error(hasil.error.issues);\nelse render(hasil.data);",
+    "lang": "ts"
+   }
+  ]
+ },
+ "ts-6-1": {
+  "exs": [
+   {
+    "t": "Kasus: private dan readonly pada dompet digital",
+    "code": "class Dompet {\n  private saldo: number = 0;\n  readonly pemilik: string;\n\n  constructor(pemilik: string) {\n    this.pemilik = pemilik;\n  }\n  isiUlang(n: number): void {\n    this.saldo += n;\n  }\n  bayar(n: number): string {\n    if (n > this.saldo) return `${this.pemilik}: saldo kurang`;\n    this.saldo -= n;\n    return `${this.pemilik}: bayar ${n}, sisa ${this.saldo}`;\n  }\n}\n\nconst d = new Dompet(\"Yusuf\");\nd.isiUlang(50000);\nconsole.log(d.bayar(32000));\nconsole.log(d.bayar(25000));\n// d.saldo = 1_000_000;      // error: Property 'saldo' is private\n// d.pemilik = \"Orang lain\"; // error: Cannot assign to 'pemilik' because it is a read-only property.",
+    "out": "Yusuf: bayar 32000, sisa 18000\nYusuf: saldo kurang"
+   },
+   {
+    "t": "Kasus: protected untuk gaji karyawan",
+    "d": "Kelas turunan boleh membaca properti protected, kode di luar kelas tidak.",
+    "code": "class Karyawan {\n  readonly nama: string;\n  protected gajiPokok: number;\n\n  constructor(nama: string, gajiPokok: number) {\n    this.nama = nama;\n    this.gajiPokok = gajiPokok;\n  }\n  gaji(): number {\n    return this.gajiPokok;\n  }\n}\n\nclass Manajer extends Karyawan {\n  private tunjangan = 2_000_000;\n  gaji(): number {\n    return this.gajiPokok + this.tunjangan;   // boleh: gajiPokok protected\n  }\n}\n\nconst daftar: Karyawan[] = [new Karyawan(\"Rudi\", 5_000_000), new Manajer(\"Wulan\", 8_000_000)];\nfor (const k of daftar) console.log(k.nama, k.gaji().toLocaleString(\"id-ID\"));\n// daftar[0].gajiPokok;   // error: Property 'gajiPokok' is protected",
+    "out": "Rudi 5.000.000\nWulan 10.000.000"
+   },
+   {
+    "t": "Kasus: private TypeScript vs #field JavaScript",
+    "d": "private hanya dijaga compiler, #field benar-benar tersembunyi saat program berjalan.",
+    "code": "class Akun {\n  #pin: string;\n  private kataSandi = \"rahasia\";\n\n  constructor(pin: string) {\n    this.#pin = pin;\n  }\n  cekPin(p: string): boolean {\n    return p === this.#pin;\n  }\n}\n\nconst a = new Akun(\"123456\");\nconsole.log(a.cekPin(\"000000\"), a.cekPin(\"123456\"));\nconsole.log(Object.keys(a));    // #pin tidak terlihat, kataSandi masih terlihat",
+    "out": "false true\n[ 'kataSandi' ]"
+   },
+   {
+    "t": "Kasus: parameter properties untuk kelas Produk",
+    "d": "Bentuk singkat ini menghasilkan kode JavaScript, jadi perlu tsc (belum didukung --experimental-strip-types).",
+    "code": "class Produk {\n  constructor(public readonly sku: string, public nama: string, private harga: number) {}\n\n  hargaDiskon(persen: number): number {\n    return this.harga * (1 - persen / 100);\n  }\n}\n\nconst p = new Produk(\"KP-01\", \"Kopi Toraja\", 90000);\nconsole.log(p.sku, p.nama, p.hargaDiskon(10));   // KP-01 Kopi Toraja 81000\n// p.harga;   // error: Property 'harga' is private"
+   }
+  ]
+ },
+ "ts-6-2": {
+  "exs": [
+   {
+    "t": "Kasus: bangun datar untuk tugas matematika",
+    "code": "abstract class BangunDatar {\n  abstract nama(): string;\n  abstract luas(): number;\n  info(): string {\n    return `${this.nama()} luas ${this.luas().toFixed(2)}`;\n  }\n}\n\nclass Persegi extends BangunDatar {\n  private sisi: number;\n  constructor(sisi: number) { super(); this.sisi = sisi; }\n  nama() { return \"Persegi\"; }\n  luas() { return this.sisi ** 2; }\n}\n\nclass Lingkaran extends BangunDatar {\n  private jari: number;\n  constructor(jari: number) { super(); this.jari = jari; }\n  nama() { return \"Lingkaran\"; }\n  luas() { return Math.PI * this.jari ** 2; }\n}\n\nconst daftar: BangunDatar[] = [new Persegi(4), new Lingkaran(7)];\nfor (const b of daftar) console.log(b.info());\n// new BangunDatar();   // error: Cannot create an instance of an abstract class.",
+    "out": "Persegi luas 16.00\nLingkaran luas 153.94"
+   },
+   {
+    "t": "Kasus: harga tiket kereta dengan override",
+    "code": "abstract class Tiket {\n  protected hargaDasar: number;\n  constructor(hargaDasar: number) { this.hargaDasar = hargaDasar; }\n  abstract kelas(): string;\n  harga(): number { return this.hargaDasar; }\n}\n\nclass Ekonomi extends Tiket {\n  kelas() { return \"Ekonomi\"; }\n}\nclass Eksekutif extends Tiket {\n  kelas() { return \"Eksekutif\"; }\n  override harga(): number { return super.harga() * 2 + 25000; }   // tambah biaya makan\n}\n\nconst tiket: Tiket[] = [new Ekonomi(150000), new Eksekutif(150000)];\ntiket.forEach((t) => console.log(t.kelas().padEnd(10), \"Rp\" + t.harga().toLocaleString(\"id-ID\")));",
+    "out": "Ekonomi    Rp150.000\nEksekutif  Rp325.000"
+   },
+   {
+    "t": "Kasus: pengumuman sekolah lewat berbagai saluran",
+    "d": "Method siaran yang sama memanggil kirim milik objek sebenarnya.",
+    "code": "abstract class Pengirim {\n  abstract kirim(tujuan: string, pesan: string): string;\n  siaran(tujuan: string[], pesan: string): void {\n    for (const t of tujuan) console.log(this.kirim(t, pesan));\n  }\n}\n\nclass SMS extends Pengirim {\n  kirim(t: string, p: string) { return `SMS ke ${t}: ${p.slice(0, 24)}...`; }\n}\nclass WhatsApp extends Pengirim {\n  kirim(t: string, p: string) { return `WA ke ${t}: ${p}`; }\n}\n\nconst saluran: Pengirim[] = [new SMS(), new WhatsApp()];\nfor (const s of saluran) s.siaran([\"0812-1111\", \"0857-2222\"], \"Rapat wali murid Sabtu pukul 09.00\");",
+    "out": "SMS ke 0812-1111: Rapat wali murid Sabtu p...\nSMS ke 0857-2222: Rapat wali murid Sabtu p...\nWA ke 0812-1111: Rapat wali murid Sabtu pukul 09.00\nWA ke 0857-2222: Rapat wali murid Sabtu pukul 09.00"
+   }
+  ]
+ },
+ "ts-7-1": {
+  "exs": [
+   {
+    "t": "Kasus: elemen terakhir dari riwayat apa pun",
+    "d": "Satu fungsi generik bekerja untuk array angka maupun teks dan tetap tahu tipenya.",
+    "code": "function terakhir<T>(daftar: T[]): T | undefined {\n  return daftar[daftar.length - 1];\n}\n\nconst suhuHarian = [29, 31, 30];\nconst pesanMasuk = [\"Halo\", \"Sudah sampai?\", \"Terima kasih\"];\nconst s = terakhir(suhuHarian);    // number | undefined\nconst p = terakhir(pesanMasuk);    // string | undefined\nconsole.log(s, p?.toUpperCase(), terakhir([]));",
+    "out": "30 TERIMA KASIH undefined"
+   },
+   {
+    "t": "Kasus: tipe generik untuk respons API",
+    "code": "type Respons<T> = { status: number; data: T };\n\nconst resProfil: Respons<{ nama: string; kota: string }> = {\n  status: 200,\n  data: { nama: \"Gilang\", kota: \"Malang\" },\n};\nconst resJumlah: Respons<number> = { status: 200, data: 42 };\n\nconsole.log(resProfil.data.nama, \"dari\", resProfil.data.kota);\nconsole.log(\"Jumlah pesanan + 1:\", resJumlah.data + 1);",
+    "out": "Gilang dari Malang\nJumlah pesanan + 1: 43"
+   },
+   {
+    "t": "Kasus: kelas antrean generik di loket",
+    "code": "class Antrean<T> {\n  private isi: T[] = [];\n  masuk(x: T): void { this.isi.push(x); }\n  keluar(): T | undefined { return this.isi.shift(); }\n  get panjang(): number { return this.isi.length; }\n}\n\nconst loket = new Antrean<string>();\nloket.masuk(\"A-001\");\nloket.masuk(\"A-002\");\nloket.masuk(\"A-003\");\nconsole.log(\"Dipanggil:\", loket.keluar(), \"| sisa\", loket.panjang);\n\nconst meja = new Antrean<number>();\nmeja.masuk(7);\nconsole.log(\"Meja:\", meja.keluar(), \"| berikutnya:\", meja.keluar());\n// loket.masuk(4);   // error: Argument of type 'number' is not assignable to parameter of type 'string'.",
+    "out": "Dipanggil: A-001 | sisa 2\nMeja: 7 | berikutnya: undefined"
+   },
+   {
+    "t": "Kasus: dua parameter tipe sekaligus",
+    "code": "function pasangan<A, B>(a: A, b: B): [A, B] {\n  return [a, b];\n}\n\nconst p1 = pasangan(\"Kopi Gayo\", 85000);        // [string, number]\nconst p2 = pasangan(true, [\"S\", \"M\", \"L\"]);      // [boolean, string[]]\nconsole.log(p1[0].length, p1[1] * 2);\nconsole.log(p2[0], p2[1].join(\"/\"));",
+    "out": "9 170000\ntrue S/M/L"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Paginasi dan groupBy generik",
+    "b": "Paginasi dan pengelompokan dipakai di hampir semua daftar data. Dengan generics, satu fungsi bisa dipakai untuk daftar siswa, produk, atau pesanan tanpa kehilangan tipe elemennya.",
+    "code": "type Halaman<T> = { item: T[]; halaman: number; totalHalaman: number };\n\nfunction paginasi<T>(data: T[], halaman: number, perHalaman: number): Halaman<T> {\n  const mulai = (halaman - 1) * perHalaman;\n  return { item: data.slice(mulai, mulai + perHalaman), halaman, totalHalaman: Math.ceil(data.length / perHalaman) };\n}\nfunction kelompokkan<T, K>(data: T[], kunci: (x: T) => K): Map<K, T[]> {\n  const hasil = new Map<K, T[]>();\n  for (const x of data) {\n    const grup = hasil.get(kunci(x));\n    if (grup) grup.push(x);\n    else hasil.set(kunci(x), [x]);\n  }\n  return hasil;\n}\n\nconst siswa = [\"Ani\", \"Bayu\", \"Citra\", \"Dewi\", \"Eka\", \"Fajar\", \"Gita\"];\nconst h2 = paginasi(siswa, 2, 3);\nconsole.log(`Halaman ${h2.halaman}/${h2.totalHalaman}:`, h2.item.join(\", \"));\n\nconst nilai = [{ n: \"Ani\", skor: 88 }, { n: \"Bayu\", skor: 72 }, { n: \"Citra\", skor: 95 }, { n: \"Dewi\", skor: 64 }];\nconst grup = kelompokkan(nilai, (x) => (x.skor >= 85 ? \"A\" : x.skor >= 70 ? \"B\" : \"C\"));\nfor (const [g, isi] of grup) console.log(g, isi.map((x) => x.n).join(\", \"));",
+    "out": "Halaman 2/3: Dewi, Eka, Fajar\nA Ani, Citra\nB Bayu\nC Dewi",
+    "lang": "ts"
+   }
+  ]
+ },
+ "ts-7-2": {
+  "exs": [
+   {
+    "t": "Kasus: validasi panjang minimal",
+    "d": "T boleh tipe apa pun asal punya properti length.",
+    "code": "function cukupPanjang<T extends { length: number }>(nilai: T, minimal: number): boolean {\n  return nilai.length >= minimal;\n}\n\nconsole.log(\"Kata sandi cukup?\", cukupPanjang(\"rahasia123\", 8));\nconsole.log(\"Foto cukup?\", cukupPanjang([\"foto1.jpg\"], 3));\n// cukupPanjang(12345, 3);   // error: number tidak punya properti length",
+    "out": "Kata sandi cukup? true\nFoto cukup? false"
+   },
+   {
+    "t": "Kasus: mengambil satu kolom data siswa",
+    "code": "function kolom<T, K extends keyof T>(daftar: T[], kunci: K): T[K][] {\n  return daftar.map((x) => x[kunci]);\n}\n\nconst siswa = [\n  { nama: \"Rina\", nilai: 88, kelas: \"IX-A\" },\n  { nama: \"Dodi\", nilai: 76, kelas: \"IX-B\" },\n];\nconst nama = kolom(siswa, \"nama\");     // string[]\nconst nilai = kolom(siswa, \"nilai\");   // number[]\nconsole.log(nama.join(\", \"));\nconsole.log(\"Rata-rata:\", nilai.reduce((a, b) => a + b, 0) / nilai.length);\n// kolom(siswa, \"alamat\");   // error: \"alamat\" bukan kunci data siswa",
+    "out": "Rina, Dodi\nRata-rata: 82"
+   },
+   {
+    "t": "Kasus: tipe bawaan untuk isi pesan",
+    "code": "type Pesan<T = string> = { judul: string; isi: T };\n\nconst biasa: Pesan = { judul: \"Info\", isi: \"Besok libur\" };            // T = string\nconst nilaiUts: Pesan<number[]> = { judul: \"Nilai UTS\", isi: [80, 92, 75] };\n\nconsole.log(biasa.judul, \"-\", biasa.isi.toUpperCase());\nconsole.log(nilaiUts.judul, \"- tertinggi\", Math.max(...nilaiUts.isi));",
+    "out": "Info - BESOK LIBUR\nNilai UTS - tertinggi 92"
+   },
+   {
+    "t": "Kasus: total untuk barang apa pun yang punya harga dan qty",
+    "code": "function total<T extends { harga: number; qty: number }>(item: T[]): number {\n  return item.reduce((s, i) => s + i.harga * i.qty, 0);\n}\n\nconst belanjaPasar = [{ nama: \"Cabai\", harga: 60000, qty: 0.5 }, { nama: \"Bawang\", harga: 40000, qty: 1 }];\nconst tiketBioskop = [{ film: \"Petualangan Sherina\", harga: 45000, qty: 3, kursi: \"F7-F9\" }];\nconsole.log(\"Pasar :\", total(belanjaPasar));\nconsole.log(\"Tiket :\", total(tiketBioskop));",
+    "out": "Pasar : 70000\nTiket : 135000"
+   }
+  ]
+ },
+ "ts-8-1": {
+  "exs": [
+   {
+    "t": "Kasus: Partial untuk memperbarui profil",
+    "code": "interface Profil { nama: string; kota: string; hobi: string }\n\nfunction perbarui(lama: Profil, ubah: Partial<Profil>): Profil {\n  return { ...lama, ...ubah };\n}\n\nconst awal: Profil = { nama: \"Sekar\", kota: \"Yogyakarta\", hobi: \"membaca\" };\nconsole.log(perbarui(awal, { kota: \"Solo\" }));\nconsole.log(perbarui(awal, { hobi: \"menari\", nama: \"Sekar Ayu\" }));",
+    "out": "{ nama: 'Sekar', kota: 'Solo', hobi: 'membaca' }\n{ nama: 'Sekar Ayu', kota: 'Yogyakarta', hobi: 'menari' }"
+   },
+   {
+    "t": "Kasus: Pick dan Omit untuk kartu produk",
+    "d": "Kartu di halaman depan tidak perlu harga modal; produk baru belum punya id.",
+    "code": "interface Produk { id: number; nama: string; harga: number; hargaModal: number; stok: number }\n\ntype KartuProduk = Pick<Produk, \"nama\" | \"harga\">;\ntype ProdukBaru = Omit<Produk, \"id\">;\n\nconst kartu: KartuProduk = { nama: \"Rendang kaleng\", harga: 55000 };\nconst baru: ProdukBaru = { nama: \"Sambal roa\", harga: 38000, hargaModal: 25000, stok: 40 };\nconsole.log(kartu);\nconsole.log(\"Kolom produk baru:\", Object.keys(baru).join(\", \"));",
+    "out": "{ nama: 'Rendang kaleng', harga: 55000 }\nKolom produk baru: nama, harga, hargaModal, stok"
+   },
+   {
+    "t": "Kasus: Record untuk jadwal pelajaran",
+    "code": "type Hari = \"Senin\" | \"Selasa\" | \"Rabu\";\n\nconst jadwal: Record<Hari, string[]> = {\n  Senin: [\"Upacara\", \"Matematika\"],\n  Selasa: [\"Fisika\", \"Bahasa Inggris\"],\n  Rabu: [\"Olahraga\", \"Seni Budaya\"],\n};\nconst urutan: Hari[] = [\"Senin\", \"Selasa\", \"Rabu\"];\nfor (const hari of urutan) console.log(hari.padEnd(7), jadwal[hari].join(\", \"));\n// jadwal.Kamis = [];   // error: Kamis bukan Hari",
+    "out": "Senin   Upacara, Matematika\nSelasa  Fisika, Bahasa Inggris\nRabu    Olahraga, Seni Budaya"
+   },
+   {
+    "t": "Kasus: Readonly untuk pengaturan bawaan",
+    "code": "interface Pengaturan { bahasa: string; temaGelap: boolean }\n\nconst bawaan: Readonly<Pengaturan> = { bahasa: \"id\", temaGelap: false };\n// bawaan.temaGelap = true;   // error: Cannot assign to 'temaGelap' because it is a read-only property.\nconst milikUser: Pengaturan = { ...bawaan, temaGelap: true };\nconsole.log(bawaan);\nconsole.log(milikUser);",
+    "out": "{ bahasa: 'id', temaGelap: false }\n{ bahasa: 'id', temaGelap: true }"
+   }
+  ]
+ },
+ "ts-8-2": {
+  "exs": [
+   {
+    "t": "Kasus: Exclude dan Extract untuk metode pembayaran",
+    "code": "type Metode = \"tunai\" | \"qris\" | \"transfer\" | \"kartu-kredit\" | \"paylater\";\n\ntype Digital = Exclude<Metode, \"tunai\">;\ntype Cicilan = Extract<Metode, \"kartu-kredit\" | \"paylater\">;\n\nconst metodeOnline: Digital = \"qris\";\nconst bisaCicil: Cicilan[] = [\"kartu-kredit\", \"paylater\"];\nconsole.log(metodeOnline, \"|\", bisaCicil.join(\", \"));\n// const salah: Digital = \"tunai\";   // error: \"tunai\" sudah dibuang",
+    "out": "qris | kartu-kredit, paylater"
+   },
+   {
+    "t": "Kasus: ReturnType dan Parameters dari fungsi yang sudah ada",
+    "code": "function buatAkun(nama: string, email: string, umur: number) {\n  return { id: nama.toLowerCase() + \"-\" + umur, nama, email, aktif: true };\n}\n\ntype Akun = ReturnType<typeof buatAkun>;\ntype ArgAkun = Parameters<typeof buatAkun>;   // [nama: string, email: string, umur: number]\n\nconst data: ArgAkun = [\"Hana\", \"hana@contoh.id\", 19];\nconst akun: Akun = buatAkun(...data);\nconsole.log(akun);",
+    "out": "{ id: 'hana-19', nama: 'Hana', email: 'hana@contoh.id', aktif: true }"
+   },
+   {
+    "t": "Kasus: NonNullable dan Awaited",
+    "code": "type NomorHP = string | null | undefined;\nconst daftarHP: NomorHP[] = [\"0812-3456\", null, \"0857-1111\", undefined];\nconst ada = daftarHP.filter((n): n is NonNullable<NomorHP> => n != null);   // string[]\nconsole.log(ada);\n\nasync function cekResi(resi: string) {\n  return { resi, posisi: \"Hub Surabaya\" };\n}\ntype HasilResi = Awaited<ReturnType<typeof cekResi>>;   // { resi: string; posisi: string }\ncekResi(\"JNT123\").then((h: HasilResi) => console.log(h.resi, h.posisi));",
+    "out": "[ '0812-3456', '0857-1111' ]\nJNT123 Hub Surabaya"
+   }
+  ]
+ },
+ "ts-9-1": {
+  "exs": [
+   {
+    "t": "Kasus: keyof untuk mengurutkan tabel kota",
+    "code": "interface Kota { nama: string; penduduk: number; provinsi: string }\n\nfunction urutkan<T, K extends keyof T>(data: T[], kunci: K): T[] {\n  return [...data].sort((a, b) => (a[kunci] < b[kunci] ? -1 : a[kunci] > b[kunci] ? 1 : 0));\n}\n\nconst kota: Kota[] = [\n  { nama: \"Medan\", penduduk: 2_460_000, provinsi: \"Sumatera Utara\" },\n  { nama: \"Bandung\", penduduk: 2_510_000, provinsi: \"Jawa Barat\" },\n  { nama: \"Makassar\", penduduk: 1_430_000, provinsi: \"Sulawesi Selatan\" },\n];\nconsole.log(urutkan(kota, \"penduduk\").map((k) => k.nama).join(\" < \"));\nconsole.log(urutkan(kota, \"nama\").map((k) => k.nama).join(\", \"));\ntype KunciKota = keyof Kota;   // \"nama\" | \"penduduk\" | \"provinsi\"\nconst k: KunciKota = \"provinsi\";\nconsole.log(\"Kunci yang dipilih:\", k);",
+    "out": "Makassar < Medan < Bandung\nBandung, Makassar, Medan\nKunci yang dipilih: provinsi"
+   },
+   {
+    "t": "Kasus: mapped type untuk status formulir",
+    "d": "Satu model data melahirkan tipe status centang dan tipe draf.",
+    "code": "interface Formulir { nama: string; email: string; telepon: string }\n\ntype Tersentuh<T> = { [K in keyof T]: boolean };\ntype BolehKosong<T> = { [K in keyof T]: T[K] | null };\n\nconst sentuh: Tersentuh<Formulir> = { nama: true, email: false, telepon: false };\nconst draf: BolehKosong<Formulir> = { nama: \"Bayu\", email: null, telepon: null };\n\nfor (const [kolom, sudah] of Object.entries(sentuh)) {\n  console.log(kolom.padEnd(8), sudah ? \"sudah diisi\" : \"belum disentuh\");\n}\nconsole.log(draf.nama, draf.email ?? \"(email kosong)\");",
+    "out": "nama     sudah diisi\nemail    belum disentuh\ntelepon  belum disentuh\nBayu (email kosong)"
+   },
+   {
+    "t": "Kasus: conditional type dan infer",
+    "code": "type JenisNilai<T> = T extends number ? \"angka\" : T extends string ? \"teks\" : \"lainnya\";\ntype IsiPromise<T> = T extends Promise<infer U> ? U : T;\n\nconst a: JenisNilai<42> = \"angka\";\nconst b: JenisNilai<\"halo\"> = \"teks\";\nconst c: JenisNilai<boolean> = \"lainnya\";\n\nasync function ambilSkor() { return 97; }\nconst skor: IsiPromise<ReturnType<typeof ambilSkor>> = 97;   // number\nconsole.log(a, b, c, skor);",
+    "out": "angka teks lainnya 97"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Membuat tipe form otomatis dari model data",
+    "b": "Dari satu interface Pendaftaran, mapped type membuat tipe pesan error dan tipe pembaca nilai, sehingga jika model bertambah kolom, tipe turunannya ikut berubah.",
+    "code": "interface Pendaftaran { nama: string; umur: number; setuju: boolean }\n\ntype PesanError<T> = { [K in keyof T]?: string };\ntype Pembaca<T> = { [K in keyof T]: () => T[K] };\ntype IsiArray<T> = T extends (infer U)[] ? U : T;\n\nfunction validasi(f: Pendaftaran): PesanError<Pendaftaran> {\n  const e: PesanError<Pendaftaran> = {};\n  if (f.nama.trim().length < 3) e.nama = \"Nama minimal 3 huruf\";\n  if (f.umur < 17) e.umur = \"Umur minimal 17 tahun\";\n  if (!f.setuju) e.setuju = \"Centang persetujuan data\";\n  return e;\n}\nconst form: Pendaftaran = { nama: \"Al\", umur: 16, setuju: false };\nfor (const [k, pesan] of Object.entries(validasi(form))) console.log(k.padEnd(7), pesan);\n\nconst baca: Pembaca<Pendaftaran> = { nama: () => form.nama, umur: () => form.umur, setuju: () => form.setuju };\nconst x: IsiArray<string[]> = \"elemen array bertipe string\";\nconsole.log(baca.nama(), baca.umur(), \"|\", x);",
+    "out": "nama    Nama minimal 3 huruf\numur    Umur minimal 17 tahun\nsetuju  Centang persetujuan data\nAl 16 | elemen array bertipe string",
+    "lang": "ts"
+   }
+  ]
+ },
+ "ts-9-2": {
+  "exs": [
+   {
+    "t": "Kasus: kode kelas dengan template literal type",
+    "code": "type Tingkat = \"X\" | \"XI\" | \"XII\";\ntype Jurusan = \"IPA\" | \"IPS\";\ntype KodeKelas = `${Tingkat}-${Jurusan}-${1 | 2}`;\n\nconst kelasku: KodeKelas = \"XI-IPA-2\";\nconst semua: KodeKelas[] = [];\nfor (const t of [\"X\", \"XI\", \"XII\"] as const) {\n  for (const j of [\"IPA\", \"IPS\"] as const) semua.push(`${t}-${j}-1`);\n}\nconsole.log(kelasku, \"|\", semua.join(\" \"));\n// const salah: KodeKelas = \"XIII-IPA-1\";   // error: XIII bukan Tingkat",
+    "out": "XI-IPA-2 | X-IPA-1 X-IPS-1 XI-IPA-1 XI-IPS-1 XII-IPA-1 XII-IPS-1"
+   },
+   {
+    "t": "Kasus: nama handler event dengan Capitalize",
+    "code": "type Aksi = \"tambah\" | \"hapus\" | \"bayar\";\ntype NamaHandler = `on${Capitalize<Aksi>}`;    // \"onTambah\" | \"onHapus\" | \"onBayar\"\n\nconst handler: Record<NamaHandler, (id: number) => string> = {\n  onTambah: (id) => `produk ${id} masuk keranjang`,\n  onHapus: (id) => `produk ${id} dihapus`,\n  onBayar: (id) => `pesanan ${id} dibayar`,\n};\nconsole.log(handler.onTambah(7));\nconsole.log(handler.onBayar(1024));",
+    "out": "produk 7 masuk keranjang\npesanan 1024 dibayar"
+   },
+   {
+    "t": "Kasus: tipe rekursif untuk folder tugas",
+    "d": "Folder bisa berisi file atau folder lain, sedalam apa pun.",
+    "code": "type Berkas = { nama: string; ukuranKb: number } | { nama: string; isi: Berkas[] };\n\nfunction totalUkuran(b: Berkas): number {\n  return \"isi\" in b ? b.isi.reduce((s, x) => s + totalUkuran(x), 0) : b.ukuranKb;\n}\n\nconst tugas: Berkas = {\n  nama: \"Tugas\",\n  isi: [\n    { nama: \"laporan.docx\", ukuranKb: 240 },\n    { nama: \"foto\", isi: [{ nama: \"a.jpg\", ukuranKb: 1200 }, { nama: \"b.jpg\", ukuranKb: 980 }] },\n  ],\n};\nconsole.log(\"Total ukuran:\", totalUkuran(tugas), \"KB\");",
+    "out": "Total ukuran: 2420 KB"
+   }
+  ]
+ },
+ "ts-10-1": {
+  "exs": [
+   {
+    "t": "Kasus: import type yang hilang saat dijalankan",
+    "d": "Baris import type dibuang seluruhnya, jadi file ini bisa langsung dijalankan Node.",
+    "code": "import type { IncomingHttpHeaders } from \"node:http\";\n\nconst header: IncomingHttpHeaders = { \"content-type\": \"application/json\", \"x-kota\": \"Bandung\" };\nconsole.log(header[\"x-kota\"], \"|\", header[\"content-type\"]);",
+    "out": "Bandung | application/json"
+   },
+   {
+    "t": "Kasus: declaration merging pada interface",
+    "code": "interface Pengaturan { bahasa: string }\ninterface Pengaturan { zonaWaktu: string }   // digabung dengan deklarasi pertama\n\nconst atur: Pengaturan = { bahasa: \"id\", zonaWaktu: \"Asia/Makassar\" };\nconsole.log(atur);",
+    "out": "{ bahasa: 'id', zonaWaktu: 'Asia/Makassar' }"
+   },
+   {
+    "t": "Kasus: file .d.ts untuk pustaka JavaScript lama",
+    "d": "Pustaka tanpa tipe diberi tanda tangan fungsi lewat ambient module.",
+    "code": "// src/types/terbilang-lama.d.ts\ndeclare module \"terbilang-lama\" {\n  export function terbilang(n: number): string;\n}\n\n// src/kuitansi.ts\nimport { terbilang } from \"terbilang-lama\";\nconst teks: string = terbilang(125000);   // \"seratus dua puluh lima ribu\"\n// terbilang(\"125000\");                   // error: argumen harus number"
+   },
+   {
+    "t": "Kasus: augmentasi window untuk analitik",
+    "code": "// src/types/global.d.ts\ndeclare global {\n  interface Window { dataLayer: unknown[] }\n}\nexport {};\n\n// src/analitik.ts\nwindow.dataLayer = window.dataLayer ?? [];\nwindow.dataLayer.push({ event: \"beli\", nilai: 85000 });   // tanpa augmentasi: error, dataLayer tidak dikenal"
+   }
+  ]
+ },
+ "ts-10-2": {
+  "exs": [
+   {
+    "t": "Kasus: decorator pencatat hasil method",
+    "d": "Decorator butuh tsc, Vite, atau esbuild; keluarannya ditulis di komentar.",
+    "code": "function log(asli: (this: unknown, ...args: number[]) => number, ctx: ClassMethodDecoratorContext) {\n  return function (this: unknown, ...args: number[]): number {\n    const hasil = asli.apply(this, args);\n    console.log(`${String(ctx.name)}(${args.join(\", \")}) = ${hasil}`);\n    return hasil;\n  };\n}\n\nclass Kalkulator {\n  @log\n  ongkir(beratKg: number, tarif: number) { return Math.ceil(beratKg) * tarif; }\n}\n\nnew Kalkulator().ongkir(2.3, 9000);   // ongkir(2.3, 9000) = 27000"
+   },
+   {
+    "t": "Kasus: decorator validasi angka positif",
+    "code": "function harusPositif(asli: (this: unknown, n: number) => void, ctx: ClassMethodDecoratorContext) {\n  return function (this: unknown, n: number): void {\n    if (n <= 0) throw new Error(`${String(ctx.name)}: nilai harus positif`);\n    asli.call(this, n);\n  };\n}\n\nclass Celengan {\n  saldo = 0;\n  @harusPositif\n  tabung(n: number) { this.saldo += n; }\n}\n\nconst c = new Celengan();\nc.tabung(20000);\ntry { c.tabung(-5000); } catch (e) { if (e instanceof Error) console.log(e.message); }\nconsole.log(c.saldo);\n// tabung: nilai harus positif\n// 20000"
+   },
+   {
+    "t": "Kasus: membungkus fungsi agar dicoba ulang",
+    "d": "Prinsip yang sama dengan decorator, ditulis sebagai fungsi biasa sehingga bisa langsung dijalankan.",
+    "code": "function cobaUlang<A extends unknown[], R>(fn: (...a: A) => R, kali: number): (...a: A) => R {\n  return (...a) => {\n    for (let i = 1; ; i++) {\n      try {\n        return fn(...a);\n      } catch (e) {\n        if (i >= kali) throw e;\n        console.log(`percobaan ${i} gagal, ulangi`);\n      }\n    }\n  };\n}\n\nlet panggilan = 0;\nconst kirimSms = cobaUlang((nomor: string) => {\n  panggilan++;\n  if (panggilan < 3) throw new Error(\"sinyal lemah\");\n  return `terkirim ke ${nomor}`;\n}, 5);\nconsole.log(kirimSms(\"0812-0000\"));",
+    "out": "percobaan 1 gagal, ulangi\npercobaan 2 gagal, ulangi\nterkirim ke 0812-0000"
+   }
+  ]
+ },
+ "ts-12-1": {
+  "exs": [
+   {
+    "t": "Kasus: rapor nilai dengan kolom rata",
+    "code": "const nama: string[] = [\"Andi\", \"Bunga Citra\", \"Cahyo\"];\nconst nilai: number[] = [87.5, 92.25, 78];\n\nconsole.log(`${\"Nama\".padEnd(12)}${\"Nilai\".padStart(7)}`);\nfor (let i = 0; i < nama.length; i++) {\n  console.log(`${nama[i].padEnd(12)}${nilai[i].toFixed(1).padStart(7)}`);\n}\nconst rata: number = nilai.reduce((a, b) => a + b, 0) / nilai.length;\nconsole.log(`${\"Rata-rata\".padEnd(12)}${rata.toFixed(2).padStart(7)}`);",
+    "out": "Nama          Nilai\nAndi           87.5\nBunga Citra    92.3\nCahyo          78.0\nRata-rata     85.92"
+   },
+   {
+    "t": "Kasus: nomor invoice dengan nol di depan",
+    "code": "const tahun: number = 2026;\nconst nomorUrut: number[] = [7, 42, 315];\nfor (const urut of nomorUrut) {\n  console.log(`INV/${tahun}/${String(urut).padStart(5, \"0\")}`);\n}",
+    "out": "INV/2026/00007\nINV/2026/00042\nINV/2026/00315"
+   },
+   {
+    "t": "Kasus: capaian penjualan dengan Intl",
+    "code": "const rp = new Intl.NumberFormat(\"id-ID\", { style: \"currency\", currency: \"IDR\", maximumFractionDigits: 0 });\nconst persen = new Intl.NumberFormat(\"id-ID\", { style: \"percent\", maximumFractionDigits: 1 });\n\nconst target: number = 50_000_000;\nconst tercapai: number = 37_250_000;\nconsole.log(\"Penjualan :\", rp.format(tercapai));\nconsole.log(\"Target    :\", rp.format(target));\nconsole.log(\"Capaian   :\", persen.format(tercapai / target));\nconsole.log(\"Kekurangan:\", (target - tercapai).toLocaleString(\"id-ID\"));",
+    "out": "Penjualan : Rp 37.250.000\nTarget    : Rp 50.000.000\nCapaian   : 74,5%\nKekurangan: 12.750.000"
+   }
+  ]
+ },
+ "ts-12-2": {
+  "exs": [
+   {
+    "t": "Kasus: for untuk tabel perkalian",
+    "d": "Jumlah barisnya pasti 10, jadi for paling jujur.",
+    "code": "const angka: number = 7;\nfor (let i = 1; i <= 10; i++) {\n  console.log(`${angka} x ${String(i).padStart(2)} = ${String(angka * i).padStart(2)}`);\n}",
+    "out": "7 x  1 =  7\n7 x  2 = 14\n7 x  3 = 21\n7 x  4 = 28\n7 x  5 = 35\n7 x  6 = 42\n7 x  7 = 49\n7 x  8 = 56\n7 x  9 = 63\n7 x 10 = 70"
+   },
+   {
+    "t": "Kasus: while sampai bensin tidak cukup",
+    "d": "Banyak perjalanan belum diketahui; yang diketahui hanya syarat berhentinya.",
+    "code": "let bensinMl: number = 4000;\nconst perPerjalananMl: number = 375;   // 15 km dengan 40 km/liter\nlet perjalanan: number = 0;\n\nwhile (bensinMl >= perPerjalananMl) {\n  bensinMl -= perPerjalananMl;\n  perjalanan++;\n}\nconsole.log(`Bisa mengantar ${perjalanan} kali, sisa bensin ${bensinMl} ml`);",
+    "out": "Bisa mengantar 10 kali, sisa bensin 250 ml"
+   },
+   {
+    "t": "Kasus: do-while untuk memasukkan PIN",
+    "d": "PIN diminta minimal sekali sebelum diperiksa.",
+    "code": "const percobaanPin: string[] = [\"1111\", \"2580\", \"123456\"];\nconst pinBenar: string = \"123456\";\nlet ke: number = 0;\nlet masukan: string;\n\ndo {\n  masukan = percobaanPin[ke];\n  ke++;\n  console.log(`Percobaan ${ke}: ${masukan === pinBenar ? \"PIN benar\" : \"PIN salah\"}`);\n} while (masukan !== pinBenar && ke < 3);",
+    "out": "Percobaan 1: PIN salah\nPercobaan 2: PIN salah\nPercobaan 3: PIN benar"
+   },
+   {
+    "t": "Kasus: for...of untuk menjumlah belanjaan",
+    "code": "const keranjang: [string, number][] = [[\"Beras 5 kg\", 72000], [\"Minyak 2 L\", 38000], [\"Telur 1 kg\", 29000]];\nlet total: number = 0;\n\nfor (const [barang, harga] of keranjang) {\n  total += harga;\n  console.log(barang.padEnd(11), harga);\n}\nconsole.log(\"Total\".padEnd(11), total);",
+    "out": "Beras 5 kg  72000\nMinyak 2 L  38000\nTelur 1 kg  29000\nTotal       139000"
+   }
+  ]
+ },
+ "ts-12-3": {
+  "exs": [
+   {
+    "t": "Kasus: tabungan mingguan berpola Fibonacci (for)",
+    "code": "let a: number = 1, b: number = 1;\nlet tabungan: number = 0;\n\nfor (let minggu = 1; minggu <= 8; minggu++) {\n  tabungan += a * 1000;\n  console.log(`Minggu ${minggu}: setor Rp${(a * 1000).toLocaleString(\"id-ID\")}, total Rp${tabungan.toLocaleString(\"id-ID\")}`);\n  [a, b] = [b, a + b];\n}",
+    "out": "Minggu 1: setor Rp1.000, total Rp1.000\nMinggu 2: setor Rp1.000, total Rp2.000\nMinggu 3: setor Rp2.000, total Rp4.000\nMinggu 4: setor Rp3.000, total Rp7.000\nMinggu 5: setor Rp5.000, total Rp12.000\nMinggu 6: setor Rp8.000, total Rp20.000\nMinggu 7: setor Rp13.000, total Rp33.000\nMinggu 8: setor Rp21.000, total Rp54.000"
+   },
+   {
+    "t": "Kasus: suku pertama yang melewati 1.000 (while)",
+    "code": "let a: number = 0, b: number = 1, ke: number = 0;\n\nwhile (a <= 1000) {\n  [a, b] = [b, a + b];\n  ke++;\n}\nconsole.log(`F(${ke}) = ${a}, suku pertama yang lebih dari 1.000`);",
+    "out": "F(17) = 1597, suku pertama yang lebih dari 1.000"
+   },
+   {
+    "t": "Kasus: apakah angka ini anggota deret?",
+    "code": "function anggotaFibonacci(x: number): boolean {\n  let a = 0, b = 1;\n  while (a < x) {\n    [a, b] = [b, a + b];\n  }\n  return a === x;\n}\n\nconst uji: number[] = [21, 50, 144];\nfor (const x of uji) console.log(x, anggotaFibonacci(x) ? \"anggota deret\" : \"bukan anggota\");",
+    "out": "21 anggota deret\n50 bukan anggota\n144 anggota deret"
+   }
+  ]
+ },
+ "ts-12-4": {
+  "exs": [
+   {
+    "t": "Kasus: barisan upacara dari yang tertinggi",
+    "d": "Cukup membalik tanda perbandingan untuk urutan menurun.",
+    "code": "const tinggi: number[] = [158, 172, 149, 165, 160];\n\nfor (let i = 0; i < tinggi.length - 1; i++) {\n  for (let j = 0; j < tinggi.length - 1 - i; j++) {\n    if (tinggi[j] < tinggi[j + 1]) {\n      [tinggi[j], tinggi[j + 1]] = [tinggi[j + 1], tinggi[j]];\n    }\n  }\n}\nconsole.log(\"Tinggi ke pendek:\", tinggi.join(\", \"));",
+    "out": "Tinggi ke pendek: 172, 165, 160, 158, 149"
+   },
+   {
+    "t": "Kasus: mengurutkan nama sesuai abjad",
+    "code": "const nama: string[] = [\"Yogi\", \"Ani\", \"Maria\", \"Benny\", \"Ketut\"];\nlet tukar: number = 0;\n\nfor (let i = 0; i < nama.length - 1; i++) {\n  for (let j = 0; j < nama.length - 1 - i; j++) {\n    if (nama[j].localeCompare(nama[j + 1], \"id\") > 0) {\n      [nama[j], nama[j + 1]] = [nama[j + 1], nama[j]];\n      tukar++;\n    }\n  }\n}\nconsole.log(nama.join(\", \"), `(${tukar} pertukaran)`);",
+    "out": "Ani, Benny, Ketut, Maria, Yogi (6 pertukaran)"
+   },
+   {
+    "t": "Kasus: produk termurah di depan",
+    "code": "const produk: { nama: string; harga: number }[] = [\n  { nama: \"Headset\", harga: 150000 },\n  { nama: \"Kabel USB-C\", harga: 35000 },\n  { nama: \"Powerbank\", harga: 220000 },\n  { nama: \"Casing HP\", harga: 45000 },\n];\nlet adaTukar: boolean = true;\nlet putaran: number = 0;\n\nwhile (adaTukar) {\n  adaTukar = false;\n  putaran++;\n  for (let j = 0; j < produk.length - putaran; j++) {\n    if (produk[j].harga > produk[j + 1].harga) {\n      [produk[j], produk[j + 1]] = [produk[j + 1], produk[j]];\n      adaTukar = true;\n    }\n  }\n}\nfor (const p of produk) console.log(p.nama.padEnd(12), p.harga.toLocaleString(\"id-ID\").padStart(8));\nconsole.log(\"Selesai dalam\", putaran, \"putaran\");",
+    "out": "Kabel USB-C    35.000\nCasing HP      45.000\nHeadset       150.000\nPowerbank     220.000\nSelesai dalam 3 putaran"
+   }
+  ]
+ },
+ "ts-12-5": {
+  "exs": [
+   {
+    "t": "Kasus: permainan Ping-Pong di kelas",
+    "d": "Kelipatan 12 dicek lebih dulu, sama seperti kelipatan 15 di FizzBuzz.",
+    "code": "const hasil: string[] = [];\nfor (let i = 1; i <= 24; i++) {\n  if (i % 12 === 0) hasil.push(\"PingPong\");\n  else if (i % 4 === 0) hasil.push(\"Ping\");\n  else if (i % 6 === 0) hasil.push(\"Pong\");\n  else hasil.push(String(i));\n}\nconsole.log(hasil.join(\" \"));",
+    "out": "1 2 3 Ping 5 Pong 7 Ping 9 10 11 PingPong 13 14 15 Ping 17 Pong 19 Ping 21 22 23 PingPong"
+   },
+   {
+    "t": "Kasus: prima pertama setelah sebuah angka",
+    "code": "const mulai: number = 90;\nlet ketemu: number = -1;\n\nfor (let x = mulai + 1; ; x++) {\n  let prima = x >= 2;\n  for (let d = 2; d * d <= x; d++) {\n    if (x % d === 0) {\n      prima = false;\n      break;          // tidak perlu mencoba pembagi lain\n    }\n  }\n  if (prima) {\n    ketemu = x;\n    break;            // berhenti di prima pertama\n  }\n}\nconsole.log(`Bilangan prima pertama setelah ${mulai} adalah ${ketemu}`);",
+    "out": "Bilangan prima pertama setelah 90 adalah 97"
+   },
+   {
+    "t": "Kasus: kursi bioskop kosong pertama",
+    "d": "Label pada loop luar membuat break keluar dari dua loop sekaligus.",
+    "code": "const kursi: string[][] = [\n  [\"X\", \"X\", \"X\", \"X\"],\n  [\"X\", \"X\", \"O\", \"X\"],\n  [\"O\", \"O\", \"X\", \"X\"],\n];\nlet posisi: string = \"penuh\";\n\ncari: for (let b = 0; b < kursi.length; b++) {\n  for (let k = 0; k < kursi[b].length; k++) {\n    if (kursi[b][k] === \"O\") {\n      posisi = `baris ${String.fromCharCode(65 + b)} nomor ${k + 1}`;\n      break cari;\n    }\n  }\n}\nconsole.log(\"Kursi kosong pertama:\", posisi);",
+    "out": "Kursi kosong pertama: baris B nomor 3"
+   }
+  ]
+ },
+ "ts-12-6": {
+  "exs": [
+   {
+    "t": "Kasus: banyak cara menyusun antrean (faktorial)",
+    "code": "let cara: number = 1;\nfor (let orang = 1; orang <= 6; orang++) {\n  cara *= orang;\n  console.log(`${orang} orang: ${cara.toLocaleString(\"id-ID\")} susunan antrean`);\n}",
+    "out": "1 orang: 1 susunan antrean\n2 orang: 2 susunan antrean\n3 orang: 6 susunan antrean\n4 orang: 24 susunan antrean\n5 orang: 120 susunan antrean\n6 orang: 720 susunan antrean"
+   },
+   {
+    "t": "Kasus: digit pemeriksa nomor anggota",
+    "d": "Jumlahkan digit berulang kali sampai tersisa satu digit.",
+    "code": "function digitPemeriksa(n: number): number {\n  while (n >= 10) {\n    let jumlah = 0;\n    while (n > 0) {\n      jumlah += n % 10;\n      n = Math.floor(n / 10);\n    }\n    n = jumlah;\n  }\n  return n;\n}\n\nconst nomor: number[] = [20260817, 9875, 7];\nfor (const x of nomor) console.log(x, \"-> digit pemeriksa\", digitPemeriksa(x));",
+    "out": "20260817 -> digit pemeriksa 8\n9875 -> digit pemeriksa 2\n7 -> digit pemeriksa 7"
+   },
+   {
+    "t": "Kasus: tanggal palindrom",
+    "d": "Angka dibalik dengan % 10 dan pembagian bulat, lalu dibandingkan.",
+    "code": "function balikAngka(n: number): number {\n  let hasil = 0;\n  while (n > 0) {\n    hasil = hasil * 10 + (n % 10);\n    n = Math.floor(n / 10);\n  }\n  return hasil;\n}\n\nconst tanggal: number[] = [12022021, 20211202, 20260626];\nfor (const t of tanggal) console.log(t, balikAngka(t) === t ? \"palindrom\" : \"bukan palindrom\");",
+    "out": "12022021 palindrom\n20211202 palindrom\n20260626 bukan palindrom"
+   }
+  ]
+ },
+ "ts-12-7": {
+  "exs": [
+   {
+    "t": "Kasus: mencari nama di daftar absen terurut",
+    "code": "const nama: string[] = [\"Agus\", \"Bella\", \"Candra\", \"Dimas\", \"Eka\", \"Farah\", \"Gita\", \"Hendra\"];\n\nfunction cariNama(daftar: string[], target: string): number {\n  let kiri = 0, kanan = daftar.length - 1;\n  while (kiri <= kanan) {\n    const tengah = Math.floor((kiri + kanan) / 2);\n    const banding = daftar[tengah].localeCompare(target);\n    if (banding === 0) return tengah;\n    if (banding < 0) kiri = tengah + 1;\n    else kanan = tengah - 1;\n  }\n  return -1;\n}\n\nfor (const t of [\"Farah\", \"Agus\", \"Zaki\"]) {\n  const i = cariNama(nama, t);\n  console.log(t.padEnd(6), i >= 0 ? `nomor absen ${i + 1}` : \"tidak terdaftar\");\n}",
+    "out": "Farah  nomor absen 6\nAgus   nomor absen 1\nZaki   tidak terdaftar"
+   },
+   {
+    "t": "Kasus: menebak angka 1 sampai 100",
+    "d": "Selalu menebak bagian tengah, jadi paling banyak 7 tebakan.",
+    "code": "const rahasia: number = 73;\nlet bawah: number = 1, atas: number = 100, tebakan: number = 0, ke: number = 0;\n\nwhile (tebakan !== rahasia) {\n  ke++;\n  tebakan = Math.floor((bawah + atas) / 2);\n  if (tebakan < rahasia) {\n    console.log(`Tebakan ${ke}: ${tebakan} terlalu kecil`);\n    bawah = tebakan + 1;\n  } else if (tebakan > rahasia) {\n    console.log(`Tebakan ${ke}: ${tebakan} terlalu besar`);\n    atas = tebakan - 1;\n  } else {\n    console.log(`Tebakan ${ke}: ${tebakan} benar!`);\n  }\n}",
+    "out": "Tebakan 1: 50 terlalu kecil\nTebakan 2: 75 terlalu besar\nTebakan 3: 62 terlalu kecil\nTebakan 4: 68 terlalu kecil\nTebakan 5: 71 terlalu kecil\nTebakan 6: 73 benar!"
+   },
+   {
+    "t": "Kasus: menentukan tarif ongkir dari tabel berat",
+    "d": "Cari batas berat pertama yang tidak lebih kecil dari berat paket.",
+    "code": "const batasKg: number[] = [1, 3, 5, 10, 20];\nconst tarif: number[] = [9000, 15000, 22000, 35000, 60000];\n\nfunction tarifUntuk(berat: number): number {\n  let kiri = 0, kanan = batasKg.length;\n  while (kiri < kanan) {\n    const tengah = Math.floor((kiri + kanan) / 2);\n    if (batasKg[tengah] < berat) kiri = tengah + 1;\n    else kanan = tengah;\n  }\n  return kiri < tarif.length ? tarif[kiri] : -1;\n}\n\nfor (const b of [0.8, 3, 7.5, 25]) {\n  const t = tarifUntuk(b);\n  console.log(`${b} kg ->`, t < 0 ? \"terlalu berat, pakai kargo\" : `Rp${t.toLocaleString(\"id-ID\")}`);\n}",
+    "out": "0.8 kg -> Rp9.000\n3 kg -> Rp15.000\n7.5 kg -> Rp35.000\n25 kg -> terlalu berat, pakai kargo"
+   }
+  ]
  }
 }

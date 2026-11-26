@@ -1,0 +1,549 @@
+{
+ "dart-1-1": {
+  "exs": [
+   {
+    "t": "Kasus: kartu nama siswa",
+    "d": "Setiap print() mencetak satu baris, berurutan dari atas ke bawah.",
+    "code": "void main() {\n  print('KARTU PELAJAR');\n  print('Nama   : Dewi Lestari');\n  print('Kelas  : XI IPA 2');\n  print('Sekolah: SMA Negeri 1 Bogor');\n}",
+    "out": "KARTU PELAJAR\nNama   : Dewi Lestari\nKelas  : XI IPA 2\nSekolah: SMA Negeri 1 Bogor"
+   },
+   {
+    "t": "Kasus: menu kantin dengan komentar",
+    "d": "Komentar tidak ikut dijalankan, jadi tidak muncul di keluaran.",
+    "code": "void main() {\n  // komentar satu baris: daftar menu hari ini\n  print('Menu Kantin Bu Sri');\n  print('1. Nasi goreng');\n  print('2. Mi ayam');\n  /* komentar beberapa baris:\n     es teh sedang habis,\n     jadi belum ditulis di menu */\n  print('3. Soto ayam');\n}",
+    "out": "Menu Kantin Bu Sri\n1. Nasi goreng\n2. Mi ayam\n3. Soto ayam"
+   },
+   {
+    "t": "Kasus: pengumuman sekolah dengan baris kosong",
+    "d": "print('') mencetak baris kosong, dan komentar /// menjelaskan fungsi main.",
+    "code": "/// Mencetak pengumuman upacara hari Senin.\nvoid main() {\n  print('PENGUMUMAN');\n  print('');\n  print('Upacara bendera dimulai pukul 07.00.');\n  print('Seluruh siswa memakai seragam putih abu-abu.');\n  print('');\n  print('Terima kasih.');\n}",
+    "out": "PENGUMUMAN\n\nUpacara bendera dimulai pukul 07.00.\nSeluruh siswa memakai seragam putih abu-abu.\n\nTerima kasih."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Mencetak tanda terima pesanan",
+    "b": "Program pertama di aplikasi kasir biasanya hanya mencetak teks tetap. Setiap baris struk adalah satu print(), dan komentar menjelaskan bagian-bagiannya untuk rekan satu tim.",
+    "code": "void main() {\n  // bagian kepala struk\n  print('==============================');\n  print('     WARUNG KOPI NUSANTARA     ');\n  print('   Jl. Merdeka 10, Bandung     ');\n  print('==============================');\n  // bagian isi pesanan\n  print('Kopi susu gula aren   18.000');\n  print('Roti bakar cokelat    22.500');\n  print('------------------------------');\n  print('Total                 40.500');\n  // bagian penutup\n  print('Terima kasih, sampai jumpa!');\n}",
+    "out": "==============================\n     WARUNG KOPI NUSANTARA     \n   Jl. Merdeka 10, Bandung     \n==============================\nKopi susu gula aren   18.000\nRoti bakar cokelat    22.500\n------------------------------\nTotal                 40.500\nTerima kasih, sampai jumpa!"
+   }
+  ]
+ },
+ "dart-1-2": {
+  "code": "void main() {\n  var nama = 'Rina';         // ditebak sebagai String\n  int umur = 20;\n  double ipk = 3.75;\n  final kampus = 'UNIMED';   // diisi sekali\n  const pajak = 0.11;        // pasti saat kompilasi\n\n  String? alamat;            // boleh null, awalnya null\n  final alamatTampil = alamat ?? 'belum diisi';\n\n  print('$nama, $umur tahun, IPK $ipk');\n  print('Kampus: $kampus, pajak $pajak');\n  print('Alamat: $alamatTampil');\n  print(alamat?.length);     // tidak error, hasilnya null\n}",
+  "out": "Rina, 20 tahun, IPK 3.75\nKampus: UNIMED, pajak 0.11\nAlamat: belum diisi\nnull",
+  "exs": [
+   {
+    "t": "Kasus: harga belanja di warung",
+    "d": "Variabel int menyimpan harga, lalu dihitung dengan operator aritmetika.",
+    "code": "void main() {\n  int hargaBeras = 15000;    // per kilogram\n  int jumlahKg = 3;\n  int hargaMinyak = 18000;\n\n  var totalBeras = hargaBeras * jumlahKg;\n  var totalBelanja = totalBeras + hargaMinyak;\n  var uangDibayar = 100000;\n  var kembalian = uangDibayar - totalBelanja;\n\n  print('Total beras: $totalBeras');\n  print('Total belanja: $totalBelanja');\n  print('Kembalian: $kembalian');\n}",
+    "out": "Total beras: 45000\nTotal belanja: 63000\nKembalian: 37000"
+   },
+   {
+    "t": "Kasus: jarak tempuh ojek daring",
+    "d": "double untuk angka desimal, const untuk tarif yang tidak pernah berubah.",
+    "code": "void main() {\n  const tarifPerKm = 2500;\n  double jarakKm = 6.4;\n  final ongkos = jarakKm * tarifPerKm;   // hasilnya double\n  final waktuMenit = jarakKm / 0.5;      // kecepatan 0,5 km per menit\n\n  print('Jarak: $jarakKm km');\n  print('Ongkos: $ongkos');\n  print('Perkiraan waktu: $waktuMenit menit');\n}",
+    "out": "Jarak: 6.4 km\nOngkos: 16000.0\nPerkiraan waktu: 12.8 menit"
+   },
+   {
+    "t": "Kasus: nomor HP cadangan yang boleh kosong",
+    "d": "String? boleh null; ?? memberi nilai cadangan dan ??= mengisi hanya jika masih null.",
+    "code": "void main() {\n  String nomorUtama = '0812-3456-7890';\n  String? nomorCadangan;          // belum diisi pengguna\n\n  final dihubungi = nomorCadangan ?? nomorUtama;\n  print('Nomor yang dihubungi: $dihubungi');\n\n  nomorCadangan ??= '0857-1111-2222';   // diisi karena masih null\n  nomorCadangan ??= '0899-0000-0000';   // diabaikan, sudah berisi\n  print('Nomor cadangan: $nomorCadangan');\n}",
+    "out": "Nomor yang dihubungi: 0812-3456-7890\nNomor cadangan: 0857-1111-2222"
+   },
+   {
+    "t": "Kasus: menukar isi dua variabel",
+    "d": "Variabel bantu menyimpan nilai lama agar tidak hilang saat ditimpa.",
+    "code": "void main() {\n  var gelasA = 'teh';\n  var gelasB = 'kopi';\n  print('Sebelum: A = $gelasA, B = $gelasB');\n\n  var bantu = gelasA;   // simpan isi A dulu\n  gelasA = gelasB;\n  gelasB = bantu;\n  print('Sesudah: A = $gelasA, B = $gelasB');\n}",
+    "out": "Sebelum: A = teh, B = kopi\nSesudah: A = kopi, B = teh"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Operator null-aware pada profil pengguna",
+    "b": "Setelah kota ??= 'Medan', compiler tahu kota tidak null lagi (type promotion), jadi kota.length aman dipakai tanpa ?.",
+    "code": "void main() {\n  String? kota;              // pengguna belum mengisi kota\n  final nama = 'Sari';\n  print(kota?.length);       // tidak error, hasil null\n\n  final label = kota ?? 'Kota belum diisi';\n  print(label);\n\n  kota ??= 'Medan';          // isi nilai bawaan\n  final panjang = kota.length;\n  print('$nama tinggal di $kota ($panjang huruf)');\n}",
+    "out": "null\nKota belum diisi\nSari tinggal di Medan (5 huruf)"
+   }
+  ]
+ },
+ "dart-1-3": {
+  "code": "void main() {\n  const nama = 'Rina';\n  const ipk = 3.4567;\n  print('Nama: $nama, IPK ${ipk.toStringAsFixed(2)}');\n\n  // lebar kolom dan isi nol\n  print('[${nama.padLeft(8)}] [${nama.padRight(8)}]');\n  print('INV-${7.toString().padLeft(4, '0')}');\n  print('hex ${255.toRadixString(16)}, biner ${5.toRadixString(2)}');\n\n  // struk berkolom: nama rata kiri, harga rata kanan\n  print('${'Kopi susu'.padRight(12)}${18000.toString().padLeft(8)}');\n  print('${'Roti bakar'.padRight(12)}${22500.toString().padLeft(8)}');\n}",
+  "out": "Nama: Rina, IPK 3.46\n[    Rina] [Rina    ]\nINV-0007\nhex ff, biner 101\nKopi susu      18000\nRoti bakar     22500",
+  "exs": [
+   {
+    "t": "Kasus: rata-rata nilai rapor",
+    "d": "Ekspresi di dalam ${...} dihitung dulu, lalu dibulatkan dengan toStringAsFixed.",
+    "code": "void main() {\n  const nama = 'Budi Santoso';\n  const mtk = 85, ipa = 78, bindo = 90;\n  final rataRata = (mtk + ipa + bindo) / 3;\n\n  print('Rapor $nama');\n  print('Jumlah nilai: ${mtk + ipa + bindo}');\n  print('Rata-rata: ${rataRata.toStringAsFixed(1)}');\n  print('Rata-rata (2 desimal): ${rataRata.toStringAsFixed(2)}');\n}",
+    "out": "Rapor Budi Santoso\nJumlah nilai: 253\nRata-rata: 84.3\nRata-rata (2 desimal): 84.33"
+   },
+   {
+    "t": "Kasus: nomor antrean di bank",
+    "d": "padLeft dengan '0' membuat nomor selalu tiga digit, toUpperCase menyeragamkan kode loket.",
+    "code": "void main() {\n  const kodeLoket = 'cs';\n  const nomor = 7;\n  const nomorBerikut = nomor + 1;\n\n  final kode = kodeLoket.toUpperCase();\n  print('Antrean: $kode-${nomor.toString().padLeft(3, '0')}');\n  print('Berikutnya: $kode-${nomorBerikut.toString().padLeft(3, '0')}');\n  print('Panjang kode: ${kode.length} huruf');\n}",
+    "out": "Antrean: CS-007\nBerikutnya: CS-008\nPanjang kode: 2 huruf"
+   },
+   {
+    "t": "Kasus: daftar harga pulsa berkolom",
+    "d": "padRight untuk kolom teks dan padLeft untuk kolom angka membuat tabel rapi.",
+    "code": "void main() {\n  print('${'Nominal'.padRight(12)}${'Harga'.padLeft(8)}');\n  print('-' * 20);\n  print('${'Pulsa 10rb'.padRight(12)}${'11500'.padLeft(8)}');\n  print('${'Pulsa 25rb'.padRight(12)}${'25500'.padLeft(8)}');\n  print('${'Pulsa 100rb'.padRight(12)}${'99000'.padLeft(8)}');\n}",
+    "out": "Nominal        Harga\n--------------------\nPulsa 10rb     11500\nPulsa 25rb     25500\nPulsa 100rb    99000"
+   },
+   {
+    "t": "Kasus: merapikan masukan nama pengguna",
+    "d": "trim membuang spasi berlebih, lalu substring mengambil huruf awal untuk inisial.",
+    "code": "void main() {\n  const masukan = '   siti nurhaliza  ';\n  final rapi = masukan.trim();\n  final inisial = rapi.substring(0, 1).toUpperCase();\n\n  print('Asli : [$masukan]');\n  print('Rapi : [$rapi]');\n  print('Inisial: $inisial');\n  print('Mengandung \"nur\"? ${rapi.contains('nur')}');\n}",
+    "out": "Asli : [   siti nurhaliza  ]\nRapi : [siti nurhaliza]\nInisial: S\nMengandung \"nur\"? true"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Format rupiah tanpa pustaka tambahan",
+    "b": "Untuk harga di bawah sejuta, ~/ 1000 (bagi bulat) mengambil bagian ribuan dan % 1000 mengambil sisanya, lalu padLeft mengisi nol. Di aplikasi nyata gunakan NumberFormat.currency(locale: 'id_ID', symbol: 'Rp') dari paket intl.",
+    "code": "void main() {\n  const harga = 85000;\n  const ribu = harga ~/ 1000;   // 85\n  const sisa = harga % 1000;    // 0\n  final teksHarga = 'Rp$ribu.${sisa.toString().padLeft(3, '0')}';\n\n  print('Harga: $teksHarga');\n  print('${'Kopi'.padRight(8)}${teksHarga.padLeft(10)}');\n  print('${'Teh'.padRight(8)}${'Rp7.500'.padLeft(10)}');\n}",
+    "out": "Harga: Rp85.000\nKopi      Rp85.000\nTeh        Rp7.500"
+   }
+  ]
+ },
+ "dart-2-1": {
+  "exs": [
+   {
+    "t": "Kasus: ongkos kirim berdasarkan berat paket",
+    "d": "if, else if, dan else memilih satu cabang dari atas ke bawah.",
+    "code": "void main() {\n  final beratKg = 3;\n  int ongkir;\n  if (beratKg <= 1) {\n    ongkir = 9000;\n  } else if (beratKg <= 5) {\n    ongkir = 15000;\n  } else {\n    ongkir = 25000;\n  }\n  print('Berat $beratKg kg, ongkir Rp$ongkir');\n}",
+    "out": "Berat 3 kg, ongkir Rp15000"
+   },
+   {
+    "t": "Kasus: nama hari dari nomor",
+    "d": "switch expression memetakan setiap nilai ke hasilnya; _ menangkap sisanya.",
+    "code": "void main() {\n  final nomorHari = 5;\n  final hari = switch (nomorHari) {\n    1 => 'Senin',\n    2 => 'Selasa',\n    3 => 'Rabu',\n    4 => 'Kamis',\n    5 => 'Jumat',\n    6 || 7 => 'Akhir pekan',\n    _ => 'Tidak dikenal',\n  };\n  print('Hari ke-$nomorHari: $hari');\n  final jenis = nomorHari == 5 ? 'hari pendek' : 'hari biasa';\n  print('Jumat adalah $jenis');\n}",
+    "out": "Hari ke-5: Jumat\nJumat adalah hari pendek"
+   },
+   {
+    "t": "Kasus: menabung uang jajan sampai cukup",
+    "d": "while dipakai karena jumlah hari belum diketahui, yang diketahui hanya targetnya.",
+    "code": "void main() {\n  const target = 75000;\n  const sisihkanPerHari = 12000;\n  var tabungan = 0;\n  var hari = 0;\n  while (tabungan < target) {\n    tabungan += sisihkanPerHari;\n    hari++;\n  }\n  print('Butuh $hari hari, tabungan Rp$tabungan');\n}",
+    "out": "Butuh 7 hari, tabungan Rp84000"
+   },
+   {
+    "t": "Kasus: label ganjil dan genap untuk nomor kursi",
+    "d": "for klasik menghitung 1 sampai 5, operator ternary memilih labelnya.",
+    "code": "void main() {\n  for (var kursi = 1; kursi <= 5; kursi++) {\n    final sisi = kursi % 2 == 0 ? 'kanan' : 'kiri';\n    print('Kursi $kursi di sisi $sisi');\n  }\n}",
+    "out": "Kursi 1 di sisi kiri\nKursi 2 di sisi kanan\nKursi 3 di sisi kiri\nKursi 4 di sisi kanan\nKursi 5 di sisi kiri"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Menyusun menu aplikasi dengan if dan for",
+    "b": "Daftar menu dibangun langkah demi langkah: for-in menambah kategori, lalu if memilih Profil atau Masuk. Di pelajaran List nanti ada cara yang lebih ringkas, yaitu collection if dan collection for.",
+    "code": "void main() {\n  final sudahLogin = true;\n  final kategori = ['Kopi', 'Teh'];\n  final menu = ['Beranda'];\n  for (final k in kategori) {\n    menu.add('Kategori $k');\n  }\n  if (sudahLogin) {\n    menu.add('Profil');\n  } else {\n    menu.add('Masuk');\n  }\n  print(menu);\n}",
+    "out": "[Beranda, Kategori Kopi, Kategori Teh, Profil]"
+   }
+  ]
+ },
+ "dart-2-2": {
+  "code": "void main() {\n  // Fibonacci: for, jumlah suku diketahui\n  var a = 0, b = 1;\n  var deret = '';\n  for (var i = 0; i < 10; i++) {\n    deret += '$a ';\n    final berikut = a + b;   // variabel bantu\n    a = b;\n    b = berikut;\n  }\n  print('Fibonacci: $deret');\n\n  // Bubble sort: while luar, for dalam\n  final data = [64, 25, 12, 22, 11];\n  var adaTukar = true;\n  while (adaTukar) {\n    adaTukar = false;\n    for (var j = 0; j < data.length - 1; j++) {\n      if (data[j] > data[j + 1]) {\n        final t = data[j];\n        data[j] = data[j + 1];\n        data[j + 1] = t;\n        adaTukar = true;\n      }\n    }\n  }\n  print('Terurut: $data');\n\n  // Prima: for bersarang + break\n  var prima = '';\n  for (var x = 2; x <= 30; x++) {\n    var isPrima = true;\n    for (var d = 2; d * d <= x; d++) {\n      if (x % d == 0) {\n        isPrima = false;\n        break;\n      }\n    }\n    if (isPrima) prima += '$x ';\n  }\n  print('Prima: $prima');\n}",
+  "out": "Fibonacci: 0 1 1 2 3 5 8 13 21 34 \nTerurut: [11, 12, 22, 25, 64]\nPrima: 2 3 5 7 11 13 17 19 23 29 ",
+  "exs": [
+   {
+    "t": "Kasus: faktorial untuk menghitung susunan antrean",
+    "d": "5 orang bisa diantrekan dalam 5! = 120 cara; for mengalikan 1 sampai n.",
+    "code": "void main() {\n  const n = 5;\n  var hasil = 1;\n  for (var i = 1; i <= n; i++) {\n    hasil *= i;\n    print('$i! = $hasil');\n  }\n  print('$n orang bisa diantrekan dalam $hasil cara');\n}",
+    "out": "1! = 1\n2! = 2\n3! = 6\n4! = 24\n5! = 120\n5 orang bisa diantrekan dalam 120 cara"
+   },
+   {
+    "t": "Kasus: mencari nilai tertinggi di kelas",
+    "d": "Simpan kandidat terbesar, lalu bandingkan dengan setiap nilai.",
+    "code": "void main() {\n  final nilai = [78, 92, 85, 64, 92, 88];\n  var tertinggi = nilai[0];\n  var posisi = 0;\n  for (var i = 1; i < nilai.length; i++) {\n    if (nilai[i] > tertinggi) {\n      tertinggi = nilai[i];\n      posisi = i;\n    }\n  }\n  print('Nilai tertinggi $tertinggi, pertama ada di absen ${posisi + 1}');\n}",
+    "out": "Nilai tertinggi 92, pertama ada di absen 2"
+   },
+   {
+    "t": "Kasus: FPB untuk membagi kue ke dalam kotak",
+    "d": "Algoritma Euclid memakai while karena jumlah langkahnya tidak diketahui di awal.",
+    "code": "void main() {\n  var a = 48;   // kue cokelat\n  var b = 36;   // kue keju\n  print('Mencari FPB dari $a dan $b');\n  while (b != 0) {\n    final sisa = a % b;\n    print('$a % $b = $sisa');\n    a = b;\n    b = sisa;\n  }\n  print('FPB = $a, jadi ada $a kotak dengan isi sama');\n}",
+    "out": "Mencari FPB dari 48 dan 36\n48 % 36 = 12\n36 % 12 = 0\nFPB = 12, jadi ada 12 kotak dengan isi sama"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Mengurutkan nilai ujian lalu mencari median",
+    "b": "Median adalah nilai tengah data yang sudah terurut. Bubble sort mengurutkan data, lalu indeks tengah diambil dengan pembagian bulat ~/.",
+    "code": "void main() {\n  final nilai = [72, 95, 60, 88, 79, 91, 66];\n  var adaTukar = true;\n  var putaran = 0;\n  while (adaTukar) {\n    adaTukar = false;\n    putaran++;\n    for (var j = 0; j < nilai.length - 1; j++) {\n      if (nilai[j] > nilai[j + 1]) {\n        final t = nilai[j];\n        nilai[j] = nilai[j + 1];\n        nilai[j + 1] = t;\n        adaTukar = true;\n      }\n    }\n  }\n  print('Terurut: $nilai');\n  print('Selesai dalam $putaran putaran');\n  print('Median: ${nilai[nilai.length ~/ 2]}');\n}",
+    "out": "Terurut: [60, 66, 72, 79, 88, 91, 95]\nSelesai dalam 6 putaran\nMedian: 79"
+   }
+  ]
+ },
+ "dart-2-3": {
+  "exs": [
+   {
+    "t": "Kasus: luas dan keliling kebun sayur",
+    "d": "Fungsi dengan parameter posisi dan return; versi satu baris memakai arrow.",
+    "code": "int luas(int panjang, int lebar) {\n  return panjang * lebar;\n}\n\nint keliling(int panjang, int lebar) => 2 * (panjang + lebar);\n\nvoid main() {\n  print('Luas kebun: ${luas(12, 5)} m2');\n  print('Pagar yang dibutuhkan: ${keliling(12, 5)} m');\n  print('Luas petak kecil: ${luas(3, 2)} m2');\n}",
+    "out": "Luas kebun: 60 m2\nPagar yang dibutuhkan: 34 m\nLuas petak kecil: 6 m2"
+   },
+   {
+    "t": "Kasus: pesan notifikasi aplikasi",
+    "d": "Parameter bernama dengan required dan nilai bawaan, seperti konstruktor widget Flutter.",
+    "code": "String buatNotifikasi({required String judul, String ikon = 'info', bool penting = false}) {\n  final tanda = penting ? '!!' : '';\n  return '[$ikon] $judul$tanda';\n}\n\nvoid main() {\n  print(buatNotifikasi(judul: 'Pesanan dikirim'));\n  print(buatNotifikasi(judul: 'Saldo menipis', ikon: 'dompet', penting: true));\n  print(buatNotifikasi(penting: true, judul: 'Kata sandi diubah'));\n}",
+    "out": "[info] Pesanan dikirim\n[dompet] Saldo menipis!!\n[info] Kata sandi diubah!!"
+   },
+   {
+    "t": "Kasus: fungsi sebagai nilai untuk aturan diskon",
+    "d": "Fungsi bisa disimpan di variabel dan dikirim sebagai argumen ke fungsi lain.",
+    "code": "int hargaAkhir(int harga, int Function(int) aturan) => aturan(harga);\n\nvoid main() {\n  final diskonMember = (int h) => h - h ~/ 10;      // potong 10%\n  final potongTetap = (int h) => h - 5000;           // potong Rp5.000\n\n  print(hargaAkhir(50000, diskonMember));\n  print(hargaAkhir(50000, potongTetap));\n  print(hargaAkhir(50000, (h) => h));               // tanpa diskon\n}",
+    "out": "45000\n45000\n50000"
+   }
+  ]
+ },
+ "dart-2-4": {
+  "exs": [
+   {
+    "t": "Kasus: tabel perkalian 7",
+    "d": "for dipakai karena jumlah barisnya pasti 10.",
+    "code": "void main() {\n  const angka = 7;\n  for (var i = 1; i <= 10; i++) {\n    print('$angka x $i = ${angka * i}');\n  }\n}",
+    "out": "7 x 1 = 7\n7 x 2 = 14\n7 x 3 = 21\n7 x 4 = 28\n7 x 5 = 35\n7 x 6 = 42\n7 x 7 = 49\n7 x 8 = 56\n7 x 9 = 63\n7 x 10 = 70"
+   },
+   {
+    "t": "Kasus: memasukkan PIN, minimal sekali",
+    "d": "do-while cocok karena pengguna pasti mencoba paling tidak satu kali.",
+    "code": "void main() {\n  const pinBenar = '2468';\n  final percobaan = ['1111', '2222', '2468'];\n  var ke = 0;\n  var pin = '';\n  do {\n    pin = percobaan[ke];\n    ke++;\n    print('Percobaan $ke: $pin');\n  } while (pin != pinBenar);\n  print('PIN benar setelah $ke kali');\n}",
+    "out": "Percobaan 1: 1111\nPercobaan 2: 2222\nPercobaan 3: 2468\nPIN benar setelah 3 kali"
+   },
+   {
+    "t": "Kasus: belanja dengan anggaran terbatas",
+    "d": "continue melewati barang yang stoknya habis, break berhenti saat uang tidak cukup.",
+    "code": "void main() {\n  final barang = ['Susu', 'Roti', 'Keju', 'Telur', 'Mentega'];\n  final harga = [18000, 15000, 45000, 28000, 32000];\n  final stok = [3, 0, 2, 5, 1];\n  var sisaUang = 70000;\n\n  for (var i = 0; i < barang.length; i++) {\n    if (stok[i] == 0) {\n      print('${barang[i]} habis, lewati');\n      continue;\n    }\n    if (harga[i] > sisaUang) {\n      print('Uang tidak cukup untuk ${barang[i]}, berhenti');\n      break;\n    }\n    sisaUang -= harga[i];\n    print('Beli ${barang[i]}, sisa Rp$sisaUang');\n  }\n}",
+    "out": "Beli Susu, sisa Rp52000\nRoti habis, lewati\nBeli Keju, sisa Rp7000\nUang tidak cukup untuk Telur, berhenti"
+   },
+   {
+    "t": "Kasus: denah kursi bioskop",
+    "d": "Loop bersarang: baris di luar, nomor kursi di dalam.",
+    "code": "void main() {\n  final barisKursi = ['A', 'B', 'C'];\n  for (final baris in barisKursi) {\n    var deret = '';\n    for (var nomor = 1; nomor <= 4; nomor++) {\n      deret += '$baris$nomor ';\n    }\n    print(deret);\n  }\n}",
+    "out": "A1 A2 A3 A4 \nB1 B2 B3 B4 \nC1 C2 C3 C4 "
+   }
+  ]
+ },
+ "dart-2-5": {
+  "exs": [
+   {
+    "t": "Kasus: syarat membuat SIM",
+    "d": "AND: semua syarat harus terpenuhi.",
+    "code": "void main() {\n  const umur = 18;\n  const punyaKtp = true;\n  const lulusUjianTeori = false;\n\n  final cukupUmur = umur >= 17;\n  final bolehUjianPraktik = cukupUmur && punyaKtp && lulusUjianTeori;\n  print('Cukup umur: $cukupUmur');\n  print('Boleh ujian praktik: $bolehUjianPraktik');\n  if (!lulusUjianTeori) {\n    print('Ulangi ujian teori dulu');\n  }\n}",
+    "out": "Cukup umur: true\nBoleh ujian praktik: false\nUlangi ujian teori dulu"
+   },
+   {
+    "t": "Kasus: gratis ongkir di toko daring",
+    "d": "OR: cukup salah satu syarat terpenuhi.",
+    "code": "void main() {\n  const member = false;\n  const totalBelanja = 125000;\n  const pakaiVoucher = false;\n\n  final gratisOngkir = member || totalBelanja >= 100000 || pakaiVoucher;\n  print('Gratis ongkir: $gratisOngkir');\n\n  final alasan = member ? 'member' : 'belanja di atas 100 ribu';\n  if (gratisOngkir) print('Alasan: $alasan');\n}",
+    "out": "Gratis ongkir: true\nAlasan: belanja di atas 100 ribu"
+   },
+   {
+    "t": "Kasus: De Morgan pada jam buka apotek",
+    "d": "!(buka && adaObat) selalu sama dengan !buka || !adaObat.",
+    "code": "void main() {\n  const jam = 22;\n  const adaObat = true;\n  final buka = jam >= 8 && jam < 21;\n\n  final tidakBisaBeli1 = !(buka && adaObat);\n  final tidakBisaBeli2 = !buka || !adaObat;\n  print('Apotek buka: $buka');\n  print('Tidak bisa beli (cara 1): $tidakBisaBeli1');\n  print('Tidak bisa beli (cara 2): $tidakBisaBeli2');\n  print('Hasilnya sama: ${tidakBisaBeli1 == tidakBisaBeli2}');\n}",
+    "out": "Apotek buka: false\nTidak bisa beli (cara 1): true\nTidak bisa beli (cara 2): true\nHasilnya sama: true"
+   }
+  ]
+ },
+ "dart-2-6": {
+  "code": "import 'dart:math';\n\nvoid main() {\n  // seed 7 agar hasilnya selalu sama; hapus angka 7 untuk hasil berbeda tiap kali\n  final acak = Random(7);\n\n  // 1. Desimal acak: 0.0 sampai KURANG DARI 1.0\n  final r = acak.nextDouble();\n  print('desimal: ${r.toStringAsFixed(4)}');\n\n  // 2. Dadu 1..6: nextInt(6) memberi 0..5, lalu ditambah 1\n  var dadu = '5 dadu :';\n  for (var i = 0; i < 5; i++) {\n    dadu += ' ${acak.nextInt(6) + 1}';\n  }\n  print(dadu);\n\n  // 3. Rentang bebas bawah..atas (kedua batas ikut)\n  const bawah = 10, atas = 20;\n  print('10..20 : ${acak.nextInt(atas - bawah + 1) + bawah}');\n\n  // 4. Lempar dadu sampai keluar angka 6\n  var lemparan = 0, hasil = 0;\n  while (hasil != 6) {\n    hasil = acak.nextInt(6) + 1;\n    lemparan++;\n  }\n  print('dapat 6 setelah $lemparan lemparan');\n\n  // 5. Memilih satu isi list dan mengocok list\n  final menu = ['soto', 'bakso', 'gado-gado', 'nasi goreng'];\n  print('menu   : ${menu[acak.nextInt(menu.length)]}');\n  final kartu = [1, 2, 3, 4, 5];\n  kartu.shuffle(acak);\n  print('kocok  : $kartu');\n\n  // 6. Seed sama menghasilkan urutan yang sama (berguna untuk pengujian)\n  final a = Random(42), b = Random(42);\n  var sama = true;\n  for (var i = 0; i < 5; i++) {\n    if (a.nextInt(100) != b.nextInt(100)) sama = false;\n  }\n  print('seed 42 dua kali, urutan sama: $sama');\n}",
+  "out": "desimal: 0.1104\n5 dadu : 3 4 1 3 5\n10..20 : 20\ndapat 6 setelah 15 lemparan\nmenu   : bakso\nkocok  : [4, 2, 5, 1, 3]\nseed 42 dua kali, urutan sama: true",
+  "exs": [
+   {
+    "t": "Kasus: undian doorprize acara 17 Agustus",
+    "d": "Indeks acak 0 sampai panjang - 1 memilih satu nama dari daftar.",
+    "code": "import 'dart:math';\n\nvoid main() {\n  final acak = Random(17);   // seed agar hasil bisa diulang saat diperiksa panitia\n  final peserta = ['Andi', 'Putri', 'Yohanes', 'Made', 'Siti', 'Fajar'];\n  for (var hadiah = 1; hadiah <= 3; hadiah++) {\n    final indeks = acak.nextInt(peserta.length);\n    print('Hadiah $hadiah: ${peserta[indeks]}');\n  }\n}",
+    "out": "Hadiah 1: Andi\nHadiah 2: Made\nHadiah 3: Fajar"
+   },
+   {
+    "t": "Kasus: mengocok urutan soal kuis",
+    "d": "shuffle mengacak urutan isi list; dengan seed, urutannya bisa diulang.",
+    "code": "import 'dart:math';\n\nvoid main() {\n  final soal = ['Ibu kota Jawa Barat?', 'Lambang sila ke-3?', '7 x 8 = ?', 'Gunung tertinggi di Jawa?'];\n  soal.shuffle(Random(3));\n  for (var i = 0; i < soal.length; i++) {\n    print('${i + 1}. ${soal[i]}');\n  }\n}",
+    "out": "1. Lambang sila ke-3?\n2. Ibu kota Jawa Barat?\n3. 7 x 8 = ?\n4. Gunung tertinggi di Jawa?"
+   },
+   {
+    "t": "Kasus: simulasi lempar koin 20 kali",
+    "d": "nextBool memberi true atau false dengan peluang sama, lalu hasilnya dihitung.",
+    "code": "import 'dart:math';\n\nvoid main() {\n  final acak = Random(2026);\n  var angka = 0, gambar = 0;\n  var urutan = '';\n  for (var i = 0; i < 20; i++) {\n    if (acak.nextBool()) {\n      angka++;\n      urutan += 'A';\n    } else {\n      gambar++;\n      urutan += 'G';\n    }\n  }\n  print(urutan);\n  print('Angka: $angka, Gambar: $gambar');\n}",
+    "out": "GAAAGAGGAGGAGGGAGGGA\nAngka: 8, Gambar: 12"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Kode OTP 6 digit yang aman",
+    "b": "Random.secure() memakai sumber acak sistem operasi sehingga tidak bisa ditebak, wajib untuk OTP dan token. Nilai OTP berbeda setiap dijalankan, jadi yang dicetak hanya pemeriksaannya.",
+    "code": "import 'dart:math';\n\nvoid main() {\n  final r = Random.secure();\n  var otp = '';\n  for (var i = 0; i < 6; i++) {\n    otp += '${r.nextInt(10)}';\n  }\n  print('Panjang OTP: ${otp.length}');\n  final angka = int.parse(otp);\n  print('Dalam rentang 0..999999: ${angka >= 0 && angka <= 999999}');\n}",
+    "out": "Panjang OTP: 6\nDalam rentang 0..999999: true"
+   }
+  ]
+ },
+ "dart-3-1": {
+  "exs": [
+   {
+    "t": "Kasus: mengolah nilai ujian satu kelas (List)",
+    "d": "where menyaring, map mengubah, fold menjumlahkan, sort mengurutkan.",
+    "code": "void main() {\n  final nilai = [88, 64, 75, 92, 58, 81];\n  final lulus = nilai.where((n) => n >= 70).toList();\n  final bonus = nilai.map((n) => n + 5).toList();\n  final total = nilai.fold(0, (jumlah, n) => jumlah + n);\n\n  print('Lulus: $lulus');\n  print('Setelah bonus 5: $bonus');\n  print('Rata-rata: ${(total / nilai.length).toStringAsFixed(1)}');\n  print('Ada yang 100? ${nilai.any((n) => n == 100)}');\n  print('Semua di atas 50? ${nilai.every((n) => n > 50)}');\n  nilai.sort();   // mengubah urutan list aslinya\n  print('Terurut: $nilai');\n}",
+    "out": "Lulus: [88, 75, 92, 81]\nSetelah bonus 5: [93, 69, 80, 97, 63, 86]\nRata-rata: 76.3\nAda yang 100? false\nSemua di atas 50? true\nTerurut: [58, 64, 75, 81, 88, 92]"
+   },
+   {
+    "t": "Kasus: stok barang di toko kelontong (Map)",
+    "d": "Map menyimpan pasangan nama barang dan jumlah stok.",
+    "code": "void main() {\n  final stok = <String, int>{'beras': 20, 'gula': 8, 'minyak': 0};\n  stok['telur'] = 30;            // tambah kunci baru\n  stok['gula'] = stok['gula']! - 3;   // ubah nilai\n  stok.remove('minyak');         // hapus\n\n  print(stok);\n  print('Ada kopi? ${stok.containsKey('kopi')}');\n  stok.forEach((barang, jumlah) {\n    print('${barang.padRight(6)} : $jumlah');\n  });\n}",
+    "out": "{beras: 20, gula: 5, telur: 30}\nAda kopi? false\nberas  : 20\ngula   : 5\ntelur  : 30"
+   },
+   {
+    "t": "Kasus: peserta ekstrakurikuler (Set)",
+    "d": "Set otomatis membuang data ganda dan bisa mencari irisan dua kelompok.",
+    "code": "void main() {\n  final absenPramuka = ['Rudi', 'Ayu', 'Rudi', 'Bima', 'Ayu'];\n  final pramuka = absenPramuka.toSet();\n  final paskibra = {'Ayu', 'Citra', 'Bima'};\n\n  print('Peserta pramuka unik: $pramuka');\n  print('Ikut keduanya: ${pramuka.intersection(paskibra)}');\n  print('Semua peserta: ${pramuka.union(paskibra)}');\n  print('Jumlah peserta unik: ${pramuka.union(paskibra).length}');\n}",
+    "out": "Peserta pramuka unik: {Rudi, Ayu, Bima}\nIkut keduanya: {Ayu, Bima}\nSemua peserta: {Rudi, Ayu, Bima, Citra}\nJumlah peserta unik: 4"
+   },
+   {
+    "t": "Kasus: menu aplikasi dengan collection if dan for",
+    "d": "Isi list ditentukan langsung di dalam literal, pola yang sering dipakai di Flutter.",
+    "code": "void main() {\n  const sudahLogin = false;\n  const adminToko = true;\n  final kategori = ['Makanan', 'Minuman'];\n  final menu = [\n    'Beranda',\n    for (final k in kategori) 'Kategori $k',\n    if (sudahLogin) 'Profil' else 'Masuk',\n    if (adminToko) 'Kelola toko',\n  ];\n  print(menu);\n}",
+    "out": "[Beranda, Kategori Makanan, Kategori Minuman, Masuk, Kelola toko]"
+   }
+  ]
+ },
+ "dart-3-2": {
+  "exs": [
+   {
+    "t": "Kasus: rekening tabungan siswa",
+    "d": "Field saldo bisa berubah lewat method setor dan tarik.",
+    "code": "class Rekening {\n  final String pemilik;\n  int saldo;\n  Rekening(this.pemilik, this.saldo);\n\n  void setor(int jumlah) {\n    saldo += jumlah;\n    print('$pemilik setor $jumlah, saldo $saldo');\n  }\n\n  void tarik(int jumlah) {\n    if (jumlah > saldo) {\n      print('$pemilik gagal tarik $jumlah, saldo tidak cukup');\n      return;\n    }\n    saldo -= jumlah;\n    print('$pemilik tarik $jumlah, saldo $saldo');\n  }\n}\n\nvoid main() {\n  final rek = Rekening('Yusuf', 50000);\n  rek.setor(25000);\n  rek.tarik(100000);\n  rek.tarik(30000);\n}",
+    "out": "Yusuf setor 25000, saldo 75000\nYusuf gagal tarik 100000, saldo tidak cukup\nYusuf tarik 30000, saldo 45000"
+   },
+   {
+    "t": "Kasus: rapor siswa dengan getter",
+    "d": "Getter rataRata dan predikat dihitung dari field setiap kali dibaca.",
+    "code": "class Siswa {\n  final String nama;\n  final List<int> nilai;\n  const Siswa(this.nama, this.nilai);\n\n  double get rataRata => nilai.fold(0, (a, b) => a + b) / nilai.length;\n  String get predikat => rataRata >= 85 ? 'A' : rataRata >= 75 ? 'B' : 'C';\n\n  @override\n  String toString() => '$nama: ${rataRata.toStringAsFixed(1)} ($predikat)';\n}\n\nvoid main() {\n  const kelas = [\n    Siswa('Nadia', [90, 88, 85]),\n    Siswa('Rizky', [70, 78, 80]),\n    Siswa('Ketut', [65, 72, 70]),\n  ];\n  for (final s in kelas) {\n    print(s);\n  }\n}",
+    "out": "Nadia: 87.7 (A)\nRizky: 76.0 (B)\nKetut: 69.0 (C)"
+   },
+   {
+    "t": "Kasus: data cuaca dengan named constructor",
+    "d": "Named constructor memberi cara lain membuat objek dari satuan yang berbeda.",
+    "code": "class Suhu {\n  final String kota;\n  final double celsius;\n  Suhu(this.kota, this.celsius);\n\n  // dari sensor yang mengirim Fahrenheit\n  Suhu.dariFahrenheit(this.kota, double f) : celsius = (f - 32) * 5 / 9;\n\n  bool get panas => celsius >= 32;\n\n  @override\n  String toString() => '$kota ${celsius.toStringAsFixed(1)} C${panas ? ' (panas)' : ''}';\n}\n\nvoid main() {\n  print(Suhu('Surabaya', 33.5));\n  print(Suhu.dariFahrenheit('Bandung', 75));\n  print(Suhu.dariFahrenheit('Kupang', 93.2));\n}",
+    "out": "Surabaya 33.5 C (panas)\nBandung 23.9 C\nKupang 34.0 C (panas)"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Model immutable dengan fromJson dan copyWith",
+    "b": "Karena field final, perubahan dilakukan dengan membuat objek baru lewat copyWith. Pola ini dipakai state management Flutter agar perubahan mudah dilacak.",
+    "code": "class Produk {\n  final String nama;\n  final int harga;\n  const Produk({required this.nama, required this.harga});\n\n  Produk.fromJson(Map<String, dynamic> j)\n      : nama = j['nama'] as String,\n        harga = j['harga'] as int;\n\n  Produk copyWith({String? nama, int? harga}) =>\n      Produk(nama: nama ?? this.nama, harga: harga ?? this.harga);\n\n  String get labelHarga => 'Rp$harga';\n\n  @override\n  String toString() => 'Produk($nama, $labelHarga)';\n}\n\nvoid main() {\n  final p = Produk.fromJson({'nama': 'Kopi Gayo', 'harga': 85000});\n  final diskon = p.copyWith(harga: 76500);\n  print(p);\n  print(diskon);\n}",
+    "out": "Produk(Kopi Gayo, Rp85000)\nProduk(Kopi Gayo, Rp76500)"
+   }
+  ]
+ },
+ "dart-3-3": {
+  "exs": [
+   {
+    "t": "Kasus: tarif kendaraan di aplikasi ojek",
+    "d": "Abstract class mewajibkan setiap turunan mengisi getter tarifPerKm.",
+    "code": "abstract class Kendaraan {\n  final String nama;\n  Kendaraan(this.nama);\n  int get tarifPerKm;\n  int ongkos(int km) => tarifPerKm * km;\n}\n\nclass Motor extends Kendaraan {\n  Motor() : super('Motor');\n  @override\n  int get tarifPerKm => 2500;\n}\n\nclass Mobil extends Kendaraan {\n  final int kursi;\n  Mobil(this.kursi) : super('Mobil $kursi kursi');\n  @override\n  int get tarifPerKm => kursi > 4 ? 5000 : 4000;\n}\n\nvoid main() {\n  final pilihan = <Kendaraan>[Motor(), Mobil(4), Mobil(6)];\n  for (final k in pilihan) {\n    print('${k.nama}: 8 km = Rp${k.ongkos(8)}');\n  }\n}",
+    "out": "Motor: 8 km = Rp20000\nMobil 4 kursi: 8 km = Rp32000\nMobil 6 kursi: 8 km = Rp40000"
+   },
+   {
+    "t": "Kasus: mixin untuk produk yang bisa didiskon",
+    "d": "Satu class memakai dua mixin sekaligus dengan with.",
+    "code": "mixin BisaDiskon {\n  int hargaSetelahDiskon(int harga, int persen) => harga - harga * persen ~/ 100;\n}\n\nmixin BisaDilacak {\n  void lacak(String aksi) => print('[lacak] $aksi');\n}\n\nclass Buku with BisaDiskon, BisaDilacak {\n  final String judul;\n  final int harga;\n  Buku(this.judul, this.harga);\n\n  void beli() {\n    lacak('beli $judul');\n    print('Bayar ${hargaSetelahDiskon(harga, 20)}');\n  }\n}\n\nvoid main() {\n  Buku('Laskar Pelangi', 95000).beli();\n}",
+    "out": "[lacak] beli Laskar Pelangi\nBayar 76000"
+   },
+   {
+    "t": "Kasus: karyawan dan manajer di toko",
+    "d": "Turunan menimpa method dan tetap memakai versi induk lewat super.",
+    "code": "class Karyawan {\n  final String nama;\n  final int gajiPokok;\n  Karyawan(this.nama, this.gajiPokok);\n  int gaji() => gajiPokok;\n  String info() => '$nama: ${gaji()}';\n}\n\nclass Manajer extends Karyawan {\n  final int tunjangan;\n  Manajer(super.nama, super.gajiPokok, this.tunjangan);\n\n  @override\n  int gaji() => super.gaji() + tunjangan;\n\n  @override\n  String info() => '${super.info()} (manajer)';\n}\n\nvoid main() {\n  final tim = [Karyawan('Lina', 4500000), Manajer('Hendra', 7000000, 1500000)];\n  for (final orang in tim) {\n    print(orang.info());\n  }\n}",
+    "out": "Lina: 4500000\nHendra: 8500000 (manajer)"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Sealed class untuk status layar",
+    "b": "Dengan sealed class, switch tahu semua turunan Status. Jika kelak ada turunan baru, compiler menandai setiap switch yang belum menanganinya.",
+    "code": "sealed class Status {}\n\nclass Memuat extends Status {}\n\nclass Sukses extends Status {\n  final int jumlahProduk;\n  Sukses(this.jumlahProduk);\n}\n\nclass Gagal extends Status {\n  final String pesan;\n  Gagal(this.pesan);\n}\n\nString ikon(Status s) => switch (s) {\n      Memuat() => 'putar',\n      Sukses() => 'centang',\n      Gagal() => 'silang',\n    };\n\nvoid main() {\n  final daftar = [Memuat(), Sukses(12), Gagal('tidak ada koneksi')];\n  for (final s in daftar) {\n    print('${s.runtimeType}: ikon ${ikon(s)}');\n  }\n}",
+    "out": "Memuat: ikon putar\nSukses: ikon centang\nGagal: ikon silang"
+   }
+  ]
+ },
+ "dart-4-1": {
+  "code": "Future<String> ambilNama(int id) async {\n  // pura-pura menunggu jawaban server selama 0,5 detik\n  await Future.delayed(const Duration(milliseconds: 500));\n  return 'Pengguna #$id';\n}\n\nFuture<void> main() async {\n  print('Memuat...');\n  final nama = await ambilNama(7);   // tunggu sampai selesai\n  print(nama);\n\n  final permintaan = ambilNama(8);   // dimulai, tapi belum ditunggu\n  print('Sambil menunggu, aplikasi tetap jalan');\n  print(await permintaan);\n  print('Selesai memuat');\n}",
+  "out": "Memuat...\nPengguna #7\nSambil menunggu, aplikasi tetap jalan\nPengguna #8\nSelesai memuat",
+  "exs": [
+   {
+    "t": "Kasus: cek saldo dompet digital",
+    "d": "Fungsi async mengembalikan Future<int>; await mengambil angkanya.",
+    "code": "Future<int> ambilSaldo(String akun) async {\n  await Future.delayed(const Duration(milliseconds: 300));\n  return akun == 'dewi' ? 250000 : 40000;\n}\n\nFuture<void> main() async {\n  final saldo = await ambilSaldo('dewi');\n  print('Saldo Dewi: Rp$saldo');\n  final cukup = saldo >= 100000;\n  print('Cukup untuk bayar listrik Rp100000? $cukup');\n}",
+    "out": "Saldo Dewi: Rp250000\nCukup untuk bayar listrik Rp100000? true"
+   },
+   {
+    "t": "Kasus: urutan pesan saat lupa await",
+    "d": "Tanpa await, baris berikutnya langsung jalan sebelum Future selesai.",
+    "code": "Future<void> kirimStruk() async {\n  await Future.delayed(const Duration(milliseconds: 200));\n  print('3. Struk terkirim ke email');\n}\n\nFuture<void> main() async {\n  print('1. Pembayaran berhasil');\n  final proses = kirimStruk();   // tidak ditunggu di sini\n  print('2. Kembali ke beranda');\n  await proses;                  // tunggu sebelum program selesai\n  print('4. Program selesai');\n}",
+    "out": "1. Pembayaran berhasil\n2. Kembali ke beranda\n3. Struk terkirim ke email\n4. Program selesai"
+   },
+   {
+    "t": "Kasus: langkah pesanan makanan berurutan",
+    "d": "Setiap await menunggu satu langkah selesai sebelum langkah berikutnya dimulai.",
+    "code": "Future<String> langkah(String nama, int ms) async {\n  await Future.delayed(Duration(milliseconds: ms));\n  return '$nama selesai';\n}\n\nFuture<void> main() async {\n  final langkahPesanan = ['Pesanan diterima', 'Makanan dimasak', 'Kurir mengantar'];\n  for (final l in langkahPesanan) {\n    print(await langkah(l, 150));\n  }\n  print('Pesanan sampai, selamat makan!');\n}",
+    "out": "Pesanan diterima selesai\nMakanan dimasak selesai\nKurir mengantar selesai\nPesanan sampai, selamat makan!"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Memuat tiga data paralel dengan Future.wait",
+    "b": "Jika ditunggu satu per satu, totalnya sekitar 750 ms. Dengan Future.wait, ketiganya berjalan bersamaan dan waktunya mengikuti yang paling lama (sekitar 300 ms).",
+    "code": "Future<String> ambil(String nama, int ms) async {\n  await Future.delayed(Duration(milliseconds: ms));\n  return nama;\n}\n\nFuture<void> main() async {\n  final sw = Stopwatch();\n  sw.start();\n  final hasil = await Future.wait([ambil('profil', 300), ambil('saldo', 200), ambil('promo', 250)]);\n  print(hasil);\n  print('Selesai kurang dari 600 ms: ${sw.elapsedMilliseconds < 600}');\n}",
+    "out": "[profil, saldo, promo]\nSelesai kurang dari 600 ms: true"
+   }
+  ]
+ },
+ "dart-4-2": {
+  "exs": [
+   {
+    "t": "Kasus: pesan chat yang masuk satu per satu",
+    "d": "async* dengan yield mengirim beberapa nilai, await for membacanya bergantian.",
+    "code": "Stream<String> pesanMasuk() async* {\n  final pesan = ['Halo, sudah sampai?', 'Aku di depan gerbang', 'Oke, aku turun'];\n  for (final p in pesan) {\n    await Future.delayed(const Duration(milliseconds: 100));\n    yield p;\n  }\n}\n\nFuture<void> main() async {\n  var nomor = 0;\n  await for (final p in pesanMasuk()) {\n    nomor++;\n    print('Pesan $nomor: $p');\n  }\n  print('Tidak ada pesan baru');\n}",
+    "out": "Pesan 1: Halo, sudah sampai?\nPesan 2: Aku di depan gerbang\nPesan 3: Oke, aku turun\nTidak ada pesan baru"
+   },
+   {
+    "t": "Kasus: memantau suhu dengan listen",
+    "d": "listen mendaftarkan fungsi yang dipanggil setiap data datang, onDone saat stream selesai.",
+    "code": "Stream<double> sensorSuhu() async* {\n  for (final s in [29.5, 31.0, 33.2, 30.4]) {\n    await Future.delayed(const Duration(milliseconds: 50));\n    yield s;\n  }\n}\n\nvoid main() {\n  sensorSuhu().listen(\n    (suhu) {\n      final status = suhu > 32 ? 'PERINGATAN panas' : 'normal';\n      print('$suhu C: $status');\n    },\n    onDone: () => print('Sensor berhenti mengirim'),\n  );\n  print('Mulai memantau...');\n}",
+    "out": "Mulai memantau...\n29.5 C: normal\n31.0 C: normal\n33.2 C: PERINGATAN panas\n30.4 C: normal\nSensor berhenti mengirim"
+   },
+   {
+    "t": "Kasus: progres unduhan dengan where dan map",
+    "d": "Stream juga punya where dan map seperti List, cocok untuk menyaring data sebelum ditampilkan.",
+    "code": "Stream<int> progresUnduhan() async* {\n  for (var persen = 0; persen <= 100; persen += 20) {\n    await Future.delayed(const Duration(milliseconds: 30));\n    yield persen;\n  }\n}\n\nFuture<void> main() async {\n  final label = progresUnduhan().where((p) => p > 0).map((p) => 'Terunduh $p%');\n  await for (final teks in label) {\n    print(teks);\n  }\n}",
+    "out": "Terunduh 20%\nTerunduh 40%\nTerunduh 60%\nTerunduh 80%\nTerunduh 100%"
+   }
+  ]
+ },
+ "dart-4-3": {
+  "exs": [
+   {
+    "t": "Kasus: pubspec aplikasi baris perintah cek ongkir",
+    "d": "Tanda ^ berarti boleh memakai versi lebih baru selama versi utamanya sama.",
+    "code": "name: cek_ongkir\ndescription: Program baris perintah untuk menghitung ongkos kirim.\nversion: 0.1.0\npublish_to: none        # tidak diunggah ke pub.dev\n\nenvironment:\n  sdk: ^3.5.0\n\ndependencies:\n  args: ^2.6.0          # membaca argumen baris perintah\n  http: ^1.2.0          # memanggil API ongkir\n\ndev_dependencies:\n  lints: ^4.0.0\n  test: ^1.25.0"
+   },
+   {
+    "t": "Kasus: aturan dart analyze untuk tim",
+    "d": "analysis_options.yaml di akar proyek mengatur aturan yang diperiksa dart analyze.",
+    "code": "# analysis_options.yaml\ninclude: package:lints/recommended.yaml\n\nanalyzer:\n  exclude:\n    - build/**\n  language:\n    strict-casts: true\n\nlinter:\n  rules:\n    - prefer_const_constructors\n    - prefer_single_quotes\n    - avoid_print"
+   },
+   {
+    "t": "Kasus: memakai package lokal dalam satu repositori",
+    "d": "Package bisa diambil dari folder lain lewat path, berguna untuk memecah proyek besar.",
+    "code": "name: kasir_app\ndescription: Aplikasi kasir warung.\nversion: 1.2.0+5\npublish_to: none\n\nenvironment:\n  sdk: ^3.5.0\n\ndependencies:\n  intl: ^0.19.0\n  kasir_inti:            # logika hitung struk di folder sebelah\n    path: ../kasir_inti\n\ndev_dependencies:\n  test: ^1.25.0"
+   }
+  ]
+ },
+ "dart-5-1": {
+  "exs": [
+   {
+    "t": "Kasus: membaca umur dari formulir pendaftaran",
+    "d": "int.tryParse memberi null untuk teks yang bukan angka, jadi tidak perlu try/catch.",
+    "code": "void main() {\n  final isianForm = ['17', 'tujuh belas', '', '25'];\n  for (final isian in isianForm) {\n    final umur = int.tryParse(isian);\n    if (umur == null) {\n      print('\"$isian\" bukan angka, minta isi ulang');\n    } else {\n      print('Umur tersimpan: $umur');\n    }\n  }\n}",
+    "out": "Umur tersimpan: 17\n\"tujuh belas\" bukan angka, minta isi ulang\n\"\" bukan angka, minta isi ulang\nUmur tersimpan: 25"
+   },
+   {
+    "t": "Kasus: validasi jumlah transfer",
+    "d": "throw melempar error dengan pesan jelas, catch (e) menangkap jenis apa pun.",
+    "code": "void transfer(int jumlah) {\n  if (jumlah <= 0) throw ArgumentError('jumlah harus lebih dari 0');\n  if (jumlah > 5000000) throw StateError('melebihi batas harian');\n  print('Transfer $jumlah diproses');\n}\n\nvoid main() {\n  for (final j in [150000, -2000, 7000000]) {\n    try {\n      transfer(j);\n    } on ArgumentError catch (e) {\n      print('Input salah: ${e.message}');\n    } catch (e) {\n      print('Ditolak: $e');\n    }\n  }\n}",
+    "out": "Transfer 150000 diproses\nInput salah: jumlah harus lebih dari 0\nDitolak: Bad state: melebihi batas harian"
+   },
+   {
+    "t": "Kasus: finally menutup koneksi printer struk",
+    "d": "Blok finally tetap jalan, baik pencetakan berhasil maupun gagal.",
+    "code": "void cetak(String isi) {\n  print('Buka koneksi printer');\n  try {\n    if (isi.isEmpty) throw FormatException('struk kosong');\n    print('Mencetak: $isi');\n  } on FormatException catch (e) {\n    print('Gagal mencetak: ${e.message}');\n  } finally {\n    print('Tutup koneksi printer');\n  }\n}\n\nvoid main() {\n  cetak('Total Rp45.000');\n  cetak('');\n}",
+    "out": "Buka koneksi printer\nMencetak: Total Rp45.000\nTutup koneksi printer\nBuka koneksi printer\nGagal mencetak: struk kosong\nTutup koneksi printer"
+   },
+   {
+    "t": "Kasus: menangkap error dari kode async",
+    "d": "try/catch juga bekerja dengan await, pola yang dipakai saat memanggil API.",
+    "code": "Future<String> ambilProfil(int id) async {\n  await Future.delayed(const Duration(milliseconds: 100));\n  if (id <= 0) throw ArgumentError('id tidak valid');\n  return 'Pengguna #$id';\n}\n\nFuture<void> main() async {\n  for (final id in [7, 0]) {\n    print('Memuat profil $id...');\n    try {\n      print(await ambilProfil(id));\n    } catch (e) {\n      print('Gagal: $e');\n    } finally {\n      print('Indikator memuat dimatikan');\n    }\n  }\n}",
+    "out": "Memuat profil 7...\nPengguna #7\nIndikator memuat dimatikan\nMemuat profil 0...\nGagal: Invalid argument(s): id tidak valid\nIndikator memuat dimatikan"
+   }
+  ]
+ },
+ "dart-5-2": {
+  "exs": [
+   {
+    "t": "Kasus: status pesanan ojek dengan enum dan switch",
+    "d": "switch pada enum harus menangani semua nilai, jadi tidak ada status yang terlupa.",
+    "code": "enum StatusOjek { mencari, menjemput, mengantar, selesai }\n\nString pesan(StatusOjek s) => switch (s) {\n      StatusOjek.mencari => 'Mencari pengemudi terdekat...',\n      StatusOjek.menjemput => 'Pengemudi menuju lokasimu',\n      StatusOjek.mengantar => 'Dalam perjalanan',\n      StatusOjek.selesai => 'Sampai tujuan, beri rating ya',\n    };\n\nvoid main() {\n  for (final s in StatusOjek.values) {\n    print('${s.index + 1}. ${s.name}: ${pesan(s)}');\n  }\n}",
+    "out": "1. mencari: Mencari pengemudi terdekat...\n2. menjemput: Pengemudi menuju lokasimu\n3. mengantar: Dalam perjalanan\n4. selesai: Sampai tujuan, beri rating ya"
+   },
+   {
+    "t": "Kasus: antrean generik untuk berbagai data",
+    "d": "Class Antrean<T> bisa menampung nomor antrean (int) maupun nama pasien (String) dengan aman tipe.",
+    "code": "class Antrean<T> {\n  final List<T> _isi = [];\n  void masuk(T x) => _isi.add(x);\n  T keluar() => _isi.removeAt(0);\n  int get panjang => _isi.length;\n}\n\nT terakhir<T>(List<T> data) => data[data.length - 1];\n\nvoid main() {\n  final nomor = Antrean<int>();\n  nomor.masuk(101);\n  nomor.masuk(102);\n  print('Dipanggil: ${nomor.keluar()}, sisa ${nomor.panjang}');\n\n  final pasien = Antrean<String>();\n  pasien.masuk('Bu Ani');\n  pasien.masuk('Pak Joko');\n  print('Pasien pertama: ${pasien.keluar()}');\n\n  print(terakhir(['Senin', 'Selasa', 'Rabu']));\n  print(terakhir([3.5, 4.0]));\n}",
+    "out": "Dipanggil: 101, sisa 1\nPasien pertama: Bu Ani\nRabu\n4.0"
+   },
+   {
+    "t": "Kasus: extension untuk teks dan durasi",
+    "d": "Extension menambah getter baru ke String dan int tanpa mengubah tipe aslinya.",
+    "code": "extension TeksNama on String {\n  String get inisial {\n    var hasil = '';\n    for (final kata in split(' ')) {\n      if (kata.isNotEmpty) hasil += kata[0].toUpperCase();\n    }\n    return hasil;\n  }\n}\n\nextension Durasi on int {\n  String get jamMenit => '${this ~/ 60} jam ${this % 60} menit';\n}\n\nvoid main() {\n  print('dewi ayu lestari'.inisial);\n  print('Perjalanan kereta: ${185.jamMenit}');\n  print('Film: ${130.jamMenit}');\n}",
+    "out": "DAL\nPerjalanan kereta: 3 jam 5 menit\nFilm: 2 jam 10 menit"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Enhanced enum dan extension",
+    "b": "Enum menyimpan label dan aturan bisnis sekaligus, sedangkan extension Rupiah dipakai di seluruh aplikasi untuk menampilkan harga.",
+    "code": "enum StatusPesanan {\n  baru('Menunggu bayar', false),\n  dibayar('Disiapkan', true),\n  dikirim('Dalam perjalanan', false);\n\n  const StatusPesanan(this.label, this.bisaDibatalkan);\n  final String label;\n  final bool bisaDibatalkan;\n}\n\nextension Rupiah on int {\n  String get rp {\n    final s = toString();\n    var hasil = '';\n    for (var i = 0; i < s.length; i++) {\n      if (i > 0 && (s.length - i) % 3 == 0) hasil += '.';\n      hasil += s[i];\n    }\n    return 'Rp$hasil';\n  }\n}\n\nvoid main() {\n  for (final s in StatusPesanan.values) {\n    print('${s.name}: ${s.label}, batal? ${s.bisaDibatalkan}');\n  }\n  print(1250000.rp);\n}",
+    "out": "baru: Menunggu bayar, batal? false\ndibayar: Disiapkan, batal? true\ndikirim: Dalam perjalanan, batal? false\nRp1.250.000"
+   }
+  ]
+ },
+ "dart-5-3": {
+  "exs": [
+   {
+    "t": "Kasus: ringkasan keranjang belanja",
+    "d": "Fungsi mengembalikan record bernama, lalu dibongkar dengan pattern.",
+    "code": "({int jumlahBarang, int total}) ringkas(List<int> harga) {\n  var total = 0;\n  for (final h in harga) {\n    total += h;\n  }\n  return (jumlahBarang: harga.length, total: total);\n}\n\nvoid main() {\n  final hasil = ringkas([18000, 22500, 5000]);\n  print('${hasil.jumlahBarang} barang, total ${hasil.total}');\n\n  final (:jumlahBarang, :total) = ringkas([12000, 8000]);\n  print('$jumlahBarang barang, total $total');\n}",
+    "out": "3 barang, total 45500\n2 barang, total 20000"
+   },
+   {
+    "t": "Kasus: kategori BMI dengan pola relasional",
+    "d": "Pola < dan >= di switch membuat rentang nilai mudah dibaca.",
+    "code": "String kategoriBmi(double bmi) => switch (bmi) {\n      < 18.5 => 'kurus',\n      < 25 => 'normal',\n      < 30 => 'berlebih',\n      _ => 'obesitas',\n    };\n\nvoid main() {\n  final data = [('Rani', 45.0, 1.60), ('Dimas', 70.0, 1.72), ('Bayu', 92.0, 1.70)];\n  for (final (nama, berat, tinggi) in data) {\n    final bmi = berat / (tinggi * tinggi);\n    print('$nama: ${bmi.toStringAsFixed(1)} (${kategoriBmi(bmi)})');\n  }\n}",
+    "out": "Rani: 17.6 (kurus)\nDimas: 23.7 (normal)\nBayu: 31.8 (obesitas)"
+   },
+   {
+    "t": "Kasus: memeriksa bentuk JSON respons API",
+    "d": "if-case memeriksa bentuk data dan mengambil isinya sekaligus, tanpa casting manual.",
+    "code": "void tampilkan(Map<String, Object?> json) {\n  if (json case {'status': 'ok', 'data': {'nama': String nama, 'poin': int poin}}) {\n    print('$nama punya $poin poin');\n  } else if (json case {'status': 'error', 'pesan': String pesan}) {\n    print('Server menolak: $pesan');\n  } else {\n    print('Format tidak dikenal');\n  }\n}\n\nvoid main() {\n  tampilkan({'status': 'ok', 'data': {'nama': 'Wulan', 'poin': 320}});\n  tampilkan({'status': 'error', 'pesan': 'token kedaluwarsa'});\n  tampilkan({'kode': 500});\n}",
+    "out": "Wulan punya 320 poin\nServer menolak: token kedaluwarsa\nFormat tidak dikenal"
+   },
+   {
+    "t": "Kasus: metode bayar dengan sealed class dan destructuring",
+    "d": "Pola objek Tunai(:final uang) mengambil field langsung di cabang switch.",
+    "code": "sealed class Bayar {}\n\nclass Tunai extends Bayar {\n  final int uang;\n  Tunai(this.uang);\n}\n\nclass Qris extends Bayar {\n  final String bank;\n  Qris(this.bank);\n}\n\nString proses(Bayar b, int tagihan) => switch (b) {\n      Tunai(:final uang) when uang < tagihan => 'Uang kurang ${tagihan - uang}',\n      Tunai(:final uang) => 'Kembalian ${uang - tagihan}',\n      Qris(:final bank) => 'Lunas lewat QRIS $bank',\n    };\n\nvoid main() {\n  print(proses(Tunai(50000), 42000));\n  print(proses(Tunai(20000), 42000));\n  print(proses(Qris('BRI'), 42000));\n}",
+    "out": "Kembalian 8000\nUang kurang 22000\nLunas lewat QRIS BRI"
+   }
+  ]
+ },
+ "dart-6-1": {
+  "exs": [
+   {
+    "t": "Kasus: struk dengan PPN 11% dan diskon member",
+    "d": "Getter subtotal di class Item, lalu PPN dihitung dari total setelah diskon.",
+    "code": "String rp(int n) {\n  final s = n.toString();\n  var hasil = '';\n  for (var i = 0; i < s.length; i++) {\n    if (i > 0 && (s.length - i) % 3 == 0) hasil += '.';\n    hasil += s[i];\n  }\n  return hasil;\n}\n\nclass Item {\n  final String nama;\n  final int harga, qty;\n  const Item(this.nama, this.harga, this.qty);\n  int get subtotal => harga * qty;\n}\n\nvoid main() {\n  const member = true;\n  const belanja = [Item('Beras 5 kg', 72000, 1), Item('Telur 1 kg', 28000, 2)];\n  var total = 0;\n  for (final it in belanja) {\n    print('${it.nama.padRight(12)} x${it.qty} ${rp(it.subtotal).padLeft(8)}');\n    total += it.subtotal;\n  }\n  final diskon = member ? total * 5 ~/ 100 : 0;\n  final ppn = ((total - diskon) * 0.11).round();\n  print('${'Diskon member'.padRight(16)}${rp(diskon).padLeft(8)}');\n  print('${'PPN 11%'.padRight(16)}${rp(ppn).padLeft(8)}');\n  print('${'Bayar'.padRight(16)}${rp(total - diskon + ppn).padLeft(8)}');\n}",
+    "out": "Beras 5 kg   x1   72.000\nTelur 1 kg   x2   56.000\nDiskon member      6.400\nPPN 11%           13.376\nBayar            134.976"
+   },
+   {
+    "t": "Kasus: rekap penjualan harian per kategori",
+    "d": "Map mengelompokkan omzet, lalu fold menjumlahkan semuanya.",
+    "code": "String rp(int n) {\n  final s = n.toString();\n  var hasil = '';\n  for (var i = 0; i < s.length; i++) {\n    if (i > 0 && (s.length - i) % 3 == 0) hasil += '.';\n    hasil += s[i];\n  }\n  return hasil;\n}\n\nvoid main() {\n  final transaksi = [\n    ('Minuman', 18000), ('Makanan', 25000), ('Minuman', 12000),\n    ('Camilan', 8000), ('Makanan', 30000),\n  ];\n  final perKategori = <String, int>{};\n  for (final (kategori, nominal) in transaksi) {\n    perKategori[kategori] = (perKategori[kategori] ?? 0) + nominal;\n  }\n  perKategori.forEach((k, v) => print('${k.padRight(8)}${rp(v).padLeft(8)}'));\n  final total = perKategori.values.fold(0, (a, b) => a + b);\n  print('${'TOTAL'.padRight(8)}${rp(total).padLeft(8)}');\n}",
+    "out": "Minuman   30.000\nMakanan   55.000\nCamilan    8.000\nTOTAL     93.000"
+   },
+   {
+    "t": "Kasus: pembayaran tunai dengan pengecekan uang kurang",
+    "d": "Exception khusus menandai uang kurang, enum mencatat metode bayar.",
+    "code": "String rp(int n) {\n  final s = n.toString();\n  var hasil = '';\n  for (var i = 0; i < s.length; i++) {\n    if (i > 0 && (s.length - i) % 3 == 0) hasil += '.';\n    hasil += s[i];\n  }\n  return hasil;\n}\n\nenum Metode { tunai, qris }\n\nclass UangKurang implements Exception {\n  final int kurang;\n  UangKurang(this.kurang);\n  @override\n  String toString() => 'Uang kurang Rp${rp(kurang)}';\n}\n\nint bayar(int tagihan, Metode metode, {int uang = 0}) {\n  if (metode == Metode.qris) return 0;\n  if (uang < tagihan) throw UangKurang(tagihan - uang);\n  return uang - tagihan;\n}\n\nvoid main() {\n  const tagihan = 66150;\n  for (final uang in [100000, 50000]) {\n    try {\n      final kembali = bayar(tagihan, Metode.tunai, uang: uang);\n      print('Tunai ${rp(uang)}, kembali ${rp(kembali)}');\n    } on UangKurang catch (e) {\n      print(e);\n    }\n  }\n  print('QRIS, kembali ${rp(bayar(tagihan, Metode.qris))}');\n}",
+    "out": "Tunai 100.000, kembali 33.850\nUang kurang Rp16.150\nQRIS, kembali 0"
+   }
+  ]
+ }
+}

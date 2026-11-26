@@ -608,5 +608,953 @@
     "out": "n = 10 | log n = 3 | n log n = 33 | n^2 = 100\nn = 1000 | log n = 10 | n log n = 9966 | n^2 = 1000000\nn = 100000 | log n = 17 | n log n = 1660964 | n^2 = 10000000000"
    }
   ]
+ },
+ "java-10-1": {
+  "exs": [
+   {
+    "t": "Kasus: ArrayIntList dipakai untuk mencatat skor",
+    "code": "import java.util.Arrays;\n\npublic class Main {\n    static class ArrayIntList {\n        private int[] elementData = new int[2];\n        private int size = 0;\n\n        void add(int nilai) {\n            if (size == elementData.length) {\n                elementData = Arrays.copyOf(elementData, size * 2);\n                System.out.println(\"  (kapasitas diperbesar menjadi \" + elementData.length + \")\");\n            }\n            elementData[size] = nilai;\n            size++;\n        }\n\n        int get(int i) {\n            if (i < 0 || i >= size) {\n                throw new IndexOutOfBoundsException(\"indeks: \" + i);\n            }\n            return elementData[i];\n        }\n\n        int size() { return size; }\n    }\n\n    public static void main(String[] args) {\n        ArrayIntList skor = new ArrayIntList();\n        skor.add(70);\n        skor.add(85);\n        skor.add(90);          // array internal penuh, diperbesar\n        skor.add(60);\n        skor.add(75);          // penuh lagi\n        System.out.println(\"Size: \" + skor.size() + \", skor ke-3: \" + skor.get(2));\n    }\n}\n",
+    "d": "Pengguna kelas tidak perlu tahu kapan array internal diperbesar.",
+    "out": "  (kapasitas diperbesar menjadi 4)\n  (kapasitas diperbesar menjadi 8)\nSize: 5, skor ke-3: 90"
+   },
+   {
+    "t": "Kasus: daftar nama dengan toString sendiri",
+    "code": "public class Main {\n    static class DaftarNama {\n        private String[] data = new String[10];\n        private int size = 0;\n\n        void add(String nama) {\n            data[size] = nama;\n            size++;\n        }\n\n        int size() { return size; }\n\n        @Override\n        public String toString() {\n            StringBuilder sb = new StringBuilder(\"[\");\n            for (int i = 0; i < size; i++) {      // hanya slot yang terisi\n                if (i > 0) sb.append(\", \");\n                sb.append(data[i]);\n            }\n            return sb.append(\"]\").toString();\n        }\n    }\n\n    public static void main(String[] args) {\n        DaftarNama kelas = new DaftarNama();\n        kelas.add(\"Sekar\");\n        kelas.add(\"Bima\");\n        kelas.add(\"Laras\");\n        System.out.println(kelas + \" size=\" + kelas.size());\n    }\n}\n",
+    "d": "toString hanya mencetak sampai size, bukan seluruh kapasitas array.",
+    "out": "[Sekar, Bima, Laras] size=3"
+   },
+   {
+    "t": "Kasus: menambah indexOf dan contains",
+    "code": "public class Main {\n    static class DaftarAngka {\n        private int[] data = new int[10];\n        private int size = 0;\n\n        void add(int x) {\n            data[size] = x;\n            size++;\n        }\n\n        int indexOf(int x) {\n            for (int i = 0; i < size; i++) {\n                if (data[i] == x) return i;\n            }\n            return -1;\n        }\n\n        boolean contains(int x) {\n            return indexOf(x) >= 0;     // memakai ulang method yang sudah ada\n        }\n    }\n\n    public static void main(String[] args) {\n        DaftarAngka nomor = new DaftarAngka();\n        nomor.add(101);\n        nomor.add(205);\n        nomor.add(310);\n        System.out.println(\"indexOf(205) = \" + nomor.indexOf(205));\n        System.out.println(\"indexOf(999) = \" + nomor.indexOf(999));\n        System.out.println(\"contains(310) = \" + nomor.contains(310));\n    }\n}\n",
+    "out": "indexOf(205) = 1\nindexOf(999) = -1\ncontains(310) = true"
+   }
+  ]
+ },
+ "java-10-2": {
+  "exs": [
+   {
+    "t": "Kasus: memantau kapasitas saat data bertambah",
+    "code": "import java.util.Arrays;\n\npublic class Main {\n    public static void main(String[] args) {\n        int[] data = new int[2];\n        int size = 0;\n        int[] masuk = {5, 7, 9, 11, 13};\n        for (int nilai : masuk) {\n            if (size == data.length) {\n                data = Arrays.copyOf(data, size * 2);\n            }\n            data[size] = nilai;\n            size++;\n            System.out.println(\"size=\" + size + \" kapasitas=\" + data.length + \" \" + Arrays.toString(data));\n        }\n    }\n}\n",
+    "d": "Slot berisi 0 adalah kapasitas cadangan yang belum terpakai.",
+    "out": "size=1 kapasitas=2 [5, 0]\nsize=2 kapasitas=2 [5, 7]\nsize=3 kapasitas=4 [5, 7, 9, 0]\nsize=4 kapasitas=4 [5, 7, 9, 11]\nsize=5 kapasitas=8 [5, 7, 9, 11, 13, 0, 0, 0]"
+   },
+   {
+    "t": "Kasus: memperbesar array tanpa Arrays.copyOf",
+    "code": "import java.util.Arrays;\n\npublic class Main {\n    public static void main(String[] args) {\n        int[] lama = {4, 8, 15};\n        int[] baru = new int[lama.length * 2];\n        for (int i = 0; i < lama.length; i++) {\n            baru[i] = lama[i];          // salin satu per satu\n        }\n        lama = baru;                    // variabel kini menunjuk array baru\n        System.out.println(Arrays.toString(lama) + \" panjang \" + lama.length);\n    }\n}\n",
+    "d": "Inilah yang dikerjakan Arrays.copyOf di balik layar.",
+    "out": "[4, 8, 15, 0, 0, 0] panjang 6"
+   },
+   {
+    "t": "Kasus: menyisipkan di tengah dengan menggeser",
+    "code": "import java.util.Arrays;\n\npublic class Main {\n    public static void main(String[] args) {\n        int[] data = {10, 20, 40, 0, 0};\n        int size = 3;\n        int indeks = 2, nilai = 30;\n        for (int i = size; i > indeks; i--) {\n            data[i] = data[i - 1];      // geser ke kanan, mulai dari belakang\n        }\n        data[indeks] = nilai;\n        size++;\n        System.out.println(Arrays.toString(data) + \" size=\" + size);\n    }\n}\n",
+    "d": "Menyisip di tengah butuh pergeseran, sehingga lebih lambat daripada menambah di akhir.",
+    "out": "[10, 20, 30, 40, 0] size=4"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Berapa kali resize terjadi?",
+    "b": "Meski sesekali harus menyalin banyak elemen, rata-rata setiap add hanya menyalin sekitar 1 elemen. Inilah arti amortized O(1).",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        int kapasitas = 10, resize = 0;\n        long salin = 0;\n        for (int n = 1; n <= 1_000_000; n++) {\n            if (n > kapasitas) {\n                salin += kapasitas;\n                kapasitas *= 2;\n                resize++;\n            }\n        }\n        System.out.println(\"Resize: \" + resize + \" kali, total elemen disalin: \" + salin);\n        System.out.println(\"Rata-rata salinan per add: \" + Math.round(salin / 10_000.0) / 100.0);\n    }\n}\n",
+    "out": "Resize: 17 kali, total elemen disalin: 1310710\nRata-rata salinan per add: 1.31"
+   }
+  ]
+ },
+ "java-10-3": {
+  "exs": [
+   {
+    "t": "Kasus: get dengan indeks yang salah",
+    "code": "public class Main {\n    static class Rak {\n        private String[] data = new String[10];\n        private int size = 0;\n\n        void add(String s) { data[size] = s; size++; }\n\n        String get(int i) {\n            if (i < 0 || i >= size) {\n                throw new IndexOutOfBoundsException(\"i=\" + i + \", size=\" + size);\n            }\n            return data[i];\n        }\n    }\n\n    public static void main(String[] args) {\n        Rak rak = new Rak();\n        rak.add(\"sabun\");\n        rak.add(\"sampo\");\n        System.out.println(rak.get(1));\n        try {\n            System.out.println(rak.get(5));\n        } catch (IndexOutOfBoundsException e) {\n            System.out.println(\"Error: \" + e.getMessage());\n        }\n    }\n}\n",
+    "d": "Tanpa pemeriksaan, get(5) akan diam-diam mengembalikan null dari slot kosong.",
+    "out": "sampo\nError: i=5, size=2"
+   },
+   {
+    "t": "Kasus: kapasitas awal tidak boleh negatif",
+    "code": "public class Main {\n    static class Antrean {\n        private final int[] data;\n        Antrean(int kapasitas) {\n            if (kapasitas < 0) {\n                throw new IllegalArgumentException(\"kapasitas negatif: \" + kapasitas);\n            }\n            data = new int[kapasitas];\n        }\n        int kapasitas() { return data.length; }\n    }\n\n    public static void main(String[] args) {\n        int[] permintaan = {5, -3};\n        for (int kap : permintaan) {\n            try {\n                Antrean a = new Antrean(kap);\n                System.out.println(\"Antrean dibuat, kapasitas \" + a.kapasitas());\n            } catch (IllegalArgumentException e) {\n                System.out.println(\"Gagal: \" + e.getMessage());\n            }\n        }\n    }\n}\n",
+    "d": "Precondition juga berlaku untuk konstruktor.",
+    "out": "Antrean dibuat, kapasitas 5\nGagal: kapasitas negatif: -3"
+   },
+   {
+    "t": "Kasus: mengambil dari daftar kosong",
+    "code": "public class Main {\n    static class Tumpukan {\n        private int[] data = new int[10];\n        private int size = 0;\n\n        void push(int x) { data[size] = x; size++; }\n\n        int pop() {\n            if (size == 0) {\n                throw new IllegalStateException(\"tumpukan kosong\");\n            }\n            size--;\n            return data[size];\n        }\n    }\n\n    public static void main(String[] args) {\n        Tumpukan t = new Tumpukan();\n        t.push(7);\n        System.out.println(\"pop: \" + t.pop());\n        try {\n            t.pop();\n        } catch (IllegalStateException e) {\n            System.out.println(\"Error: \" + e.getMessage());\n        }\n    }\n}\n",
+    "d": "IllegalStateException cocok saat objek sedang dalam keadaan yang tidak mengizinkan operasi itu.",
+    "out": "pop: 7\nError: tumpukan kosong"
+   }
+  ]
+ },
+ "java-10-4": {
+  "exs": [
+   {
+    "t": "Kasus: LinkedIntList lengkap dengan toString",
+    "code": "public class Main {\n    static class ListNode {\n        int data;\n        ListNode next;\n        ListNode(int data, ListNode next) {\n            this.data = data;\n            this.next = next;\n        }\n    }\n\n    static class LinkedIntList {\n        private ListNode front;\n\n        void addFirst(int nilai) {\n            front = new ListNode(nilai, front);\n        }\n\n        void addLast(int nilai) {\n            if (front == null) {\n                front = new ListNode(nilai, null);\n            } else {\n                ListNode cur = front;\n                while (cur.next != null) {\n                    cur = cur.next;\n                }\n                cur.next = new ListNode(nilai, null);\n            }\n        }\n\n        @Override\n        public String toString() {\n            StringBuilder sb = new StringBuilder();\n            for (ListNode cur = front; cur != null; cur = cur.next) {\n                sb.append(cur.data).append(\" -> \");\n            }\n            return sb.append(\"null\").toString();\n        }\n    }\n\n    public static void main(String[] args) {\n        LinkedIntList list = new LinkedIntList();\n        list.addLast(20);\n        list.addLast(30);\n        list.addFirst(10);\n        System.out.println(list);\n    }\n}\n",
+    "out": "10 -> 20 -> 30 -> null"
+   },
+   {
+    "t": "Kasus: menghitung size dengan berjalan",
+    "code": "public class Main {\n    static class ListNode {\n        int data;\n        ListNode next;\n        ListNode(int data, ListNode next) {\n            this.data = data;\n            this.next = next;\n        }\n    }\n\n    public static void main(String[] args) {\n        ListNode front = new ListNode(5, new ListNode(9, new ListNode(2, null)));\n        int size = 0;\n        ListNode cur = front;\n        while (cur != null) {\n            size++;\n            cur = cur.next;\n        }\n        System.out.println(\"Jumlah node: \" + size);\n    }\n}\n",
+    "d": "Linked list tidak tahu ukurannya kecuali dihitung atau dicatat di field.",
+    "out": "Jumlah node: 3"
+   },
+   {
+    "t": "Kasus: menghapus node pertama",
+    "code": "public class Main {\n    static class ListNode {\n        int data;\n        ListNode next;\n        ListNode(int data, ListNode next) {\n            this.data = data;\n            this.next = next;\n        }\n    }\n\n    public static void main(String[] args) {\n        ListNode front = new ListNode(1, new ListNode(2, new ListNode(3, null)));\n        front = front.next;      // node 1 tidak dirujuk lagi, nanti dibersihkan GC\n        for (ListNode c = front; c != null; c = c.next) {\n            System.out.print(c.data + \" \");\n        }\n        System.out.println();\n    }\n}\n",
+    "d": "Menghapus di depan cukup memindahkan front; tidak ada elemen yang digeser.",
+    "out": "2 3 "
+   }
+  ]
+ },
+ "java-10-5": {
+  "exs": [
+   {
+    "t": "Kasus: chat terbaru tampil paling atas",
+    "code": "public class Main {\n    static class Node {\n        String data;\n        Node next;\n        Node(String data, Node next) {\n            this.data = data;\n            this.next = next;\n        }\n    }\n\n    public static void main(String[] args) {\n        Node front = null;\n        front = new Node(\"Halo, sudah sampai?\", front);\n        front = new Node(\"Sebentar lagi\", front);\n        front = new Node(\"Oke, aku tunggu di lobi\", front);\n        System.out.println(\"Pesan terbaru: \" + front.data);\n        System.out.println(\"Sebelumnya   : \" + front.next.data);\n    }\n}\n",
+    "out": "Pesan terbaru: Oke, aku tunggu di lobi\nSebelumnya   : Sebentar lagi"
+   },
+   {
+    "t": "Kasus: membangun daftar angka dari array",
+    "code": "public class Main {\n    static class ListNode {\n        int data;\n        ListNode next;\n        ListNode(int data, ListNode next) {\n            this.data = data;\n            this.next = next;\n        }\n    }\n\n    public static void main(String[] args) {\n        int[] angka = {3, 6, 9};\n        ListNode front = null;\n        for (int x : angka) {\n            front = new ListNode(x, front);   // setiap angka ditaruh di depan\n        }\n        System.out.println(front.data + \" \" + front.next.data + \" \" + front.next.next.data);\n    }\n}\n",
+    "d": "Karena selalu ditaruh di depan, urutannya terbalik dari array.",
+    "out": "9 6 3"
+   },
+   {
+    "t": "Kasus: dua node baru, urutan referensi itu penting",
+    "code": "public class Main {\n    static class ListNode {\n        int data;\n        ListNode next;\n        ListNode(int data, ListNode next) {\n            this.data = data;\n            this.next = next;\n        }\n    }\n\n    public static void main(String[] args) {\n        ListNode front = new ListNode(50, null);\n        ListNode baru = new ListNode(40, null);\n        baru.next = front;        // 1) sambungkan node baru ke front lama\n        front = baru;             // 2) baru pindahkan front\n        System.out.println(front.data + \" -> \" + front.next.data);\n    }\n}\n",
+    "d": "Jika langkah 2 dilakukan duluan, node 50 akan hilang dari list.",
+    "out": "40 -> 50"
+   }
+  ]
+ },
+ "java-10-6": {
+  "exs": [
+   {
+    "t": "Kasus: total belanja di linked list",
+    "code": "public class Main {\n    static class ListNode {\n        int data;\n        ListNode next;\n        ListNode(int data, ListNode next) {\n            this.data = data;\n            this.next = next;\n        }\n    }\n\n    public static void main(String[] args) {\n        ListNode front = new ListNode(12000, new ListNode(8000, new ListNode(15000, null)));\n        ListNode cur = front;\n        int total = 0;\n        while (cur != null) {\n            total += cur.data;\n            cur = cur.next;\n        }\n        System.out.println(\"Total: Rp\" + total);\n    }\n}\n",
+    "out": "Total: Rp35000"
+   },
+   {
+    "t": "Kasus: mencari nomor antrean",
+    "code": "public class Main {\n    static class ListNode {\n        int data;\n        ListNode next;\n        ListNode(int data, ListNode next) {\n            this.data = data;\n            this.next = next;\n        }\n    }\n\n    public static void main(String[] args) {\n        ListNode front = new ListNode(101, new ListNode(102, new ListNode(105, null)));\n        int cari = 105;\n        int posisi = 0;\n        ListNode cur = front;\n        while (cur != null && cur.data != cari) {\n            cur = cur.next;\n            posisi++;\n        }\n        if (cur == null) {\n            System.out.println(cari + \" tidak ada\");\n        } else {\n            System.out.println(cari + \" ada di posisi \" + posisi);\n        }\n    }\n}\n",
+    "d": "Urutan syarat penting: cek cur != null dulu sebelum membaca cur.data.",
+    "out": "105 ada di posisi 2"
+   },
+   {
+    "t": "Kasus: suhu tertinggi",
+    "code": "public class Main {\n    static class ListNode {\n        int data;\n        ListNode next;\n        ListNode(int data, ListNode next) {\n            this.data = data;\n            this.next = next;\n        }\n    }\n\n    public static void main(String[] args) {\n        ListNode front = new ListNode(29, new ListNode(33, new ListNode(31, new ListNode(30, null))));\n        int maks = front.data;\n        for (ListNode cur = front.next; cur != null; cur = cur.next) {\n            if (cur.data > maks) {\n                maks = cur.data;\n            }\n        }\n        System.out.println(\"Suhu tertinggi: \" + maks);\n    }\n}\n",
+    "d": "Pola traversal bisa ditulis dengan for, sama seperti while.",
+    "out": "Suhu tertinggi: 33"
+   }
+  ]
+ },
+ "java-10-7": {
+  "exs": [
+   {
+    "t": "Kasus: BST nilai ujian lalu dicetak terurut",
+    "code": "public class Main {\n    static class IntTreeNode {\n        int data;\n        IntTreeNode left, right;\n        IntTreeNode(int data) { this.data = data; }\n    }\n\n    static IntTreeNode add(IntTreeNode node, int v) {\n        if (node == null) return new IntTreeNode(v);\n        if (v < node.data) node.left = add(node.left, v);\n        else node.right = add(node.right, v);\n        return node;\n    }\n\n    static void inOrder(IntTreeNode node) {\n        if (node != null) {\n            inOrder(node.left);\n            System.out.print(node.data + \" \");\n            inOrder(node.right);\n        }\n    }\n\n    public static void main(String[] args) {\n        IntTreeNode root = null;\n        int[] nilai = {70, 85, 60, 90, 75, 65};\n        for (int n : nilai) {\n            root = add(root, n);\n        }\n        inOrder(root);\n        System.out.println();\n    }\n}\n",
+    "out": "60 65 70 75 85 90 "
+   },
+   {
+    "t": "Kasus: mencari nilai di BST",
+    "code": "public class Main {\n    static class IntTreeNode {\n        int data;\n        IntTreeNode left, right;\n        IntTreeNode(int data) { this.data = data; }\n    }\n\n    static IntTreeNode add(IntTreeNode node, int v) {\n        if (node == null) return new IntTreeNode(v);\n        if (v < node.data) node.left = add(node.left, v);\n        else node.right = add(node.right, v);\n        return node;\n    }\n\n    static boolean contains(IntTreeNode node, int v) {\n        if (node == null) return false;\n        if (v == node.data) return true;\n        if (v < node.data) return contains(node.left, v);   // cukup satu sisi\n        return contains(node.right, v);\n    }\n\n    public static void main(String[] args) {\n        IntTreeNode root = null;\n        for (int n : new int[]{50, 30, 70, 20, 40, 80}) {\n            root = add(root, n);\n        }\n        System.out.println(\"Ada 40? \" + contains(root, 40));\n        System.out.println(\"Ada 65? \" + contains(root, 65));\n    }\n}\n",
+    "d": "Setiap langkah hanya turun ke satu anak, jadi tidak semua node diperiksa.",
+    "out": "Ada 40? true\nAda 65? false"
+   },
+   {
+    "t": "Kasus: jumlah node dan tinggi pohon",
+    "code": "public class Main {\n    static class IntTreeNode {\n        int data;\n        IntTreeNode left, right;\n        IntTreeNode(int data) { this.data = data; }\n    }\n\n    static IntTreeNode add(IntTreeNode node, int v) {\n        if (node == null) return new IntTreeNode(v);\n        if (v < node.data) node.left = add(node.left, v);\n        else node.right = add(node.right, v);\n        return node;\n    }\n\n    static int jumlah(IntTreeNode n) {\n        if (n == null) return 0;\n        return 1 + jumlah(n.left) + jumlah(n.right);\n    }\n\n    static int tinggi(IntTreeNode n) {\n        if (n == null) return 0;\n        return 1 + Math.max(tinggi(n.left), tinggi(n.right));\n    }\n\n    public static void main(String[] args) {\n        IntTreeNode root = null;\n        for (int n : new int[]{8, 3, 10, 1, 6, 14, 4}) {\n            root = add(root, n);\n        }\n        System.out.println(\"Jumlah node: \" + jumlah(root) + \", tinggi: \" + tinggi(root));\n    }\n}\n",
+    "out": "Jumlah node: 7, tinggi: 4"
+   }
+  ]
+ },
+ "java-10-8": {
+  "exs": [
+   {
+    "t": "Kasus: menyisipkan nomor anggota satu per satu",
+    "code": "public class Main {\n    static class IntTreeNode {\n        int data;\n        IntTreeNode left, right;\n        IntTreeNode(int data) { this.data = data; }\n    }\n\n    static IntTreeNode add(IntTreeNode node, int v) {\n        if (node == null) return new IntTreeNode(v);\n        if (v < node.data) node.left = add(node.left, v);\n        else node.right = add(node.right, v);\n        return node;\n    }\n\n    public static void main(String[] args) {\n        IntTreeNode root = null;\n        int[] nomor = {40, 20, 60, 10, 30};\n        for (int n : nomor) {\n            root = add(root, n);\n        }\n        System.out.println(\"Akar: \" + root.data);\n        System.out.println(\"Anak kiri akar: \" + root.left.data + \", anak kanan: \" + root.right.data);\n        System.out.println(\"Anak kiri dari 20: \" + root.left.left.data + \", kanan: \" + root.left.right.data);\n    }\n}\n",
+    "out": "Akar: 40\nAnak kiri akar: 20, anak kanan: 60\nAnak kiri dari 20: 10, kanan: 30"
+   },
+   {
+    "t": "Kasus: BST nama kota dengan compareTo",
+    "code": "public class Main {\n    static class Simpul {\n        String data;\n        Simpul kiri, kanan;\n        Simpul(String data) { this.data = data; }\n    }\n\n    static Simpul add(Simpul node, String v) {\n        if (node == null) return new Simpul(v);\n        if (v.compareTo(node.data) < 0) node.kiri = add(node.kiri, v);\n        else node.kanan = add(node.kanan, v);\n        return node;\n    }\n\n    static void cetak(Simpul n) {\n        if (n != null) {\n            cetak(n.kiri);\n            System.out.print(n.data + \" \");\n            cetak(n.kanan);\n        }\n    }\n\n    public static void main(String[] args) {\n        Simpul root = null;\n        for (String k : new String[]{\"Medan\", \"Bandung\", \"Sorong\", \"Ambon\", \"Kendari\"}) {\n            root = add(root, k);\n        }\n        cetak(root);\n        System.out.println();\n    }\n}\n",
+    "d": "Aturannya sama, hanya perbandingannya memakai compareTo.",
+    "out": "Ambon Bandung Kendari Medan Sorong "
+   },
+   {
+    "t": "Kasus: urutan sisip menentukan bentuk pohon",
+    "code": "public class Main {\n    static class IntTreeNode {\n        int data;\n        IntTreeNode left, right;\n        IntTreeNode(int data) { this.data = data; }\n    }\n\n    static IntTreeNode add(IntTreeNode node, int v) {\n        if (node == null) return new IntTreeNode(v);\n        if (v < node.data) node.left = add(node.left, v);\n        else node.right = add(node.right, v);\n        return node;\n    }\n\n    static int tinggi(IntTreeNode n) {\n        if (n == null) return 0;\n        return 1 + Math.max(tinggi(n.left), tinggi(n.right));\n    }\n\n    public static void main(String[] args) {\n        IntTreeNode acak = null;\n        for (int n : new int[]{3, 1, 4, 2, 5}) acak = add(acak, n);\n        IntTreeNode urut = null;\n        for (int n : new int[]{1, 2, 3, 4, 5}) urut = add(urut, n);\n        System.out.println(\"Tinggi (acak): \" + tinggi(acak));\n        System.out.println(\"Tinggi (urut): \" + tinggi(urut));\n    }\n}\n",
+    "d": "Data yang disisipkan sudah terurut membuat BST menjadi seperti linked list.",
+    "out": "Tinggi (acak): 3\nTinggi (urut): 5"
+   }
+  ]
+ },
+ "java-10-9": {
+  "exs": [
+   {
+    "t": "Kasus: in-order mencetak harga terurut",
+    "code": "public class Main {\n    static class IntTreeNode {\n        int data;\n        IntTreeNode left, right;\n        IntTreeNode(int data) { this.data = data; }\n    }\n\n    static IntTreeNode add(IntTreeNode node, int v) {\n        if (node == null) return new IntTreeNode(v);\n        if (v < node.data) node.left = add(node.left, v);\n        else node.right = add(node.right, v);\n        return node;\n    }\n\n    static void inOrder(IntTreeNode node) {\n        if (node != null) {\n            inOrder(node.left);\n            System.out.print(node.data + \" \");\n            inOrder(node.right);\n        }\n    }\n\n    public static void main(String[] args) {\n        IntTreeNode root = null;\n        for (int h : new int[]{25000, 12000, 40000, 8000, 18000}) {\n            root = add(root, h);\n        }\n        inOrder(root);\n        System.out.println();\n    }\n}\n",
+    "out": "8000 12000 18000 25000 40000 "
+   },
+   {
+    "t": "Kasus: membandingkan pre-order dan in-order",
+    "code": "public class Main {\n    static class IntTreeNode {\n        int data;\n        IntTreeNode left, right;\n        IntTreeNode(int data) { this.data = data; }\n    }\n\n    static IntTreeNode add(IntTreeNode node, int v) {\n        if (node == null) return new IntTreeNode(v);\n        if (v < node.data) node.left = add(node.left, v);\n        else node.right = add(node.right, v);\n        return node;\n    }\n\n    static void preOrder(IntTreeNode n) {\n        if (n != null) {\n            System.out.print(n.data + \" \");   // akar dulu\n            preOrder(n.left);\n            preOrder(n.right);\n        }\n    }\n\n    static void inOrder(IntTreeNode n) {\n        if (n != null) {\n            inOrder(n.left);\n            System.out.print(n.data + \" \");   // akar di tengah\n            inOrder(n.right);\n        }\n    }\n\n    public static void main(String[] args) {\n        IntTreeNode root = null;\n        for (int n : new int[]{5, 3, 8, 1, 4}) root = add(root, n);\n        System.out.print(\"pre-order: \");\n        preOrder(root);\n        System.out.print(\"\\nin-order : \");\n        inOrder(root);\n        System.out.println();\n    }\n}\n",
+    "d": "Yang berbeda hanya kapan akar dicetak.",
+    "out": "pre-order: 5 3 1 4 8 \nin-order : 1 3 4 5 8 "
+   },
+   {
+    "t": "Kasus: mengumpulkan hasil in-order ke ArrayList",
+    "code": "import java.util.*;\n\npublic class Main {\n    static class IntTreeNode {\n        int data;\n        IntTreeNode left, right;\n        IntTreeNode(int data) { this.data = data; }\n    }\n\n    static IntTreeNode add(IntTreeNode node, int v) {\n        if (node == null) return new IntTreeNode(v);\n        if (v < node.data) node.left = add(node.left, v);\n        else node.right = add(node.right, v);\n        return node;\n    }\n\n    static void kumpulkan(IntTreeNode n, List<Integer> hasil) {\n        if (n != null) {\n            kumpulkan(n.left, hasil);\n            hasil.add(n.data);\n            kumpulkan(n.right, hasil);\n        }\n    }\n\n    public static void main(String[] args) {\n        IntTreeNode root = null;\n        for (int n : new int[]{60, 45, 80, 50}) root = add(root, n);\n        List<Integer> hasil = new ArrayList<>();\n        kumpulkan(root, hasil);\n        System.out.println(\"Terurut: \" + hasil + \", terkecil \" + hasil.get(0));\n    }\n}\n",
+    "d": "Daripada mencetak, hasil traversal bisa disimpan untuk diolah lagi.",
+    "out": "Terurut: [45, 50, 60, 80], terkecil 45"
+   }
+  ]
+ },
+ "java-10-10": {
+  "exs": [
+   {
+    "t": "Kasus: indeks ember dari hashCode",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        String[] kunci = {\"Ani\", \"Budi\", \"Cici\", \"Dodi\", \"Eka\"};\n        int ember = 7;\n        for (String k : kunci) {\n            int indeks = Math.abs(k.hashCode() % ember);\n            System.out.println(k + \" hashCode=\" + k.hashCode() + \" -> ember \" + indeks);\n        }\n    }\n}\n",
+    "d": "Budi, Cici, dan Dodi jatuh di ember yang sama: inilah collision.",
+    "out": "Ani hashCode=65980 -> ember 5\nBudi hashCode=2081848 -> ember 6\nCici hashCode=2100076 -> ember 6\nDodi hashCode=2135664 -> ember 6\nEka hashCode=69723 -> ember 3"
+   },
+   {
+    "t": "Kasus: HashMap nomor plat ke pemilik",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Map<String, String> plat = new HashMap<>();\n        plat.put(\"B 1234 XY\", \"Pak Hasan\");\n        plat.put(\"D 777 AB\", \"Bu Ratna\");\n        plat.put(\"BK 88 ZZ\", \"Mas Leo\");\n        System.out.println(plat.get(\"D 777 AB\"));          // langsung ke ember, rata-rata O(1)\n        System.out.println(plat.containsKey(\"L 1 A\"));\n    }\n}\n",
+    "out": "Bu Ratna\nfalse"
+   },
+   {
+    "t": "Kasus: antrean prioritas pesanan kilat",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        PriorityQueue<Integer> menitTersisa = new PriorityQueue<>();\n        menitTersisa.add(45);\n        menitTersisa.add(10);\n        menitTersisa.add(30);\n        menitTersisa.add(5);\n        while (!menitTersisa.isEmpty()) {\n            System.out.println(\"Kirim pesanan dengan sisa \" + menitTersisa.remove() + \" menit\");\n        }\n    }\n}\n",
+    "d": "Pesanan dengan waktu tersisa paling sedikit selalu keluar lebih dulu.",
+    "out": "Kirim pesanan dengan sisa 5 menit\nKirim pesanan dengan sisa 10 menit\nKirim pesanan dengan sisa 30 menit\nKirim pesanan dengan sisa 45 menit"
+   }
+  ]
+ },
+ "java-10-11": {
+  "exs": [
+   {
+    "t": "Kasus: separate chaining buatan sendiri",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        List<List<Integer>> tabel = new ArrayList<>();\n        for (int i = 0; i < 7; i++) {\n            tabel.add(new ArrayList<>());          // 7 ember kosong\n        }\n        int[] kunci = {23, 16, 9, 4, 30};\n        for (int k : kunci) {\n            tabel.get(k % 7).add(k);               // 23, 16, 9, dan 30 jatuh di ember 2\n        }\n        for (int i = 0; i < 7; i++) {\n            System.out.println(\"ember \" + i + \": \" + tabel.get(i));\n        }\n    }\n}\n",
+    "d": "Setiap ember adalah daftar kecil yang menampung kunci yang bertabrakan.",
+    "out": "ember 0: []\nember 1: []\nember 2: [23, 16, 9, 30]\nember 3: []\nember 4: [4]\nember 5: []\nember 6: []"
+   },
+   {
+    "t": "Kasus: load factor dan kapan tabel diperbesar",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        int ember = 4;\n        int isi = 0;\n        for (int i = 1; i <= 7; i++) {\n            isi++;\n            double load = (double) isi / ember;\n            if (load > 0.75) {\n                ember *= 2;\n                System.out.println(\"isi \" + isi + \": load \" + load + \" > 0.75, ember jadi \" + ember);\n            }\n        }\n    }\n}\n",
+    "d": "HashMap Java memakai batas 0.75 sebagai bawaan.",
+    "out": "isi 4: load 1.0 > 0.75, ember jadi 8\nisi 7: load 0.875 > 0.75, ember jadi 16"
+   },
+   {
+    "t": "Kasus: equals dan hashCode agar Set mengenali duplikat",
+    "code": "import java.util.*;\n\npublic class Main {\n    static class Siswa {\n        final String nis, nama;\n        Siswa(String nis, String nama) { this.nis = nis; this.nama = nama; }\n\n        @Override\n        public boolean equals(Object o) {\n            if (!(o instanceof Siswa)) return false;\n            Siswa lain = (Siswa) o;\n            return nis.equals(lain.nis);\n        }\n\n        @Override\n        public int hashCode() {\n            return nis.hashCode();     // objek yang equals harus punya hashCode sama\n        }\n    }\n\n    public static void main(String[] args) {\n        Set<Siswa> kelas = new HashSet<>();\n        kelas.add(new Siswa(\"2401\", \"Ayu\"));\n        kelas.add(new Siswa(\"2401\", \"Ayu\"));     // data sama, objek berbeda\n        kelas.add(new Siswa(\"2402\", \"Bima\"));\n        System.out.println(\"Jumlah siswa unik: \" + kelas.size());\n    }\n}\n",
+    "d": "Tanpa hashCode yang cocok, kedua Ayu bisa masuk ember berbeda dan dianggap dua siswa.",
+    "out": "Jumlah siswa unik: 2"
+   }
+  ]
+ },
+ "java-10-12": {
+  "exs": [
+   {
+    "t": "Kasus: nilai terkecil selalu keluar duluan",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        PriorityQueue<Integer> pq = new PriorityQueue<>();\n        for (int x : new int[]{5, 3, 8, 1}) {\n            pq.add(x);\n        }\n        System.out.println(\"Intip: \" + pq.peek());\n        while (!pq.isEmpty()) {\n            System.out.print(pq.remove() + \" \");\n        }\n        System.out.println();\n    }\n}\n",
+    "out": "Intip: 1\n1 3 5 8 "
+   },
+   {
+    "t": "Kasus: skor tertinggi lebih dulu",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        PriorityQueue<Integer> skor = new PriorityQueue<>(Collections.reverseOrder());\n        skor.add(780);\n        skor.add(950);\n        skor.add(610);\n        System.out.println(\"Juara 1: \" + skor.remove());\n        System.out.println(\"Juara 2: \" + skor.remove());\n    }\n}\n",
+    "d": "Collections.reverseOrder() mengubah min-heap menjadi max-heap.",
+    "out": "Juara 1: 950\nJuara 2: 780"
+   },
+   {
+    "t": "Kasus: tugas dengan tenggat paling dekat",
+    "code": "import java.util.*;\n\npublic class Main {\n    record Tugas(String nama, int tenggat) implements Comparable<Tugas> {\n        public int compareTo(Tugas lain) {\n            return Integer.compare(tenggat, lain.tenggat);\n        }\n    }\n\n    public static void main(String[] args) {\n        PriorityQueue<Tugas> pq = new PriorityQueue<>();\n        pq.add(new Tugas(\"Laporan praktikum\", 3));\n        pq.add(new Tugas(\"PR matematika\", 1));\n        pq.add(new Tugas(\"Presentasi kelompok\", 7));\n        while (!pq.isEmpty()) {\n            Tugas t = pq.remove();\n            System.out.println(t.tenggat() + \" hari lagi: \" + t.nama());\n        }\n    }\n}\n",
+    "d": "Objek buatan sendiri bisa masuk priority queue bila bisa dibandingkan.",
+    "out": "1 hari lagi: PR matematika\n3 hari lagi: Laporan praktikum\n7 hari lagi: Presentasi kelompok"
+   }
+  ]
+ },
+ "java-11-1": {
+  "exs": [
+   {
+    "t": "Kasus: siswa yang lulus KKM",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        List<Integer> nilai = List.of(80, 65, 92, 70, 58, 88);\n        List<Integer> lulus = nilai.stream()\n                .filter(n -> n >= 75)\n                .toList();\n        System.out.println(\"Lulus: \" + lulus);\n    }\n}\n",
+    "d": "filter menyaring elemen dengan sebuah lambda yang menjawab benar atau salah.",
+    "out": "Lulus: [80, 92, 88]"
+   },
+   {
+    "t": "Kasus: harga setelah PPN 11%",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        List<Integer> harga = List.of(10000, 25000, 40000);\n        List<Integer> denganPpn = harga.stream()\n                .map(h -> h * 111 / 100)\n                .toList();\n        System.out.println(harga + \" -> \" + denganPpn);\n        System.out.println(\"List asal tidak berubah: \" + harga);\n    }\n}\n",
+    "d": "map mengubah setiap elemen tanpa mengubah list aslinya.",
+    "out": "[10000, 25000, 40000] -> [11100, 27750, 44400]\nList asal tidak berubah: [10000, 25000, 40000]"
+   },
+   {
+    "t": "Kasus: total ongkir dari beberapa paket",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        List<Integer> ongkir = List.of(9000, 15000, 12000);\n        int total = ongkir.stream()\n                .reduce(0, (a, b) -> a + b);\n        System.out.println(\"Total ongkir: \" + total);\n\n        int kotaJauh = ongkir.stream()\n                .filter(o -> o > 10000)\n                .map(o -> o + 2000)          // tambahan asuransi\n                .reduce(0, (a, b) -> a + b);\n        System.out.println(\"Ongkir jauh + asuransi: \" + kotaJauh);\n    }\n}\n",
+    "d": "reduce menggabungkan semua elemen menjadi satu nilai.",
+    "out": "Total ongkir: 36000\nOngkir jauh + asuransi: 31000"
+   }
+  ]
+ },
+ "java-11-2": {
+  "exs": [
+   {
+    "t": "Kasus: fungsi diskon disimpan di variabel",
+    "code": "import java.util.*;\nimport java.util.function.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Function<Integer, Integer> diskon10 = h -> h * 90 / 100;\n        Function<Integer, Integer> potong5rb = h -> h - 5000;\n        int harga = 80000;\n        System.out.println(\"Diskon 10%: \" + diskon10.apply(harga));\n        System.out.println(\"Potong 5rb: \" + potong5rb.apply(harga));\n    }\n}\n",
+    "d": "Lambda bisa disimpan seperti nilai biasa, lalu dipanggil dengan apply.",
+    "out": "Diskon 10%: 72000\nPotong 5rb: 75000"
+   },
+   {
+    "t": "Kasus: mencetak semua pesanan dengan forEach",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        List<String> pesanan = List.of(\"soto\", \"rawon\", \"pecel\");\n        pesanan.forEach(p -> System.out.println(\"Siapkan \" + p));\n    }\n}\n",
+    "d": "forEach menerima lambda yang dijalankan untuk setiap elemen.",
+    "out": "Siapkan soto\nSiapkan rawon\nSiapkan pecel"
+   },
+   {
+    "t": "Kasus: mengurutkan nama dari yang terpendek",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        List<String> nama = new ArrayList<>(List.of(\"Bonifasius\", \"Ade\", \"Kurniawati\", \"Tio\"));\n        nama.sort((a, b) -> a.length() - b.length());\n        System.out.println(nama);\n\n        nama.removeIf(n -> n.length() <= 3);     // buang nama pendek\n        System.out.println(nama);\n    }\n}\n",
+    "d": "Lambda dua parameter dipakai sebagai aturan pembanding saat mengurutkan.",
+    "out": "[Ade, Tio, Bonifasius, Kurniawati]\n[Bonifasius, Kurniawati]"
+   }
+  ]
+ },
+ "java-11-3": {
+  "exs": [
+   {
+    "t": "Kasus: method penyaring yang menerima Predicate",
+    "code": "import java.util.*;\nimport java.util.function.*;\n\npublic class Main {\n    static List<String> saring(List<String> data, Predicate<String> syarat) {\n        List<String> hasil = new ArrayList<>();\n        for (String s : data) {\n            if (syarat.test(s)) {\n                hasil.add(s);\n            }\n        }\n        return hasil;\n    }\n\n    public static void main(String[] args) {\n        List<String> produk = List.of(\"kopi bubuk\", \"teh celup\", \"kopi sachet\", \"gula aren\");\n        System.out.println(saring(produk, p -> p.startsWith(\"kopi\")));\n        System.out.println(saring(produk, p -> p.length() < 10));\n    }\n}\n",
+    "d": "saring adalah higher-order function: aturan penyaringnya dikirim dari luar.",
+    "out": "[kopi bubuk, kopi sachet]\n[teh celup, gula aren]"
+   },
+   {
+    "t": "Kasus: Supplier, Consumer, dan BiFunction",
+    "code": "import java.util.function.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Supplier<String> nomorTiket = () -> \"TKT-001\";\n        Consumer<String> kirimSms = pesan -> System.out.println(\"SMS: \" + pesan);\n        BiFunction<Integer, Integer, Integer> ongkir = (kg, tarif) -> kg * tarif;\n\n        kirimSms.accept(\"Tiket \" + nomorTiket.get() + \" berhasil dipesan\");\n        System.out.println(\"Ongkir 3 kg: \" + ongkir.apply(3, 9000));\n    }\n}\n",
+    "d": "Supplier tanpa masukan, Consumer tanpa hasil, BiFunction dengan dua masukan.",
+    "out": "SMS: Tiket TKT-001 berhasil dipesan\nOngkir 3 kg: 27000"
+   },
+   {
+    "t": "Kasus: menggabungkan aturan promo dengan and dan negate",
+    "code": "import java.util.function.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Predicate<Integer> belanjaBesar = total -> total >= 100000;\n        Predicate<Integer> kelipatanSeribu = total -> total % 1000 == 0;\n        Predicate<Integer> dapatPromo = belanjaBesar.and(kelipatanSeribu);\n\n        for (int total : new int[]{150000, 99000, 120500}) {\n            System.out.println(total + \": promo \" + dapatPromo.test(total) + \", belanja kecil \" + belanjaBesar.negate().test(total));\n        }\n    }\n}\n",
+    "d": "Predicate kecil dirangkai menjadi aturan yang lebih besar.",
+    "out": "150000: promo true, belanja kecil false\n99000: promo false, belanja kecil true\n120500: promo false, belanja kecil false"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Pipeline pembersih input dengan andThen",
+    "b": "Formulir pendaftaran biasanya membersihkan input dulu sebelum memeriksanya. Setiap langkah adalah fungsi kecil yang bisa diuji sendiri.",
+    "code": "import java.util.*;\nimport java.util.function.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Function<String, String> bersih = ((Function<String, String>) String::strip)\n                .andThen(String::toLowerCase)\n                .andThen(s -> s.replace(\" \", \"\"));\n        Predicate<String> adaAt = s -> s.indexOf('@') > 0;\n        Predicate<String> adaTitik = s -> s.lastIndexOf('.') > s.indexOf('@') + 1;\n        Predicate<String> emailValid = adaAt.and(adaTitik);\n\n        for (String s : List.of(\"  Sari@Contoh.ID \", \"budi @ x\", \"rina@kampus\")) {\n            String b = bersih.apply(s);\n            System.out.println(\"'\" + b + \"' valid=\" + emailValid.test(b));\n        }\n    }\n}\n",
+    "out": "'sari@contoh.id' valid=true\n'budi@x' valid=false\n'rina@kampus' valid=false"
+   }
+  ]
+ },
+ "java-11-4": {
+  "exs": [
+   {
+    "t": "Kasus: nama siswa berawalan R ditulis kapital",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        List<String> nama = List.of(\"rina\", \"dedi\", \"rafi\", \"sinta\", \"reza\");\n        List<String> hasil = nama.stream()\n                .filter(n -> n.startsWith(\"r\"))\n                .map(n -> n.toUpperCase())\n                .toList();\n        System.out.println(hasil);\n    }\n}\n",
+    "out": "[RINA, RAFI, REZA]"
+   },
+   {
+    "t": "Kasus: total kalori menu sarapan",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        List<String> menu = List.of(\"nasi uduk:450\", \"teh manis:120\", \"pisang:90\", \"gorengan:180\");\n        int kalori = menu.stream()\n                .map(m -> Integer.parseInt(m.split(\":\")[1]))\n                .filter(k -> k >= 100)\n                .reduce(0, Integer::sum);\n        System.out.println(\"Kalori dari menu >= 100: \" + kalori);\n    }\n}\n",
+    "d": "map bisa mengubah tipe: dari String menjadi Integer.",
+    "out": "Kalori dari menu >= 100: 750"
+   },
+   {
+    "t": "Kasus: suhu tertinggi dengan reduce",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        List<Integer> suhu = List.of(29, 33, 31, 34, 30);\n        int tertinggi = suhu.stream().reduce(Integer.MIN_VALUE, (a, b) -> Math.max(a, b));\n        int jumlahPanas = suhu.stream()\n                .filter(s -> s >= 32)\n                .map(s -> 1)\n                .reduce(0, Integer::sum);\n        System.out.println(\"Tertinggi \" + tertinggi + \", hari panas \" + jumlahPanas);\n    }\n}\n",
+    "d": "reduce tidak hanya untuk menjumlah; ia bisa mencari nilai terbesar juga.",
+    "out": "Tertinggi 34, hari panas 2"
+   }
+  ]
+ },
+ "java-11-5": {
+  "exs": [
+   {
+    "t": "Kasus: tiga produk terlaris",
+    "code": "import java.util.*;\nimport java.util.stream.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        record Produk(String nama, int terjual) {}\n        List<Produk> data = List.of(new Produk(\"Kopi Gayo\", 120), new Produk(\"Teh Melati\", 95),\n                new Produk(\"Gula Aren\", 150), new Produk(\"Madu\", 40), new Produk(\"Oat\", 60));\n        List<String> top3 = data.stream()\n                .sorted(Comparator.comparingInt(Produk::terjual).reversed())\n                .limit(3)\n                .map(Produk::nama)\n                .toList();\n        System.out.println(top3);\n    }\n}\n",
+    "d": "sorted lalu limit: rangkaian method yang dibaca dari atas ke bawah.",
+    "out": "[Gula Aren, Kopi Gayo, Teh Melati]"
+   },
+   {
+    "t": "Kasus: daftar hadir digabung menjadi satu kalimat",
+    "code": "import java.util.*;\nimport java.util.stream.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        List<String> hadir = List.of(\"Yudi\", \"Ina\", \"Tasya\", \"Galih\");\n        String kalimat = hadir.stream()\n                .sorted()\n                .collect(Collectors.joining(\", \", \"Hadir: \", \".\"));\n        System.out.println(kalimat);\n        long jumlah = hadir.stream().filter(n -> n.length() == 4).count();\n        System.out.println(\"Nama 4 huruf: \" + jumlah);\n    }\n}\n",
+    "d": "collect dan count adalah operasi terminal yang memicu pipeline berjalan.",
+    "out": "Hadir: Galih, Ina, Tasya, Yudi.\nNama 4 huruf: 1"
+   },
+   {
+    "t": "Kasus: stream itu malas dan berhenti lebih awal",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        List<Integer> angka = List.of(5, 12, 8, 20, 15, 30);\n        List<Integer> hasil = angka.stream()\n                .filter(n -> {\n                    System.out.println(\"cek \" + n);\n                    return n > 10;\n                })\n                .limit(2)\n                .toList();\n        System.out.println(\"Hasil: \" + hasil);\n    }\n}\n",
+    "d": "Angka setelah 20 tidak pernah dicek karena dua hasil sudah didapat.",
+    "out": "cek 5\ncek 12\ncek 8\ncek 20\nHasil: [12, 20]"
+   }
+  ]
+ },
+ "java-11-6": {
+  "exs": [
+   {
+    "t": "Kasus: mencari siswa berdasarkan NIS",
+    "code": "import java.util.*;\n\npublic class Main {\n    static Map<String, String> siswa = Map.of(\"2401\", \"Ayu\", \"2402\", \"Bima\");\n\n    static Optional<String> cari(String nis) {\n        return Optional.ofNullable(siswa.get(nis));\n    }\n\n    public static void main(String[] args) {\n        System.out.println(cari(\"2401\").orElse(\"tidak ditemukan\"));\n        System.out.println(cari(\"9999\").orElse(\"tidak ditemukan\"));\n        System.out.println(\"Ada 2402? \" + cari(\"2402\").isPresent());\n    }\n}\n",
+    "d": "Tipe kembalian Optional memberi tahu pemanggil bahwa hasilnya bisa kosong.",
+    "out": "Ayu\ntidak ditemukan\nAda 2402? true"
+   },
+   {
+    "t": "Kasus: kupon belanja yang mungkin kosong",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Optional<Integer> kuponAda = Optional.of(15000);\n        Optional<Integer> kuponKosong = Optional.empty();\n        int belanja = 100000;\n\n        int bayar1 = belanja - kuponAda.orElse(0);\n        int bayar2 = belanja - kuponKosong.orElse(0);\n        System.out.println(\"Dengan kupon: \" + bayar1 + \", tanpa kupon: \" + bayar2);\n        kuponAda.ifPresentOrElse(k -> System.out.println(\"Kupon dipakai: \" + k),\n                () -> System.out.println(\"Tidak ada kupon\"));\n        kuponKosong.ifPresentOrElse(k -> System.out.println(\"Kupon dipakai: \" + k),\n                () -> System.out.println(\"Tidak ada kupon\"));\n    }\n}\n",
+    "out": "Dengan kupon: 85000, tanpa kupon: 100000\nKupon dipakai: 15000\nTidak ada kupon"
+   },
+   {
+    "t": "Kasus: findFirst dan max mengembalikan Optional",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        List<Integer> harga = List.of(45000, 120000, 87000);\n        Optional<Integer> pertamaMahal = harga.stream().filter(h -> h > 100000).findFirst();\n        Optional<Integer> pertamaSangatMahal = harga.stream().filter(h -> h > 500000).findFirst();\n        System.out.println(pertamaMahal.map(h -> \"Rp\" + h).orElse(\"-\"));\n        System.out.println(pertamaSangatMahal.map(h -> \"Rp\" + h).orElse(\"-\"));\n        System.out.println(\"Termahal: \" + harga.stream().max(Integer::compare).orElse(0));\n    }\n}\n",
+    "d": "Stream memakai Optional karena hasil pencarian bisa saja tidak ada.",
+    "out": "Rp120000\n-\nTermahal: 120000"
+   }
+  ]
+ },
+ "java-12-1": {
+  "exs": [
+   {
+    "t": "Kasus: kelas di dalam package rapor sekolah",
+    "code": "package id.sekolah.rapor;\n\npublic class Main {\n    public static void main(String[] args) {\n        System.out.println(\"Nama lengkap kelas: \" + Main.class.getName());\n        System.out.println(\"Package: \" + Main.class.getPackageName());\n    }\n}\n",
+    "d": "Nama lengkap kelas = nama package + nama kelas.",
+    "out": "Nama lengkap kelas: id.sekolah.rapor.Main\nPackage: id.sekolah.rapor"
+   },
+   {
+    "t": "Kasus: memakai kelas tanpa import, dengan import, dan import static",
+    "code": "import java.util.ArrayList;\nimport static java.lang.Math.max;\n\npublic class Main {\n    public static void main(String[] args) {\n        java.util.List<String> kota = new ArrayList<>();   // nama lengkap, tanpa import\n        kota.add(\"Palembang\");\n        kota.add(\"Jambi\");\n        System.out.println(kota);\n        System.out.println(\"Nilai terbesar: \" + max(70, 85));     // dari import static\n        System.out.println(\"String dan Math dari java.lang: \" + \"ok\".length() + \" \" + Math.abs(-3));\n    }\n}\n",
+    "d": "Kelas di java.lang selalu tersedia; kelas lain butuh import atau nama lengkap.",
+    "out": "[Palembang, Jambi]\nNilai terbesar: 85\nString dan Math dari java.lang: 2 3"
+   },
+   {
+    "t": "Kasus: dua kelas bernama sama dari package berbeda",
+    "code": "import java.util.Date;\n\npublic class Main {\n    public static void main(String[] args) {\n        Date sekarang = new Date(0);                               // java.util.Date\n        java.sql.Date tanggalDb = java.sql.Date.valueOf(\"2026-11-26\"); // java.sql.Date\n        System.out.println(sekarang.getClass().getName());\n        System.out.println(tanggalDb.getClass().getName() + \" \" + tanggalDb);\n    }\n}\n",
+    "d": "Package mencegah bentrok nama: yang satu di-import, yang lain ditulis lengkap.",
+    "out": "java.util.Date\njava.sql.Date 2026-11-26"
+   }
+  ]
+ },
+ "java-12-2": {
+  "exs": [
+   {
+    "t": "Kasus: menulis lalu membaca daftar nilai",
+    "code": "import java.io.*;\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) throws FileNotFoundException {\n        File f = new File(\"nilai.txt\");\n        PrintWriter tulis = new PrintWriter(f);\n        tulis.println(\"Budi 85 90\");\n        tulis.println(\"Sari 80 90\");\n        tulis.close();\n\n        Scanner baca = new Scanner(f);\n        while (baca.hasNextLine()) {\n            String baris = baca.nextLine();\n            Scanner token = new Scanner(baris);\n            String nama = token.next();\n            int total = 0, n = 0;\n            while (token.hasNextInt()) {\n                total += token.nextInt();\n                n++;\n            }\n            System.out.println(nama + \": \" + (double) total / n);\n        }\n        baca.close();\n        f.delete();\n    }\n}\n",
+    "d": "PrintWriter menulis file, Scanner membacanya kembali.",
+    "out": "Budi: 87.5\nSari: 85.0"
+   },
+   {
+    "t": "Kasus: membaca berbasis token untuk menjumlah setoran",
+    "code": "import java.io.*;\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) throws FileNotFoundException {\n        File f = new File(\"setoran.txt\");\n        PrintWriter tulis = new PrintWriter(f);\n        tulis.println(\"50000 25000\");\n        tulis.println(\"100000\");\n        tulis.println(\"75000 10000 5000\");\n        tulis.close();\n\n        Scanner baca = new Scanner(f);\n        long total = 0;\n        int banyak = 0;\n        while (baca.hasNextLong()) {        // abaikan baris, ambil setiap angka\n            total += baca.nextLong();\n            banyak++;\n        }\n        baca.close();\n        f.delete();\n        System.out.println(banyak + \" setoran, total Rp\" + total);\n    }\n}\n",
+    "d": "Membaca per token cocok bila letak baris tidak penting.",
+    "out": "6 setoran, total Rp265000"
+   },
+   {
+    "t": "Kasus: file tidak ada ditangani dengan rapi",
+    "code": "import java.io.*;\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        try {\n            Scanner baca = new Scanner(new File(\"data-tidak-ada.txt\"));\n            System.out.println(baca.nextLine());\n        } catch (FileNotFoundException e) {\n            System.out.println(\"File tidak ditemukan, memakai data kosong\");\n        }\n    }\n}\n",
+    "d": "FileNotFoundException adalah checked exception: harus ditangkap atau dideklarasikan.",
+    "out": "File tidak ditemukan, memakai data kosong"
+   }
+  ]
+ },
+ "java-12-3": {
+  "exs": [
+   {
+    "t": "Kasus: menjumlah dua nilai di setiap baris",
+    "code": "import java.io.*;\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) throws FileNotFoundException {\n        File f = new File(\"nilai.txt\");\n        try (PrintWriter w = new PrintWriter(f)) {\n            w.println(\"Dewi 78 84\");\n            w.println(\"Rudi 90 80\");\n            w.println(\"Lina 65 88\");\n        }\n        try (Scanner baca = new Scanner(f)) {\n            while (baca.hasNextLine()) {\n                Scanner t = new Scanner(baca.nextLine());\n                String nama = t.next();\n                int total = t.nextInt() + t.nextInt();\n                System.out.println(nama + \" \" + total);\n            }\n        }\n        f.delete();\n    }\n}\n",
+    "out": "Dewi 162\nRudi 170\nLina 153"
+   },
+   {
+    "t": "Kasus: menghitung baris dan kata sebuah pantun",
+    "code": "import java.io.*;\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) throws FileNotFoundException {\n        File f = new File(\"pantun.txt\");\n        try (PrintWriter w = new PrintWriter(f)) {\n            w.println(\"Kalau ada jarum yang patah\");\n            w.println(\"Jangan disimpan di dalam peti\");\n            w.println(\"Kalau ada kata yang salah\");\n            w.println(\"Jangan disimpan di dalam hati\");\n        }\n        int baris = 0, kata = 0;\n        try (Scanner baca = new Scanner(f)) {\n            while (baca.hasNextLine()) {\n                String isi = baca.nextLine();\n                baris++;\n                kata += isi.split(\" \").length;\n            }\n        }\n        f.delete();\n        System.out.println(baris + \" baris, \" + kata + \" kata\");\n    }\n}\n",
+    "d": "Baris bisa dipecah dengan split, tidak harus dengan Scanner kedua.",
+    "out": "4 baris, 20 kata"
+   },
+   {
+    "t": "Kasus: melewati baris kosong dan komentar",
+    "code": "import java.io.*;\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) throws FileNotFoundException {\n        File f = new File(\"stok.txt\");\n        try (PrintWriter w = new PrintWriter(f)) {\n            w.println(\"# stok gudang\");\n            w.println(\"beras 20\");\n            w.println(\"\");\n            w.println(\"gula 12\");\n        }\n        try (Scanner baca = new Scanner(f)) {\n            while (baca.hasNextLine()) {\n                String baris = baca.nextLine().trim();\n                if (baris.isEmpty() || baris.startsWith(\"#\")) {\n                    continue;                     // lewati\n                }\n                String[] bagian = baris.split(\" \");\n                System.out.println(bagian[0] + \" tersisa \" + bagian[1] + \" karung\");\n            }\n        }\n        f.delete();\n    }\n}\n",
+    "d": "File konfigurasi sering memakai # untuk komentar.",
+    "out": "beras tersisa 20 karung\ngula tersisa 12 karung"
+   }
+  ]
+ },
+ "java-12-4": {
+  "exs": [
+   {
+    "t": "Kasus: menulis dan membaca catatan harian",
+    "code": "import java.io.IOException;\nimport java.nio.file.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        Path p = Path.of(\"catatan.txt\");\n        Files.writeString(p, \"Senin: belajar Java\\nSelasa: latihan soal\\n\");\n        String isi = Files.readString(p);\n        System.out.print(isi);\n        System.out.println(\"Ukuran: \" + Files.size(p) + \" byte\");\n        Files.delete(p);\n    }\n}\n",
+    "d": "writeString dan readString cukup satu baris untuk file kecil.",
+    "out": "Senin: belajar Java\nSelasa: latihan soal\nUkuran: 41 byte"
+   },
+   {
+    "t": "Kasus: memilih baris tertentu dengan readAllLines",
+    "code": "import java.io.IOException;\nimport java.nio.file.*;\nimport java.util.List;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        Path p = Path.of(\"transaksi.csv\");\n        Files.write(p, List.of(\"INV-1,lunas\", \"INV-2,pending\", \"INV-3,lunas\", \"INV-4,batal\"));\n        List<String> baris = Files.readAllLines(p);\n        for (String b : baris) {\n            if (b.endsWith(\"pending\")) {\n                System.out.println(\"Perlu ditagih: \" + b.split(\",\")[0]);\n            }\n        }\n        System.out.println(\"Total baris: \" + baris.size());\n        Files.delete(p);\n    }\n}\n",
+    "out": "Perlu ditagih: INV-2\nTotal baris: 4"
+   },
+   {
+    "t": "Kasus: Files.lines untuk file log besar",
+    "code": "import java.io.IOException;\nimport java.nio.file.*;\nimport java.util.List;\nimport java.util.stream.Stream;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        Path log = Path.of(\"server.log\");\n        Files.write(log, List.of(\"INFO start\", \"ERROR db timeout\", \"INFO request\", \"ERROR disk penuh\"));\n        try (Stream<String> s = Files.lines(log)) {      // dibaca baris demi baris\n            long error = s.filter(b -> b.startsWith(\"ERROR\")).count();\n            System.out.println(\"Jumlah ERROR: \" + error);\n        }\n        System.out.println(\"Ada? \" + Files.exists(log));\n        Files.delete(log);\n        System.out.println(\"Setelah dihapus? \" + Files.exists(log));\n    }\n}\n",
+    "d": "try-with-resources menutup file setelah stream selesai.",
+    "out": "Jumlah ERROR: 2\nAda? true\nSetelah dihapus? false"
+   }
+  ]
+ },
+ "java-12-5": {
+  "exs": [
+   {
+    "t": "Kasus: jatuh tempo tagihan listrik",
+    "code": "import java.time.LocalDate;\nimport java.time.temporal.ChronoUnit;\n\npublic class Main {\n    public static void main(String[] args) {\n        LocalDate terbit = LocalDate.of(2026, 1, 20);\n        LocalDate jatuhTempo = terbit.plusDays(14);\n        LocalDate bayar = LocalDate.of(2026, 2, 6);\n        System.out.println(\"Jatuh tempo: \" + jatuhTempo);\n        System.out.println(\"Terlambat? \" + bayar.isAfter(jatuhTempo));\n        System.out.println(\"Terlambat \" + ChronoUnit.DAYS.between(jatuhTempo, bayar) + \" hari\");\n    }\n}\n",
+    "out": "Jatuh tempo: 2026-02-03\nTerlambat? true\nTerlambat 3 hari"
+   },
+   {
+    "t": "Kasus: umur dan hari ulang tahun",
+    "code": "import java.time.*;\nimport java.time.format.DateTimeFormatter;\nimport java.util.Locale;\n\npublic class Main {\n    public static void main(String[] args) {\n        LocalDate lahir = LocalDate.of(2008, 3, 15);\n        LocalDate hariIni = LocalDate.of(2026, 11, 26);\n        Period umur = Period.between(lahir, hariIni);\n        System.out.println(\"Umur: \" + umur.getYears() + \" tahun \" + umur.getMonths() + \" bulan \" + umur.getDays() + \" hari\");\n        System.out.println(\"Ulang tahun ke-17: \" + lahir.plusYears(17).getDayOfWeek());\n        DateTimeFormatter f = DateTimeFormatter.ofPattern(\"d MMMM yyyy\", Locale.forLanguageTag(\"id\"));\n        System.out.println(\"Lahir: \" + lahir.format(f));\n    }\n}\n",
+    "d": "Period mengukur selisih dalam tahun, bulan, dan hari.",
+    "out": "Umur: 18 tahun 8 bulan 11 hari\nUlang tahun ke-17: SATURDAY\nLahir: 15 Maret 2008"
+   },
+   {
+    "t": "Kasus: lama shift kerja kasir",
+    "code": "import java.time.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        LocalTime masuk = LocalTime.of(7, 30);\n        LocalTime pulang = LocalTime.of(15, 45);\n        Duration lama = Duration.between(masuk, pulang);\n        System.out.println(\"Lama kerja: \" + lama.toHours() + \" jam \" + lama.toMinutesPart() + \" menit\");\n        System.out.println(\"Istirahat jam: \" + masuk.plusHours(4));\n    }\n}\n",
+    "d": "Duration mengukur selisih waktu dalam jam, menit, dan detik.",
+    "out": "Lama kerja: 8 jam 15 menit\nIstirahat jam: 11:30"
+   }
+  ]
+ },
+ "java-12-6": {
+  "exs": [
+   {
+    "t": "Kasus: validasi NIS dan kode pos",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        String[] nis = {\"20240117\", \"2024A117\", \"123\"};\n        for (String n : nis) {\n            System.out.println(\"NIS \" + n + \" valid? \" + n.matches(\"\\\\d{8}\"));\n        }\n        System.out.println(\"Kode pos 40115 valid? \" + \"40115\".matches(\"[1-9]\\\\d{4}\"));\n    }\n}\n",
+    "d": "Pola \\d{8} berarti tepat delapan angka.",
+    "out": "NIS 20240117 valid? true\nNIS 2024A117 valid? false\nNIS 123 valid? false\nKode pos 40115 valid? true"
+   },
+   {
+    "t": "Kasus: mengambil semua tagar dari unggahan",
+    "code": "import java.util.regex.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        String unggahan = \"Liburan ke #Lombok bareng keluarga #pantai #2026\";\n        Matcher m = Pattern.compile(\"#(\\\\w+)\").matcher(unggahan);\n        while (m.find()) {\n            System.out.println(\"Tagar: \" + m.group(1));\n        }\n    }\n}\n",
+    "d": "group(1) mengambil isi tanda kurung saja, tanpa tanda #.",
+    "out": "Tagar: Lombok\nTagar: pantai\nTagar: 2026"
+   },
+   {
+    "t": "Kasus: menyamarkan nomor HP di struk",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        String struk = \"Pelanggan: Rizky, HP 081234567890\";\n        String aman = struk.replaceAll(\"(\\\\d{4})\\\\d{4}(\\\\d{4})\", \"$1****$2\");\n        System.out.println(aman);\n        String rapi = \"Jl.  Merdeka   No. 5\".replaceAll(\"\\\\s+\", \" \");\n        System.out.println(rapi);\n    }\n}\n",
+    "d": "replaceAll memakai grup $1 dan $2 untuk menyusun ulang teks.",
+    "out": "Pelanggan: Rizky, HP 0812****7890\nJl. Merdeka No. 5"
+   }
+  ]
+ },
+ "java-12-7": {
+  "exs": [
+   {
+    "t": "Kasus: memeriksa keaslian file unduhan dengan SHA-256",
+    "code": "import java.nio.charset.StandardCharsets;\nimport java.security.MessageDigest;\nimport java.util.HexFormat;\n\npublic class Main {\n    static String sha256(String data) {\n        try {\n            MessageDigest md = MessageDigest.getInstance(\"SHA-256\");\n            return HexFormat.of().formatHex(md.digest(data.getBytes(StandardCharsets.UTF_8)));\n        } catch (Exception e) {\n            throw new IllegalStateException(e);\n        }\n    }\n\n    public static void main(String[] args) {\n        String asli = \"installer-v1.2\";\n        String unduhan = \"installer-v1.2\";\n        String rusak = \"installer-v1.3\";\n        System.out.println(\"Hash asli  : \" + sha256(asli).substring(0, 16) + \"...\");\n        System.out.println(\"Unduhan cocok? \" + sha256(asli).equals(sha256(unduhan)));\n        System.out.println(\"File rusak cocok? \" + sha256(asli).equals(sha256(rusak)));\n    }\n}\n",
+    "d": "Satu karakter berbeda menghasilkan hash yang sama sekali lain.",
+    "out": "Hash asli  : 01d378649a404000...\nUnduhan cocok? true\nFile rusak cocok? false"
+   },
+   {
+    "t": "Kasus: Base64 untuk mengirim data biner sebagai teks",
+    "code": "import java.nio.charset.StandardCharsets;\nimport java.util.Base64;\n\npublic class Main {\n    public static void main(String[] args) {\n        String token = \"user:sari|role:kasir\";\n        String sandi = Base64.getEncoder().encodeToString(token.getBytes(StandardCharsets.UTF_8));\n        System.out.println(\"Base64 : \" + sandi);\n        String balik = new String(Base64.getDecoder().decode(sandi), StandardCharsets.UTF_8);\n        System.out.println(\"Kembali: \" + balik);\n    }\n}\n",
+    "d": "Base64 bukan enkripsi: siapa pun bisa membalikkannya.",
+    "out": "Base64 : dXNlcjpzYXJpfHJvbGU6a2FzaXI=\nKembali: user:sari|role:kasir"
+   },
+   {
+    "t": "Kasus: membedah alamat URL API",
+    "code": "import java.net.URI;\n\npublic class Main {\n    public static void main(String[] args) {\n        URI u = URI.create(\"https://api.tokokopi.id:8443/v1/produk?kategori=kopi&hal=2\");\n        System.out.println(\"Skema : \" + u.getScheme());\n        System.out.println(\"Host  : \" + u.getHost());\n        System.out.println(\"Port  : \" + u.getPort());\n        System.out.println(\"Path  : \" + u.getPath());\n        System.out.println(\"Query : \" + u.getQuery());\n    }\n}\n",
+    "d": "Sebelum memanggil API dengan HttpClient, URL dibuat sebagai objek URI.",
+    "out": "Skema : https\nHost  : api.tokokopi.id\nPort  : 8443\nPath  : /v1/produk\nQuery : kategori=kopi&hal=2"
+   }
+  ]
+ },
+ "java-13-1": {
+  "exs": [
+   {
+    "t": "Kasus: dua kasir menghitung omzet bersamaan",
+    "code": "public class Main {\n    public static void main(String[] args) throws InterruptedException {\n        long[] omzet = new long[2];\n        Thread kasir1 = new Thread(() -> {\n            for (int i = 1; i <= 1000; i++) omzet[0] += 15000;\n        });\n        Thread kasir2 = new Thread(() -> {\n            for (int i = 1; i <= 800; i++) omzet[1] += 20000;\n        });\n        kasir1.start();\n        kasir2.start();\n        kasir1.join();          // tunggu sampai selesai sebelum membaca hasil\n        kasir2.join();\n        System.out.println(\"Kasir 1: \" + omzet[0] + \", kasir 2: \" + omzet[1]);\n        System.out.println(\"Total: \" + (omzet[0] + omzet[1]));\n    }\n}\n",
+    "d": "Setiap thread menulis ke slotnya sendiri, jadi tidak ada data yang diperebutkan.",
+    "out": "Kasir 1: 15000000, kasir 2: 16000000\nTotal: 31000000"
+   },
+   {
+    "t": "Kasus: counter pengunjung dengan synchronized",
+    "code": "public class Main {\n    static int pengunjung = 0;\n\n    static synchronized void masuk() {     // hanya satu thread boleh masuk sekaligus\n        pengunjung++;\n    }\n\n    public static void main(String[] args) throws InterruptedException {\n        Runnable pintu = () -> {\n            for (int i = 0; i < 50_000; i++) {\n                masuk();\n            }\n        };\n        Thread pintuA = new Thread(pintu);\n        Thread pintuB = new Thread(pintu);\n        pintuA.start(); pintuB.start();\n        pintuA.join(); pintuB.join();\n        System.out.println(\"Pengunjung: \" + pengunjung + \" (harus 100000)\");\n    }\n}\n",
+    "d": "synchronized membuat baca-tambah-tulis menjadi satu langkah yang tidak bisa disela.",
+    "out": "Pengunjung: 100000 (harus 100000)"
+   },
+   {
+    "t": "Kasus: tiket konser terjual dengan AtomicInteger",
+    "code": "import java.util.concurrent.atomic.AtomicInteger;\n\npublic class Main {\n    public static void main(String[] args) throws InterruptedException {\n        AtomicInteger terjual = new AtomicInteger();\n        Thread[] loket = new Thread[4];\n        for (int i = 0; i < loket.length; i++) {\n            loket[i] = new Thread(() -> {\n                for (int j = 0; j < 2500; j++) terjual.incrementAndGet();\n            });\n            loket[i].start();\n        }\n        for (Thread t : loket) t.join();\n        System.out.println(\"Tiket terjual: \" + terjual.get());\n    }\n}\n",
+    "d": "AtomicInteger aman dipakai banyak thread tanpa synchronized.",
+    "out": "Tiket terjual: 10000"
+   }
+  ]
+ },
+ "java-13-2": {
+  "exs": [
+   {
+    "t": "Kasus: thread pool menghitung ongkir beberapa kota",
+    "code": "import java.util.*;\nimport java.util.concurrent.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        ExecutorService pool = Executors.newFixedThreadPool(3);\n        List<String> kota = List.of(\"Bandung\", \"Makassar\", \"Jayapura\", \"Medan\");\n        List<Future<Integer>> hasil = new ArrayList<>();\n        for (String k : kota) {\n            hasil.add(pool.submit(() -> k.length() * 3000));   // pura-pura menghitung ongkir\n        }\n        for (int i = 0; i < kota.size(); i++) {\n            System.out.println(kota.get(i) + \": Rp\" + hasil.get(i).get());\n        }\n        pool.shutdown();\n    }\n}\n",
+    "d": "Future.get() menunggu sampai tugasnya selesai, lalu mengembalikan hasilnya.",
+    "out": "Bandung: Rp21000\nMakassar: Rp24000\nJayapura: Rp24000\nMedan: Rp15000"
+   },
+   {
+    "t": "Kasus: invokeAll untuk mengecek stok di tiga gudang",
+    "code": "import java.util.*;\nimport java.util.concurrent.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        try (ExecutorService ex = Executors.newVirtualThreadPerTaskExecutor()) {\n            List<Callable<Integer>> cek = List.of(\n                    () -> { Thread.sleep(50); return 12; },   // gudang Jakarta\n                    () -> { Thread.sleep(80); return 5; },    // gudang Surabaya\n                    () -> { Thread.sleep(30); return 20; });  // gudang Medan\n            int total = 0;\n            for (Future<Integer> f : ex.invokeAll(cek)) {\n                total += f.get();\n            }\n            System.out.println(\"Total stok: \" + total);\n        }\n    }\n}\n",
+    "d": "Ketiga gudang dicek bersamaan, jadi waktunya mengikuti yang paling lambat saja.",
+    "out": "Total stok: 37"
+   },
+   {
+    "t": "Kasus: memulai virtual thread secara langsung",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws InterruptedException {\n        List<Thread> semua = new ArrayList<>();\n        int[] hasil = new int[5];\n        for (int i = 0; i < 5; i++) {\n            int id = i;\n            semua.add(Thread.ofVirtual().start(() -> hasil[id] = (id + 1) * 100));\n        }\n        for (Thread t : semua) t.join();\n        System.out.println(\"Virtual? \" + semua.get(0).isVirtual());\n        System.out.println(Arrays.toString(hasil));\n    }\n}\n",
+    "d": "Thread.ofVirtual() membuat thread ringan tanpa executor.",
+    "out": "Virtual? true\n[100, 200, 300, 400, 500]"
+   }
+  ]
+ },
+ "java-13-3": {
+  "exs": [
+   {
+    "t": "Kasus: tombol batal unduhan memakai flag volatile",
+    "code": "public class Main {\n    static volatile boolean batal = false;\n\n    public static void main(String[] args) throws InterruptedException {\n        Thread unduh = new Thread(() -> {\n            long potongan = 0;\n            while (!batal) {\n                potongan++;          // pura-pura mengunduh\n            }\n            System.out.println(\"Unduhan dihentikan\");\n        });\n        unduh.start();\n        Thread.sleep(100);\n        batal = true;               // pengguna menekan Batal\n        unduh.join();\n        System.out.println(\"Thread unduh hidup? \" + unduh.isAlive());\n    }\n}\n",
+    "d": "Tanpa volatile, thread unduh bisa terus membaca nilai lama dari cache.",
+    "out": "Unduhan dihentikan\nThread unduh hidup? false"
+   },
+   {
+    "t": "Kasus: volatile tidak membuat ++ aman",
+    "code": "public class Main {\n    static volatile int hitung = 0;   // volatile saja: hasilnya bisa kurang dari 200000\n\n    public static void main(String[] args) throws InterruptedException {\n        Runnable kerja = () -> {\n            for (int i = 0; i < 100_000; i++) {\n                synchronized (Main.class) {\n                    hitung++;        // ++ tetap butuh synchronized atau Atomic\n                }\n            }\n        };\n        Thread a = new Thread(kerja), b = new Thread(kerja);\n        a.start(); b.start();\n        a.join(); b.join();\n        System.out.println(\"hitung = \" + hitung);\n    }\n}\n",
+    "d": "volatile menjamin nilai terbaru terlihat, bukan menjamin operasi gabungan atomik.",
+    "out": "hitung = 200000"
+   },
+   {
+    "t": "Kasus: join juga memberi jaminan happens-before",
+    "code": "public class Main {\n    public static void main(String[] args) throws InterruptedException {\n        int[] laporan = new int[1];\n        Thread penyusun = new Thread(() -> laporan[0] = 4250000);\n        penyusun.start();\n        penyusun.join();      // semua tulisan penyusun pasti terlihat setelah join\n        System.out.println(\"Omzet harian: \" + laporan[0]);\n    }\n}\n",
+    "d": "Setelah join selesai, data yang ditulis thread lain dijamin terlihat tanpa volatile.",
+    "out": "Omzet harian: 4250000"
+   }
+  ]
+ },
+ "java-14-1": {
+  "exs": [
+   {
+    "t": "Kasus: build.gradle.kts untuk aplikasi kasir",
+    "code": "// build.gradle.kts\nplugins {\n    application\n}\n\njava {\n    toolchain { languageVersion = JavaLanguageVersion.of(21) }\n}\n\nrepositories { mavenCentral() }\n\ndependencies {\n    implementation(\"org.slf4j:slf4j-api:2.0.16\")\n    runtimeOnly(\"ch.qos.logback:logback-classic:1.5.12\")\n    testImplementation(\"org.junit.jupiter:junit-jupiter:5.11.3\")\n    testRuntimeOnly(\"org.junit.platform:junit-platform-launcher\")\n}\n\napplication {\n    mainClass = \"id.tokokopi.kasir.App\"\n}\n\ntasks.test { useJUnitPlatform() }\n\n# Perintah:\n# ./gradlew run     menjalankan aplikasi\n# ./gradlew test    menjalankan tes\n# ./gradlew build   compile + test + buat build/libs/kasir.jar\n",
+    "d": "implementation untuk kode utama, testImplementation hanya untuk tes."
+   },
+   {
+    "t": "Kasus: siklus hidup Maven dari terminal",
+    "code": "mvn validate     # cek pom.xml benar\nmvn compile      # validate + compile src/main/java\nmvn test         # ... + jalankan tes di src/test/java\nmvn package      # ... + buat target/kasir-1.0.0.jar\nmvn install      # ... + simpan jar ke ~/.m2 agar dipakai proyek lain\nmvn clean package -DskipTests   # bersihkan target/, lalu kemas tanpa tes\n\n# Struktur folder standar (Maven dan Gradle sama):\n# kasir/\n#   pom.xml\n#   src/main/java/id/tokokopi/kasir/App.java\n#   src/main/resources/application.properties\n#   src/test/java/id/tokokopi/kasir/AppTest.java\n",
+    "d": "Menjalankan satu tahap otomatis menjalankan semua tahap sebelumnya."
+   },
+   {
+    "t": "Kasus: BUILD file Bazel di monorepo",
+    "code": "# kasir/BUILD.bazel\njava_library(\n    name = \"kasir-lib\",\n    srcs = glob([\"src/main/java/**/*.java\"]),\n    deps = [\"//common/uang:uang-lib\"],      # modul lain di repo yang sama\n)\n\njava_binary(\n    name = \"kasir\",\n    main_class = \"id.tokokopi.kasir.App\",\n    runtime_deps = [\":kasir-lib\"],\n)\n\njava_test(\n    name = \"kasir-test\",\n    srcs = glob([\"src/test/java/**/*.java\"]),\n    test_class = \"id.tokokopi.kasir.AppTest\",\n    deps = [\":kasir-lib\"],\n)\n\n# bazel build //kasir:kasir\n# bazel test //kasir:kasir-test\n",
+    "d": "Bazel menyusun target kecil yang saling bergantung, cocok untuk repo raksasa."
+   }
+  ]
+ },
+ "java-14-2": {
+  "exs": [
+   {
+    "t": "Kasus: level log menyaring pesan yang tampil",
+    "code": "import java.util.logging.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Logger log = Logger.getLogger(\"stok\");\n        log.setUseParentHandlers(false);\n        Handler h = new StreamHandler(System.out, new SimpleFormatter() {\n            @Override\n            public String format(LogRecord r) {\n                return \"[\" + r.getLevel() + \"] \" + r.getMessage() + \"\\n\";\n            }\n        });\n        log.addHandler(h);\n\n        log.setLevel(Level.WARNING);           // produksi: hanya WARNING ke atas\n        log.info(\"cek stok kopi\");             // tidak tampil\n        log.warning(\"stok kopi tinggal 3\");\n        log.severe(\"stok gula habis\");\n\n        log.setLevel(Level.INFO);              // saat debugging: lebih rinci\n        log.info(\"cek stok teh\");\n        h.flush();\n    }\n}\n",
+    "d": "Level diatur tanpa mengubah baris-baris pemanggil log.",
+    "out": "[WARNING] stok kopi tinggal 3\n[SEVERE] stok gula habis\n[INFO] cek stok teh"
+   },
+   {
+    "t": "Kasus: SLF4J dengan placeholder dan exception",
+    "code": "import org.slf4j.Logger;\nimport org.slf4j.LoggerFactory;\n\npublic class PengirimanService {\n    private static final Logger log = LoggerFactory.getLogger(PengirimanService.class);\n\n    public void kirim(String resi, int beratGram) {\n        log.debug(\"Menghitung ongkir resi {} berat {} g\", resi, beratGram);\n        if (beratGram > 30_000) {\n            log.warn(\"Resi {} melebihi batas berat: {} g\", resi, beratGram);\n            return;\n        }\n        try {\n            // panggil API kurir ...\n            log.info(\"Resi {} berhasil diserahkan ke kurir\", resi);\n        } catch (RuntimeException e) {\n            log.error(\"Gagal mengirim resi {}\", resi, e);   // exception sebagai argumen terakhir\n        }\n    }\n}\n",
+    "d": "Placeholder {} diisi berurutan; teks hanya disusun bila levelnya aktif."
+   },
+   {
+    "t": "Kasus: MDC untuk melacak satu request",
+    "code": "import org.slf4j.Logger;\nimport org.slf4j.LoggerFactory;\nimport org.slf4j.MDC;\n\npublic class PesananHandler {\n    private static final Logger log = LoggerFactory.getLogger(PesananHandler.class);\n\n    public void tangani(String requestId, String noPesanan) {\n        MDC.put(\"requestId\", requestId);          // ikut tercetak di setiap baris log\n        try {\n            log.info(\"Mulai memproses pesanan {}\", noPesanan);\n            log.info(\"Pembayaran pesanan {} dikonfirmasi\", noPesanan);\n        } finally {\n            MDC.clear();\n        }\n    }\n}\n\n// logback.xml: <pattern>%d{HH:mm:ss} %-5level [%X{requestId}] %logger - %msg%n</pattern>\n// 10:15:02 INFO  [req-7f3a] PesananHandler - Mulai memproses pesanan INV-7\n",
+    "d": "Dengan requestId yang sama, semua log satu request mudah dicari."
+   }
+  ]
+ },
+ "java-14-3": {
+  "exs": [
+   {
+    "t": "Kasus: pola Arrange-Act-Assert tanpa framework",
+    "code": "public class Main {\n    static class Diskon {\n        static long hitung(long harga, int persen) {\n            if (persen < 0 || persen > 100) throw new IllegalArgumentException(\"persen salah\");\n            return harga - harga * persen / 100;\n        }\n    }\n\n    static void cek(String nama, long harapan, long hasil) {\n        System.out.println((harapan == hasil ? \"LULUS \" : \"GAGAL \") + nama + \": harapan \" + harapan + \", hasil \" + hasil);\n    }\n\n    public static void main(String[] args) {\n        cek(\"diskon 10%\", 45_000, Diskon.hitung(50_000, 10));\n        cek(\"tanpa diskon\", 80_000, Diskon.hitung(80_000, 0));\n        cek(\"diskon penuh\", 0, Diskon.hitung(80_000, 100));\n        try {\n            Diskon.hitung(1000, -5);\n            System.out.println(\"GAGAL persen negatif: tidak ditolak\");\n        } catch (IllegalArgumentException e) {\n            System.out.println(\"LULUS persen negatif ditolak\");\n        }\n    }\n}\n",
+    "d": "JUnit melakukan hal yang sama, ditambah laporan, pencarian tes otomatis, dan integrasi dengan build tool.",
+    "out": "LULUS diskon 10%: harapan 45000, hasil 45000\nLULUS tanpa diskon: harapan 80000, hasil 80000\nLULUS diskon penuh: harapan 0, hasil 0\nLULUS persen negatif ditolak"
+   },
+   {
+    "t": "Kasus: @BeforeEach menyiapkan keranjang baru untuk setiap tes",
+    "code": "import static org.junit.jupiter.api.Assertions.*;\nimport org.junit.jupiter.api.*;\n\nclass KeranjangTest {\n    private Keranjang keranjang;\n\n    @BeforeEach\n    void siapkan() {                       // Arrange bersama, dijalankan sebelum SETIAP tes\n        keranjang = new Keranjang();\n    }\n\n    @Test\n    void keranjangBaruKosong() {\n        assertTrue(keranjang.isEmpty());\n    }\n\n    @Test\n    @DisplayName(\"Total menjumlahkan harga x jumlah\")\n    void totalDihitungBenar() {\n        keranjang.tambah(\"Kopi Gayo\", 85_000, 2);    // Act\n        keranjang.tambah(\"Gula Aren\", 30_000, 1);\n        assertEquals(200_000, keranjang.total());    // Assert\n    }\n\n    @Test\n    void jumlahNolDitolak() {\n        var e = assertThrows(IllegalArgumentException.class,\n                () -> keranjang.tambah(\"Teh\", 25_000, 0));\n        assertEquals(\"jumlah harus > 0\", e.getMessage());\n    }\n}\n",
+    "d": "Setiap tes mendapat objek baru, sehingga tes tidak saling memengaruhi."
+   },
+   {
+    "t": "Kasus: TestNG dengan data provider",
+    "code": "import org.testng.annotations.DataProvider;\nimport org.testng.annotations.Test;\nimport static org.testng.Assert.assertEquals;\n\npublic class OngkirTestNG {\n    @DataProvider(name = \"berat\")\n    public Object[][] data() {\n        return new Object[][] { {800, 9000}, {1000, 9000}, {1001, 15000} };\n    }\n\n    @Test(dataProvider = \"berat\", groups = \"cepat\")\n    public void tarifSesuaiBerat(int gram, int harapan) {\n        assertEquals(Ongkir.hitung(gram), harapan);   // TestNG: (hasil, harapan)\n    }\n}\n",
+    "d": "Perhatikan urutan argumen assertEquals di TestNG terbalik dari JUnit."
+   }
+  ]
+ },
+ "java-14-4": {
+  "exs": [
+   {
+    "t": "Kasus: mock buatan tangan untuk gateway SMS",
+    "code": "import java.util.*;\n\npublic class Main {\n    interface SmsGateway {\n        void kirim(String nomor, String pesan);\n    }\n\n    static class SmsPalsu implements SmsGateway {    // tidak benar-benar mengirim SMS\n        final List<String> terkirim = new ArrayList<>();\n        public void kirim(String nomor, String pesan) {\n            terkirim.add(nomor + \" -> \" + pesan);\n        }\n    }\n\n    static class LayananOtp {\n        private final SmsGateway sms;\n        LayananOtp(SmsGateway sms) { this.sms = sms; }\n        void kirimKode(String nomor, String kode) {\n            sms.kirim(nomor, \"Kode OTP kamu: \" + kode);\n        }\n    }\n\n    public static void main(String[] args) {\n        SmsPalsu sms = new SmsPalsu();\n        LayananOtp otp = new LayananOtp(sms);\n        otp.kirimKode(\"0812-555-0101\", \"4821\");\n        otp.kirimKode(\"0857-555-0202\", \"9034\");\n\n        // verifikasi: apakah gateway dipanggil dengan benar?\n        System.out.println(\"Dipanggil \" + sms.terkirim.size() + \" kali\");\n        System.out.println(\"Pesan pertama: \" + sms.terkirim.get(0));\n    }\n}\n",
+    "d": "Mockito membuat objek seperti SmsPalsu secara otomatis.",
+    "out": "Dipanggil 2 kali\nPesan pertama: 0812-555-0101 -> Kode OTP kamu: 4821"
+   },
+   {
+    "t": "Kasus: Mockito mengatur hasil dan memeriksa panggilan",
+    "code": "import static org.mockito.Mockito.*;\nimport static org.junit.jupiter.api.Assertions.*;\nimport org.junit.jupiter.api.Test;\n\nclass StokServiceTest {\n    @Test\n    void stokHabisTidakBolehDipesan() {\n        GudangClient gudang = mock(GudangClient.class);\n        when(gudang.sisa(\"KOPI-GAYO\")).thenReturn(0);       // atur perilaku mock\n\n        StokService service = new StokService(gudang);\n        assertFalse(service.bisaDipesan(\"KOPI-GAYO\", 1));\n\n        verify(gudang, times(1)).sisa(\"KOPI-GAYO\");        // dipanggil tepat sekali\n        verify(gudang, never()).kurangi(anyString(), anyInt());\n    }\n}\n",
+    "d": "never() memastikan stok tidak dikurangi saat pesanan ditolak."
+   },
+   {
+    "t": "Kasus: REST Assured menguji endpoint pembuatan pesanan",
+    "code": "import static io.restassured.RestAssured.*;\nimport static org.hamcrest.Matchers.*;\n\n@Test\nvoid buatPesananMengembalikan201() {\n    given()\n        .contentType(\"application/json\")\n        .body(\"{\\\"produkId\\\": 1, \\\"jumlah\\\": 2}\")\n    .when()\n        .post(\"/api/pesanan\")\n    .then()\n        .statusCode(201)\n        .body(\"status\", equalTo(\"MENUNGGU_PEMBAYARAN\"))\n        .body(\"total\", equalTo(170000));\n}\n",
+    "d": "Tes integrasi seperti ini memanggil aplikasi yang sedang berjalan lewat HTTP."
+   }
+  ]
+ },
+ "java-15-1": {
+  "exs": [
+   {
+    "t": "Kasus: kenapa harus PreparedStatement (SQL injection)",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        String inputLogin = \"' OR '1'='1\";\n\n        // SALAH: input disambung langsung ke SQL\n        String berbahaya = \"SELECT * FROM pengguna WHERE email = '\" + inputLogin + \"'\";\n        System.out.println(\"Disambung : \" + berbahaya);\n        System.out.println(\"-> kondisi selalu benar, semua pengguna ikut terbaca\");\n\n        // BENAR: SQL tetap, input dikirim terpisah sebagai nilai\n        String aman = \"SELECT * FROM pengguna WHERE email = ?\";\n        System.out.println(\"Prepared  : \" + aman + \"   [nilai ?: \" + inputLogin + \"]\");\n    }\n}\n",
+    "d": "Dengan tanda ?, input hanya dianggap data, tidak pernah menjadi bagian perintah SQL.",
+    "out": "Disambung : SELECT * FROM pengguna WHERE email = '' OR '1'='1'\n-> kondisi selalu benar, semua pengguna ikut terbaca\nPrepared  : SELECT * FROM pengguna WHERE email = ?   [nilai ?: ' OR '1'='1]"
+   },
+   {
+    "t": "Kasus: menambah pelanggan dengan executeUpdate",
+    "code": "import java.sql.*;\n\npublic class TambahPelanggan {\n    public static void main(String[] args) throws SQLException {\n        String url = \"jdbc:postgresql://localhost:5432/toko\";\n        String sql = \"INSERT INTO pelanggan (nama, kota) VALUES (?, ?)\";\n        try (Connection con = DriverManager.getConnection(url, \"app\", \"rahasia\");\n             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {\n            ps.setString(1, \"Nur Aisyah\");\n            ps.setString(2, \"Banjarmasin\");\n            int baris = ps.executeUpdate();              // jumlah baris yang berubah\n            try (ResultSet kunci = ps.getGeneratedKeys()) {\n                if (kunci.next()) {\n                    System.out.println(baris + \" baris ditambah, id baru \" + kunci.getLong(1));\n                }\n            }\n        }\n    }\n}\n// Contoh keluaran: 1 baris ditambah, id baru 42\n",
+    "d": "executeQuery untuk SELECT, executeUpdate untuk INSERT, UPDATE, dan DELETE."
+   },
+   {
+    "t": "Kasus: impor ratusan produk sekaligus dengan batch",
+    "code": "String sql = \"INSERT INTO produk (nama, harga) VALUES (?, ?)\";\ntry (Connection con = dataSource.getConnection();\n     PreparedStatement ps = con.prepareStatement(sql)) {\n    con.setAutoCommit(false);\n    for (Produk p : daftarDariCsv) {\n        ps.setString(1, p.nama());\n        ps.setInt(2, p.harga());\n        ps.addBatch();                 // kumpulkan dulu\n    }\n    int[] hasil = ps.executeBatch();   // kirim ke database sekali jalan\n    con.commit();\n    System.out.println(hasil.length + \" produk diimpor\");\n}\n",
+    "d": "Batch mengurangi bolak-balik ke database sehingga impor jauh lebih cepat."
+   }
+  ]
+ },
+ "java-15-2": {
+  "exs": [
+   {
+    "t": "Kasus: memetakan baris tabel ke objek secara manual",
+    "code": "import java.util.*;\n\npublic class Main {\n    record Produk(long id, String nama, int harga) {}\n\n    public static void main(String[] args) {\n        // anggap ini hasil SELECT id, nama, harga FROM produk\n        String[][] baris = {\n            {\"1\", \"Kopi Gayo\", \"85000\"},\n            {\"2\", \"Teh Melati\", \"25000\"},\n        };\n        List<Produk> daftar = new ArrayList<>();\n        for (String[] b : baris) {\n            daftar.add(new Produk(Long.parseLong(b[0]), b[1], Integer.parseInt(b[2])));\n        }\n        for (Produk p : daftar) {\n            System.out.println(p);\n        }\n    }\n}\n",
+    "d": "Pekerjaan berulang inilah yang diotomatiskan ORM: satu baris menjadi satu objek.",
+    "out": "Produk[id=1, nama=Kopi Gayo, harga=85000]\nProduk[id=2, nama=Teh Melati, harga=25000]"
+   },
+   {
+    "t": "Kasus: query turunan dari nama method",
+    "code": "public interface PelangganRepository extends JpaRepository<Pelanggan, Long> {\n\n    // SELECT ... WHERE kota = ?\n    List<Pelanggan> findByKota(String kota);\n\n    // SELECT ... WHERE email = ?   (bisa kosong)\n    Optional<Pelanggan> findByEmail(String email);\n\n    // SELECT count(*) ... WHERE aktif = true\n    long countByAktifTrue();\n\n    // SELECT ... WHERE nama LIKE ? ORDER BY nama ASC\n    List<Pelanggan> findByNamaContainingIgnoreCaseOrderByNamaAsc(String potongan);\n}\n\n// Pemakaian:\n// repo.findByKota(\"Bandung\");\n// repo.findByEmail(\"sari@contoh.id\").orElseThrow();\n",
+    "d": "Spring Data membaca nama method lalu membuatkan SQL-nya."
+   },
+   {
+    "t": "Kasus: entity dan query dengan Ebean",
+    "code": "@Entity\n@Table(name = \"produk\")\npublic class Produk extends Model {      // Model dari io.ebean\n    @Id\n    Long id;\n    String nama;\n    String kategori;\n    int harga;\n}\n\n// Menyimpan\nProduk p = new Produk();\np.nama = \"Kopi Toraja\";\np.kategori = \"Kopi\";\np.harga = 92_000;\np.save();\n\n// Query bertipe\nList<Produk> kopiMurah = DB.find(Produk.class)\n        .where().eq(\"kategori\", \"Kopi\").lt(\"harga\", 90_000)\n        .orderBy(\"harga\")\n        .findList();\n",
+    "d": "Ebean memakai anotasi JPA yang sama, dengan gaya pemakaian yang lebih ringkas."
+   }
+  ]
+ },
+ "java-15-3": {
+  "exs": [
+   {
+    "t": "Kasus: constructor injection untuk notifikasi pesanan",
+    "code": "public class Main {\n    interface Notifikasi {\n        void kirim(String pesan);\n    }\n\n    static class NotifikasiWhatsApp implements Notifikasi {\n        public void kirim(String pesan) { System.out.println(\"[WA] \" + pesan); }\n    }\n\n    static class NotifikasiSms implements Notifikasi {\n        public void kirim(String pesan) { System.out.println(\"[SMS] \" + pesan); }\n    }\n\n    static class PesananService {\n        private final Notifikasi notifikasi;\n        PesananService(Notifikasi notifikasi) {    // dependency diterima, bukan dibuat sendiri\n            this.notifikasi = notifikasi;\n        }\n        void konfirmasi(String no) {\n            notifikasi.kirim(\"Pesanan \" + no + \" sudah dikonfirmasi\");\n        }\n    }\n\n    public static void main(String[] args) {\n        // \"container\" sederhana: kita sendiri yang merangkai objek\n        Notifikasi wa = new NotifikasiWhatsApp();\n        Notifikasi sms = new NotifikasiSms();\n\n        new PesananService(wa).konfirmasi(\"INV-31\");\n        new PesananService(sms).konfirmasi(\"INV-32\");\n    }\n}\n",
+    "d": "PesananService tidak peduli notifikasi dikirim lewat apa; itu ditentukan dari luar.",
+    "out": "[WA] Pesanan INV-31 sudah dikonfirmasi\n[SMS] Pesanan INV-32 sudah dikonfirmasi"
+   },
+   {
+    "t": "Kasus: endpoint POST dengan validasi",
+    "code": "@RestController\n@RequestMapping(\"/api/pesanan\")\nclass PesananController {\n    private final PesananService service;\n\n    PesananController(PesananService service) {     // disuntikkan Spring\n        this.service = service;\n    }\n\n    record PesananBaru(@NotNull Long produkId, @Min(1) int jumlah) {}\n\n    @PostMapping\n    @ResponseStatus(HttpStatus.CREATED)\n    Pesanan buat(@Valid @RequestBody PesananBaru body) {\n        return service.buat(body.produkId(), body.jumlah());\n    }\n\n    @GetMapping(\"/{id}\")\n    Pesanan detail(@PathVariable Long id) {\n        return service.cari(id);\n    }\n}\n// POST /api/pesanan {\"produkId\":1,\"jumlah\":2} -> 201 Created\n",
+    "d": "JSON di body otomatis diubah menjadi record, lalu divalidasi sebelum method dijalankan."
+   },
+   {
+    "t": "Kasus: memilih implementasi dengan @Configuration dan @Bean",
+    "code": "@Configuration\nclass GatewayConfig {\n\n    @Bean\n    @Profile(\"prod\")\n    PembayaranGateway gatewayAsli(@Value(\"${qris.api-key}\") String apiKey) {\n        return new QrisGateway(apiKey);\n    }\n\n    @Bean\n    @Profile(\"dev\")\n    PembayaranGateway gatewayPalsu() {\n        return new GatewayPalsu();      // tidak menarik uang sungguhan\n    }\n}\n\n// application-prod.properties: qris.api-key=${QRIS_API_KEY}\n// Jalankan: java -jar toko.jar --spring.profiles.active=dev\n",
+    "d": "Spring menyuntikkan bean yang sesuai profil aktif ke setiap konstruktor yang membutuhkannya."
+   }
+  ]
+ },
+ "java-15-4": {
+  "exs": [
+   {
+    "t": "Kasus: Javalin dengan POST dan validasi sederhana",
+    "code": "import io.javalin.Javalin;\nimport java.util.*;\n\npublic class ApiCatatan {\n    record Catatan(int id, String isi) {}\n\n    public static void main(String[] args) {\n        List<Catatan> data = new ArrayList<>();\n        var app = Javalin.create().start(7070);\n\n        app.get(\"/catatan\", ctx -> ctx.json(data));\n        app.post(\"/catatan\", ctx -> {\n            String isi = ctx.body();\n            if (isi.isBlank()) {\n                ctx.status(400).result(\"isi kosong\");\n                return;\n            }\n            Catatan c = new Catatan(data.size() + 1, isi);\n            data.add(c);\n            ctx.status(201).json(c);\n        });\n    }\n}\n",
+    "d": "Setiap rute cukup sebuah lambda yang menerima ctx (request dan response)."
+   },
+   {
+    "t": "Kasus: resource Quarkus dengan dependency injection",
+    "code": "@Path(\"/produk\")\n@Produces(MediaType.APPLICATION_JSON)\npublic class ProdukResource {\n\n    @Inject\n    ProdukService service;          // disuntikkan CDI milik Quarkus\n\n    @GET\n    public List<Produk> semua() {\n        return service.semua();\n    }\n\n    @GET\n    @Path(\"/{id}\")\n    public Produk satu(@PathParam(\"id\") long id) {\n        return service.cari(id);\n    }\n}\n\n// Mode dev dengan hot reload: ./mvnw quarkus:dev\n// Native executable       : ./mvnw package -Dnative\n",
+    "d": "Quarkus memakai standar Jakarta REST (JAX-RS) dan CDI."
+   },
+   {
+    "t": "Kasus: controller Play Framework versi Java",
+    "code": "// conf/routes\n// GET   /halo/:nama     controllers.HaloController.sapa(nama: String)\n\npackage controllers;\n\nimport play.mvc.*;\n\npublic class HaloController extends Controller {\n    public Result sapa(String nama) {\n        return ok(\"Halo, \" + nama + \"!\");     // 200 OK berisi teks\n    }\n}\n",
+    "d": "Rute Play ditulis di file conf/routes, terpisah dari kode controller."
+   }
+  ]
+ },
+ "java-15-5": {
+  "exs": [
+   {
+    "t": "Kasus: Javadoc pada kelas dan method yang bisa dijalankan",
+    "code": "public class Main {\n    /**\n     * Kalkulator ongkos kirim kurir reguler.\n     *\n     * <p>Berat dibulatkan ke atas per 1 kg.\n     */\n    static class Ongkir {\n        /** Tarif per kilogram dalam rupiah. */\n        static final int TARIF_PER_KG = 9000;\n\n        /**\n         * Menghitung ongkos kirim.\n         *\n         * @param beratGram berat paket dalam gram, harus lebih dari 0\n         * @return ongkos kirim dalam rupiah\n         * @throws IllegalArgumentException jika {@code beratGram <= 0}\n         */\n        static int hitung(int beratGram) {\n            if (beratGram <= 0) {\n                throw new IllegalArgumentException(\"berat harus > 0\");\n            }\n            int kg = (beratGram + 999) / 1000;\n            return kg * TARIF_PER_KG;\n        }\n    }\n\n    public static void main(String[] args) {\n        System.out.println(Ongkir.hitung(1500));\n        System.out.println(Ongkir.hitung(3000));\n    }\n}\n",
+    "d": "Komentar Javadoc tidak mengubah jalannya program, tetapi muncul di IDE dan situs dokumentasi.",
+    "out": "18000\n27000"
+   },
+   {
+    "t": "Kasus: Javadoc untuk record dengan @param komponen",
+    "code": "public class Main {\n    /**\n     * Data rekening tabungan.\n     *\n     * @param nomor   nomor rekening 10 digit\n     * @param pemilik nama sesuai KTP\n     * @param saldo   saldo dalam rupiah, tidak negatif\n     */\n    record Rekening(String nomor, String pemilik, long saldo) {}\n\n    public static void main(String[] args) {\n        Rekening r = new Rekening(\"1234567890\", \"Siti Rahma\", 2_500_000);\n        System.out.println(r.pemilik() + \" saldo \" + r.saldo());\n    }\n}\n",
+    "d": "Untuk record, setiap komponen dijelaskan dengan @param di atas deklarasinya.",
+    "out": "Siti Rahma saldo 2500000"
+   },
+   {
+    "t": "Kasus: menautkan dokumentasi dengan {@link} dan @see",
+    "code": "public class Main {\n    static class Harga {\n        /** Tarif PPN dalam persen. */\n        static final int PPN = 11;\n\n        /**\n         * Menambahkan PPN ke harga dasar.\n         *\n         * <p>Besarnya mengikuti {@link #PPN}. Untuk harga setelah diskon,\n         * hitung diskonnya dulu baru panggil method ini.\n         *\n         * @param hargaDasar harga sebelum pajak\n         * @return harga setelah PPN\n         * @see <a href=\"https://pajak.go.id\">Informasi PPN</a>\n         */\n        static long setelahPpn(long hargaDasar) {\n            return hargaDasar + hargaDasar * PPN / 100;\n        }\n    }\n\n    public static void main(String[] args) {\n        System.out.println(Harga.setelahPpn(100_000));\n    }\n}\n",
+    "d": "{@link} menjadi tautan yang bisa diklik di dokumentasi HTML.",
+    "out": "111000"
+   }
+  ]
+ },
+ "java-16-1": {
+  "exs": [
+   {
+    "t": "Kasus: tabel nilai rapor yang rata",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        String[] mapel = {\"Matematika\", \"B. Indonesia\", \"IPA\"};\n        double[] nilai = {87.5, 91.25, 78.0};\n        System.out.printf(\"%-14s %6s%n\", \"Mapel\", \"Nilai\");\n        for (int i = 0; i < mapel.length; i++) {\n            System.out.printf(\"%-14s %6.1f%n\", mapel[i], nilai[i]);\n        }\n        double rata = (nilai[0] + nilai[1] + nilai[2]) / 3;\n        System.out.printf(\"%-14s %6.2f%n\", \"Rata-rata\", rata);\n    }\n}\n",
+    "d": "%-14s rata kiri selebar 14, %6.1f desimal satu angka dalam kolom selebar 6.",
+    "out": "Mapel           Nilai\nMatematika       87.5\nB. Indonesia     91.3\nIPA              78.0\nRata-rata       85.58"
+   },
+   {
+    "t": "Kasus: nomor antrean dan kode invoice dengan String.format",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        for (int no = 1; no <= 3; no++) {\n            String antrean = String.format(\"A-%03d\", no);\n            System.out.println(\"Nomor antrean: \" + antrean);\n        }\n        String invoice = String.format(\"INV/%d/%02d/%05d\", 2026, 11, 427);\n        System.out.println(invoice);\n    }\n}\n",
+    "d": "%03d menambahkan nol di depan sampai lebarnya 3 digit.",
+    "out": "Nomor antrean: A-001\nNomor antrean: A-002\nNomor antrean: A-003\nINV/2026/11/00427"
+   },
+   {
+    "t": "Kasus: laporan diskon dengan persen dan pemisah ribuan",
+    "code": "import java.util.Locale;\n\npublic class Main {\n    public static void main(String[] args) {\n        Locale id = Locale.forLanguageTag(\"id-ID\");\n        int harga = 1250000;\n        int persen = 15;\n        int potongan = harga * persen / 100;\n        System.out.printf(id, \"Harga     : Rp%,d%n\", harga);\n        System.out.printf(id, \"Diskon    : %d%% (Rp%,d)%n\", persen, potongan);\n        System.out.printf(id, \"Bayar     : Rp%,d%n\", harga - potongan);\n        System.out.printf(id, \"Rasio     : %.2f%n\", (double) potongan / harga);\n    }\n}\n",
+    "d": "Dengan locale Indonesia, pemisah ribuan menjadi titik dan desimal menjadi koma.",
+    "out": "Harga     : Rp1.250.000\nDiskon    : 15% (Rp187.500)\nBayar     : Rp1.062.500\nRasio     : 0,15"
+   }
+  ]
+ },
+ "java-16-2": {
+  "exs": [
+   {
+    "t": "Kasus: for untuk cicilan 6 bulan",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        int hutang = 1_200_000;\n        int cicilan = hutang / 6;\n        for (int bulan = 1; bulan <= 6; bulan++) {\n            hutang -= cicilan;\n            System.out.println(\"Bulan \" + bulan + \": sisa Rp\" + hutang);\n        }\n    }\n}\n",
+    "d": "Jumlah bulan sudah pasti 6, jadi for paling jujur.",
+    "out": "Bulan 1: sisa Rp1000000\nBulan 2: sisa Rp800000\nBulan 3: sisa Rp600000\nBulan 4: sisa Rp400000\nBulan 5: sisa Rp200000\nBulan 6: sisa Rp0"
+   },
+   {
+    "t": "Kasus: while sampai pulsa tidak cukup",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        int pulsa = 10000;\n        int tarifSms = 350;\n        int terkirim = 0;\n        while (pulsa >= tarifSms) {\n            pulsa -= tarifSms;\n            terkirim++;\n        }\n        System.out.println(\"SMS terkirim: \" + terkirim + \", sisa pulsa Rp\" + pulsa);\n    }\n}\n",
+    "d": "Banyak putaran baru diketahui setelah loop selesai, jadi while.",
+    "out": "SMS terkirim: 28, sisa pulsa Rp200"
+   },
+   {
+    "t": "Kasus: do-while meminta PIN minimal sekali",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        String[] percobaan = {\"1111\", \"2580\", \"1234\"};   // anggap diketik pengguna\n        String pinBenar = \"2580\";\n        int i = 0;\n        String pin;\n        do {\n            pin = percobaan[i];\n            i++;\n            System.out.println(\"Percobaan \" + i + \": \" + (pin.equals(pinBenar) ? \"PIN benar\" : \"PIN salah\"));\n        } while (!pin.equals(pinBenar) && i < 3);\n    }\n}\n",
+    "d": "PIN harus diminta dulu sebelum bisa diperiksa, jadi do-while.",
+    "out": "Percobaan 1: PIN salah\nPercobaan 2: PIN benar"
+   }
+  ]
+ },
+ "java-16-3": {
+  "exs": [
+   {
+    "t": "Kasus: suku ke-n dengan for",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        int n = 20;\n        long a = 0, b = 1;\n        for (int i = 0; i < n; i++) {\n            long berikut = a + b;\n            a = b;\n            b = berikut;\n        }\n        System.out.println(\"Suku ke-\" + n + \" = \" + a);\n    }\n}\n",
+    "out": "Suku ke-20 = 6765"
+   },
+   {
+    "t": "Kasus: jumlah suku genap di bawah 1000 dengan while",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        long a = 0, b = 1, jumlah = 0;\n        while (a < 1000) {\n            if (a % 2 == 0) {\n                jumlah += a;\n            }\n            long berikut = a + b;\n            a = b;\n            b = berikut;\n        }\n        System.out.println(\"Jumlah suku genap < 1000: \" + jumlah);\n    }\n}\n",
+    "d": "Kondisi berhenti berupa batas nilai, bukan jumlah suku, jadi while.",
+    "out": "Jumlah suku genap < 1000: 798"
+   },
+   {
+    "t": "Kasus: menyimpan deret di array",
+    "code": "import java.util.Arrays;\n\npublic class Main {\n    public static void main(String[] args) {\n        long[] fib = new long[12];\n        fib[0] = 0;\n        fib[1] = 1;\n        for (int i = 2; i < fib.length; i++) {\n            fib[i] = fib[i - 1] + fib[i - 2];\n        }\n        System.out.println(Arrays.toString(fib));\n    }\n}\n",
+    "d": "Dengan array, dua suku sebelumnya selalu bisa dibaca langsung lewat indeks.",
+    "out": "[0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89]"
+   }
+  ]
+ },
+ "java-16-4": {
+  "exs": [
+   {
+    "t": "Kasus: mengurutkan nama peserta lomba",
+    "code": "import java.util.Arrays;\n\npublic class Main {\n    public static void main(String[] args) {\n        String[] nama = {\"Wulan\", \"Agus\", \"Retno\", \"Bayu\"};\n        for (int putaran = 1; putaran < nama.length; putaran++) {\n            for (int j = 0; j < nama.length - putaran; j++) {\n                if (nama[j].compareTo(nama[j + 1]) > 0) {\n                    String t = nama[j];\n                    nama[j] = nama[j + 1];\n                    nama[j + 1] = t;\n                }\n            }\n        }\n        System.out.println(Arrays.toString(nama));\n    }\n}\n",
+    "out": "[Agus, Bayu, Retno, Wulan]"
+   },
+   {
+    "t": "Kasus: harga dari termahal ke termurah",
+    "code": "import java.util.Arrays;\n\npublic class Main {\n    public static void main(String[] args) {\n        int[] harga = {15000, 42000, 8000, 27000};\n        boolean adaTukar = true;\n        while (adaTukar) {\n            adaTukar = false;\n            for (int j = 0; j < harga.length - 1; j++) {\n                if (harga[j] < harga[j + 1]) {      // dibalik: yang kecil digeser ke kanan\n                    int t = harga[j];\n                    harga[j] = harga[j + 1];\n                    harga[j + 1] = t;\n                    adaTukar = true;\n                }\n            }\n        }\n        System.out.println(Arrays.toString(harga));\n    }\n}\n",
+    "d": "Cukup membalik tanda perbandingan untuk urutan menurun.",
+    "out": "[42000, 27000, 15000, 8000]"
+   },
+   {
+    "t": "Kasus: menghitung perbandingan dan pertukaran",
+    "code": "import java.util.Arrays;\n\npublic class Main {\n    public static void main(String[] args) {\n        int[] a = {5, 1, 4, 2, 8};\n        int banding = 0, tukar = 0;\n        for (int putaran = 1; putaran < a.length; putaran++) {\n            for (int j = 0; j < a.length - putaran; j++) {\n                banding++;\n                if (a[j] > a[j + 1]) {\n                    int t = a[j]; a[j] = a[j + 1]; a[j + 1] = t;\n                    tukar++;\n                }\n            }\n        }\n        System.out.println(Arrays.toString(a) + \" perbandingan=\" + banding + \" tukar=\" + tukar);\n    }\n}\n",
+    "d": "Untuk 5 data selalu ada 10 perbandingan, kira-kira n²/2.",
+    "out": "[1, 2, 4, 5, 8] perbandingan=10 tukar=4"
+   }
+  ]
+ },
+ "java-16-5": {
+  "exs": [
+   {
+    "t": "Kasus: FizzBuzz versi warung kopi",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        // kelipatan 4: Kopi, kelipatan 6: Susu, keduanya (12): KopiSusu\n        for (int i = 1; i <= 12; i++) {\n            if (i % 12 == 0) System.out.println(\"KopiSusu\");\n            else if (i % 4 == 0) System.out.println(\"Kopi\");\n            else if (i % 6 == 0) System.out.println(\"Susu\");\n            else System.out.println(i);\n        }\n    }\n}\n",
+    "d": "Kelipatan persekutuan terkecil (12) diperiksa paling awal.",
+    "out": "1\n2\n3\nKopi\n5\nSusu\n7\nKopi\n9\n10\n11\nKopiSusu"
+   },
+   {
+    "t": "Kasus: apakah 91 bilangan prima?",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        int x = 91;\n        boolean prima = x >= 2;\n        int pembagi = 2;\n        while (pembagi * pembagi <= x) {\n            if (x % pembagi == 0) {\n                prima = false;\n                break;\n            }\n            pembagi++;\n        }\n        System.out.println(x + (prima ? \" prima\" : \" bukan prima, habis dibagi \" + pembagi));\n    }\n}\n",
+    "d": "91 terlihat prima, padahal 7 x 13.",
+    "out": "91 bukan prima, habis dibagi 7"
+   },
+   {
+    "t": "Kasus: lima bilangan prima pertama setelah 100",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        int ditemukan = 0;\n        for (int x = 101; ditemukan < 5; x++) {\n            boolean prima = true;\n            for (int d = 2; d * d <= x; d++) {\n                if (x % d == 0) {\n                    prima = false;\n                    break;          // keluar dari loop dalam saja\n                }\n            }\n            if (prima) {\n                System.out.print(x + \" \");\n                ditemukan++;\n            }\n        }\n        System.out.println();\n    }\n}\n",
+    "d": "break hanya menghentikan loop terdalam; loop luar tetap berjalan.",
+    "out": "101 103 107 109 113 "
+   }
+  ]
+ },
+ "java-16-6": {
+  "exs": [
+   {
+    "t": "Kasus: tabel faktorial 1 sampai 10",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        long f = 1;\n        for (int n = 1; n <= 10; n++) {\n            f *= n;              // n! = (n-1)! x n\n            System.out.println(n + \"! = \" + f);\n        }\n    }\n}\n",
+    "d": "Faktorial sebelumnya dipakai ulang, tidak dihitung dari awal.",
+    "out": "1! = 1\n2! = 2\n3! = 6\n4! = 24\n5! = 120\n6! = 720\n7! = 5040\n8! = 40320\n9! = 362880\n10! = 3628800"
+   },
+   {
+    "t": "Kasus: membalik angka nomor rekening",
+    "code": "public class Main {\n    static int cekBalik(int n) {\n        int b = 0;\n        while (n > 0) {\n            b = b * 10 + n % 10;\n            n /= 10;\n        }\n        return b;\n    }\n\n    public static void main(String[] args) {\n        int angka = 120345;\n        int sisa = angka, balik = 0;\n        while (sisa > 0) {\n            balik = balik * 10 + sisa % 10;\n            sisa /= 10;\n        }\n        System.out.println(angka + \" dibalik menjadi \" + balik);\n        System.out.println(\"12321 palindrom angka? \" + (cekBalik(12321) == 12321));\n    }\n}\n",
+    "d": "Pola % 10 dan / 10 yang sama dengan jumlah digit, hanya cara menggabungkannya yang berbeda.",
+    "out": "120345 dibalik menjadi 543021\n12321 palindrom angka? true"
+   },
+   {
+    "t": "Kasus: palindrom kalimat tanpa spasi dan huruf besar",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        String kalimat = \"Kasur ini rusak\";\n        String bersih = kalimat.replace(\" \", \"\").toLowerCase();\n        int kiri = 0, kanan = bersih.length() - 1;\n        boolean palindrom = true;\n        while (kiri < kanan) {\n            if (bersih.charAt(kiri) != bersih.charAt(kanan)) {\n                palindrom = false;\n                break;\n            }\n            kiri++;\n            kanan--;\n        }\n        System.out.println(\"\\\"\" + kalimat + \"\\\" palindrom? \" + palindrom);\n    }\n}\n",
+    "d": "Teks dibersihkan dulu, baru dua penunjuk bergerak ke tengah.",
+    "out": "\"Kasur ini rusak\" palindrom? true"
+   }
+  ]
+ },
+ "java-16-7": {
+  "exs": [
+   {
+    "t": "Kasus: harga yang tidak ada di daftar",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        int[] harga = {5000, 8000, 12000, 15000, 20000, 27000, 35000};\n        int cari = 9000;\n        int kiri = 0, kanan = harga.length - 1, langkah = 0;\n        boolean ketemu = false;\n        while (kiri <= kanan) {\n            langkah++;\n            int tengah = (kiri + kanan) / 2;\n            if (harga[tengah] == cari) {\n                ketemu = true;\n                break;\n            } else if (harga[tengah] < cari) {\n                kiri = tengah + 1;\n            } else {\n                kanan = tengah - 1;\n            }\n        }\n        System.out.println(cari + \" ketemu? \" + ketemu + \" (\" + langkah + \" langkah, berhenti saat kiri=\" + kiri + \" > kanan=\" + kanan + \")\");\n    }\n}\n",
+    "d": "Saat kiri melewati kanan, ruang pencarian habis.",
+    "out": "9000 ketemu? false (3 langkah, berhenti saat kiri=2 > kanan=1)"
+   },
+   {
+    "t": "Kasus: mencari nama di buku tamu terurut",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        String[] tamu = {\"Adit\", \"Bela\", \"Doni\", \"Fitri\", \"Hana\", \"Indra\", \"Joni\", \"Kirana\"};\n        String cari = \"Indra\";\n        int kiri = 0, kanan = tamu.length - 1, posisi = -1;\n        while (kiri <= kanan) {\n            int tengah = (kiri + kanan) / 2;\n            int banding = tamu[tengah].compareTo(cari);\n            if (banding == 0) {\n                posisi = tengah;\n                break;\n            } else if (banding < 0) {\n                kiri = tengah + 1;\n            } else {\n                kanan = tengah - 1;\n            }\n        }\n        System.out.println(cari + \" ada di nomor urut \" + (posisi + 1));\n    }\n}\n",
+    "out": "Indra ada di nomor urut 6"
+   },
+   {
+    "t": "Kasus: berapa langkah untuk 1000 nomor kursi?",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        int[] kursi = new int[1000];\n        for (int i = 0; i < kursi.length; i++) {\n            kursi[i] = i + 1;\n        }\n        int[] dicari = {1, 500, 999};\n        for (int cari : dicari) {\n            int kiri = 0, kanan = kursi.length - 1, langkah = 0;\n            while (kiri <= kanan) {\n                langkah++;\n                int tengah = (kiri + kanan) / 2;\n                if (kursi[tengah] == cari) break;\n                else if (kursi[tengah] < cari) kiri = tengah + 1;\n                else kanan = tengah - 1;\n            }\n            System.out.println(\"Kursi \" + cari + \": \" + langkah + \" langkah\");\n        }\n    }\n}\n",
+    "d": "Untuk 1.000 data, tidak pernah lebih dari 10 langkah.",
+    "out": "Kursi 1: 9 langkah\nKursi 500: 1 langkah\nKursi 999: 9 langkah"
+   }
+  ]
  }
 }
