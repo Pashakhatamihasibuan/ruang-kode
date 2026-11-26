@@ -1,0 +1,173 @@
+{
+ "slm-1-2": {
+  "exs": [
+   {
+    "t": "Kasus: mendaftarkan font dari desain",
+    "d": "Font yang dipakai di Figma diunduh, disimpan di assets/fonts, lalu didaftarkan per ketebalan.",
+    "code": "flutter:\n  fonts:\n    - family: PlusJakartaSans\n      fonts:\n        - asset: assets/fonts/PlusJakartaSans-Regular.ttf\n        - asset: assets/fonts/PlusJakartaSans-SemiBold.ttf\n          weight: 600\n        - asset: assets/fonts/PlusJakartaSans-Bold.ttf\n          weight: 700\n\n# di tema: ThemeData(fontFamily: 'PlusJakartaSans')"
+   },
+   {
+    "t": "Kasus: ikon aplikasi dari satu gambar 1024 px",
+    "d": "flutter_launcher_icons membuat semua ukuran ikon Android dan iOS, termasuk adaptive icon.",
+    "code": "dev_dependencies:\n  flutter_launcher_icons: ^0.14.1\n\nflutter_launcher_icons:\n  image_path: assets/branding/ikon_1024.png      # ekspor dari Figma, PNG 1024 x 1024\n  android: true\n  ios: true\n  remove_alpha_ios: true                         # App Store menolak ikon transparan\n  adaptive_icon_background: \"#6B3E26\"\n  adaptive_icon_foreground: assets/branding/ikon_depan.png\n\n# jalankan: dart run flutter_launcher_icons"
+   },
+   {
+    "t": "Kasus: splash screen sesuai warna merek",
+    "d": "flutter_native_splash membuat layar pembuka native dari warna dan logo hasil ekspor.",
+    "code": "dev_dependencies:\n  flutter_native_splash: ^2.4.1\n\nflutter_native_splash:\n  color: \"#FBF7F2\"\n  image: assets/branding/logo_splash.png         # logo 288 dp di tengah, ekspor 3x\n  color_dark: \"#1E1410\"\n  image_dark: assets/branding/logo_splash_gelap.png\n  android_12:\n    color: \"#FBF7F2\"\n    image: assets/branding/logo_splash.png\n\n# jalankan: dart run flutter_native_splash:create"
+   }
+  ]
+ },
+ "slm-1-3": {
+  "exs": [
+   {
+    "t": "Kasus: palet dari Figma untuk mode terang dan gelap",
+    "d": "Warna merek dikunci sebagai primary, sisanya dibangkitkan dari benih yang sama untuk kedua mode.",
+    "code": "const merek = Color(0xFF6D4C41);\n\nfinal skemaTerang = ColorScheme.fromSeed(seedColor: merek).copyWith(\n  primary: merek,                       // persis seperti token color/primary\n  surface: const Color(0xFFFFFBF8),     // token color/surface\n);\n\nfinal skemaGelap = ColorScheme.fromSeed(seedColor: merek, brightness: Brightness.dark);\n\nfinal temaTerang = ThemeData(colorScheme: skemaTerang);\nfinal temaGelap = ThemeData(colorScheme: skemaGelap);"
+   },
+   {
+    "t": "Kasus: skala tipografi dari spesifikasi Figma",
+    "d": "Figma menulis ukuran/tinggi baris (28/36); di Flutter tinggi baris ditulis sebagai rasio height.",
+    "code": "// Token Figma          Ukuran/tinggi   Ketebalan\n// display/judul        28/36           SemiBold\n// body/besar           16/24           Regular\n// label/tombol         14/20           Medium\nconst teksKopi = TextTheme(\n  headlineMedium: TextStyle(fontSize: 28, height: 36 / 28, fontWeight: FontWeight.w600),\n  bodyLarge: TextStyle(fontSize: 16, height: 24 / 16),\n  labelLarge: TextStyle(fontSize: 14, height: 20 / 14, fontWeight: FontWeight.w500),\n);\n\nfinal tema = ThemeData(\n  colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF6D4C41)),\n  textTheme: teksKopi,\n  fontFamily: 'PlusJakartaSans',\n);"
+   },
+   {
+    "t": "Kasus: token jarak dan radius sebagai konstanta",
+    "d": "Nilai spacing dan radius dari Figma dikumpulkan di satu class agar tidak ada angka acak di layar.",
+    "code": "abstract final class Jarak {\n  static const xs = 4.0;\n  static const sm = 8.0;\n  static const md = 16.0;\n  static const lg = 24.0;\n}\n\nabstract final class Sudut {\n  static const kartu = BorderRadius.all(Radius.circular(12));\n  static const tombol = BorderRadius.all(Radius.circular(12));\n}\n\n// pemakaian di layar\nContainer(\n  padding: const EdgeInsets.all(Jarak.md),\n  decoration: BoxDecoration(\n    color: Theme.of(context).colorScheme.primaryContainer,\n    borderRadius: Sudut.kartu,\n  ),\n  child: const Text('Promo hari ini'),\n)"
+   }
+  ]
+ },
+ "slm-2-2": {
+  "exs": [
+   {
+    "t": "Kasus: blok kepala layar Masuk",
+    "d": "Logo, judul, dan subjudul disusun sesuai redline: jarak 24 lalu 4.",
+    "code": "class KepalaMasuk extends StatelessWidget {\n  const KepalaMasuk({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    final t = Theme.of(context);\n    return Column(\n      crossAxisAlignment: CrossAxisAlignment.start,\n      children: [\n        Image.asset('assets/images/logo.png', width: 48, height: 48),\n        const SizedBox(height: 24),\n        Text('Masuk', style: t.textTheme.headlineMedium),\n        const SizedBox(height: 4),\n        Text(\n          'Lanjutkan belajarmu hari ini.',\n          style: t.textTheme.bodyLarge?.copyWith(color: t.colorScheme.onSurfaceVariant),\n        ),\n      ],\n    );\n  }\n}"
+   },
+   {
+    "t": "Kasus: pemisah \"atau\" di antara dua tombol",
+    "d": "Dua garis Divider mengisi sisa ruang dengan Expanded, teks di tengah.",
+    "code": "class PemisahAtau extends StatelessWidget {\n  const PemisahAtau({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    final warna = Theme.of(context).colorScheme.outlineVariant;\n    return Row(\n      children: [\n        Expanded(child: Divider(color: warna)),\n        const Padding(\n          padding: EdgeInsets.symmetric(horizontal: 12),\n          child: Text('atau'),\n        ),\n        Expanded(child: Divider(color: warna)),\n      ],\n    );\n  }\n}"
+   },
+   {
+    "t": "Kasus: baris \"Belum punya akun? Daftar\"",
+    "d": "Teks biasa dan TextButton digabung di tengah; area sentuh tombol tetap 48 dp.",
+    "code": "class BarisDaftar extends StatelessWidget {\n  const BarisDaftar({super.key, required this.onDaftar});\n  final VoidCallback onDaftar;\n\n  @override\n  Widget build(BuildContext context) {\n    return Row(\n      mainAxisAlignment: MainAxisAlignment.center,\n      children: [\n        const Text('Belum punya akun?'),\n        TextButton(\n          style: TextButton.styleFrom(minimumSize: const Size(48, 48)),\n          onPressed: onDaftar,\n          child: const Text('Daftar'),\n        ),\n      ],\n    );\n  }\n}"
+   }
+  ]
+ },
+ "slm-2-3": {
+  "exs": [
+   {
+    "t": "Kasus: blok kepala layar Masuk di Compose",
+    "d": "Logo, judul, dan subjudul dengan jarak 24 dan 4 dp sesuai redline.",
+    "code": "@Composable\nfun KepalaMasuk() {\n    Column {\n        Image(\n            painter = painterResource(R.drawable.logo),\n            contentDescription = \"Logo KopiNusa\",\n            modifier = Modifier.size(48.dp)\n        )\n        Spacer(Modifier.height(24.dp))\n        Text(\"Masuk\", style = MaterialTheme.typography.headlineMedium)\n        Spacer(Modifier.height(4.dp))\n        Text(\n            \"Lanjutkan belajarmu hari ini.\",\n            style = MaterialTheme.typography.bodyLarge,\n            color = MaterialTheme.colorScheme.onSurfaceVariant\n        )\n    }\n}"
+   },
+   {
+    "t": "Kasus: pemisah \"atau\" di Compose",
+    "d": "weight(1f) di Compose sama dengan Expanded di Flutter.",
+    "code": "@Composable\nfun PemisahAtau() {\n    Row(verticalAlignment = Alignment.CenterVertically) {\n        HorizontalDivider(Modifier.weight(1f))\n        Text(\"atau\", modifier = Modifier.padding(horizontal = 12.dp))\n        HorizontalDivider(Modifier.weight(1f))\n    }\n}"
+   },
+   {
+    "t": "Kasus: tombol Masuk dengan Google",
+    "d": "OutlinedButton lebar penuh setinggi 52 dp dengan ikon 20 dp dan jarak 8 dp.",
+    "code": "@Composable\nfun TombolGoogle(onClick: () -> Unit) {\n    OutlinedButton(\n        onClick = onClick,\n        shape = RoundedCornerShape(12.dp),\n        modifier = Modifier.fillMaxWidth().height(52.dp)\n    ) {\n        Icon(\n            painter = painterResource(R.drawable.ic_google),\n            contentDescription = null, // label sudah dibaca dari teks\n            tint = Color.Unspecified,\n            modifier = Modifier.size(20.dp)\n        )\n        Spacer(Modifier.width(8.dp))\n        Text(\"Masuk dengan Google\")\n    }\n}"
+   }
+  ]
+ },
+ "slm-3-1": {
+  "exs": [
+   {
+    "t": "Kasus: chip kategori yang bisa digeser mendatar",
+    "d": "ListView horizontal dengan ChoiceChip; tinggi baris dikunci sesuai desain.",
+    "code": "class ChipKategori extends StatelessWidget {\n  const ChipKategori({super.key, required this.terpilih, required this.onPilih});\n  final String terpilih;\n  final ValueChanged<String> onPilih;\n\n  static const kategori = ['Semua', 'Kopi', 'Non-kopi', 'Roti', 'Promo'];\n\n  @override\n  Widget build(BuildContext context) {\n    return SizedBox(\n      height: 48,\n      child: ListView.separated(\n        scrollDirection: Axis.horizontal,\n        padding: const EdgeInsets.symmetric(horizontal: 16),\n        itemCount: kategori.length,\n        separatorBuilder: (_, __) => const SizedBox(width: 8),\n        itemBuilder: (_, i) => ChoiceChip(\n          label: Text(kategori[i]),\n          selected: kategori[i] == terpilih,\n          onSelected: (_) => onPilih(kategori[i]),\n        ),\n      ),\n    );\n  }\n}"
+   },
+   {
+    "t": "Kasus: lencana diskon di pojok foto produk",
+    "d": "Elemen bertumpuk di Figma menjadi Stack; Positioned meletakkan lencana 8 dp dari pojok.",
+    "code": "Widget fotoDenganDiskon(String foto, int persen) {\n  return Stack(\n    children: [\n      AspectRatio(\n        aspectRatio: 1,\n        child: ClipRRect(\n          borderRadius: BorderRadius.circular(12),\n          child: Image.asset(foto, fit: BoxFit.cover),\n        ),\n      ),\n      Positioned(\n        top: 8,\n        left: 8,\n        child: Container(\n          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),\n          decoration: BoxDecoration(color: Colors.red.shade700, borderRadius: BorderRadius.circular(8)),\n          child: Text('-$persen%', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),\n        ),\n      ),\n    ],\n  );\n}"
+   },
+   {
+    "t": "Kasus: grid dua kolom tetap dengan tinggi kartu dari desain",
+    "d": "Desain menetapkan 2 kolom dan kartu setinggi 252 dp, jadi pakai FixedCrossAxisCount dengan mainAxisExtent.",
+    "code": "GridView.builder(\n  padding: const EdgeInsets.all(16),\n  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(\n    crossAxisCount: 2,\n    mainAxisSpacing: 12,\n    crossAxisSpacing: 12,\n    mainAxisExtent: 252, // tinggi kartu persis seperti di Figma\n  ),\n  itemCount: produk.length,\n  itemBuilder: (context, i) => KartuProduk(produk[i]),\n)"
+   }
+  ]
+ },
+ "slm-3-2": {
+  "exs": [
+   {
+    "t": "Kasus: kartu produk dengan lencana diskon di Compose",
+    "d": "Box menumpuk gambar dan lencana; align(Alignment.TopStart) meletakkannya di pojok.",
+    "code": "@Composable\nfun KartuProduk(p: Produk, onTambah: () -> Unit) {\n    Card(shape = RoundedCornerShape(12.dp)) {\n        Box {\n            AsyncImage(\n                model = p.fotoUrl, contentDescription = p.nama,\n                contentScale = ContentScale.Crop,\n                modifier = Modifier.fillMaxWidth().aspectRatio(1f)\n            )\n            if (p.diskon > 0) {\n                Text(\n                    \"-${p.diskon}%\",\n                    color = Color.White,\n                    modifier = Modifier\n                        .align(Alignment.TopStart)\n                        .padding(8.dp)\n                        .background(Color(0xFFC62828), RoundedCornerShape(8.dp))\n                        .padding(horizontal = 8.dp, vertical = 4.dp)\n                )\n            }\n        }\n        Text(p.nama, maxLines = 2, overflow = TextOverflow.Ellipsis, modifier = Modifier.padding(12.dp))\n    }\n}"
+   },
+   {
+    "t": "Kasus: chip kategori dengan LazyRow",
+    "d": "LazyRow adalah versi mendatar LazyColumn; FilterChip menandai kategori terpilih.",
+    "code": "@Composable\nfun ChipKategori(kategori: List<String>, terpilih: String, onPilih: (String) -> Unit) {\n    LazyRow(\n        contentPadding = PaddingValues(horizontal = 16.dp),\n        horizontalArrangement = Arrangement.spacedBy(8.dp)\n    ) {\n        items(kategori) { k ->\n            FilterChip(\n                selected = k == terpilih,\n                onClick = { onPilih(k) },\n                label = { Text(k) }\n            )\n        }\n    }\n}"
+   },
+   {
+    "t": "Kasus: grid dua kolom tetap",
+    "d": "GridCells.Fixed(2) untuk desain yang selalu dua kolom di ponsel.",
+    "code": "LazyVerticalGrid(\n    columns = GridCells.Fixed(2),\n    contentPadding = PaddingValues(16.dp),\n    horizontalArrangement = Arrangement.spacedBy(12.dp),\n    verticalArrangement = Arrangement.spacedBy(12.dp)\n) {\n    items(produk, key = { it.id }) { p ->\n        KartuProduk(p, onTambah = { keranjang.tambah(p) })\n    }\n}"
+   }
+  ]
+ },
+ "slm-3-3": {
+  "exs": [
+   {
+    "t": "Kasus: app bar dengan tombol cari dan notifikasi",
+    "d": "actions berisi IconButton dengan tooltip agar terbaca pembaca layar.",
+    "code": "AppBar(\n  title: const Text('KopiNusa'),\n  actions: [\n    IconButton(tooltip: 'Cari menu', onPressed: () {}, icon: const Icon(Icons.search)),\n    IconButton(\n      tooltip: 'Notifikasi',\n      onPressed: () {},\n      icon: const Badge(label: Text('3'), child: Icon(Icons.notifications_outlined)),\n    ),\n  ],\n)"
+   },
+   {
+    "t": "Kasus: judul besar yang mengecil saat digulir",
+    "d": "SliverAppBar.large meniru desain dengan judul besar di atas yang menyusut menjadi app bar biasa.",
+    "code": "CustomScrollView(\n  slivers: [\n    const SliverAppBar.large(title: Text('Pesanan saya')),\n    SliverList.builder(\n      itemCount: pesanan.length,\n      itemBuilder: (context, i) => ListTile(\n        title: Text(pesanan[i].kode),\n        subtitle: Text(pesanan[i].status),\n      ),\n    ),\n  ],\n)"
+   },
+   {
+    "t": "Kasus: tab bawah yang mengingat posisi setiap halaman",
+    "d": "IndexedStack menyimpan semua halaman sehingga posisi gulir tidak hilang saat pindah tab.",
+    "code": "class Kerangka extends StatefulWidget {\n  const Kerangka({super.key});\n  @override\n  State<Kerangka> createState() => _KerangkaState();\n}\n\nclass _KerangkaState extends State<Kerangka> {\n  int indeks = 0;\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      body: IndexedStack(\n        index: indeks,\n        children: const [BerandaPage(), MenuPage(), PesananPage(), ProfilPage()],\n      ),\n      bottomNavigationBar: NavigationBar(\n        selectedIndex: indeks,\n        onDestinationSelected: (i) => setState(() => indeks = i),\n        destinations: const [\n          NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home), label: 'Beranda'),\n          NavigationDestination(icon: Icon(Icons.menu_book_outlined), label: 'Menu'),\n          NavigationDestination(icon: Icon(Icons.receipt_long_outlined), label: 'Pesanan'),\n          NavigationDestination(icon: Icon(Icons.person_outline), label: 'Profil'),\n        ],\n      ),\n    );\n  }\n}"
+   }
+  ]
+ },
+ "slm-4-1": {
+  "exs": [
+   {
+    "t": "Kasus: tombol aksi yang turun baris di ponsel 320 dp",
+    "d": "Wrap memindahkan tombol ke baris berikut saat lebar tidak cukup, bukan overflow.",
+    "code": "Wrap(\n  spacing: 8,\n  runSpacing: 8,\n  children: [\n    FilledButton(onPressed: () {}, child: const Text('Tambah ke keranjang')),\n    OutlinedButton(onPressed: () {}, child: const Text('Simpan')),\n    TextButton(onPressed: () {}, child: const Text('Bagikan')),\n  ],\n)"
+   },
+   {
+    "t": "Kasus: teks yang tetap aman saat huruf diperbesar 200%",
+    "d": "Hindari tinggi tetap pada wadah teks; biarkan tumbuh dan batasi baris bila perlu.",
+    "code": "Container(\n  // buruk: height: 48 membuat teks terpotong saat huruf sistem diperbesar\n  constraints: const BoxConstraints(minHeight: 48),\n  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),\n  child: Text(\n    'Pesanan diantar dalam 30 menit',\n    maxLines: 2,\n    overflow: TextOverflow.ellipsis,\n    style: Theme.of(context).textTheme.bodyLarge,\n  ),\n)\n\n// uji cepat: MediaQuery(data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(2)), child: ...)"
+   },
+   {
+    "t": "Kasus: kelas ukuran layar sebagai enum",
+    "d": "Breakpoint Material 3 dibungkus satu fungsi agar semua layar memakai batas yang sama.",
+    "code": "enum KelasLayar { ringkas, sedang, lebar }\n\nKelasLayar kelasDari(double lebar) => switch (lebar) {\n      < 600 => KelasLayar.ringkas,\n      < 840 => KelasLayar.sedang,\n      _ => KelasLayar.lebar,\n    };\n\n// di build():\n// final kelas = kelasDari(MediaQuery.sizeOf(context).width);\n// final kolom = switch (kelas) { KelasLayar.ringkas => 2, KelasLayar.sedang => 3, KelasLayar.lebar => 4 };"
+   }
+  ]
+ },
+ "slm-4-2": {
+  "exs": [
+   {
+    "t": "Kasus: golden test tiga state tombol",
+    "d": "Satu golden menyimpan tampilan normal, nonaktif, dan memuat sekaligus.",
+    "code": "testWidgets('golden TombolUtama semua state', (tester) async {\n  await tester.pumpWidget(MaterialApp(\n    theme: temaKopiNusa,\n    home: const Scaffold(\n      body: Column(children: [\n        TombolUtama(label: 'Masuk', onPressed: _kosong),\n        TombolUtama(label: 'Masuk', onPressed: null),\n        TombolUtama(label: 'Masuk', onPressed: _kosong, memuat: true),\n      ]),\n    ),\n  ));\n  await expectLater(find.byType(Column), matchesGoldenFile('goldens/tombol_utama_state.png'));\n});\n\nvoid _kosong() {}"
+   },
+   {
+    "t": "Kasus: golden di ponsel kecil dengan huruf 200%",
+    "d": "Ukuran layar dan skala huruf diatur agar kasus terburuk ikut dikunci.",
+    "code": "testWidgets('kartu produk di 320 dp dan huruf 2x', (tester) async {\n  tester.view.physicalSize = const Size(320, 640);\n  tester.view.devicePixelRatio = 1.0;\n  addTearDown(tester.view.reset);\n\n  await tester.pumpWidget(MaterialApp(\n    theme: temaKopiNusa,\n    home: const MediaQuery(\n      data: MediaQueryData(textScaler: TextScaler.linear(2)),\n      child: Scaffold(body: KartuProduk(nama: 'Kopi Susu Aren Gula Merah', harga: 22000)),\n    ),\n  ));\n  await expectLater(find.byType(KartuProduk), matchesGoldenFile('goldens/kartu_320_2x.png'));\n});"
+   },
+   {
+    "t": "Kasus: memeriksa ukuran target sentuh dan kontras",
+    "d": "Flutter punya guideline aksesibilitas yang bisa diuji bersama golden test.",
+    "code": "testWidgets('layar Masuk memenuhi pedoman aksesibilitas', (tester) async {\n  final handle = tester.ensureSemantics();\n  await tester.pumpWidget(MaterialApp(theme: temaKopiNusa, home: const LayarMasuk()));\n\n  await expectLater(tester, meetsGuideline(androidTapTargetGuideline)); // minimal 48 x 48 dp\n  await expectLater(tester, meetsGuideline(textContrastGuideline));     // kontras 4.5:1\n  await expectLater(tester, meetsGuideline(labeledTapTargetGuideline)); // ikon punya label\n  handle.dispose();\n});"
+   }
+  ]
+ }
+}
