@@ -1,0 +1,361 @@
+{
+ "bi-1-1": {
+  "exs": [
+   {
+    "t": "Kasus: laporan, dashboard, atau analisis?",
+    "d": "Bentuk keluaran ditentukan oleh seberapa sering pertanyaannya muncul.",
+    "code": "Pertanyaan                                   Bentuk keluaran          Peran utama\n\"Berapa omzet kemarin per toko?\" (tiap hari)  dashboard otomatis        BI analyst\n\"Kenapa retur naik di Oktober?\" (sekali)      analisis ad-hoc           data analyst\n\"Laporan pajak bulanan\"                       laporan terjadwal (PDF)   BI analyst + keuangan"
+   },
+   {
+    "t": "Kasus: alur kerja BI di rantai minimarket",
+    "code": "POS 120 toko -> data engineer memuat ke warehouse tiap malam\n             -> BI analyst memodelkan fakta_penjualan + dim_toko + dim_produk\n             -> dashboard \"Penjualan Harian\" untuk 12 manajer area\n             -> manajer area memutuskan toko mana yang perlu kiriman stok tambahan"
+   },
+   {
+    "t": "Kasus: satu minggu BI analyst di aplikasi ojek",
+    "code": "Senin   : rapat definisi \"pengemudi aktif\" dengan tim operasional\nSelasa  : tambah kartu \"waktu jemput rata-rata\" di dashboard kota\nRabu    : cek data: perjalanan Makassar kemarin hanya separuh, ternyata pipeline terlambat\nKamis   : presentasi tren pemesanan saat hujan ke tim marketing\nJumat   : dokumentasikan semua measure di kamus metrik"
+   }
+  ]
+ },
+ "bi-1-2": {
+  "exs": [
+   {
+    "t": "Kasus: kepala gudang minta \"laporan stok\"",
+    "code": "Pertanyaan balik\n- Keputusan apa?   -> barang mana yang dipesan ulang minggu ini\n- Pembaca?         -> kepala gudang, dibuka di laptop gudang\n- Frekuensi?       -> setiap Senin dan Kamis pagi\n- Definisi stok?   -> stok fisik dikurangi yang sudah dipesan pelanggan\nHasil: tabel barang di bawah stok minimum, urut dari yang paling cepat habis"
+   },
+   {
+    "t": "Kasus: fungsi bisnis dan metriknya",
+    "code": "Fungsi       Pertanyaan utama                       Metrik\nPenjualan    toko mana di bawah target?             omzet vs target, transaksi\nPemasaran    promo mana yang menguntungkan?         biaya per pelanggan baru, ROAS\nOperasional  apakah pengiriman tepat waktu?         % tepat waktu, lama proses\nKeuangan     apakah kita untung?                    margin kotor, arus kas\nSDM          apakah karyawan bertahan?              turnover, lama bekerja"
+   },
+   {
+    "t": "Kasus: satu kata \"omzet\", tiga angka berbeda",
+    "d": "Sepakati definisi sebelum membuat laporan.",
+    "code": "Omzet kotor               : harga normal x jumlah                  Rp 10,0 jt\nOmzet bersih              : setelah diskon                         Rp  9,3 jt\nOmzet bersih setelah retur: setelah diskon dan barang kembali      Rp  8,9 jt\nSemua benar, tetapi menjawab pertanyaan yang berbeda"
+   }
+  ]
+ },
+ "bi-2-1": {
+  "exs": [
+   {
+    "t": "Kasus: unit terjual per kategori",
+    "code": "SELECT p.kategori, SUM(f.jumlah) AS unit\nFROM fakta_penjualan f\nJOIN dim_produk p ON p.produk_id = f.produk_id\nGROUP BY p.kategori\nORDER BY unit DESC;",
+    "out": "kategori | unit\n---------+-----\nMinuman  | 1227\nCamilan  | 551\nBumbu    | 386"
+   },
+   {
+    "t": "Kasus: KPI omzet kuartal 2 dibanding target",
+    "d": "KPI selalu punya target sebagai pembanding: Rp 65 juta.",
+    "code": "SELECT SUM(f.jumlah * f.harga * (100 - f.diskon_persen) / 100) AS omzet_q2,\n       65000000 AS target,\n       ROUND(100.0 * SUM(f.jumlah * f.harga * (100 - f.diskon_persen) / 100) / 65000000, 1) AS capaian_persen\nFROM fakta_penjualan f\nJOIN dim_tanggal d ON d.tanggal_id = f.tanggal_id\nWHERE d.kuartal = 2;",
+    "out": "omzet_q2 | target   | capaian_persen\n---------+----------+---------------\n61213500 | 65000000 | 94.2"
+   },
+   {
+    "t": "Kasus: rata-rata barang per transaksi di setiap toko",
+    "code": "SELECT t.nama AS toko, ROUND(AVG(f.jumlah), 1) AS item_per_transaksi\nFROM fakta_penjualan f\nJOIN dim_toko t ON t.toko_id = f.toko_id\nGROUP BY t.nama\nORDER BY item_per_transaksi DESC;",
+    "out": "toko           | item_per_transaksi\n---------------+-------------------\nOnline         | 10.9\nToko Dago      | 7.6\nToko Sudirman  | 7.4\nToko Kesawan   | 7.2\nToko Tunjungan | 6.7"
+   }
+  ]
+ },
+ "bi-2-2": {
+  "exs": [
+   {
+    "t": "Kasus: margin kotor per kategori",
+    "code": "SELECT p.kategori,\n       SUM(f.jumlah * f.harga * (100 - f.diskon_persen) / 100) AS omzet,\n       ROUND(100.0 * (SUM(f.jumlah * f.harga * (100 - f.diskon_persen) / 100) - SUM(f.jumlah * p.hpp)) / SUM(f.jumlah * f.harga * (100 - f.diskon_persen) / 100), 1) AS margin_persen\nFROM fakta_penjualan f\nJOIN dim_produk p ON p.produk_id = f.produk_id\nGROUP BY p.kategori\nORDER BY margin_persen DESC;",
+    "out": "kategori | omzet    | margin_persen\n---------+----------+--------------\nBumbu    | 11385000 | 42.4\nCamilan  | 18758250 | 37.5\nMinuman  | 92282750 | 35.6"
+   },
+   {
+    "t": "Kasus: kontribusi produk di dalam kategorinya",
+    "d": "SUM(...) OVER (PARTITION BY kategori) memberi total kategori di setiap baris.",
+    "code": "SELECT p.kategori, p.nama, SUM(f.jumlah * f.harga * (100 - f.diskon_persen) / 100) AS omzet,\n       ROUND(100.0 * SUM(f.jumlah * f.harga * (100 - f.diskon_persen) / 100) / SUM(SUM(f.jumlah * f.harga * (100 - f.diskon_persen) / 100)) OVER (PARTITION BY p.kategori), 1) AS kontribusi_persen\nFROM fakta_penjualan f\nJOIN dim_produk p ON p.produk_id = f.produk_id\nGROUP BY p.kategori, p.nama\nORDER BY p.kategori, omzet DESC;",
+    "out": "kategori | nama             | omzet    | kontribusi_persen\n---------+------------------+----------+------------------\nBumbu    | Sambal Bawang    | 11385000 | 100\nCamilan  | Kacang Mete      | 14244000 | 75.9\nCamilan  | Keripik Singkong | 4514250  | 24.1\nMinuman  | Madu Hutan       | 44652000 | 48.4\nMinuman  | Kopi Gayo        | 38592000 | 41.8\nMinuman  | Teh Melati       | 9038750  | 9.8"
+   },
+   {
+    "t": "Kasus: pertumbuhan kuartal 2 dibanding kuartal 1 per toko",
+    "d": "Angka absolut ditampilkan di samping persentase.",
+    "code": "WITH k AS (\n  SELECT t.nama AS toko, d.kuartal, SUM(f.jumlah * f.harga * (100 - f.diskon_persen) / 100) AS omzet\n  FROM fakta_penjualan f\n  JOIN dim_toko t ON t.toko_id = f.toko_id\n  JOIN dim_tanggal d ON d.tanggal_id = f.tanggal_id\n  GROUP BY t.nama, d.kuartal\n)\nSELECT toko,\n       SUM(CASE WHEN kuartal = 1 THEN omzet END) AS q1,\n       SUM(CASE WHEN kuartal = 2 THEN omzet END) AS q2,\n       ROUND(100.0 * (SUM(CASE WHEN kuartal = 2 THEN omzet END) - SUM(CASE WHEN kuartal = 1 THEN omzet END))\n             / SUM(CASE WHEN kuartal = 1 THEN omzet END), 1) AS tumbuh_persen\nFROM k\nGROUP BY toko\nORDER BY tumbuh_persen DESC;",
+    "out": "toko           | q1       | q2       | tumbuh_persen\n---------------+----------+----------+--------------\nToko Kesawan   | 9065000  | 13358750 | 47.4\nToko Sudirman  | 8547250  | 11883750 | 39\nToko Dago      | 12581750 | 11840500 | -5.9\nToko Tunjungan | 11681500 | 9298750  | -20.4\nOnline         | 19337000 | 14831750 | -23.3"
+   }
+  ]
+ },
+ "bi-2-3": {
+  "exs": [
+   {
+    "t": "Kasus: bulan pembelian pertama setiap pelanggan",
+    "d": "Dijalankan pada database Toko Nusantara (tabel pesanan).",
+    "code": "SELECT pelanggan_id, MIN(STRFTIME('%Y-%m', tanggal)) AS kohort\nFROM pesanan\nWHERE status <> 'batal'\nGROUP BY pelanggan_id\nORDER BY kohort, pelanggan_id;",
+    "out": "pelanggan_id | kohort\n-------------+--------\n1            | 2024-10\n2            | 2024-10\n3            | 2024-10\n5            | 2024-11\n6            | 2024-11\n8            | 2024-11"
+   },
+   {
+    "t": "Kasus: ukuran kohort dan yang kembali di bulan berikutnya",
+    "d": "Dijalankan pada database Toko Nusantara.",
+    "code": "WITH pertama AS (\n  SELECT pelanggan_id, MIN(STRFTIME('%Y-%m', tanggal)) AS kohort\n  FROM pesanan WHERE status <> 'batal' GROUP BY pelanggan_id\n)\nSELECT p.kohort,\n       COUNT(DISTINCT p.pelanggan_id) AS pelanggan,\n       COUNT(DISTINCT CASE WHEN STRFTIME('%Y-%m', o.tanggal) > p.kohort THEN o.pelanggan_id END) AS kembali\nFROM pertama p\nJOIN pesanan o ON o.pelanggan_id = p.pelanggan_id AND o.status <> 'batal'\nGROUP BY p.kohort\nORDER BY p.kohort;",
+    "out": "kohort  | pelanggan | kembali\n--------+-----------+--------\n2024-10 | 3         | 1\n2024-11 | 3         | 0"
+   },
+   {
+    "t": "Kasus: CLV dari empat angka",
+    "d": "Nilai pesanan rata-rata x frekuensi per bulan x lama bertahan x margin.",
+    "code": "SELECT 145000 AS nilai_pesanan,\n       1.3 AS beli_per_bulan,\n       12 AS bulan_bertahan,\n       0.32 AS margin,\n       145000 * 1.3 * 12 * 0.32 AS clv;",
+    "out": "nilai_pesanan | beli_per_bulan | bulan_bertahan | margin | clv\n--------------+----------------+----------------+--------+-------\n145000        | 1.3            | 12             | 0.32   | 723840"
+   }
+  ]
+ },
+ "bi-2-4": {
+  "exs": [
+   {
+    "t": "Kasus: indikator di aplikasi kursus daring",
+    "code": "Lagging (hasil)               Leading (sinyal awal)\nPerpanjangan langganan        video ditonton per minggu\nKelulusan kursus              tugas pertama dikumpulkan dalam 3 hari\nRating aplikasi               crash per 1.000 sesi"
+   },
+   {
+    "t": "Kasus: pasangan indikator untuk gudang",
+    "code": "Lagging : keluhan \"barang terlambat\" per bulan\nLeading : pesanan yang belum dikemas lebih dari 6 jam (dipantau tiap jam)\nTindakan: bila > 50 pesanan, tambah shift pengemasan sore itu juga"
+   },
+   {
+    "t": "Kasus: membuktikan sinyal awal",
+    "d": "Indikator yang terdengar masuk akal belum tentu mendahului hasilnya.",
+    "code": "1. Kumpulkan 12 bulan data: kandidat leading (keranjang dibuat) dan lagging (omzet)\n2. Geser data leading 1, 2, 3 minggu ke depan, bandingkan polanya\n3. Pilih jeda yang paling konsisten, cek di periode lain (bukan hanya musim promo)\n4. Baru pasang di dashboard dengan ambang peringatan"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Apakah kunjungan sales minggu lalu mendahului order minggu ini?",
+    "b": "Tim penjualan punya data kunjungan dan order 12 minggu. Untuk menguji apakah kunjungan adalah leading indicator, minggu dibagi dua: minggu dengan kunjungan di atas rata-rata dan di bawahnya, lalu dibandingkan rata-rata order pada minggu yang sama dan satu minggu sesudahnya. Bila selisih paling besar muncul seminggu kemudian, kunjungan memang bergerak lebih dulu (tetap perlu diuji sebab-akibatnya).",
+    "code": "kunjungan = [42, 38, 55, 61, 47, 70, 66, 52, 75, 80, 58, 63]\norder     = [31, 29, 33, 38, 47, 35, 49, 50, 38, 55, 57, 41]\nrata_kunjungan = sum(kunjungan) / len(kunjungan)\n\nfor jeda in range(3):\n    tinggi, rendah = [], []\n    for i in range(len(kunjungan) - jeda):\n        (tinggi if kunjungan[i] > rata_kunjungan else rendah).append(order[i + jeda])\n    selisih = sum(tinggi) / len(tinggi) - sum(rendah) / len(rendah)\n    print(f\"jeda {jeda} minggu: order setelah kunjungan tinggi lebih banyak {selisih:+.1f}\")",
+    "lang": "python",
+    "out": "jeda 0 minggu: order setelah kunjungan tinggi lebih banyak +1.5\njeda 1 minggu: order setelah kunjungan tinggi lebih banyak +15.9\njeda 2 minggu: order setelah kunjungan tinggi lebih banyak -0.2"
+   }
+  ]
+ },
+ "bi-3-4": {
+  "exs": [
+   {
+    "t": "Kasus: survei kepuasan 400 pelanggan",
+    "d": "Selang kepercayaan 95% untuk proporsi: p +/- 1,96 x akar(p(1-p)/n).",
+    "code": "Puas: 312 dari 400 -> p = 0,78\nGalat baku = akar(0,78 x 0,22 / 400) = 0,0207\nCI 95%     = 0,78 +/- 1,96 x 0,0207 = 0,74 sampai 0,82\nLaporan    : \"78% pelanggan puas (74-82%)\""
+   },
+   {
+    "t": "Kasus: signifikan tetapi tidak penting",
+    "d": "p-value kecil tidak berarti efeknya besar.",
+    "code": "Tombol hijau vs biru, 2 juta pengunjung per varian\nKonversi 3,00% vs 3,04%, p = 0,01 -> signifikan\nSelisih 0,04 poin = sekitar 800 pembeli per 2 juta\nKeputusan: biaya mengganti desain di 3 aplikasi lebih mahal dari manfaatnya"
+   },
+   {
+    "t": "Kasus: sampel terlalu kecil",
+    "code": "Promo baru dicoba di 1 toko selama 3 hari: omzet naik 12%\nCI 95% kenaikan: -9% sampai +33% -> belum bisa disimpulkan\nSaran: uji di 10 toko selama 4 minggu dengan 10 toko pembanding"
+   }
+  ]
+ },
+ "bi-3-5": {
+  "exs": [
+   {
+    "t": "Kasus: omzet per kuartal",
+    "code": "SELECT d.kuartal, SUM(f.jumlah * f.harga * (100 - f.diskon_persen) / 100) AS omzet\nFROM fakta_penjualan f\nJOIN dim_tanggal d ON d.tanggal_id = f.tanggal_id\nGROUP BY d.kuartal\nORDER BY d.kuartal;",
+    "out": "kuartal | omzet\n--------+---------\n1       | 61212500\n2       | 61213500"
+   },
+   {
+    "t": "Kasus: pola tanggal gajian",
+    "d": "Transaksi dikelompokkan menurut awal, tengah, dan akhir bulan.",
+    "code": "SELECT CASE WHEN CAST(SUBSTR(d.tanggal, 9, 2) AS INTEGER) <= 10 THEN '1. awal bulan'\n            WHEN CAST(SUBSTR(d.tanggal, 9, 2) AS INTEGER) <= 20 THEN '2. tengah bulan'\n            ELSE '3. akhir bulan' END AS periode,\n       SUM(f.jumlah * f.harga * (100 - f.diskon_persen) / 100) AS omzet\nFROM fakta_penjualan f\nJOIN dim_tanggal d ON d.tanggal_id = f.tanggal_id\nGROUP BY periode\nORDER BY periode;",
+    "out": "periode         | omzet\n----------------+---------\n1. awal bulan   | 40689500\n2. tengah bulan | 41769250\n3. akhir bulan  | 39967250"
+   },
+   {
+    "t": "Kasus: ramalan naif untuk bulan berikutnya",
+    "d": "Rata-rata 3 bulan terakhir dipakai sebagai perkiraan bulan berikutnya.",
+    "code": "WITH b AS (\n  SELECT d.bulan, SUM(f.jumlah * f.harga * (100 - f.diskon_persen) / 100) AS omzet\n  FROM fakta_penjualan f JOIN dim_tanggal d ON d.tanggal_id = f.tanggal_id\n  GROUP BY d.bulan\n)\nSELECT bulan, omzet,\n       ROUND(AVG(omzet) OVER (ORDER BY bulan ROWS BETWEEN 2 PRECEDING AND CURRENT ROW)) AS ramalan_bulan_depan\nFROM b\nORDER BY bulan;",
+    "out": "bulan | omzet    | ramalan_bulan_depan\n------+----------+--------------------\n1     | 16165250 | 16165250\n2     | 20871000 | 18518125\n3     | 24176250 | 20404167\n4     | 18057750 | 21035000\n5     | 22064500 | 21432833\n6     | 21091250 | 20404500"
+   }
+  ]
+ },
+ "bi-4-1": {
+  "exs": [
+   {
+    "t": "Kasus: satu baris fakta berisi apa?",
+    "d": "Grain: satu produk di satu toko pada satu tanggal.",
+    "code": "SELECT f.id, d.tanggal, t.nama AS toko, p.nama AS produk, f.jumlah, f.harga\nFROM fakta_penjualan f\nJOIN dim_tanggal d ON d.tanggal_id = f.tanggal_id\nJOIN dim_toko t ON t.toko_id = f.toko_id\nJOIN dim_produk p ON p.produk_id = f.produk_id\nORDER BY f.id\nLIMIT 5;",
+    "out": "id | tanggal    | toko          | produk           | jumlah | harga\n---+------------+---------------+------------------+--------+------\n1  | 2024-01-05 | Toko Sudirman | Keripik Singkong | 11     | 15000\n2  | 2024-01-05 | Toko Sudirman | Teh Melati       | 2      | 25000\n3  | 2024-01-05 | Toko Sudirman | Kacang Mete      | 2      | 60000\n4  | 2024-01-05 | Toko Dago     | Sambal Bawang    | 1      | 30000\n5  | 2024-01-05 | Toko Dago     | Kopi Gayo        | 8      | 85000"
+   },
+   {
+    "t": "Kasus: omzet per wilayah per bulan",
+    "d": "Dua dimensi dipakai bersamaan untuk memotong fakta.",
+    "code": "SELECT t.wilayah, d.nama_bulan, SUM(f.jumlah * f.harga * (100 - f.diskon_persen) / 100) AS omzet\nFROM fakta_penjualan f\nJOIN dim_toko t ON t.toko_id = f.toko_id\nJOIN dim_tanggal d ON d.tanggal_id = f.tanggal_id\nGROUP BY t.wilayah, d.bulan, d.nama_bulan\nORDER BY t.wilayah, d.bulan;",
+    "out": "wilayah | nama_bulan | omzet\n--------+------------+---------\nJawa    | Jan        | 8929250\nJawa    | Feb        | 11478000\nJawa    | Mar        | 12403250\nJawa    | Apr        | 7984750\nJawa    | May        | 14053750\nJawa    | Jun        | 10984500\nOnline  | Jan        | 5958500\nOnline  | Feb        | 5353000\nOnline  | Mar        | 8025500\nOnline  | Apr        | 4460000\nOnline  | May        | 4003250\nOnline  | Jun        | 6368500\nSumatra | Jan        | 1277500\nSumatra | Feb        | 4040000\nSumatra | Mar        | 3747500\nSumatra | Apr        | 5613000\nSumatra | May        | 4007500\nSumatra | Jun        | 3738250"
+   },
+   {
+    "t": "Kasus: memastikan grain tidak dilanggar",
+    "d": "Bila grain benar, kombinasi tanggal, produk, dan toko tidak pernah muncul dua kali. Di data latihan ada satu kombinasi kembar yang perlu diselidiki: transaksi terpisah atau data ganda?",
+    "code": "SELECT tanggal_id, produk_id, toko_id, COUNT(*) AS n\nFROM fakta_penjualan\nGROUP BY tanggal_id, produk_id, toko_id\nHAVING COUNT(*) > 1;",
+    "out": "tanggal_id | produk_id | toko_id | n\n-----------+-----------+---------+--\n20240105   | 1         | 2       | 2"
+   }
+  ]
+ },
+ "bi-4-2": {
+  "exs": [
+   {
+    "t": "Kasus: kelengkapan kolom penting",
+    "code": "SELECT COUNT(*) AS baris,\n       SUM(CASE WHEN jumlah IS NULL THEN 1 ELSE 0 END) AS jumlah_kosong,\n       SUM(CASE WHEN harga IS NULL THEN 1 ELSE 0 END) AS harga_kosong,\n       SUM(CASE WHEN diskon_persen IS NULL THEN 1 ELSE 0 END) AS diskon_kosong\nFROM fakta_penjualan;",
+    "out": "baris | jumlah_kosong | harga_kosong | diskon_kosong\n------+---------------+--------------+--------------\n272   | 0             | 0            | 0"
+   },
+   {
+    "t": "Kasus: keunikan id transaksi",
+    "code": "SELECT id, COUNT(*) AS n\nFROM fakta_penjualan\nGROUP BY id\nHAVING COUNT(*) > 1;",
+    "out": "id | n\n---+--"
+   },
+   {
+    "t": "Kasus: ketepatan waktu data",
+    "d": "Tanggal terakhir yang masuk dibandingkan dengan yang seharusnya ada.",
+    "code": "SELECT MIN(d.tanggal) AS data_pertama, MAX(d.tanggal) AS data_terakhir, COUNT(DISTINCT d.tanggal) AS hari_terisi\nFROM fakta_penjualan f\nJOIN dim_tanggal d ON d.tanggal_id = f.tanggal_id;",
+    "out": "data_pertama | data_terakhir | hari_terisi\n-------------+---------------+------------\n2024-01-05   | 2024-06-25    | 18"
+   },
+   {
+    "t": "Kasus: produk dan toko yang tidak pernah muncul di fakta",
+    "d": "Dimensi tanpa transaksi bisa berarti produk baru, atau data yang hilang.",
+    "code": "SELECT 'produk' AS dimensi, p.nama\nFROM dim_produk p LEFT JOIN fakta_penjualan f ON f.produk_id = p.produk_id\nWHERE f.id IS NULL\nUNION ALL\nSELECT 'toko', t.nama\nFROM dim_toko t LEFT JOIN fakta_penjualan f ON f.toko_id = t.toko_id\nWHERE f.id IS NULL;",
+    "out": "dimensi | nama\n--------+-----"
+   }
+  ]
+ },
+ "bi-4-3": {
+  "exs": [
+   {
+    "t": "Kasus: model staging merapikan data mentah",
+    "d": "Staging hanya mengganti nama, tipe, dan membuang baris uji coba; belum ada logika bisnis.",
+    "code": "-- models/staging/stg_transaksi.sql (dbt)\nSELECT\n    CAST(id AS INTEGER)            AS transaksi_id,\n    CAST(tgl AS DATE)              AS tanggal,\n    LOWER(TRIM(status))            AS status,\n    CAST(qty AS INTEGER)           AS jumlah,\n    CAST(harga_satuan AS INTEGER)  AS harga\nFROM {{ source('kasir', 'transaksi') }}\nWHERE toko_id <> 999   -- toko uji coba"
+   },
+   {
+    "t": "Kasus: ELT, muat mentah lalu ubah di dalam warehouse",
+    "code": "-- 1) Load: salin apa adanya ke skema mentah\nCREATE TABLE mentah.transaksi AS SELECT * FROM eksternal.csv_kasir_2024_06;\n\n-- 2) Transform: dengan SQL di warehouse\nCREATE TABLE gold.omzet_harian AS\nSELECT tgl, toko_id, SUM(qty * harga_satuan) AS omzet\nFROM mentah.transaksi\nWHERE status = 'selesai'\nGROUP BY tgl, toko_id;"
+   },
+   {
+    "t": "Kasus: data mart untuk tim keuangan",
+    "d": "Data mart adalah potongan warehouse untuk satu departemen.",
+    "code": "-- models/marts/keuangan/laba_kotor_bulanan.sql (dbt)\nSELECT d.tahun, d.bulan,\n       SUM(f.jumlah * f.harga) AS omzet,\n       SUM(f.jumlah * p.hpp) AS hpp,\n       SUM(f.jumlah * f.harga) - SUM(f.jumlah * p.hpp) AS laba_kotor\nFROM {{ ref('fakta_penjualan') }} f\nJOIN {{ ref('dim_tanggal') }} d ON d.tanggal_id = f.tanggal_id\nJOIN {{ ref('dim_produk') }} p ON p.produk_id = f.produk_id\nGROUP BY d.tahun, d.bulan"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Tes dan dokumentasi model di dbt",
+    "b": "Setiap model diberi deskripsi dan tes otomatis. Saat dbt build berjalan tiap pagi, tes yang gagal menghentikan pembaruan dashboard, sehingga angka yang salah tidak sampai ke manajemen. Deskripsi yang sama muncul di dokumentasi dan lineage dbt.",
+    "code": "# models/marts/schema.yml\nversion: 2\nmodels:\n  - name: fakta_penjualan\n    description: \"Satu baris = satu produk di satu toko pada satu tanggal, hanya transaksi selesai.\"\n    columns:\n      - name: produk_id\n        tests:\n          - not_null\n          - relationships: { to: ref('dim_produk'), field: produk_id }\n      - name: diskon_persen\n        tests:\n          - accepted_values: { values: [0, 5, 10] }\n      - name: jumlah\n        tests:\n          - dbt_utils.expression_is_true: { expression: \"> 0\" }\n\n# dbt build --select fakta_penjualan+   (bangun model dan semua turunannya, lalu jalankan tes)"
+   }
+  ]
+ },
+ "bi-5-8": {
+  "exs": [
+   {
+    "t": "Kasus: unit terjual kumulatif per bulan",
+    "code": "WITH bulanan AS (\n  SELECT t.bulan, SUM(f.jumlah) AS unit\n  FROM fakta_penjualan f\n  JOIN dim_tanggal t ON t.tanggal_id = f.tanggal_id\n  GROUP BY t.bulan\n)\nSELECT bulan, unit, SUM(unit) OVER (ORDER BY bulan) AS unit_kumulatif\nFROM bulanan\nORDER BY bulan;",
+    "out": "bulan | unit | unit_kumulatif\n------+------+---------------\n1     | 334  | 334\n2     | 378  | 712\n3     | 405  | 1117\n4     | 327  | 1444\n5     | 350  | 1794\n6     | 370  | 2164"
+   },
+   {
+    "t": "Kasus: perubahan bulan ke bulan per toko",
+    "d": "PARTITION BY membuat LAG mengambil bulan sebelumnya dari toko yang sama.",
+    "code": "WITH b AS (\n  SELECT s.nama AS toko, t.bulan, SUM(f.jumlah * f.harga) AS omzet\n  FROM fakta_penjualan f\n  JOIN dim_tanggal t ON t.tanggal_id = f.tanggal_id\n  JOIN dim_toko s ON s.toko_id = f.toko_id\n  WHERE t.bulan IN (5, 6)\n  GROUP BY s.nama, t.bulan\n)\nSELECT toko, bulan, omzet,\n       ROUND(100.0 * (omzet - LAG(omzet) OVER (PARTITION BY toko ORDER BY bulan))\n             / NULLIF(LAG(omzet) OVER (PARTITION BY toko ORDER BY bulan), 0), 1) AS ubah_persen\nFROM b\nORDER BY toko, bulan;",
+    "out": "toko           | bulan | omzet   | ubah_persen\n---------------+-------+---------+------------\nOnline         | 5     | 4095000 | NULL\nOnline         | 6     | 6720000 | 64.1\nToko Dago      | 5     | 5790000 | NULL\nToko Dago      | 6     | 4030000 | -30.4\nToko Kesawan   | 5     | 4130000 | NULL\nToko Kesawan   | 6     | 3825000 | -7.4\nToko Sudirman  | 5     | 4590000 | NULL\nToko Sudirman  | 6     | 4065000 | -11.4\nToko Tunjungan | 5     | 4095000 | NULL\nToko Tunjungan | 6     | 3110000 | -24.1"
+   },
+   {
+    "t": "Kasus: kumulatif yang mulai ulang setiap kuartal",
+    "d": "Quarter-to-date: total berjalan di-reset di awal kuartal.",
+    "code": "WITH bulanan AS (\n  SELECT t.kuartal, t.bulan, SUM(f.jumlah * f.harga) AS omzet\n  FROM fakta_penjualan f\n  JOIN dim_tanggal t ON t.tanggal_id = f.tanggal_id\n  GROUP BY t.kuartal, t.bulan\n)\nSELECT kuartal, bulan, omzet,\n       SUM(omzet) OVER (PARTITION BY kuartal ORDER BY bulan) AS omzet_qtd\nFROM bulanan\nORDER BY bulan;",
+    "out": "kuartal | bulan | omzet    | omzet_qtd\n--------+-------+----------+----------\n1       | 1     | 16780000 | 16780000\n1       | 2     | 21550000 | 38330000\n1       | 3     | 24870000 | 63200000\n2       | 4     | 18300000 | 18300000\n2       | 5     | 22700000 | 41000000\n2       | 6     | 21750000 | 62750000"
+   }
+  ]
+ },
+ "bi-6-2": {
+  "exs": [
+   {
+    "t": "Kasus: dashboard stok untuk kepala gudang",
+    "code": "+--------------+--------------+--------------+\n| SKU di bawah | Nilai stok   | Hari stok    |\n| minimum: 14  | Rp 820 jt    | 23 hari      |\n+--------------+--------------+--------------+\n| Tabel: SKU di bawah minimum, urut sisa hari  |\n|   (kolom: SKU, stok, rata jual/hari, sisa)   |\n+----------------------------------------------+\n| Tren stok 8 minggu per kategori (garis)      |\n+----------------------------------------------+\nFilter: gudang · kategori"
+   },
+   {
+    "t": "Kasus: tata letak versi ponsel",
+    "d": "Di ponsel kartu ditumpuk satu kolom, rincian disembunyikan di halaman kedua.",
+    "code": "[ Omzet hari ini   Rp 18,2 jt  ▲ 4% ]\n[ vs target       91%         ▼    ]\n[ Transaksi       412               ]\n[ Tren 14 hari (garis kecil)        ]\n[ Lihat rincian per toko  >         ]"
+   },
+   {
+    "t": "Kasus: satu dashboard, satu audiens",
+    "d": "Dashboard yang mencoba melayani semua orang akhirnya tidak dipakai siapa pun.",
+    "code": "Audiens          Tujuan                         Isi utama\nDireksi          apakah kita sesuai rencana?    4 KPI vs target, tren kuartal\nManajer area     toko mana perlu dibantu?       omzet per toko vs target, peringkat\nKepala toko      apa yang laku hari ini?        produk terlaris, stok menipis"
+   }
+  ]
+ },
+ "bi-6-3": {
+  "exs": [
+   {
+    "t": "Kasus: sumbu batang yang dipotong",
+    "code": "Omzet Toko A Rp 94 jt, Toko B Rp 98 jt (selisih 4%)\nSumbu mulai Rp 0     : batang B sedikit lebih tinggi  -> jujur\nSumbu mulai Rp 90 jt : batang B tampak 2x batang A   -> menyesatkan"
+   },
+   {
+    "t": "Kasus: judul yang menyatakan kesimpulan",
+    "code": "Judul lemah : \"Konversi checkout per minggu\"\nJudul kuat  : \"Konversi checkout turun dari 3,1% ke 2,4% sejak ongkir dinaikkan 2 Mei\""
+   },
+   {
+    "t": "Kasus: cerita empat langkah untuk direksi",
+    "code": "Konteks     : retur pakaian naik dari 6% ke 11% dalam 3 bulan\nTemuan      : 70% retur karena \"ukuran tidak sesuai\", terpusat di 2 merek\nImplikasi   : biaya ongkir balik Rp 140 jt per bulan\nRekomendasi : tabel ukuran per merek + foto model dengan tinggi badan, uji 4 minggu"
+   }
+  ]
+ },
+ "bi-6-4": {
+  "exs": [
+   {
+    "t": "Kasus: satu warna aksen untuk yang perlu diperhatikan",
+    "code": "Omzet per toko (batang, urut besar ke kecil)\nMedan     ███████████  abu-abu\nBandung   █████████    abu-abu\nSurabaya  ██████       abu-abu\nOnline    ████         MERAH + \"▼ di bawah target\"   <- satu-satunya yang disorot"
+   },
+   {
+    "t": "Kasus: format angka yang cepat dibaca",
+    "code": "Mentah             Di kartu KPI\n4823500000        Rp4,8 M\n154500            Rp154,5 rb\n0.4132            41,3%\n-0.008            -0,8 poin"
+   },
+   {
+    "t": "Kasus: urutan kategori yang alami",
+    "d": "Bulan dan tingkatan diurutkan menurut urutan aslinya, bukan menurut nilai.",
+    "code": "Benar : Jan, Feb, Mar, Apr, Mei, Jun\nSalah : Mar, Mei, Jun, Feb, Apr, Jan   (diurutkan dari omzet terbesar)\nBenar : Bronze, Silver, Gold, Platinum"
+   }
+  ]
+ },
+ "bi-7-1": {
+  "exs": [
+   {
+    "t": "Kasus: measure margin kotor di DAX",
+    "d": "DIVIDE aman terhadap pembagian dengan nol.",
+    "code": "Omzet = SUMX ( fakta_penjualan, fakta_penjualan[jumlah] * fakta_penjualan[harga] )\nHPP   = SUMX ( fakta_penjualan, fakta_penjualan[jumlah] * RELATED ( dim_produk[hpp] ) )\nMargin Kotor % = DIVIDE ( [Omzet] - [HPP], [Omzet] )"
+   },
+   {
+    "t": "Kasus: omzet tahun berjalan dan tahun lalu",
+    "code": "Omzet YTD = TOTALYTD ( [Omzet], dim_tanggal[tanggal] )\nOmzet Tahun Lalu = CALCULATE ( [Omzet], SAMEPERIODLASTYEAR ( dim_tanggal[tanggal] ) )\nTumbuh YoY % = DIVIDE ( [Omzet] - [Omzet Tahun Lalu], [Omzet Tahun Lalu] )"
+   },
+   {
+    "t": "Kasus: calculated column vs measure",
+    "d": "Kolom dihitung per baris saat data dimuat; measure dihitung ulang mengikuti filter.",
+    "code": "-- calculated column (per baris, tersimpan)\nKelas Harga = IF ( dim_produk[harga] >= 75000, \"premium\", \"reguler\" )\n\n-- measure (mengikuti filter toko, bulan, dsb.)\nRata Diskon % = AVERAGE ( fakta_penjualan[diskon_persen] ) / 100\n\n-- salah kaprah: rata-rata dari persentase per toko != persentase total\nMargin Total % = DIVIDE ( [Omzet] - [HPP], [Omzet] )   -- benar untuk total"
+   }
+  ]
+ },
+ "bi-8-1": {
+  "exs": [
+   {
+    "t": "Kasus: row-level security per wilayah di Power BI",
+    "d": "Manajer area hanya melihat baris wilayahnya sendiri.",
+    "code": "Role: Manajer Sumatra\nTabel dim_toko, filter DAX: [wilayah] = \"Sumatra\"\n\nRole dinamis (satu aturan untuk semua):\n[email_manajer] = USERPRINCIPALNAME ()"
+   },
+   {
+    "t": "Kasus: data pribadi di dashboard CS",
+    "code": "Kolom             Tampil?   Alasan\nid_pelanggan      ya        perlu untuk mencari tiket\nnama depan        ya        menyapa pelanggan\nnomor HP          sebagian  0812****890, cukup untuk verifikasi\nalamat lengkap    tidak     tidak dibutuhkan untuk menjawab keluhan\nNIK               tidak     tidak pernah boleh masuk dashboard"
+   },
+   {
+    "t": "Kasus: memeriksa bias metrik",
+    "d": "Metrik yang tampak netral bisa merugikan kelompok tertentu.",
+    "code": "Metrik \"waktu respons CS\" dipakai untuk bonus\nTemuan: pelanggan dari daerah dengan sinyal lemah lebih sering di-skip agar rata-rata cepat\nPerbaikan: tambahkan metrik \"tiket terselesaikan\" dan pantau per wilayah"
+   }
+  ]
+ },
+ "bi-8-2": {
+  "exs": [
+   {
+    "t": "Kasus: susunan satu proyek portofolio",
+    "code": "1. Pertanyaan bisnis : \"Cabang mana yang rugi karena promo ongkir?\"\n2. Data             : 6 bulan transaksi (data publik/sintetis, sebutkan sumbernya)\n3. Model            : fakta_penjualan + 3 dimensi (diagram)\n4. Dashboard        : tautan Tableau Public / Power BI\n5. Temuan           : 3 poin dengan angka\n6. Rekomendasi      : apa yang harus dilakukan dan dampaknya"
+   },
+   {
+    "t": "Kasus: soal SQL yang sering keluar di wawancara",
+    "code": "1. Omzet per bulan dan pertumbuhan MoM        -> GROUP BY + LAG\n2. Tiga produk terlaris per kategori          -> ROW_NUMBER() OVER (PARTITION BY ...)\n3. Pelanggan yang belum belanja 90 hari       -> LEFT JOIN / NOT EXISTS + tanggal\n4. Persentase kontribusi tiap wilayah         -> SUM(...) OVER ()"
+   },
+   {
+    "t": "Kasus: menjawab studi kasus \"pengguna aktif turun 10%\"",
+    "code": "1. Cek data dulu      : definisi aktif berubah? event tracking rusak setelah rilis?\n2. Pecah             : platform (Android/iOS/web), negara, versi aplikasi\n3. Waktu             : turun mendadak (bug) atau perlahan (tren)?\n4. Kaitkan peristiwa : rilis, kompetitor promo, libur panjang\n5. Simpulkan         : hipotesis paling kuat + data pendukung + langkah berikutnya"
+   }
+  ]
+ }
+}

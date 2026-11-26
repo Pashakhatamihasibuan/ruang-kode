@@ -1,0 +1,393 @@
+{
+ "pgdba-1-1": {
+  "exs": [
+   {
+    "t": "Kasus: saya terhubung ke server mana?",
+    "d": "Langkah pertama sebelum mengubah apa pun: pastikan database, user, dan alamat server yang benar.",
+    "code": "SELECT current_database() AS db,\n       current_user AS pengguna,\n       inet_server_addr() AS alamat,\n       inet_server_port() AS port;"
+   },
+   {
+    "t": "Kasus: ukuran setiap database di server",
+    "code": "SELECT datname AS database,\n       pg_size_pretty(pg_database_size(datname)) AS ukuran\nFROM pg_database\nORDER BY pg_database_size(datname) DESC;"
+   },
+   {
+    "t": "Kasus: sudah berapa lama server menyala",
+    "d": "Uptime yang tiba-tiba pendek berarti server baru saja restart, dan DBA perlu mencari tahu sebabnya.",
+    "code": "SELECT pg_postmaster_start_time() AS mulai,\n       now() - pg_postmaster_start_time() AS uptime;"
+   }
+  ]
+ },
+ "pgdba-1-2": {
+  "exs": [
+   {
+    "t": "Kasus: jumlah koneksi klien per database",
+    "d": "Setiap koneksi adalah satu proses backend, jadi angka ini langsung berarti pemakaian memori.",
+    "code": "SELECT datname, count(*) AS koneksi\nFROM pg_stat_activity\nWHERE backend_type = 'client backend'\nGROUP BY datname\nORDER BY koneksi DESC;"
+   },
+   {
+    "t": "Kasus: posisi WAL dan nama file WAL saat ini",
+    "d": "LSN adalah alamat di aliran WAL; angkanya terus naik setiap ada perubahan data.",
+    "code": "SELECT pg_current_wal_lsn() AS lsn,\n       pg_walfile_name(pg_current_wal_lsn()) AS file_wal;"
+   },
+   {
+    "t": "Kasus: ukuran halaman dan jadwal checkpoint",
+    "code": "SHOW block_size;          -- 8192 byte per halaman\nSHOW checkpoint_timeout;  -- jeda maksimal antar checkpoint\nSHOW max_wal_size;        -- WAL sebanyak ini juga memicu checkpoint"
+   }
+  ]
+ },
+ "pgdba-1-3": {
+  "exs": [
+   {
+    "t": "Kasus: menjalankan satu perintah tanpa masuk psql",
+    "d": "Opsi -c cocok untuk skrip dan pengecekan cepat.",
+    "code": "psql \"host=localhost port=5432 dbname=tokodb user=postgres\" -c '\\dt'"
+   },
+   {
+    "t": "Kasus: menjalankan file skema dan berhenti saat ada error",
+    "d": "Tanpa ON_ERROR_STOP, psql terus menjalankan perintah berikutnya walau ada yang gagal.",
+    "code": "psql -U postgres -d tokodb -v ON_ERROR_STOP=1 -f skema.sql"
+   },
+   {
+    "t": "Kasus: memeriksa server siap menerima koneksi",
+    "code": "docker exec pg17 pg_isready -U postgres\ndocker logs --tail 20 pg17"
+   },
+   {
+    "t": "Kasus: menyimpan kata sandi di ~/.pgpass",
+    "d": "File harus hanya bisa dibaca pemiliknya, kalau tidak psql mengabaikannya.",
+    "code": "echo 'localhost:5432:tokodb:postgres:rahasia_kuat' >> ~/.pgpass\nchmod 600 ~/.pgpass\npsql -h localhost -U postgres -d tokodb   # tidak ditanya kata sandi lagi"
+   }
+  ]
+ },
+ "pgdba-2-1": {
+  "exs": [
+   {
+    "t": "Kasus: schema gudang untuk tim logistik",
+    "code": "CREATE SCHEMA gudang;\n\nCREATE TABLE gudang.stok (\n  id      bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  sku     text NOT NULL UNIQUE,\n  jumlah  integer NOT NULL DEFAULT 0\n);\n\nINSERT INTO gudang.stok (sku, jumlah) VALUES ('KOPI-GAYO', 40), ('TEH-MELATI', 120)\nRETURNING id, sku;"
+   },
+   {
+    "t": "Kasus: nama tabel tanpa awalan schema",
+    "d": "search_path menentukan urutan schema yang dicari.",
+    "code": "SHOW search_path;                    -- \"$user\", public\nSET search_path = penjualan, public;\nSELECT nama, kota FROM pelanggan;    -- yang dibaca: penjualan.pelanggan"
+   },
+   {
+    "t": "Kasus: daftar tabel buatan sendiri per schema",
+    "code": "SELECT table_schema, table_name\nFROM information_schema.tables\nWHERE table_schema NOT IN ('pg_catalog', 'information_schema')\nORDER BY 1, 2;"
+   },
+   {
+    "t": "Kasus: identity menolak id yang diisi manual",
+    "d": "GENERATED ALWAYS menjaga nomor id tetap diurus database.",
+    "code": "INSERT INTO penjualan.pelanggan (id, nama) VALUES (99, 'Sari');\n-- ERROR: cannot insert a non-DEFAULT value into column \"id\"\n\nINSERT INTO penjualan.pelanggan (nama) VALUES ('Sari') RETURNING id;"
+   }
+  ]
+ },
+ "pgdba-2-2": {
+  "exs": [
+   {
+    "t": "Kasus: timestamptz menampilkan jam sesuai zona pembaca",
+    "d": "Nilainya disimpan sekali dalam UTC, lalu ditampilkan sesuai TimeZone sesi.",
+    "code": "CREATE TABLE jadwal (acara text, mulai timestamptz NOT NULL);\nINSERT INTO jadwal VALUES ('Webinar SQL', '2026-11-20 09:00+07');\n\nSET TIME ZONE 'Asia/Jakarta';  SELECT mulai FROM jadwal;  -- 09:00+07\nSET TIME ZONE 'Asia/Makassar'; SELECT mulai FROM jadwal;  -- 10:00+08"
+   },
+   {
+    "t": "Kasus: RESTRICT menolak hapus produk yang masih dipesan",
+    "code": "INSERT INTO produk (nama, harga) VALUES ('Kopi Gayo', 85000);\nINSERT INTO pesanan (produk_id, jumlah) VALUES (1, 2);\n\nDELETE FROM produk WHERE id = 1;\n-- ERROR: update or delete on table \"produk\" violates foreign key constraint"
+   },
+   {
+    "t": "Kasus: CHECK yang melibatkan dua kolom",
+    "d": "Constraint bernama memudahkan membaca pesan error.",
+    "code": "CREATE TABLE promo (\n  kode     text PRIMARY KEY,\n  mulai    date NOT NULL,\n  selesai  date NOT NULL,\n  diskon   numeric(5,2) NOT NULL,\n  CONSTRAINT promo_tanggal_benar CHECK (selesai > mulai),\n  CONSTRAINT promo_diskon_wajar  CHECK (diskon BETWEEN 0 AND 90)\n);\nINSERT INTO promo VALUES ('GAJIAN', '2026-11-25', '2026-11-20', 10);\n-- ERROR: ... violates check constraint \"promo_tanggal_benar\""
+   },
+   {
+    "t": "Kasus: kolom array untuk tag produk",
+    "code": "INSERT INTO produk (nama, harga, tag) VALUES ('Teh Melati', 25000, '{minuman,teh}');\n\nSELECT nama, tag FROM produk WHERE 'teh' = ANY (tag);"
+   }
+  ]
+ },
+ "pgdba-2-3": {
+  "exs": [
+   {
+    "t": "Kasus: menyimpan payload webhook pembayaran",
+    "d": "Payload dari payment gateway disimpan utuh, kolom penting diambil dengan ->>.",
+    "code": "CREATE TABLE webhook (\n  id        bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  diterima  timestamptz NOT NULL DEFAULT now(),\n  payload   jsonb NOT NULL\n);\nINSERT INTO webhook (payload) VALUES\n  ('{\"order_id\": \"INV-1001\", \"status\": \"settlement\", \"amount\": \"125000\"}');\n\nSELECT payload->>'order_id' AS pesanan, (payload->>'amount')::numeric AS nominal\nFROM webhook\nWHERE payload @> '{\"status\": \"settlement\"}';"
+   },
+   {
+    "t": "Kasus: produk yang punya kunci tertentu",
+    "d": "Operator ? memeriksa keberadaan kunci, apa pun nilainya.",
+    "code": "SELECT nama FROM produk WHERE spek ? 'roast';"
+   },
+   {
+    "t": "Kasus: mengubah satu kunci tanpa menimpa yang lain",
+    "code": "UPDATE produk\nSET spek = jsonb_set(spek, '{berat_g}', '500')\nWHERE nama = 'Kopi Gayo';\n\nSELECT spek FROM produk WHERE nama = 'Kopi Gayo';"
+   },
+   {
+    "t": "Kasus: enum untuk status dan inet untuk alamat IP",
+    "code": "CREATE TYPE status_pesanan AS ENUM ('baru', 'dibayar', 'dikirim', 'selesai');\n\nCREATE TABLE log_login (\n  pengguna  text NOT NULL,\n  ip        inet NOT NULL,\n  waktu     timestamptz NOT NULL DEFAULT now()\n);\nINSERT INTO log_login (pengguna, ip) VALUES ('rina', '10.0.1.25'), ('budi', '182.253.10.4');\n\nSELECT pengguna, ip FROM log_login WHERE ip << '10.0.0.0/8';  -- login dari jaringan kantor"
+   }
+  ]
+ },
+ "pgdba-3-1": {
+  "exs": [
+   {
+    "t": "Kasus: akun aplikasi web dengan hak secukupnya",
+    "d": "Aplikasi boleh membaca dan menulis pelanggan, tetapi tidak boleh menghapus atau mengubah struktur.",
+    "code": "CREATE ROLE webapp LOGIN PASSWORD 'ganti_di_vault';\nGRANT USAGE ON SCHEMA penjualan TO webapp;\nGRANT SELECT, INSERT, UPDATE ON penjualan.pelanggan TO webapp;"
+   },
+   {
+    "t": "Kasus: karyawan pindah tim, cabut keanggotaannya",
+    "code": "REVOKE baca_saja FROM dewi;\nALTER ROLE dewi NOLOGIN;   -- akun dikunci, riwayatnya tetap ada"
+   },
+   {
+    "t": "Kasus: memeriksa hak yang dimiliki sebuah role",
+    "code": "SELECT grantee, table_schema, table_name, privilege_type\nFROM information_schema.role_table_grants\nWHERE grantee = 'baca_saja'\nORDER BY table_name, privilege_type;"
+   },
+   {
+    "t": "Kasus: hak baca per kolom untuk CS magang",
+    "d": "Kolom email tidak ikut diberikan, jadi tetap tertutup.",
+    "code": "CREATE ROLE cs_magang LOGIN PASSWORD 'ganti_di_vault';\nGRANT USAGE ON SCHEMA penjualan TO cs_magang;\nGRANT SELECT (id, nama, kota) ON penjualan.pelanggan TO cs_magang;\n\nSET ROLE cs_magang;\nSELECT nama, kota FROM penjualan.pelanggan;   -- berhasil\nSELECT email FROM penjualan.pelanggan;        -- ERROR: permission denied\nRESET ROLE;"
+   }
+  ]
+ },
+ "pgdba-3-2": {
+  "exs": [
+   {
+    "t": "Kasus: mengizinkan satu server laporan baru",
+    "d": "Alamat /32 berarti tepat satu mesin. Baris baru ditaruh di atas baris reject.",
+    "code": "# pg_hba.conf\nhostssl  tokodb    laporan   10.0.3.15/32     scram-sha-256\n\n# muat ulang tanpa restart, lalu cek tidak ada baris yang error\npsql -U postgres -c \"SELECT pg_reload_conf();\"\npsql -U postgres -c \"SELECT line_number, error FROM pg_hba_file_rules WHERE error IS NOT NULL;\""
+   },
+   {
+    "t": "Kasus: klien wajib memverifikasi sertifikat server",
+    "d": "verify-full memeriksa sertifikat dan nama host, sehingga tahan serangan man-in-the-middle.",
+    "code": "psql \"host=db1.toko.internal dbname=tokodb user=webapp sslmode=verify-full sslrootcert=/etc/ssl/certs/toko-ca.crt\""
+   },
+   {
+    "t": "Kasus: memindahkan kata sandi lama dari md5 ke scram",
+    "d": "Kata sandi md5 lama harus di-set ulang setelah password_encryption diganti.",
+    "code": "psql -U postgres -c \"SELECT rolname FROM pg_authid WHERE rolpassword LIKE 'md5%';\"\npsql -U postgres -c \"ALTER ROLE webapp PASSWORD 'sandi_baru_dari_vault';\"\n# setelah semua role pindah, ganti METHOD md5 menjadi scram-sha-256 di pg_hba.conf"
+   }
+  ]
+ },
+ "pgdba-3-3": {
+  "exs": [
+   {
+    "t": "Kasus: pelanggan hanya melihat pesanannya sendiri",
+    "code": "CREATE TABLE pesanan_app (\n  id            bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  pelanggan_id  bigint NOT NULL,\n  total         numeric(12,0) NOT NULL\n);\nALTER TABLE pesanan_app ENABLE ROW LEVEL SECURITY;\nCREATE POLICY pesanan_sendiri ON pesanan_app\n  USING (pelanggan_id = current_setting('app.pelanggan_id')::bigint);"
+   },
+   {
+    "t": "Kasus: aturan baca dan tulis yang berbeda",
+    "d": "Kasir boleh melihat semua pesanan cabangnya, tetapi hanya boleh menambah pesanan untuk cabang sendiri.",
+    "code": "CREATE POLICY kasir_baca ON pesanan_toko FOR SELECT\n  USING (toko = current_setting('app.toko'));\n\nCREATE POLICY kasir_tambah ON pesanan_toko FOR INSERT\n  WITH CHECK (toko = current_setting('app.toko'));"
+   },
+   {
+    "t": "Kasus: pemilik tabel juga tunduk pada policy",
+    "d": "Tanpa FORCE, pemilik tabel (sering kali akun migrasi aplikasi) melewati RLS.",
+    "code": "ALTER TABLE pesanan_toko FORCE ROW LEVEL SECURITY;"
+   },
+   {
+    "t": "Kasus: memeriksa policy yang aktif",
+    "code": "SELECT tablename, policyname, cmd, qual, with_check\nFROM pg_policies\nORDER BY tablename, policyname;"
+   }
+  ]
+ },
+ "pgdba-4-1": {
+  "exs": [
+   {
+    "t": "Kasus: checkout mengurangi stok dan mencatat pesanan bersama",
+    "d": "Jika salah satu perintah gagal, keduanya dibatalkan.",
+    "code": "BEGIN;\nUPDATE gudang.stok SET jumlah = jumlah - 2 WHERE sku = 'KOPI-GAYO';\nINSERT INTO pesanan (produk_id, jumlah) VALUES (1, 2);\nCOMMIT;"
+   },
+   {
+    "t": "Kasus: Read Committed melihat commit terbaru",
+    "d": "Dua sesi psql dibuka bersamaan. Sesi A melihat angka baru di SELECT keduanya.",
+    "code": "-- sesi A\nBEGIN;\nSELECT saldo FROM rekening WHERE no = 'A';   -- 300000\n\n-- sesi B\nUPDATE rekening SET saldo = saldo + 50000 WHERE no = 'A';   -- autocommit\n\n-- sesi A\nSELECT saldo FROM rekening WHERE no = 'A';   -- 350000\nCOMMIT;"
+   },
+   {
+    "t": "Kasus: laporan akhir bulan dengan snapshot tetap",
+    "d": "Repeatable Read membuat semua SELECT dalam transaksi melihat data yang sama.",
+    "code": "BEGIN ISOLATION LEVEL REPEATABLE READ;\nSELECT sum(saldo) AS total FROM rekening;\n-- transaksi lain boleh COMMIT di sini, angka di bawah tetap sama\nSELECT no, saldo FROM rekening ORDER BY no;\nCOMMIT;"
+   },
+   {
+    "t": "Kasus: Serializable dan aplikasi yang mengulang",
+    "d": "Bila muncul error serialisasi (SQLSTATE 40001), aplikasi menjalankan ulang seluruh transaksi.",
+    "code": "BEGIN ISOLATION LEVEL SERIALIZABLE;\nSELECT count(*) FROM jadwal_dokter WHERE dokter = 'dr. Rina' AND tanggal = '2026-11-20';\nINSERT INTO jadwal_dokter (dokter, tanggal, pasien) VALUES ('dr. Rina', '2026-11-20', 'Budi');\nCOMMIT;\n-- ERROR: could not serialize access due to read/write dependencies among transactions\n-- -> ulangi transaksi dari BEGIN"
+   }
+  ]
+ },
+ "pgdba-4-2": {
+  "exs": [
+   {
+    "t": "Kasus: mengunci baris stok sebelum mengurangi",
+    "d": "FOR UPDATE membuat kasir lain menunggu sampai transaksi ini selesai.",
+    "code": "BEGIN;\nSELECT qty FROM stok WHERE sku = 'KOPI' FOR UPDATE;\nUPDATE stok SET qty = qty - 1 WHERE sku = 'KOPI';\nCOMMIT;"
+   },
+   {
+    "t": "Kasus: antrean tugas tanpa saling menunggu",
+    "d": "SKIP LOCKED membuat setiap worker mengambil tugas yang belum dikunci worker lain.",
+    "code": "BEGIN;\nSELECT id, jenis FROM tugas\nWHERE status = 'antre'\nORDER BY id\nLIMIT 1\nFOR UPDATE SKIP LOCKED;\n-- kerjakan tugasnya, lalu:\nUPDATE tugas SET status = 'selesai' WHERE id = 42;\nCOMMIT;"
+   },
+   {
+    "t": "Kasus: lock yang sedang dipegang dan ditunggu",
+    "code": "SELECT l.pid, l.relation::regclass AS tabel, l.mode, l.granted\nFROM pg_locks l\nWHERE l.relation IS NOT NULL AND l.relation::regclass::text NOT LIKE 'pg_%'\nORDER BY l.granted, l.pid;"
+   },
+   {
+    "t": "Kasus: mencegah deadlock dengan urutan kunci yang sama",
+    "d": "Semua transaksi mengunci baris berurutan menurut sku, jadi tidak ada yang saling menunggu melingkar.",
+    "code": "BEGIN;\nSELECT sku FROM stok WHERE sku IN ('GULA', 'KOPI') ORDER BY sku FOR UPDATE;\nUPDATE stok SET qty = qty - 1 WHERE sku IN ('GULA', 'KOPI');\nCOMMIT;"
+   }
+  ]
+ },
+ "pgdba-4-3": {
+  "exs": [
+   {
+    "t": "Kasus: tabel yang paling lama tidak di-vacuum",
+    "code": "SELECT relname, n_dead_tup, last_vacuum, last_autovacuum\nFROM pg_stat_user_tables\nORDER BY greatest(last_vacuum, last_autovacuum) NULLS FIRST\nLIMIT 5;"
+   },
+   {
+    "t": "Kasus: memantau VACUUM yang sedang berjalan",
+    "code": "SELECT pid, relid::regclass AS tabel, phase,\n       round(100.0 * heap_blks_scanned / nullif(heap_blks_total, 0), 1) AS persen\nFROM pg_stat_progress_vacuum;"
+   },
+   {
+    "t": "Kasus: transaksi lama yang menahan VACUUM",
+    "d": "Baris mati tidak bisa dibersihkan selama masih ada transaksi yang mungkin membacanya.",
+    "code": "SELECT pid, state, now() - xact_start AS lama, age(backend_xmin) AS umur_xmin\nFROM pg_stat_activity\nWHERE backend_xmin IS NOT NULL\nORDER BY age(backend_xmin) DESC\nLIMIT 3;"
+   },
+   {
+    "t": "Kasus: setelah impor besar, vacuum dan perbarui statistik",
+    "code": "COPY pesanan FROM '/data/pesanan_november.csv' WITH (FORMAT csv, HEADER);\nVACUUM (ANALYZE) pesanan;"
+   }
+  ]
+ },
+ "pgdba-5-1": {
+  "exs": [
+   {
+    "t": "Kasus: rencana perkiraan tanpa menjalankan query",
+    "d": "EXPLAIN saja aman untuk query berat karena tidak benar-benar dijalankan.",
+    "code": "EXPLAIN\nSELECT p.nama, count(*)\nFROM pesanan s JOIN pelanggan p ON p.id = s.pelanggan_id\nWHERE s.status = 'batal'\nGROUP BY p.nama;"
+   },
+   {
+    "t": "Kasus: perkiraan baris meleset karena statistik usang",
+    "d": "Bandingkan rows perkiraan dengan actual rows; setelah ANALYZE keduanya mendekat.",
+    "code": "EXPLAIN (ANALYZE) SELECT * FROM pesanan WHERE status = 'batal';\nANALYZE pesanan;\nEXPLAIN (ANALYZE) SELECT * FROM pesanan WHERE status = 'batal';"
+   },
+   {
+    "t": "Kasus: menganalisis UPDATE tanpa mengubah data",
+    "d": "EXPLAIN ANALYZE benar-benar menjalankan perintah, jadi bungkus dengan transaksi lalu ROLLBACK.",
+    "code": "BEGIN;\nEXPLAIN (ANALYZE, BUFFERS)\nUPDATE pesanan SET status = 'selesai' WHERE status = 'dikirim' AND dibuat < now() - interval '14 days';\nROLLBACK;"
+   },
+   {
+    "t": "Kasus: rencana dalam JSON untuk alat visualisasi",
+    "d": "Tempel hasilnya ke explain.dalibo.com.",
+    "code": "EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)\nSELECT * FROM pesanan WHERE pelanggan_id = 4821 ORDER BY dibuat DESC LIMIT 10;"
+   }
+  ]
+ },
+ "pgdba-5-2": {
+  "exs": [
+   {
+    "t": "Kasus: partial index untuk pesanan yang belum dibayar",
+    "d": "Hanya sebagian kecil baris yang masuk index, jadi ukurannya kecil.",
+    "code": "CREATE INDEX CONCURRENTLY pesanan_baru_idx\n  ON pesanan (dibuat)\n  WHERE status = 'baru';\n\nEXPLAIN SELECT id FROM pesanan WHERE status = 'baru' AND dibuat < now() - interval '1 day';"
+   },
+   {
+    "t": "Kasus: expression index untuk login dengan email",
+    "d": "Query harus memakai ekspresi yang sama, lower(email), agar index terpakai.",
+    "code": "CREATE INDEX CONCURRENTLY pelanggan_email_lower_idx ON pelanggan (lower(email));\n\nEXPLAIN SELECT id FROM pelanggan WHERE lower(email) = lower('Rina@Contoh.id');"
+   },
+   {
+    "t": "Kasus: BRIN untuk tabel log yang terus bertambah",
+    "d": "Data log ditulis berurutan menurut waktu, jadi BRIN yang sangat kecil sudah cukup.",
+    "code": "CREATE INDEX log_akses_waktu_brin ON log_akses USING brin (waktu);\n\nEXPLAIN SELECT count(*) FROM log_akses\nWHERE waktu >= '2026-11-01' AND waktu < '2026-11-02';"
+   },
+   {
+    "t": "Kasus: mencari indeks yang tidak pernah dipakai",
+    "code": "SELECT relname AS tabel, indexrelname AS indeks,\n       pg_size_pretty(pg_relation_size(indexrelid)) AS ukuran, idx_scan\nFROM pg_stat_user_indexes\nWHERE idx_scan = 0\nORDER BY pg_relation_size(indexrelid) DESC;"
+   }
+  ]
+ },
+ "pgdba-5-3": {
+  "exs": [
+   {
+    "t": "Kasus: query dengan rata-rata waktu paling lambat",
+    "d": "Saring yang sering dipanggil agar query sekali jalan tidak mendominasi.",
+    "code": "SELECT left(query, 50) AS query, calls, round(mean_exec_time, 1) AS rata_ms\nFROM pg_stat_statements\nWHERE calls > 50\nORDER BY mean_exec_time DESC\nLIMIT 5;"
+   },
+   {
+    "t": "Kasus: nilai memori yang sedang berlaku",
+    "code": "SELECT name, setting, unit, source\nFROM pg_settings\nWHERE name IN ('shared_buffers', 'effective_cache_size', 'work_mem', 'maintenance_work_mem')\nORDER BY name;"
+   },
+   {
+    "t": "Kasus: work_mem besar hanya untuk satu laporan",
+    "d": "SET LOCAL berlaku sampai transaksi selesai, jadi koneksi lain tidak terpengaruh.",
+    "code": "BEGIN;\nSET LOCAL work_mem = '256MB';\nSELECT pelanggan_id, sum(total) FROM pesanan GROUP BY pelanggan_id ORDER BY 2 DESC;\nCOMMIT;"
+   },
+   {
+    "t": "Kasus: menyetel server ber-SSD dan RAM 16 GB",
+    "d": "Sebagian parameter cukup reload, shared_buffers butuh restart.",
+    "code": "ALTER SYSTEM SET random_page_cost = 1.1;\nALTER SYSTEM SET effective_cache_size = '12GB';\nALTER SYSTEM SET shared_buffers = '4GB';\nSELECT pg_reload_conf();\n\nSELECT name, setting, pending_restart FROM pg_settings WHERE pending_restart;"
+   }
+  ]
+ },
+ "pgdba-6-1": {
+  "exs": [
+   {
+    "t": "Kasus: backup harian otomatis dengan cron",
+    "d": "Setiap pukul 01.00 dibuat dump baru, dan dump lebih dari 7 hari dihapus.",
+    "code": "# crontab -e (user postgres)\n0 1 * * * pg_dump -Fc -f /backup/tokodb_$(date +\\%F).dump tokodb\n30 1 * * * find /backup -name 'tokodb_*.dump' -mtime +7 -delete"
+   },
+   {
+    "t": "Kasus: backup role dan pengaturan global",
+    "d": "pg_dump tidak menyertakan role; tanpa file ini, restore ke server baru gagal karena pemilik tabel tidak ada.",
+    "code": "pg_dumpall -U postgres --globals-only -f globals_$(date +%F).sql"
+   },
+   {
+    "t": "Kasus: uji restore ke database baru",
+    "d": "Backup baru terbukti berguna setelah berhasil dipulihkan.",
+    "code": "createdb -U postgres tokodb_uji\npg_restore -U postgres -d tokodb_uji -j 4 tokodb_2026-11-05.dump\npsql -U postgres -d tokodb_uji -c \"SELECT count(*) FROM pesanan;\""
+   },
+   {
+    "t": "Kasus: backup satu schema saja",
+    "code": "pg_dump -U postgres -Fc -n penjualan -f penjualan_$(date +%F).dump tokodb"
+   }
+  ]
+ },
+ "pgdba-6-2": {
+  "exs": [
+   {
+    "t": "Kasus: server ini primary atau standby?",
+    "code": "SELECT pg_is_in_recovery() AS standby;"
+   },
+   {
+    "t": "Kasus: lag replikasi dilihat dari standby",
+    "code": "SELECT now() - pg_last_xact_replay_timestamp() AS lag_waktu,\n       pg_last_wal_receive_lsn() AS diterima,\n       pg_last_wal_replay_lsn() AS diputar;"
+   },
+   {
+    "t": "Kasus: replication slot untuk standby baru",
+    "d": "Slot menahan WAL sampai standby membacanya; slot yang ditinggalkan bisa memenuhi disk.",
+    "code": "SELECT pg_create_physical_replication_slot('standby_2');\n\nSELECT slot_name, active FROM pg_replication_slots;"
+   },
+   {
+    "t": "Kasus: status subscription logical di server tujuan",
+    "code": "SELECT subname, received_lsn, latest_end_lsn, latest_end_time\nFROM pg_stat_subscription;"
+   }
+  ]
+ },
+ "pgdba-6-3": {
+  "exs": [
+   {
+    "t": "Kasus: pemakaian koneksi dibanding batas",
+    "code": "SELECT count(*) AS dipakai,\n       current_setting('max_connections')::int AS batas,\n       round(100.0 * count(*) / current_setting('max_connections')::int, 1) AS persen\nFROM pg_stat_activity;"
+   },
+   {
+    "t": "Kasus: lima tabel terbesar beserta indeksnya",
+    "code": "SELECT relname AS tabel,\n       pg_size_pretty(pg_total_relation_size(relid)) AS total\nFROM pg_stat_user_tables\nORDER BY pg_total_relation_size(relid) DESC\nLIMIT 5;"
+   },
+   {
+    "t": "Kasus: seberapa dekat ke wraparound",
+    "d": "Persen terhadap batas sekitar 2 miliar transaksi.",
+    "code": "SELECT datname, age(datfrozenxid) AS umur,\n       round(100.0 * age(datfrozenxid) / 2000000000, 1) AS persen\nFROM pg_database\nORDER BY umur DESC;"
+   },
+   {
+    "t": "Kasus: mulai mencatat query lambat",
+    "code": "ALTER SYSTEM SET log_min_duration_statement = '500ms';\nSELECT pg_reload_conf();\n-- analisis log dengan pgBadger: pgbadger /var/log/postgresql/postgresql-*.log -o laporan.html"
+   }
+  ]
+ }
+}

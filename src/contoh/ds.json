@@ -1,0 +1,298 @@
+{
+ "ds-1-1": {
+  "exs": [
+   {
+    "t": "Kasus: memecah halaman checkout ke tingkat atomic",
+    "code": "Halaman   Checkout pesanan #1042 (data asli Bu Ratna)\nTemplate  Header + daftar item + ringkasan biaya + tombol bayar\nOrganisme Ringkasan biaya (beberapa baris harga + total + Button)\nMolekul   Baris harga (Label + angka Rp), Pilihan kurir (Radio + Label + harga)\nAtom      Label, Radio, Button, Icon, Divider"
+   },
+   {
+    "t": "Kasus: design system, pustaka komponen, dan UI kit",
+    "code": "ISTILAH            ISINYA                                         CONTOH DI TIM\nUI kit             berkas Figma berisi komponen siap pakai        \"Kit Celengan v2.fig\"\nPustaka komponen   kode komponen yang dipasang developer          paket @celengan/ui\nDesign system      prinsip + token + komponen (Figma & kode)      situs ds.celengan.id\n                   + pedoman + proses kontribusi & versi",
+    "d": "Design system mencakup dua yang lain, ditambah aturan dan prosesnya."
+   },
+   {
+    "t": "Kasus: isi minimum untuk produk kecil",
+    "code": "Mulai dari yang paling sering dipakai:\n1. Token  : 1 warna aksi, 4 netral, 3 fungsional, skala jarak 4/8, 5 ukuran huruf\n2. Atom   : Button, Input, Icon, Badge\n3. Molekul: FormField (Label + Input + teks bantuan)\n4. Pedoman: satu halaman \"kapan pakai Button primary\"\nBelum perlu: tata kelola formal, katalog komponen interaktif, multi-brand"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Memetakan komponen ke tingkat atomic design",
+    "b": "Daftarkan komponen yang sudah ada, lalu kelompokkan per tingkat. Tingkat yang kosong atau terlalu gemuk menunjukkan bagian yang perlu dirapikan.",
+    "code": "TINGKAT    JUMLAH  KOMPONEN\nATOM       5       Button; Icon; Badge; Input; Avatar\nMOLEKUL    3       SearchField (Input + Icon + Button); FormField (Label + Input + Helper);\n                   ListItem (Avatar + teks + Badge)\nORGANISME  2       Header (Logo + SearchField + Avatar); CheckoutForm (beberapa FormField + Button)\nTEMPLATE   1       Halaman daftar: Header + filter + grid kartu + pagination\nHALAMAN    1       Hasil pencarian \"beras 5 kg\" dengan data asli",
+    "lang": "text"
+   }
+  ]
+ },
+ "ds-1-2": {
+  "exs": [
+   {
+    "t": "Kasus: memeriksa tanda-tanda di aplikasi kasir",
+    "code": "TANDA                                          KASIR \"Warungku\"\nWarna aksi berbeda-beda                        ya, 5 hijau\nTombol utama punya banyak versi                ya, 4 versi\nDebat jarak setiap rilis                       ya, tiap sprint\nHalaman baru dibuat dari nol                   ya\nLebih dari satu tim / platform                 ya, Android + web admin\n-> 5 dari 5: mulai design system, diawali token dan Button"
+   },
+   {
+    "t": "Kasus: tim kecil cukup UI kit dulu",
+    "code": "Produk : landing page + form pendaftaran les privat\nTim    : 1 desainer, 1 developer\nLayar  : 6\nKeputusan: belum perlu design system penuh.\n  - simpan 8 warna dan 5 ukuran huruf sebagai style Figma + CSS variables\n  - buat 3 komponen: Button, Input, Card\n  - tinjau ulang bila tim bertambah atau produk kedua dimulai"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Estimasi ROI sederhana design system",
+    "b": "Hitung jam yang hemat karena komponen tidak dibuat ulang, kurangi biaya merawat sistem, lalu bandingkan dengan biaya membangunnya.",
+    "code": "ASUMSI\n  6 tim produk x 10 komponen dibuat ulang per bulan x 8 jam per komponen\n  design system menghilangkan 60% kerja ulang\n  biaya bangun 1.200 jam, biaya rawat 120 jam per bulan\n\nHITUNG\n  hemat kotor : 6 x 10 x 8 x 0,6 = 288 jam/bulan\n  bersih      : 288 - 120        = 168 jam/bulan\n  balik modal : 1.200 / 168      = 7,1 bulan\n\nDengan 1 tim saja: 1 x 10 x 8 x 0,6 - 120 = -72 jam/bulan\n-> belum layak, cukup UI kit sederhana",
+    "lang": "text"
+   }
+  ]
+ },
+ "ds-2-1": {
+  "exs": [
+   {
+    "t": "Kasus: lembar audit tombol",
+    "code": "AUDIT TOMBOL · 38 tangkapan layar\nKelompok             Jumlah  Contoh layar            Catatan\nBiru isi, radius 8     17    Beranda, Profil         paling sering -> calon standar\nBiru isi, radius 4      9    Checkout, Riwayat\nBiru garis              6    Pengaturan              sekunder\nHijau isi               4    Top up                  warna aksi kedua, perlu dibahas\nTeks saja               2    Login                   tersier\n-> usulan: 1 primary, 1 secondary, 1 teks"
+   },
+   {
+    "t": "Kasus: memilih halaman pilot",
+    "code": "KANDIDAT         SERING DIUBAH  RISIKO BISNIS  KOMPONEN TERCAKUP  PILIHAN\nProfil           sedang         rendah         Button, Input, List   ✓\nCheckout         tinggi         tinggi         Button, Input         terlalu berisiko\nBeranda          tinggi         sedang         banyak kartu khusus   terlalu luas\n-> Profil: cukup komponen inti, aman bila ada masalah"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Audit warna dari berkas CSS yang ada",
+    "b": "Kumpulkan semua kode warna dari CSS produk (cari pola #RRGGBB), samakan huruf besar-kecil, hitung pemakaiannya, lalu tandai warna yang hampir sama.",
+    "code": "14 pemakaian, 9 warna unik\n  #2563EB x2      #DC2626 x2      #111827 x2\n  #6B7280 x2      #E5E7EB x2      #1D4ED8 x1\n  #2563EA x1      #E11D48 x1      #6B7281 x1\n\nHampir sama (selisih tiap kanal <= 6), satukan:\n  #2563EA -> #2563EB\n  #6B7281 -> #6B7280\nPerlu keputusan: #E11D48 vs #DC2626 (dua merah bahaya)",
+    "lang": "text"
+   }
+  ]
+ },
+ "ds-3-1": {
+  "exs": [
+   {
+    "t": "Kasus: prinsip yang bisa dipakai memutuskan",
+    "code": "Terlalu umum                 Bisa dipakai memutuskan\n\"Sederhana\"                  \"Satu layar, satu aksi utama.\"\n\"Ramah\"                      \"Kabar buruk selalu disertai langkah berikutnya.\"\n\"Transparan\"                 \"Biaya admin terlihat sebelum tombol Bayar.\"\n\nDipakai saat review: desain checkout menaruh biaya admin di langkah akhir\n-> ditolak karena melanggar prinsip ketiga."
+   },
+   {
+    "t": "Kasus: pedoman microcopy dan format lokal",
+    "code": "✗ \"Submit\"               ✓ \"Simpan alamat\"\n✗ \"Input tidak valid\"    ✓ \"Nomor HP harus 10-13 digit\"\n✗ \"Anda gagal login\"     ✓ \"Email atau kata sandi belum cocok\"\n✗ \"Rp1250000\"            ✓ \"Rp 1.250.000\"\n✗ \"10/30/2026\"           ✓ \"30/10/2026\"\n✗ \"081234567890\"         ✓ \"+62 812-3456-7890\""
+   }
+  ]
+ },
+ "ds-3-2": {
+  "exs": [
+   {
+    "t": "Kasus: ikon memakai token ukuran dan ketebalan",
+    "code": ".ikon {\n  width: var(--icon-size-md);\n  height: var(--icon-size-md);\n  stroke: currentColor;            /* warna ikut teks */\n  stroke-width: var(--icon-stroke);\n  fill: none;\n}\n.ikon--kecil { width: var(--icon-size-sm); height: var(--icon-size-sm); }",
+    "d": "Semua ikon satu set: ukuran dan garis dari token yang sama."
+   },
+   {
+    "t": "Kasus: panel samping memakai token motion",
+    "code": ".panel {\n  transform: translateX(100%);\n  transition: transform var(--motion-duration-base) var(--motion-easing-standard);\n}\n.panel[data-terbuka=\"true\"] { transform: translateX(0); }\n\n.tombol:hover {\n  transition: background-color var(--motion-duration-fast) var(--motion-easing-standard);\n}\n/* saat prefers-reduced-motion aktif, token durasi sudah 0ms: tidak perlu aturan baru */"
+   }
+  ]
+ },
+ "ds-4-1": {
+  "exs": [
+   {
+    "t": "Kasus: token jarak tiga lapis",
+    "code": "{\n  \"space\": {\n    \"4\":  { \"$type\": \"dimension\", \"$value\": \"16px\" },\n    \"6\":  { \"$type\": \"dimension\", \"$value\": \"24px\" },\n    \"inset\": {\n      \"md\": { \"$value\": \"{space.4}\" },\n      \"lg\": { \"$value\": \"{space.6}\" }\n    }\n  },\n  \"card\": {\n    \"padding\": { \"$value\": \"{space.inset.lg}\" }\n  }\n}"
+   },
+   {
+    "t": "Kasus: brand kedua hanya mengganti primitif",
+    "code": "{\n  \"teal\": {\n    \"700\": { \"$type\": \"color\", \"$value\": \"#166534\",\n             \"$description\": \"Tema Celengan Syariah: hanya primitif ini yang berbeda\" }\n  }\n}",
+    "d": "color.action.primary dan button.primary.bg tidak disentuh, tetapi ikut berubah karena merujuk {teal.700}."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Memeriksa komponen yang memakai token primitif",
+    "b": "Aturan: komponen hanya boleh merujuk token semantik. Periksa setiap properti komponen; rujukan langsung ke primitif (red.700, space.4) adalah pelanggaran.",
+    "code": "KOMPONEN  bg                     fg                      pad              STATUS\nButton    color.action.primary   color.text.on-action    space.inset.md   OK\nAlert     red.700                color.text.on-danger    space.4          LANGGAR: bg, pad\nCard      color.surface.raised   color.text.default      space.inset.lg   OK\n\nPerbaikan Alert: bg -> color.feedback.danger.bg, pad -> space.inset.md",
+    "lang": "text"
+   }
+  ]
+ },
+ "ds-4-2": {
+  "exs": [
+   {
+    "t": "Kasus: memakai skala warna bahaya",
+    "code": "TOKEN       NILAI     DIPAKAI UNTUK\nred.50      #FEF2F2   latar banner error\nred.200     #FECACA   garis input error\nred.700     #B91C1C   teks dan ikon error (5,9:1 di atas red.50)\nred.900     #7F1D1D   teks error di mode kontras tinggi\nJangan: red.400 untuk teks di atas putih (kontras < 4,5:1)"
+   },
+   {
+    "t": "Kasus: status pesanan tidak hanya dibedakan warna",
+    "code": "STATUS       WARNA        IKON   TEKS\nDibayar      sukses       ✓      \"Dibayar\"\nMenunggu     peringatan   ◔      \"Menunggu pembayaran\"\nDibatalkan   bahaya       ✕      \"Dibatalkan\"\n-> pengguna buta warna merah-hijau tetap bisa membedakan dari ikon dan teks"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Matriks kontras untuk pasangan yang diizinkan",
+    "b": "Hitung rasio kontras setiap pasangan teks dan latar dengan rumus WCAG, lalu tandai yang di bawah 4,5:1. Hasilnya menjadi tabel resmi pasangan yang boleh dipakai.",
+    "code": "                  bg.default   bg.subtle   action.primary\n                  #FFFFFF      #F1F5F9     #0F766E\ntext.default      17,85        16,30        3,26 x\ntext.muted         7,58         6,92        1,38 x\ntext.on-action     1,00 x       1,10 x      5,47\ntext.link          5,36         4,89        1,02 x\n\nx = di bawah 4,5:1, pasangan ini tidak boleh dipakai untuk teks biasa",
+    "lang": "text"
+   }
+  ]
+ },
+ "ds-4-3": {
+  "exs": [
+   {
+    "t": "Kasus: kartu tabungan memakai skala jarak",
+    "code": ".kartu-tabungan {\n  padding: var(--space-300);              /* 24px */\n  display: grid;\n  gap: var(--space-100);                  /* 8px antarbaris */\n}\n.kartu-tabungan h3 { font-size: var(--font-size-400); margin: 0; }\n.kartu-tabungan .nominal { font-size: var(--font-size-500); }\n.kartu-tabungan .keterangan { font-size: var(--font-size-100); }",
+    "d": "Tidak ada angka liar: setiap ukuran diambil dari skala."
+   },
+   {
+    "t": "Kasus: skala rasio 1,2 untuk dasbor yang padat",
+    "code": ":root {\n  /* 16 x 1,2^n, dibulatkan */\n  --font-size-100: .833rem;  /* 13.3px */\n  --font-size-200: 1rem;     /* 16px   */\n  --font-size-300: 1.2rem;   /* 19.2px */\n  --font-size-400: 1.44rem;  /* 23px   */\n  --font-size-500: 1.728rem; /* 27.6px */\n}",
+    "d": "Rasio lebih kecil membuat beda antarukuran lebih halus, cocok untuk layar berisi banyak data."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Token jarak dan tipe dalam format DTCG",
+    "b": "Skala yang sama ditulis sebagai token DTCG agar bisa dipakai alat lain. Ukuran tipe dihitung 16 x 1,2^(n-1) lalu dibulatkan; seluruh skala tipe menjadi 13, 16, 19, 23, 28, 33.",
+    "code": "{\n  \"space\": {\n    \"0\": { \"$type\": \"dimension\", \"$value\": { \"value\": 0, \"unit\": \"px\" } },\n    \"1\": { \"$type\": \"dimension\", \"$value\": { \"value\": 4, \"unit\": \"px\" } },\n    \"2\": { \"$type\": \"dimension\", \"$value\": { \"value\": 8, \"unit\": \"px\" } }\n  },\n  \"font-size\": {\n    \"100\": { \"$type\": \"dimension\", \"$value\": { \"value\": 13, \"unit\": \"px\" } },\n    \"200\": { \"$type\": \"dimension\", \"$value\": { \"value\": 16, \"unit\": \"px\" } },\n    \"300\": { \"$type\": \"dimension\", \"$value\": { \"value\": 19, \"unit\": \"px\" } }\n  }\n}",
+    "lang": "json"
+   }
+  ]
+ },
+ "ds-4-5": {
+  "exs": [
+   {
+    "t": "Kasus: token radius dan durasi animasi",
+    "code": "{\n  \"radius\": {\n    \"md\": { \"$type\": \"dimension\", \"$value\": \"12px\" }\n  },\n  \"duration\": {\n    \"fast\": { \"$type\": \"duration\", \"$value\": \"150ms\",\n              \"$description\": \"Hover dan fokus\" }\n  }\n}\n\n/* hasil build untuk web */\n:root {\n  --radius-md: 12px;\n  --duration-fast: 150ms;\n}"
+   },
+   {
+    "t": "Kasus: alias berantai menjadi CSS",
+    "code": "{\n  \"color\": {\n    \"teal\":   { \"700\": { \"$type\": \"color\", \"$value\": \"#0F766E\" } },\n    \"brand\":  { \"primary\": { \"$type\": \"color\", \"$value\": \"{color.teal.700}\" } },\n    \"action\": { \"primary\": { \"$type\": \"color\", \"$value\": \"{color.brand.primary}\" } }\n  }\n}\n\n/* hasil build: rantai alias tetap terlihat */\n:root {\n  --color-teal-700: #0F766E;\n  --color-brand-primary: var(--color-teal-700);\n  --color-action-primary: var(--color-brand-primary);\n}"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Satu token, tiga platform",
+    "b": "Alat build (Style Dictionary atau Tokens Studio) membaca token DTCG dan menulis keluaran untuk tiap platform. Begini satu sumber menjadi tiga berkas:",
+    "code": "TOKEN DTCG                         WEB (CSS)                          ANDROID (Kotlin)                      iOS (Swift)\ncolor.teal.600 = #0F766E           --color-teal-600: #0F766E;         val ColorTeal600 = Color(0xFF0F766E)   static let colorTeal600 = Color(hex: 0x0F766E)\ncolor.action.primary               --color-action-primary: #0F766E;   val ColorActionPrimary = ...           static let colorActionPrimary = ...\n  = {color.teal.600}\nradius.md = 10px                   --radius-md: 10px;                 10.dp                                 10",
+    "lang": "text"
+   }
+  ]
+ },
+ "ds-5-1": {
+  "cx": [
+   {
+    "t": "Varian, ukuran, dan state memuat tanpa menyalin komponen",
+    "b": "Satu komponen tombol, varian dan ukurannya lewat kelas. Saat memuat, tombol diberi aria-busy dan tetap punya label yang dibaca.",
+    "code": "<button class=\"ds-btn ds-btn--primary ds-btn--md\">Simpan alamat</button>\n<button class=\"ds-btn ds-btn--secondary ds-btn--sm\">Batal</button>\n<button class=\"ds-btn ds-btn--danger ds-btn--md\" aria-busy=\"true\" aria-disabled=\"true\">\n  <span class=\"ds-spinner\" aria-hidden=\"true\"></span>\n  <span>Menghapus alamat…</span>\n</button>\n\n<style>\n.ds-btn { display: inline-flex; align-items: center; gap: 8px; border: 0; border-radius: 12px; font-weight: 600; }\n.ds-btn--md { min-height: 44px; padding: 0 20px; }\n.ds-btn--sm { min-height: 36px; padding: 0 14px; }\n.ds-btn--primary   { background: var(--color-action-primary); color: var(--color-on-action); }\n.ds-btn--secondary { background: transparent; color: var(--color-action-primary); box-shadow: inset 0 0 0 2px currentColor; }\n.ds-btn--danger    { background: var(--color-danger); color: #fff; }\n.ds-btn[aria-disabled=\"true\"] { opacity: .6; cursor: not-allowed; }\n</style>",
+    "lang": "html"
+   }
+  ]
+ },
+ "ds-5-2": {
+  "exs": [
+   {
+    "t": "Kasus: switch untuk pengaturan yang langsung berlaku",
+    "code": "<div class=\"setting\">\n  <span id=\"notif-label\">Pengingat setoran mingguan</span>\n  <button role=\"switch\" aria-checked=\"true\" aria-labelledby=\"notif-label\">\n    <span class=\"switch-thumb\" aria-hidden=\"true\"></span>\n  </button>\n</div>\n<!-- berubah saat ditekan, tanpa tombol Simpan -->",
+    "d": "Switch untuk efek langsung; checkbox untuk pilihan yang dikirim bersama form."
+   },
+   {
+    "t": "Kasus: checkbox persetujuan dengan pesan error",
+    "code": "<div class=\"field\">\n  <input type=\"checkbox\" id=\"setuju\" aria-invalid=\"true\" aria-describedby=\"setuju-err\">\n  <label for=\"setuju\">Saya menyetujui syarat autodebet</label>\n  <p id=\"setuju-err\" class=\"err\">Centang persetujuan untuk mengaktifkan autodebet.</p>\n</div>"
+   },
+   {
+    "t": "Kasus: teks bantuan tanpa error",
+    "code": "<div class=\"field\">\n  <label for=\"nama-target\">Nama target</label>\n  <input id=\"nama-target\" maxlength=\"30\" aria-describedby=\"nama-target-bantu\">\n  <p id=\"nama-target-bantu\" class=\"bantu\">Contoh: Liburan ke Lombok. Maksimal 30 karakter.</p>\n</div>"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Aturan kapan validasi ditampilkan",
+    "b": "Error yang muncul saat pengguna baru mulai mengetik terasa menyalahkan. Tahan error sampai field ditinggalkan dalam keadaan terisi, atau sampai form dikirim.",
+    "code": "SITUASI                        DIKIRIM  PERNAH DITINGGALKAN  ISI     TAMPILKAN?\nemail sedang diketik           tidak    tidak                rina@   tahan dulu\nemail ditinggalkan             tidak    ya                   rina@   tampilkan error\nfield kosong dilewati          tidak    ya                   (kosong) tahan dulu\nsubmit dengan field kosong     ya       tidak                (kosong) tampilkan error\n\nAturan: tampilkan bila sudah dikirim, ATAU bila sudah ditinggalkan dan terisi.",
+    "lang": "text"
+   }
+  ]
+ },
+ "ds-5-3": {
+  "exs": [
+   {
+    "t": "Kasus: toast dengan tombol Urungkan",
+    "code": "<div class=\"toast\" role=\"status\">\n  Transaksi \"Kopi\" dihapus.\n  <button type=\"button\" class=\"toast-aksi\">Urungkan</button>\n</div>\n<!-- hilang sendiri setelah 6 detik; aksi penting tidak boleh hanya ada di toast -->"
+   },
+   {
+    "t": "Kasus: banner saldo yang menetap",
+    "code": "<div class=\"banner banner--danger\" role=\"alert\">\n  <strong>Saldo tidak cukup untuk autodebet tanggal 25.</strong>\n  Isi saldo minimal Rp 150.000 sebelum tanggal 24.\n  <a href=\"/isi-saldo\">Isi saldo</a>\n</div>\n<!-- tetap tampil sampai saldo cukup, tidak bisa ditutup -->"
+   },
+   {
+    "t": "Kasus: modal konfirmasi keluar dari form",
+    "code": "<dialog id=\"keluar\" aria-labelledby=\"keluar-judul\">\n  <h2 id=\"keluar-judul\">Keluar tanpa menyimpan?</h2>\n  <p>Target \"Dana pendidikan\" yang baru kamu isi akan hilang.</p>\n  <button value=\"tetap\" autofocus>Lanjut mengisi</button>\n  <button value=\"keluar\">Keluar</button>\n</dialog>",
+    "d": "Fokus awal di pilihan yang aman."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Pohon keputusan komponen umpan balik",
+    "b": "Jawab pertanyaan berurutan dari atas; jawaban ya pertama menentukan komponennya.",
+    "code": "1. Harus dijawab sebelum lanjut (berisiko)?  ya -> Modal\n2. Terkait satu field?                        ya -> Pesan inline di field\n3. Penting dan menetap?                       ya -> Banner\n4. Konfirmasi sementara?                      ya -> Toast (hilang sendiri, opsi Urungkan)\n5. Selain itu                                    -> Teks status di halaman\n\nSITUASI                           HASIL\nAlamat disimpan                   Toast\nSaldo tidak cukup saat checkout   Banner\nHapus akun permanen               Modal\nFormat nomor HP salah             Pesan inline\nKoneksi terputus, mode offline    Banner",
+    "lang": "text"
+   }
+  ]
+ },
+ "ds-6-1": {
+  "exs": [
+   {
+    "t": "Kasus: dokumentasi komponen TextField",
+    "code": "TextField\nKapan dipakai   : isian satu baris (nama, nominal, nomor HP)\nKapan tidak     : teks panjang -> TextArea; pilihan tetap -> Select\nBagian          : label (wajib), input, teks bantuan, pesan error, prefix \"Rp\"\nState           : default, fokus, terisi, error, nonaktif\nProps           : label, helper, error, prefix, inputmode\n✓ label \"Nominal setoran\" di atas input\n✗ placeholder sebagai satu-satunya label"
+   },
+   {
+    "t": "Kasus: contoh benar dan salah untuk Toast",
+    "code": "Toast\n✓ \"Alamat disimpan.\"                         konfirmasi ringan\n✓ \"Transaksi dihapus. [Urungkan]\"            aksi bisa dibatalkan\n✗ \"Saldo tidak cukup.\"                       butuh tindakan -> Banner\n✗ \"Hapus akun? [Ya] [Tidak]\"                 keputusan -> Modal\n✗ dua toast bertumpuk                        tampilkan satu per satu"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Daftar story Storybook untuk semua state tombol",
+    "b": "Di Storybook, setiap state komponen menjadi satu story yang bisa dilihat, diuji visual, dan diuji aksesibilitasnya. Rencanakan daftarnya bersama developer:",
+    "code": "KATALOG: Komponen/Button\nDeskripsi: Satu tombol primary per layar. Label kata kerja spesifik.\nKontrol  : variant = primary | secondary | ghost | danger\n\nSTORY          ISIAN                                                 TUJUAN\nPrimary        \"Simpan perubahan\"                                    tampilan dasar\nMemuat         loading = ya                                          spinner + aria-busy\nNonaktif       disabled = ya                                         kontras label tetap terbaca\nBahaya         variant danger, \"Hapus alamat\"                        aksi berisiko\nLabelPanjang   \"Lanjutkan ke pembayaran dengan virtual account\"      teks membungkus, tidak terpotong",
+    "lang": "text"
+   }
+  ]
+ },
+ "ds-6-2": {
+  "exs": [
+   {
+    "t": "Kasus: menentukan nomor versi rilis berikutnya",
+    "code": "Versi sekarang: 2.4.1\nPerubahan di rilis ini:\n  fix   Toast: warna fokus kurang kontras         -> PATCH\n  feat  Badge: varian \"info\" baru                  -> MINOR\nRilis: 2.5.0 (ambil kenaikan tertinggi)\n\nSprint depan: prop \"size\" Button diganti \"density\" -> 3.0.0 + panduan migrasi"
+   },
+   {
+    "t": "Kasus: alur kontribusi komponen dari tim produk",
+    "code": "1. Usulan      tim Pinjaman mengisi formulir: masalah, layar, 3 contoh pemakaian\n2. Review desain  tim inti: apakah bisa memakai komponen yang ada?\n3. Desain + kode  dikerjakan tim Pinjaman, didampingi tim inti\n4. Review kode    aksesibilitas, token, tes visual\n5. Dokumentasi    halaman kapan dipakai / kapan tidak\n6. Rilis          masuk 2.6.0, diumumkan di kanal #design-system"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Mengukur adopsi dari pemindaian kode",
+    "b": "Hitung berapa kali komponen sistem dipakai dibandingkan komponen lokal buatan sendiri. Adopsi = pemakaian sistem / seluruh pemakaian.",
+    "code": "HASIL PEMINDAIAN 4 BERKAS\nkomponen DS    : Button 3, Card 2, Modal 1          = 6\nkomponen lokal : btn-lama 2, card-custom 1          = 3\nadopsi         : 6 / (6 + 3) = 67%\n\nVersi sekarang 2.4.1:\n  ubah API props Button  -> 3.0.0\n  tambah varian baru     -> 2.5.0\n  perbaiki warna fokus   -> 2.4.2",
+    "lang": "text"
+   }
+  ]
+ },
+ "ds-6-3": {
+  "exs": [
+   {
+    "t": "Kasus: dokumentasi aksesibilitas komponen Dialog",
+    "code": "Dokumentasi komponen: Dialog\n\nKeyboard   Esc menutup; Tab berputar di dalam dialog\nFokus      saat buka: ke elemen pertama yang aman; saat tutup: kembali ke pemicu\nARIA       aria-labelledby ke judul; aria-describedby ke isi (opsional)\nUkuran     tombol minimal 44px; bisa dibaca di zoom 200% tanpa terpotong\nJangan     menutup dialog saat latar diklik untuk aksi berisiko"
+   },
+   {
+    "t": "Kasus: alternatif tanpa seret untuk slider (2.5.7)",
+    "code": "Komponen: Slider nominal setoran\n\nSeret      geser bulatan untuk memilih Rp 10.000 - Rp 1.000.000\nTanpa seret tombol [-] dan [+] (langkah Rp 10.000) dan kolom angka yang bisa diketik\nKeyboard   panah kiri/kanan = Rp 10.000; Page Up/Down = Rp 100.000\nARIA       role=\"slider\", aria-valuenow, aria-valuetext=\"Rp 250.000\"",
+    "d": "Pengguna yang tidak bisa menyeret tetap bisa memilih nominal."
+   }
+  ]
+ },
+ "ds-7-1": {
+  "cx": [
+   {
+    "t": "Rencana rilis MVP design system Celengan",
+    "b": "Urutkan backlog dari fondasi ke komponen, beri poin, lalu isi sprint sampai kapasitas 8 poin. Item yang tidak muat pindah ke sprint berikutnya.",
+    "code": "SPRINT  ITEM                                JENIS         POIN\n1       Token warna, tipe, jarak, radius     fondasi       3\n1       Button                               komponen      2\n1       TextField                            komponen      3     (total 8)\n2       Card                                 komponen      1\n2       ListItem                             komponen      2\n2       BottomNav                            komponen      2\n2       Toast                                komponen      1\n2       Dialog                               komponen      2     (total 8)\n3       ProgressBar celengan                 komponen      1\n3       Dokumentasi + Storybook              dokumentasi   3     (total 4)\n\nRilis v1.0.0 setelah 3 sprint",
+    "lang": "text"
+   }
+  ]
+ }
+}

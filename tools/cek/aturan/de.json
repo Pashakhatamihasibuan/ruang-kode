@@ -1,0 +1,50 @@
+{
+ "aturan": [
+  [
+   "SCD tipe 2",
+   "(?i)\\bvalid_(from|to)\\b|\\bberlaku_(dari|sampai)\\b|\\bis_current\\b",
+   "^Slowly changing"
+  ],
+  [
+   "Parquet & partisi",
+   "(?i)to_parquet|read_parquet|\\.parquet\\(|\\bpyarrow\\b|partition_cols|partitionBy",
+   "^Format kolom"
+  ],
+  [
+   "upsert",
+   "(?i)\\bON\\s+CONFLICT\\b|\\bMERGE\\s+INTO\\b",
+   "^Idempotensi"
+  ],
+  [
+   "Airflow",
+   "\\bfrom\\s+airflow\\b|\\bimport\\s+airflow\\b|^\\s*@dag\\b|^\\s*@task\\b|\\bDAG\\(|\\bairflow\\s+(dags|tasks)\\b",
+   "^Orkestrasi dengan Airflow"
+  ],
+  [
+   "Kafka",
+   "confluent_kafka|\\bkafka\\.|KafkaProducer|KafkaConsumer|\\bProducer\\(\\{|\\bConsumer\\(\\{|kafka-topics",
+   "^Kafka"
+  ],
+  [
+   "PySpark",
+   "(?i)\\bpyspark\\b|\\bSparkSession\\b",
+   "^Apache Spark"
+  ],
+  [
+   "Docker & Terraform",
+   "(?m)^FROM\\s+[\\w./-]+:[\\w.-]+|^\\s*resource\\s+\\\"|\\bkubectl\\b|^apiVersion:|\\bterraform\\s+(init|plan|apply)",
+   "^Docker, Kubernetes"
+  ],
+  [
+   "validasi skema (pydantic)",
+   "\\bpydantic\\b|\\bjsonschema\\b|great_expectations",
+   "^Kontrak data"
+  ],
+  [
+   "masking & pseudonim",
+   "\\bhmac\\.|SHA256\\(|\\bsha256\\(",
+   "^Keamanan & privasi"
+  ]
+ ],
+ "abaikan": []
+}

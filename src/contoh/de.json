@@ -1,0 +1,419 @@
+{
+ "de-1-1": {
+  "exs": [
+   {
+    "t": "Kasus: siklus hidup data aplikasi ojek daring",
+    "d": "Lima tahap yang sama berlaku untuk data lokasi pengemudi.",
+    "code": "Generation   aplikasi pengemudi mengirim GPS tiap 5 detik\nIngestion    event masuk ke Kafka, topik lokasi_pengemudi\nStorage      disalin ke lake (GCS) per jam\nTransform    dihitung kepadatan pengemudi per kelurahan\nServing      peta panas untuk tim operasional + tarif dinamis di aplikasi"
+   },
+   {
+    "t": "Kasus: siklus hidup data nilai rapor sekolah",
+    "d": "Skala kecil, tahapnya tetap sama.",
+    "code": "Generation   guru mengisi nilai di aplikasi sekolah\nIngestion    ekspor CSV setiap Jumat sore\nStorage      tabel nilai_mentah di PostgreSQL\nTransform    rata-rata per mapel dan per kelas, siswa di bawah KKM\nServing      dashboard kepala sekolah + surel ke wali kelas"
+   },
+   {
+    "t": "Kasus: lapisan pendukung di setiap tahap",
+    "d": "Undercurrent tidak berdiri sendiri, ia hadir di semua tahap.",
+    "code": "Lapisan           Contoh di pipeline penjualan\nKeamanan          nomor HP pelanggan disamarkan sebelum masuk warehouse\nManajemen data    kolom total wajib >= 0, lineage tercatat di katalog\nDataOps           pipeline dites di CI, alert ke Slack bila gagal\nOrkestrasi        Airflow menjalankan ingest 02.00 lalu transform 03.00\nRekayasa PL       kode di Git, review lewat pull request"
+   }
+  ]
+ },
+ "de-1-2": {
+  "exs": [
+   {
+    "t": "Kasus: keahlian yang diminta lowongan",
+    "code": "Peran              Alat yang paling sering diminta\nData engineer      SQL, Python, Airflow, Spark, satu cloud, Docker\nAnalytics engineer SQL, dbt, Git, pemodelan dimensi\nData analyst       SQL, spreadsheet, Looker Studio/Power BI, statistik dasar\nData scientist     Python, statistik, scikit-learn, eksperimen A/B"
+   },
+   {
+    "t": "Kasus: toko kecil vs marketplace besar",
+    "d": "Kebutuhan yang menentukan arsitektur, bukan tren.",
+    "code": "                   Toko kopi 3 cabang         Marketplace nasional\nVolume             2 rb transaksi/hari        50 jt event/hari\nLatensi laporan    besok pagi cukup           dashboard per menit\nTim data           1 orang merangkap          30 orang\nPilihan            Postgres + cron + Sheets   Kafka + Spark + BigQuery + Airflow"
+   },
+   {
+    "t": "Kasus: satu pertanyaan bisnis, siapa mengerjakan apa",
+    "code": "Pertanyaan: \"Cabang mana yang stok kopinya sering habis?\"\nData engineer   alirkan data stok gudang tiap jam, pastikan tidak ada yang hilang\nData analyst    hitung frekuensi stok nol per cabang, buat dashboard\nData scientist  ramalkan permintaan mingguan agar pesanan ulang lebih tepat"
+   }
+  ]
+ },
+ "de-2-7": {
+  "exs": [
+   {
+    "t": "Kasus: memeriksa berkas ekspor sebelum dimuat",
+    "d": "Lihat ukuran, nama kolom, dan baris yang punya sel kosong tanpa membuka berkasnya.",
+    "code": "ls -lh ekspor/penjualan_2024-10-01.csv\nhead -1 ekspor/penjualan_2024-10-01.csv | tr ',' '\\n'      # satu kolom per baris\ngrep -c ',,' ekspor/penjualan_2024-10-01.csv               # baris dengan sel kosong"
+   },
+   {
+    "t": "Kasus: total omzet satu kota dengan awk",
+    "code": "awk -F, 'NR > 1 && $3 == \"Medan\" { total += $4 } END { print total }' penjualan_2024.csv"
+   },
+   {
+    "t": "Kasus: mengunduh data API per tanggal",
+    "d": "-f membuat curl gagal bila server menjawab error, jadi berkas rusak tidak tersimpan.",
+    "code": "TGL=$(date +%F)\nmkdir -p raw/kurs\ncurl -sf \"https://api.contoh.id/kurs?tanggal=$TGL\" -o \"raw/kurs/$TGL.json\"\njq 'length' \"raw/kurs/$TGL.json\""
+   },
+   {
+    "t": "Kasus: cron yang tidak berjalan dobel",
+    "d": "flock mencegah job baru mulai bila job sebelumnya belum selesai.",
+    "code": "# crontab -e\n*/15 * * * * flock -n /tmp/sinkron_stok.lock /opt/etl/sinkron_stok.sh >> /var/log/etl/stok.log 2>&1"
+   }
+  ]
+ },
+ "de-2-8": {
+  "exs": [
+   {
+    "t": "Kasus: replikasi 3 salinan dan kuorum",
+    "d": "Tulis dianggap berhasil bila mayoritas node mengonfirmasi.",
+    "code": "Replika: node-A, node-B, node-C   (N = 3)\nKuorum tulis W = 2, kuorum baca R = 2   (W + R > N)\n\nnode-C mati -> tulis tetap berhasil di A dan B\nPembaca selalu menyentuh minimal satu node yang punya data terbaru"
+   },
+   {
+    "t": "Kasus: pesan yang terkirim dua kali",
+    "d": "Jaringan bisa putus setelah server menerima pesan tetapi sebelum balasan sampai.",
+    "code": "Pembayaran #INV-77 dikirim -> server memproses -> balasan hilang di jaringan\nKlien mengirim ulang #INV-77\nTanpa idempotensi : saldo terpotong dua kali\nDengan idempotensi: server melihat id INV-77 sudah diproses, balas \"sukses\" saja"
+   },
+   {
+    "t": "Kasus: jam antar mesin tidak sama",
+    "d": "Urutan kejadian sebaiknya memakai nomor urut atau offset, bukan jam mesin.",
+    "code": "mesin-1 (jam +3 detik) : 10:00:05 pesanan dibayar\nmesin-2 (jam tepat)    : 10:00:03 pesanan dibatalkan\nDiurutkan menurut jam  : dibatalkan -> dibayar   (salah)\nDiurutkan menurut offset Kafka partisi pesanan: dibayar (offset 41) -> dibatalkan (offset 42)"
+   }
+  ]
+ },
+ "de-3-5": {
+  "exs": [
+   {
+    "t": "Kasus: OLTP mengubah status satu pesanan",
+    "d": "Satu baris, dicari lewat primary key, selesai dalam milidetik.",
+    "code": "UPDATE pesanan\nSET status = 'dikirim'\nWHERE id = 10293;"
+   },
+   {
+    "t": "Kasus: OLAP menghitung omzet per kota per kuartal",
+    "d": "Membaca jutaan baris tetapi hanya tiga kolom.",
+    "code": "SELECT kota,\n       EXTRACT(QUARTER FROM tanggal) AS kuartal,\n       SUM(omzet) AS omzet\nFROM fakta_penjualan\nWHERE tanggal >= '2024-01-01' AND tanggal < '2025-01-01'\nGROUP BY kota, kuartal\nORDER BY kota, kuartal;"
+   },
+   {
+    "t": "Kasus: tabel lebar khas gudang data",
+    "d": "Atribut yang sering dipakai disalin ke tabel fakta agar analis tidak perlu banyak JOIN.",
+    "code": "CREATE TABLE fakta_penjualan_lebar (\n  tanggal   DATE,\n  kota      TEXT,\n  kategori  TEXT,\n  produk    TEXT,\n  kanal     TEXT,\n  jumlah    INTEGER,\n  omzet     BIGINT\n);"
+   }
+  ]
+ },
+ "de-3-6": {
+  "exs": [
+   {
+    "t": "Kasus: CP atau AP?",
+    "d": "Pilihan saat jaringan antar pusat data terputus.",
+    "code": "Sistem                         Saat partisi jaringan       Pilihan\nSaldo dompet digital           tolak transaksi             CP (konsisten)\nJumlah like video              tetap tampil, boleh telat   AP (tersedia)\nKeranjang belanja              tetap bisa tambah barang    AP, gabungkan setelah pulih\nStok tiket konser terakhir     tolak bila ragu             CP"
+   },
+   {
+    "t": "Kasus: keranjang belanja di Redis",
+    "d": "Akses dengan kunci, kedaluwarsa otomatis setelah 7 hari.",
+    "code": "HSET keranjang:41 KOPI-GAYO 2 TEH-MELATI 1\nHINCRBY keranjang:41 KOPI-GAYO 1\nEXPIRE keranjang:41 604800\nHGETALL keranjang:41"
+   },
+   {
+    "t": "Kasus: katalog dengan atribut berbeda di MongoDB",
+    "d": "Dua dokumen di koleksi yang sama tidak harus punya kolom yang sama.",
+    "code": "{ \"_id\": \"KOPI-GAYO\", \"nama\": \"Kopi Gayo\", \"roast\": \"medium\", \"berat_g\": 250 }\n{ \"_id\": \"KAOS-01\",  \"nama\": \"Kaos Batik\", \"ukuran\": [\"S\", \"M\", \"L\"], \"bahan\": \"katun\" }"
+   }
+  ]
+ },
+ "de-4-2": {
+  "exs": [
+   {
+    "t": "Kasus: SCD tipe 1 menimpa nilai lama",
+    "d": "Lebih sederhana, tetapi riwayat kota lama hilang.",
+    "code": "dim = [\n    {\"pelanggan_id\": 41, \"kota\": \"Bandung\"},\n    {\"pelanggan_id\": 42, \"kota\": \"Medan\"},\n]\nperubahan = {\"pelanggan_id\": 41, \"kota\": \"Jakarta\"}\n\nfor baris in dim:\n    if baris[\"pelanggan_id\"] == perubahan[\"pelanggan_id\"]:\n        baris[\"kota\"] = perubahan[\"kota\"]\n\nfor baris in dim:\n    print(baris)",
+    "out": "{'pelanggan_id': 41, 'kota': 'Jakarta'}\n{'pelanggan_id': 42, 'kota': 'Medan'}"
+   },
+   {
+    "t": "Kasus: versi mana yang berlaku saat transaksi?",
+    "d": "Transaksi dicocokkan dengan versi yang rentang tanggalnya memuat tanggal transaksi.",
+    "code": "dim = [\n    {\"sk\": 1, \"pelanggan_id\": 41, \"kota\": \"Bandung\", \"berlaku_dari\": \"2023-01-15\", \"berlaku_sampai\": \"2024-06-01\"},\n    {\"sk\": 3, \"pelanggan_id\": 41, \"kota\": \"Jakarta\", \"berlaku_dari\": \"2024-06-01\", \"berlaku_sampai\": \"9999-12-31\"},\n]\ntransaksi = [(\"T-01\", 41, \"2024-03-10\"), (\"T-02\", 41, \"2024-08-17\")]\n\nfor trx_id, pid, tgl in transaksi:\n    versi = next(d for d in dim if d[\"pelanggan_id\"] == pid\n                 and d[\"berlaku_dari\"] <= tgl < d[\"berlaku_sampai\"])\n    print(trx_id, tgl, \"-> sk\", versi[\"sk\"], versi[\"kota\"])",
+    "out": "T-01 2024-03-10 -> sk 1 Bandung\nT-02 2024-08-17 -> sk 3 Jakarta"
+   },
+   {
+    "t": "Kasus: data yang tidak berubah tidak membuat versi baru",
+    "d": "Pipeline harian mengirim ulang semua pelanggan; hanya yang kotanya berubah yang mendapat versi baru.",
+    "code": "aktif = {41: {\"sk\": 3, \"kota\": \"Jakarta\"}, 42: {\"sk\": 2, \"kota\": \"Medan\"}}\nhari_ini = {41: \"Jakarta\", 42: \"Binjai\"}\nsk_berikut = 4\n\nfor pid, kota in hari_ini.items():\n    if aktif[pid][\"kota\"] == kota:\n        print(pid, \"tidak berubah, dilewati\")\n    else:\n        print(pid, f\"tutup sk {aktif[pid]['sk']}, buat sk {sk_berikut} ({kota})\")\n        sk_berikut += 1",
+    "out": "41 tidak berubah, dilewati\n42 tutup sk 2, buat sk 4 (Binjai)"
+   }
+  ]
+ },
+ "de-4-3": {
+  "exs": [
+   {
+    "t": "Kasus: lapisan medallion untuk data perjalanan ojek",
+    "code": "gs://ojek-lake/\n  bronze/perjalanan/dt=2024-10-01/      <- JSON apa adanya dari aplikasi\n  silver/perjalanan/dt=2024-10-01/      <- tipe benar, perjalanan uji coba dibuang\n  gold/pendapatan_pengemudi_harian/     <- siap untuk dashboard dan pembayaran mingguan\n  gold/fitur_permintaan_per_area/       <- fitur untuk model tarif dinamis"
+   },
+   {
+    "t": "Kasus: warehouse, lake, atau lakehouse?",
+    "code": "Kebutuhan                                   Pilihan\nLaporan keuangan dari tabel rapi            warehouse (BigQuery/Snowflake)\nArsip log klik mentah 5 tahun, murah        lake (S3/GCS)\nBI dan ML membaca data yang sama, ACID      lakehouse (Delta Lake/Iceberg)"
+   },
+   {
+    "t": "Kasus: data mesh di perusahaan e-commerce",
+    "d": "Setiap domain memiliki dan menerbitkan data produknya sendiri.",
+    "code": "Domain       Produk data                 Pemilik           Janji layanan\nPembayaran   gold.transaksi_bayar        tim payment       segar tiap 15 menit\nLogistik     gold.status_pengiriman      tim logistik      segar tiap jam\nPemasaran    gold.segmen_pelanggan       tim growth        diperbarui harian 04.00\nPlatform data menyediakan katalog, akses, dan pemantauan untuk semua domain"
+   }
+  ]
+ },
+ "de-4-4": {
+  "exs": [
+   {
+    "t": "Kasus: partisi log klik per tanggal dan jam",
+    "d": "Kueri satu jam terakhir cukup membaca satu folder.",
+    "code": "s3://lake/klik/\n  tanggal=2024-10-01/jam=09/part-0000.parquet\n  tanggal=2024-10-01/jam=10/part-0000.parquet\n  tanggal=2024-10-01/jam=11/part-0000.parquet"
+   },
+   {
+    "t": "Kasus: memilih kolom partisi",
+    "d": "Kolom dengan terlalu banyak nilai unik menghasilkan jutaan folder kecil.",
+    "code": "Kolom          Nilai unik/tahun   Cocok untuk partisi?\ntanggal        365                ya, paling umum\nkota           34 provinsi        ya, bila sering difilter\npelanggan_id   12 juta            tidak, file kecil berlebihan\norder_id       unik per baris     tidak sama sekali"
+   },
+   {
+    "t": "Kasus: hanya membaca kolom dan partisi yang dibutuhkan",
+    "d": "Pembacaan Parquet bisa memilih kolom dan menyaring partisi sebelum data dimuat.",
+    "code": "import pandas as pd\n\ndf = pd.read_parquet(\n    \"gudang/penjualan\",\n    columns=[\"kota\", \"total\"],\n    filters=[(\"tahun\", \"==\", 2024), (\"bulan\", \"==\", 5)],\n)\nprint(df.groupby(\"kota\")[\"total\"].sum())"
+   }
+  ]
+ },
+ "de-5-1": {
+  "exs": [
+   {
+    "t": "Kasus: pola pemrosesan di aplikasi ojek",
+    "code": "Kebutuhan                            Latensi    Pola\nPembayaran mingguan pengemudi        hari       batch\nJumlah pengemudi aktif per area      menit      micro-batch\nMencocokkan penumpang dan pengemudi  detik      streaming\nDeteksi akun palsu                   jam        batch + model ML"
+   },
+   {
+    "t": "Kasus: arsitektur hybrid (lambda)",
+    "d": "Jalur cepat memberi angka sementara, jalur batch membetulkannya setiap malam.",
+    "code": "Event checkout --> Kafka --+--> Flink (angka per menit) --> dashboard live\n                           |\n                           +--> lake --> batch 02.00 --> angka final di warehouse"
+   },
+   {
+    "t": "Kasus: menghitung biaya latensi",
+    "d": "Streaming lebih mahal; pakai hanya bila nilai bisnisnya sepadan.",
+    "code": "Laporan omzet harian via streaming : klaster jalan 24 jam, angka berubah tiap detik\nLaporan omzet harian via batch     : job 10 menit per hari, angka final dan stabil\nKesimpulan: laporan harian cukup batch"
+   }
+  ]
+ },
+ "de-5-2": {
+  "exs": [
+   {
+    "t": "Kasus: hapus lalu isi ulang satu tanggal",
+    "d": "Menjalankan ulang tanggal yang sama tidak menggandakan data karena partisinya dibersihkan dulu, dalam satu transaksi.",
+    "code": "import sqlite3\n\ncon = sqlite3.connect(\":memory:\")\ncon.execute(\"CREATE TABLE omzet (tanggal TEXT, cabang TEXT, total INTEGER)\")\ndata = [(\"2024-10-01\", \"Medan\", 1250000), (\"2024-10-01\", \"Bandung\", 980000)]\n\nfor percobaan in range(3):\n    with con:\n        con.execute(\"DELETE FROM omzet WHERE tanggal = ?\", (\"2024-10-01\",))\n        con.executemany(\"INSERT INTO omzet VALUES (?, ?, ?)\", data)\n\nprint(con.execute(\"SELECT COUNT(*), SUM(total) FROM omzet\").fetchone())",
+    "out": "(2, 2230000)"
+   },
+   {
+    "t": "Kasus: event dengan id yang sama hanya disimpan sekali",
+    "d": "DO NOTHING mengabaikan event duplikat dari consumer yang mengulang.",
+    "code": "import sqlite3\n\ncon = sqlite3.connect(\":memory:\")\ncon.execute(\"CREATE TABLE event (event_id TEXT PRIMARY KEY, jenis TEXT)\")\nmasuk = [(\"e1\", \"checkout\"), (\"e2\", \"bayar\"), (\"e1\", \"checkout\"), (\"e3\", \"kirim\"), (\"e2\", \"bayar\")]\n\ncon.executemany(\"INSERT INTO event VALUES (?, ?) ON CONFLICT(event_id) DO NOTHING\", masuk)\nprint(con.execute(\"SELECT event_id, jenis FROM event ORDER BY event_id\").fetchall())",
+    "out": "[('e1', 'checkout'), ('e2', 'bayar'), ('e3', 'kirim')]"
+   },
+   {
+    "t": "Kasus: upsert hanya bila data lebih baru",
+    "d": "Data yang datang terlambat tidak menimpa data yang lebih baru.",
+    "code": "import sqlite3\n\ncon = sqlite3.connect(\":memory:\")\ncon.execute(\"CREATE TABLE stok (sku TEXT PRIMARY KEY, jumlah INTEGER, diubah TEXT)\")\nkiriman = [(\"KOPI\", 40, \"2024-10-01 09:00\"), (\"KOPI\", 35, \"2024-10-01 11:00\"), (\"KOPI\", 38, \"2024-10-01 10:00\")]\n\nfor baris in kiriman:\n    con.execute(\"\"\"INSERT INTO stok VALUES (?, ?, ?)\n        ON CONFLICT(sku) DO UPDATE SET jumlah = excluded.jumlah, diubah = excluded.diubah\n        WHERE excluded.diubah > stok.diubah\"\"\", baris)\n\nprint(con.execute(\"SELECT * FROM stok\").fetchone())",
+    "out": "('KOPI', 35, '2024-10-01 11:00')"
+   }
+  ]
+ },
+ "de-5-3": {
+  "exs": [
+   {
+    "t": "Kasus: dua ekstraksi paralel lalu digabung",
+    "d": "Task yang tidak saling bergantung dijalankan bersamaan oleh scheduler.",
+    "code": "from datetime import datetime\nfrom airflow.decorators import dag, task\n\n@dag(schedule=\"0 3 * * *\", start_date=datetime(2024, 1, 1), catchup=False)\ndef laporan_pelanggan():\n\n    @task\n    def ekstrak_order(ds=None):\n        return f\"s3://lake/raw/order/dt={ds}/\"\n\n    @task\n    def ekstrak_pelanggan(ds=None):\n        return f\"s3://lake/raw/pelanggan/dt={ds}/\"\n\n    @task\n    def gabung(path_order: str, path_pelanggan: str):\n        bangun_mart(path_order, path_pelanggan)\n\n    gabung(ekstrak_order(), ekstrak_pelanggan())\n\nlaporan_pelanggan()"
+   },
+   {
+    "t": "Kasus: DAG mingguan dengan retry dan peringatan",
+    "d": "Setiap Senin 06.00; bila tetap gagal setelah 2 kali coba, tim dikabari.",
+    "code": "from datetime import datetime, timedelta\nfrom airflow.decorators import dag, task\n\n@dag(schedule=\"0 6 * * 1\", start_date=datetime(2024, 1, 1), catchup=False,\n     default_args={\"retries\": 2, \"retry_delay\": timedelta(minutes=10),\n                   \"on_failure_callback\": kirim_ke_slack})\ndef rekap_mingguan():\n\n    @task\n    def hitung(data_interval_start=None, data_interval_end=None):\n        buat_rekap(dari=data_interval_start, sampai=data_interval_end)\n\n    hitung()\n\nrekap_mingguan()"
+   },
+   {
+    "t": "Kasus: backfill tanggal yang terlewat",
+    "d": "Karena setiap run memproses tanggalnya sendiri (ds) dan idempoten, run lama aman dijalankan ulang.",
+    "code": "airflow dags backfill \\\n  --start-date 2024-10-01 \\\n  --end-date 2024-10-07 \\\n  penjualan_harian\n\nairflow tasks clear penjualan_harian --start-date 2024-10-03 --end-date 2024-10-03 --yes"
+   }
+  ]
+ },
+ "de-5-5": {
+  "exs": [
+   {
+    "t": "Kasus: segmen pelanggan ke alat pemasaran WhatsApp",
+    "code": "warehouse.gold.segmen_pelanggan\n  pelanggan_id | no_hp_hash | segmen\n  41           | 9f2c...    | belum_belanja_30_hari\n        | Reverse ETL harian 07.00\n        v\nAlat broadcast: daftar \"Kangen Kopi\" -> kirim voucher 10% pukul 10.00"
+   },
+   {
+    "t": "Kasus: pemetaan kolom warehouse ke CRM",
+    "d": "Kunci pencocokan harus stabil, misalnya email atau id pelanggan.",
+    "code": "Kolom warehouse        Field CRM               Aturan\npelanggan_id           external_id             kunci upsert\ntotal_belanja_12_bln   Lifetime Value (Rp)     dibulatkan ke ribuan\nsegmen                 Segment                 hanya nilai dari daftar resmi\nskor_berhenti          Churn Risk              0-1 diubah jadi Rendah/Sedang/Tinggi"
+   },
+   {
+    "t": "Kasus: sinkron penuh vs sinkron perubahan",
+    "code": "Sinkron penuh     : kirim 1.000.000 kontak setiap jam  -> kena batas API CRM\nSinkron perubahan : kirim hanya yang berubah sejak run lalu (+/- 3.000 kontak)\nSyarat            : simpan snapshot terakhir yang dikirim untuk dibandingkan"
+   }
+  ]
+ },
+ "de-5-6": {
+  "exs": [
+   {
+    "t": "Kasus: kolom wajib di CSV dari pemasok",
+    "d": "Berkas ditolak sejak awal bila kolomnya tidak sesuai kontrak.",
+    "code": "import csv, io\n\nKOLOM_WAJIB = [\"sku\", \"nama\", \"harga\", \"stok\"]\nberkas = io.StringIO(\"sku,nama,harga\\nKOPI-01,Kopi Gayo,85000\\n\")\n\nheader = next(csv.reader(berkas))\nkurang = [k for k in KOLOM_WAJIB if k not in header]\nif kurang:\n    print(\"berkas ditolak, kolom hilang:\", kurang)\nelse:\n    print(\"berkas diterima\")",
+    "out": "berkas ditolak, kolom hilang: ['stok']"
+   },
+   {
+    "t": "Kasus: perubahan skema yang aman dan yang merusak",
+    "d": "Menambah kolom opsional aman; menghapus atau mengganti tipe kolom merusak konsumen.",
+    "code": "v1 = {\"order_id\": \"int\", \"tanggal\": \"date\", \"total\": \"int\"}\nv2 = {\"order_id\": \"int\", \"tanggal\": \"date\", \"total\": \"str\", \"metode\": \"str\"}\n\nhilang = [k for k in v1 if k not in v2]\nganti_tipe = [k for k in v1 if k in v2 and v1[k] != v2[k]]\ntambah = [k for k in v2 if k not in v1]\nprint(\"kolom baru (aman):\", tambah)\nprint(\"merusak:\", hilang + ganti_tipe)\nprint(\"butuh versi kontrak baru\" if hilang or ganti_tipe else \"boleh dirilis\")",
+    "out": "kolom baru (aman): ['metode']\nmerusak: ['total']\nbutuh versi kontrak baru"
+   },
+   {
+    "t": "Kasus: nilai status hanya dari daftar yang disepakati",
+    "code": "STATUS_SAH = {\"baru\", \"dibayar\", \"dikirim\", \"selesai\", \"batal\"}\nmasuk = [(1, \"dibayar\"), (2, \"Dikirim\"), (3, \"selesai\"), (4, \"refund\")]\n\nfor order_id, status in masuk:\n    if status in STATUS_SAH:\n        print(order_id, \"lolos\")\n    else:\n        print(order_id, \"karantina: status tidak dikenal ->\", status)",
+    "out": "1 lolos\n2 karantina: status tidak dikenal -> Dikirim\n3 lolos\n4 karantina: status tidak dikenal -> refund"
+   }
+  ]
+ },
+ "de-6-1": {
+  "exs": [
+   {
+    "t": "Kasus: key menjaga urutan event satu pesanan",
+    "d": "Semua event dengan key INV-7 masuk partisi yang sama, sehingga urutannya terjaga.",
+    "code": "from confluent_kafka import Producer\nimport json\n\np = Producer({\"bootstrap.servers\": \"kafka:9092\", \"enable.idempotence\": True, \"acks\": \"all\"})\n\ndef laporan(err, msg):\n    if err:\n        print(\"gagal kirim:\", err)\n    else:\n        print(f\"{msg.key().decode()} -> partisi {msg.partition()} offset {msg.offset()}\")\n\nfor status in [\"dibuat\", \"dibayar\", \"dikirim\"]:\n    p.produce(\"pesanan\", key=\"INV-7\", value=json.dumps({\"status\": status}), callback=laporan)\np.flush()"
+   },
+   {
+    "t": "Kasus: dua consumer group membaca topik yang sama",
+    "d": "Setiap group punya offset sendiri; gudang dan analitik tidak saling mengganggu.",
+    "code": "from confluent_kafka import Consumer\n\ngudang = Consumer({\"bootstrap.servers\": \"kafka:9092\", \"group.id\": \"gudang\",\n                   \"auto.offset.reset\": \"earliest\", \"enable.auto.commit\": False})\nanalitik = Consumer({\"bootstrap.servers\": \"kafka:9092\", \"group.id\": \"analitik\",\n                     \"auto.offset.reset\": \"earliest\"})\ngudang.subscribe([\"pesanan\"])\nanalitik.subscribe([\"pesanan\"])"
+   },
+   {
+    "t": "Kasus: membuat topik dan memeriksa lag",
+    "d": "Jumlah partisi membatasi berapa consumer dalam satu group yang bisa bekerja paralel.",
+    "code": "kafka-topics.sh --bootstrap-server kafka:9092 --create --topic pesanan \\\n  --partitions 6 --replication-factor 3 --config retention.ms=604800000\n\nkafka-consumer-groups.sh --bootstrap-server kafka:9092 --describe --group gudang\n# kolom LAG = pesan yang belum diproses per partisi"
+   }
+  ]
+ },
+ "de-6-2": {
+  "exs": [
+   {
+    "t": "Kasus: antrean kerja vs pub/sub",
+    "d": "Antrean membagi pekerjaan; pub/sub menyebarkan satu peristiwa ke banyak pelanggan.",
+    "code": "Antrean (SQS)  : 1 pesan \"kirim struk\" -> diambil SATU worker email\nPub/sub (SNS)  : 1 peristiwa \"pesanan dibayar\" -> gudang, email, poin loyalti\n                 masing-masing mendapat salinannya sendiri"
+   },
+   {
+    "t": "Kasus: aturan retry dan dead letter queue",
+    "code": "Percobaan 1  gagal (timeout SMTP)  -> tunggu 30 detik\nPercobaan 2  gagal                 -> tunggu 2 menit\nPercobaan 3  gagal                 -> pindah ke DLQ email-gagal\nDLQ dipantau: alert bila > 100 pesan, diproses ulang setelah penyebab diperbaiki"
+   },
+   {
+    "t": "Kasus: kapan tetap sinkron",
+    "d": "Pengguna menunggu jawaban saat itu juga, jadi antrean tidak cocok.",
+    "code": "Cek saldo sebelum bayar          -> HTTP sinkron, jawaban < 300 md\nValidasi kode voucher            -> HTTP sinkron\nKirim email konfirmasi           -> antrean asinkron\nHitung ulang poin loyalti        -> antrean asinkron"
+   }
+  ]
+ },
+ "de-7-2": {
+  "exs": [
+   {
+    "t": "Kasus: transaksi per metode pembayaran dari CSV",
+    "d": "Transformasi bersifat lazy; perhitungan baru terjadi saat show().",
+    "code": "from pyspark.sql import SparkSession, functions as F\n\nspark = SparkSession.builder.appName(\"metode_bayar\").getOrCreate()\n\ntrx = spark.read.csv(\"s3://toko-lake/bronze/transaksi.csv\", header=True, inferSchema=True)\n(trx.groupBy(\"metode\")\n    .agg(F.count(\"*\").alias(\"n\"), F.sum(\"total\").alias(\"omzet\"))\n    .orderBy(F.desc(\"omzet\"))\n    .show())"
+   },
+   {
+    "t": "Kasus: transaksi terbesar di setiap kota",
+    "d": "Window function di PySpark sama seperti ROW_NUMBER di SQL.",
+    "code": "from pyspark.sql import SparkSession, Window, functions as F\n\nspark = SparkSession.builder.appName(\"trx_terbesar\").getOrCreate()\ntrx = spark.read.parquet(\"s3://toko-lake/silver/transaksi/\")\n\nw = Window.partitionBy(\"kota\").orderBy(F.desc(\"total\"))\nterbesar = trx.withColumn(\"urut\", F.row_number().over(w)).where(F.col(\"urut\") == 1)\nterbesar.select(\"kota\", \"order_id\", \"total\").show()"
+   },
+   {
+    "t": "Kasus: Spark SQL untuk tim yang terbiasa SQL",
+    "code": "from pyspark.sql import SparkSession\n\nspark = SparkSession.builder.appName(\"spark_sql\").getOrCreate()\nspark.read.parquet(\"s3://toko-lake/silver/transaksi/\").createOrReplaceTempView(\"transaksi\")\n\nspark.sql(\"\"\"\n    SELECT kota, COUNT(*) AS n, SUM(total) AS omzet\n    FROM transaksi\n    WHERE status = 'selesai'\n    GROUP BY kota\n    ORDER BY omzet DESC\n\"\"\").show()"
+   }
+  ]
+ },
+ "de-8-1": {
+  "exs": [
+   {
+    "t": "Kasus: pipeline penjualan di Google Cloud region Jakarta",
+    "code": "Postgres kasir --Datastream--> Cloud Storage (bronze)\n                                   |\n                           Cloud Composer (Airflow) 02.00\n                                   v\n                           BigQuery: silver -> gold (dbt)\n                                   v\n                           Looker Studio untuk manajer cabang\nSemua resource di asia-southeast2 agar data tetap di Indonesia"
+   },
+   {
+    "t": "Kasus: arsitektur yang sama di AWS",
+    "code": "RDS PostgreSQL --DMS--> S3 (bronze)\n                         |\n                 MWAA (Airflow) 02.00\n                         v\n                 Redshift / Athena: silver -> gold\n                         v\n                 QuickSight\nRegion ap-southeast-3 (Jakarta)"
+   },
+   {
+    "t": "Kasus: memilih layanan terkelola atau memasang sendiri",
+    "code": "Pertimbangan        Terkelola (BigQuery, MWAA)     Pasang sendiri (VM + Airflow)\nWaktu mulai         jam                            minggu\nBiaya awal          kecil, bayar pemakaian         VM menyala terus\nPerawatan           ditangani penyedia             patch, backup, skala sendiri\nCocok untuk         tim kecil, kebutuhan umum      kebutuhan khusus, tim platform kuat"
+   }
+  ]
+ },
+ "de-8-2": {
+  "exs": [
+   {
+    "t": "Kasus: membangun dan menjalankan image job ETL",
+    "code": "docker build -t etl-penjualan:1.4.0 .\ndocker run --rm --env-file .env etl-penjualan:1.4.0 --tanggal 2024-10-01"
+   },
+   {
+    "t": "Kasus: job harian sebagai CronJob Kubernetes",
+    "code": "apiVersion: batch/v1\nkind: CronJob\nmetadata:\n  name: etl-penjualan\nspec:\n  schedule: \"0 2 * * *\"\n  concurrencyPolicy: Forbid\n  jobTemplate:\n    spec:\n      backoffLimit: 2\n      template:\n        spec:\n          restartPolicy: Never\n          containers:\n            - name: etl\n              image: asia-southeast2-docker.pkg.dev/toko/etl/etl-penjualan:1.4.0\n              envFrom:\n                - secretRef: { name: etl-rahasia }"
+   },
+   {
+    "t": "Kasus: alur kerja Terraform",
+    "d": "plan memperlihatkan apa yang akan berubah sebelum apply benar-benar mengubahnya.",
+    "code": "terraform init\nterraform plan -out rencana.tfplan    # tinjau: 1 to add, 0 to change, 0 to destroy\nterraform apply rencana.tfplan"
+   }
+  ]
+ },
+ "de-9-2": {
+  "exs": [
+   {
+    "t": "Kasus: rekonsiliasi jumlah baris sumber dan tujuan",
+    "d": "Angka yang berbeda berarti ada baris yang hilang di tengah jalan.",
+    "code": "sumber = {\"2024-10-01\": 41250, \"2024-10-02\": 43900, \"2024-10-03\": 42010}\ntujuan = {\"2024-10-01\": 41250, \"2024-10-02\": 43120, \"2024-10-03\": 42010}\n\nfor tgl in sumber:\n    selisih = sumber[tgl] - tujuan.get(tgl, 0)\n    status = \"cocok\" if selisih == 0 else f\"HILANG {selisih} baris\"\n    print(tgl, status)",
+    "out": "2024-10-01 cocok\n2024-10-02 HILANG 780 baris\n2024-10-03 cocok"
+   },
+   {
+    "t": "Kasus: unit test fungsi transformasi",
+    "d": "Fungsi kecil yang dites dengan assert menangkap bug sebelum masuk pipeline.",
+    "code": "def bersihkan_kota(teks):\n    return teks.strip().title() if teks else None\n\nassert bersihkan_kota(\"  medan \") == \"Medan\"\nassert bersihkan_kota(\"BANDUNG\") == \"Bandung\"\nassert bersihkan_kota(\"\") is None\nassert bersihkan_kota(None) is None\nprint(\"semua tes lulus\")",
+    "out": "semua tes lulus"
+   },
+   {
+    "t": "Kasus: volume hari ini dibanding rata-rata 7 hari",
+    "code": "volume = [41200, 43900, 42800, 40100, 44500, 39800, 42300]\nhari_ini = 18750\n\nrata = sum(volume) / len(volume)\nrasio = hari_ini / rata\nprint(f\"rata-rata 7 hari: {rata:.0f}, hari ini: {hari_ini} ({rasio:.0%})\")\nprint(\"ANOMALI: kirim alert\" if rasio < 0.5 or rasio > 1.5 else \"normal\")",
+    "out": "rata-rata 7 hari: 42086, hari ini: 18750 (45%)\nANOMALI: kirim alert"
+   }
+  ]
+ },
+ "de-9-3": {
+  "exs": [
+   {
+    "t": "Kasus: hak akses berlapis per dataset",
+    "d": "Analis membaca lapisan analitik, hanya pipeline yang menyentuh data mentah.",
+    "code": "GRANT SELECT ON SCHEMA analitik TO 'group:analis@toko.id';\nGRANT SELECT, INSERT ON SCHEMA mentah TO 'serviceAccount:etl@toko.iam.gserviceaccount.com';\nREVOKE SELECT ON SCHEMA mentah FROM 'group:analis@toko.id';"
+   },
+   {
+    "t": "Kasus: view tanpa kolom pribadi untuk tim pemasaran",
+    "d": "Kolom NIK, email, dan nomor HP tidak ikut sama sekali.",
+    "code": "CREATE VIEW analitik.pelanggan_pemasaran AS\nSELECT pelanggan_id, kota, segmen, tanggal_daftar\nFROM mentah.pelanggan;"
+   },
+   {
+    "t": "Kasus: permintaan hapus data pribadi (UU PDP)",
+    "d": "Data identitas dihapus, data transaksi tetap ada untuk laporan keuangan tetapi tidak bisa dikaitkan lagi ke orangnya.",
+    "code": "UPDATE mentah.pelanggan\nSET nama = NULL, email = NULL, no_hp = NULL, nik = NULL, dihapus_pada = CURRENT_TIMESTAMP\nWHERE pelanggan_id = 41;\n\nINSERT INTO audit.permintaan_hapus (pelanggan_id, diproses_pada) VALUES (41, CURRENT_TIMESTAMP);"
+   }
+  ]
+ },
+ "de-9-4": {
+  "exs": [
+   {
+    "t": "Kasus: entri katalog untuk satu tabel",
+    "code": "Tabel        : gold.segmen_pelanggan\nPemilik      : tim growth (growth-data@toko.id)\nDeskripsi    : satu baris per pelanggan aktif, segmen RFM terbaru\nJadwal       : harian 04.00, selesai paling lambat 05.00\nData pribadi : tidak (hanya pelanggan_id)\nUji          : unik(pelanggan_id), segmen in daftar resmi"
+   },
+   {
+    "t": "Kasus: lineage tingkat kolom",
+    "d": "Bila definisi diskon berubah, semua kolom turunannya ketahuan.",
+    "code": "mentah.transaksi.harga_normal --+\n                                +--> staging.diskon_rp = harga_normal - harga_bayar\nmentah.transaksi.harga_bayar ---+                |\n                                                 v\n                                  mart.fct_penjualan.omzet_bersih\n                                                 v\n                                  Dashboard \"Penjualan Mingguan\" (kartu Omzet Bersih)"
+   },
+   {
+    "t": "Kasus: menjawab \"angka ini dari mana?\"",
+    "d": "Lineage memendekkan penelusuran dari hari menjadi menit.",
+    "code": "Pertanyaan direktur: \"Kenapa omzet bersih Oktober turun 8%?\"\n1. Buka lineage kartu Omzet Bersih -> mart.fct_penjualan\n2. Riwayat perubahan dbt: model stg_diskon diubah 3 Oktober\n3. Perubahan itu menghitung ongkir sebagai diskon -> perbaiki, jalankan ulang Oktober"
+   }
+  ]
+ }
+}

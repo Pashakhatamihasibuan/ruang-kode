@@ -1,0 +1,281 @@
+{
+ "qa-1-1": {
+  "exs": [
+   {
+    "t": "Kasus: kriteria penerimaan fitur lupa kata sandi",
+    "code": "Kebutuhan : Pengguna bisa mengatur ulang kata sandi lewat email.\nKriteria penerimaan:\n  Given  pengguna terdaftar dengan email budi@contoh.id\n  When   ia meminta tautan reset\n  Then   email berisi tautan terkirim dalam 1 menit\n\n  Given  tautan reset sudah berumur lebih dari 30 menit\n  When   tautan dibuka\n  Then   muncul pesan 'Tautan kedaluwarsa' dan tombol minta tautan baru\n\n  Given  email tidak terdaftar\n  When   ia meminta tautan reset\n  Then   pesan yang tampil sama dengan email terdaftar (tidak membocorkan akun)"
+   },
+   {
+    "t": "Kasus: pertanyaan QA saat refinement",
+    "d": "QA mencegah bug dengan bertanya sebelum kode ditulis.",
+    "code": "Cerita    : Sebagai pembeli, saya bisa memakai voucher saat checkout.\nPertanyaan QA:\n  1. Bolehkah dua voucher dipakai bersamaan?\n  2. Voucher persen punya batas potongan maksimal?\n  3. Apa yang terjadi bila item dihapus sampai belanja di bawah minimum voucher?\n  4. Voucher berlaku untuk ongkir atau hanya harga barang?\n  5. Kapan kuota voucher berkurang: saat dipasang atau saat dibayar?\nHasil     : PO menambah 3 kriteria penerimaan sebelum sprint dimulai"
+   },
+   {
+    "t": "Kasus: membedakan QA, QC, dan testing",
+    "code": "Kegiatan                                         Termasuk\nMenyusun standar review kode dan Definition of Done   QA (mencegah, fokus proses)\nMeninjau kriteria penerimaan sebelum sprint          QA\nMenjalankan 40 test case regresi checkout            Testing (bagian dari QC)\nMemutuskan build 3.12 layak rilis dari hasil tes      QC (memeriksa produk)\nRetrospektif: kenapa 3 bug lolos ke produksi?        QA (memperbaiki proses)"
+   }
+  ]
+ },
+ "qa-1-2": {
+  "exs": [
+   {
+    "t": "Kasus: memetakan tes fitur keranjang ke piramida",
+    "code": "Lapisan     Tes untuk fitur keranjang\nUnit        hitung subtotal, pembulatan, batas qty 1-99, stok habis\nIntegrasi   API POST /keranjang menyimpan ke database, harga diambil dari layanan katalog\nE2E         pengguna menambah 2 produk, mengubah qty, lalu checkout sampai halaman bayar\n\nJumlah      unit 35 tes, integrasi 8 tes, E2E 2 tes"
+   },
+   {
+    "t": "Kasus: tes fungsional dan non-fungsional untuk halaman login",
+    "code": "Fungsional (apa yang dilakukan)\n  - login dengan email dan sandi benar masuk ke Beranda\n  - sandi salah menampilkan pesan kesalahan\n  - 'Ingat saya' menjaga sesi 30 hari\nNon-fungsional (seberapa baik)\n  - performa  : respons login < 1 detik untuk 500 pengguna bersamaan\n  - keamanan  : sandi dikirim lewat HTTPS, dibatasi 5 percobaan per menit\n  - aksesibilitas: semua isian punya label, bisa dipakai dengan keyboard\n  - kompatibilitas: Chrome, Safari, Firefox versi terbaru"
+   },
+   {
+    "t": "Kasus: smoke, sanity, dan regresi setelah hotfix",
+    "d": "Tiga jenis tes yang sering tertukar.",
+    "code": "Hotfix 3.12.1: perbaikan perhitungan ongkir ke Papua\n\nSmoke     (5 menit)  aplikasi terbuka, login, cari produk, buka keranjang -> build layak diuji\nSanity    (15 menit) ongkir ke Jayapura, Merauke, dan Medan sesuai tabel tarif baru\nRegresi   (2 jam)    seluruh suite checkout: voucher, alamat, pembayaran, ongkir semua pulau"
+   }
+  ]
+ },
+ "qa-1-3": {
+  "exs": [
+   {
+    "t": "Kasus: STLC untuk fitur voucher",
+    "d": "Setiap fase punya hasil yang bisa diperiksa.",
+    "code": "Fase                     Hasil\nAnalisis kebutuhan       daftar pertanyaan ke PO, 6 kriteria penerimaan disepakati\nPerencanaan tes          ruang lingkup, risiko, jadwal, kriteria keluar\nDesain test case         32 test case (EP, BVA, decision table)\nPenyiapan lingkungan     staging + 10 voucher uji (aktif, kedaluwarsa, kuota habis)\nEksekusi                 30 lulus, 2 gagal -> BUG-401, BUG-402\nPenutupan                laporan ringkas dan pelajaran untuk sprint berikutnya"
+   },
+   {
+    "t": "Kasus: Definition of Done yang memuat kualitas",
+    "code": "Sebuah cerita dianggap selesai bila:\n  [ ] semua kriteria penerimaan lulus diuji\n  [ ] unit test ditulis dan CI hijau\n  [ ] kode sudah direview minimal 1 orang\n  [ ] tidak ada bug kritis atau tinggi yang terbuka\n  [ ] test case regresi ditambahkan ke suite\n  [ ] PO sudah melihat demo di staging"
+   },
+   {
+    "t": "Kasus: kegiatan QA selama sprint dua minggu",
+    "code": "Hari 1     sprint planning: ikut memperkirakan usaha pengujian\nHari 1-2   menulis test case dari kriteria penerimaan\nHari 3-8   menguji cerita segera setelah selesai (tidak menunggu akhir sprint)\nHari 5     pairing dengan developer menulis tes API\nHari 9     regresi otomatis + eksplorasi 1 jam\nHari 10    demo dan retrospektif: catat bug yang lolos dan penyebabnya"
+   }
+  ]
+ },
+ "qa-2-1": {
+  "exs": [
+   {
+    "t": "Kasus: panjang kata sandi 8-20 karakter",
+    "d": "Tiga partisi: terlalu pendek, valid, terlalu panjang. Batas diuji di kedua sisinya.",
+    "code": "def jalankan(*tes):\n    lulus = 0\n    for t in tes:\n        try:\n            t()\n            print('LULUS', t.__name__)\n            lulus += 1\n        except AssertionError as e:\n            print('GAGAL', t.__name__, '-', e)\n    print(f'{lulus}/{len(tes)} tes lulus')\n\ndef sandi_valid(s):\n    return 8 <= len(s) <= 20\n\ndef tes_partisi():\n    assert not sandi_valid('a' * 4)\n    assert sandi_valid('a' * 12)\n    assert not sandi_valid('a' * 30)\n\ndef tes_batas_bawah():\n    assert [sandi_valid('a' * n) for n in (7, 8, 9)] == [False, True, True]\n\ndef tes_batas_atas():\n    assert [sandi_valid('a' * n) for n in (19, 20, 21)] == [True, True, False]\n\njalankan(tes_partisi, tes_batas_bawah, tes_batas_atas)",
+    "out": "LULUS tes_partisi\nLULUS tes_batas_bawah\nLULUS tes_batas_atas\n3/3 tes lulus"
+   },
+   {
+    "t": "Kasus: batas nominal transfer menemukan bug",
+    "d": "Aturan: transfer Rp10.000 sampai Rp50.000.000.",
+    "code": "def jalankan(*tes):\n    lulus = 0\n    for t in tes:\n        try:\n            t()\n            print('LULUS', t.__name__)\n            lulus += 1\n        except AssertionError as e:\n            print('GAGAL', t.__name__, '-', e)\n    print(f'{lulus}/{len(tes)} tes lulus')\n\ndef boleh_transfer(nominal):\n    return 10000 < nominal <= 50000000     # BUG: seharusnya >= 10000\n\ndef tes_wakil_partisi():\n    assert boleh_transfer(500000)\n    assert not boleh_transfer(5000)\n    assert not boleh_transfer(60000000)\n\ndef tes_batas_minimum():\n    for n, harap in [(9999, False), (10000, True), (10001, True)]:\n        assert boleh_transfer(n) == harap, f'Rp{n} harusnya {harap}'\n\ndef tes_batas_maksimum():\n    for n, harap in [(49999999, True), (50000000, True), (50000001, False)]:\n        assert boleh_transfer(n) == harap, f'Rp{n} harusnya {harap}'\n\njalankan(tes_wakil_partisi, tes_batas_minimum, tes_batas_maksimum)",
+    "out": "LULUS tes_wakil_partisi\nGAGAL tes_batas_minimum - Rp10000 harusnya True\nLULUS tes_batas_maksimum\n2/3 tes lulus"
+   },
+   {
+    "t": "Kasus: partisi tidak valid untuk kode pos",
+    "d": "Setiap partisi tidak valid diuji sendiri agar penyebab gagalnya jelas.",
+    "code": "def jalankan(*tes):\n    lulus = 0\n    for t in tes:\n        try:\n            t()\n            print('LULUS', t.__name__)\n            lulus += 1\n        except AssertionError as e:\n            print('GAGAL', t.__name__, '-', e)\n    print(f'{lulus}/{len(tes)} tes lulus')\n\ndef kode_pos_valid(k):\n    return len(k) == 5 and k.isdigit() and k[0] != '0'\n\ndef tes_valid():\n    assert kode_pos_valid('20112')\n\ndef tes_terlalu_pendek():\n    assert not kode_pos_valid('2011')\n\ndef tes_terlalu_panjang():\n    assert not kode_pos_valid('201120')\n\ndef tes_ada_huruf():\n    assert not kode_pos_valid('2011A')\n\ndef tes_diawali_nol():\n    assert not kode_pos_valid('01234')\n\njalankan(tes_valid, tes_terlalu_pendek, tes_terlalu_panjang, tes_ada_huruf, tes_diawali_nol)",
+    "out": "LULUS tes_valid\nLULUS tes_terlalu_pendek\nLULUS tes_terlalu_panjang\nLULUS tes_ada_huruf\nLULUS tes_diawali_nol\n5/5 tes lulus"
+   }
+  ]
+ },
+ "qa-2-2": {
+  "exs": [
+   {
+    "t": "Kasus: persetujuan pinjaman dengan tiga kondisi",
+    "d": "Tiga kondisi ya/tidak menghasilkan 8 aturan; semuanya diuji.",
+    "code": "def jalankan(*tes):\n    lulus = 0\n    for t in tes:\n        try:\n            t()\n            print('LULUS', t.__name__)\n            lulus += 1\n        except AssertionError as e:\n            print('GAGAL', t.__name__, '-', e)\n    print(f'{lulus}/{len(tes)} tes lulus')\n\ndef keputusan(gaji_cukup, riwayat_baik, punya_jaminan):\n    if gaji_cukup and riwayat_baik:\n        return 'setuju'\n    if riwayat_baik and punya_jaminan:\n        return 'setuju'\n    if gaji_cukup and punya_jaminan:\n        return 'tinjau manual'\n    return 'tolak'\n\nTABEL = [\n    # gaji, riwayat, jaminan, harapan\n    (True,  True,  True,  'setuju'),\n    (True,  True,  False, 'setuju'),\n    (True,  False, True,  'tinjau manual'),\n    (True,  False, False, 'tolak'),\n    (False, True,  True,  'setuju'),\n    (False, True,  False, 'tolak'),\n    (False, False, True,  'tolak'),\n    (False, False, False, 'tolak'),\n]\n\ndef tes_semua_aturan():\n    for g, r, j, harap in TABEL:\n        hasil = keputusan(g, r, j)\n        assert hasil == harap, f'{g},{r},{j}: {hasil} != {harap}'\n\njalankan(tes_semua_aturan)",
+    "out": "LULUS tes_semua_aturan\n1/1 tes lulus"
+   },
+   {
+    "t": "Kasus: harga tiket bioskop pelajar dan hari Selasa",
+    "d": "Tabel menemukan kombinasi yang terlupa saat menulis kode.",
+    "code": "def jalankan(*tes):\n    lulus = 0\n    for t in tes:\n        try:\n            t()\n            print('LULUS', t.__name__)\n            lulus += 1\n        except AssertionError as e:\n            print('GAGAL', t.__name__, '-', e)\n    print(f'{lulus}/{len(tes)} tes lulus')\n\ndef harga_tiket(pelajar, selasa):\n    if pelajar and selasa:\n        return 25000          # BUG: aturan bilang diskon tidak digabung, harus 30000\n    if pelajar or selasa:\n        return 30000\n    return 50000\n\nTABEL = [(True, True, 30000), (True, False, 30000), (False, True, 30000), (False, False, 50000)]\n\ndef tes_tabel():\n    salah = [(p, s, harga_tiket(p, s), h) for p, s, h in TABEL if harga_tiket(p, s) != h]\n    assert not salah, f'aturan salah: {salah}'\n\njalankan(tes_tabel)",
+    "out": "GAGAL tes_tabel - aturan salah: [(True, True, 25000, 30000)]\n0/1 tes lulus"
+   }
+  ]
+ },
+ "qa-2-3": {
+  "exs": [
+   {
+    "t": "Kasus: akun terkunci setelah 3 kali gagal",
+    "d": "Keadaan: aktif, peringatan, terkunci. Sandi benar mengembalikan hitungan ke nol.",
+    "code": "def jalankan(*tes):\n    lulus = 0\n    for t in tes:\n        try:\n            t()\n            print('LULUS', t.__name__)\n            lulus += 1\n        except AssertionError as e:\n            print('GAGAL', t.__name__, '-', e)\n    print(f'{lulus}/{len(tes)} tes lulus')\n\nclass Akun:\n    def __init__(self):\n        self.gagal = 0\n        self.status = 'aktif'\n\n    def login(self, benar):\n        if self.status == 'terkunci':\n            return 'ditolak'\n        if benar:\n            self.gagal = 0\n            self.status = 'aktif'\n            return 'masuk'\n        self.gagal += 1\n        self.status = 'terkunci' if self.gagal >= 3 else 'peringatan'\n        return self.status\n\ndef tes_tiga_gagal_mengunci():\n    a = Akun()\n    hasil = [a.login(False) for _ in range(3)]\n    assert hasil == ['peringatan', 'peringatan', 'terkunci']\n\ndef tes_terkunci_menolak_sandi_benar():\n    a = Akun()\n    for _ in range(3):\n        a.login(False)\n    assert a.login(True) == 'ditolak'\n\ndef tes_berhasil_mereset_hitungan():\n    a = Akun()\n    a.login(False); a.login(False); a.login(True)\n    assert a.login(False) == 'peringatan', f'hitungan gagal {a.gagal}'\n\njalankan(tes_tiga_gagal_mengunci, tes_terkunci_menolak_sandi_benar, tes_berhasil_mereset_hitungan)",
+    "out": "LULUS tes_tiga_gagal_mengunci\nLULUS tes_terkunci_menolak_sandi_benar\nLULUS tes_berhasil_mereset_hitungan\n3/3 tes lulus"
+   },
+   {
+    "t": "Kasus: tiket helpdesk dan tabel transisi tidak valid",
+    "d": "Selain alur normal, setiap pasangan keadaan-peristiwa yang tidak ada di diagram harus ditolak.",
+    "code": "def jalankan(*tes):\n    lulus = 0\n    for t in tes:\n        try:\n            t()\n            print('LULUS', t.__name__)\n            lulus += 1\n        except AssertionError as e:\n            print('GAGAL', t.__name__, '-', e)\n    print(f'{lulus}/{len(tes)} tes lulus')\n\nTRANSISI = {\n    ('baru', 'ambil'): 'dikerjakan',\n    ('dikerjakan', 'tunggu'): 'menunggu pelanggan',\n    ('menunggu pelanggan', 'balas'): 'dikerjakan',\n    ('dikerjakan', 'selesai'): 'ditutup',\n    ('ditutup', 'buka lagi'): 'dikerjakan',\n}\nKEADAAN = ['baru', 'dikerjakan', 'menunggu pelanggan', 'ditutup']\nPERISTIWA = ['ambil', 'tunggu', 'balas', 'selesai', 'buka lagi']\n\ndef proses(s, p):\n    return TRANSISI.get((s, p), 'DITOLAK')\n\ndef tes_alur_dengan_menunggu():\n    s = 'baru'\n    for p in ['ambil', 'tunggu', 'balas', 'selesai']:\n        s = proses(s, p)\n    assert s == 'ditutup'\n\ndef tes_tidak_boleh_langsung_tutup():\n    assert proses('baru', 'selesai') == 'DITOLAK'\n\ndef tes_hitung_transisi_tidak_valid():\n    tidak_valid = [(s, p) for s in KEADAAN for p in PERISTIWA if proses(s, p) == 'DITOLAK']\n    assert len(tidak_valid) == 15, len(tidak_valid)\n\njalankan(tes_alur_dengan_menunggu, tes_tidak_boleh_langsung_tutup, tes_hitung_transisi_tidak_valid)",
+    "out": "LULUS tes_alur_dengan_menunggu\nLULUS tes_tidak_boleh_langsung_tutup\nLULUS tes_hitung_transisi_tidak_valid\n3/3 tes lulus"
+   }
+  ]
+ },
+ "qa-3-1": {
+  "exs": [
+   {
+    "t": "Kasus: test case negatif untuk voucher kedaluwarsa",
+    "code": "ID           : TC-VCR-007\nJudul        : Voucher kedaluwarsa ditolak dengan pesan jelas\nPrakondisi   : Login sebagai rina@contoh.id; voucher LAMA10 berakhir 31-10-2026\nData uji     : Keranjang berisi Teh Melati (Rp40.000)\nLangkah      :\n  1. Buka Checkout\n  2. Ketik 'LAMA10' di kolom voucher, tekan 'Pakai'\nHasil harapan:\n  - Muncul pesan 'Voucher sudah berakhir 31 Okt'\n  - Total tetap Rp40.000\n  - Kuota voucher tidak berkurang"
+   },
+   {
+    "t": "Kasus: memperbaiki test case yang kabur",
+    "d": "Sebelum dan sesudah: langkah yang bisa diulang orang lain dan hasil yang bisa diperiksa.",
+    "code": "SEBELUM\n  Judul : Tes upload foto\n  Langkah: upload foto\n  Harapan: berhasil\n\nSESUDAH\n  Judul        : Unggah foto profil JPG 1,9 MB berhasil\n  Prakondisi   : Login sebagai budi@contoh.id, belum punya foto profil\n  Data uji     : profil_1_9mb.jpg (1.990 KB, 800x800)\n  Langkah      : 1. Buka Profil  2. Tekan 'Ganti foto'  3. Pilih profil_1_9mb.jpg\n  Hasil harapan: foto tampil di Profil dan di pojok kanan atas dalam 3 detik"
+   },
+   {
+    "t": "Kasus: satu kebutuhan, beberapa test case",
+    "d": "Setiap test case menguji satu hal, sehingga kegagalan langsung menunjuk penyebabnya.",
+    "code": "Kebutuhan: foto profil JPG/PNG, maksimal 2 MB\n\nTC-PRF-01  JPG 1,9 MB              -> diterima\nTC-PRF-02  PNG 2,0 MB tepat        -> diterima\nTC-PRF-03  JPG 2,1 MB              -> 'Ukuran maksimal 2 MB'\nTC-PRF-04  GIF 500 KB              -> 'Format harus JPG atau PNG'\nTC-PRF-05  berkas .jpg palsu (PDF) -> ditolak\nTC-PRF-06  koneksi putus saat unggah -> foto lama tetap, pesan 'Coba lagi'"
+   }
+  ]
+ },
+ "qa-3-2": {
+  "exs": [
+   {
+    "t": "Kasus: laporan bug di versi web",
+    "code": "Judul    : [Pencarian] Hasil kosong untuk kata berhuruf kapital 'KOPI'\nLingkungan: web staging, build 2026.11.20, Chrome 131, Windows 11\nLangkah  :\n  1. Buka https://staging.toko.id\n  2. Ketik 'KOPI' di kotak pencarian, tekan Enter\nAktual   : 'Produk tidak ditemukan'\nHarapan  : 14 produk kopi tampil, sama seperti pencarian 'kopi'\nFrekuensi: 3/3; terjadi juga di Firefox\nSeverity : Medium   Priority: (diisi PO)"
+   },
+   {
+    "t": "Kasus: severity dan priority tidak selalu sejalan",
+    "code": "Bug                                               Severity  Priority\nAplikasi crash saat bayar dengan VA BCA            Critical  P1\nSalah ketik nama brand sponsor di banner utama     Low       P1  (kampanye besok)\nLaporan admin bulanan lambat 40 detik              Medium    P3\nCrash di Android 8 (0,1% pengguna)                 High      P3\nWarna tombol beda 1 tingkat dari desain            Trivial   P4"
+   },
+   {
+    "t": "Kasus: siklus hidup sebuah bug",
+    "code": "BUG-882 Isian kecamatan hilang setelah rotasi layar\n\n20 Nov  New        dilaporkan QA dengan video\n20 Nov  Triaged    PO: severity High, priority P2\n21 Nov  In Progress dev mengambil\n22 Nov  Fixed      perbaikan di build 3.12.2\n22 Nov  Retest     QA mengulang langkah di 3 perangkat\n22 Nov  Reopened   masih terjadi di tablet\n24 Nov  Fixed      build 3.12.3\n24 Nov  Verified   lulus di 4 perangkat\n24 Nov  Closed     tes regresi TC-ALM-019 ditambahkan"
+   }
+  ]
+ },
+ "qa-3-3": {
+  "exs": [
+   {
+    "t": "Kasus: charter untuk fitur pencarian",
+    "code": "Charter : Jelajahi pencarian produk dengan kata kunci tidak biasa untuk menemukan\n          hasil yang hilang atau salah urut, 60 menit, web Chrome.\nIde     : salah ketik (kpoi), huruf kapital, kata Indonesia-Inggris (coffee),\n          tanda baca, 1 huruf, 100 huruf, filter harga + kata kunci, halaman 50\nCatatan : waktu 60 menit | uji 70% | investigasi bug 20% | setup 10%"
+   },
+   {
+    "t": "Kasus: catatan sesi dan debrief",
+    "d": "Hasil sesi ditulis ringkas agar bisa dibahas dalam 10 menit.",
+    "code": "Sesi    : 21 Nov 14.00-14.45, Rina, Charter: formulir alamat\nDiuji   : Android 14 (A14), web Chrome\nBug     : BUG-881 simpan ganda, BUG-882 kecamatan hilang saat rotasi\nIsu     : peta lambat dimuat di jaringan 3G (bukan bug, catat untuk performa)\nPertanyaan: alamat luar negeri? kode pos wajib?\nTidak sempat: mode gelap, pembaca layar\nUsulan  : sesi lanjutan 30 menit untuk aksesibilitas"
+   },
+   {
+    "t": "Kasus: heuristik SFDPOT untuk fitur unggah foto",
+    "d": "Setiap huruf memberi sudut pandang ide tes baru.",
+    "code": "Structure : berkas JPG/PNG/HEIC, metadata EXIF lokasi\nFunction  : potong, putar, ganti, hapus foto\nData      : 0 byte, 2 MB tepat, 20 MB, nama berkas beremoji\nPlatform  : Android 9 vs 15, iPhone, web Safari\nOperations: unggah lalu langsung keluar aplikasi, mode pesawat\nTime      : unggah lambat 3G, dua unggahan bersamaan"
+   }
+  ]
+ },
+ "qa-4-1": {
+  "exs": [
+   {
+    "t": "Kasus: format rupiah dengan Arrange-Act-Assert",
+    "d": "Tes keempat menemukan bug: tanda minus ditaruh setelah Rp.",
+    "code": "def jalankan(*tes):\n    lulus = 0\n    for t in tes:\n        try:\n            t()\n            print('LULUS', t.__name__)\n            lulus += 1\n        except AssertionError as e:\n            print('GAGAL', t.__name__, '-', e)\n    print(f'{lulus}/{len(tes)} tes lulus')\n\ndef rupiah(n):\n    return 'Rp' + f'{n:,}'.replace(',', '.')\n\ndef tes_ribuan():\n    # Arrange\n    nominal = 85000\n    # Act\n    hasil = rupiah(nominal)\n    # Assert\n    assert hasil == 'Rp85.000'\n\ndef tes_jutaan():\n    assert rupiah(12500000) == 'Rp12.500.000'\n\ndef tes_nol():\n    assert rupiah(0) == 'Rp0'\n\ndef tes_negatif():\n    hasil = rupiah(-5000)\n    assert hasil == '-Rp5.000', f'dapat {hasil!r}'\n\njalankan(tes_ribuan, tes_jutaan, tes_nol, tes_negatif)",
+    "out": "LULUS tes_ribuan\nLULUS tes_jutaan\nLULUS tes_nol\nGAGAL tes_negatif - dapat 'Rp-5.000'\n3/4 tes lulus"
+   },
+   {
+    "t": "Kasus: keranjang baru di setiap tes",
+    "d": "Setiap tes membuat objeknya sendiri di bagian Arrange, jadi urutan tes tidak berpengaruh.",
+    "code": "def jalankan(*tes):\n    lulus = 0\n    for t in tes:\n        try:\n            t()\n            print('LULUS', t.__name__)\n            lulus += 1\n        except AssertionError as e:\n            print('GAGAL', t.__name__, '-', e)\n    print(f'{lulus}/{len(tes)} tes lulus')\n\nclass Keranjang:\n    def __init__(self):\n        self.isi = {}\n    def tambah(self, nama, harga, qty=1):\n        if qty < 1:\n            raise ValueError('qty minimal 1')\n        lama = self.isi.get(nama, (harga, 0))[1]\n        self.isi[nama] = (harga, lama + qty)\n    def total(self):\n        return sum(h * q for h, q in self.isi.values())\n\ndef tes_tambah_produk_sama_menjumlah_qty():\n    k = Keranjang()\n    k.tambah('Kopi', 85000)\n    k.tambah('Kopi', 85000, 2)\n    assert k.isi['Kopi'] == (85000, 3)\n\ndef tes_total_dua_produk():\n    k = Keranjang()\n    k.tambah('Kopi', 85000)\n    k.tambah('Gula Aren', 25000, 2)\n    assert k.total() == 135000\n\ndef tes_qty_nol_ditolak():\n    k = Keranjang()\n    try:\n        k.tambah('Kopi', 85000, 0)\n        assert False, 'harus error'\n    except ValueError:\n        pass\n    assert k.total() == 0\n\njalankan(tes_tambah_produk_sama_menjumlah_qty, tes_total_dua_produk, tes_qty_nol_ditolak)",
+    "out": "LULUS tes_tambah_produk_sama_menjumlah_qty\nLULUS tes_total_dua_produk\nLULUS tes_qty_nol_ditolak\n3/3 tes lulus"
+   },
+   {
+    "t": "Kasus: tes validasi email dengan unittest dan subTest",
+    "d": "subTest melaporkan setiap data uji yang gagal tanpa menghentikan sisanya.",
+    "code": "import unittest\n\ndef email_valid(e):\n    nama, _, domain = e.partition('@')\n    return bool(nama) and '.' in domain and ' ' not in e\n\nclass TesEmail(unittest.TestCase):\n    def test_valid(self):\n        for e in ['rina@contoh.id', 'budi.s@kantor.co.id']:\n            with self.subTest(email=e):\n                self.assertTrue(email_valid(e))\n\n    def test_tidak_valid(self):\n        for e in ['rina', 'rina@', '@contoh.id', 'rina @contoh.id', 'rina@contoh']:\n            with self.subTest(email=e):\n                self.assertFalse(email_valid(e))\n\nhasil = unittest.TestResult()\nunittest.defaultTestLoader.loadTestsFromTestCase(TesEmail).run(hasil)\nprint(f'{hasil.testsRun} tes, {len(hasil.failures)} gagal')",
+    "out": "2 tes, 0 gagal"
+   }
+  ]
+ },
+ "qa-4-2": {
+  "exs": [
+   {
+    "t": "Kasus: stub kurs agar tes tidak bergantung internet",
+    "d": "Layanan kurs diganti Mock yang selalu memberi angka tetap.",
+    "code": "from unittest.mock import Mock\n\ndef harga_dalam_usd(harga_rp, layanan_kurs):\n    kurs = layanan_kurs.ambil('USD')\n    return round(harga_rp / kurs, 2)\n\nkurs = Mock()\nkurs.ambil.return_value = 16000\nprint(harga_dalam_usd(85000, kurs))\nprint(harga_dalam_usd(1600000, kurs))\nkurs.ambil.assert_called_with('USD')\nprint('dipanggil', kurs.ambil.call_count, 'kali')",
+    "out": "5.31\n100.0\ndipanggil 2 kali"
+   },
+   {
+    "t": "Kasus: side_effect untuk menguji percobaan ulang",
+    "d": "Dua kali timeout lalu berhasil: apakah kode mencoba tepat 3 kali?",
+    "code": "from unittest.mock import Mock\n\ndef kirim_sms(gateway, nomor, pesan, maks=3):\n    for coba in range(1, maks + 1):\n        try:\n            return gateway.kirim(nomor, pesan), coba\n        except TimeoutError:\n            continue\n    return 'gagal', maks\n\ngw = Mock()\ngw.kirim.side_effect = [TimeoutError, TimeoutError, 'terkirim']\nprint(kirim_sms(gw, '0812', 'Kode OTP 4821'))\nprint('jumlah panggilan:', gw.kirim.call_count)\n\ngw2 = Mock()\ngw2.kirim.side_effect = TimeoutError\nprint(kirim_sms(gw2, '0812', 'Kode OTP 4821'))",
+    "out": "('terkirim', 3)\njumlah panggilan: 3\n('gagal', 3)"
+   },
+   {
+    "t": "Kasus: patch jam agar tes promo tidak tergantung waktu",
+    "d": "patch mengganti fungsi sekarang() hanya selama blok with.",
+    "code": "from datetime import datetime\nfrom unittest.mock import patch\n\ndef sekarang():\n    return datetime.now()\n\ndef promo_aktif():\n    jam = sekarang().hour\n    return 12 <= jam < 14          # promo makan siang\n\nwith patch('__main__.sekarang', return_value=datetime(2026, 12, 12, 12, 30)):\n    print('12.30 ->', promo_aktif())\nwith patch('__main__.sekarang', return_value=datetime(2026, 12, 12, 14, 0)):\n    print('14.00 ->', promo_aktif())\nwith patch('__main__.sekarang', return_value=datetime(2026, 12, 12, 11, 59)):\n    print('11.59 ->', promo_aktif())",
+    "out": "12.30 -> True\n14.00 -> False\n11.59 -> False"
+   }
+  ]
+ },
+ "qa-4-3": {
+  "exs": [
+   {
+    "t": "Kasus: memeriksa skema respons tanpa server",
+    "d": "Bentuk JSON dicek terpisah dari isinya, sehingga perubahan kontrak cepat ketahuan.",
+    "code": "import json\n\nSKEMA = {'id': int, 'nama': str, 'harga': int, 'stok': int, 'kategori': str}\n\ndef cek_skema(data, skema):\n    salah = []\n    for kunci, tipe in skema.items():\n        if kunci not in data:\n            salah.append(f'{kunci} hilang')\n        elif not isinstance(data[kunci], tipe):\n            salah.append(f'{kunci} bertipe {type(data[kunci]).__name__}, harap {tipe.__name__}')\n    salah += [f'{k} tidak dikenal' for k in data if k not in skema]\n    return salah or ['sesuai']\n\nv1 = json.loads('{\"id\": 12, \"nama\": \"Kopi Gayo\", \"harga\": 85000, \"stok\": 14, \"kategori\": \"kopi\"}')\nv2 = json.loads('{\"id\": 12, \"nama\": \"Kopi Gayo\", \"harga\": \"85000\", \"stok\": 14, \"kat\": \"kopi\"}')\nprint('v1:', cek_skema(v1, SKEMA))\nprint('v2:', cek_skema(v2, SKEMA))",
+    "out": "v1: ['sesuai']\nv2: ['harga bertipe str, harap int', 'kategori hilang', 'kat tidak dikenal']"
+   },
+   {
+    "t": "Kasus: alur buat-baca-hapus alamat lewat API",
+    "d": "Tes membuat datanya sendiri lalu membersihkannya.",
+    "code": "import requests\n\nBASE = 'https://staging.toko.id/api'\nHDR = {'Authorization': 'Bearer token-uji-rina'}\n\ndef test_alur_alamat():\n    baru = {'label': 'Kantor', 'jalan': 'Jl. Gatot Subroto 12', 'kode_pos': '20112'}\n    r = requests.post(f'{BASE}/alamat', json=baru, headers=HDR, timeout=5)\n    assert r.status_code == 201\n    alamat_id = r.json()['id']\n\n    r = requests.get(f'{BASE}/alamat/{alamat_id}', headers=HDR, timeout=5)\n    assert r.status_code == 200 and r.json()['label'] == 'Kantor'\n\n    r = requests.delete(f'{BASE}/alamat/{alamat_id}', headers=HDR, timeout=5)\n    assert r.status_code == 204\n    assert requests.get(f'{BASE}/alamat/{alamat_id}', headers=HDR, timeout=5).status_code == 404"
+   },
+   {
+    "t": "Kasus: tes negatif untuk validasi isian API",
+    "d": "Setiap isian salah harus dibalas 422 dengan pesan pada field yang tepat.",
+    "code": "import pytest\nimport requests\n\nBASE = 'https://staging.toko.id/api'\n\n@pytest.mark.parametrize('isian, field', [\n    ({'jalan': 'Jl. Merdeka 1'}, 'label'),\n    ({'label': 'Rumah', 'jalan': 'Jl. Merdeka 1', 'kode_pos': '12'}, 'kode_pos'),\n    ({'label': 'R' * 200, 'jalan': 'Jl. Merdeka 1', 'kode_pos': '20112'}, 'label'),\n])\ndef test_isian_salah_ditolak(isian, field, token_rina):\n    r = requests.post(f'{BASE}/alamat', json=isian,\n                      headers={'Authorization': f'Bearer {token_rina}'}, timeout=5)\n    assert r.status_code == 422\n    assert field in r.json()['errors']\n\ndef test_tanpa_token_ditolak():\n    r = requests.post(f'{BASE}/alamat', json={}, timeout=5)\n    assert r.status_code == 401"
+   }
+  ]
+ },
+ "qa-5-1": {
+  "exs": [
+   {
+    "t": "Kasus: pencarian produk menampilkan hasil yang benar",
+    "code": "from playwright.sync_api import Page, expect\n\ndef test_cari_kopi(page: Page):\n    page.goto('https://staging.toko.id')\n    page.get_by_placeholder('Cari produk').fill('kopi gayo')\n    page.keyboard.press('Enter')\n    hasil = page.get_by_test_id('kartu-produk')\n    expect(hasil).to_have_count(3)\n    expect(hasil.first).to_contain_text('Kopi Gayo')\n\ndef test_cari_tidak_ada(page: Page):\n    page.goto('https://staging.toko.id/cari?q=zzzz')\n    expect(page.get_by_text('Produk tidak ditemukan')).to_be_visible()"
+   },
+   {
+    "t": "Kasus: memalsukan respons API ongkir",
+    "d": "page.route membuat tes tidak bergantung layanan kurir yang lambat.",
+    "code": "from playwright.sync_api import Page, expect\n\ndef test_ongkir_gagal_dimuat(page: Page):\n    page.route('**/api/ongkir*', lambda r: r.fulfill(status=503, json={'error': 'kurir sibuk'}))\n    page.goto('https://staging.toko.id/checkout')\n    expect(page.get_by_role('alert')).to_have_text('Ongkir belum bisa dihitung, coba lagi')\n    expect(page.get_by_role('button', name='Bayar')).to_be_disabled()"
+   },
+   {
+    "t": "Kasus: menguji tampilan ponsel",
+    "d": "Profil perangkat bawaan Playwright mengatur ukuran layar dan user agent.",
+    "code": "import pytest\nfrom playwright.sync_api import Page, expect\n\n@pytest.fixture\ndef browser_context_args(browser_context_args, playwright):\n    return {**browser_context_args, **playwright.devices['Pixel 7']}\n\ndef test_menu_jadi_tombol_hamburger(page: Page):\n    page.goto('https://staging.toko.id')\n    expect(page.get_by_role('navigation')).to_be_hidden()\n    page.get_by_role('button', name='Menu').click()\n    expect(page.get_by_role('link', name='Pesanan Saya')).to_be_visible()\n\n# pytest tests/e2e --tracing retain-on-failure --screenshot only-on-failure"
+   }
+  ]
+ },
+ "qa-5-2": {
+  "exs": [
+   {
+    "t": "Kasus: menunggu kondisi, bukan menunggu waktu tetap",
+    "d": "Fungsi tunggu_sampai berhenti begitu kondisi terpenuhi, dan gagal jelas bila batas waktu habis.",
+    "code": "import time\n\ndef tunggu_sampai(kondisi, batas=2.0, jeda=0.05):\n    mulai = time.monotonic()\n    while time.monotonic() - mulai < batas:\n        if kondisi():\n            return round(time.monotonic() - mulai, 1)\n        time.sleep(jeda)\n    raise AssertionError(f'kondisi tidak terpenuhi dalam {batas} detik')\n\nsiap_pada = time.monotonic() + 0.3          # status pembayaran berubah setelah 0,3 detik\nstatus = lambda: 'Berhasil' if time.monotonic() >= siap_pada else 'Diproses'\n\nlama = tunggu_sampai(lambda: status() == 'Berhasil')\nprint('selesai menunggu dalam < 1 detik:', lama < 1, '(sleep(5) selalu 5 detik)')\ntry:\n    tunggu_sampai(lambda: status() == 'Dibatalkan', batas=0.2)\nexcept AssertionError as e:\n    print('GAGAL:', e)",
+    "out": "selesai menunggu dalam < 1 detik: True (sleep(5) selalu 5 detik)\nGAGAL: kondisi tidak terpenuhi dalam 0.2 detik"
+   },
+   {
+    "t": "Kasus: jam disuntikkan agar tes kedaluwarsa OTP stabil",
+    "d": "Tes yang memakai jam sungguhan bisa gagal tepat di pergantian menit; jam palsu menghilangkan itu.",
+    "code": "from datetime import datetime, timedelta\n\nclass OTP:\n    def __init__(self, kode, jam):\n        self.jam = jam\n        self.kode, self.dibuat = kode, jam()\n    def cocok(self, kode):\n        return kode == self.kode and self.jam() - self.dibuat <= timedelta(minutes=5)\n\nclass JamPalsu:\n    def __init__(self, t): self.t = t\n    def __call__(self): return self.t\n    def maju(self, **kw): self.t += timedelta(**kw)\n\njam = JamPalsu(datetime(2026, 12, 12, 9, 0))\notp = OTP('4821', jam)\njam.maju(minutes=4, seconds=59); print('4:59 ->', otp.cocok('4821'))\njam.maju(seconds=1);             print('5:00 ->', otp.cocok('4821'))\njam.maju(seconds=1);             print('5:01 ->', otp.cocok('4821'))",
+    "out": "4:59 -> True\n5:00 -> True\n5:01 -> False"
+   },
+   {
+    "t": "Kasus: mengacak urutan tes untuk menemukan ketergantungan",
+    "d": "Tes yang lulus hanya bila dijalankan setelah tes lain adalah sumber flaky.",
+    "code": "import random\n\nDB = {}\ndef tes_daftar():\n    DB['rina'] = {'saldo': 0}\ndef tes_topup():\n    assert 'rina' in DB, 'pengguna rina belum ada'   # bergantung pada tes_daftar\n    DB['rina']['saldo'] += 50000\n\ndef jalankan_acak(benih):\n    DB.clear()\n    urutan = [tes_daftar, tes_topup]\n    random.Random(benih).shuffle(urutan)\n    for t in urutan:\n        try:\n            t()\n        except AssertionError as e:\n            return f'benih {benih}: GAGAL {t.__name__} ({e})'\n    return f'benih {benih}: lulus'\n\nfor b in (4, 5, 6, 7):\n    print(jalankan_acak(b))\nprint('Perbaikan: tes_topup membuat pengguna sendiri di bagian Arrange')",
+    "out": "benih 4: GAGAL tes_topup (pengguna rina belum ada)\nbenih 5: lulus\nbenih 6: GAGAL tes_topup (pengguna rina belum ada)\nbenih 7: lulus\nPerbaikan: tes_topup membuat pengguna sendiri di bagian Arrange"
+   }
+  ]
+ },
+ "qa-5-3": {
+  "exs": [
+   {
+    "t": "Kasus: uji beban login dengan POST dan cek isi respons",
+    "code": "// login-load.js\nimport http from 'k6/http';\nimport { check, sleep } from 'k6';\n\nexport const options = {\n  vus: 50,\n  duration: '5m',\n  thresholds: {\n    http_req_duration: ['p(95)<800'],\n    checks: ['rate>0.99'],\n  },\n};\n\nexport default function () {\n  const r = http.post(`${__ENV.BASE_URL}/api/login`,\n    JSON.stringify({ email: `uji${__VU}@contoh.id`, sandi: 'RahasiaKuat!9' }),\n    { headers: { 'Content-Type': 'application/json' } });\n  check(r, {\n    'status 200': (x) => x.status === 200,\n    'ada token': (x) => x.json('token') !== undefined,\n  });\n  sleep(1);\n}"
+   },
+   {
+    "t": "Kasus: threshold berbeda per jenis permintaan",
+    "d": "Tag memisahkan halaman cepat dari endpoint berat agar batasnya adil.",
+    "code": "import http from 'k6/http';\nimport { sleep } from 'k6';\n\nexport const options = {\n  stages: [{ duration: '2m', target: 100 }, { duration: '10m', target: 100 }, { duration: '1m', target: 0 }],\n  thresholds: {\n    'http_req_duration{jenis:katalog}': ['p(95)<300'],\n    'http_req_duration{jenis:checkout}': ['p(95)<1200'],\n    http_req_failed: ['rate<0.01'],\n  },\n};\n\nexport default function () {\n  http.get(`${__ENV.BASE_URL}/api/produk`, { tags: { jenis: 'katalog' } });\n  sleep(2);\n  http.post(`${__ENV.BASE_URL}/api/checkout`, '{\"keranjang\": 1}', { tags: { jenis: 'checkout' } });\n  sleep(3);\n}"
+   },
+   {
+    "t": "Kasus: login sekali di setup lalu dipakai semua VU",
+    "d": "setup() berjalan sekali; hasilnya dikirim ke setiap iterasi.",
+    "code": "import http from 'k6/http';\nimport { check } from 'k6';\n\nexport const options = { vus: 20, iterations: 400 };\n\nexport function setup() {\n  const r = http.post(`${__ENV.BASE_URL}/api/login`,\n    JSON.stringify({ email: 'qa-bot@contoh.id', sandi: __ENV.SANDI_UJI }),\n    { headers: { 'Content-Type': 'application/json' } });\n  return { token: r.json('token') };\n}\n\nexport default function (data) {\n  const r = http.get(`${__ENV.BASE_URL}/api/pesanan`,\n    { headers: { Authorization: `Bearer ${data.token}` } });\n  check(r, { 'riwayat pesanan 200': (x) => x.status === 200 });\n}\n// SANDI_UJI=... BASE_URL=https://staging.toko.id k6 run riwayat.js"
+   }
+  ]
+ }
+}
