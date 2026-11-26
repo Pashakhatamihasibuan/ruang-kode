@@ -1,0 +1,16 @@
+{
+ "aturan": [
+  ["flex/grid", "class=\"[^\"]*(?<![\\w:-])(flex|inline-flex|grid|grid-cols-[\\w\\[]+|col-span-\\w+|justify-\\w+|items-\\w+)(?![\\w-])", "^Flexbox dan Grid"],
+  ["prefix responsif", "(?<![\\w@-])(sm|md|lg|xl|2xl|3xl):[a-z-]", "^Desain responsif"],
+  ["variant keadaan & mode gelap", "(?<![\\w-])(hover|focus|focus-visible|focus-within|active|disabled|invalid|checked|group-hover|group-focus|peer-[\\w\\[]+|dark|aria-[\\w-]+|has-\\[[^\\]]*\\]|motion-safe|motion-reduce):|(?<![\\w-])(group|peer)(?![\\w-])", "^Hover, focus"],
+  ["transisi", "(?<![\\w:-])(transition(-[a-z]+)?|duration-\\d+|ease-(in|out|in-out|linear))(?![\\w-])", "^Hover, focus"],
+  ["@apply & komponen", "@apply|@layer\\s+components|twMerge|className=", "^Komponen dan @apply"],
+  ["tema & konfigurasi", "@theme|tailwind\\.config|theme:\\s*\\{", "^Tema dan konfigurasi"],
+  ["posisi, z-index, overflow", "class=\"[^\"]*(?<![\\w:-])(relative|absolute|fixed|sticky|z-\\d+|-?inset-[\\w-]+|overflow-[\\w-]+|isolate)(?![\\w-])", "^Posisi, z-index"],
+  ["transform & animasi", "(?<![\\w-])(-?translate-[xy]-[\\w/]+|scale-\\d+|-?rotate-\\d+|animate-[a-z]+)(?![\\w-])", "^Transform, transisi"],
+  ["JavaScript", "addEventListener|classList|querySelector|getElementById|=>|\\bconst\\s|console\\.", "^Menu ponsel dengan sedikit JavaScript"],
+  ["fitur v4 (container query, @utility, @custom-variant, starting:)", "@container|(?<![\\w-])@(sm|md|lg|xl):|@utility|@custom-variant|@plugin|(?<![\\w-])starting:", "^Tailwind v4"],
+  ["React/TSX & import modul", "^\\s*import\\s|^\\s*export\\s|<[A-Z]\\w+[\\s>]", "^\\b$"]
+ ],
+ "abaikan": []
+}

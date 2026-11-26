@@ -17,6 +17,18 @@
     "code": "Main\n    Output \"Halo, \" & \"Indonesia\" & \"!\"\nEnd",
     "out": "Halo, Indonesia!"
    }
+  ],
+  "cx": [
+   {
+    "t": "Simbol flowchart dan padanannya di Flowgorithm",
+    "b": "",
+    "code": "Simbol            Bentuk           Di Flowgorithm       Contoh isi\nTerminal          oval             Main / End           Mulai, Selesai\nProses            persegi          Assign               total = harga * qty\nInput             jajar genjang    Input                Input nilai\nOutput            jajar genjang    Output               Output \"Lulus\"\nKeputusan         belah ketupat    If                   nilai >= 75 ?\nPerulangan        segi enam        For / While / Do     For i = 1 to 10\nDeklarasi         persegi bergaris Declare              Integer umur\nPanggilan fungsi  persegi ganda    Call                 (dibahas di modul 5)\nKonektor          lingkaran        (otomatis)           A -> A"
+   },
+   {
+    "t": "Flowchart proses bisnis dengan swimlane: pemesanan kopi",
+    "b": "Analis sistem memakai flowchart seperti ini saat wawancara kebutuhan, sebelum ada satu baris kode pun.",
+    "code": "PELANGGAN        | KASIR                         | BARISTA\n-----------------+-------------------------------+------------------\n(Mulai)          |                               |\n[Pesan kopi] ----+-> [Catat pesanan]             |\n                 |   <Bayar QRIS berhasil?>      |\n                 |    | tidak -> [Minta metode lain]\n                 |    | ya                       |\n                 |   [Cetak nomor antre] --------+-> [Buat kopi]\n[Terima kopi] <--+-------------------------------+-- [Panggil nomor]\n(Selesai)        |                               |"
+   }
   ]
  },
  "flowg-1-2": {
@@ -125,6 +137,273 @@
     "b": "Promo \"diskon 20% + voucher 10%\" bukan berarti diskon 30%. Voucher dihitung dari harga setelah diskon pertama, sehingga urutan Assign menentukan hasil.",
     "code": "Main\n    Declare Real harga, diskonToko, setelahDiskon, voucher, bayar\n    Input harga\n    Assign diskonToko = harga * 20 / 100\n    Assign setelahDiskon = harga - diskonToko\n    Assign voucher = setelahDiskon * 10 / 100\n    Assign bayar = setelahDiskon - voucher\n    Output \"Setelah diskon toko: \" & setelahDiskon\n    Output \"Potongan voucher: \" & voucher\n    Output \"Bayar: \" & bayar\nEnd",
     "out": "Masukan 500000\nSetelah diskon toko: 400000\nPotongan voucher: 40000\nBayar: 360000 (bukan 350000)"
+   }
+  ]
+ },
+ "flowg-3-1": {
+  "exs": [
+   {
+    "t": "Kasus: lulus atau remedial",
+    "code": "Main\n    Declare Integer nilai\n    Input nilai\n    If nilai >= 75 Then\n        Output \"Lulus\"\n    Else\n        Output \"Remedial\"\n    End If\nEnd",
+    "out": "Masukan 80 → Lulus\nMasukan 74 → Remedial"
+   },
+   {
+    "t": "Kasus: cabang False dibiarkan kosong",
+    "code": "Main\n    Declare Integer stok\n    Input stok\n    If stok < 5 Then\n        Output \"Stok menipis!\"\n    End If\n    Output \"Stok: \" & stok\nEnd",
+    "out": "Masukan 3 → Stok menipis!\n            Stok: 3\nMasukan 12 → Stok: 12"
+   },
+   {
+    "t": "Kasus: beberapa simbol di satu cabang",
+    "code": "Main\n    Declare Integer belanja, ongkir\n    Input belanja\n    If belanja >= 100000 Then\n        Assign ongkir = 0\n        Output \"Gratis ongkir!\"\n    Else\n        Assign ongkir = 15000\n    End If\n    Output \"Total: \" & (belanja + ongkir)\nEnd",
+    "out": "Masukan 150000 → Gratis ongkir!\n                 Total: 150000\nMasukan 60000 → Total: 75000"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Aturan ganjil-genap kendaraan di Jakarta",
+    "b": "Petugas memeriksa angka terakhir pelat dan tanggal. Kendaraan boleh melintas jika keduanya sama-sama ganjil atau sama-sama genap.",
+    "code": "Main\n    Declare Integer angkaPlat, digit, tanggal\n    Input angkaPlat\n    Input tanggal\n    Assign digit = angkaPlat mod 10\n    If digit mod 2 = tanggal mod 2 Then\n        Output \"Boleh melintas\"\n    Else\n        Output \"Dilarang melintas\"\n    End If\nEnd",
+    "out": "Masukan 1234, 19 → Dilarang melintas\nMasukan 5677, 19 → Boleh melintas\nMasukan 2020, 20 → Boleh melintas"
+   }
+  ]
+ },
+ "flowg-3-2": {
+  "exs": [
+   {
+    "t": "Kasus: kategori umur pengunjung",
+    "code": "Main\n    Declare Integer umur\n    Input umur\n    If umur < 5 Then\n        Output \"Balita: gratis\"\n    Else\n        If umur < 18 Then\n            Output \"Anak: Rp15000\"\n        Else\n            If umur < 60 Then\n                Output \"Dewasa: Rp25000\"\n            Else\n                Output \"Lansia: Rp10000\"\n            End If\n        End If\n    End If\nEnd",
+    "out": "Masukan 3 → Balita: gratis\nMasukan 17 → Anak: Rp15000\nMasukan 35 → Dewasa: Rp25000\nMasukan 65 → Lansia: Rp10000"
+   },
+   {
+    "t": "Kasus: ongkir berdasarkan zona",
+    "code": "Main\n    Declare Integer zona, ongkir\n    Input zona\n    If zona = 1 Then\n        Assign ongkir = 9000\n    Else\n        If zona = 2 Then\n            Assign ongkir = 15000\n        Else\n            Assign ongkir = 25000\n        End If\n    End If\n    Output \"Ongkir zona \" & zona & \": \" & ongkir\nEnd",
+    "out": "Masukan 2 → Ongkir zona 2: 15000"
+   },
+   {
+    "t": "Kasus: If di cabang True (member dan belanja)",
+    "code": "Main\n    Declare Boolean member\n    Declare Integer belanja\n    Input member\n    Input belanja\n    If member Then\n        If belanja >= 200000 Then\n            Output \"Diskon 15%\"\n        Else\n            Output \"Diskon 5%\"\n        End If\n    Else\n        Output \"Tidak ada diskon\"\n    End If\nEnd",
+    "out": "Masukan true, 250000 → Diskon 15%\nMasukan false, 250000 → Tidak ada diskon"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Konversi nilai dengan validasi dan uji batas",
+    "b": "Sistem akademik kampus menolak nilai di luar 0 sampai 100 lebih dulu, lalu memeriksa batas dari yang tertinggi. QA menguji setiap nilai tepat di batas.",
+    "code": "Main\n    Declare Integer n\n    Declare String huruf\n    Input n\n    If n < 0 or n > 100 Then\n        Assign huruf = \"tidak valid\"\n    Else\n        If n >= 85 Then\n            Assign huruf = \"A\"\n        Else\n            If n >= 75 Then\n                Assign huruf = \"B\"\n            Else\n                If n >= 60 Then\n                    Assign huruf = \"C\"\n                Else\n                    Assign huruf = \"D\"\n                End If\n            End If\n        End If\n    End If\n    Output n & \": \" & huruf\nEnd",
+    "out": "-1: tidak valid\n59: D\n60: C\n74: C\n75: B\n85: A\n101: tidak valid"
+   }
+  ]
+ },
+ "flowg-4-1": {
+  "exs": [
+   {
+    "t": "Kasus: kelipatan 3 sampai 30",
+    "code": "Main\n    Declare Integer i\n    For i = 3 to 30 step 3\n        Output i\n    End For\nEnd",
+    "out": "3\n6\n9\n12\n15\n18\n21\n24\n27\n30"
+   },
+   {
+    "t": "Kasus: hitung mundur dengan arah Decreasing",
+    "code": "Main\n    Declare Integer t\n    For t = 5 to 1 decreasing\n        Output t & \"...\"\n    End For\n    Output \"Mulai!\"\nEnd",
+    "out": "5...\n4...\n3...\n2...\n1...\nMulai!"
+   },
+   {
+    "t": "Kasus: menjumlah gaji 4 minggu",
+    "code": "Main\n    Declare Integer minggu, upah, total\n    Assign total = 0\n    For minggu = 1 to 4\n        Input upah\n        Assign total = total + upah\n    End For\n    Output \"Total gaji sebulan: \" & total\nEnd",
+    "out": "Masukan 350000, 400000, 375000, 425000 → Total gaji sebulan: 1550000"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Tabel perkalian bersarang dan hitung mundur melompat",
+    "b": "Aplikasi belajar anak menampilkan tabel perkalian 3 × 3. For di dalam For membentuk baris dan kolom; For kedua memakai langkah -2.",
+    "code": "Main\n    Declare Integer i, j, t\n    Declare String baris\n    For i = 1 to 3\n        Assign baris = \"\"\n        For j = 1 to 3\n            Assign baris = baris & (i * j) & \" \"\n        End For\n        Output baris\n    End For\n    For t = 10 to 0 decreasing step 2\n        Output t\n    End For\nEnd",
+    "out": "1 2 3\n2 4 6\n3 6 9\n10\n8\n6\n4\n2\n0"
+   }
+  ]
+ },
+ "flowg-4-2": {
+  "exs": [
+   {
+    "t": "Kasus: faktorial 5",
+    "code": "Main\n    Declare Integer n, i, hasil\n    Input n\n    Assign hasil = 1          // bukan 0!\n    For i = 1 to n\n        Assign hasil = hasil * i\n    End For\n    Output n & \"! = \" & hasil\nEnd",
+    "out": "Masukan 5 → 5! = 120"
+   },
+   {
+    "t": "Kasus: jumlah n bilangan ganjil pertama",
+    "code": "Main\n    Declare Integer n, i, total\n    Input n\n    Assign total = 0\n    For i = 1 to n\n        Assign total = total + (2 * i - 1)\n    End For\n    Output \"Jumlah \" & n & \" bilangan ganjil pertama: \" & total\nEnd",
+    "out": "Masukan 5 → Jumlah 5 bilangan ganjil pertama: 25",
+    "d": "1 + 3 + 5 + 7 + 9 = 25, selalu sama dengan n × n."
+   },
+   {
+    "t": "Kasus: Fibonacci sampai suku ke-10",
+    "code": "Main\n    Declare Integer i, a, b, c\n    Declare String deret\n    Assign a = 0\n    Assign b = 1\n    Assign deret = \"\"\n    For i = 1 to 10\n        Assign deret = deret & a & \" \"\n        Assign c = a + b\n        Assign a = b\n        Assign b = c\n    End For\n    Output deret\nEnd",
+    "out": "0 1 1 2 3 5 8 13 21 34"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Faktorial: banyak cara menyusun urutan presentasi",
+    "b": "Panitia ingin tahu ada berapa urutan presentasi untuk 8 kelompok. Jawabannya 8!, dan angkanya cepat sekali membesar. Di bahasa lain, Integer 64-bit sudah tidak cukup mulai 21!.",
+    "code": "Main\n    Declare Integer kelompok, i, cara\n    Input kelompok\n    Assign cara = 1\n    For i = 1 to kelompok\n        Assign cara = cara * i\n    End For\n    Output kelompok & \" kelompok bisa disusun dalam \" & cara & \" urutan\"\nEnd",
+    "out": "Masukan 3 → 3 kelompok bisa disusun dalam 6 urutan\nMasukan 8 → 8 kelompok bisa disusun dalam 40320 urutan"
+   }
+  ]
+ },
+ "flowg-4-3": {
+  "exs": [
+   {
+    "t": "Kasus: menabung sampai target",
+    "code": "Main\n    Declare Integer saldo, bulan\n    Assign saldo = 0\n    Assign bulan = 0\n    While saldo < 1000000\n        Assign saldo = saldo + 150000\n        Assign bulan = bulan + 1\n    End While\n    Output \"Target tercapai di bulan ke-\" & bulan & \", saldo \" & saldo\nEnd",
+    "out": "Target tercapai di bulan ke-7, saldo 1050000"
+   },
+   {
+    "t": "Kasus: menghitung banyak digit",
+    "code": "Main\n    Declare Integer n, digit\n    Input n\n    Assign digit = 0\n    While n > 0\n        Assign n = Int(n / 10)\n        Assign digit = digit + 1\n    End While\n    Output \"Banyak digit: \" & digit\nEnd",
+    "out": "Masukan 2026 → Banyak digit: 4"
+   },
+   {
+    "t": "Kasus: menjumlah sampai pengguna mengetik 0",
+    "code": "Main\n    Declare Integer harga, total\n    Assign total = 0\n    Input harga\n    While harga <> 0\n        Assign total = total + harga\n        Input harga\n    End While\n    Output \"Total: \" & total\nEnd",
+    "out": "Masukan 15000, 7000, 0 → Total: 22000\nMasukan 0 → Total: 0"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Komputer menebak angka dengan strategi tengah",
+    "b": "Strategi yang sama dipakai binary search dan git bisect: selalu tebak di tengah rentang, lalu buang separuh yang salah. Angka 1 sampai 100 selalu tertebak paling banyak 7 kali.",
+    "code": "Main\n    Declare Integer rahasia, bawah, atas, tebakan, coba\n    Input rahasia\n    Assign bawah = 1\n    Assign atas = 100\n    Assign coba = 0\n    Assign tebakan = 0\n    While tebakan <> rahasia\n        Assign tebakan = Int((bawah + atas) / 2)\n        Assign coba = coba + 1\n        If tebakan < rahasia Then\n            Assign bawah = tebakan + 1\n        Else\n            If tebakan > rahasia Then\n                Assign atas = tebakan - 1\n            End If\n        End If\n    End While\n    Output \"Tertebak dalam \" & coba & \" kali\"\nEnd",
+    "out": "Masukan 50 → Tertebak dalam 1 kali\nMasukan 37 → Tertebak dalam 3 kali\nMasukan 100 → Tertebak dalam 7 kali"
+   }
+  ]
+ },
+ "flowg-4-4": {
+  "exs": [
+   {
+    "t": "Kasus: minta umur sampai masuk akal",
+    "code": "Main\n    Declare Integer umur\n    Do\n        Output \"Umur (1-120)?\"\n        Input umur\n    Loop While umur < 1 or umur > 120\n    Output \"Umur tersimpan: \" & umur\nEnd",
+    "out": "Masukan 0, 150, 21 → (pertanyaan muncul 3 kali) Umur tersimpan: 21"
+   },
+   {
+    "t": "Kasus: PIN dicoba minimal sekali",
+    "code": "Main\n    Declare Integer pin, coba\n    Assign coba = 0\n    Do\n        Input pin\n        Assign coba = coba + 1\n    Loop While pin <> 2468\n    Output \"PIN benar setelah \" & coba & \" percobaan\"\nEnd",
+    "out": "Masukan 1111, 2468 → PIN benar setelah 2 percobaan"
+   },
+   {
+    "t": "Kasus: tanya \"tambah barang lagi?\"",
+    "code": "Main\n    Declare Integer harga, total\n    Declare String lagi\n    Assign total = 0\n    Do\n        Input harga\n        Assign total = total + harga\n        Output \"Tambah barang lagi? (y/n)\"\n        Input lagi\n    Loop While lagi = \"y\"\n    Output \"Total: \" & total\nEnd",
+    "out": "Masukan 12000, y, 8000, n → Total: 20000"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Menu ATM sederhana",
+    "b": "Mesin ATM selalu menampilkan menu minimal sekali, lalu terus kembali ke menu sampai nasabah memilih keluar. Penarikan yang melebihi saldo ditolak di dalam loop.",
+    "code": "Main\n    Declare Integer saldo, pilihan, jumlah\n    Assign saldo = 500000\n    Do\n        Output \"1 Cek saldo  2 Tarik  0 Keluar\"\n        Input pilihan\n        If pilihan = 1 Then\n            Output \"Saldo: \" & saldo\n        Else\n            If pilihan = 2 Then\n                Input jumlah\n                If jumlah <= saldo Then\n                    Assign saldo = saldo - jumlah\n                    Output \"Tarik \" & jumlah & \" berhasil\"\n                Else\n                    Output \"Ditolak: saldo tidak cukup\"\n                End If\n            End If\n        End If\n    Loop While pilihan <> 0\n    Output \"Terima kasih\"\nEnd",
+    "out": "Masukan 1, 2, 200000, 2, 900000, 1, 0\nSaldo: 500000\nTarik 200000 berhasil\nDitolak: saldo tidak cukup\nSaldo: 300000\nTerima kasih\n(menu ditampilkan sebelum setiap pilihan)"
+   }
+  ]
+ },
+ "flowg-5-1": {
+  "exs": [
+   {
+    "t": "Kasus: berapa hari hujan dalam seminggu",
+    "code": "Main\n    Declare Integer hujan[7]\n    Declare Integer i, hariHujan\n    For i = 0 to 6\n        Input hujan[i]          // curah hujan (mm)\n    End For\n    Assign hariHujan = 0\n    For i = 0 to 6\n        If hujan[i] > 0 Then\n            Assign hariHujan = hariHujan + 1\n        End If\n    End For\n    Output \"Hari hujan: \" & hariHujan\nEnd",
+    "out": "Masukan 0, 12, 5, 0, 0, 30, 2 → Hari hujan: 4"
+   },
+   {
+    "t": "Kasus: menampilkan daftar dari belakang",
+    "code": "Main\n    Declare String nama[3]\n    Declare Integer i\n    For i = 0 to 2\n        Input nama[i]\n    End For\n    For i = 2 to 0 decreasing\n        Output i & \": \" & nama[i]\n    End For\nEnd",
+    "out": "Masukan Ani, Bayu, Cici\n2: Cici\n1: Bayu\n0: Ani"
+   },
+   {
+    "t": "Kasus: nilai terendah dari array",
+    "code": "Main\n    Declare Integer nilai[5]\n    Declare Integer i, minimum\n    For i = 0 to 4\n        Input nilai[i]\n    End For\n    Assign minimum = nilai[0]\n    For i = 1 to 4\n        If nilai[i] < minimum Then\n            Assign minimum = nilai[i]\n        End If\n    End For\n    Output \"Terendah: \" & minimum\nEnd",
+    "out": "Masukan 70, 85, 62, 91, 78 → Terendah: 62"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Rekap nilai kelas dengan dua array sejajar",
+    "b": "Wali kelas memasukkan nama dan nilai, lalu mendapat rata-rata, siswa tertinggi, dan daftar remedial. Indeks yang sama di nama[] dan nilai[] menunjuk siswa yang sama.",
+    "code": "Main\n    Declare String nama[5]\n    Declare Integer nilai[5]\n    Declare Integer i, total, iMaks\n    For i = 0 to 4\n        Input nama[i]\n        Input nilai[i]\n    End For\n    Assign total = 0\n    Assign iMaks = 0\n    For i = 0 to 4\n        Assign total = total + nilai[i]\n        If nilai[i] > nilai[iMaks] Then\n            Assign iMaks = i\n        End If\n    End For\n    Output \"Rata-rata: \" & total / 5\n    Output \"Tertinggi: \" & nama[iMaks] & \" (\" & nilai[iMaks] & \")\"\n    For i = 0 to 4\n        If nilai[i] < 70 Then\n            Output \"Remedial: \" & nama[i]\n        End If\n    End For\nEnd",
+    "out": "Masukan Ani 88, Budi 65, Citra 92, Dedi 70, Eka 58\nRata-rata: 74.6\nTertinggi: Citra (92)\nRemedial: Budi\nRemedial: Eka"
+   }
+  ]
+ },
+ "flowg-5-2": {
+  "code": "Function HitungLuas (Integer p, Integer l) → Integer\n    Declare Integer hasil\n    Assign hasil = p * l\nReturn hasil\n\nFunction CetakGaris (Integer n) → None\n    Declare Integer i\n    Declare String garis\n    Assign garis = \"\"\n    For i = 1 to n\n        Assign garis = garis & \"-\"\n    End For\n    Output garis\nReturn\n\nMain\n    Declare Integer luas\n    Assign luas = HitungLuas(8, 5)\n    Output \"Luas: \" & luas\n    Call CetakGaris(3)\nEnd",
+  "out": "Luas: 40\n---",
+  "exs": [
+   {
+    "t": "Kasus: fungsi konversi suhu",
+    "code": "Function KeFahrenheit (Real c) → Real\n    Declare Real f\n    Assign f = c * 9 / 5 + 32\nReturn f\n\nMain\n    Output KeFahrenheit(100)\n    Output KeFahrenheit(25)\nEnd",
+    "out": "212\n77"
+   },
+   {
+    "t": "Kasus: fungsi Boolean dipakai di If",
+    "code": "Function IsGenap (Integer n) → Boolean\n    Declare Boolean hasil\n    Assign hasil = n mod 2 = 0\nReturn hasil\n\nMain\n    Declare Integer x\n    Input x\n    If IsGenap(x) Then\n        Output x & \" genap\"\n    Else\n        Output x & \" ganjil\"\n    End If\nEnd",
+    "out": "Masukan 14 → 14 genap"
+   },
+   {
+    "t": "Kasus: prosedur kop struk dipanggil dua kali",
+    "code": "Function CetakKop (String toko) → None\n    Output \"=== \" & toko & \" ===\"\nReturn\n\nMain\n    Call CetakKop(\"Warung Bu Sri\")\n    Output \"Nasi rames  15000\"\n    Call CetakKop(\"Terima kasih\")\nEnd",
+    "out": "=== Warung Bu Sri ===\nNasi rames  15000\n=== Terima kasih ==="
+   }
+  ],
+  "cx": [
+   {
+    "t": "Fungsi BMI dan prosedur cetak laporan",
+    "b": "Puskesmas membuat laporan BMI. Rumus dan kategori ada di fungsi terpisah, sedangkan prosedur CetakLaporan hanya mengatur tampilan.",
+    "code": "Function HitungBMI (Real berat, Real tinggi) → Real\n    Declare Real bmi\n    Assign bmi = berat / (tinggi * tinggi)\nReturn bmi\n\nFunction Kategori (Real bmi) → String\n    Declare String k\n    If bmi < 18.5 Then\n        Assign k = \"Kurus\"\n    Else\n        If bmi < 25 Then\n            Assign k = \"Normal\"\n        Else\n            Assign k = \"Gemuk\"\n        End If\n    End If\nReturn k\n\nFunction CetakLaporan (String nama, Real berat, Real tinggi) → None\n    Declare Real bmi\n    Assign bmi = HitungBMI(berat, tinggi)\n    Output nama & \": BMI \" & bmi & \" (\" & Kategori(bmi) & \")\"\nReturn\n\nMain\n    Call CetakLaporan(\"Rudi\", 52, 1.75)\n    Call CetakLaporan(\"Sinta\", 58, 1.62)\n    Call CetakLaporan(\"Bayu\", 85, 1.70)\nEnd",
+    "out": "Rudi: BMI 16.98 (Kurus)\nSinta: BMI 22.1 (Normal)\nBayu: BMI 29.41 (Gemuk)\n(angka BMI dibulatkan di sini; Flowgorithm menampilkan lebih banyak desimal)"
+   }
+  ]
+ },
+ "flowg-5-3": {
+  "exs": [
+   {
+    "t": "Tantangan 1: tambahkan PPN 11% setelah diskon",
+    "code": "Main\n    Declare Integer total\n    Declare Real ppn, akhir\n    Assign total = 94500          // hasil setelah diskon\n    Assign ppn = total * 11 / 100\n    Assign akhir = total + ppn\n    Output \"PPN 11%: \" & ppn\n    Output \"Total + PPN: \" & akhir\nEnd",
+    "out": "PPN 11%: 10395\nTotal + PPN: 104895"
+   },
+   {
+    "t": "Tantangan 2: hitung jumlah barang yang dibeli",
+    "code": "Main\n    Declare Integer harga, jumlah, total, barang\n    Assign total = 0\n    Assign barang = 0\n    Do\n        Input harga\n        If harga > 0 Then\n            Input jumlah\n            Assign total = total + harga * jumlah\n            Assign barang = barang + jumlah\n        End If\n    Loop While harga > 0\n    Output barang & \" barang, total \" & total\nEnd",
+    "out": "Masukan 25000, 2, 18000, 3, 0 → 5 barang, total 104000"
+   },
+   {
+    "t": "Kasus: uji dengan uang yang kurang",
+    "code": "Main\n    Declare Integer total, bayar\n    Assign total = 94500\n    Input bayar\n    If bayar >= total Then\n        Output \"Kembalian: \" & (bayar - total)\n    Else\n        Output \"Uang kurang \" & (total - bayar)\n    End If\nEnd",
+    "out": "Masukan 90000 → Uang kurang 4500\nMasukan 94500 → Kembalian: 0",
+    "d": "Uji juga uang yang pas: kembalian 0 harus tetap masuk cabang True."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Kasir kafe: diskon, PPN, dan pecahan kembalian",
+    "b": "Kasir kafe memakai semua yang sudah dipelajari: Do untuk input barang, If untuk diskon, dan array pecahan uang untuk menghitung lembar kembalian dengan Int dan mod.",
+    "code": "Main\n    Declare Integer harga, jumlah, subtotal, diskon, ppn, total, uang, kembali, i, lembar\n    Declare Integer pecahan[8]\n    Assign subtotal = 0\n    Do\n        Input harga\n        If harga > 0 Then\n            Input jumlah\n            Assign subtotal = subtotal + harga * jumlah\n        End If\n    Loop While harga > 0\n    Assign diskon = 0\n    If subtotal >= 200000 Then\n        Assign diskon = subtotal * 5 / 100\n    End If\n    Assign ppn = (subtotal - diskon) * 11 / 100\n    Assign total = subtotal - diskon + ppn\n    Output \"Subtotal \" & subtotal & \", diskon \" & diskon & \", PPN \" & ppn & \", TOTAL \" & total\n    Input uang\n    Assign kembali = uang - total\n    Output \"Kembali \" & kembali\n    Assign pecahan = {20000, 10000, 5000, 2000, 1000, 500, 200, 100}\n    For i = 0 to 7\n        Assign lembar = Int(kembali / pecahan[i])\n        Assign kembali = kembali mod pecahan[i]\n        If lembar > 0 Then\n            Output \"  \" & lembar & \" x \" & pecahan[i]\n        End If\n    End For\n    Output \"Sisa receh: \" & kembali\nEnd",
+    "out": "Masukan 28000 5, 22000 2, 6000 4, 0, lalu uang 250000\nSubtotal 208000, diskon 10400, PPN 21736, TOTAL 219336\nKembali 30664\n  1 x 20000\n  1 x 10000\n  1 x 500\n  1 x 100\nSisa receh: 64"
+   }
+  ]
+ },
+ "flowg-5-4": {
+  "exs": [
+   {
+    "t": "Kasus: simbol If menjadi if/else",
+    "code": "# Flowchart: Input x, If x mod 2 = 0 Then Output \"genap\" Else Output \"ganjil\"\nx = 17\nif x % 2 == 0:          # mod menjadi %, = menjadi ==\n    print(x, \"genap\")\nelse:\n    print(x, \"ganjil\")",
+    "out": "17 ganjil"
+   },
+   {
+    "t": "Kasus: simbol While menjadi while",
+    "code": "# Flowchart TargetTabungan\nsaldo = 0\nbulan = 0\nwhile saldo < 1000000:\n    saldo = saldo + 150000\n    bulan = bulan + 1\nprint(\"Target tercapai di bulan ke-\" + str(bulan) + \", saldo \" + str(saldo))",
+    "out": "Target tercapai di bulan ke-7, saldo 1050000"
+   },
+   {
+    "t": "Kasus: Function menjadi def",
+    "code": "# Flowchart: Function HitungLuas(Integer p, Integer l) -> Integer\ndef hitung_luas(p, l):\n    hasil = p * l\n    return hasil\n\nluas = hitung_luas(8, 5)\nprint(\"Luas: \" + str(luas))",
+    "out": "Luas: 40",
+    "d": "Operator & untuk menggabungkan teks menjadi + dengan str() di Python."
    }
   ]
  }

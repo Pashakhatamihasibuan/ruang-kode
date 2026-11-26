@@ -1,0 +1,334 @@
+{
+ "tw-1-1": {
+  "exs": [
+   {
+    "t": "Kasus: kartu pengumuman dari kelas utilitas",
+    "code": "<div class=\"max-w-md mx-auto mt-8 p-6 bg-amber-50 border border-amber-200 rounded-xl\">\n  <h2 class=\"text-xl font-bold text-amber-900\">Pengumuman</h2>\n  <p class=\"mt-2 text-amber-800\">Ujian tengah semester dimulai Senin depan.</p>\n</div>",
+    "d": "Setiap kelas melakukan satu hal: p-6 padding, bg-amber-50 latar, rounded-xl sudut."
+   },
+   {
+    "t": "Kasus: CSS biasa dibandingkan dengan Tailwind",
+    "code": "<!-- CSS biasa: .tombol { padding: 8px 16px; background: #0284c7; color: white; border-radius: 8px; } -->\n<button class=\"tombol\">Daftar</button>\n\n<!-- Tailwind: gaya yang sama langsung di HTML -->\n<button class=\"px-4 py-2 bg-sky-600 text-white rounded-lg\">Daftar</button>"
+   },
+   {
+    "t": "Kasus: halaman latihan dengan Play CDN",
+    "code": "<!doctype html>\n<html lang=\"id\">\n<head>\n  <meta charset=\"utf-8\">\n  <script src=\"https://cdn.tailwindcss.com\"></script>\n</head>\n<body class=\"bg-slate-100\">\n  <h1 class=\"m-6 text-3xl font-bold text-slate-800\">Halo, Tailwind!</h1>\n</body>\n</html>",
+    "d": "Play CDN cocok untuk belajar; untuk proyek sungguhan pasang lewat npm."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Memasang Tailwind v4 di proyek Vite",
+    "b": "Tim memulai proyek landing page dengan Vite. Tiga langkah: pasang paket, daftarkan plugin, dan impor Tailwind di file CSS utama.",
+    "code": "# 1. buat proyek dan pasang paket\nnpm create vite@latest landing -- --template vanilla\ncd landing && npm install tailwindcss @tailwindcss/vite\n\n# 2. vite.config.js: tambahkan tailwindcss() ke daftar plugins\n\n# 3. src/style.css\n@import \"tailwindcss\";\n\n<!-- 4. index.html: pakai kelas utilitas -->\n<button class=\"rounded-lg bg-emerald-600 px-4 py-2 font-semibold text-white\">\n  Daftar sekarang\n</button>",
+    "lang": "bash"
+   },
+   {
+    "t": "Kenapa CSS hasil akhirnya kecil",
+    "b": "Saat build, Tailwind memindai file HTML dan hanya membuat CSS untuk kelas yang benar-benar ditulis. Halaman di bawah hanya memakai 12 kelas, jadi CSS hasilnya hanya berisi 12 aturan itu, bukan puluhan ribu kelas yang mungkin.",
+    "code": "<div class=\"p-6 bg-white rounded-xl\">\n  <h2 class=\"text-lg font-semibold text-slate-900\">Rina Wulandari</h2>\n  <p class=\"mt-1 text-sm text-slate-500\">Frontend Developer</p>\n  <button class=\"mt-4 px-4 py-2 bg-emerald-600 text-white\">Ikuti</button>\n</div>\n<!-- kelas yang dibuatkan CSS: p-6 bg-white rounded-xl text-lg font-semibold text-slate-900\n     mt-1 text-sm text-slate-500 mt-4 px-4 py-2 bg-emerald-600 text-white -->"
+   }
+  ]
+ },
+ "tw-1-2": {
+  "exs": [
+   {
+    "t": "Kasus: jarak di dalam dan di luar kotak",
+    "code": "<div class=\"m-4 p-6 bg-sky-100\">\n  m-4 = margin 16px, p-6 = padding 24px\n</div>\n<div class=\"mx-4 mt-2 px-3 py-1 bg-sky-200\">mx-4 mt-2 px-3 py-1</div>"
+   },
+   {
+    "t": "Kasus: lebar setengah, penuh, dan maksimum",
+    "code": "<div class=\"w-full bg-emerald-100 p-2\">w-full</div>\n<div class=\"w-1/2 bg-emerald-200 p-2\">w-1/2</div>\n<div class=\"max-w-xs mx-auto bg-emerald-300 p-2\">max-w-xs di tengah (mx-auto)</div>\n<div class=\"h-16 w-16 bg-emerald-500\"></div>"
+   },
+   {
+    "t": "Kasus: tingkat warna dan transparansi",
+    "code": "<p class=\"p-2 bg-rose-50 text-rose-900\">rose-50: paling terang</p>\n<p class=\"p-2 bg-rose-500 text-white\">rose-500: sedang</p>\n<p class=\"p-2 bg-rose-900 text-rose-50\">rose-900: gelap</p>\n<p class=\"p-2 bg-sky-600/20 text-sky-900\">sky-600 dengan transparansi 20%</p>\n<p class=\"p-2 w-[310px] bg-[#B4532A] text-white\">nilai khusus dengan kurung siku</p>"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Kartu harga dengan skala jarak yang konsisten",
+    "b": "Desain sistem memakai kelipatan 4px. Jarak di kartu harga ini hanya memakai mt-2, mt-4, mt-6, dan mt-8 sehingga semua kartu di situs terasa seragam.",
+    "code": "<div class=\"mx-auto max-w-sm rounded-2xl border border-slate-200 bg-white p-6 shadow-sm\">\n  <p class=\"text-sm text-emerald-700\">Paling populer</p>\n  <h3 class=\"mt-2 text-2xl font-bold text-slate-900\">Kelas Frontend</h3>\n  <p class=\"mt-4 text-4xl font-extrabold\">Rp499rb<span class=\"text-base text-slate-500\">/bulan</span></p>\n  <ul class=\"mt-6 space-y-3 text-slate-700\">\n    <li>✓ 120 video materi</li><li>✓ Review proyek mingguan</li><li>✓ Sertifikat</li>\n  </ul>\n  <a href=\"#\" class=\"mt-8 block rounded-lg bg-emerald-600 px-4 py-3 text-center font-semibold text-white\">Mulai belajar</a>\n</div>\n<!-- Desain minta 18px? Pakai p-4 (16px) atau p-[18px] bila harus persis. -->"
+   }
+  ]
+ },
+ "tw-1-3": {
+  "exs": [
+   {
+    "t": "Kasus: judul, subjudul, dan paragraf artikel",
+    "code": "<h1 class=\"text-4xl font-bold text-slate-900\">Wisata Danau Toba</h1>\n<p class=\"mt-1 text-lg font-medium text-slate-600\">Panduan liburan 3 hari</p>\n<p class=\"mt-4 text-base leading-relaxed text-slate-700\">Danau vulkanik terbesar di Asia Tenggara ini ...</p>"
+   },
+   {
+    "t": "Kasus: label kategori dan kode",
+    "code": "<p class=\"text-xs font-semibold uppercase tracking-widest text-emerald-700\">Teknologi</p>\n<p class=\"font-mono text-sm bg-slate-100 px-2\">npm install tailwindcss</p>\n<p class=\"font-serif italic text-slate-600\">\"Belajar itu proses, bukan perlombaan.\"</p>"
+   },
+   {
+    "t": "Kasus: judul produk panjang yang dipotong",
+    "code": "<div class=\"w-48\">\n  <p class=\"truncate font-semibold\">Sepatu Lari Nusantara Edisi Terbatas Warna Hitam</p>\n  <p class=\"text-center text-sm underline\">Lihat detail</p>\n</div>",
+    "d": "truncate memotong teks satu baris dan menambahkan elipsis (...)."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Artikel blog yang nyaman dibaca",
+    "b": "Redaksi blog memakai pola tipografi yang sama di setiap artikel: label kategori kecil berhuruf kapital, judul besar, ringkasan berjarak baris lega, dan lebar paragraf dibatasi max-w-prose.",
+    "code": "<article class=\"mx-auto max-w-prose px-4 py-12\">\n  <p class=\"text-sm font-semibold uppercase tracking-wider text-emerald-700\">Tutorial</p>\n  <h1 class=\"mt-2 text-3xl font-extrabold leading-tight text-slate-900\">\n    Membuat landing page responsif dengan Tailwind dalam satu sore\n  </h1>\n  <p class=\"mt-4 text-lg leading-relaxed text-slate-600\">Ringkasan artikel di sini.</p>\n  <p class=\"mt-6 text-base leading-7 text-slate-700\">Isi paragraf pertama ...</p>\n</article>\n<!-- max-w-prose = 65ch, sekitar 65 karakter per baris -->"
+   }
+  ]
+ },
+ "tw-2-1": {
+  "exs": [
+   {
+    "t": "Kasus: header dengan logo kiri dan tombol kanan",
+    "code": "<header class=\"flex items-center justify-between p-4 bg-white border-b\">\n  <b class=\"text-lg\">WarungKu</b>\n  <button class=\"px-3 py-1 bg-emerald-600 text-white rounded\">Masuk</button>\n</header>"
+   },
+   {
+    "t": "Kasus: kartu dengan isi tersusun ke bawah",
+    "code": "<div class=\"flex flex-col gap-2 w-56 p-4 border rounded-lg\">\n  <h3 class=\"font-bold\">Nasi Goreng</h3>\n  <p class=\"text-sm text-slate-500\">Pedas level 3</p>\n  <p class=\"font-semibold\">Rp18.000</p>\n</div>"
+   },
+   {
+    "t": "Kasus: galeri tiga kolom dengan item lebar",
+    "code": "<div class=\"grid grid-cols-3 gap-3 p-4\">\n  <div class=\"col-span-2 p-6 bg-amber-100 rounded\">Foto utama</div>\n  <div class=\"p-6 bg-amber-50 rounded\">1</div>\n  <div class=\"p-6 bg-amber-50 rounded\">2</div>\n  <div class=\"p-6 bg-amber-50 rounded\">3</div>\n  <div class=\"p-6 bg-amber-50 rounded\">4</div>\n</div>"
+   },
+   {
+    "t": "Kasus: memusatkan isi di tengah",
+    "code": "<div class=\"flex items-center justify-center h-48 bg-slate-100\">\n  <p class=\"font-semibold\">Tepat di tengah</p>\n</div>"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Navbar flex dan galeri grid bento",
+    "b": "Kedai kopi memakai flex untuk navbar dan grid dengan baris tetap untuk galeri gaya bento, di mana satu kotak besar memakan dua kolom dan dua baris.",
+    "code": "<header class=\"flex items-center justify-between gap-4 border-b px-6 py-4\">\n  <a href=\"/\" class=\"text-xl font-black\">RuangKopi</a>\n  <nav class=\"flex gap-6\"><a href=\"#menu\">Menu</a><a href=\"#lokasi\">Lokasi</a></nav>\n  <a href=\"#pesan\" class=\"rounded-full bg-amber-700 px-4 py-2 text-white\">Pesan</a>\n</header>\n\n<section class=\"grid auto-rows-[12rem] grid-cols-4 gap-4 p-6\">\n  <div class=\"col-span-2 row-span-2 rounded-2xl bg-amber-100\">Menu andalan</div>\n  <div class=\"rounded-2xl bg-stone-200\">Espresso</div>\n  <div class=\"rounded-2xl bg-stone-200\">V60</div>\n  <div class=\"col-span-2 rounded-2xl bg-emerald-100\">Promo pagi</div>\n</section>"
+   }
+  ]
+ },
+ "tw-2-2": {
+  "exs": [
+   {
+    "t": "Kasus: satu kolom di ponsel, tiga kolom di desktop",
+    "code": "<div class=\"grid grid-cols-1 md:grid-cols-3 gap-4 p-4\">\n  <div class=\"p-4 bg-sky-100 rounded\">Paket Dasar</div>\n  <div class=\"p-4 bg-sky-100 rounded\">Paket Pro</div>\n  <div class=\"p-4 bg-sky-100 rounded\">Paket Tim</div>\n</div>"
+   },
+   {
+    "t": "Kasus: judul yang membesar bertahap",
+    "code": "<h1 class=\"text-2xl sm:text-3xl lg:text-5xl font-bold\">Festival Kuliner Nusantara</h1>",
+    "d": "24px di ponsel, 30px mulai 640px, 48px mulai 1024px."
+   },
+   {
+    "t": "Kasus: menu lengkap hanya di layar lebar",
+    "code": "<nav class=\"flex items-center justify-between p-4\">\n  <b>RuangKode</b>\n  <div class=\"hidden md:flex gap-6\"><a>Kursus</a><a>Harga</a><a>Blog</a></div>\n  <button class=\"md:hidden\">Menu</button>\n</nav>"
+   },
+   {
+    "t": "Kasus: tombol menumpuk di ponsel, sejajar di layar sm",
+    "code": "<div class=\"flex flex-col sm:flex-row gap-3\">\n  <a class=\"px-6 py-3 bg-emerald-600 text-white text-center rounded-lg\">Daftar</a>\n  <a class=\"px-6 py-3 border text-center rounded-lg\">Pelajari dulu</a>\n</div>"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Hero dua kolom yang menumpuk di ponsel",
+    "b": "Situs kursus menaruh gambar di atas teks pada ponsel, lalu menukar urutannya di layar md ke atas. Ukuran judul naik bertahap di setiap titik henti.",
+    "code": "<section class=\"mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 md:grid-cols-2 md:py-24\">\n  <div class=\"order-2 md:order-1\">\n    <h1 class=\"text-3xl font-extrabold sm:text-4xl lg:text-6xl\">Belajar coding dari nol sampai kerja</h1>\n    <p class=\"mt-4 text-slate-600 md:text-lg\">Kurikulum industri, mentor praktisi.</p>\n    <div class=\"mt-8 flex flex-col gap-3 sm:flex-row\">\n      <a class=\"rounded-lg bg-emerald-600 px-6 py-3 text-center text-white\">Mulai gratis</a>\n      <a class=\"rounded-lg border px-6 py-3 text-center\">Lihat kurikulum</a>\n    </div>\n  </div>\n  <img class=\"order-1 w-full rounded-3xl md:order-2\" src=\"hero.webp\" alt=\"Siswa belajar\" width=\"800\" height=\"600\">\n</section>\n<!-- Kelas aktif per lebar layar:\n      360px → text-3xl, 1 kolom\n      640px → text-4xl, 1 kolom\n      800px → text-4xl, 2 kolom\n     1100px → text-6xl, 2 kolom -->"
+   }
+  ]
+ },
+ "tw-2-3": {
+  "exs": [
+   {
+    "t": "Kasus: tombol dengan hover, fokus, dan disabled",
+    "code": "<button class=\"px-4 py-2 bg-emerald-600 text-white rounded-lg transition duration-200\n               hover:bg-emerald-700 focus-visible:ring-4 focus-visible:ring-emerald-300\n               active:bg-emerald-800 disabled:opacity-50\" disabled>\n  Bayar sekarang\n</button>"
+   },
+   {
+    "t": "Kasus: kartu dengan group-hover",
+    "code": "<a class=\"group block p-4 border rounded-lg hover:border-sky-500\">\n  <h3 class=\"font-bold group-hover:text-sky-600\">Kursus Python</h3>\n  <p class=\"text-sm text-slate-500 group-hover:underline\">Lihat silabus</p>\n</a>",
+    "d": "Saat kartu (group) di-hover, judul dan teks di dalamnya ikut berubah."
+   },
+   {
+    "t": "Kasus: pilihan yang tersorot dengan peer",
+    "code": "<label class=\"block\">\n  <input type=\"checkbox\" class=\"peer\">\n  <span class=\"ml-2 peer-checked:font-bold peer-checked:text-emerald-700\">Saya setuju dengan syarat</span>\n</label>"
+   },
+   {
+    "t": "Kasus: kartu yang ikut mode gelap",
+    "code": "<div class=\"p-6 rounded-xl bg-white text-slate-800 dark:bg-slate-900 dark:text-slate-100\">\n  <h3 class=\"font-bold\">Saldo dompet</h3>\n  <p class=\"text-slate-500 dark:text-slate-400\">Rp250.000</p>\n</div>"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Kartu kursus interaktif dengan kontras yang lulus",
+    "b": "Tim desain memeriksa kontras setiap pasangan warna di mode terang dan gelap. text-slate-500 di putih 4.76:1 dan text-slate-400 di slate-900 6.96:1 lulus AA; emerald-600 di putih hanya 3.77:1, jadi tautan teks memakai emerald-700.",
+    "code": "<a href=\"/kelas/react\" class=\"group block rounded-2xl border bg-white p-6 transition\n   hover:border-emerald-600 hover:shadow-lg\n   focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600\n   dark:border-slate-700 dark:bg-slate-900\">\n  <h3 class=\"font-bold text-slate-900 group-hover:text-emerald-700 dark:text-white\">React untuk Pemula</h3>\n  <p class=\"text-sm text-slate-500 dark:text-slate-400\">24 pelajaran · 6 proyek</p>\n  <span class=\"text-sm text-emerald-700 group-hover:underline dark:text-emerald-400\">Lihat silabus →</span>\n</a>\n\n<label class=\"block\">\n  <input type=\"email\" required class=\"peer w-full rounded-lg border px-3 py-2 invalid:border-red-500\">\n  <span class=\"mt-1 hidden text-sm text-red-600 peer-invalid:block\">Format email belum benar</span>\n</label>"
+   }
+  ]
+ },
+ "tw-3-1": {
+  "exs": [
+   {
+    "t": "Kasus: input pencarian dengan ring fokus",
+    "code": "<label for=\"cari\" class=\"block text-sm font-medium text-slate-700\">Cari resep</label>\n<input id=\"cari\" type=\"search\" placeholder=\"Contoh: rendang\"\n       class=\"mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2\n              focus:outline-none focus:ring-2 focus:ring-amber-400\">"
+   },
+   {
+    "t": "Kasus: email yang salah ditandai merah",
+    "code": "<label for=\"email\" class=\"block text-sm font-medium\">Email</label>\n<input id=\"email\" type=\"email\" required\n       class=\"mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 invalid:border-rose-500\">"
+   },
+   {
+    "t": "Kasus: select dan textarea yang seragam",
+    "code": "<form class=\"max-w-sm space-y-4 p-6\">\n  <div>\n    <label for=\"kota\" class=\"block text-sm font-medium\">Kota</label>\n    <select id=\"kota\" class=\"mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2\">\n      <option>Bandung</option><option>Surabaya</option>\n    </select>\n  </div>\n  <div>\n    <label for=\"pesan\" class=\"block text-sm font-medium\">Pesan</label>\n    <textarea id=\"pesan\" rows=\"3\" class=\"mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2\"></textarea>\n  </div>\n  <button class=\"w-full rounded-lg bg-sky-600 py-2 text-white hover:bg-sky-700\">Kirim</button>\n</form>"
+   }
+  ]
+ },
+ "tw-3-2": {
+  "exs": [
+   {
+    "t": "Kasus: kelas tombol dengan @apply",
+    "code": "<style type=\"text/tailwindcss\">\n  .btn { @apply px-4 py-2 rounded-lg font-semibold; }\n  .btn-hijau { @apply bg-emerald-600 text-white hover:bg-emerald-700; }\n  .btn-garis { @apply border border-emerald-600 text-emerald-700; }\n</style>\n<button class=\"btn btn-hijau\">Simpan</button>\n<button class=\"btn btn-garis\">Batal</button>"
+   },
+   {
+    "t": "Kasus: gaya untuk konten dari CMS",
+    "code": "<style type=\"text/tailwindcss\">\n  /* isi artikel dari CMS tidak bisa diberi kelas satu per satu */\n  .isi-artikel h2 { @apply mt-8 text-2xl font-bold; }\n  .isi-artikel a  { @apply text-emerald-700 underline; }\n</style>\n<div class=\"isi-artikel\">\n  <h2>Langkah pertama</h2>\n  <p>Baca <a href=\"#\">panduan ini</a> dulu.</p>\n</div>"
+   },
+   {
+    "t": "Kasus: kapan tidak perlu @apply",
+    "code": "<!-- Kelas dipakai sekali saja: biarkan di HTML, tidak perlu @apply -->\n<section class=\"mx-auto max-w-3xl px-4 py-16 text-center\">\n  <h2 class=\"text-3xl font-bold\">Kenapa memilih kami?</h2>\n</section>"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Kapan @apply dan kapan komponen",
+    "b": "Tim memakai @apply hanya untuk dua hal: konten CMS dan elemen yang berulang di banyak halaman HTML statis. Di proyek React atau Vue, kelas ditulis sekali di komponen Tombol sehingga @apply tidak diperlukan.",
+    "code": "/* style.css */\n@layer components {\n  .btn { @apply inline-flex h-11 items-center gap-2 rounded-lg px-4 font-semibold transition; }\n  .btn-utama { @apply bg-emerald-600 text-white hover:bg-emerald-700; }\n  .btn-bahaya { @apply bg-rose-600 text-white hover:bg-rose-700; }\n  .konten-cms a { @apply text-emerald-700 underline underline-offset-2; }\n}\n\n<!-- HTML -->\n<button class=\"btn btn-utama\">Simpan</button>\n<button class=\"btn btn-bahaya\">Hapus</button>",
+    "lang": "css"
+   }
+  ]
+ },
+ "tw-3-3": {
+  "exs": [
+   {
+    "t": "Kasus: warna merek di Play CDN",
+    "code": "<script>\n  tailwind.config = { theme: { extend: { colors: { batik: '#6B3E1F', emas: '#C9A227' } } } }\n</script>\n<h1 class=\"text-3xl font-bold text-batik\">Batik Sekar Jagad</h1>\n<span class=\"px-2 py-1 bg-emas text-white rounded\">Koleksi baru</span>"
+   },
+   {
+    "t": "Kasus: font judul sendiri",
+    "code": "<script>\n  tailwind.config = { theme: { extend: { fontFamily: { judul: ['\"Fraunces\"', 'serif'] } } } }\n</script>\n<h1 class=\"font-judul text-4xl\">Kedai Senja</h1>"
+   },
+   {
+    "t": "Kasus: token tema di Tailwind v4",
+    "code": "<style type=\"text/tailwindcss\">\n  @theme {\n    --color-merek: #0F766E;\n    --radius-kartu: 1.25rem;\n  }\n</style>\n<div class=\"p-6 rounded-kartu bg-merek text-white\">Kelas bg-merek dan rounded-kartu otomatis tersedia</div>"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Token merek dengan @theme",
+    "b": "Satu file CSS menyimpan semua token merek: font, skala warna, radius, dan titik henti tambahan. Kelas seperti bg-merek-50 dan 3xl: langsung bisa dipakai di HTML.",
+    "code": "/* style.css (Tailwind v4) */\n@import \"tailwindcss\";\n\n@theme {\n  --font-sans: \"Plus Jakarta Sans\", ui-sans-serif, system-ui, sans-serif;\n  --color-merek-50:  oklch(0.97 0.02 165);\n  --color-merek-500: oklch(0.62 0.16 165);\n  --color-merek-700: oklch(0.45 0.119 165);\n  --radius-kartu: 1.25rem;\n  --breakpoint-3xl: 120rem;\n}\n\n/* Hasilnya langsung tersedia: */\n<div class=\"rounded-kartu bg-merek-50 font-sans text-merek-700 3xl:p-12\">...</div>\n\n/* Tema per pelanggan (white-label) cukup menimpa variabel */\n[data-brand=\"kopi\"] { --color-merek-500: oklch(0.55 0.12 50); }",
+    "lang": "css"
+   }
+  ]
+ },
+ "tw-3-4": {
+  "exs": [
+   {
+    "t": "Tantangan: grid empat kolom di layar lg",
+    "code": "<section class=\"grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 px-6 pb-10\">\n  <div class=\"p-5 rounded-xl bg-slate-50 border\"><b>Editor langsung</b></div>\n  <div class=\"p-5 rounded-xl bg-slate-50 border\"><b>Kuis</b></div>\n  <div class=\"p-5 rounded-xl bg-slate-50 border\"><b>Peta belajar</b></div>\n  <div class=\"p-5 rounded-xl bg-slate-50 border\"><b>Sertifikat</b></div>\n</section>"
+   },
+   {
+    "t": "Kasus: bagian testimoni",
+    "code": "<section class=\"bg-slate-50 px-6 py-12\">\n  <h2 class=\"text-center text-2xl font-bold\">Kata mereka</h2>\n  <div class=\"mt-8 grid gap-6 md:grid-cols-2\">\n    <blockquote class=\"rounded-xl bg-white p-6 shadow-sm\">\n      <p class=\"text-slate-700\">\"Materinya runtut, saya langsung bisa bikin portofolio.\"</p>\n      <footer class=\"mt-3 text-sm font-semibold\">Dimas, Yogyakarta</footer>\n    </blockquote>\n    <blockquote class=\"rounded-xl bg-white p-6 shadow-sm\">\n      <p class=\"text-slate-700\">\"Latihan di browser bikin belajar di HP jadi mudah.\"</p>\n      <footer class=\"mt-3 text-sm font-semibold\">Ayu, Makassar</footer>\n    </blockquote>\n  </div>\n</section>"
+   },
+   {
+    "t": "Kasus: ajakan bertindak di akhir halaman",
+    "code": "<section class=\"mx-6 mb-10 rounded-2xl bg-sky-600 px-6 py-10 text-center text-white\">\n  <h2 class=\"text-2xl md:text-3xl font-bold\">Siap mulai belajar?</h2>\n  <a class=\"mt-6 inline-block rounded-lg bg-white px-6 py-3 font-semibold text-sky-700 hover:bg-sky-50\">Daftar gratis</a>\n</section>"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Kerangka landing page kursus",
+    "b": "Landing page bootcamp mengikuti urutan yang terbukti: hero dengan satu ajakan jelas, bukti sosial, fitur, testimoni, harga, dan FAQ. Semua bagian memakai lebar maksimum dan jarak yang sama.",
+    "code": "<body class=\"bg-white text-slate-800 dark:bg-slate-950 dark:text-slate-200\">\n  <header class=\"flex items-center justify-between border-b px-6 py-4\">...</header>\n  <main>\n    <section class=\"mx-auto max-w-6xl px-4 py-16 text-center md:py-28\">\n      <p class=\"mx-auto w-fit rounded-full bg-emerald-50 px-3 py-1 text-sm text-emerald-700\">Angkatan Januari 2027 dibuka</p>\n      <h1 class=\"mt-6 text-4xl font-extrabold md:text-6xl\">Jadi Frontend Developer dalam 16 minggu</h1>\n      <p class=\"mx-auto mt-4 max-w-2xl text-lg text-slate-600\">Belajar HTML sampai React dengan proyek nyata.</p>\n      <a href=\"#daftar\" class=\"mt-8 inline-flex h-12 items-center rounded-lg bg-emerald-600 px-8 font-semibold text-white hover:bg-emerald-700\">Daftar sekarang</a>\n    </section>\n    <section id=\"fitur\" class=\"mx-auto grid max-w-6xl gap-6 px-4 py-16 sm:grid-cols-2 lg:grid-cols-3\">...</section>\n    <section id=\"testimoni\" class=\"bg-slate-50 py-16 dark:bg-slate-900\">...</section>\n    <section id=\"harga\" class=\"mx-auto grid max-w-5xl gap-6 px-4 py-16 md:grid-cols-3\">...</section>\n    <section id=\"faq\" class=\"mx-auto max-w-3xl px-4 py-16\"><details class=\"border-b py-4\">...</details></section>\n  </main>\n  <footer class=\"border-t py-10 text-center text-sm text-slate-500\">© 2026 RuangKode</footer>\n</body>"
+   }
+  ]
+ },
+ "tw-4-1": {
+  "exs": [
+   {
+    "t": "Kasus: lencana \"Promo\" di pojok foto",
+    "code": "<div class=\"relative w-56\">\n  <img src=\"sepatu.jpg\" alt=\"Sepatu lari hitam\" class=\"rounded-xl\">\n  <span class=\"absolute top-2 left-2 px-2 py-1 text-xs font-bold text-white bg-rose-600 rounded\">Promo</span>\n</div>"
+   },
+   {
+    "t": "Kasus: tombol WhatsApp yang menempel di layar",
+    "code": "<a href=\"https://wa.me/6281234567890\" class=\"fixed bottom-4 right-4 z-50 px-4 py-3 rounded-full bg-emerald-600 text-white shadow-lg\">\n  Chat admin\n</a>"
+   },
+   {
+    "t": "Kasus: tabel lebar yang bisa digeser di ponsel",
+    "code": "<div class=\"overflow-x-auto border rounded-lg\">\n  <table class=\"min-w-[640px] w-full text-left text-sm\">\n    <tr><th class=\"p-2\">Tanggal</th><th class=\"p-2\">Produk</th><th class=\"p-2\">Jumlah</th><th class=\"p-2\">Total</th></tr>\n    <tr><td class=\"p-2\">1 Nov</td><td class=\"p-2\">Kopi Gayo</td><td class=\"p-2\">3</td><td class=\"p-2\">Rp255.000</td></tr>\n  </table>\n</div>"
+   },
+   {
+    "t": "Kasus: lapisan gelap di atas gambar hero",
+    "code": "<div class=\"relative h-64\">\n  <img src=\"pantai.jpg\" alt=\"\" class=\"absolute inset-0 h-full w-full object-cover\">\n  <div class=\"absolute inset-0 bg-black/50\"></div>\n  <h1 class=\"relative z-10 p-8 text-3xl font-bold text-white\">Liburan ke Lombok</h1>\n</div>"
+   }
+  ]
+ },
+ "tw-4-2": {
+  "exs": [
+   {
+    "t": "Kasus: kartu terangkat saat di-hover",
+    "code": "<div class=\"w-64 p-5 border rounded-xl transition duration-300 ease-out hover:-translate-y-1 hover:shadow-lg\">\n  Paket Liburan Bali\n</div>"
+   },
+   {
+    "t": "Kasus: ikon memuat dan skeleton",
+    "code": "<div class=\"w-6 h-6 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin motion-reduce:animate-none\"></div>\n<div class=\"mt-4 w-64 space-y-2 animate-pulse\">\n  <div class=\"h-4 bg-slate-200 rounded\"></div>\n  <div class=\"h-4 w-1/2 bg-slate-200 rounded\"></div>\n</div>"
+   },
+   {
+    "t": "Kasus: tombol mengecil saat ditekan",
+    "code": "<button class=\"px-5 py-2 bg-sky-600 text-white rounded-lg transition active:scale-95 hover:scale-105\">\n  Tambah ke keranjang\n</button>"
+   },
+   {
+    "t": "Kasus: titik notifikasi yang berdenyut",
+    "code": "<span class=\"relative inline-flex\">\n  <span class=\"absolute inline-flex h-3 w-3 rounded-full bg-rose-400 opacity-75 animate-ping\"></span>\n  <span class=\"relative inline-flex h-3 w-3 rounded-full bg-rose-600\"></span>\n</span>"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Kartu hover dan skeleton yang menghormati preferensi pengguna",
+    "b": "Aplikasi katalog memakai motion-safe: agar animasi hanya berjalan untuk pengguna yang tidak meminta pengurangan gerak. Hanya transform dan opacity yang dianimasikan agar tetap ringan di ponsel.",
+    "code": "<article class=\"rounded-2xl border p-6 transition duration-200 ease-out\n                motion-safe:hover:-translate-y-1 motion-safe:hover:shadow-xl\">\n  Kursus Desain UI\n</article>\n\n<!-- Skeleton loading saat data belum datang -->\n<div class=\"space-y-3\" aria-busy=\"true\">\n  <div class=\"h-40 rounded-xl bg-slate-200 motion-safe:animate-pulse\"></div>\n  <div class=\"h-4 w-3/4 rounded bg-slate-200 motion-safe:animate-pulse\"></div>\n</div>\n\n<!-- ease-out terasa responsif: pada 25% waktu, gerakan sudah sekitar 41% selesai -->\n<button class=\"rounded-lg bg-emerald-600 px-4 py-2 text-white transition duration-200 ease-out hover:scale-105\">Simpan</button>"
+   }
+  ]
+ },
+ "tw-4-3": {
+  "exs": [
+   {
+    "t": "Kasus: tombol tampilkan kata sandi",
+    "code": "<input id=\"sandi\" type=\"password\" class=\"border rounded-lg px-3 py-2\">\n<button id=\"lihat\" class=\"ml-2 text-sm text-sky-700 underline\" aria-pressed=\"false\">Tampilkan</button>\n<script>\n  const sandi = document.getElementById('sandi');\n  const lihat = document.getElementById('lihat');\n  lihat.addEventListener('click', () => {\n    const tampil = sandi.type === 'password';\n    sandi.type = tampil ? 'text' : 'password';\n    lihat.setAttribute('aria-pressed', tampil);\n  });\n</script>"
+   },
+   {
+    "t": "Kasus: membuka dan menutup panel FAQ",
+    "code": "<button id=\"tanya\" class=\"font-semibold\" aria-expanded=\"false\" aria-controls=\"jawab\">Berapa lama pengiriman? ▾</button>\n<p id=\"jawab\" class=\"hidden mt-2 text-slate-600\">2-4 hari kerja.</p>\n<script>\n  const tanya = document.getElementById('tanya');\n  const jawab = document.getElementById('jawab');\n  tanya.addEventListener('click', () => {\n    const buka = jawab.classList.toggle('hidden') === false;\n    tanya.setAttribute('aria-expanded', buka);\n  });\n</script>",
+    "d": "classList.toggle mengembalikan true jika kelas ditambahkan, jadi menu terbuka saat hasilnya false."
+   },
+   {
+    "t": "Kasus: menandai tab yang aktif",
+    "code": "<div class=\"flex gap-2\">\n  <button class=\"tab px-3 py-1 rounded bg-sky-600 text-white\">Deskripsi</button>\n  <button class=\"tab px-3 py-1 rounded bg-slate-100\">Ulasan</button>\n</div>\n<script>\n  document.querySelectorAll('.tab').forEach((tab) => {\n    tab.addEventListener('click', () => {\n      document.querySelectorAll('.tab').forEach((t) => t.classList.remove('bg-sky-600', 'text-white'));\n      tab.classList.add('bg-sky-600', 'text-white');\n    });\n  });\n</script>"
+   }
+  ]
+ },
+ "tw-4-4": {
+  "exs": [
+   {
+    "t": "Kasus: memulai proyek v4 dengan satu baris",
+    "code": "/* style.css */\n@import \"tailwindcss\";\n/* tidak perlu tailwind.config.js dan tidak perlu mengisi content:\n   file sumber dideteksi otomatis */"
+   },
+   {
+    "t": "Kasus: menambah warna dan font merek",
+    "code": "@import \"tailwindcss\";\n\n@theme {\n  --color-sawo: #8B5A2B;\n  --font-judul: \"Fraunces\", serif;\n}\n/* kelas yang tersedia: bg-sawo, text-sawo, border-sawo, font-judul */"
+   },
+   {
+    "t": "Kasus: utilitas dan variant buatan sendiri",
+    "code": "@import \"tailwindcss\";\n\n@utility kartu-dasar {\n  border-radius: 1rem;\n  padding: 1.5rem;\n  background: white;\n}\n@custom-variant dark (&:where(.dark, .dark *));   /* mode gelap lewat kelas .dark */"
+   },
+   {
+    "t": "Kasus: container query bawaan",
+    "code": "/* HTML:\n<div class=\"@container\">\n  <article class=\"flex flex-col gap-4 @md:flex-row\">...</article>\n</div>\n   kartu menyamping saat WADAHNYA minimal 28rem, bukan layarnya */\n@import \"tailwindcss\";"
+   }
+  ]
+ }
+}

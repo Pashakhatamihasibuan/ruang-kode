@@ -1,0 +1,563 @@
+{
+ "html-1-1": {
+  "exs": [
+   {
+    "t": "Kasus: halaman yang tidak ditemukan (404)",
+    "code": "GET /produk/kopi-luwak HTTP/1.1\nHost: tokonusantara.id\n\nHTTP/1.1 404 Not Found\nContent-Type: text/html; charset=utf-8\n\n<h1>Halaman tidak ditemukan</h1>",
+    "d": "Server tetap membalas, tetapi kode status 404 memberi tahu browser bahwa alamatnya tidak ada."
+   },
+   {
+    "t": "Kasus: satu halaman, banyak permintaan",
+    "code": "1. DNS   : tokonusantara.id  →  103.28.12.7\n2. GET /index.html        → 200 OK  (HTML)\n3. GET /css/gaya.css      → 200 OK  (CSS, disebut di dalam HTML)\n4. GET /img/logo.png      → 200 OK  (gambar)\n5. GET /js/app.js         → 200 OK  (JavaScript)\n6. Browser menggambar halaman di layar",
+    "d": "Browser membaca HTML dulu, lalu meminta setiap file lain yang disebut di dalamnya."
+   },
+   {
+    "t": "Kasus: membedah sebuah URL",
+    "code": "https://tokonusantara.id/produk/kopi?warna=hitam#ulasan\n└─┬─┘   └──────┬───────┘└────┬────┘└─────┬────┘└──┬──┘\nprotokol     domain        path        query     fragmen"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Membaca kode status di DevTools",
+    "b": "Saat situs toko lambat atau gambar tidak muncul, developer membuka tab Network di DevTools dan membaca kolom Status. Kode status memberi tahu siapa yang perlu dicari kesalahannya: browser, server, atau alamatnya.",
+    "code": "Name             Status  Type        Arti\nindex.html       200     document    berhasil\ngaya.css         304     stylesheet  tidak berubah, pakai salinan di cache\nlogo.png         200     png         berhasil\npromo-lama.jpg   404     jpeg        alamat gambar salah atau file dihapus\n/keranjang       302     document    dialihkan ke halaman login\n/api/stok        500     fetch       error di server, bukan di browser",
+    "lang": "text"
+   }
+  ]
+ },
+ "html-1-2": {
+  "exs": [
+   {
+    "t": "Kasus: halaman profil sekolah",
+    "code": "<!DOCTYPE html>\n<html lang=\"id\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>SMA Negeri 3 Yogyakarta</title>\n</head>\n<body>\n  <h1>SMA Negeri 3 Yogyakarta</h1>\n  <p>Sekolah dengan 36 kelas dan 12 ekstrakurikuler.</p>\n</body>\n</html>"
+   },
+   {
+    "t": "Kasus: title tampil di tab, bukan di halaman",
+    "code": "<!DOCTYPE html>\n<html lang=\"id\">\n<head>\n  <meta charset=\"utf-8\">\n  <title>Menu Warung Bu Sri</title>   <!-- muncul di tab browser -->\n</head>\n<body>\n  <h1>Daftar Menu</h1>                 <!-- muncul di halaman -->\n</body>\n</html>"
+   },
+   {
+    "t": "Kasus: meta charset agar huruf khusus tampil benar",
+    "code": "<!DOCTYPE html>\n<html lang=\"id\">\n<head>\n  <meta charset=\"utf-8\">   <!-- tanpa ini, \"Rp15.000 · café\" bisa tampil berantakan -->\n  <title>Kafé Senja</title>\n</head>\n<body>\n  <p>Es kopi · Rp15.000 · café latte</p>\n</body>\n</html>"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Kerangka dokumen minimal yang dipakai di proyek nyata",
+    "b": "Setiap halaman di tim frontend dimulai dari kerangka yang sama. Lima baris di head ini selalu ada: doctype, bahasa, charset, viewport, dan judul yang unik per halaman.",
+    "code": "<!doctype html>\n<html lang=\"id\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>Kopi Gayo Arabika 250 g | Toko Kopi Nusantara</title>\n</head>\n<body>\n  <h1>Kopi Gayo Arabika 250 g</h1>\n  <p>Sangrai medium, dikirim dari Aceh Tengah.</p>\n</body>\n</html>"
+   }
+  ]
+ },
+ "html-1-3": {
+  "exs": [
+   {
+    "t": "Kasus: elemen dengan isi dan elemen kosong",
+    "code": "<p>Alamat toko:<br>Jl. Malioboro 12<br>Yogyakarta</p>\n<img src=\"logo.png\" alt=\"Logo Toko Batik Sekar\">",
+    "d": "p punya tag penutup, sedangkan br dan img tidak punya isi dan tidak ditutup."
+   },
+   {
+    "t": "Kasus: atribut id, class, dan title",
+    "code": "<h2 id=\"promo\">Promo Akhir Bulan</h2>\n<p class=\"harga\">Rp49.000</p>\n<p class=\"harga\">Rp75.000</p>\n<p title=\"Berlaku sampai 30 November\">Lihat syarat promo</p>",
+    "d": "id unik untuk satu elemen; class bisa dipakai banyak elemen."
+   },
+   {
+    "t": "Kasus: komentar dan spasi yang diringkas",
+    "code": "<!-- TODO: ganti harga setelah stok baru datang -->\n<p>Harga      paket\n   hemat     Rp25.000</p>",
+    "d": "Browser menampilkan \"Harga paket hemat Rp25.000\" dalam satu baris, dan komentar tidak terlihat."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Markup salah vs benar yang sering lolos tanpa disadari",
+    "b": "Browser memaafkan banyak kesalahan, sehingga bug markup sering lolos ke produksi. Validator seperti validator.w3.org menangkapnya.",
+    "code": "<!-- SALAH -->\n<p>Promo <b>hari ini<p>diskon 20%</b>       <!-- p di dalam p, b tidak ditutup benar -->\n<img src=\"kopi.jpg\">                          <!-- tanpa alt -->\n<button disabled=\"false\">Bayar</button>       <!-- tetap disabled! nilai tidak berpengaruh -->\n<p id=\"harga\">Rp85.000</p><p id=\"harga\">Rp70.000</p>  <!-- id harus unik -->\n\n<!-- BENAR -->\n<p>Promo <b>hari ini</b>: diskon 20%</p>\n<img src=\"kopi.jpg\" alt=\"Bungkus kopi Gayo 250 gram\" width=\"400\" height=\"400\">\n<button>Bayar</button>                        <!-- hapus atribut untuk mengaktifkan -->\n<p id=\"harga-utama\">Rp85.000</p><p id=\"harga-coret\">Rp70.000</p>"
+   }
+  ]
+ },
+ "html-2-1": {
+  "exs": [
+   {
+    "t": "Kasus: pengumuman sekolah",
+    "code": "<h1>Pengumuman Libur Semester</h1>\n<p>Libur semester ganjil dimulai 22 Desember.</p>\n<h2>Jadwal</h2>\n<p>Masuk kembali: 5 Januari.</p>\n<h2>Tugas libur</h2>\n<p>Membaca satu novel dan menulis ringkasannya.</p>"
+   },
+   {
+    "t": "Kasus: alamat dengan br dan pemisah hr",
+    "code": "<h2>Kantor Cabang Surabaya</h2>\n<p>Jl. Tunjungan 45<br>Surabaya 60275<br>Telp. (031) 555 1234</p>\n<hr>\n<h2>Kantor Cabang Medan</h2>\n<p>Jl. Gatot Subroto 88<br>Medan 20112</p>"
+   },
+   {
+    "t": "Kasus: urutan judul yang tidak melompat",
+    "code": "<h1>Panduan Daftar Ulang</h1>\n<h2>Berkas yang disiapkan</h2>\n<h3>Untuk siswa baru</h3>\n<p>Fotokopi akta kelahiran dan kartu keluarga.</p>\n<h3>Untuk siswa pindahan</h3>\n<p>Surat pindah dari sekolah asal.</p>\n<h2>Waktu daftar ulang</h2>\n<p>Senin sampai Rabu, pukul 08.00-12.00.</p>",
+    "d": "h3 hanya muncul di bawah h2, tidak langsung di bawah h1."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Hierarki heading halaman artikel",
+    "b": "Tim konten blog memeriksa kerangka heading sebelum terbit. Ekstensi seperti HeadingsMap memperlihatkan pohon judul ini; tingkat yang melompat langsung terlihat.",
+    "code": "<h1>Cara Menyeduh Kopi V60 di Rumah</h1>\n<p>Panduan ini cocok untuk pemula dan hanya butuh 10 menit.</p>\n<h2>Alat yang dibutuhkan</h2>\n  <h3>Wajib</h3>\n  <h3>Opsional</h3>\n<h2>Langkah menyeduh</h2>\n  <h3>1. Bilas kertas filter</h3>\n  <h3>2. Blooming 30 detik</h3>\n<h2>Kesalahan umum</h2>\n<!-- Ukuran tampilan diatur CSS. Jangan memakai h4 hanya karena \"ukurannya pas\". -->"
+   }
+  ]
+ },
+ "html-2-2": {
+  "exs": [
+   {
+    "t": "Kasus: harga coret di toko daring",
+    "code": "<p>Sepatu Lari Nusantara</p>\n<p>Harga: <del>Rp450.000</del> <ins>Rp315.000</ins></p>\n<p><strong>Hemat 30%</strong> hanya sampai hari Minggu.</p>"
+   },
+   {
+    "t": "Kasus: rumus kimia dan satuan luas",
+    "code": "<p>Air: H<sub>2</sub>O, karbon dioksida: CO<sub>2</sub>.</p>\n<p>Luas kamar kos: 12 m<sup>2</sup>.</p>\n<p>Rumus Pythagoras: a<sup>2</sup> + b<sup>2</sup> = c<sup>2</sup></p>"
+   },
+   {
+    "t": "Kasus: istilah, singkatan, dan sorotan",
+    "code": "<p><dfn>Batik tulis</dfn> adalah batik yang motifnya digambar dengan canting.</p>\n<p>Pendaftaran <abbr title=\"Seleksi Nasional Berdasarkan Prestasi\">SNBP</abbr> dibuka bulan Januari.</p>\n<p>Hasil pencarian \"batik\": Kain <mark>batik</mark> tulis Pekalongan</p>\n<p>Gaya <i lang=\"en\">slow living</i> sedang populer.</p>"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Teks dengan makna yang bisa dibaca mesin",
+    "b": "Pembaca layar mengubah nada untuk strong dan em, mesin pencari menyorot kata yang di-mark, dan lang membuat kata asing dilafalkan dengan benar.",
+    "code": "<p><strong>Peringatan:</strong> stok tinggal 3.</p>\n<p>Biji <i lang=\"la\">Coffea arabica</i> ditanam di ketinggian 1.200 mdpl.</p>\n<p>Hasil pencarian untuk \"gayo\": Kopi <mark>Gayo</mark> Arabika</p>\n<p>Harga sudah termasuk <abbr title=\"Pajak Pertambahan Nilai\">PPN</abbr> 11%.</p>\n<p>Harga: <del>Rp100.000</del> <ins>Rp85.000</ins></p>\n<p>Ini <em>bukan</em> promo potong harga, melainkan bonus produk.</p>"
+   }
+  ]
+ },
+ "html-2-3": {
+  "exs": [
+   {
+    "t": "Kasus: kutipan tokoh di artikel",
+    "code": "<blockquote>\n  <p>Pendidikan adalah tempat persemaian benih-benih kebudayaan.</p>\n  <cite>Ki Hadjar Dewantara</cite>\n</blockquote>"
+   },
+   {
+    "t": "Kasus: menulis tag HTML di dalam teks",
+    "code": "<p>Untuk membuat judul utama, pakai <code>&lt;h1&gt;</code>.</p>\n<p>Gambar ditulis dengan <code>&lt;img src=\"...\" alt=\"...\"&gt;</code>.</p>",
+    "d": "Tanpa &lt; dan &gt;, browser mengira itu tag sungguhan dan tidak menampilkannya."
+   },
+   {
+    "t": "Kasus: pantun dengan pre dan alamat kontak",
+    "code": "<pre>\nJalan-jalan ke Kota Medan,\n   jangan lupa membeli duku.\nKalau ingin pandai berdagang,\n   rajinlah membaca buku.\n</pre>\n<address>Redaksi Majalah Sekolah<br>\nredaksi@sman1.sch.id</address>\n<p>&copy; 2026 OSIS SMAN 1 &amp; Tim Jurnalistik</p>"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Testimoni, potongan kode, dan entity",
+    "b": "Halaman dokumentasi produk menampilkan perintah dan potongan kode apa adanya. Setiap < dan & di dalam kode harus ditulis sebagai entity.",
+    "code": "<blockquote>\n  <p>Pengirimannya cepat, kopinya wangi sekali. Sudah langganan 6 bulan.</p>\n  <cite>Rina, pelanggan dari Bandung</cite>\n</blockquote>\n\n<p>Untuk memasang, jalankan <code>npm install toko-ui</code>.</p>\n<pre><code>&lt;button class=\"btn\"&gt;Beli&lt;/button&gt;\nif (a &lt; b &amp;&amp; c) { … }</code></pre>\n\n<p>&copy; 2026 Toko Kopi Nusantara &middot; Rp&nbsp;85.000</p>"
+   }
+  ]
+ },
+ "html-2-4": {
+  "code": "<h2>Pertanyaan umum</h2>\n<details name=\"faq\" open>\n  <summary>Berapa lama pengiriman?</summary>\n  <p>2 sampai 4 hari kerja untuk Pulau Jawa.</p>\n</details>\n<details name=\"faq\">\n  <summary>Bisa bayar di tempat (COD)?</summary>\n  <p>Bisa untuk pesanan di bawah Rp1.000.000.</p>\n</details>\n\n<button popovertarget=\"info-ongkir\">Info ongkir</button>\n<p id=\"info-ongkir\" popover>Gratis ongkir untuk belanja di atas Rp150.000.</p>\n\n<!-- commandfor + command membuka dialog tanpa JavaScript -->\n<button commandfor=\"konfirmasi\" command=\"show-modal\">Batalkan pesanan</button>\n<dialog id=\"konfirmasi\">\n  <form method=\"dialog\">\n    <p>Yakin membatalkan pesanan #1024?</p>\n    <button value=\"tidak\">Kembali</button>\n    <button value=\"ya\">Ya, batalkan</button>\n  </form>\n</dialog>",
+  "exs": [
+   {
+    "t": "Kasus: FAQ pendaftaran sekolah",
+    "code": "<details>\n  <summary>Kapan pendaftaran dibuka?</summary>\n  <p>1 sampai 15 Juni secara daring.</p>\n</details>\n<details>\n  <summary>Apakah ada biaya pendaftaran?</summary>\n  <p>Tidak, pendaftaran gratis.</p>\n</details>",
+    "d": "Tanpa atribut name, setiap details bisa terbuka bersamaan."
+   },
+   {
+    "t": "Kasus: akordeon yang saling menutup",
+    "code": "<details name=\"materi\" open>\n  <summary>Bab 1: Bilangan</summary>\n  <p>Bilangan bulat, pecahan, dan desimal.</p>\n</details>\n<details name=\"materi\">\n  <summary>Bab 2: Aljabar</summary>\n  <p>Variabel, persamaan, dan pertidaksamaan.</p>\n</details>",
+    "d": "name yang sama membuat hanya satu bagian terbuka."
+   },
+   {
+    "t": "Kasus: dialog info yang ditutup dengan tombol",
+    "code": "<button commandfor=\"syarat\" command=\"show-modal\">Baca syarat promo</button>\n<dialog id=\"syarat\">\n  <h2>Syarat promo</h2>\n  <p>Minimal belanja Rp100.000, berlaku sampai 30 November.</p>\n  <button commandfor=\"syarat\" command=\"close\">Mengerti</button>\n</dialog>"
+   }
+  ],
+  "cx": [
+   {
+    "t": "FAQ, popover, dan modal hapus akun",
+    "b": "Halaman bantuan aplikasi memakai tiga pola sekaligus: FAQ yang bisa dibuka-tutup, popover info singkat, dan modal konfirmasi untuk aksi yang tidak bisa dibatalkan. Semuanya berjalan tanpa satu baris JavaScript.",
+    "code": "<details name=\"faq\" open>\n  <summary>Berapa lama pengiriman?</summary>\n  <p>1-2 hari kerja untuk Jabodetabek, 3-5 hari untuk luar Jawa.</p>\n</details>\n<details name=\"faq\">\n  <summary>Bisa bayar di tempat (COD)?</summary>\n  <p>Bisa untuk pesanan di bawah Rp1.000.000.</p>\n</details>\n\n<button popovertarget=\"info-poin\">Apa itu poin?</button>\n<p id=\"info-poin\" popover>Setiap belanja Rp10.000 mendapat 1 poin.</p>\n\n<button commandfor=\"hapus\" command=\"show-modal\">Hapus akun</button>\n<dialog id=\"hapus\">\n  <form method=\"dialog\">\n    <h2>Hapus akun permanen?</h2>\n    <p>Riwayat pesanan akan hilang dan tidak bisa dikembalikan.</p>\n    <button value=\"batal\" autofocus>Batal</button>\n    <button value=\"hapus\">Ya, hapus</button>\n  </form>\n</dialog>"
+   }
+  ]
+ },
+ "html-3-1": {
+  "exs": [
+   {
+    "t": "Kasus: link absolut dan relatif",
+    "code": "<p><a href=\"https://kemdikbud.go.id\">Situs Kemendikbud</a> (absolut)</p>\n<p><a href=\"jadwal.html\">Jadwal pelajaran</a> (file di folder yang sama)</p>\n<p><a href=\"../index.html\">Kembali ke beranda</a> (naik satu folder)</p>"
+   },
+   {
+    "t": "Kasus: daftar isi yang melompat ke bagian",
+    "code": "<p><a href=\"#syarat\">Syarat</a> · <a href=\"#biaya\">Biaya</a></p>\n<h2 id=\"syarat\">Syarat pendaftaran</h2>\n<p>Usia minimal 15 tahun.</p>\n<h2 id=\"biaya\">Biaya</h2>\n<p>Gratis untuk pelajar.</p>",
+    "d": "href=\"#syarat\" menuju elemen yang id-nya syarat."
+   },
+   {
+    "t": "Kasus: email, telepon, dan tab baru",
+    "code": "<p>Tanya admin: <a href=\"mailto:admin@kursuskoding.id\">admin@kursuskoding.id</a></p>\n<p>Telepon: <a href=\"tel:+6281234567890\">0812-3456-7890</a></p>\n<p><a href=\"https://maps.google.com/?q=Monas\" target=\"_blank\" rel=\"noopener\">Lihat lokasi di peta (tab baru)</a></p>"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Teks link yang jelas dan link yang aman",
+    "b": "Audit aksesibilitas sering menemukan link \"klik di sini\" yang tidak bermakna saat dibaca pembaca layar. Link ke situs lain juga diberi rel=\"noopener noreferrer\".",
+    "code": "<!-- buruk -->\n<p>Katalog terbaru bisa diunduh <a href=\"/katalog.pdf\">di sini</a>.</p>\n<!-- baik -->\n<p><a href=\"/katalog-2026.pdf\" download>Unduh katalog 2026 (PDF, 2,4 MB)</a></p>\n\n<p><a href=\"https://wa.me/6281234567890?text=Halo%2C%20saya%20mau%20pesan\" target=\"_blank\" rel=\"noopener noreferrer\">\n  Pesan lewat WhatsApp (membuka tab baru)\n</a></p>\n<p><a href=\"tel:+622112345678\">(021) 1234 5678</a></p>"
+   }
+  ]
+ },
+ "html-3-2": {
+  "exs": [
+   {
+    "t": "Kasus: foto produk dengan alt yang menjelaskan",
+    "code": "<img src=\"tas-rotan.jpg\" alt=\"Tas rotan anyaman bulat warna cokelat muda\" width=\"300\" height=\"300\">",
+    "d": "Tulis apa yang terlihat dan penting, bukan \"gambar tas\"."
+   },
+   {
+    "t": "Kasus: gambar dekoratif dengan alt kosong",
+    "code": "<h2><img src=\"ikon-daun.svg\" alt=\"\" width=\"24\" height=\"24\"> Produk ramah lingkungan</h2>",
+    "d": "alt=\"\" membuat pembaca layar melewati ikon yang hanya hiasan."
+   },
+   {
+    "t": "Kasus: figure dengan keterangan dan lazy loading",
+    "code": "<figure>\n  <img src=\"candi-borobudur.jpg\" alt=\"Stupa-stupa Candi Borobudur saat matahari terbit\"\n       width=\"640\" height=\"360\" loading=\"lazy\">\n  <figcaption>Candi Borobudur, Magelang, Jawa Tengah.</figcaption>\n</figure>"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Gambar produk responsif dan cepat",
+    "b": "Toko daring menyiapkan beberapa ukuran dan format gambar. Browser memilih file terkecil yang cukup tajam, sehingga halaman cepat di jaringan seluler.",
+    "code": "<figure>\n  <picture>\n    <source type=\"image/avif\" srcset=\"kopi-400.avif 400w, kopi-800.avif 800w, kopi-1200.avif 1200w\" sizes=\"(min-width: 768px) 50vw, 100vw\">\n    <source type=\"image/webp\" srcset=\"kopi-400.webp 400w, kopi-800.webp 800w, kopi-1200.webp 1200w\" sizes=\"(min-width: 768px) 50vw, 100vw\">\n    <img src=\"kopi-800.jpg\" alt=\"Kopi Gayo dalam kemasan cokelat 250 gram dengan biji kopi di sekitarnya\"\n         width=\"800\" height=\"800\" loading=\"lazy\" decoding=\"async\">\n  </picture>\n  <figcaption>Kopi Gayo Arabika, sangrai medium.</figcaption>\n</figure>\n\n<!-- Gambar utama di bagian paling atas: jangan lazy -->\n<img src=\"hero.webp\" alt=\"\" width=\"1600\" height=\"600\">"
+   }
+  ]
+ },
+ "html-3-3": {
+  "exs": [
+   {
+    "t": "Kasus: rekaman pengumuman sekolah",
+    "code": "<audio controls>\n  <source src=\"pengumuman.ogg\" type=\"audio/ogg\">\n  <source src=\"pengumuman.mp3\" type=\"audio/mpeg\">\n  Browser kamu tidak mendukung audio.\n</audio>",
+    "d": "Browser memakai source pertama yang formatnya didukung."
+   },
+   {
+    "t": "Kasus: video latar yang diputar otomatis",
+    "code": "<video autoplay muted loop playsinline width=\"480\">\n  <source src=\"suasana-pasar.mp4\" type=\"video/mp4\">\n</video>",
+    "d": "Video yang diputar otomatis wajib muted, kalau tidak browser memblokirnya."
+   },
+   {
+    "t": "Kasus: menyematkan peta dengan iframe",
+    "code": "<iframe src=\"https://www.openstreetmap.org/export/embed.html?bbox=106.82,-6.18,106.83,-6.17\"\n        title=\"Peta lokasi Monas\" width=\"480\" height=\"300\" loading=\"lazy\"></iframe>",
+    "d": "title menjelaskan isi iframe kepada pembaca layar."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Video tutorial dengan teks dan peta yang aman",
+    "b": "Video tutorial produk diberi captions agar bisa ditonton tanpa suara di KRL. Peta pihak lain disematkan dengan sandbox yang membatasi kemampuannya.",
+    "code": "<video controls preload=\"metadata\" poster=\"seduh-poster.jpg\" width=\"1280\" height=\"720\" playsinline>\n  <source src=\"cara-seduh.webm\" type=\"video/webm\">\n  <source src=\"cara-seduh.mp4\" type=\"video/mp4\">\n  <track kind=\"captions\" src=\"cara-seduh.id.vtt\" srclang=\"id\" label=\"Bahasa Indonesia\" default>\n  Browser Anda tidak mendukung video. <a href=\"cara-seduh.mp4\">Unduh videonya</a>.\n</video>\n\n<iframe src=\"https://www.google.com/maps/embed?pb=…\" title=\"Lokasi toko di peta\"\n        width=\"600\" height=\"400\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"\n        sandbox=\"allow-scripts allow-same-origin allow-popups\"></iframe>"
+   }
+  ]
+ },
+ "html-4-1": {
+  "exs": [
+   {
+    "t": "Kasus: daftar belanja dan langkah resep",
+    "code": "<h3>Bahan nasi goreng</h3>\n<ul>\n  <li>2 piring nasi</li>\n  <li>2 butir telur</li>\n  <li>3 siung bawang merah</li>\n</ul>\n<h3>Langkah</h3>\n<ol>\n  <li>Tumis bawang sampai harum.</li>\n  <li>Masukkan telur, orak-arik.</li>\n  <li>Masukkan nasi dan aduk rata.</li>\n</ol>"
+   },
+   {
+    "t": "Kasus: daftar bersarang untuk jadwal",
+    "code": "<ul>\n  <li>Senin\n    <ul>\n      <li>Matematika</li>\n      <li>Bahasa Indonesia</li>\n    </ul>\n  </li>\n  <li>Selasa\n    <ul>\n      <li>Fisika</li>\n    </ul>\n  </li>\n</ul>"
+   },
+   {
+    "t": "Kasus: peringkat lomba dengan start dan reversed",
+    "code": "<h3>Tiga besar lomba cerdas cermat</h3>\n<ol reversed>\n  <li>SMAN 2 Padang</li>\n  <li>SMAN 1 Bukittinggi</li>\n  <li>SMAN 5 Padang</li>\n</ol>\n<h3>Lanjutan peringkat</h3>\n<ol start=\"4\">\n  <li>SMAN 3 Solok</li>\n</ol>",
+    "d": "reversed menomori 3, 2, 1; start=\"4\" mulai dari angka 4."
+   },
+   {
+    "t": "Kasus: spesifikasi ponsel dengan dl",
+    "code": "<dl>\n  <dt>Layar</dt><dd>6,5 inci</dd>\n  <dt>Baterai</dt><dd>5000 mAh</dd>\n  <dt>Warna</dt><dd>Hitam</dd><dd>Biru</dd>\n</dl>"
+   }
+  ]
+ },
+ "html-4-2": {
+  "exs": [
+   {
+    "t": "Kasus: jadwal pelajaran",
+    "code": "<table>\n  <caption>Jadwal kelas XI IPA 2</caption>\n  <thead>\n    <tr><th scope=\"col\">Jam</th><th scope=\"col\">Senin</th><th scope=\"col\">Selasa</th></tr>\n  </thead>\n  <tbody>\n    <tr><th scope=\"row\">07.00</th><td>Matematika</td><td>Biologi</td></tr>\n    <tr><th scope=\"row\">08.30</th><td>Kimia</td><td>Fisika</td></tr>\n  </tbody>\n</table>"
+   },
+   {
+    "t": "Kasus: rowspan untuk sel yang sama",
+    "code": "<table>\n  <tr><th>Hari</th><th>Jam</th><th>Kegiatan</th></tr>\n  <tr><td rowspan=\"2\">Sabtu</td><td>08.00</td><td>Pramuka</td></tr>\n  <tr><td>10.00</td><td>Futsal</td></tr>\n</table>",
+    "d": "Sel \"Sabtu\" mengisi dua baris sekaligus."
+   },
+   {
+    "t": "Kasus: tabel nilai dengan total di tfoot",
+    "code": "<table>\n  <caption>Nilai rapor Dimas</caption>\n  <thead><tr><th scope=\"col\">Mapel</th><th scope=\"col\">Nilai</th></tr></thead>\n  <tbody>\n    <tr><td>Matematika</td><td>88</td></tr>\n    <tr><td>Bahasa Inggris</td><td>92</td></tr>\n  </tbody>\n  <tfoot><tr><th scope=\"row\">Rata-rata</th><td>90</td></tr></tfoot>\n</table>"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Tabel laporan penjualan yang aksesibel",
+    "b": "Laporan bulanan untuk manajer memakai caption, thead, tbody, tfoot, dan scope. Pembaca layar bisa menyebut \"Bandung, Omzet, Rp182.400.000\" untuk setiap sel.",
+    "code": "<table>\n  <caption>Penjualan per cabang, Oktober 2026</caption>\n  <thead>\n    <tr><th scope=\"col\">Cabang</th><th scope=\"col\">Transaksi</th><th scope=\"col\">Omzet</th></tr>\n  </thead>\n  <tbody>\n    <tr><th scope=\"row\">Bandung</th><td>1.204</td><td>Rp182.400.000</td></tr>\n    <tr><th scope=\"row\">Medan</th><td>987</td><td>Rp141.900.000</td></tr>\n  </tbody>\n  <tfoot>\n    <tr><th scope=\"row\">Total</th><td>2.191</td><td>Rp324.300.000</td></tr>\n  </tfoot>\n</table>"
+   }
+  ]
+ },
+ "html-5-1": {
+  "exs": [
+   {
+    "t": "Kasus: form login",
+    "code": "<form action=\"/masuk\" method=\"post\">\n  <p>\n    <label for=\"surel\">Email</label><br>\n    <input id=\"surel\" name=\"email\" type=\"email\" autocomplete=\"email\">\n  </p>\n  <p>\n    <label for=\"sandi\">Kata sandi</label><br>\n    <input id=\"sandi\" name=\"sandi\" type=\"password\" autocomplete=\"current-password\">\n  </p>\n  <button type=\"submit\">Masuk</button>\n</form>"
+   },
+   {
+    "t": "Kasus: pencarian dengan method GET",
+    "code": "<form action=\"/cari\" method=\"get\">\n  <label for=\"q\">Cari buku</label>\n  <input id=\"q\" name=\"q\" type=\"search\">\n  <button>Cari</button>\n</form>",
+    "d": "Mengetik \"laskar\" lalu menekan Cari membuka /cari?q=laskar."
+   },
+   {
+    "t": "Kasus: kuesioner dengan radio, checkbox, dan textarea",
+    "code": "<form action=\"/survei\" method=\"post\">\n  <fieldset>\n    <legend>Seberapa puas dengan kantin?</legend>\n    <label><input type=\"radio\" name=\"puas\" value=\"puas\"> Puas</label>\n    <label><input type=\"radio\" name=\"puas\" value=\"biasa\"> Biasa</label>\n    <label><input type=\"radio\" name=\"puas\" value=\"kurang\"> Kurang</label>\n  </fieldset>\n  <label><input type=\"checkbox\" name=\"anonim\"> Kirim tanpa nama</label>\n  <p><label for=\"saran\">Saran</label><br>\n    <textarea id=\"saran\" name=\"saran\" rows=\"3\"></textarea></p>\n  <button>Kirim</button>\n</form>",
+    "d": "Radio dengan name sama membentuk satu kelompok: hanya satu yang bisa dipilih."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Form alamat pengiriman yang ramah isi otomatis",
+    "b": "Toko daring mengurangi pembeli yang berhenti di tengah checkout dengan label yang jelas, type yang tepat, dan autocomplete agar browser mengisi data tersimpan.",
+    "code": "<form action=\"/checkout\" method=\"post\">\n  <label for=\"nama\">Nama penerima</label>\n  <input id=\"nama\" name=\"nama\" autocomplete=\"name\">\n\n  <label for=\"hp\">Nomor HP</label>\n  <input id=\"hp\" name=\"hp\" type=\"tel\" autocomplete=\"tel\" placeholder=\"0812xxxxxxx\">\n\n  <label for=\"alamat\">Alamat lengkap</label>\n  <textarea id=\"alamat\" name=\"alamat\" autocomplete=\"street-address\" rows=\"3\"></textarea>\n\n  <fieldset>\n    <legend>Metode pengiriman</legend>\n    <label><input type=\"radio\" name=\"kirim\" value=\"reguler\" checked> Reguler (2-3 hari)</label>\n    <label><input type=\"radio\" name=\"kirim\" value=\"instan\"> Instan (hari ini)</label>\n  </fieldset>\n  <button type=\"submit\">Lanjut ke pembayaran</button>\n</form>"
+   }
+  ]
+ },
+ "html-5-2": {
+  "exs": [
+   {
+    "t": "Kasus: field wajib dan panjang NIK",
+    "code": "<form>\n  <label for=\"nik\">NIK (16 digit)</label>\n  <input id=\"nik\" name=\"nik\" required minlength=\"16\" maxlength=\"16\" pattern=\"[0-9]{16}\">\n  <button>Simpan</button>\n</form>"
+   },
+   {
+    "t": "Kasus: batas angka untuk jumlah tiket",
+    "code": "<form>\n  <label for=\"tiket\">Jumlah tiket (maks. 4)</label>\n  <input id=\"tiket\" name=\"tiket\" type=\"number\" min=\"1\" max=\"4\" step=\"1\" value=\"1\" required>\n  <button>Pesan</button>\n</form>"
+   },
+   {
+    "t": "Kasus: nomor HP Indonesia dengan pattern",
+    "code": "<form>\n  <label for=\"hp\">Nomor HP (diawali 08)</label>\n  <input id=\"hp\" name=\"hp\" type=\"tel\" required pattern=\"08[0-9]{8,11}\"\n         title=\"Diawali 08, total 10 sampai 13 angka\">\n  <button>Daftar</button>\n</form>",
+    "d": "title muncul di pesan error browser saat pattern tidak cocok."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Form pendaftaran dengan validasi bawaan lengkap",
+    "b": "Form pendaftaran aplikasi memakai validasi browser untuk umpan balik cepat. Server tetap memeriksa ulang semua aturan yang sama.",
+    "code": "<form action=\"/daftar\" method=\"post\">\n  <label for=\"email\">Email</label>\n  <input id=\"email\" type=\"email\" name=\"email\" required>\n\n  <label for=\"sandi\">Kata sandi</label>\n  <input id=\"sandi\" type=\"password\" name=\"sandi\" minlength=\"8\" required\n         pattern=\"(?=.*\\d)(?=.*[a-zA-Z]).{8,}\" title=\"Minimal 8 karakter, berisi huruf dan angka\">\n  <p>Minimal 8 karakter, berisi huruf dan angka.</p>\n\n  <label for=\"umur\">Umur</label>\n  <input id=\"umur\" type=\"number\" name=\"umur\" min=\"13\" max=\"100\" required>\n\n  <label><input type=\"checkbox\" name=\"setuju\" required> Saya setuju dengan syarat layanan</label>\n  <button>Daftar</button>\n</form>"
+   }
+  ]
+ },
+ "html-5-3": {
+  "exs": [
+   {
+    "t": "Kasus: unggah pas foto",
+    "code": "<form action=\"/pendaftaran\" method=\"post\" enctype=\"multipart/form-data\">\n  <label for=\"foto\">Pas foto 3x4 (JPG)</label>\n  <input id=\"foto\" name=\"foto\" type=\"file\" accept=\"image/jpeg\" required>\n  <button>Unggah</button>\n</form>"
+   },
+   {
+    "t": "Kasus: beberapa dokumen PDF sekaligus",
+    "code": "<form action=\"/berkas\" method=\"post\" enctype=\"multipart/form-data\">\n  <label for=\"berkas\">Rapor semester 1-5 (PDF)</label>\n  <input id=\"berkas\" name=\"berkas\" type=\"file\" accept=\".pdf,application/pdf\" multiple>\n  <button>Kirim berkas</button>\n</form>",
+    "d": "multiple mengizinkan memilih banyak file sekaligus."
+   },
+   {
+    "t": "Kasus: foto langsung dari kamera ponsel",
+    "code": "<form action=\"/laporan\" method=\"post\" enctype=\"multipart/form-data\">\n  <label for=\"bukti\">Foto kerusakan jalan</label>\n  <input id=\"bukti\" name=\"bukti\" type=\"file\" accept=\"image/*\" capture=\"environment\">\n  <button>Laporkan</button>\n</form>",
+    "d": "capture=\"environment\" membuka kamera belakang di ponsel."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Unggah bukti transfer yang aman",
+    "b": "Di sisi HTML, accept dan required membantu pengguna. Batas ukuran 2 MB dan pemeriksaan jenis file yang sebenarnya tetap dilakukan server, karena accept mudah dilewati.",
+    "code": "<form action=\"/bukti\" method=\"post\" enctype=\"multipart/form-data\">\n  <label for=\"bukti\">Foto bukti transfer (JPG/PNG, maks 2 MB)</label>\n  <input id=\"bukti\" name=\"bukti\" type=\"file\" accept=\"image/jpeg,image/png\" capture=\"environment\" required>\n  <p>File di atas 2 MB akan ditolak server.</p>\n  <button>Kirim</button>\n</form>"
+   }
+  ]
+ },
+ "html-5-4": {
+  "exs": [
+   {
+    "t": "Kasus: tanggal lahir dan jam janji temu",
+    "code": "<form>\n  <label for=\"lahir\">Tanggal lahir</label>\n  <input id=\"lahir\" type=\"date\" min=\"1950-01-01\" max=\"2012-12-31\" required>\n\n  <label for=\"jam\">Jam konsultasi</label>\n  <input id=\"jam\" type=\"time\" min=\"08:00\" max=\"16:00\" step=\"1800\">\n</form>"
+   },
+   {
+    "t": "Kasus: saran nama kampus dengan datalist",
+    "code": "<label for=\"kampus\">Kampus tujuan</label>\n<input id=\"kampus\" list=\"daftar-kampus\">\n<datalist id=\"daftar-kampus\">\n  <option value=\"Universitas Indonesia\">\n  <option value=\"Institut Teknologi Bandung\">\n  <option value=\"Universitas Gadjah Mada\">\n</datalist>",
+    "d": "Pengguna boleh memilih saran atau mengetik nama kampus lain."
+   },
+   {
+    "t": "Kasus: OTP, warna, dan slider",
+    "code": "<label for=\"otp\">Kode OTP</label>\n<input id=\"otp\" inputmode=\"numeric\" autocomplete=\"one-time-code\" maxlength=\"6\" pattern=\"[0-9]{6}\">\n\n<label for=\"warna\">Warna kaus</label>\n<input id=\"warna\" type=\"color\" value=\"#2E5E8C\">\n\n<label for=\"porsi\">Tingkat pedas (0-5)</label>\n<input id=\"porsi\" type=\"range\" min=\"0\" max=\"5\" value=\"2\">"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Form reservasi meja restoran",
+    "b": "Restoran membatasi tanggal dan jam yang bisa dipilih langsung di input, sehingga pelanggan tidak bisa memesan di luar jam buka.",
+    "code": "<form action=\"/reservasi\" method=\"post\">\n  <label for=\"tgl\">Tanggal</label>\n  <input id=\"tgl\" name=\"tgl\" type=\"date\" min=\"2026-11-20\" max=\"2026-12-31\" required>\n\n  <label for=\"jam\">Jam</label>\n  <input id=\"jam\" name=\"jam\" type=\"time\" min=\"10:00\" max=\"21:00\" step=\"1800\" required>\n\n  <label for=\"orang\">Jumlah orang (1-12)</label>\n  <input id=\"orang\" name=\"orang\" type=\"range\" min=\"1\" max=\"12\" value=\"2\">\n\n  <label for=\"hp\">Nomor WhatsApp</label>\n  <input id=\"hp\" name=\"hp\" type=\"tel\" inputmode=\"tel\" autocomplete=\"tel\">\n\n  <label for=\"cabang\">Cabang</label>\n  <input id=\"cabang\" name=\"cabang\" list=\"daftar-cabang\" placeholder=\"Ketik nama kota\">\n  <datalist id=\"daftar-cabang\">\n    <option value=\"Bandung - Dago\"><option value=\"Bandung - Braga\"><option value=\"Jakarta - Kemang\">\n  </datalist>\n  <button>Pesan meja</button>\n</form>"
+   }
+  ],
+  "code": "<form>\n  <label for=\"email\">Email</label>\n  <input id=\"email\" type=\"email\" autocomplete=\"email\" required>\n\n  <label for=\"otp\">Kode OTP</label>\n  <input id=\"otp\" inputmode=\"numeric\" autocomplete=\"one-time-code\" pattern=\"[0-9]{6}\" maxlength=\"6\">\n\n  <label for=\"kirim\">Tanggal kirim</label>\n  <input id=\"kirim\" type=\"date\" min=\"2026-11-01\">\n\n  <label for=\"budget\">Budget maksimal (Rp50.000 - Rp2.000.000)</label>\n  <input id=\"budget\" type=\"range\" min=\"50000\" max=\"2000000\" step=\"50000\" value=\"500000\">\n\n  <label for=\"kota\">Kota</label>\n  <input id=\"kota\" list=\"daftar-kota\" autocomplete=\"address-level2\">\n  <datalist id=\"daftar-kota\">\n    <option value=\"Medan\"><option value=\"Bandung\"><option value=\"Makassar\">\n  </datalist>\n</form>"
+ },
+ "html-6-1": {
+  "exs": [
+   {
+    "t": "Kasus: kerangka blog sekolah",
+    "code": "<header>\n  <h1>Blog OSIS SMAN 8</h1>\n  <nav><a href=\"/\">Beranda</a> · <a href=\"/kegiatan\">Kegiatan</a></nav>\n</header>\n<main>\n  <article>\n    <h2>Pentas Seni 2026 Sukses Digelar</h2>\n    <p>Lebih dari 500 siswa menonton penampilan tari saman.</p>\n  </article>\n</main>\n<footer><p>&copy; 2026 OSIS SMAN 8</p></footer>"
+   },
+   {
+    "t": "Kasus: section bertema di halaman produk",
+    "code": "<main>\n  <h1>Batik Tulis Pekalongan</h1>\n  <section>\n    <h2>Deskripsi</h2>\n    <p>Kain katun primisima, motif jlamprang.</p>\n  </section>\n  <section>\n    <h2>Ulasan pembeli</h2>\n    <article><h3>Sari, Semarang</h3><p>Warnanya tidak luntur.</p></article>\n  </section>\n</main>",
+    "d": "Setiap section punya judul; setiap ulasan adalah article karena bisa berdiri sendiri."
+   },
+   {
+    "t": "Kasus: aside untuk konten sampingan",
+    "code": "<main>\n  <article>\n    <h1>Tips Hemat Kuota Saat Belajar Daring</h1>\n    <p>Unduh materi saat terhubung Wi-Fi.</p>\n  </article>\n  <aside>\n    <h2>Baca juga</h2>\n    <p><a href=\"/kuota-murah\">Paket kuota pelajar termurah</a></p>\n  </aside>\n</main>"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Kerangka halaman toko dengan landmark",
+    "b": "Pengguna pembaca layar membuka daftar landmark dan langsung melompat ke main atau nav. Kerangka ini dipakai sebagai template di hampir semua toko daring.",
+    "code": "<header>\n  <a href=\"/\"><img src=\"logo.svg\" alt=\"Toko Kopi Nusantara, beranda\" width=\"120\" height=\"32\"></a>\n  <nav>\n    <a href=\"/produk\">Produk</a> <a href=\"/promo\">Promo</a> <a href=\"/bantuan\">Bantuan</a>\n  </nav>\n  <search><form action=\"/cari\"><label for=\"q\">Cari produk</label> <input id=\"q\" name=\"q\" type=\"search\"></form></search>\n</header>\n<main>\n  <h1>Kopi Single Origin</h1>\n  <section>\n    <h2>Terlaris minggu ini</h2>\n    <article><h3>Kopi Gayo</h3> <p>Rp85.000</p></article>\n  </section>\n  <aside><h2>Promo</h2><p>Gratis ongkir di atas Rp150.000</p></aside>\n</main>\n<footer>\n  <address>Jl. Braga No. 10, Bandung · <a href=\"mailto:halo@tokokopi.id\">halo@tokokopi.id</a></address>\n</footer>"
+   }
+  ]
+ },
+ "html-6-2": {
+  "exs": [
+   {
+    "t": "Kasus: span untuk menyorot sebagian teks",
+    "code": "<p>Status pesanan: <span class=\"status-dikirim\">Dikirim</span></p>\n<p>Estimasi tiba: <span class=\"tanggal\">28 November</span></p>"
+   },
+   {
+    "t": "Kasus: div sebagai pembungkus kartu",
+    "code": "<div class=\"kartu\">\n  <h3>Paket Belajar Python</h3>\n  <p>12 pelajaran, sertifikat.</p>\n</div>\n<div class=\"kartu kartu-unggulan\">\n  <h3>Paket Belajar Web</h3>\n  <p>25 pelajaran, proyek portofolio.</p>\n</div>",
+    "d": "Satu elemen boleh punya beberapa class, dipisah spasi."
+   },
+   {
+    "t": "Kasus: data-* untuk menyimpan informasi tambahan",
+    "code": "<ul>\n  <li data-kode=\"BDG\" data-ongkir=\"9000\">Bandung</li>\n  <li data-kode=\"SBY\" data-ongkir=\"15000\">Surabaya</li>\n  <li data-kode=\"MKS\" data-ongkir=\"28000\">Makassar</li>\n</ul>",
+    "d": "Nilai data-ongkir tidak tampil di halaman, tetapi bisa dibaca CSS dan JavaScript nanti."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Kartu produk dengan class dan data-*",
+    "b": "Tim frontend memakai class untuk gaya dan data-* untuk data yang dibutuhkan script nanti (SKU, harga, stok). Nama class mengikuti pola blok__elemen--varian agar mudah dicari.",
+    "code": "<article class=\"kartu-produk\" data-sku=\"KP-GAYO-250\" data-harga=\"85000\" data-stok=\"3\">\n  <h3 class=\"kartu-produk__judul\">Kopi Gayo</h3>\n  <p class=\"kartu-produk__harga\">Rp<span class=\"angka\">85.000</span></p>\n  <span class=\"lencana lencana--peringatan\">Sisa 3</span>\n  <button class=\"tombol tombol--utama\" data-aksi=\"tambah\">Tambah</button>\n</article>\n<article class=\"kartu-produk\" data-sku=\"TH-MLT-100\" data-harga=\"25000\" data-stok=\"40\">\n  <h3 class=\"kartu-produk__judul\">Teh Melati</h3>\n  <p class=\"kartu-produk__harga\">Rp<span class=\"angka\">25.000</span></p>\n  <button class=\"tombol tombol--utama\" data-aksi=\"tambah\">Tambah</button>\n</article>"
+   }
+  ]
+ },
+ "html-7-1": {
+  "exs": [
+   {
+    "t": "Kasus: file CSS eksternal untuk banyak halaman",
+    "code": "<!-- index.html, profil.html, dan kontak.html memakai baris yang sama -->\n<head>\n  <meta charset=\"utf-8\">\n  <title>Profil Sekolah</title>\n  <link rel=\"stylesheet\" href=\"css/gaya.css\">\n</head>"
+   },
+   {
+    "t": "Kasus: style internal di satu halaman",
+    "code": "<head>\n  <style>\n    h1 { color: #2E5E8C; }\n    .catatan { background: #F2F1EC; padding: 8px; }\n  </style>\n</head>\n<body>\n  <h1>Hasil Ujian</h1>\n  <p class=\"catatan\">Nilai akan diumumkan Jumat.</p>\n</body>"
+   },
+   {
+    "t": "Kasus: inline style seperlunya",
+    "code": "<p>Sisa kuota: <span style=\"color: #B23A2E; font-weight: 600;\">200 MB</span></p>",
+    "d": "Inline cocok untuk satu kasus kecil, tetapi sulit dirawat jika dipakai di mana-mana."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Memilih cara memasang CSS di proyek nyata",
+    "b": "Situs produksi memakai satu file CSS utama yang di-cache browser, ditambah sedikit CSS internal untuk tampilan paling atas agar halaman cepat terlihat.",
+    "code": "<head>\n  <!-- 1. Internal kecil: tampilan paling atas halaman -->\n  <style>\n    body { margin: 0; font-family: system-ui, sans-serif; }\n  </style>\n  <!-- 2. Eksternal: berkas utama, nama ber-hash agar bisa di-cache lama -->\n  <link rel=\"stylesheet\" href=\"/assets/app.3f9a1c.css\">\n  <!-- 3. Khusus cetak: tidak memblokir tampilan di layar -->\n  <link rel=\"stylesheet\" href=\"/assets/print.css\" media=\"print\">\n</head>\n<!-- Hindari style=\"\" di elemen kecuali nilai yang diatur JavaScript -->"
+   }
+  ]
+ },
+ "html-7-2": {
+  "exs": [
+   {
+    "t": "Kasus: file JavaScript dengan defer",
+    "code": "<head>\n  <meta charset=\"utf-8\">\n  <title>Kalkulator Zakat</title>\n  <script src=\"js/kalkulator.js\" defer></script>\n</head>",
+    "d": "defer: file diunduh paralel dan dijalankan setelah HTML selesai dibaca."
+   },
+   {
+    "t": "Kasus: script di akhir body",
+    "code": "<body>\n  <p id=\"tahun\"></p>\n  <script>\n    document.getElementById('tahun').textContent = '© ' + new Date().getFullYear();\n  </script>\n</body>",
+    "d": "Script diletakkan setelah elemen yang ingin diubahnya."
+   },
+   {
+    "t": "Kasus: async untuk skrip yang berdiri sendiri",
+    "code": "<head>\n  <script src=\"js/app.js\" defer></script>        <!-- urutan penting -->\n  <script src=\"js/statistik.js\" async></script>  <!-- urutan tidak penting -->\n  <script type=\"module\" src=\"js/main.js\"></script> <!-- module otomatis defer -->\n</head>"
+   }
+  ]
+ },
+ "html-8-1": {
+  "exs": [
+   {
+    "t": "Kasus: tombol ikon yang punya nama",
+    "code": "<button aria-label=\"Cari\">🔍</button>\n<button aria-label=\"Tambah ke favorit\">♡</button>",
+    "d": "Tanpa aria-label, pembaca layar hanya membacakan \"tombol\"."
+   },
+   {
+    "t": "Kasus: pesan status yang diumumkan",
+    "code": "<button onclick=\"document.getElementById('info').textContent='Tersimpan'\">Simpan draf</button>\n<p id=\"info\" role=\"status\"></p>",
+    "d": "role=\"status\" membuat perubahan teks dibacakan tanpa memindahkan fokus."
+   },
+   {
+    "t": "Kasus: error input yang terhubung",
+    "code": "<label for=\"hp\">Nomor HP</label>\n<input id=\"hp\" aria-invalid=\"true\" aria-describedby=\"hp-error\">\n<p id=\"hp-error\">Nomor HP harus diawali 08 atau +62.</p>"
+   }
+  ]
+ },
+ "html-8-2": {
+  "exs": [
+   {
+    "t": "Kasus: title dan description halaman artikel",
+    "code": "<head>\n  <title>Cara Daftar SNBP 2026: Syarat dan Jadwal | Info Kampus</title>\n  <meta name=\"description\" content=\"Panduan lengkap daftar SNBP 2026: syarat nilai rapor, jadwal, dan dokumen yang perlu disiapkan.\">\n</head>"
+   },
+   {
+    "t": "Kasus: canonical untuk URL ganda",
+    "code": "<!-- Halaman yang sama bisa dibuka lewat:\n     /produk/sepatu?warna=hitam  dan  /produk/sepatu?ref=promo -->\n<link rel=\"canonical\" href=\"https://toko.contoh.id/produk/sepatu\">"
+   },
+   {
+    "t": "Kasus: pratinjau saat dibagikan ke WhatsApp",
+    "code": "<meta property=\"og:title\" content=\"Batik Tulis Pekalongan - Diskon 20%\">\n<meta property=\"og:description\" content=\"Kain katun primisima, motif jlamprang.\">\n<meta property=\"og:image\" content=\"https://toko.contoh.id/img/batik-1200x630.jpg\">"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Head halaman produk yang siap SEO",
+    "b": "Tim SEO menulis judul yang unik, deskripsi yang mengundang klik, canonical, dan versi bahasa lain. Halaman hasil pencarian internal diberi noindex agar tidak mengotori hasil Google.",
+    "code": "<head>\n  <title>Kopi Gayo Arabika 250 g - Sangrai Medium | Toko Kopi Nusantara</title>\n  <meta name=\"description\" content=\"Kopi Gayo arabika single origin dari Aceh Tengah. Notes cokelat dan rempah. Kirim hari ini, gratis ongkir di atas Rp150.000.\">\n  <link rel=\"canonical\" href=\"https://tokokopi.id/produk/kopi-gayo-250\">\n  <link rel=\"alternate\" hreflang=\"id\" href=\"https://tokokopi.id/produk/kopi-gayo-250\">\n  <link rel=\"alternate\" hreflang=\"en\" href=\"https://tokokopi.id/en/products/gayo-coffee-250\">\n</head>\n<!-- Di halaman hasil pencarian internal dan keranjang: -->\n<meta name=\"robots\" content=\"noindex, follow\">"
+   }
+  ]
+ },
+ "html-8-3": {
+  "exs": [
+   {
+    "t": "Kasus: gambar utama diprioritaskan, sisanya ditunda",
+    "code": "<img src=\"/img/hero-promo.webp\" alt=\"Promo Harbolnas 12.12\" width=\"1200\" height=\"500\" fetchpriority=\"high\">\n<img src=\"/img/galeri-1.webp\" alt=\"Pengunjung toko\" width=\"400\" height=\"300\" loading=\"lazy\">\n<img src=\"/img/galeri-2.webp\" alt=\"Rak produk\" width=\"400\" height=\"300\" loading=\"lazy\">"
+   },
+   {
+    "t": "Kasus: preconnect dan preload",
+    "code": "<head>\n  <!-- buka koneksi ke CDN lebih awal -->\n  <link rel=\"preconnect\" href=\"https://cdn.contoh.id\" crossorigin>\n  <!-- unduh font yang langsung dipakai di judul -->\n  <link rel=\"preload\" href=\"https://cdn.contoh.id/font/judul.woff2\" as=\"font\" type=\"font/woff2\" crossorigin>\n</head>"
+   },
+   {
+    "t": "Kasus: CSP lewat meta tag",
+    "code": "<meta http-equiv=\"Content-Security-Policy\"\n      content=\"default-src 'self'; script-src 'self'; img-src 'self' data:\">",
+    "d": "Script dari domain lain dan script inline yang disisipkan penyerang akan ditolak browser."
+   },
+   {
+    "t": "Kasus: script CDN dengan integrity",
+    "code": "<script src=\"https://cdn.jsdelivr.net/npm/dayjs@1.11.13/dayjs.min.js\"\n        integrity=\"sha384-…hash-dari-berkas…\" crossorigin=\"anonymous\" defer></script>",
+    "d": "Jika isi file di CDN diubah orang lain, hash tidak cocok dan browser menolak menjalankannya."
+   }
+  ]
+ },
+ "html-8-4": {
+  "exs": [
+   {
+    "t": "Kasus: Open Graph untuk artikel blog",
+    "code": "<meta property=\"og:type\" content=\"article\">\n<meta property=\"og:title\" content=\"5 Kuliner Wajib di Yogyakarta\">\n<meta property=\"og:description\" content=\"Gudeg, bakpia, sate klathak, dan dua lagi yang jarang diketahui turis.\">\n<meta property=\"og:image\" content=\"https://blog.contoh.id/img/kuliner-jogja-1200x630.jpg\">\n<meta property=\"og:url\" content=\"https://blog.contoh.id/kuliner-jogja\">"
+   },
+   {
+    "t": "Kasus: JSON-LD untuk kursus",
+    "code": "<script type=\"application/ld+json\">\n{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"Course\",\n  \"name\": \"Dasar HTML untuk Pemula\",\n  \"description\": \"25 pelajaran HTML dari nol sampai halaman portofolio.\",\n  \"provider\": { \"@type\": \"Organization\", \"name\": \"Ruang Kode\" }\n}\n</script>"
+   },
+   {
+    "t": "Kasus: JSON-LD untuk acara",
+    "code": "<script type=\"application/ld+json\">\n{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"Event\",\n  \"name\": \"Pentas Seni SMAN 8 Jakarta\",\n  \"startDate\": \"2026-12-12T09:00+07:00\",\n  \"location\": { \"@type\": \"Place\", \"name\": \"Aula SMAN 8 Jakarta\" }\n}\n</script>"
+   }
+  ]
+ }
+}

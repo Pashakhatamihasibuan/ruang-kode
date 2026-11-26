@@ -1,0 +1,392 @@
+{
+ "bs-1-1": {
+  "exs": [
+   {
+    "t": "Kasus: halaman lengkap dengan CDN",
+    "code": "<!doctype html>\n<html lang=\"id\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>Warung Bu Sri</title>\n  <link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css\" rel=\"stylesheet\">\n</head>\n<body>\n  <div class=\"container py-4\">\n    <h1 class=\"display-6\">Warung Bu Sri</h1>\n    <p class=\"lead\">Nasi rames dan es teh, buka setiap hari.</p>\n    <button class=\"btn btn-primary\">Pesan</button>\n  </div>\n  <script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js\"></script>\n</body>\n</html>",
+    "d": "CSS di <head>, bundle JS di akhir <body>."
+   },
+   {
+    "t": "Kasus: tombol biasa dibanding tombol Bootstrap",
+    "code": "<div class=\"container py-4\">\n  <button>Tombol HTML biasa</button>\n  <button class=\"btn btn-primary\">Tombol Bootstrap</button>\n</div>",
+    "d": "Cukup tambahkan kelas btn dan btn-primary, gaya tombolnya langsung jadi."
+   },
+   {
+    "t": "Kasus: warna tombol lain yang siap pakai",
+    "code": "<div class=\"container py-4\">\n  <button class=\"btn btn-success\">Simpan</button>\n  <button class=\"btn btn-danger\">Hapus</button>\n  <button class=\"btn btn-secondary\">Batal</button>\n</div>"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Templat awal dengan CDN",
+    "b": "Templat lengkap: CSS Bootstrap dan ikon di <head>, bundle JS di akhir <body>. Atribut integrity memastikan file dari CDN tidak diubah orang lain.",
+    "code": "<!doctype html>\n<html lang=\"id\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>Kursus Coding</title>\n  <link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css\" rel=\"stylesheet\"\n        integrity=\"sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH\" crossorigin=\"anonymous\">\n  <link href=\"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css\" rel=\"stylesheet\">\n</head>\n<body>\n  <main class=\"container py-5\">\n    <h1 class=\"display-5\">Halo, Bootstrap!</h1>\n    <button class=\"btn btn-primary\"><i class=\"bi bi-rocket-takeoff\"></i> Mulai</button>\n  </main>\n  <script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js\"\n          integrity=\"sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz\" crossorigin=\"anonymous\"></script>\n</body>\n</html>",
+    "lang": "html"
+   },
+   {
+    "t": "Memasang lewat npm",
+    "b": "Untuk proyek dengan bundler, pasang paket bootstrap lalu impor CSS dan JS-nya sekali di file JS utama.",
+    "code": "npm install bootstrap\n\n# lalu di src/main.js:\n#   import \"bootstrap/dist/css/bootstrap.min.css\";\n#   import \"bootstrap\";",
+    "lang": "bash"
+   },
+   {
+    "t": "Hanya CSS, tanpa bundle JS",
+    "b": "Halaman yang hanya memakai tampilan (tombol, teks, grid) cukup memuat CSS. Bundle JS baru dibutuhkan untuk komponen interaktif seperti navbar lipat dan modal.",
+    "code": "<!doctype html>\n<html lang=\"id\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>Menu Kopi</title>\n  <link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css\" rel=\"stylesheet\">\n</head>\n<body>\n  <div class=\"container py-4\">\n    <h1 class=\"display-6\">Menu Kopi</h1>\n    <p class=\"lead\">Kopi susu Rp18.000, americano Rp15.000.</p>\n  </div>\n</body>\n</html>",
+    "lang": "html"
+   }
+  ]
+ },
+ "bs-1-2": {
+  "exs": [
+   {
+    "t": "Kasus: tiga kolom sama lebar",
+    "code": "<div class=\"container py-3\">\n  <div class=\"row g-3\">\n    <div class=\"col\"><div class=\"p-3 border rounded\">Pagi</div></div>\n    <div class=\"col\"><div class=\"p-3 border rounded\">Siang</div></div>\n    <div class=\"col\"><div class=\"p-3 border rounded\">Malam</div></div>\n  </div>\n</div>",
+    "d": "Kelas col tanpa angka membagi baris sama rata."
+   },
+   {
+    "t": "Kasus: konten utama 8 kolom, samping 4 kolom",
+    "code": "<div class=\"container py-3\">\n  <div class=\"row g-3\">\n    <div class=\"col-12 col-md-8\"><div class=\"p-3 border rounded\">Isi artikel</div></div>\n    <div class=\"col-12 col-md-4\"><div class=\"p-3 border rounded\">Artikel terkait</div></div>\n  </div>\n</div>",
+    "d": "8 + 4 = 12. Di ponsel keduanya menumpuk karena col-12."
+   },
+   {
+    "t": "Kasus: galeri 2 kolom di ponsel, 4 kolom di layar lebar",
+    "code": "<div class=\"container py-3\">\n  <div class=\"row g-2\">\n    <div class=\"col-6 col-lg-3\"><div class=\"p-4 border rounded\">Foto 1</div></div>\n    <div class=\"col-6 col-lg-3\"><div class=\"p-4 border rounded\">Foto 2</div></div>\n    <div class=\"col-6 col-lg-3\"><div class=\"p-4 border rounded\">Foto 3</div></div>\n    <div class=\"col-6 col-lg-3\"><div class=\"p-4 border rounded\">Foto 4</div></div>\n  </div>\n</div>"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Tata letak blog dan galeri",
+    "b": "Kolom utama dan sidebar, galeri dengan row-cols (jumlah kolom ditentukan di baris), serta offset dan order untuk menggeser dan menukar urutan kolom.",
+    "code": "<div class=\"container py-4\">\n  <div class=\"row g-4\">\n    <main class=\"col-lg-8\"><div class=\"p-3 border rounded\">Artikel</div></main>\n    <aside class=\"col-lg-4\"><div class=\"p-3 border rounded\">Sidebar</div></aside>   <!-- menumpuk di bawah lg -->\n  </div>\n\n  <div class=\"row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3 mt-2\">\n    <div class=\"col\"><div class=\"p-3 border rounded\">Foto 1</div></div>\n    <div class=\"col\"><div class=\"p-3 border rounded\">Foto 2</div></div>\n    <div class=\"col\"><div class=\"p-3 border rounded\">Foto 3</div></div>\n    <div class=\"col\"><div class=\"p-3 border rounded\">Foto 4</div></div>\n  </div>\n\n  <div class=\"row mt-2\">\n    <div class=\"col-md-6 offset-md-3 p-3 border rounded\">Konten di tengah</div>\n  </div>\n  <div class=\"row mt-2\">\n    <div class=\"col-6 col-md-4 order-md-2 p-3 border\">A (pindah ke kanan mulai md)</div>\n    <div class=\"col-6 col-md-8 order-md-1 p-3 border\">B</div>\n  </div>\n</div>",
+    "lang": "html"
+   },
+   {
+    "t": "Grid bersarang",
+    "b": "Di dalam sebuah kolom kamu boleh membuat .row baru. Baris dalam itu kembali dibagi 12 kolom, dihitung dari lebar kolom induknya.",
+    "code": "<div class=\"container py-3\">\n  <div class=\"row g-3\">\n    <div class=\"col-md-8\">\n      <div class=\"p-3 border rounded\">\n        Produk unggulan\n        <div class=\"row g-2 mt-1\">\n          <div class=\"col-6\"><div class=\"p-2 border rounded\">Kopi Gayo</div></div>\n          <div class=\"col-6\"><div class=\"p-2 border rounded\">Kopi Toraja</div></div>\n        </div>\n      </div>\n    </div>\n    <div class=\"col-md-4\"><div class=\"p-3 border rounded\">Promo</div></div>\n  </div>\n</div>",
+    "lang": "html"
+   }
+  ]
+ },
+ "bs-1-3": {
+  "exs": [
+   {
+    "t": "Kasus: judul di kiri, tombol di kanan",
+    "code": "<div class=\"container py-3\">\n  <div class=\"d-flex justify-content-between align-items-center p-3 border rounded\">\n    <h2 class=\"fs-5 mb-0\">Keranjang (3)</h2>\n    <button class=\"btn btn-primary\">Bayar</button>\n  </div>\n</div>"
+   },
+   {
+    "t": "Kasus: elemen yang tampil hanya di layar tertentu",
+    "code": "<div class=\"container py-3\">\n  <p class=\"d-none d-md-block p-2 bg-info-subtle\">Teks ini hanya tampil mulai layar md (768px).</p>\n  <p class=\"d-md-none p-2 bg-warning-subtle\">Teks ini hanya tampil di ponsel.</p>\n</div>",
+    "d": "d-none menyembunyikan, d-md-block menampilkan lagi mulai md."
+   },
+   {
+    "t": "Kasus: warna dan tebal teks untuk status",
+    "code": "<div class=\"container py-3\">\n  <p class=\"text-success fw-bold\">Pembayaran berhasil</p>\n  <p class=\"text-danger\">Stok habis</p>\n  <p class=\"text-body-secondary fs-6\">Terakhir diperbarui 5 menit lalu</p>\n  <p class=\"bg-warning p-2 rounded text-center\">Promo berakhir malam ini</p>\n</div>"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Header bagian dengan utilitas",
+    "b": "Di ponsel judul dan tombol menumpuk (flex-column), mulai md berjajar (flex-md-row). text-truncate memotong teks panjang dengan elipsis.",
+    "code": "<section class=\"py-5 bg-body-tertiary\">\n  <div class=\"container\">\n    <div class=\"d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4\">\n      <div>\n        <span class=\"small text-uppercase fw-semibold text-success\">Baru</span>\n        <h2 class=\"fw-bold mt-2 mb-1\">Kelas Data Analyst</h2>\n        <p class=\"lead text-body-secondary mb-0\">SQL, Excel, Python, dan dashboard.</p>\n      </div>\n      <a href=\"#\" class=\"btn btn-primary px-4\">Lihat semua</a>\n    </div>\n    <p class=\"text-truncate\" style=\"max-width: 320px\">Judul sangat panjang yang akan dipotong dengan elipsis bila tidak muat</p>\n    <p class=\"small text-uppercase fw-semibold text-primary\">Label kecil</p>\n  </div>\n</section>",
+    "lang": "html"
+   },
+   {
+    "t": "Skala jarak 0 sampai 5",
+    "b": "Angka di kelas jarak bukan piksel. 1 = 4px, 2 = 8px, 3 = 16px, 4 = 24px, 5 = 48px. Huruf kedua menunjuk sisi: t atas, b bawah, s kiri, e kanan, x kiri-kanan, y atas-bawah.",
+    "code": "<div class=\"container py-3\">\n  <div class=\"bg-info-subtle border mb-2 p-0\">p-0 = 0px</div>\n  <div class=\"bg-info-subtle border mb-2 p-1\">p-1 = 4px</div>\n  <div class=\"bg-info-subtle border mb-2 p-2\">p-2 = 8px</div>\n  <div class=\"bg-info-subtle border mb-2 p-3\">p-3 = 16px</div>\n  <div class=\"bg-info-subtle border mb-2 p-4\">p-4 = 24px</div>\n  <div class=\"bg-info-subtle border mb-2 p-5\">p-5 = 48px</div>\n  <div class=\"bg-warning-subtle border mt-4 px-4 mb-md-5 mx-auto\" style=\"max-width: 300px\">mt-4 px-4 mb-md-5 mx-auto</div>\n</div>",
+    "lang": "html"
+   }
+  ]
+ },
+ "bs-2-1": {
+  "exs": [
+   {
+    "t": "Kasus: variasi tombol",
+    "code": "<div class=\"container py-3 d-flex flex-wrap gap-2 align-items-center\">\n  <button class=\"btn btn-primary\">Utama</button>\n  <button class=\"btn btn-outline-secondary\">Garis tepi</button>\n  <button class=\"btn btn-success btn-sm\">Kecil</button>\n  <button class=\"btn btn-warning btn-lg\">Besar</button>\n  <button class=\"btn btn-primary\" disabled>Nonaktif</button>\n</div>"
+   },
+   {
+    "t": "Kasus: kartu produk dengan gambar",
+    "code": "<div class=\"container py-3\">\n  <div class=\"card\" style=\"max-width: 18rem\">\n    <img src=\"teh-melati.webp\" class=\"card-img-top\" alt=\"Teh melati dalam gelas\">\n    <div class=\"card-body\">\n      <h5 class=\"card-title\">Teh Melati</h5>\n      <p class=\"card-text\">Teh hijau wangi melati, 100 gram.</p>\n      <a href=\"#\" class=\"btn btn-outline-primary\">Rp 35.000</a>\n    </div>\n  </div>\n</div>"
+   },
+   {
+    "t": "Kasus: alert sukses dan gagal, badge di judul",
+    "code": "<div class=\"container py-3\">\n  <div class=\"alert alert-success\">Pesanan berhasil dibuat.</div>\n  <div class=\"alert alert-danger\">Pembayaran gagal, coba lagi.</div>\n  <h4>Kotak masuk <span class=\"badge text-bg-secondary\">4</span></h4>\n</div>"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Kartu kursus lengkap",
+    "b": "Kartu dengan gambar, badge, footer, dan stretched-link yang membuat seluruh kartu bisa diklik. Alert bisa ditutup lewat data-bs-dismiss, dan tombol bisa menampilkan spinner saat memproses.",
+    "code": "<div class=\"card h-100 shadow-sm\" style=\"max-width: 20rem\">\n  <img src=\"react.webp\" class=\"card-img-top\" alt=\"Kelas React\" width=\"400\" height=\"225\">\n  <div class=\"card-body\">\n    <div class=\"d-flex gap-2 mb-2\">\n      <span class=\"badge text-bg-primary\">Frontend</span>\n      <span class=\"badge text-bg-warning\">Terlaris</span>\n    </div>\n    <h5 class=\"card-title\"><a href=\"/kelas/react\" class=\"stretched-link text-decoration-none text-reset\">React dari Nol</a></h5>\n    <p class=\"card-text text-body-secondary\">24 materi · 18 jam · proyek toko online</p>\n  </div>\n  <div class=\"card-footer bg-transparent d-flex justify-content-between align-items-center\">\n    <span><del class=\"text-body-secondary small\">Rp599.000</del> <strong>Rp399.000</strong></span>\n    <span class=\"text-warning\">★ 4,8</span>\n  </div>\n</div>\n\n<div class=\"alert alert-success alert-dismissible fade show mt-3\" role=\"alert\">\n  Pembayaran diterima. Akses kelas sudah aktif.\n  <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Tutup\"></button>\n</div>\n\n<button class=\"btn btn-primary\" disabled>\n  <span class=\"spinner-border spinner-border-sm\" aria-hidden=\"true\"></span>\n  <span role=\"status\">Memproses...</span>\n</button>",
+    "lang": "html"
+   },
+   {
+    "t": "Harga coret dan badge diskon",
+    "b": "Badge merah untuk diskon besar, kuning untuk diskon biasa, dan tanpa badge bila harga normal. Warna badge dipilih dengan kelas text-bg-*.",
+    "code": "<div class=\"container py-3 d-flex flex-wrap gap-3\">\n  <div class=\"card\" style=\"width: 14rem\"><div class=\"card-body\">\n    <h6 class=\"card-title\">React dari Nol <span class=\"badge text-bg-warning\">-33%</span></h6>\n    <p class=\"card-text\"><del class=\"text-body-secondary\">Rp599.000</del> <strong>Rp399.000</strong></p>\n  </div></div>\n  <div class=\"card\" style=\"width: 14rem\"><div class=\"card-body\">\n    <h6 class=\"card-title\">Python Data</h6>\n    <p class=\"card-text\"><strong>Rp450.000</strong></p>\n  </div></div>\n  <div class=\"card\" style=\"width: 14rem\"><div class=\"card-body\">\n    <h6 class=\"card-title\">UI/UX Figma <span class=\"badge text-bg-danger\">-60%</span></h6>\n    <p class=\"card-text\"><del class=\"text-body-secondary\">Rp750.000</del> <strong>Rp299.000</strong></p>\n  </div></div>\n</div>",
+    "lang": "html"
+   }
+  ]
+ },
+ "bs-2-2": {
+  "exs": [
+   {
+    "t": "Kasus: navbar terang dengan tiga tautan",
+    "code": "<nav class=\"navbar navbar-expand-md bg-body-tertiary border-bottom\">\n  <div class=\"container\">\n    <a class=\"navbar-brand\" href=\"#\">Toko Nusantara</a>\n    <button class=\"navbar-toggler\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#menuToko\" aria-controls=\"menuToko\" aria-expanded=\"false\" aria-label=\"Buka menu\">\n      <span class=\"navbar-toggler-icon\"></span>\n    </button>\n    <div class=\"collapse navbar-collapse\" id=\"menuToko\">\n      <ul class=\"navbar-nav\">\n        <li class=\"nav-item\"><a class=\"nav-link active\" href=\"#\">Beranda</a></li>\n        <li class=\"nav-item\"><a class=\"nav-link\" href=\"#\">Produk</a></li>\n        <li class=\"nav-item\"><a class=\"nav-link\" href=\"#\">Kontak</a></li>\n      </ul>\n    </div>\n  </div>\n</nav>",
+    "d": "navbar-expand-md: menu melebar mulai 768px."
+   },
+   {
+    "t": "Kasus: tombol masuk di sisi kanan navbar",
+    "code": "<nav class=\"navbar navbar-expand-lg bg-body-tertiary\">\n  <div class=\"container\">\n    <a class=\"navbar-brand fw-bold\" href=\"#\">RuangKode</a>\n    <button class=\"navbar-toggler\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#navKanan\" aria-controls=\"navKanan\" aria-expanded=\"false\" aria-label=\"Buka menu\">\n      <span class=\"navbar-toggler-icon\"></span>\n    </button>\n    <div class=\"collapse navbar-collapse\" id=\"navKanan\">\n      <ul class=\"navbar-nav me-auto\">\n        <li class=\"nav-item\"><a class=\"nav-link\" href=\"#\">Kelas</a></li>\n        <li class=\"nav-item\"><a class=\"nav-link\" href=\"#\">Mentor</a></li>\n      </ul>\n      <a class=\"btn btn-primary\" href=\"#\">Masuk</a>\n    </div>\n  </div>\n</nav>",
+    "d": "me-auto pada daftar menu mendorong tombol ke kanan."
+   },
+   {
+    "t": "Kasus: tombol lipat untuk isi selain navbar",
+    "code": "<div class=\"container py-3\">\n  <button class=\"btn btn-outline-secondary\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#rincian\" aria-expanded=\"false\" aria-controls=\"rincian\">\n    Lihat rincian ongkir\n  </button>\n  <div class=\"collapse mt-2\" id=\"rincian\">\n    <div class=\"p-3 border rounded\">Jawa Rp10.000 · Sumatra Rp18.000 · Sulawesi Rp25.000</div>\n  </div>\n</div>",
+    "d": "Pola data-bs-toggle=\"collapse\" yang sama bisa membuka-tutup bagian apa saja."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Navbar responsif dengan tombol aksi",
+    "b": "Brand dengan ikon, menu di kiri (me-auto), dan dua tombol di kanan. aria-current=\"page\" menandai halaman yang sedang dibuka bagi pembaca layar.",
+    "code": "<nav class=\"navbar navbar-expand-lg bg-body-tertiary border-bottom\">\n  <div class=\"container\">\n    <a class=\"navbar-brand fw-bold\" href=\"/\"><i class=\"bi bi-code-slash\"></i> RuangKode</a>\n    <button class=\"navbar-toggler\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#navUtama\"\n            aria-controls=\"navUtama\" aria-expanded=\"false\" aria-label=\"Buka navigasi\">\n      <span class=\"navbar-toggler-icon\"></span>\n    </button>\n    <div class=\"collapse navbar-collapse\" id=\"navUtama\">\n      <ul class=\"navbar-nav me-auto mb-2 mb-lg-0\">\n        <li class=\"nav-item\"><a class=\"nav-link active\" aria-current=\"page\" href=\"/\">Beranda</a></li>\n        <li class=\"nav-item\"><a class=\"nav-link\" href=\"/kelas\">Kelas</a></li>\n        <li class=\"nav-item\"><a class=\"nav-link\" href=\"/harga\">Harga</a></li>\n      </ul>\n      <div class=\"d-flex gap-2\">\n        <a class=\"btn btn-outline-secondary\" href=\"/masuk\">Masuk</a>\n        <a class=\"btn btn-primary\" href=\"/daftar\">Daftar gratis</a>\n      </div>\n    </div>\n  </div>\n</nav>",
+    "lang": "html"
+   }
+  ]
+ },
+ "bs-2-3": {
+  "exs": [
+   {
+    "t": "Kasus: form masuk dengan kotak centang",
+    "code": "<form class=\"container py-3\" style=\"max-width: 24rem\">\n  <div class=\"mb-3\">\n    <label for=\"email\" class=\"form-label\">Email</label>\n    <input type=\"email\" id=\"email\" class=\"form-control\" placeholder=\"nama@contoh.id\">\n  </div>\n  <div class=\"mb-3\">\n    <label for=\"sandi\" class=\"form-label\">Kata sandi</label>\n    <input type=\"password\" id=\"sandi\" class=\"form-control\">\n  </div>\n  <div class=\"mb-3 form-check\">\n    <input type=\"checkbox\" id=\"ingat\" class=\"form-check-input\">\n    <label for=\"ingat\" class=\"form-check-label\">Ingat saya</label>\n  </div>\n  <button class=\"btn btn-primary w-100\">Masuk</button>\n</form>"
+   },
+   {
+    "t": "Kasus: menandai input benar dan salah secara manual",
+    "code": "<div class=\"container py-3\">\n  <div class=\"mb-3\">\n    <label for=\"user\" class=\"form-label\">Nama pengguna</label>\n    <input id=\"user\" class=\"form-control is-valid\" value=\"rina_w\">\n    <div class=\"valid-feedback\">Nama pengguna tersedia.</div>\n  </div>\n  <div class=\"mb-3\">\n    <label for=\"hp\" class=\"form-label\">Nomor HP</label>\n    <input id=\"hp\" class=\"form-control is-invalid\" value=\"0812\">\n    <div class=\"invalid-feedback\">Nomor HP terlalu pendek.</div>\n  </div>\n</div>"
+   },
+   {
+    "t": "Kasus: email wajib diisi dan harus benar formatnya",
+    "code": "<form id=\"langganan\" class=\"container py-3 needs-validation\" novalidate>\n  <label for=\"surel\" class=\"form-label\">Email untuk kabar promo</label>\n  <input type=\"email\" id=\"surel\" class=\"form-control\" required>\n  <div class=\"invalid-feedback\">Isi email yang benar, misalnya nama@contoh.id.</div>\n  <button class=\"btn btn-success mt-3\">Langganan</button>\n</form>\n<script>\n  const f = document.getElementById('langganan');\n  f.addEventListener('submit', e => {\n    e.preventDefault();\n    f.classList.add('was-validated');\n  });\n</script>",
+    "d": "Kelas was-validated memunculkan pesan, aturannya diambil dari atribut type dan required."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Form checkout dengan validasi Bootstrap",
+    "code": "<form class=\"row g-3 needs-validation\" novalidate>\n  <div class=\"col-md-6 form-floating\">\n    <input type=\"text\" class=\"form-control\" id=\"nama\" placeholder=\"Nama\" required minlength=\"3\">\n    <label for=\"nama\">Nama penerima</label>\n    <div class=\"invalid-feedback\">Nama minimal 3 huruf.</div>\n  </div>\n  <div class=\"col-md-6\">\n    <label for=\"hp\" class=\"form-label\">Nomor HP</label>\n    <div class=\"input-group has-validation\">\n      <span class=\"input-group-text\">+62</span>\n      <input type=\"tel\" class=\"form-control\" id=\"hp\" pattern=\"8[0-9]{8,11}\" required aria-describedby=\"hpBantu\">\n      <div class=\"invalid-feedback\">Masukkan nomor tanpa 0 di depan, contoh 81234567890.</div>\n    </div>\n    <div id=\"hpBantu\" class=\"form-text\">Untuk konfirmasi pengiriman via WhatsApp.</div>\n  </div>\n  <div class=\"col-md-4\">\n    <label for=\"kodepos\" class=\"form-label\">Kode pos</label>\n    <input class=\"form-control\" id=\"kodepos\" inputmode=\"numeric\" pattern=\"[0-9]{5}\" required>\n    <div class=\"invalid-feedback\">Kode pos 5 digit.</div>\n  </div>\n  <div class=\"col-12 form-check\">\n    <input class=\"form-check-input\" type=\"checkbox\" id=\"setuju\" required>\n    <label class=\"form-check-label\" for=\"setuju\">Saya setuju data dipakai untuk pengiriman</label>\n  </div>\n  <div class=\"col-12\"><button class=\"btn btn-primary w-100 btn-lg\">Bayar</button></div>\n</form>\n<script>\n  document.querySelectorAll(\".needs-validation\").forEach((f) =>\n    f.addEventListener(\"submit\", (e) => {\n      if (!f.checkValidity()) { e.preventDefault(); e.stopPropagation(); f.querySelector(\":invalid\")?.focus(); }\n      f.classList.add(\"was-validated\");\n    }));\n</script>",
+    "lang": "html",
+    "b": "Form checkout dengan label mengambang (form-floating), input-group untuk awalan +62, dan pola nomor. Skrip memeriksa semua form needs-validation dan memfokuskan input pertama yang salah."
+   },
+   {
+    "t": "Aturan validasi dari atribut HTML",
+    "b": "Bootstrap tidak membuat aturan sendiri. Ia hanya mewarnai input menurut atribut HTML: required, minlength, pattern, dan type. Contoh ini sudah ditandai was-validated, jadi pesannya langsung terlihat.",
+    "code": "<form class=\"container py-3 was-validated\" novalidate>\n  <div class=\"mb-3\">\n    <label for=\"nama2\" class=\"form-label\">Nama (minimal 3 huruf)</label>\n    <input id=\"nama2\" class=\"form-control\" minlength=\"3\" required value=\"Al\">\n    <div class=\"invalid-feedback\">Terlalu pendek.</div>\n  </div>\n  <div class=\"mb-3\">\n    <label for=\"pos2\" class=\"form-label\">Kode pos (5 angka)</label>\n    <input id=\"pos2\" class=\"form-control\" pattern=\"[0-9]{5}\" required value=\"40115\">\n    <div class=\"valid-feedback\">Kode pos benar.</div>\n    <div class=\"invalid-feedback\">Harus 5 angka.</div>\n  </div>\n</form>",
+    "lang": "html"
+   }
+  ]
+ },
+ "bs-2-4": {
+  "exs": [
+   {
+    "t": "Kasus: modal informasi dengan tombol tutup",
+    "code": "<div class=\"container py-3\">\n  <button class=\"btn btn-primary\" data-bs-toggle=\"modal\" data-bs-target=\"#infoOngkir\">Info ongkir</button>\n</div>\n<div class=\"modal fade\" id=\"infoOngkir\" tabindex=\"-1\" aria-labelledby=\"judulOngkir\" aria-hidden=\"true\">\n  <div class=\"modal-dialog\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header\">\n        <h5 class=\"modal-title\" id=\"judulOngkir\">Ongkos kirim</h5>\n        <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"Tutup\"></button>\n      </div>\n      <div class=\"modal-body\">Gratis ongkir untuk belanja di atas Rp100.000.</div>\n      <div class=\"modal-footer\"><button class=\"btn btn-secondary\" data-bs-dismiss=\"modal\">Mengerti</button></div>\n    </div>\n  </div>\n</div>"
+   },
+   {
+    "t": "Kasus: modal di tengah layar dan berukuran besar",
+    "code": "<div class=\"container py-3\">\n  <button class=\"btn btn-outline-primary\" data-bs-toggle=\"modal\" data-bs-target=\"#syarat\">Syarat dan ketentuan</button>\n</div>\n<div class=\"modal fade\" id=\"syarat\" tabindex=\"-1\" aria-labelledby=\"judulSyarat\" aria-hidden=\"true\">\n  <div class=\"modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header\">\n        <h5 class=\"modal-title\" id=\"judulSyarat\">Syarat dan ketentuan</h5>\n        <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"Tutup\"></button>\n      </div>\n      <div class=\"modal-body\"><p>1. Pesanan diproses dalam 1x24 jam.</p><p>2. Barang rusak bisa ditukar dalam 7 hari.</p></div>\n    </div>\n  </div>\n</div>",
+    "d": "modal-dialog-centered, modal-lg, dan modal-dialog-scrollable ditambahkan di .modal-dialog."
+   },
+   {
+    "t": "Kasus: membuka modal lewat JavaScript",
+    "code": "<div class=\"container py-3\">\n  <button id=\"tombolPromo\" class=\"btn btn-warning\">Lihat promo</button>\n</div>\n<div class=\"modal fade\" id=\"promo\" tabindex=\"-1\" aria-labelledby=\"judulPromo\" aria-hidden=\"true\">\n  <div class=\"modal-dialog\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header\">\n        <h5 class=\"modal-title\" id=\"judulPromo\">Promo hari ini</h5>\n        <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"Tutup\"></button>\n      </div>\n      <div class=\"modal-body\">Diskon 20% untuk semua kopi.</div>\n    </div>\n  </div>\n</div>\n<script>\n  const modalPromo = new bootstrap.Modal(document.getElementById('promo'));\n  document.getElementById('tombolPromo').addEventListener('click', () => modalPromo.show());\n</script>",
+    "d": "Tanpa data-bs-toggle, modal dibuka dengan new bootstrap.Modal(el).show()."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Modal konfirmasi hapus dengan data dinamis",
+    "b": "Satu modal dipakai untuk banyak tombol. Event show.bs.modal memberi tahu tombol mana yang membukanya (relatedTarget), sehingga isi modal bisa diganti sesuai baris yang dipilih.",
+    "code": "<ul class=\"list-unstyled\">\n  <li id=\"kelas-12\" class=\"mb-2\">Kelas React\n    <button class=\"btn btn-sm btn-outline-danger\" data-bs-toggle=\"modal\" data-bs-target=\"#modalHapus\" data-nama=\"Kelas React\" data-id=\"12\">Hapus</button></li>\n  <li id=\"kelas-15\">Kelas Python\n    <button class=\"btn btn-sm btn-outline-danger\" data-bs-toggle=\"modal\" data-bs-target=\"#modalHapus\" data-nama=\"Kelas Python\" data-id=\"15\">Hapus</button></li>\n</ul>\n\n<div class=\"modal fade\" id=\"modalHapus\" tabindex=\"-1\" aria-labelledby=\"judulHapus\" aria-hidden=\"true\">\n  <div class=\"modal-dialog modal-dialog-centered\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header\">\n        <h1 class=\"modal-title fs-5\" id=\"judulHapus\">Hapus kelas?</h1>\n        <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"Tutup\"></button>\n      </div>\n      <div class=\"modal-body\">Kelas <strong id=\"namaHapus\"></strong> akan dihapus permanen.</div>\n      <div class=\"modal-footer\">\n        <button class=\"btn btn-secondary\" data-bs-dismiss=\"modal\">Batal</button>\n        <button class=\"btn btn-danger\" id=\"konfirmasiHapus\">Ya, hapus</button>\n      </div>\n    </div>\n  </div>\n</div>\n<script>\n  const el = document.getElementById(\"modalHapus\");\n  let idDipilih = null;\n  el.addEventListener(\"show.bs.modal\", (e) => {\n    idDipilih = e.relatedTarget.dataset.id;\n    document.getElementById(\"namaHapus\").textContent = e.relatedTarget.dataset.nama;   // textContent: aman dari XSS\n  });\n  document.getElementById(\"konfirmasiHapus\").addEventListener(\"click\", () => {\n    document.getElementById(\"kelas-\" + idDipilih).remove();\n    bootstrap.Modal.getOrCreateInstance(el).hide();\n  });\n</script>",
+    "lang": "html"
+   }
+  ]
+ },
+ "bs-3-1": {
+  "exs": [
+   {
+    "t": "Kasus: mengganti warna primary untuk teks dan latar",
+    "code": "<style>\n  :root { --bs-primary: #0f766e; --bs-primary-rgb: 15, 118, 110; }\n</style>\n<div class=\"container py-3\">\n  <p class=\"text-primary fw-bold\">Teks ini ikut berwarna hijau toska.</p>\n  <div class=\"bg-primary text-white p-3 rounded\">Latar ini juga.</div>\n</div>",
+    "d": "Kelas text-primary dan bg-primary membaca --bs-primary-rgb, jadi keduanya ikut berubah."
+   },
+   {
+    "t": "Kasus: mode gelap hanya pada satu bagian",
+    "code": "<div class=\"container py-3\">\n  <div class=\"card mb-3\"><div class=\"card-body\">Kartu terang (bawaan).</div></div>\n  <div class=\"card\" data-bs-theme=\"dark\"><div class=\"card-body\">Kartu gelap: cukup satu atribut.</div></div>\n</div>"
+   },
+   {
+    "t": "Kasus: tombol outline dengan warna merek",
+    "code": "<style>\n  .btn-outline-primary {\n    --bs-btn-color: #B4532A;\n    --bs-btn-border-color: #B4532A;\n    --bs-btn-hover-bg: #B4532A;\n    --bs-btn-hover-border-color: #B4532A;\n    --bs-btn-hover-color: #fff;\n  }\n</style>\n<div class=\"container py-3\">\n  <button class=\"btn btn-outline-primary\">Lihat menu</button>\n</div>",
+    "d": "Setiap komponen punya variabel sendiri berawalan --bs-btn-, --bs-card-, dan seterusnya."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Kustomisasi merek dengan Sass",
+    "b": "Variabel Sass ditulis sebelum @import agar semua komponen dibuat ulang dengan nilai baru. Variabel CSS --bs- tetap bisa ditimpa saat runtime tanpa compile ulang.",
+    "code": "// custom.scss\n$primary: #0f766e;\n$border-radius: .75rem;\n$font-family-sans-serif: \"Plus Jakarta Sans\", system-ui, sans-serif;\n$enable-shadows: true;\n@import \"bootstrap/scss/bootstrap\";\n\n// Ubah saat runtime tanpa compile ulang\n.tema-kopi { --bs-primary: #92400e; --bs-primary-rgb: 146, 64, 14; }",
+    "lang": "scss"
+   },
+   {
+    "t": "Tombol ganti mode gelap",
+    "b": "Mode gelap seluruh halaman cukup dengan mengganti atribut data-bs-theme pada <html>. Skrip kecil ini menukar nilainya setiap tombol diklik.",
+    "code": "<div class=\"container py-3\">\n  <button class=\"btn btn-outline-secondary\" id=\"tombolTema\">Ganti tema</button>\n  <div class=\"card mt-3\"><div class=\"card-body\">Kartu ini mengikuti tema halaman.</div></div>\n</div>\n<script>\n  const html = document.documentElement;\n  document.getElementById(\"tombolTema\").addEventListener(\"click\", () => {\n    const gelap = html.getAttribute(\"data-bs-theme\") === \"dark\";\n    html.setAttribute(\"data-bs-theme\", gelap ? \"light\" : \"dark\");\n  });\n</script>",
+    "lang": "html"
+   },
+   {
+    "t": "Warna subtle dan emphasis turunan",
+    "b": "Setiap warna tema punya turunan yang dihitung Bootstrap: latar lembut (bg-*-subtle), garis (border-*-subtle), dan teks tegas (text-*-emphasis). Turunan ini ikut menyesuaikan di mode gelap.",
+    "code": "<div class=\"container py-3\">\n  <div class=\"p-3 mb-2 bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded\">Info: kelas dimulai pukul 19.00.</div>\n  <div class=\"p-3 mb-2 bg-success-subtle border border-success-subtle text-success-emphasis rounded\">Tugas sudah dinilai.</div>\n  <div class=\"p-3 bg-danger-subtle border border-danger-subtle text-danger-emphasis rounded\" data-bs-theme=\"dark\">Versi gelap: batas pengumpulan besok.</div>\n</div>",
+    "lang": "html"
+   }
+  ]
+ },
+ "bs-3-2": {
+  "exs": [
+   {
+    "t": "Kasus: hero dua kolom dengan tombol ajakan",
+    "code": "<header class=\"container py-5\">\n  <div class=\"row align-items-center g-4\">\n    <div class=\"col-lg-6\">\n      <h1 class=\"display-5 fw-bold\">Belajar Flutter 8 minggu</h1>\n      <p class=\"lead text-body-secondary\">Bangun tiga aplikasi nyata bersama mentor.</p>\n      <a class=\"btn btn-primary btn-lg\" href=\"#daftar\">Daftar sekarang</a>\n    </div>\n    <div class=\"col-lg-6\"><img class=\"img-fluid rounded\" src=\"aplikasi.webp\" alt=\"Tampilan aplikasi Flutter\"></div>\n  </div>\n</header>"
+   },
+   {
+    "t": "Kasus: bagian harga tiga paket",
+    "code": "<section class=\"container py-5\">\n  <div class=\"row row-cols-1 row-cols-md-3 g-3 text-center\">\n    <div class=\"col\"><div class=\"card h-100\"><div class=\"card-body\">\n      <h5 class=\"card-title\">Dasar</h5><p class=\"fs-3 fw-bold\">Rp0</p><a class=\"btn btn-outline-primary\" href=\"#\">Coba</a>\n    </div></div></div>\n    <div class=\"col\"><div class=\"card h-100 border-primary\"><div class=\"card-body\">\n      <h5 class=\"card-title\">Pro <span class=\"badge text-bg-primary\">Populer</span></h5><p class=\"fs-3 fw-bold\">Rp99rb</p><a class=\"btn btn-primary\" href=\"#\">Pilih</a>\n    </div></div></div>\n    <div class=\"col\"><div class=\"card h-100\"><div class=\"card-body\">\n      <h5 class=\"card-title\">Tim</h5><p class=\"fs-3 fw-bold\">Rp499rb</p><a class=\"btn btn-outline-primary\" href=\"#\">Hubungi</a>\n    </div></div></div>\n  </div>\n</section>"
+   },
+   {
+    "t": "Kasus: footer tiga kolom",
+    "code": "<footer class=\"bg-body-tertiary border-top py-4\">\n  <div class=\"container\">\n    <div class=\"row g-3 small\">\n      <div class=\"col-md-4\"><strong>RuangKode</strong><p class=\"text-body-secondary mb-0\">Belajar coding dalam bahasa Indonesia.</p></div>\n      <div class=\"col-6 col-md-4\"><strong>Kelas</strong><p class=\"mb-0\">Web · Mobile · Data</p></div>\n      <div class=\"col-6 col-md-4\"><strong>Kontak</strong><p class=\"mb-0\">halo@ruangkode.id</p></div>\n    </div>\n  </div>\n</footer>"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Kerangka halaman kursus",
+    "b": "Navbar lipat, hero dua kolom, grid kartu silabus, dan footer. Semuanya hanya memakai komponen dan utilitas dari modul sebelumnya.",
+    "code": "<nav class=\"navbar navbar-expand-lg bg-body border-bottom\">\n  <div class=\"container\">\n    <a class=\"navbar-brand fw-bold\" href=\"/\">RuangKode</a>\n    <button class=\"navbar-toggler\" data-bs-toggle=\"collapse\" data-bs-target=\"#navKursus\" aria-controls=\"navKursus\" aria-expanded=\"false\" aria-label=\"Buka menu\"><span class=\"navbar-toggler-icon\"></span></button>\n    <div class=\"collapse navbar-collapse\" id=\"navKursus\">\n      <ul class=\"navbar-nav ms-auto\">\n        <li class=\"nav-item\"><a class=\"nav-link\" href=\"#silabus\">Silabus</a></li>\n        <li class=\"nav-item\"><a class=\"nav-link\" href=\"#harga\">Harga</a></li>\n      </ul>\n    </div>\n  </div>\n</nav>\n<header class=\"py-5 bg-body-tertiary\">\n  <div class=\"container\"><div class=\"row align-items-center g-5\">\n    <div class=\"col-lg-6\">\n      <span class=\"badge text-bg-success mb-3\">Batch 12 · Mulai 6 Januari 2027</span>\n      <h1 class=\"display-5 fw-bold\">Bootcamp Frontend 16 Minggu</h1>\n      <p class=\"lead\">HTML, CSS, JavaScript, React, dan proyek portofolio dengan mentor industri.</p>\n      <div class=\"d-grid d-sm-flex gap-2\"><a class=\"btn btn-primary btn-lg\" href=\"#harga\">Daftar</a><a class=\"btn btn-outline-secondary btn-lg\" href=\"#silabus\">Lihat silabus</a></div>\n    </div>\n    <div class=\"col-lg-6\"><img class=\"img-fluid rounded-4\" src=\"hero.webp\" alt=\"Siswa bootcamp\" width=\"720\" height=\"480\"></div>\n  </div></div>\n</header>\n<section id=\"silabus\" class=\"container py-5\">\n  <div class=\"row row-cols-1 row-cols-md-2 row-cols-lg-4 g-3\">\n    <div class=\"col\"><div class=\"card h-100\"><div class=\"card-body\"><h6 class=\"card-title\">Minggu 1-3</h6><p class=\"card-text\">HTML & CSS</p></div></div></div>\n    <div class=\"col\"><div class=\"card h-100\"><div class=\"card-body\"><h6 class=\"card-title\">Minggu 4-7</h6><p class=\"card-text\">JavaScript</p></div></div></div>\n    <div class=\"col\"><div class=\"card h-100\"><div class=\"card-body\"><h6 class=\"card-title\">Minggu 8-13</h6><p class=\"card-text\">Git dan React</p></div></div></div>\n    <div class=\"col\"><div class=\"card h-100\"><div class=\"card-body\"><h6 class=\"card-title\">Minggu 14-16</h6><p class=\"card-text\">Proyek akhir</p></div></div></div>\n  </div>\n</section>\n<footer class=\"border-top py-3 text-center small text-body-secondary\">© 2026 RuangKode</footer>",
+    "lang": "html"
+   },
+   {
+    "t": "Tombol daftar yang membuka form di modal",
+    "b": "Menggabungkan modal dan form dengan validasi: pengunjung tidak perlu pindah halaman untuk mendaftar.",
+    "code": "<button class=\"btn btn-primary btn-lg\" data-bs-toggle=\"modal\" data-bs-target=\"#modalDaftar\">Daftar</button>\n\n<div class=\"modal fade\" id=\"modalDaftar\" tabindex=\"-1\" aria-labelledby=\"judulDaftar\" aria-hidden=\"true\">\n  <div class=\"modal-dialog modal-dialog-centered\">\n    <form id=\"formDaftar\" class=\"modal-content needs-validation\" novalidate>\n      <div class=\"modal-header\">\n        <h5 class=\"modal-title\" id=\"judulDaftar\">Daftar Bootcamp</h5>\n        <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"Tutup\"></button>\n      </div>\n      <div class=\"modal-body\">\n        <label for=\"emailDaftar\" class=\"form-label\">Email</label>\n        <input type=\"email\" id=\"emailDaftar\" class=\"form-control\" required>\n        <div class=\"invalid-feedback\">Email wajib diisi dengan benar.</div>\n      </div>\n      <div class=\"modal-footer\"><button class=\"btn btn-primary\">Kirim</button></div>\n    </form>\n  </div>\n</div>\n<script>\n  const formDaftar = document.getElementById(\"formDaftar\");\n  formDaftar.addEventListener(\"submit\", (e) => {\n    e.preventDefault();\n    formDaftar.classList.add(\"was-validated\");\n    if (formDaftar.checkValidity()) bootstrap.Modal.getOrCreateInstance(\"#modalDaftar\").hide();\n  });\n</script>",
+    "lang": "html"
+   }
+  ]
+ },
+ "bs-4-1": {
+  "exs": [
+   {
+    "t": "Kasus: dropdown dengan pemisah dan item nonaktif",
+    "code": "<div class=\"container py-3\">\n  <div class=\"dropdown\">\n    <button class=\"btn btn-outline-secondary dropdown-toggle\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\">Kategori</button>\n    <ul class=\"dropdown-menu\">\n      <li><a class=\"dropdown-item\" href=\"#\">Kopi</a></li>\n      <li><a class=\"dropdown-item\" href=\"#\">Teh</a></li>\n      <li><hr class=\"dropdown-divider\"></li>\n      <li><a class=\"dropdown-item disabled\" aria-disabled=\"true\">Camilan (segera)</a></li>\n    </ul>\n  </div>\n</div>"
+   },
+   {
+    "t": "Kasus: tab bergaya pill",
+    "code": "<div class=\"container py-3\">\n  <ul class=\"nav nav-pills mb-3\" role=\"tablist\">\n    <li class=\"nav-item\"><button class=\"nav-link active\" data-bs-toggle=\"pill\" data-bs-target=\"#harian\" type=\"button\" role=\"tab\">Harian</button></li>\n    <li class=\"nav-item\"><button class=\"nav-link\" data-bs-toggle=\"pill\" data-bs-target=\"#bulanan\" type=\"button\" role=\"tab\">Bulanan</button></li>\n  </ul>\n  <div class=\"tab-content\">\n    <div class=\"tab-pane fade show active\" id=\"harian\" role=\"tabpanel\">Penjualan hari ini: 42 gelas.</div>\n    <div class=\"tab-pane fade\" id=\"bulanan\" role=\"tabpanel\">Penjualan bulan ini: 1.180 gelas.</div>\n  </div>\n</div>",
+    "d": "Ganti nav-tabs dengan nav-pills dan data-bs-toggle=\"pill\"."
+   },
+   {
+    "t": "Kasus: FAQ yang hanya membuka satu jawaban",
+    "code": "<div class=\"container py-3\">\n  <div class=\"accordion\" id=\"faqToko\">\n    <div class=\"accordion-item\">\n      <h2 class=\"accordion-header\"><button class=\"accordion-button\" data-bs-toggle=\"collapse\" data-bs-target=\"#j1\">Berapa lama pengiriman?</button></h2>\n      <div id=\"j1\" class=\"accordion-collapse collapse show\" data-bs-parent=\"#faqToko\"><div class=\"accordion-body\">2 sampai 4 hari kerja.</div></div>\n    </div>\n    <div class=\"accordion-item\">\n      <h2 class=\"accordion-header\"><button class=\"accordion-button collapsed\" data-bs-toggle=\"collapse\" data-bs-target=\"#j2\">Bisa bayar di tempat?</button></h2>\n      <div id=\"j2\" class=\"accordion-collapse collapse\" data-bs-parent=\"#faqToko\"><div class=\"accordion-body\">Bisa, untuk wilayah Jawa.</div></div>\n    </div>\n  </div>\n</div>",
+    "d": "Hapus data-bs-parent bila semua jawaban boleh terbuka bersamaan."
+   }
+  ]
+ },
+ "bs-4-2": {
+  "exs": [
+   {
+    "t": "Kasus: menu samping dari kanan",
+    "code": "<div class=\"container py-3\">\n  <button class=\"btn btn-primary\" data-bs-toggle=\"offcanvas\" data-bs-target=\"#menuAkun\">Akun saya</button>\n</div>\n<div class=\"offcanvas offcanvas-end\" tabindex=\"-1\" id=\"menuAkun\" aria-labelledby=\"judulAkun\">\n  <div class=\"offcanvas-header\">\n    <h5 class=\"offcanvas-title\" id=\"judulAkun\">Akun saya</h5>\n    <button class=\"btn-close\" data-bs-dismiss=\"offcanvas\" aria-label=\"Tutup\"></button>\n  </div>\n  <div class=\"offcanvas-body\">Pesanan · Alamat · Keluar</div>\n</div>",
+    "d": "offcanvas-start dari kiri, offcanvas-end dari kanan, offcanvas-bottom dari bawah."
+   },
+   {
+    "t": "Kasus: mengaktifkan tooltip di beberapa tombol",
+    "code": "<div class=\"container py-3 d-flex gap-2\">\n  <button class=\"btn btn-outline-secondary\" data-bs-toggle=\"tooltip\" data-bs-title=\"Salin tautan\">Salin</button>\n  <button class=\"btn btn-outline-secondary\" data-bs-toggle=\"tooltip\" data-bs-placement=\"bottom\" data-bs-title=\"Unduh PDF\">Unduh</button>\n</div>\n<script>\n  document.querySelectorAll('[data-bs-toggle=\"tooltip\"]').forEach(el => new bootstrap.Tooltip(el));\n</script>",
+    "d": "Tooltip bersifat opt-in, jadi setiap elemen perlu diaktifkan dengan new bootstrap.Tooltip."
+   },
+   {
+    "t": "Kasus: toast dengan judul dan tombol tutup",
+    "code": "<div class=\"container py-3\">\n  <button id=\"btnSimpan\" class=\"btn btn-success\">Simpan alamat</button>\n  <div id=\"toastAlamat\" class=\"toast mt-3\" role=\"status\" aria-live=\"polite\" aria-atomic=\"true\">\n    <div class=\"toast-header\">\n      <strong class=\"me-auto\">Alamat</strong>\n      <small>baru saja</small>\n      <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"toast\" aria-label=\"Tutup\"></button>\n    </div>\n    <div class=\"toast-body\">Alamat pengiriman tersimpan.</div>\n  </div>\n</div>\n<script>\n  const toastAlamat = new bootstrap.Toast(document.getElementById('toastAlamat'));\n  document.getElementById('btnSimpan').addEventListener('click', () => toastAlamat.show());\n</script>"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Keranjang offcanvas, toast, dan tooltip",
+    "b": "Tombol keranjang membuka panel dari kanan, tombol tambah memunculkan toast yang hilang sendiri setelah 3 detik (data-bs-delay), dan singkatan PPN diberi tooltip. Toast dan tooltip diaktifkan di skrip.",
+    "code": "<button class=\"btn btn-primary\" data-bs-toggle=\"offcanvas\" data-bs-target=\"#keranjang\">\n  <i class=\"bi bi-cart\"></i> Keranjang <span class=\"badge text-bg-light\">2</span>\n</button>\n<button class=\"btn btn-outline-success tambah-keranjang\">Tambah kelas</button>\n\n<div class=\"offcanvas offcanvas-end\" tabindex=\"-1\" id=\"keranjang\" aria-labelledby=\"judulKeranjang\">\n  <div class=\"offcanvas-header\"><h5 id=\"judulKeranjang\">Keranjang</h5><button class=\"btn-close\" data-bs-dismiss=\"offcanvas\" aria-label=\"Tutup\"></button></div>\n  <div class=\"offcanvas-body\">...</div>\n</div>\n\n<div id=\"toastSimpan\" class=\"toast mt-3\" role=\"status\" aria-live=\"polite\" aria-atomic=\"true\" data-bs-delay=\"3000\">\n  <div class=\"toast-body d-flex justify-content-between\">Kelas ditambahkan ke keranjang <button class=\"btn-close\" data-bs-dismiss=\"toast\" aria-label=\"Tutup\"></button></div>\n</div>\n\n<p class=\"mt-3\">Harga sudah termasuk <span class=\"text-decoration-underline\" data-bs-toggle=\"tooltip\" data-bs-title=\"Pajak Pertambahan Nilai 11%\" tabindex=\"0\">PPN</span>.</p>\n\n<script>\n  document.querySelectorAll('[data-bs-toggle=\"tooltip\"]').forEach((el) => new bootstrap.Tooltip(el));\n  const toast = bootstrap.Toast.getOrCreateInstance(document.getElementById(\"toastSimpan\"));\n  document.querySelectorAll(\".tambah-keranjang\").forEach((b) => b.addEventListener(\"click\", () => toast.show()));\n</script>",
+    "lang": "html"
+   }
+  ]
+ },
+ "bs-4-3": {
+  "exs": [
+   {
+    "t": "Kasus: tabel belang, hover, dan ringkas",
+    "code": "<div class=\"container py-3\">\n  <div class=\"table-responsive\">\n    <table class=\"table table-striped table-hover table-sm\">\n      <thead><tr><th>Nama</th><th>Kelas</th><th class=\"text-end\">Nilai</th></tr></thead>\n      <tbody>\n        <tr><td>Rina</td><td>Flutter</td><td class=\"text-end\">92</td></tr>\n        <tr><td>Budi</td><td>Kotlin</td><td class=\"text-end\">85</td></tr>\n        <tr><td>Sari</td><td>Dart</td><td class=\"text-end\">78</td></tr>\n      </tbody>\n    </table>\n  </div>\n</div>"
+   },
+   {
+    "t": "Kasus: list group dengan badge jumlah",
+    "code": "<div class=\"container py-3\">\n  <ul class=\"list-group\">\n    <li class=\"list-group-item d-flex justify-content-between align-items-center\">Pesanan baru <span class=\"badge text-bg-primary rounded-pill\">5</span></li>\n    <li class=\"list-group-item d-flex justify-content-between align-items-center\">Dikirim <span class=\"badge text-bg-secondary rounded-pill\">12</span></li>\n    <li class=\"list-group-item d-flex justify-content-between align-items-center\">Dibatalkan <span class=\"badge text-bg-danger rounded-pill\">1</span></li>\n  </ul>\n</div>"
+   },
+   {
+    "t": "Kasus: pagination dengan halaman aktif dan tombol nonaktif",
+    "code": "<nav class=\"container py-3\" aria-label=\"Halaman ulasan\">\n  <ul class=\"pagination pagination-sm\">\n    <li class=\"page-item disabled\"><span class=\"page-link\">Sebelumnya</span></li>\n    <li class=\"page-item active\" aria-current=\"page\"><span class=\"page-link\">1</span></li>\n    <li class=\"page-item\"><a class=\"page-link\" href=\"?hal=2\">2</a></li>\n    <li class=\"page-item\"><a class=\"page-link\" href=\"?hal=2\">Berikutnya</a></li>\n  </ul>\n</nav>",
+    "d": "Di halaman pertama, tombol Sebelumnya dinonaktifkan dengan .disabled."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Tabel transaksi dengan pagination",
+    "code": "<div class=\"table-responsive\">\n  <table class=\"table table-striped table-hover align-middle\">\n    <caption>Transaksi November 2026</caption>\n    <thead class=\"table-light\"><tr><th scope=\"col\">No. invoice</th><th scope=\"col\">Siswa</th><th scope=\"col\" class=\"text-end\">Total</th><th scope=\"col\">Status</th></tr></thead>\n    <tbody>\n      <tr><td>INV-0412</td><td>Rina W.</td><td class=\"text-end\">Rp399.000</td><td><span class=\"badge text-bg-success\">Lunas</span></td></tr>\n      <tr><td>INV-0413</td><td>Budi S.</td><td class=\"text-end\">Rp450.000</td><td><span class=\"badge text-bg-warning\">Menunggu</span></td></tr>\n    </tbody>\n  </table>\n</div>\n<nav aria-label=\"Navigasi halaman transaksi\">\n  <ul class=\"pagination justify-content-center\">\n    <li class=\"page-item disabled\"><span class=\"page-link\">«</span></li>\n    <li class=\"page-item active\" aria-current=\"page\"><span class=\"page-link\">1</span></li>\n    <li class=\"page-item\"><a class=\"page-link\" href=\"?hal=2\">2</a></li>\n    <li class=\"page-item\"><a class=\"page-link\" href=\"?hal=3\">3</a></li>\n    <li class=\"page-item\"><a class=\"page-link\" href=\"?hal=2\">»</a></li>\n  </ul>\n</nav>",
+    "lang": "html",
+    "b": "Tabel transaksi dengan caption, kepala tabel terang, badge status, dan pagination di tengah. Halaman aktif ditulis sebagai span karena tidak perlu diklik."
+   },
+   {
+    "t": "List group yang bisa diklik",
+    "b": "Gunakan <a> atau <button> dengan list-group-item-action agar item bisa diklik dan berubah warna saat disorot. Tandai pilihan aktif dengan .active dan item yang tidak bisa dipilih dengan .disabled.",
+    "code": "<div class=\"container py-3\" style=\"max-width: 22rem\">\n  <div class=\"list-group\">\n    <a href=\"#profil\" class=\"list-group-item list-group-item-action active\" aria-current=\"true\">Profil</a>\n    <a href=\"#alamat\" class=\"list-group-item list-group-item-action\">Alamat pengiriman</a>\n    <a href=\"#bayar\" class=\"list-group-item list-group-item-action\">Metode pembayaran</a>\n    <a class=\"list-group-item list-group-item-action disabled\" aria-disabled=\"true\">Langganan (segera)</a>\n  </div>\n  <ul class=\"list-group list-group-flush mt-4\">\n    <li class=\"list-group-item list-group-item-success\">Pembayaran #1024 lunas</li>\n    <li class=\"list-group-item list-group-item-warning\">Pembayaran #1025 menunggu</li>\n  </ul>\n</div>",
+    "lang": "html"
+   }
+  ]
+ },
+ "bs-4-4": {
+  "exs": [
+   {
+    "t": "Kasus: baris ikon dengan tombol di ujung kanan",
+    "code": "<div class=\"container py-3\">\n  <div class=\"hstack gap-2 p-2 border rounded\">\n    <span>Kopi Gayo</span>\n    <span class=\"badge text-bg-secondary\">x2</span>\n    <button class=\"btn btn-sm btn-outline-danger ms-auto\">Hapus</button>\n  </div>\n  <div class=\"vstack gap-2 mt-3\">\n    <div class=\"p-2 border rounded\">Langkah 1: pilih produk</div>\n    <div class=\"p-2 border rounded\">Langkah 2: isi alamat</div>\n  </div>\n</div>"
+   },
+   {
+    "t": "Kasus: badge notifikasi di pojok tombol",
+    "code": "<div class=\"container py-4\">\n  <button class=\"btn btn-primary position-relative\">\n    Pesan\n    <span class=\"position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger\">3</span>\n  </button>\n</div>",
+    "d": "Induk position-relative, badge position-absolute, lalu translate-middle menggeser titik tengahnya ke pojok."
+   },
+   {
+    "t": "Kasus: foto produk persegi tanpa gepeng",
+    "code": "<div class=\"container py-3\" style=\"max-width: 14rem\">\n  <div class=\"ratio ratio-1x1\">\n    <img src=\"kopi-gayo.webp\" class=\"object-fit-cover rounded\" alt=\"Biji kopi Gayo\">\n  </div>\n</div>",
+    "d": "Foto setinggi apa pun dipotong rapi menjadi persegi."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Profil mentor, video, dan tombol ikon",
+    "code": "<div class=\"hstack gap-3 align-items-start\">\n  <div class=\"position-relative flex-shrink-0\">\n    <img src=\"mentor.webp\" class=\"rounded-circle object-fit-cover\" width=\"64\" height=\"64\" alt=\"Dimas, mentor React\">\n    <span class=\"position-absolute bottom-0 end-0 p-2 bg-success border border-light rounded-circle\">\n      <span class=\"visually-hidden\">Sedang online</span>\n    </span>\n  </div>\n  <div class=\"vstack gap-1\">\n    <strong>Dimas Pratama</strong>\n    <span class=\"text-body-secondary small\">Senior Frontend Engineer · 8 tahun</span>\n  </div>\n  <button class=\"btn btn-light ms-auto\"><i class=\"bi bi-chat-dots\"></i><span class=\"visually-hidden\">Kirim pesan</span></button>\n</div>\n\n<div class=\"ratio ratio-16x9 rounded-3 overflow-hidden mt-4\">\n  <video controls preload=\"metadata\" poster=\"cuplikan.webp\"><source src=\"cuplikan.mp4\" type=\"video/mp4\"></video>\n</div>",
+    "lang": "html",
+    "b": "Profil mentor: avatar dengan titik status di pojok (posisi absolut), teks bertumpuk dengan vstack, dan tombol yang didorong ke kanan dengan ms-auto. Video dibungkus .ratio agar tetap 16:9."
+   },
+   {
+    "t": "Pilihan rasio bawaan",
+    "b": "Bootstrap menyediakan ratio-1x1, ratio-4x3, ratio-16x9, dan ratio-21x9. Tinggi wadah dihitung dari lebarnya, jadi kotak di bawah tetap proporsional saat layar menyempit.",
+    "code": "<div class=\"container py-3\">\n  <div class=\"row g-3\">\n    <div class=\"col-6 col-md-3\"><div class=\"ratio ratio-1x1 bg-info-subtle border\"><div class=\"d-flex align-items-center justify-content-center\">1x1</div></div></div>\n    <div class=\"col-6 col-md-3\"><div class=\"ratio ratio-4x3 bg-info-subtle border\"><div class=\"d-flex align-items-center justify-content-center\">4x3</div></div></div>\n    <div class=\"col-6 col-md-3\"><div class=\"ratio ratio-16x9 bg-info-subtle border\"><div class=\"d-flex align-items-center justify-content-center\">16x9</div></div></div>\n    <div class=\"col-6 col-md-3\"><div class=\"ratio ratio-21x9 bg-info-subtle border\"><div class=\"d-flex align-items-center justify-content-center\">21x9</div></div></div>\n  </div>\n</div>",
+    "lang": "html"
+   }
+  ]
+ }
+}

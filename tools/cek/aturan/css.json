@@ -1,0 +1,105 @@
+{
+ "aturan": [
+  [
+   "box model (box-sizing/margin/outline)",
+   "box-sizing|(^|[\\s;{])margin(-[a-z]+)?\\s*:|(^|[\\s;{])outline(-offset)?\\s*:",
+   "^Box model"
+  ],
+  [
+   "unit relatif & fungsi ukuran",
+   "\\d(rem|em|vw|vh|dvh|svh|ch|vmin|vmax|cqi)\\b|\\b(calc|clamp|min|max)\\(",
+   "^Unit ukuran"
+  ],
+  [
+   "rgb/hsl, gradien, bayangan, opacity",
+   "\\b(rgb|hsl)a?\\(|gradient\\(|box-shadow|(^|[\\s;{])opacity\\s*:",
+   "^Warna & latar"
+  ],
+  [
+   "tipografi lanjutan",
+   "@font-face|letter-spacing|text-transform|text-wrap|font-variant|text-shadow",
+   "^Tipografi"
+  ],
+  [
+   "oklch/color-mix/light-dark",
+   "oklch\\(|color-mix\\(|light-dark\\(|color-scheme",
+   "^Warna modern"
+  ],
+  [
+   "display/visibility/float",
+   "display\\s*:\\s*(inline|inline-block|none|contents)\\b|visibility\\s*:|float\\s*:",
+   "^Display & alur"
+  ],
+  [
+   "position & z-index",
+   "position\\s*:\\s*(relative|absolute|fixed|sticky)|z-index|(^|[\\s;{])inset(-[a-z-]+)?\\s*:",
+   "^Position"
+  ],
+  [
+   "flexbox",
+   "display\\s*:\\s*(inline-)?flex|(^|[\\s;{])flex(-wrap|-direction|-shrink|-grow|-basis)?\\s*:|justify-content|align-items",
+   "^Flexbox"
+  ],
+  [
+   "grid",
+   "display\\s*:\\s*grid|grid-template|grid-column|grid-row|grid-area|place-items",
+   "^Grid"
+  ],
+  [
+   "media query",
+   "@media",
+   "^Media query"
+  ],
+  [
+   "container query",
+   "@container|container(-type|-name)?\\s*:",
+   "^Container query"
+  ],
+  [
+   "aspect-ratio & object-fit",
+   "aspect-ratio|object-fit|object-position|\\ssrcset=|<picture",
+   "^Gambar responsif"
+  ],
+  [
+   "combinator (keturunan, >, +, ~)",
+   "^[^{}:\\n]*\\S\\s+[>+~]\\s+[^{}\\n]*\\{|^\\s*[.#]?[a-z][\\w-]*([.#:][\\w-]+)*\\s+[.#]?[a-z][\\w.:-]*\\s*\\{",
+   "^Combinator"
+  ],
+  [
+   "selector atribut",
+   "^[^{}\\n]*\\[[a-z-]+([~^$*|]?=[^\\]]*)?\\][^{}\\n]*\\{",
+   "^Combinator"
+  ],
+  [
+   "pseudo-class & pseudo-element",
+   ":(hover|focus|focus-visible|focus-within|active|checked|nth-child|nth-of-type|not|is|where|first-child|last-child|empty|placeholder-shown|invalid|valid|user-invalid|disabled)\\b|::?(before|after|first-letter|placeholder|marker|selection)\\b",
+   "^Combinator"
+  ],
+  [
+   "transform, transisi, animasi",
+   "(?<![-\\w])transform\\s*:|transition|@keyframes|animation|(^|[\\s;{])(translate|rotate|scale)\\s*:|@view-transition",
+   "^Transform"
+  ],
+  [
+   ":has() & nesting",
+   ":has\\(|^\\s*&",
+   "^:has\\(\\)"
+  ],
+  [
+   "variabel CSS",
+   "var\\(--|^\\s*--[\\w-]+\\s*:|[{;]\\s*--[\\w-]+\\s*:|@property",
+   "^Variabel CSS"
+  ],
+  [
+   "Sass & @layer",
+   "\\$[a-z][\\w-]*|@mixin|@include|@use\\s|@layer",
+   "^BEM, Sass"
+  ],
+  [
+   "JavaScript",
+   "\\bconst\\s|\\bconsole\\.|=>|\\bfunction\\b|<script",
+   "^\\b$"
+  ]
+ ],
+ "abaikan": []
+}

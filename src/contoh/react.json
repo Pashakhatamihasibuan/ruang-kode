@@ -1,0 +1,454 @@
+{
+ "react-1-1": {
+  "exs": [
+   {
+    "t": "Kasus: menyusun halaman dari beberapa komponen",
+    "code": "function Header() {\n  return <header><h1>Toko Nusantara</h1></header>;\n}\nfunction Footer() {\n  return <footer><small>© 2026 Toko Nusantara</small></footer>;\n}\nfunction App() {\n  return (\n    <>\n      <Header />\n      <main><p>Selamat datang!</p></main>\n      <Footer />\n    </>\n  );\n}",
+    "d": "Setiap bagian halaman menjadi komponen sendiri, lalu digabung di App."
+   },
+   {
+    "t": "Kasus: ekspresi JavaScript di dalam { }",
+    "code": "function Ringkasan() {\n  const jumlah = 3;\n  const harga = 25000;\n  const tanggal = new Date(2026, 10, 26);\n  return (\n    <p>\n      {jumlah} barang, total Rp{(jumlah * harga).toLocaleString(\"id-ID\")},\n      dipesan {tanggal.toLocaleDateString(\"id-ID\")}\n    </p>\n  );\n}"
+   },
+   {
+    "t": "Kasus: atribut JSX yang berbeda dari HTML",
+    "code": "function FormLangganan() {\n  return (\n    <form className=\"langganan\">\n      <label htmlFor=\"email\">Email</label>\n      <input id=\"email\" type=\"email\" placeholder=\"nama@contoh.id\" />\n      <br />\n      <img src=\"/kopi.webp\" alt=\"Secangkir kopi\" style={{ width: 120, borderRadius: 8 }} />\n    </form>\n  );\n}",
+    "d": "className, htmlFor, tag kosong yang ditutup (<br />), dan style berupa objek."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Komponen kartu produk",
+    "b": "Data kartu disimpan sebagai konstanta di dalam komponen, lalu dipakai di JSX. Di pelajaran berikutnya data ini akan dikirim dari luar lewat props.",
+    "code": "export function KartuProduk() {\n  const nama = \"Kopi Gayo\";\n  const harga = 85000;\n  const gambar = \"/img/kopi-gayo.webp\";\n  const stok = 12;\n  return (\n    <article className=\"kartu\">\n      <img src={gambar} alt={nama} width={240} height={240} loading=\"lazy\" />\n      <h3>{nama}</h3>\n      <p className=\"harga\">Rp{harga.toLocaleString(\"id-ID\")}</p>\n      <small>Sisa {stok}</small>\n    </article>\n  );\n}",
+    "lang": "tsx"
+   },
+   {
+    "t": "Apa yang sebenarnya dihasilkan JSX",
+    "b": "JSX hanyalah gula sintaks. <h3 className=\"judul\">Halo {nama}</h3> dikompilasi menjadi pemanggilan fungsi jsx(\"h3\", {...}) yang mengembalikan objek biasa. Contoh ini membuat fungsi jsx tiruan dan mengubah objeknya menjadi HTML.",
+    "code": "type El = { type: string; atribut: Record<string, string>; isi: (El | string)[] };\nconst jsx = (type: string, atribut: Record<string, string>, ...isi: (El | string)[]): El => ({ type, atribut, isi });\n\nfunction render(el: El | string): string {\n  if (typeof el === \"string\") return el;\n  const attr = Object.entries(el.atribut).map(([k, v]) => ` ${k === \"className\" ? \"class\" : k}=\"${v}\"`).join(\"\");\n  return `<${el.type}${attr}>${el.isi.map(render).join(\"\")}</${el.type}>`;\n}\nconst nama = \"Rina\";\nconst pohon = jsx(\"article\", { className: \"kartu\" }, jsx(\"h3\", {}, \"Halo \", nama), jsx(\"p\", { className: \"harga\" }, \"Rp45.000\"));\nconsole.log(JSON.stringify(pohon).slice(0, 80) + \"...\");\nconsole.log(render(pohon));",
+    "out": "{\"type\":\"article\",\"atribut\":{\"className\":\"kartu\"},\"isi\":[{\"type\":\"h3\",\"atribut\":...\n<article class=\"kartu\"><h3>Halo Rina</h3><p class=\"harga\">Rp45.000</p></article>",
+    "lang": "ts"
+   }
+  ]
+ },
+ "react-1-2": {
+  "exs": [
+   {
+    "t": "Kasus: satu komponen, data berbeda",
+    "code": "function Sapa({ nama, kota }) {\n  return <p>Halo {nama} dari {kota}!</p>;\n}\nfunction App() {\n  return (\n    <>\n      <Sapa nama=\"Rina\" kota=\"Bandung\" />\n      <Sapa nama=\"Budi\" kota=\"Makassar\" />\n    </>\n  );\n}"
+   },
+   {
+    "t": "Kasus: nilai bawaan untuk prop yang tidak dikirim",
+    "code": "function Label({ teks, warna = \"#2E5E8C\" }) {\n  return <span style={{ color: warna, fontWeight: 600 }}>{teks}</span>;\n}\nfunction App() {\n  return (\n    <p>\n      <Label teks=\"Baru\" /> <Label teks=\"Diskon\" warna=\"#B4532A\" />\n    </p>\n  );\n}",
+    "d": "Label pertama memakai warna bawaan karena prop warna tidak dikirim."
+   },
+   {
+    "t": "Kasus: children untuk membungkus isi apa pun",
+    "code": "function Kotak({ judul, children }) {\n  return (\n    <div className=\"kartu\">\n      <h3>{judul}</h3>\n      {children}\n    </div>\n  );\n}\nfunction App() {\n  return (\n    <Kotak judul=\"Info pengiriman\">\n      <p>Pesanan dikirim setiap hari pukul 15.00.</p>\n      <p>Gratis ongkir di atas Rp100.000.</p>\n    </Kotak>\n  );\n}"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Tombol yang dapat dipakai ulang dengan varian",
+    "b": "Props diberi tipe dengan TypeScript. ComponentProps<\"button\"> membuat Tombol menerima semua atribut button biasa (type, disabled, dan lainnya), lalu sisa props diteruskan dengan spread {...sisa}.",
+    "code": "import type { ComponentProps, ReactNode } from \"react\";\n\ntype TombolProps = ComponentProps<\"button\"> & {\n  varian?: \"utama\" | \"sekunder\" | \"bahaya\";\n  ukuran?: \"sm\" | \"md\" | \"lg\";\n  ikon?: ReactNode;\n};\n\nexport function Tombol({ varian = \"utama\", ukuran = \"md\", ikon, children, ...sisa }: TombolProps) {\n  return (\n    <button className={`btn btn-${varian} btn-${ukuran}`} {...sisa}>\n      {ikon}\n      {children}\n    </button>\n  );\n}\n\n// Pemakaian\n<Tombol type=\"submit\">Simpan</Tombol>\n<Tombol varian=\"bahaya\" ukuran=\"sm\" ikon=\"🗑\" disabled>Hapus</Tombol>",
+    "lang": "tsx"
+   }
+  ]
+ },
+ "react-1-3": {
+  "exs": [
+   {
+    "t": "Kasus: tombol suka yang menghitung",
+    "code": "function TombolSuka() {\n  const [suka, setSuka] = useState(0);\n  return <button onClick={() => setSuka((s) => s + 1)}>♥ {suka}</button>;\n}"
+   },
+   {
+    "t": "Kasus: state teks dari input",
+    "code": "function Sapaan() {\n  const [nama, setNama] = useState(\"\");\n  return (\n    <div>\n      <input value={nama} onChange={(e) => setNama(e.target.value)} placeholder=\"Nama kamu\" />\n      <p>Halo, {nama || \"tamu\"}!</p>\n    </div>\n  );\n}"
+   },
+   {
+    "t": "Kasus: menambah item ke array tanpa push",
+    "code": "function Belanjaan() {\n  const [daftar, setDaftar] = useState([\"Kopi\"]);\n  return (\n    <div>\n      <button onClick={() => setDaftar([...daftar, \"Teh\"])}>Tambah teh</button>\n      <p>Isi: {daftar.join(\", \")}</p>\n    </div>\n  );\n}",
+    "d": "[...daftar, \"Teh\"] membuat array baru, jadi React tahu state berubah."
+   }
+  ]
+ },
+ "react-1-4": {
+  "exs": [
+   {
+    "t": "Kasus: daftar dari array dengan key",
+    "code": "const MENU = [\n  { id: \"k1\", nama: \"Kopi Susu\", harga: 18000 },\n  { id: \"k2\", nama: \"Americano\", harga: 15000 },\n  { id: \"t1\", nama: \"Teh Tarik\", harga: 14000 },\n];\nfunction Menu() {\n  return (\n    <ul>\n      {MENU.map((m) => (\n        <li key={m.id}>{m.nama} · Rp{m.harga.toLocaleString(\"id-ID\")}</li>\n      ))}\n    </ul>\n  );\n}"
+   },
+   {
+    "t": "Kasus: tampilkan pesan bila keranjang kosong",
+    "code": "function Keranjang() {\n  const [isi, setIsi] = useState([]);\n  return (\n    <div>\n      <button onClick={() => setIsi([...isi, \"Kopi\"])}>Tambah kopi</button>\n      {isi.length === 0 ? <p>Keranjang masih kosong.</p> : <p>{isi.length} barang di keranjang</p>}\n      {isi.length > 0 && <button onClick={() => setIsi([])}>Kosongkan</button>}\n    </div>\n  );\n}",
+    "d": "Pakai isi.length > 0 && ..., bukan isi.length && ..., agar angka 0 tidak tampil."
+   },
+   {
+    "t": "Kasus: menghapus item dari daftar",
+    "code": "function DaftarTugas() {\n  const [tugas, setTugas] = useState([\n    { id: 1, judul: \"Belajar props\" },\n    { id: 2, judul: \"Belajar state\" },\n  ]);\n  const hapus = (id) => setTugas(tugas.filter((t) => t.id !== id));\n  return (\n    <ul>\n      {tugas.map((t) => (\n        <li key={t.id}>\n          {t.judul} <button onClick={() => hapus(t.id)}>Hapus</button>\n        </li>\n      ))}\n    </ul>\n  );\n}",
+    "d": "onClick={() => hapus(t.id)} membungkus pemanggilan dalam fungsi agar tidak langsung dijalankan."
+   }
+  ]
+ },
+ "react-2-1": {
+  "exs": [
+   {
+    "t": "Kasus: judul tab mengikuti jumlah keranjang",
+    "code": "function App() {\n  const [jumlah, setJumlah] = useState(0);\n  useEffect(() => {\n    document.title = jumlah ? `(${jumlah}) Toko Nusantara` : \"Toko Nusantara\";\n  }, [jumlah]);\n  return <button onClick={() => setJumlah((j) => j + 1)}>Tambah ke keranjang</button>;\n}"
+   },
+   {
+    "t": "Kasus: mendengarkan ukuran jendela dan membersihkannya",
+    "code": "function LebarLayar() {\n  const [lebar, setLebar] = useState(window.innerWidth);\n  useEffect(() => {\n    const ubah = () => setLebar(window.innerWidth);\n    window.addEventListener(\"resize\", ubah);\n    return () => window.removeEventListener(\"resize\", ubah);   // cleanup\n  }, []);\n  return <p>Lebar layar: {lebar}px</p>;\n}",
+    "d": "Tanpa cleanup, listener lama tetap menumpuk setiap komponen muncul lagi."
+   },
+   {
+    "t": "Kasus: hitung mundur yang berhenti di nol",
+    "code": "function HitungMundur({ mulai }) {\n  const [sisa, setSisa] = useState(mulai);\n  useEffect(() => {\n    if (sisa === 0) return;\n    const t = setTimeout(() => setSisa(sisa - 1), 1000);\n    return () => clearTimeout(t);\n  }, [sisa]);\n  return <p>{sisa > 0 ? `Promo berakhir dalam ${sisa} detik` : \"Promo berakhir\"}</p>;\n}"
+   }
+  ]
+ },
+ "react-2-2": {
+  "exs": [
+   {
+    "t": "Kasus: memfokuskan input saat tombol diklik",
+    "code": "function Pencarian() {\n  const inputRef = useRef(null);\n  return (\n    <div>\n      <input ref={inputRef} placeholder=\"Cari produk\" />\n      <button onClick={() => inputRef.current.focus()}>Cari</button>\n    </div>\n  );\n}"
+   },
+   {
+    "t": "Kasus: menghitung render tanpa memicu render",
+    "code": "function Penghitung() {\n  const [n, setN] = useState(0);\n  const jumlahRender = useRef(0);\n  jumlahRender.current += 1;                // mengubah ref tidak me-render ulang\n  return (\n    <div>\n      <button onClick={() => setN(n + 1)}>Klik {n}</button>\n      <p>Komponen sudah dirender {jumlahRender.current} kali</p>\n    </div>\n  );\n}"
+   },
+   {
+    "t": "Kasus: total keranjang dihitung ulang hanya saat isi berubah",
+    "code": "function Ringkasan({ item }) {\n  const [catatan, setCatatan] = useState(\"\");\n  const total = useMemo(\n    () => item.reduce((t, i) => t + i.harga * i.qty, 0),\n    [item]\n  );\n  return (\n    <div>\n      <p>Total: Rp{total.toLocaleString(\"id-ID\")}</p>\n      <input value={catatan} onChange={(e) => setCatatan(e.target.value)} placeholder=\"Catatan untuk penjual\" />\n    </div>\n  );\n}",
+    "d": "Mengetik catatan me-render komponen, tetapi total tidak dihitung ulang."
+   }
+  ]
+ },
+ "react-2-3": {
+  "exs": [
+   {
+    "t": "Kasus: reducer penghitung dengan tiga aksi",
+    "code": "function reducer(n, aksi) {\n  switch (aksi.type) {\n    case \"tambah\": return n + 1;\n    case \"kurang\": return Math.max(0, n - 1);\n    case \"reset\": return 0;\n    default: return n;\n  }\n}\nfunction Jumlah() {\n  const [n, dispatch] = useReducer(reducer, 0);\n  return (\n    <div>\n      <button onClick={() => dispatch({ type: \"kurang\" })}>−</button> {n}{\" \"}\n      <button onClick={() => dispatch({ type: \"tambah\" })}>+</button>{\" \"}\n      <button onClick={() => dispatch({ type: \"reset\" })}>Reset</button>\n    </div>\n  );\n}"
+   },
+   {
+    "t": "Kasus: tema terang/gelap lewat Context",
+    "code": "const TemaCtx = React.createContext(\"terang\");\n\nfunction Tombol() {\n  const tema = useContext(TemaCtx);\n  return <button style={{ background: tema === \"gelap\" ? \"#222\" : \"#eee\", color: tema === \"gelap\" ? \"#fff\" : \"#222\" }}>Tombol {tema}</button>;\n}\nfunction App() {\n  const [tema, setTema] = useState(\"terang\");\n  return (\n    <TemaCtx.Provider value={tema}>\n      <button onClick={() => setTema(tema === \"terang\" ? \"gelap\" : \"terang\")}>Ganti tema</button>\n      <Tombol />\n    </TemaCtx.Provider>\n  );\n}",
+    "d": "Tombol membaca tema langsung, tanpa props berlapis dari App."
+   },
+   {
+    "t": "Kasus: data pengguna yang login untuk banyak komponen",
+    "code": "const UserCtx = React.createContext(null);\n\nfunction Sapa() {\n  const user = useContext(UserCtx);\n  return <p>{user ? `Halo, ${user.nama}` : \"Silakan masuk\"}</p>;\n}\nfunction App() {\n  const [user, setUser] = useState(null);\n  return (\n    <UserCtx.Provider value={user}>\n      <Sapa />\n      <button onClick={() => setUser({ nama: \"Rina\" })}>Masuk sebagai Rina</button>\n    </UserCtx.Provider>\n  );\n}"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Reducer keranjang yang bisa diuji tanpa browser",
+    "b": "Reducer adalah fungsi murni (state, aksi) => stateBaru, jadi bisa diuji tanpa React: cukup jalankan daftar aksi dengan reduce dan periksa state akhirnya.",
+    "code": "type Item = { sku: string; nama: string; harga: number; qty: number };\ntype State = { item: Item[]; kupon: string | null };\ntype Action =\n  | { type: \"tambah\"; item: Omit<Item, \"qty\"> }\n  | { type: \"ubahQty\"; sku: string; qty: number }\n  | { type: \"hapus\"; sku: string }\n  | { type: \"kupon\"; kode: string | null };\n\nfunction reducer(s: State, a: Action): State {\n  switch (a.type) {\n    case \"tambah\": {\n      const ada = s.item.some((i) => i.sku === a.item.sku);\n      return { ...s, item: ada ? s.item.map((i) => (i.sku === a.item.sku ? { ...i, qty: i.qty + 1 } : i)) : [...s.item, { ...a.item, qty: 1 }] };\n    }\n    case \"ubahQty\": return { ...s, item: s.item.map((i) => (i.sku === a.sku ? { ...i, qty: a.qty } : i)).filter((i) => i.qty > 0) };\n    case \"hapus\": return { ...s, item: s.item.filter((i) => i.sku !== a.sku) };\n    case \"kupon\": return { ...s, kupon: a.kode };\n  }\n}\nconst aksi: Action[] = [\n  { type: \"tambah\", item: { sku: \"KP\", nama: \"Kopi\", harga: 45000 } },\n  { type: \"tambah\", item: { sku: \"TH\", nama: \"Teh\", harga: 28000 } },\n  { type: \"tambah\", item: { sku: \"KP\", nama: \"Kopi\", harga: 45000 } },\n  { type: \"ubahQty\", sku: \"TH\", qty: 0 },\n  { type: \"kupon\", kode: \"HEMAT10\" },\n];\nconst akhir = aksi.reduce(reducer, { item: [], kupon: null });\nconsole.log(akhir.item.map((i) => `${i.nama} x${i.qty}`).join(\", \"), \"| kupon:\", akhir.kupon);\nconsole.log(\"total:\", akhir.item.reduce((t, i) => t + i.harga * i.qty, 0).toLocaleString(\"id-ID\"));",
+    "lang": "ts",
+    "out": "Kopi x2 | kupon: HEMAT10\ntotal: 90.000"
+   },
+   {
+    "t": "Menyambungkan reducer ke Context",
+    "b": "Provider menyimpan state dan dispatch dari useReducer, lalu komponen mana pun di bawahnya membacanya dengan useContext. Pemeriksaan null membantu bila komponen lupa dibungkus Provider.",
+    "code": "import { createContext, useContext, useReducer, type Dispatch, type ReactNode } from \"react\";\n\nconst KeranjangCtx = createContext<{ state: State; dispatch: Dispatch<Action> } | null>(null);\n\nexport function KeranjangProvider({ children }: { children: ReactNode }) {\n  const [state, dispatch] = useReducer(reducer, { item: [], kupon: null });\n  return <KeranjangCtx.Provider value={{ state, dispatch }}>{children}</KeranjangCtx.Provider>;\n}\n\nexport function IkonKeranjang() {\n  const ctx = useContext(KeranjangCtx);\n  if (!ctx) throw new Error(\"IkonKeranjang harus dipakai di dalam <KeranjangProvider>\");\n  return <span>🛒 {ctx.state.item.length}</span>;\n}",
+    "lang": "tsx"
+   }
+  ]
+ },
+ "react-2-4": {
+  "exs": [
+   {
+    "t": "Kasus: useToggle untuk buka-tutup",
+    "code": "function useToggle(awal = false) {\n  const [nyala, setNyala] = useState(awal);\n  const toggle = () => setNyala((n) => !n);\n  return [nyala, toggle];\n}\nfunction FAQ() {\n  const [buka, toggle] = useToggle();\n  return (\n    <div>\n      <button onClick={toggle}>Berapa lama pengiriman?</button>\n      {buka && <p>2 sampai 4 hari kerja.</p>}\n    </div>\n  );\n}"
+   },
+   {
+    "t": "Kasus: useLebarLayar dipakai di dua komponen",
+    "code": "function useLebarLayar() {\n  const [lebar, setLebar] = useState(window.innerWidth);\n  useEffect(() => {\n    const ubah = () => setLebar(window.innerWidth);\n    window.addEventListener(\"resize\", ubah);\n    return () => window.removeEventListener(\"resize\", ubah);\n  }, []);\n  return lebar;\n}\nfunction Menu() {\n  const lebar = useLebarLayar();\n  return lebar < 640 ? <button>☰ Menu</button> : <nav>Beranda · Produk · Kontak</nav>;\n}\nfunction Info() {\n  return <small>Lebar: {useLebarLayar()}px</small>;\n}"
+   },
+   {
+    "t": "Kasus: useHitungMundur dengan parameter",
+    "code": "function useHitungMundur(detik) {\n  const [sisa, setSisa] = useState(detik);\n  useEffect(() => {\n    if (sisa === 0) return;\n    const t = setTimeout(() => setSisa((s) => s - 1), 1000);\n    return () => clearTimeout(t);\n  }, [sisa]);\n  return sisa;\n}\nfunction KirimUlangOTP() {\n  const sisa = useHitungMundur(30);\n  return <button disabled={sisa > 0}>{sisa > 0 ? `Kirim ulang dalam ${sisa} dtk` : \"Kirim ulang kode\"}</button>;\n}",
+    "d": "Setiap komponen yang memanggil hook ini mendapat hitungan mundurnya sendiri."
+   }
+  ],
+  "cx": [
+   {
+    "t": "useLocalStorage, useDebounce, dan useMediaQuery",
+    "b": "Tiga custom hook yang sering dipakai. Masing-masing hanya menggabungkan useState dan useEffect, lalu mengembalikan nilai yang siap dipakai komponen.",
+    "code": "import { useEffect, useState } from \"react\";\n\nexport function useLocalStorage<T>(kunci: string, awal: T) {\n  const [nilai, setNilai] = useState<T>(() => {\n    try { const s = localStorage.getItem(kunci); return s ? (JSON.parse(s) as T) : awal; }\n    catch { return awal; }\n  });\n  useEffect(() => { try { localStorage.setItem(kunci, JSON.stringify(nilai)); } catch {} }, [kunci, nilai]);\n  return [nilai, setNilai] as const;\n}\n\nexport function useDebounce<T>(nilai: T, ms = 300) {\n  const [d, setD] = useState(nilai);\n  useEffect(() => { const t = setTimeout(() => setD(nilai), ms); return () => clearTimeout(t); }, [nilai, ms]);\n  return d;\n}\n\nexport function useMediaQuery(q: string) {\n  const [cocok, setCocok] = useState(() => matchMedia(q).matches);\n  useEffect(() => {\n    const m = matchMedia(q);\n    const ubah = () => setCocok(m.matches);\n    m.addEventListener(\"change\", ubah);\n    return () => m.removeEventListener(\"change\", ubah);\n  }, [q]);\n  return cocok;\n}\n\n// Pemakaian\nconst [tema, setTema] = useLocalStorage<\"terang\" | \"gelap\">(\"tema\", \"terang\");\nconst qDebounced = useDebounce(q, 400);\nconst mobile = useMediaQuery(\"(max-width: 640px)\");",
+    "lang": "tsx"
+   },
+   {
+    "t": "Logika useDebounce diuji dengan waktu palsu",
+    "code": "function debounceSim(ms: number) {\n  let jadwal: { at: number; v: string } | null = null; const terkirim: string[] = [];\n  return {\n    ketik: (t: number, v: string) => { jadwal = { at: t + ms, v }; },\n    maju: (t: number) => { if (jadwal && t >= jadwal.at) { terkirim.push(`${jadwal.v}@${jadwal.at}ms`); jadwal = null; } },\n    terkirim,\n  };\n}\nconst s = debounceSim(400);\nconst ketikan: [number, string][] = [[0, \"s\"], [120, \"se\"], [250, \"sep\"], [900, \"sepa\"], [1000, \"sepat\"], [1100, \"sepatu\"]];\nfor (let t = 0; t <= 2000; t += 50) {\n  const k = ketikan.find(([w]) => w === t); if (k) s.ketik(...k);\n  s.maju(t);\n}\nconsole.log(\"6 ketukan ->\", s.terkirim.length, \"request:\", s.terkirim.join(\", \"));",
+    "lang": "ts",
+    "out": "6 ketukan -> 2 request: sep@650ms, sepatu@1500ms",
+    "b": "Logika debounce di dalam useDebounce bisa diuji dengan jam palsu: hanya ketikan yang diikuti jeda 400 ms yang benar-benar dikirim."
+   }
+  ]
+ },
+ "react-2-5": {
+  "exs": [
+   {
+    "t": "Kasus: daftar kota yang ditunda saat mengetik",
+    "code": "function CariKota({ semuaKota }) {\n  const [q, setQ] = useState(\"\");\n  const qTunda = useDeferredValue(q);\n  const hasil = useMemo(() => semuaKota.filter((k) => k.toLowerCase().includes(qTunda.toLowerCase())), [semuaKota, qTunda]);\n  return (\n    <>\n      <input value={q} onChange={(e) => setQ(e.target.value)} placeholder=\"Cari kota\" />\n      <p>{hasil.length} kota{q !== qTunda && \" (memperbarui...)\"}</p>\n    </>\n  );\n}"
+   },
+   {
+    "t": "Kasus: pindah tab berat dengan indikator",
+    "code": "function Dasbor() {\n  const [tab, setTab] = useState(\"ringkasan\");\n  const [isPending, startTransition] = useTransition();\n  const pilih = (t) => startTransition(() => setTab(t));\n  return (\n    <div>\n      <button onClick={() => pilih(\"ringkasan\")}>Ringkasan</button>\n      <button onClick={() => pilih(\"laporan\")}>Laporan</button>\n      {isPending && <span> memuat...</span>}\n      {tab === \"laporan\" ? <LaporanBerat /> : <Ringkasan />}\n    </div>\n  );\n}",
+    "d": "Klik tetap terasa cepat; React merender LaporanBerat di latar."
+   },
+   {
+    "t": "Kasus: input mendesak, filter tidak mendesak",
+    "code": "function FilterProduk({ produk }) {\n  const [teks, setTeks] = useState(\"\");          // mendesak: harus langsung tampil di input\n  const [filter, setFilter] = useState(\"\");      // tidak mendesak: boleh menyusul\n  const [, startTransition] = useTransition();\n  const ubah = (e) => {\n    setTeks(e.target.value);\n    startTransition(() => setFilter(e.target.value));\n  };\n  const tampil = produk.filter((p) => p.nama.includes(filter));\n  return (\n    <>\n      <input value={teks} onChange={ubah} />\n      <ul>{tampil.map((p) => <li key={p.id}>{p.nama}</li>)}</ul>\n    </>\n  );\n}"
+   }
+  ]
+ },
+ "react-3-1": {
+  "exs": [
+   {
+    "t": "Kasus: layout dengan beberapa \"slot\" lewat props",
+    "code": "function TataLetak({ samping, children }) {\n  return (\n    <div style={{ display: \"grid\", gridTemplateColumns: \"200px 1fr\", gap: 16 }}>\n      <aside>{samping}</aside>\n      <main>{children}</main>\n    </div>\n  );\n}\n<TataLetak samping={<nav>Kategori: Kopi · Teh</nav>}>\n  <h1>Semua produk</h1>\n</TataLetak>",
+    "d": "Selain children, prop biasa juga boleh berisi JSX."
+   },
+   {
+    "t": "Kasus: render props untuk daftar yang bisa difilter",
+    "code": "function DaftarFilter({ item, render }) {\n  const [q, setQ] = useState(\"\");\n  const hasil = item.filter((i) => i.nama.toLowerCase().includes(q.toLowerCase()));\n  return (\n    <>\n      <input value={q} onChange={(e) => setQ(e.target.value)} placeholder=\"Saring\" />\n      <ul>{hasil.map((i) => <li key={i.id}>{render(i)}</li>)}</ul>\n    </>\n  );\n}\n<DaftarFilter item={produk} render={(p) => <b>{p.nama}</b>} />\n<DaftarFilter item={pelanggan} render={(c) => <span>{c.nama} · {c.kota}</span>} />"
+   },
+   {
+    "t": "Kasus: HOC yang menampilkan pemuat",
+    "code": "function denganMemuat(Komponen) {\n  return function Bungkus({ memuat, ...props }) {\n    return memuat ? <p>Memuat...</p> : <Komponen {...props} />;\n  };\n}\nconst TabelPesananMemuat = denganMemuat(TabelPesanan);\n<TabelPesananMemuat memuat={sedangAmbil} data={pesanan} />"
+   }
+  ]
+ },
+ "react-3-2": {
+  "exs": [
+   {
+    "t": "Kasus: notifikasi melayang lewat portal",
+    "code": "function Notifikasi({ pesan }) {\n  return ReactDOM.createPortal(\n    <div style={{ position: \"fixed\", bottom: 16, right: 16, background: \"#222\", color: \"#fff\", padding: 12, borderRadius: 8 }}>\n      {pesan}\n    </div>,\n    document.body\n  );\n}\nfunction App() {\n  const [tampil, setTampil] = useState(false);\n  return (\n    <div style={{ overflow: \"hidden\", height: 80 }}>\n      <button onClick={() => setTampil(true)}>Simpan</button>\n      {tampil && <Notifikasi pesan=\"Tersimpan!\" />}\n    </div>\n  );\n}",
+    "d": "Walau induknya overflow: hidden, notifikasi tetap terlihat karena dirender di document.body."
+   },
+   {
+    "t": "Kasus: error boundary dengan pesan cadangan sendiri",
+    "code": "class BatasError extends React.Component {\n  state = { error: null };\n  static getDerivedStateFromError(error) { return { error }; }\n  render() {\n    return this.state.error ? this.props.cadangan : this.props.children;\n  }\n}\nfunction App() {\n  return (\n    <>\n      <BatasError cadangan={<p>Ulasan gagal dimuat.</p>}><Ulasan /></BatasError>\n      <BatasError cadangan={<p>Rekomendasi tidak tersedia.</p>}><Rekomendasi /></BatasError>\n    </>\n  );\n}",
+    "d": "Pasang beberapa batas agar satu bagian rusak tidak merusak bagian lain."
+   },
+   {
+    "t": "Kasus: memuat komponen berat hanya saat dibuka",
+    "code": "const PetaToko = React.lazy(() => import(\"./PetaToko.jsx\"));\n\nfunction Kontak() {\n  const [lihatPeta, setLihatPeta] = useState(false);\n  return (\n    <section>\n      <button onClick={() => setLihatPeta(true)}>Lihat peta</button>\n      {lihatPeta && (\n        <React.Suspense fallback={<p>Memuat peta...</p>}>\n          <PetaToko />\n        </React.Suspense>\n      )}\n    </section>\n  );\n}"
+   }
+  ]
+ },
+ "react-3-3": {
+  "exs": [
+   {
+    "t": "Kasus: memisahkan baris tabel menjadi komponen presentational",
+    "code": "function BarisProduk({ produk, onHapus }) {\n  return (\n    <tr>\n      <td>{produk.nama}</td>\n      <td>Rp{produk.harga.toLocaleString(\"id-ID\")}</td>\n      <td><button onClick={() => onHapus(produk.id)}>Hapus</button></td>\n    </tr>\n  );\n}\nfunction TabelProduk({ daftar, onHapus }) {\n  return (\n    <table><tbody>\n      {daftar.map((p) => <BarisProduk key={p.id} produk={p} onHapus={onHapus} />)}\n    </tbody></table>\n  );\n}",
+    "d": "BarisProduk hanya menerima props dan menampilkan, jadi mudah diuji sendiri."
+   },
+   {
+    "t": "Kasus: state disimpan sedekat mungkin dengan pemakainya",
+    "code": "// Sebelum: induk menyimpan state yang hanya dipakai satu anak\nfunction Halaman() {\n  const [kodeKupon, setKodeKupon] = useState(\"\");   // setiap ketukan me-render seluruh halaman\n  return <><DaftarProduk /><KotakKupon kode={kodeKupon} onUbah={setKodeKupon} /></>;\n}\n\n// Sesudah: state pindah ke dalam KotakKupon\nfunction KotakKupon() {\n  const [kode, setKode] = useState(\"\");\n  return <input value={kode} onChange={(e) => setKode(e.target.value)} placeholder=\"Kode kupon\" />;\n}"
+   },
+   {
+    "t": "Kasus: menaikkan state saat dua saudara membutuhkannya",
+    "code": "function Toko() {\n  const [kategori, setKategori] = useState(\"semua\");   // dipakai Filter dan Daftar\n  return (\n    <>\n      <Filter nilai={kategori} onPilih={setKategori} />\n      <Daftar kategori={kategori} />\n    </>\n  );\n}\nfunction Filter({ nilai, onPilih }) {\n  return [\"semua\", \"kopi\", \"teh\"].map((k) => (\n    <button key={k} aria-pressed={nilai === k} onClick={() => onPilih(k)}>{k}</button>\n  ));\n}"
+   }
+  ]
+ },
+ "react-4-1": {
+  "exs": [
+   {
+    "t": "Kasus: select dan checkbox terkendali",
+    "code": "function PilihKirim() {\n  const [kurir, setKurir] = useState(\"reguler\");\n  const [asuransi, setAsuransi] = useState(false);\n  return (\n    <form>\n      <select value={kurir} onChange={(e) => setKurir(e.target.value)}>\n        <option value=\"reguler\">Reguler (3 hari)</option>\n        <option value=\"kilat\">Kilat (1 hari)</option>\n      </select>\n      <label>\n        <input type=\"checkbox\" checked={asuransi} onChange={(e) => setAsuransi(e.target.checked)} /> Asuransi\n      </label>\n      <p>Dipilih: {kurir}{asuransi && \" + asuransi\"}</p>\n    </form>\n  );\n}",
+    "d": "Checkbox memakai checked dan e.target.checked, bukan value."
+   },
+   {
+    "t": "Kasus: textarea dengan batas karakter",
+    "code": "function Ulasan() {\n  const [teks, setTeks] = useState(\"\");\n  const maks = 140;\n  return (\n    <div>\n      <textarea value={teks} onChange={(e) => setTeks(e.target.value.slice(0, maks))} rows={3} />\n      <small style={{ color: teks.length === maks ? \"#B23A2E\" : \"#666\" }}>{teks.length}/{maks}</small>\n    </div>\n  );\n}",
+    "d": "Karena nilainya lewat state, kita bisa memotong teks sebelum ditampilkan."
+   },
+   {
+    "t": "Kasus: error baru muncul setelah input ditinggalkan",
+    "code": "function InputEmail() {\n  const [email, setEmail] = useState(\"\");\n  const [disentuh, setDisentuh] = useState(false);\n  const salah = !/^\\S+@\\S+\\.\\S+$/.test(email);\n  return (\n    <div>\n      <input value={email} onChange={(e) => setEmail(e.target.value)} onBlur={() => setDisentuh(true)}\n        aria-invalid={disentuh && salah} aria-describedby=\"email-err\" />\n      <small id=\"email-err\">{disentuh && salah ? \"Format email belum benar\" : \"\"}</small>\n    </div>\n  );\n}",
+    "d": "onBlur menandai input sudah disentuh, agar pengguna tidak dimarahi sebelum selesai mengetik."
+   }
+  ]
+ },
+ "react-4-2": {
+  "exs": [
+   {
+    "t": "Kasus: form masuk dengan dua aturan",
+    "code": "import { useForm } from \"react-hook-form\";\nimport { zodResolver } from \"@hookform/resolvers/zod\";\nimport { z } from \"zod\";\n\nconst Skema = z.object({\n  email: z.string().email(\"Email tidak valid\"),\n  sandi: z.string().min(8, \"Minimal 8 karakter\"),\n});\n\nexport function FormMasuk({ onMasuk }: { onMasuk: (d: z.infer<typeof Skema>) => void }) {\n  const { register, handleSubmit, formState: { errors } } = useForm({ resolver: zodResolver(Skema) });\n  return (\n    <form onSubmit={handleSubmit(onMasuk)}>\n      <input type=\"email\" {...register(\"email\")} />\n      <small>{errors.email?.message}</small>\n      <input type=\"password\" {...register(\"sandi\")} />\n      <small>{errors.sandi?.message}</small>\n      <button>Masuk</button>\n    </form>\n  );\n}"
+   },
+   {
+    "t": "Kasus: konfirmasi kata sandi harus sama",
+    "code": "import { z } from \"zod\";\n\nconst SkemaDaftar = z.object({\n  sandi: z.string().min(8, \"Minimal 8 karakter\"),\n  ulangi: z.string(),\n}).refine((d) => d.sandi === d.ulangi, {\n  message: \"Kata sandi tidak sama\",\n  path: [\"ulangi\"],                // error ditampilkan di input ulangi\n});",
+    "d": "refine memeriksa aturan yang melibatkan lebih dari satu kolom."
+   },
+   {
+    "t": "Kasus: skema yang sama memeriksa data dari API",
+    "code": "import { z } from \"zod\";\n\nconst Produk = z.object({ id: z.number(), nama: z.string(), harga: z.number().nonnegative() });\ntype Produk = z.infer<typeof Produk>;      // tipe TypeScript otomatis\n\nasync function ambilProduk(id: number): Promise<Produk> {\n  const json = await fetch(`/api/produk/${id}`).then((r) => r.json());\n  const hasil = Produk.safeParse(json);\n  if (!hasil.success) throw new Error(\"Data produk dari server tidak sesuai\");\n  return hasil.data;\n}"
+   }
+  ]
+ },
+ "react-5-1": {
+  "exs": [
+   {
+    "t": "Kasus: menandai menu yang sedang aktif",
+    "code": "import { NavLink } from \"react-router\";\n\nfunction Navigasi() {\n  const gaya = ({ isActive }) => ({ fontWeight: isActive ? 700 : 400 });\n  return (\n    <nav>\n      <NavLink to=\"/\" end style={gaya}>Beranda</NavLink>{\" \"}\n      <NavLink to=\"/produk\" style={gaya}>Produk</NavLink>{\" \"}\n      <NavLink to=\"/keranjang\" style={gaya}>Keranjang</NavLink>\n    </nav>\n  );\n}",
+    "d": "NavLink seperti Link, tetapi tahu apakah alamatnya sedang dibuka."
+   },
+   {
+    "t": "Kasus: pindah halaman setelah form dikirim",
+    "code": "import { useNavigate } from \"react-router\";\n\nfunction FormAlamat() {\n  const navigate = useNavigate();\n  const kirim = (e) => {\n    e.preventDefault();\n    // ... simpan alamat\n    navigate(\"/checkout/pembayaran\");\n  };\n  return (\n    <form onSubmit={kirim}>\n      <input placeholder=\"Alamat lengkap\" required />\n      <button>Lanjut ke pembayaran</button>\n    </form>\n  );\n}"
+   },
+   {
+    "t": "Kasus: filter yang tersimpan di URL",
+    "code": "import { useSearchParams } from \"react-router\";\n\nfunction Katalog() {\n  const [params, setParams] = useSearchParams();      // /produk?kat=teh\n  const kat = params.get(\"kat\") ?? \"semua\";\n  return (\n    <>\n      {[\"semua\", \"kopi\", \"teh\"].map((k) => (\n        <button key={k} aria-pressed={kat === k} onClick={() => setParams({ kat: k })}>{k}</button>\n      ))}\n      <DaftarProduk kategori={kat} />\n    </>\n  );\n}",
+    "d": "Karena tersimpan di URL, filter ikut terbawa saat tautan dibagikan atau tombol back ditekan."
+   }
+  ]
+ },
+ "react-5-2": {
+  "exs": [
+   {
+    "t": "Kasus: store tema yang dipakai di mana saja",
+    "code": "import { create } from \"zustand\";\n\nexport const useTema = create((set) => ({\n  tema: \"terang\",\n  ganti: () => set((s) => ({ tema: s.tema === \"terang\" ? \"gelap\" : \"terang\" })),\n}));\n\nfunction TombolTema() {\n  const ganti = useTema((s) => s.ganti);\n  return <button onClick={ganti}>Ganti tema</button>;\n}\nfunction Header() {\n  const tema = useTema((s) => s.tema);\n  return <header className={tema}>Toko Nusantara</header>;\n}"
+   },
+   {
+    "t": "Kasus: aksi yang membaca state lain dengan get",
+    "code": "import { create } from \"zustand\";\n\nexport const useKeranjang = create((set, get) => ({\n  isi: [],\n  tambah: (p) => set((s) => ({ isi: [...s.isi, p] })),\n  total: () => get().isi.reduce((t, p) => t + p.harga, 0),\n  sudahAda: (id) => get().isi.some((p) => p.id === id),\n}));\n\nconst total = useKeranjang((s) => s.total());"
+   },
+   {
+    "t": "Kasus: state kecil-kecil dengan atom Jotai",
+    "code": "import { atom, useAtom, useAtomValue } from \"jotai\";\n\nconst kataAtom = atom(\"\");\nconst jumlahHurufAtom = atom((get) => get(kataAtom).length);   // atom turunan\n\nfunction Kotak() {\n  const [kata, setKata] = useAtom(kataAtom);\n  return <input value={kata} onChange={(e) => setKata(e.target.value)} />;\n}\nfunction Hitung() {\n  return <small>{useAtomValue(jumlahHurufAtom)} huruf</small>;\n}",
+    "d": "Hanya komponen yang membaca atom tertentu yang render ulang saat atom itu berubah."
+   }
+  ]
+ },
+ "react-6-1": {
+  "exs": [
+   {
+    "t": "Kasus: memuat daftar sekali saat komponen muncul",
+    "code": "function DaftarKota() {\n  const [kota, setKota] = useState([]);\n  const [memuat, setMemuat] = useState(true);\n  useEffect(() => {\n    fetch(\"/api/kota\")\n      .then((r) => r.json())\n      .then((data) => { setKota(data); setMemuat(false); });\n  }, []);\n  if (memuat) return <p>Memuat kota...</p>;\n  return <ul>{kota.map((k) => <li key={k.id}>{k.nama}</li>)}</ul>;\n}"
+   },
+   {
+    "t": "Kasus: muat ulang saat id berubah, abaikan respons lama",
+    "code": "function DetailProduk({ id }) {\n  const [produk, setProduk] = useState(null);\n  useEffect(() => {\n    let aktif = true;\n    setProduk(null);\n    fetch(`/api/produk/${id}`)\n      .then((r) => r.json())\n      .then((data) => { if (aktif) setProduk(data); });\n    return () => { aktif = false; };      // id berubah sebelum respons datang\n  }, [id]);\n  return produk ? <h2>{produk.nama}</h2> : <p>Memuat produk #{id}...</p>;\n}"
+   },
+   {
+    "t": "Kasus: mengirim data dengan POST saat tombol diklik",
+    "code": "function TombolLangganan({ email }) {\n  const [status, setStatus] = useState(\"diam\");    // diam | mengirim | berhasil | gagal\n  async function kirim() {\n    setStatus(\"mengirim\");\n    try {\n      const r = await fetch(\"/api/langganan\", { method: \"POST\", headers: { \"content-type\": \"application/json\" }, body: JSON.stringify({ email }) });\n      setStatus(r.ok ? \"berhasil\" : \"gagal\");\n    } catch {\n      setStatus(\"gagal\");\n    }\n  }\n  return (\n    <>\n      <button onClick={kirim} disabled={status === \"mengirim\"}>Langganan</button>\n      {status === \"berhasil\" && <p>Terima kasih!</p>}\n      {status === \"gagal\" && <p role=\"alert\">Gagal, coba lagi.</p>}\n    </>\n  );\n}",
+    "d": "Pengiriman data cukup dipanggil di event handler, tidak perlu useEffect."
+   }
+  ]
+ },
+ "react-6-2": {
+  "exs": [
+   {
+    "t": "Kasus: query dengan kunci per produk",
+    "code": "import { useQuery } from \"@tanstack/react-query\";\n\nfunction DetailProduk({ id }) {\n  const { data, isPending } = useQuery({\n    queryKey: [\"produk\", id],                         // kunci berbeda = cache berbeda\n    queryFn: () => fetch(`/api/produk/${id}`).then((r) => r.json()),\n  });\n  if (isPending) return <p>Memuat...</p>;\n  return <h2>{data.nama}</h2>;\n}",
+    "d": "Membuka produk yang sama untuk kedua kalinya langsung tampil dari cache."
+   },
+   {
+    "t": "Kasus: SWR untuk data profil",
+    "code": "import useSWR from \"swr\";\n\nconst fetcher = (url) => fetch(url).then((r) => r.json());\n\nfunction Profil() {\n  const { data, error, isLoading } = useSWR(\"/api/saya\", fetcher);\n  if (isLoading) return <p>Memuat...</p>;\n  if (error) return <p>Gagal memuat profil</p>;\n  return <p>Halo, {data.nama}</p>;\n}"
+   },
+   {
+    "t": "Kasus: query GraphQL dengan Apollo Client",
+    "code": "import { gql, useQuery } from \"@apollo/client\";\n\nconst PRODUK = gql`\n  query { daftarProduk { id nama harga } }\n`;\n\nfunction Katalog() {\n  const { data, loading, error } = useQuery(PRODUK);\n  if (loading) return <p>Memuat...</p>;\n  if (error) return <p>Gagal: {error.message}</p>;\n  return <ul>{data.daftarProduk.map((p) => <li key={p.id}>{p.nama}</li>)}</ul>;\n}"
+   }
+  ]
+ },
+ "react-6-3": {
+  "exs": [
+   {
+    "t": "Kasus: empat keadaan dengan state biasa",
+    "code": "function DaftarUlasan({ produkId }) {\n  const [st, setSt] = useState({ memuat: true, error: null, data: [] });\n  useEffect(() => {\n    fetch(`/api/produk/${produkId}/ulasan`)\n      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(\"HTTP \" + r.status))))\n      .then((data) => setSt({ memuat: false, error: null, data }))\n      .catch((error) => setSt({ memuat: false, error, data: [] }));\n  }, [produkId]);\n\n  if (st.memuat) return <p>Memuat ulasan...</p>;\n  if (st.error) return <p role=\"alert\">Ulasan gagal dimuat.</p>;\n  if (st.data.length === 0) return <p>Belum ada ulasan. Jadilah yang pertama!</p>;\n  return <ul>{st.data.map((u) => <li key={u.id}>{u.teks}</li>)}</ul>;\n}"
+   },
+   {
+    "t": "Kasus: kosong karena pencarian tidak menemukan apa pun",
+    "code": "function HasilCari({ q, data }) {\n  if (data.length === 0) return (\n    <div>\n      <p>Tidak ada produk untuk \"{q}\".</p>\n      <p>Coba kata lain, misalnya \"kopi\" atau \"teh\".</p>\n    </div>\n  );\n  return <ul>{data.map((p) => <li key={p.id}>{p.nama}</li>)}</ul>;\n}",
+    "d": "Empty state karena filter berbeda dengan empty state pengguna baru, jadi pesannya juga berbeda."
+   },
+   {
+    "t": "Kasus: skeleton yang menyerupai bentuk kartu",
+    "code": "function KartuSkeleton() {\n  return (\n    <div className=\"kartu\" aria-hidden=\"true\">\n      <div style={{ height: 120, background: \"#eee\", borderRadius: 8 }} />\n      <div style={{ height: 14, width: \"70%\", background: \"#eee\", marginTop: 8 }} />\n      <div style={{ height: 14, width: \"40%\", background: \"#eee\", marginTop: 6 }} />\n    </div>\n  );\n}\nfunction GridProduk({ q }) {\n  if (q.isPending) return <div aria-busy=\"true\">{[1, 2, 3].map((i) => <KartuSkeleton key={i} />)}</div>;\n  if (q.isError) return <button onClick={() => q.refetch()}>Coba lagi</button>;\n  return q.data.map((p) => <KartuProduk key={p.id} {...p} />);\n}"
+   }
+  ]
+ },
+ "react-7-1": {
+  "exs": [
+   {
+    "t": "Kasus: kelas CSS Module yang berganti sesuai status",
+    "code": "// Badge.module.css\n// .badge { padding: 2px 8px; border-radius: 999px; }\n// .lunas { background: #DCF2E3; color: #2F7A52; }\n// .menunggu { background: #FCEFD4; color: #8A5A00; }\n\nimport s from \"./Badge.module.css\";\nexport function BadgeStatus({ status }) {\n  return <span className={`${s.badge} ${s[status]}`}>{status}</span>;\n}\n// <BadgeStatus status=\"lunas\" />"
+   },
+   {
+    "t": "Kasus: kelas Tailwind bersyarat",
+    "code": "export function TombolTab({ aktif, children, onClick }) {\n  return (\n    <button\n      onClick={onClick}\n      className={`px-3 py-1 rounded-full ${aktif ? \"bg-stone-900 text-white\" : \"bg-stone-100 text-stone-700\"}`}\n    >\n      {children}\n    </button>\n  );\n}"
+   },
+   {
+    "t": "Kasus: gaya inline untuk nilai yang dihitung",
+    "code": "export function BarProgres({ persen }) {\n  return (\n    <div style={{ height: 8, background: \"#eee\", borderRadius: 4 }}>\n      <div style={{ width: `${persen}%`, height: \"100%\", background: \"#2F7A52\", borderRadius: 4 }} />\n    </div>\n  );\n}",
+    "d": "style={{ }} cocok untuk nilai dinamis seperti lebar; gaya tetap tetap di CSS."
+   }
+  ]
+ },
+ "react-7-2": {
+  "exs": [
+   {
+    "t": "Kasus: tooltip aksesibel dengan Radix",
+    "code": "import * as Tooltip from \"@radix-ui/react-tooltip\";\n\nexport function InfoOngkir() {\n  return (\n    <Tooltip.Provider>\n      <Tooltip.Root>\n        <Tooltip.Trigger>Ongkir?</Tooltip.Trigger>\n        <Tooltip.Portal>\n          <Tooltip.Content className=\"rounded bg-stone-900 px-2 py-1 text-white\" sideOffset={4}>\n            Gratis di atas Rp100.000\n          </Tooltip.Content>\n        </Tooltip.Portal>\n      </Tooltip.Root>\n    </Tooltip.Provider>\n  );\n}",
+    "d": "Radix mengurus fokus keyboard, Escape, dan atribut ARIA; kamu cukup memberi gaya."
+   },
+   {
+    "t": "Kasus: kartu yang muncul perlahan dengan Motion",
+    "code": "import { motion } from \"motion/react\";\n\nexport function KartuMuncul({ children }) {\n  return (\n    <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>\n      {children}\n    </motion.div>\n  );\n}"
+   },
+   {
+    "t": "Kasus: memakai komponen shadcn/ui yang sudah disalin",
+    "code": "// npx shadcn@latest add button card\nimport { Button } from \"@/components/ui/button\";\nimport { Card, CardContent, CardHeader, CardTitle } from \"@/components/ui/card\";\n\nexport function KartuPaket() {\n  return (\n    <Card>\n      <CardHeader><CardTitle>Paket Pro</CardTitle></CardHeader>\n      <CardContent>\n        <p>Rp99.000 per bulan</p>\n        <Button variant=\"outline\">Pilih paket</Button>\n      </CardContent>\n    </Card>\n  );\n}",
+    "d": "Kodenya ada di folder proyekmu, jadi bebas diubah."
+   }
+  ]
+ },
+ "react-8-1": {
+  "exs": [
+   {
+    "t": "Kasus: memeriksa teks yang tampil dari props",
+    "code": "import { render, screen } from \"@testing-library/react\";\nimport { test, expect } from \"vitest\";\nimport KartuProduk from \"./KartuProduk\";\n\ntest(\"menampilkan nama dan harga\", () => {\n  render(<KartuProduk nama=\"Kopi Gayo\" harga={85000} />);\n  expect(screen.getByRole(\"heading\", { name: \"Kopi Gayo\" })).toBeInTheDocument();\n  expect(screen.getByText(\"Rp85.000\")).toBeInTheDocument();\n});"
+   },
+   {
+    "t": "Kasus: memastikan callback dipanggil saat form dikirim",
+    "code": "import { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { test, expect, vi } from \"vitest\";\nimport FormKupon from \"./FormKupon\";\n\ntest(\"mengirim kode kupon\", async () => {\n  const onPakai = vi.fn();\n  render(<FormKupon onPakai={onPakai} />);\n  await userEvent.type(screen.getByLabelText(\"Kode kupon\"), \"HEMAT10\");\n  await userEvent.click(screen.getByRole(\"button\", { name: \"Pakai\" }));\n  expect(onPakai).toHaveBeenCalledWith(\"HEMAT10\");\n});"
+   },
+   {
+    "t": "Kasus: menunggu data yang dimuat dari server tiruan",
+    "code": "import { render, screen } from \"@testing-library/react\";\nimport { test, expect, vi } from \"vitest\";\nimport DaftarKota from \"./DaftarKota\";\n\ntest(\"menampilkan kota setelah fetch selesai\", async () => {\n  vi.stubGlobal(\"fetch\", vi.fn().mockResolvedValue({ json: () => Promise.resolve([{ id: 1, nama: \"Medan\" }]) }));\n  render(<DaftarKota />);\n  expect(screen.getByText(\"Memuat kota...\")).toBeInTheDocument();\n  expect(await screen.findByText(\"Medan\")).toBeInTheDocument();     // findBy menunggu\n});",
+    "d": "findBy... menunggu elemen muncul, cocok untuk hasil yang datang belakangan."
+   }
+  ]
+ },
+ "react-8-2": {
+  "exs": [
+   {
+    "t": "Kasus: komponen interaktif di Next.js perlu \"use client\"",
+    "code": "// app/produk/[id]/TombolBeli.tsx\n\"use client\";\nimport { useState } from \"react\";\n\nexport function TombolBeli({ nama }: { nama: string }) {\n  const [ditambah, setDitambah] = useState(false);\n  return (\n    <button onClick={() => setDitambah(true)} disabled={ditambah}>\n      {ditambah ? \"Sudah di keranjang\" : `Beli ${nama}`}\n    </button>\n  );\n}\n// page.tsx (Server Component) cukup memakai <TombolBeli nama={p.nama} />",
+    "d": "Komponen yang memakai state atau event harus menjadi Client Component."
+   },
+   {
+    "t": "Kasus: props bertipe dengan TypeScript",
+    "code": "type Status = \"menunggu\" | \"dikirim\" | \"selesai\";\ntype Props = { nomor: string; status: Status; total: number; onBatal?: () => void };\n\nexport function BarisPesanan({ nomor, status, total, onBatal }: Props) {\n  return (\n    <li>\n      {nomor} · {status} · Rp{total.toLocaleString(\"id-ID\")}\n      {onBatal && status === \"menunggu\" && <button onClick={onBatal}>Batalkan</button>}\n    </li>\n  );\n}\n// <BarisPesanan nomor=\"INV-1\" status=\"hilang\" total={5000} />  -> error saat kompilasi"
+   },
+   {
+    "t": "Kasus: daftar panjang di React Native",
+    "code": "import { FlatList, Text, View } from \"react-native\";\n\ntype Produk = { id: string; nama: string };\n\nexport function DaftarProduk({ data }: { data: Produk[] }) {\n  return (\n    <FlatList\n      data={data}\n      keyExtractor={(p) => p.id}\n      renderItem={({ item }) => (\n        <View style={{ padding: 12, borderBottomWidth: 1, borderColor: \"#eee\" }}>\n          <Text>{item.nama}</Text>\n        </View>\n      )}\n    />\n  );\n}",
+    "d": "FlatList hanya merender baris yang terlihat, pengganti map untuk daftar panjang di ponsel."
+   }
+  ]
+ }
+}
