@@ -1,0 +1,131 @@
+{
+ "flowg-1-1": {
+  "exs": [
+   {
+    "t": "Kasus: beberapa simbol Output berurutan",
+    "code": "Main\n    Output \"Selamat pagi!\"\n    Output \"Hari ini kita belajar flowchart.\"\n    Output \"Semangat!\"\nEnd",
+    "out": "Selamat pagi!\nHari ini kita belajar flowchart.\nSemangat!",
+    "d": "Simbol dijalankan dari atas ke bawah, satu per satu."
+   },
+   {
+    "t": "Kasus: Output hasil perhitungan",
+    "code": "Main\n    Output \"Harga 3 gorengan:\"\n    Output 3 * 2000\nEnd",
+    "out": "Harga 3 gorengan:\n6000"
+   },
+   {
+    "t": "Kasus: menggabungkan teks dengan &",
+    "code": "Main\n    Output \"Halo, \" & \"Indonesia\" & \"!\"\nEnd",
+    "out": "Halo, Indonesia!"
+   }
+  ]
+ },
+ "flowg-1-2": {
+  "exs": [
+   {
+    "t": "Kasus: keliling persegi panjang",
+    "code": "Main\n    Declare Integer panjang, lebar, keliling\n    Input panjang\n    Input lebar\n    Assign keliling = 2 * (panjang + lebar)\n    Output \"Keliling = \" & keliling\nEnd",
+    "out": "Masukan 8 dan 5 → Keliling = 26"
+   },
+   {
+    "t": "Kasus: membaca Variable Watch",
+    "code": "Main\n    Declare Integer uang, harga, sisa\n    Assign uang = 20000        // Watch: uang = 20000\n    Assign harga = 12500       // Watch: harga = 12500\n    Assign sisa = uang - harga // Watch: sisa = 7500\n    Output \"Sisa uang: \" & sisa\nEnd",
+    "out": "Sisa uang: 7500",
+    "d": "Jalankan langkah demi langkah dan cocokkan isi Variable Watch dengan komentar."
+   },
+   {
+    "t": "Kasus: simbol Comment untuk menjelaskan",
+    "code": "Main\n    // Comment: menghitung total belanja tanpa diskon\n    Declare Integer harga, jumlah, total\n    Input harga\n    Input jumlah\n    Assign total = harga * jumlah\n    Output \"Total: \" & total\nEnd",
+    "out": "Masukan 4500 dan 3 → Total: 13500"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Meniru Variable Watch dengan tabel",
+    "b": "Saat debugging di tempat kerja, developer menulis tabel isi variabel per langkah, persis seperti jendela Variable Watch. Tabel ini dibuat untuk program diskon sederhana.",
+    "code": "Main\n    Declare Integer harga, potongan, bayar\n    Assign harga = 80000\n    Assign potongan = harga * 25 / 100\n    Assign bayar = harga - potongan\n    Output \"Bayar: \" & bayar\nEnd\n\nLangkah | Simbol                          | harga | potongan | bayar\n   1    | Assign harga = 80000            | 80000 |    -     |   -\n   2    | Assign potongan = harga*25/100  | 80000 |  20000   |   -\n   3    | Assign bayar = harga - potongan | 80000 |  20000   | 60000\n   4    | Output                          |   (layar: Bayar: 60000)",
+    "out": "Bayar: 60000"
+   }
+  ]
+ },
+ "flowg-1-3": {
+  "exs": [
+   {
+    "t": "Kasus: empat tipe data",
+    "code": "Main\n    Declare String nama\n    Declare Integer umur\n    Declare Real tinggi\n    Declare Boolean pelajar\n    Assign nama = \"Fajar\"\n    Assign umur = 17\n    Assign tinggi = 168.5\n    Assign pelajar = true\n    Output nama & \", \" & umur & \" tahun, \" & tinggi & \" cm, pelajar: \" & pelajar\nEnd",
+    "out": "Fajar, 17 tahun, 168.5 cm, pelajar: true"
+   },
+   {
+    "t": "Kasus: mod dan Int untuk menit dan detik",
+    "code": "Main\n    Declare Integer total, menit, detik\n    Assign total = 135\n    Assign menit = Int(total / 60)\n    Assign detik = total mod 60\n    Output total & \" detik = \" & menit & \" menit \" & detik & \" detik\"\nEnd",
+    "out": "135 detik = 2 menit 15 detik"
+   },
+   {
+    "t": "Kasus: fungsi bawaan Len, Sqrt, Abs",
+    "code": "Main\n    Declare String kata\n    Assign kata = \"Flowgorithm\"\n    Output \"Panjang kata: \" & Len(kata)\n    Output \"Akar 144: \" & Sqrt(144)\n    Output \"Mutlak -8: \" & Abs(-8)\nEnd",
+    "out": "Panjang kata: 11\nAkar 144: 12\nMutlak -8: 8"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Ringkasan operator Flowgorithm",
+    "b": "Sebelum menerjemahkan flowchart ke bahasa lain, hafalkan operatornya. Program ini memperlihatkan hasil setiap operator untuk a = 17 dan b = 5.",
+    "code": "Main\n    Declare Integer a, b\n    Declare Real hasil\n    Declare String nama\n    Assign a = 17\n    Assign b = 5\n    Assign hasil = a / b\n    Output \"a / b      = \" & hasil\n    Output \"Int(a / b) = \" & Int(a / b)\n    Output \"a mod b    = \" & a mod b\n    Output \"a ^ 2      = \" & a ^ 2\n    Assign nama = \"Sari\"\n    Output \"Halo \" & nama\nEnd",
+    "out": "a / b      = 3.4\nInt(a / b) = 3\na mod b    = 2\na ^ 2      = 289\nHalo Sari"
+   }
+  ]
+ },
+ "flowg-2-1": {
+  "exs": [
+   {
+    "t": "Kasus: volume tabung air",
+    "code": "Main\n    Declare Real r, t, alas, volume\n    Input r\n    Input t\n    Assign alas = 3.14159 * r * r\n    Assign volume = alas * t\n    Output \"Volume: \" & volume & \" cm3\"\nEnd",
+    "out": "Masukan 10 dan 20 → Volume: 6283.18 cm3"
+   },
+   {
+    "t": "Kasus: luas segitiga",
+    "code": "Main\n    Declare Real alas, tinggi, luas\n    Input alas\n    Input tinggi\n    Assign luas = alas * tinggi / 2\n    Output \"Luas segitiga: \" & luas\nEnd",
+    "out": "Masukan 9 dan 4 → Luas segitiga: 18"
+   },
+   {
+    "t": "Kasus: konversi suhu Celcius ke Reamur dan Fahrenheit",
+    "code": "Main\n    Declare Real c, r, f\n    Input c\n    Assign r = c * 4 / 5\n    Assign f = c * 9 / 5 + 32\n    Output \"Reamur: \" & r\n    Output \"Fahrenheit: \" & f\nEnd",
+    "out": "Masukan 30 → Reamur: 24\n             Fahrenheit: 86"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Menghitung kebutuhan cat kolam bundar",
+    "b": "Kontraktor kolam menghitung luas yang dicat (dasar dan dinding), lalu liter cat dengan daya sebar 10 m² per liter. Setiap rumus ada di satu simbol Assign agar mudah diperiksa.",
+    "code": "Main\n    Declare Real diameter, dalam, r, luasDasar, luasDinding, liter\n    Input diameter\n    Input dalam\n    Assign r = diameter / 2\n    Assign luasDasar = 3.14159 * r * r\n    Assign luasDinding = 2 * 3.14159 * r * dalam\n    Assign liter = (luasDasar + luasDinding) / 10\n    Output \"Luas dicat: \" & (luasDasar + luasDinding) & \" m2\"\n    Output \"Butuh cat: \" & liter & \" liter\"\nEnd",
+    "out": "Masukan 4 dan 1.2\nLuas dicat: 27.645992 m2\nButuh cat: 2.7645992 liter (beli 3 liter)"
+   }
+  ]
+ },
+ "flowg-2-2": {
+  "exs": [
+   {
+    "t": "Kasus: harga setelah PPN 11%",
+    "code": "Main\n    Declare Real harga, ppn, total\n    Input harga\n    Assign ppn = harga * 11 / 100\n    Assign total = harga + ppn\n    Output \"PPN: \" & ppn\n    Output \"Total: \" & total\nEnd",
+    "out": "Masukan 200000 → PPN: 22000\n                 Total: 222000"
+   },
+   {
+    "t": "Kasus: cashback e-wallet",
+    "code": "Main\n    Declare Real belanja, cashback, saldoKembali\n    Input belanja\n    Assign cashback = belanja * 5 / 100\n    Assign saldoKembali = cashback\n    Output \"Cashback masuk ke saldo: \" & saldoKembali\nEnd",
+    "out": "Masukan 120000 → Cashback masuk ke saldo: 6000"
+   },
+   {
+    "t": "Kasus: harga per biji dari harga grosir",
+    "code": "Main\n    Declare Real hargaDus, isi, hargaSatuan, untung\n    Input hargaDus\n    Input isi\n    Assign hargaSatuan = hargaDus / isi\n    Assign untung = 1500 - hargaSatuan\n    Output \"Modal per biji: \" & hargaSatuan\n    Output \"Untung per biji jika dijual 1500: \" & untung\nEnd",
+    "out": "Masukan 48000 dan 40 → Modal per biji: 1200\n                       Untung per biji jika dijual 1500: 300"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Diskon berlapis: diskon toko lalu voucher",
+    "b": "Promo \"diskon 20% + voucher 10%\" bukan berarti diskon 30%. Voucher dihitung dari harga setelah diskon pertama, sehingga urutan Assign menentukan hasil.",
+    "code": "Main\n    Declare Real harga, diskonToko, setelahDiskon, voucher, bayar\n    Input harga\n    Assign diskonToko = harga * 20 / 100\n    Assign setelahDiskon = harga - diskonToko\n    Assign voucher = setelahDiskon * 10 / 100\n    Assign bayar = setelahDiskon - voucher\n    Output \"Setelah diskon toko: \" & setelahDiskon\n    Output \"Potongan voucher: \" & voucher\n    Output \"Bayar: \" & bayar\nEnd",
+    "out": "Masukan 500000\nSetelah diskon toko: 400000\nPotongan voucher: 40000\nBayar: 360000 (bukan 350000)"
+   }
+  ]
+ }
+}

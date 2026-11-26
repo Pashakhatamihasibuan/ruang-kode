@@ -167,5 +167,891 @@
     "out": "Pokok  : Rp15000000\nBunga  : Rp900000\nCicilan: Rp1325000 per bulan"
    }
   ]
+ },
+ "pseudo-2-1": {
+  "exs": [
+   {
+    "t": "Kasus: syarat ikut ujian (AND)",
+    "code": "DECLARE kehadiran : INTEGER\nDECLARE sudahBayar, bolehUjian : BOOLEAN\nkehadiran ← 80\nsudahBayar ← TRUE\nbolehUjian ← kehadiran >= 75 AND sudahBayar\nOUTPUT \"Boleh ikut ujian: \", bolehUjian",
+    "out": "Boleh ikut ujian: TRUE",
+    "d": "AND butuh semua bagian benar."
+   },
+   {
+    "t": "Kasus: gratis ongkir (OR)",
+    "code": "DECLARE belanja : INTEGER\nDECLARE premium, gratisOngkir : BOOLEAN\nbelanja ← 85000\npremium ← TRUE\ngratisOngkir ← belanja > 100000 OR premium\nOUTPUT \"Gratis ongkir: \", gratisOngkir",
+    "out": "Gratis ongkir: TRUE",
+    "d": "Belanja belum 100 ribu, tetapi member premium. OR cukup satu yang benar."
+   },
+   {
+    "t": "Kasus: boleh menjemur pakaian (NOT)",
+    "code": "DECLARE hujan, bolehJemur : BOOLEAN\nhujan ← FALSE\nbolehJemur ← NOT hujan\nOUTPUT \"Boleh menjemur: \", bolehJemur",
+    "out": "Boleh menjemur: TRUE"
+   },
+   {
+    "t": "Kasus: angka genap disimpan sebagai Boolean",
+    "code": "DECLARE angka : INTEGER\nDECLARE genap : BOOLEAN\nangka ← 38\ngenap ← angka MOD 2 = 0\nOUTPUT angka, \" genap? \", genap",
+    "out": "38 genap? TRUE"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Kurung mengubah arti aturan promo",
+    "b": "Tim promo menulis \"diskon untuk pelajar di hari Selasa atau member\". Tanpa kurung, aturan ini bisa dibaca dua cara dan hasilnya berbeda. Developer wajib menanyakan maksudnya lalu menulis kurung yang jelas.",
+    "code": "DECLARE pelajar, selasa, member : BOOLEAN\nDECLARE tafsiranA, tafsiranB : BOOLEAN\npelajar ← FALSE\nselasa ← FALSE\nmember ← TRUE\ntafsiranA ← (pelajar AND selasa) OR member\ntafsiranB ← pelajar AND (selasa OR member)\nOUTPUT \"Tafsiran A: \", tafsiranA\nOUTPUT \"Tafsiran B: \", tafsiranB",
+    "out": "Tafsiran A: TRUE\nTafsiran B: FALSE"
+   }
+  ]
+ },
+ "pseudo-2-2": {
+  "exs": [
+   {
+    "t": "Kasus: poin belanja di minimarket",
+    "code": "DECLARE belanja, poin : INTEGER\nINPUT belanja\npoin ← 0\nIF belanja >= 50000 THEN\n    poin ← 10\nENDIF\nOUTPUT \"Poin didapat: \", poin",
+    "out": "Masukan 72000 → Poin didapat: 10\nMasukan 30000 → Poin didapat: 0"
+   },
+   {
+    "t": "Kasus: peringatan stok menipis",
+    "code": "DECLARE stok : INTEGER\nINPUT stok\nIF stok < 5 THEN\n    OUTPUT \"Peringatan: stok menipis, segera pesan ulang\"\nENDIF\nOUTPUT \"Sisa stok: \", stok",
+    "out": "Masukan 3 → Peringatan: stok menipis, segera pesan ulang\n            Sisa stok: 3\nMasukan 20 → Sisa stok: 20"
+   },
+   {
+    "t": "Kasus: denda telat perpustakaan",
+    "code": "DECLARE hariTelat, denda : INTEGER\nINPUT hariTelat\ndenda ← 0\nIF hariTelat > 0 THEN\n    denda ← hariTelat * 1000\nENDIF\nOUTPUT \"Denda: Rp\", denda",
+    "out": "Masukan 4 → Denda: Rp4000\nMasukan 0 → Denda: Rp0"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Nilai bawaan dulu, lalu IF untuk pengecualian",
+    "b": "Biaya admin transfer antarbank Rp6.500, tetapi gratis jika bank tujuan sama. Isi nilai bawaan dulu, lalu satu IF mengubahnya. Variabel admin dijamin selalu punya nilai.",
+    "code": "DECLARE bankAsal, bankTujuan : STRING\nDECLARE jumlah, admin : INTEGER\nINPUT bankAsal\nINPUT bankTujuan\nINPUT jumlah\nadmin ← 6500\nIF bankAsal = bankTujuan THEN\n    admin ← 0\nENDIF\nOUTPUT \"Total didebit: Rp\", jumlah + admin",
+    "out": "Masukan BRI, BCA, 100000 → Total didebit: Rp106500\nMasukan BRI, BRI, 100000 → Total didebit: Rp100000"
+   }
+  ]
+ },
+ "pseudo-2-3": {
+  "exs": [
+   {
+    "t": "Kasus: ganjil atau genap",
+    "code": "DECLARE n : INTEGER\nINPUT n\nIF n MOD 2 = 0 THEN\n    OUTPUT n, \" adalah genap\"\nELSE\n    OUTPUT n, \" adalah ganjil\"\nENDIF",
+    "out": "Masukan 14 → 14 adalah genap\nMasukan 7 → 7 adalah ganjil"
+   },
+   {
+    "t": "Kasus: harga tiket bioskop",
+    "code": "DECLARE umur, harga : INTEGER\nINPUT umur\nIF umur < 12 THEN\n    harga ← 30000\nELSE\n    harga ← 50000\nENDIF\nOUTPUT \"Harga tiket: Rp\", harga",
+    "out": "Masukan 9 → Harga tiket: Rp30000\nMasukan 12 → Harga tiket: Rp50000",
+    "d": "Uji tepat di batas: umur 12 sudah membayar harga dewasa."
+   },
+   {
+    "t": "Kasus: memeriksa password",
+    "code": "DECLARE password : STRING\nINPUT password\nIF password = \"rahasia123\" THEN\n    OUTPUT \"Login berhasil\"\nELSE\n    OUTPUT \"Password salah\"\nENDIF",
+    "out": "Masukan rahasia123 → Login berhasil\nMasukan Rahasia123 → Password salah"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Menguji kedua cabang dan kasus batas",
+    "b": "Di tim QA, setiap IF-ELSE diuji minimal tiga kali: satu nilai di cabang THEN, satu di cabang ELSE, dan satu tepat di batas. Kesalahan > versus >= hanya ketahuan di nilai batas.",
+    "code": "DECLARE nilai : INTEGER\nDECLARE status : STRING\nINPUT nilai\nIF nilai >= 75 THEN\n    status ← \"Lulus\"\nELSE\n    status ← \"Remedial\"\nENDIF\nOUTPUT nilai, \" → \", status\n\n// Rencana uji:\n// 74 → Remedial (cabang ELSE)\n// 75 → Lulus    (tepat di batas)\n// 90 → Lulus    (cabang THEN)",
+    "out": "74 → Remedial\n75 → Lulus\n90 → Lulus"
+   }
+  ]
+ },
+ "pseudo-2-4": {
+  "exs": [
+   {
+    "t": "Kasus: nomor hari menjadi nama hari",
+    "code": "DECLARE nomor : INTEGER\nDECLARE hari : STRING\nINPUT nomor\nCASE OF nomor\n    1 : hari ← \"Senin\"\n    2 : hari ← \"Selasa\"\n    3 : hari ← \"Rabu\"\n    4 : hari ← \"Kamis\"\n    5 : hari ← \"Jumat\"\n    6 : hari ← \"Sabtu\"\n    7 : hari ← \"Minggu\"\n    OTHERWISE : hari ← \"Nomor hari tidak sah\"\nENDCASE\nOUTPUT hari",
+    "out": "Masukan 5 → Jumat\nMasukan 9 → Nomor hari tidak sah"
+   },
+   {
+    "t": "Kasus: kelas tiket kereta",
+    "code": "DECLARE kelas : CHAR\nDECLARE harga : INTEGER\nINPUT kelas\nCASE OF kelas\n    'E' : harga ← 250000      // eksekutif\n    'B' : harga ← 180000      // bisnis\n    'P' : harga ← 95000       // ekonomi premium\n    OTHERWISE : harga ← 0\nENDCASE\nOUTPUT \"Harga: Rp\", harga",
+    "out": "Masukan B → Harga: Rp180000"
+   },
+   {
+    "t": "Kasus: kalkulator sederhana",
+    "code": "DECLARE a, b, hasil : REAL\nDECLARE op : CHAR\nINPUT a\nINPUT op\nINPUT b\nCASE OF op\n    '+' : hasil ← a + b\n    '-' : hasil ← a - b\n    '*' : hasil ← a * b\n    '/' : hasil ← a / b\n    OTHERWISE : OUTPUT \"Operator tidak dikenal\"\n                hasil ← 0\nENDCASE\nOUTPUT \"Hasil: \", hasil",
+    "out": "Masukan 12, *, 3 → Hasil: 36"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Label status pesanan toko daring",
+    "b": "Backend menyimpan status sebagai kode singkat, aplikasi menampilkan kalimat untuk pembeli. CASE memetakan setiap kode ke satu label, dan OTHERWISE menangkap kode baru yang belum dikenal aplikasi lama.",
+    "code": "DECLARE status, label : STRING\nINPUT status\nCASE OF status\n    \"PAID\"    : label ← \"Pesanan dikemas\"\n    \"SHIPPED\" : label ← \"Dalam perjalanan\"\n    \"DONE\"    : label ← \"Pesanan selesai\"\n    OTHERWISE : label ← \"Status tidak dikenal\"\nENDCASE\nOUTPUT status, \" → \", label",
+    "out": "PAID → Pesanan dikemas\nDONE → Pesanan selesai\nREFUND → Status tidak dikenal"
+   }
+  ]
+ },
+ "pseudo-2-5": {
+  "exs": [
+   {
+    "t": "Kasus: diskon member bertingkat (bersarang sungguhan)",
+    "code": "DECLARE belanja, diskon : INTEGER\nDECLARE member : BOOLEAN\nINPUT belanja\nINPUT member\nIF member THEN\n    IF belanja >= 200000 THEN\n        diskon ← belanja * 15 / 100\n    ELSE\n        diskon ← belanja * 5 / 100\n    ENDIF\nELSE\n    diskon ← 0\nENDIF\nOUTPUT \"Diskon: Rp\", diskon",
+    "out": "Masukan 250000, TRUE → Diskon: Rp37500\nMasukan 100000, TRUE → Diskon: Rp5000\nMasukan 250000, FALSE → Diskon: Rp0"
+   },
+   {
+    "t": "Kasus: kategori suhu tubuh (berantai)",
+    "code": "DECLARE suhu : REAL\nDECLARE kategori : STRING\nINPUT suhu\nIF suhu >= 38 THEN\n    kategori ← \"Demam\"\nELSE\n    IF suhu >= 37.5 THEN\n        kategori ← \"Hangat, pantau terus\"\n    ELSE\n        IF suhu >= 36 THEN\n            kategori ← \"Normal\"\n        ELSE\n            kategori ← \"Rendah\"\n        ENDIF\n    ENDIF\nENDIF\nOUTPUT kategori",
+    "out": "Masukan 38.4 → Demam\nMasukan 37.6 → Hangat, pantau terus\nMasukan 36.5 → Normal",
+    "d": "Kondisi paling ketat dicek paling dulu."
+   },
+   {
+    "t": "Kasus: menyederhanakan sarang dengan AND",
+    "code": "// Sebelum: dua IF bersarang\n// IF umur >= 17 THEN\n//     IF punyaKTP THEN OUTPUT \"Boleh membuat rekening\" ENDIF\n// ENDIF\n\n// Sesudah: satu kondisi gabungan\nDECLARE umur : INTEGER\nDECLARE punyaKTP : BOOLEAN\nINPUT umur\nINPUT punyaKTP\nIF umur >= 17 AND punyaKTP THEN\n    OUTPUT \"Boleh membuat rekening\"\nELSE\n    OUTPUT \"Belum memenuhi syarat\"\nENDIF",
+    "out": "Masukan 19, TRUE → Boleh membuat rekening\nMasukan 16, TRUE → Belum memenuhi syarat"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Tarif parkir mal: jenis kendaraan lalu lama parkir",
+    "b": "Sistem parkir memeriksa jenis kendaraan dulu, lalu lama parkir. Jam pertama punya tarif sendiri, jam berikutnya lebih murah.",
+    "code": "DECLARE jenis : STRING\nDECLARE jam, tarif : INTEGER\nINPUT jenis\nINPUT jam\nIF jenis = \"motor\" THEN\n    IF jam <= 1 THEN\n        tarif ← 2000\n    ELSE\n        tarif ← 2000 + (jam - 1) * 1000\n    ENDIF\nELSE\n    IF jam <= 1 THEN\n        tarif ← 5000\n    ELSE\n        tarif ← 5000 + (jam - 1) * 3000\n    ENDIF\nENDIF\nOUTPUT jenis, \" \", jam, \" jam → Rp\", tarif",
+    "out": "motor 1 jam → Rp2000\nmotor 4 jam → Rp5000\nmobil 3 jam → Rp11000"
+   }
+  ]
+ },
+ "pseudo-2-6": {
+  "code": "DECLARE nilai : INTEGER\nDECLARE pesan : STRING\nINPUT nilai\n// penjaga: tolak data tidak sah lebih dulu\nIF nilai < 0 OR nilai > 100 THEN\n    pesan ← \"Error: nilai harus 0 sampai 100\"\n// logika utama hanya jalan untuk data yang sah\nELSE IF nilai >= 75 THEN\n    pesan ← \"Lulus\"\nELSE\n    pesan ← \"Remedial\"\nENDIF\nOUTPUT pesan",
+  "out": "Masukan 120 → Error: nilai harus 0 sampai 100\nMasukan 80  → Lulus\nMasukan 60  → Remedial",
+  "exs": [
+   {
+    "t": "Kasus: tarik tunai di ATM",
+    "code": "DECLARE saldo, jumlah : INTEGER\nsaldo ← 750000\nINPUT jumlah\nIF jumlah <= 0 THEN\n    OUTPUT \"Jumlah tidak sah\"\nELSE IF jumlah MOD 50000 <> 0 THEN\n    OUTPUT \"Harus kelipatan Rp50.000\"\nELSE IF jumlah > saldo THEN\n    OUTPUT \"Saldo tidak cukup\"\nELSE\n    saldo ← saldo - jumlah\n    OUTPUT \"Silakan ambil uang. Sisa saldo Rp\", saldo\nENDIF",
+    "out": "Masukan 120000 → Harus kelipatan Rp50.000\nMasukan 900000 → Saldo tidak cukup\nMasukan 300000 → Silakan ambil uang. Sisa saldo Rp450000",
+    "d": "Setiap penjaga menolak satu jenis kesalahan, logika utama ada di cabang terakhir."
+   },
+   {
+    "t": "Kasus: pembagian yang aman",
+    "code": "DECLARE totalBiaya, jumlahOrang : INTEGER\nINPUT totalBiaya\nINPUT jumlahOrang\nIF jumlahOrang <= 0 THEN\n    OUTPUT \"Jumlah orang minimal 1\"\nELSE\n    OUTPUT \"Patungan per orang: Rp\", totalBiaya / jumlahOrang\nENDIF",
+    "out": "Masukan 240000, 0 → Jumlah orang minimal 1\nMasukan 240000, 6 → Patungan per orang: Rp40000"
+   },
+   {
+    "t": "Kasus: validasi formulir pendaftaran",
+    "code": "DECLARE nama : STRING\nDECLARE umur : INTEGER\nINPUT nama\nINPUT umur\nIF nama = \"\" THEN\n    OUTPUT \"Nama wajib diisi\"\nELSE IF umur < 17 THEN\n    OUTPUT \"Umur minimal 17 tahun\"\nELSE\n    OUTPUT \"Pendaftaran \", nama, \" diterima\"\nENDIF",
+    "out": "Masukan \"\", 20 → Nama wajib diisi\nMasukan Bagas, 15 → Umur minimal 17 tahun\nMasukan Bagas, 18 → Pendaftaran Bagas diterima"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Transfer saldo dengan berlapis penjaga",
+    "b": "Aplikasi bank memeriksa semua kemungkinan data buruk sebelum memindahkan uang. Urutan penjaga penting: jumlah tidak sah dicek paling awal, baru saldo dan limit.",
+    "code": "DECLARE saldo, jumlah : INTEGER\nsaldo ← 12000000\nINPUT jumlah\nIF jumlah <= 0 THEN\n    OUTPUT \"Jumlah tidak valid\"\nELSE IF jumlah > saldo THEN\n    OUTPUT \"Saldo tidak cukup\"\nELSE IF jumlah > 10000000 THEN\n    OUTPUT \"Melebihi limit harian\"\nELSE\n    saldo ← saldo - jumlah\n    OUTPUT \"OK, sisa \", saldo\nENDIF",
+    "out": "-5       → Jumlah tidak valid\n2000000  → OK, sisa 10000000\n11500000 → Melebihi limit harian\n15000000 → Saldo tidak cukup"
+   }
+  ]
+ },
+ "pseudo-3-1": {
+  "exs": [
+   {
+    "t": "Kasus: tabel perkalian 7",
+    "code": "DECLARE i : INTEGER\nFOR i ← 1 TO 5 DO\n    OUTPUT \"7 x \", i, \" = \", 7 * i\nENDFOR",
+    "out": "7 x 1 = 7\n7 x 2 = 14\n7 x 3 = 21\n7 x 4 = 28\n7 x 5 = 35"
+   },
+   {
+    "t": "Kasus: hitung mundur peluncuran roket",
+    "code": "DECLARE detik : INTEGER\nFOR detik ← 5 TO 1 STEP -1 DO\n    OUTPUT detik\nENDFOR\nOUTPUT \"Meluncur!\"",
+    "out": "5\n4\n3\n2\n1\nMeluncur!"
+   },
+   {
+    "t": "Kasus: tabungan 6 bulan",
+    "code": "DECLARE bulan, tabungan : INTEGER\ntabungan ← 0\nFOR bulan ← 1 TO 6 DO\n    tabungan ← tabungan + 50000\n    OUTPUT \"Bulan \", bulan, \": Rp\", tabungan\nENDFOR",
+    "out": "Bulan 1: Rp50000\nBulan 2: Rp100000\nBulan 3: Rp150000\nBulan 4: Rp200000\nBulan 5: Rp250000\nBulan 6: Rp300000"
+   },
+   {
+    "t": "Kasus: kelipatan 5 dengan STEP",
+    "code": "DECLARE i : INTEGER\nFOR i ← 0 TO 20 STEP 5 DO\n    OUTPUT i\nENDFOR",
+    "out": "0\n5\n10\n15\n20"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Tabel sisa utang cicilan",
+    "b": "Aplikasi pinjaman menampilkan sisa utang setiap bulan. Jumlah bulannya pasti (tenor 6 bulan), jadi FOR yang tepat.",
+    "code": "DECLARE bulan, sisa : INTEGER\nsisa ← 6000000\nFOR bulan ← 1 TO 6 DO\n    sisa ← sisa - 1000000\n    OUTPUT \"Bulan \", bulan, \": sisa Rp\", sisa\nENDFOR\nOUTPUT \"Lunas!\"",
+    "out": "Bulan 1: sisa Rp5000000\nBulan 2: sisa Rp4000000\nBulan 3: sisa Rp3000000\nBulan 4: sisa Rp2000000\nBulan 5: sisa Rp1000000\nBulan 6: sisa Rp0\nLunas!"
+   }
+  ]
+ },
+ "pseudo-3-2": {
+  "exs": [
+   {
+    "t": "Kasus: baterai ponsel",
+    "code": "DECLARE baterai, jam : INTEGER\nbaterai ← 100\njam ← 0\nWHILE baterai >= 20 DO\n    baterai ← baterai - 15     // pemakaian per jam\n    jam ← jam + 1\nENDWHILE\nOUTPUT \"Setelah \", jam, \" jam, baterai tinggal \", baterai, \"%\"",
+    "out": "Setelah 6 jam, baterai tinggal 10%",
+    "d": "Kita tidak tahu jumlah putarannya di awal, hanya kapan berhenti."
+   },
+   {
+    "t": "Kasus: pangkat dua pertama yang melebihi 1000",
+    "code": "DECLARE n : INTEGER\nn ← 1\nWHILE n <= 1000 DO\n    n ← n * 2\nENDWHILE\nOUTPUT n",
+    "out": "1024"
+   },
+   {
+    "t": "Kasus: kondisi salah sejak awal",
+    "code": "DECLARE saldo : INTEGER\nsaldo ← 150000\nWHILE saldo < 100000 DO\n    OUTPUT \"Menabung lagi...\"\n    saldo ← saldo + 30000\nENDWHILE\nOUTPUT \"Saldo: \", saldo",
+    "out": "Saldo: 150000",
+    "d": "Badan loop tidak dijalankan sama sekali karena kondisi langsung salah."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Berapa tahun tabungan menjadi dua kali lipat?",
+    "b": "Perencana keuangan memakai perhitungan ini untuk simulasi deposito. Jumlah tahunnya belum diketahui, yang diketahui hanya target: saldo minimal dua kali lipat.",
+    "code": "DECLARE saldo : REAL\nDECLARE tahun : INTEGER\nsaldo ← 10000000\ntahun ← 0\nWHILE saldo < 20000000 DO\n    saldo ← saldo * 1.06      // bunga 6% per tahun\n    tahun ← tahun + 1\nENDWHILE\nOUTPUT \"Butuh \", tahun, \" tahun, saldo menjadi Rp\", saldo",
+    "out": "Butuh 12 tahun, saldo menjadi Rp20121964.7 (dibulatkan)"
+   }
+  ]
+ },
+ "pseudo-3-3": {
+  "exs": [
+   {
+    "t": "Kasus: meminta nilai sampai sah",
+    "code": "DECLARE nilai : INTEGER\nREPEAT\n    OUTPUT \"Masukkan nilai (0-100):\"\n    INPUT nilai\nUNTIL nilai >= 0 AND nilai <= 100\nOUTPUT \"Nilai tersimpan: \", nilai",
+    "out": "Masukan 150, -3, 88\n... (diminta tiga kali)\nNilai tersimpan: 88"
+   },
+   {
+    "t": "Kasus: lempar dadu sampai keluar 6",
+    "code": "DECLARE dadu, lemparan : INTEGER\nlemparan ← 0\nREPEAT\n    INPUT dadu           // hasil lemparan\n    lemparan ← lemparan + 1\nUNTIL dadu = 6\nOUTPUT \"Angka 6 keluar di lemparan ke-\", lemparan",
+    "out": "Masukan 3, 1, 6 → Angka 6 keluar di lemparan ke-3"
+   },
+   {
+    "t": "Kasus: menu yang tampil minimal sekali",
+    "code": "DECLARE pilihan : INTEGER\nREPEAT\n    OUTPUT \"1. Cek saldo  2. Isi pulsa  0. Keluar\"\n    INPUT pilihan\n    IF pilihan = 1 THEN\n        OUTPUT \"Saldo Anda Rp250000\"\n    ENDIF\nUNTIL pilihan = 0\nOUTPUT \"Terima kasih\"",
+    "out": "Masukan 1, 0\n1. Cek saldo  2. Isi pulsa  0. Keluar\nSaldo Anda Rp250000\n1. Cek saldo  2. Isi pulsa  0. Keluar\nTerima kasih"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Minta PIN sampai benar, maksimal 3 kali",
+    "b": "ATM sungguhan membatasi percobaan PIN. Kondisi UNTIL punya dua bagian: PIN benar, atau percobaan sudah 3 kali.",
+    "code": "DECLARE pin : STRING\nDECLARE percobaan : INTEGER\npercobaan ← 0\nREPEAT\n    INPUT pin\n    percobaan ← percobaan + 1\nUNTIL pin = \"1234\" OR percobaan = 3\nIF pin = \"1234\" THEN\n    OUTPUT \"Masuk\"\nELSE\n    OUTPUT \"Kartu diblokir\"\nENDIF",
+    "out": "Masukan 0000, 9999, 1234 → Masuk\nMasukan 0000, 9999, 5555 → Kartu diblokir"
+   }
+  ]
+ },
+ "pseudo-3-4": {
+  "exs": [
+   {
+    "t": "Kasus: tahu berapa kali → FOR",
+    "code": "// Mencetak nomor absen 30 siswa: jumlahnya pasti\nDECLARE nomor : INTEGER\nFOR nomor ← 1 TO 30 DO\n    OUTPUT \"Absen nomor \", nomor\nENDFOR",
+    "out": "Absen nomor 1\nAbsen nomor 2\n...\nAbsen nomor 30"
+   },
+   {
+    "t": "Kasus: berhenti saat data habis → WHILE",
+    "code": "// Menjumlah nilai sampai pengguna mengetik -1 (bisa 0 data)\nDECLARE nilai, total : INTEGER\ntotal ← 0\nINPUT nilai\nWHILE nilai <> -1 DO\n    total ← total + nilai\n    INPUT nilai\nENDWHILE\nOUTPUT \"Total: \", total",
+    "out": "Masukan 80, 70, -1 → Total: 150\nMasukan -1 → Total: 0"
+   },
+   {
+    "t": "Kasus: harus jalan minimal sekali → REPEAT-UNTIL",
+    "code": "// Pengguna harus menjawab dulu sebelum jawabannya bisa dicek\nDECLARE jawab : STRING\nREPEAT\n    OUTPUT \"Simpan perubahan? (y/n)\"\n    INPUT jawab\nUNTIL jawab = \"y\" OR jawab = \"n\"\nOUTPUT \"Pilihan: \", jawab",
+    "out": "Masukan x, y → (pertanyaan muncul dua kali) Pilihan: y"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Kondisi awal sudah salah: siapa yang tetap jalan?",
+    "b": "Bug yang sering muncul di produksi: loop yang \"seharusnya jalan\" ternyata tidak jalan sama sekali, atau sebaliknya. Bandingkan ketiganya dengan nilai awal yang sama.",
+    "code": "DECLARE n, i, hitungFor, hitungWhile, hitungRepeat : INTEGER\nn ← 10\nhitungFor ← 0\nhitungWhile ← 0\nhitungRepeat ← 0\n\nFOR i ← n TO 5 DO              // awal 10 sudah melewati 5\n    hitungFor ← hitungFor + 1\nENDFOR\n\nWHILE n < 5 DO\n    hitungWhile ← hitungWhile + 1\nENDWHILE\n\nREPEAT\n    hitungRepeat ← hitungRepeat + 1\nUNTIL n >= 5\n\nOUTPUT \"FOR   : \", hitungFor, \" kali\"\nOUTPUT \"WHILE : \", hitungWhile, \" kali\"\nOUTPUT \"REPEAT: \", hitungRepeat, \" kali\"",
+    "out": "FOR   : 0 kali\nWHILE : 0 kali\nREPEAT: 1 kali"
+   }
+  ]
+ },
+ "pseudo-3-5": {
+  "exs": [
+   {
+    "t": "Kasus: sentinel 0 untuk mengakhiri input belanja",
+    "code": "DECLARE harga, total : INTEGER\ntotal ← 0\nINPUT harga\nWHILE harga <> 0 DO       // 0 berarti \"selesai\"\n    total ← total + harga\n    INPUT harga\nENDWHILE\nOUTPUT \"Total belanja: Rp\", total",
+    "out": "Masukan 12000, 8500, 20000, 0 → Total belanja: Rp40500"
+   },
+   {
+    "t": "Kasus: flag ketemu",
+    "code": "// Cari kelipatan 7 pertama mulai dari 50\nDECLARE n : INTEGER\nDECLARE ketemu : BOOLEAN\nn ← 50\nketemu ← FALSE\nWHILE NOT ketemu DO\n    IF n MOD 7 = 0 THEN\n        ketemu ← TRUE\n    ELSE\n        n ← n + 1\n    ENDIF\nENDWHILE\nOUTPUT \"Kelipatan 7 pertama: \", n",
+    "out": "Kelipatan 7 pertama: 56"
+   },
+   {
+    "t": "Kasus: memperbaiki kondisi <> yang tidak pernah tercapai",
+    "code": "DECLARE i : INTEGER\n// SALAH: i bernilai 1, 3, 5, 7, 9, 11, ... tidak pernah tepat 10\n// WHILE i <> 10 DO ...\n\n// BENAR: pakai < agar pasti berhenti\ni ← 1\nWHILE i < 10 DO\n    OUTPUT i\n    i ← i + 2\nENDWHILE",
+    "out": "1\n3\n5\n7\n9"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Bug: variabel tidak berubah, dan pengamannya",
+    "b": "Layanan yang memproses antrean sering diberi batas pengaman. Jika ada bug yang membuat kondisi tidak pernah salah, loop tetap berhenti setelah batas tercapai, bukan membuat server macet.",
+    "code": "DECLARE i, batas : INTEGER\n// SALAH: i tidak pernah bertambah → berputar selamanya\n// i ← 0\n// WHILE i < 5 DO OUTPUT i ENDWHILE\n\n// BENAR, ditambah batas pengaman\ni ← 0\nbatas ← 1000\nWHILE i < 5 AND batas > 0 DO\n    OUTPUT i\n    i ← i + 1\n    batas ← batas - 1\nENDWHILE\nOUTPUT \"Sisa batas: \", batas",
+    "out": "0\n1\n2\n3\n4\nSisa batas: 995"
+   }
+  ]
+ },
+ "pseudo-3-6": {
+  "exs": [
+   {
+    "t": "Kasus: tabel perkalian 3 × 3",
+    "code": "DECLARE i, j : INTEGER\nDECLARE baris : STRING\nFOR i ← 1 TO 3 DO\n    baris ← \"\"\n    FOR j ← 1 TO 3 DO\n        baris ← baris & (i * j) & \" \"\n    ENDFOR\n    OUTPUT baris\nENDFOR",
+    "out": "1 2 3\n2 4 6\n3 6 9"
+   },
+   {
+    "t": "Kasus: nomor kursi bioskop",
+    "code": "DECLARE b, k : INTEGER\nFOR b ← 1 TO 2 DO\n    FOR k ← 1 TO 4 DO\n        OUTPUT \"Baris \", b, \" Kursi \", k\n    ENDFOR\nENDFOR",
+    "out": "Baris 1 Kursi 1\nBaris 1 Kursi 2\nBaris 1 Kursi 3\nBaris 1 Kursi 4\nBaris 2 Kursi 1\n...\nBaris 2 Kursi 4",
+    "d": "Loop dalam berjalan penuh (4 kali) untuk setiap baris: total 2 × 4 = 8 kursi."
+   },
+   {
+    "t": "Kasus: persegi panjang bintang",
+    "code": "DECLARE i, j : INTEGER\nDECLARE baris : STRING\nFOR i ← 1 TO 3 DO\n    baris ← \"\"\n    FOR j ← 1 TO 5 DO\n        baris ← baris & \"*\"\n    ENDFOR\n    OUTPUT baris\nENDFOR",
+    "out": "*****\n*****\n*****"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Kombinasi lembar uang untuk nominal tertentu",
+    "b": "Mesin penukaran uang mencari kombinasi lembar Rp2.000 dan Rp5.000 yang totalnya tepat Rp21.000. Loop luar mencoba jumlah lembar 5.000, loop dalam mencoba jumlah lembar 2.000.",
+    "code": "DECLARE a, b, dicek : INTEGER\ndicek ← 0\nFOR b ← 0 TO 4 DO              // lembar 5.000\n    FOR a ← 0 TO 10 DO         // lembar 2.000\n        dicek ← dicek + 1\n        IF 2000 * a + 5000 * b = 21000 THEN\n            OUTPUT a, \" lembar 2rb + \", b, \" lembar 5rb\"\n        ENDIF\n    ENDFOR\nENDFOR\nOUTPUT dicek, \" kombinasi diperiksa\"",
+    "out": "8 lembar 2rb + 1 lembar 5rb\n3 lembar 2rb + 3 lembar 5rb\n55 kombinasi diperiksa"
+   }
+  ]
+ },
+ "pseudo-3-7": {
+  "exs": [
+   {
+    "t": "Kasus: penghitung bilangan genap",
+    "code": "DECLARE i, banyakGenap : INTEGER\nbanyakGenap ← 0\nFOR i ← 1 TO 20 DO\n    IF i MOD 2 = 0 THEN\n        banyakGenap ← banyakGenap + 1\n    ENDIF\nENDFOR\nOUTPUT \"Bilangan genap 1-20: \", banyakGenap",
+    "out": "Bilangan genap 1-20: 10"
+   },
+   {
+    "t": "Kasus: pengali untuk faktorial",
+    "code": "DECLARE i, hasil : INTEGER\nhasil ← 1          // pengali mulai dari 1, bukan 0\nFOR i ← 1 TO 6 DO\n    hasil ← hasil * i\nENDFOR\nOUTPUT \"6! = \", hasil",
+    "out": "6! = 720"
+   },
+   {
+    "t": "Kasus: suhu terendah minggu ini",
+    "code": "DECLARE i : INTEGER\nDECLARE suhu, minimum : REAL\nFOR i ← 1 TO 5 DO\n    INPUT suhu\n    IF i = 1 OR suhu < minimum THEN\n        minimum ← suhu\n    ENDIF\nENDFOR\nOUTPUT \"Suhu terendah: \", minimum",
+    "out": "Masukan 31.5, 29.8, 30.2, 28.9, 32.0 → Suhu terendah: 28.9"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Ringkasan penjualan harian dalam satu loop",
+    "b": "Laporan tutup kasir menghitung total, jumlah transaksi, rata-rata, dan transaksi terbesar sekaligus, tanpa membaca data dua kali.",
+    "code": "DECLARE i, trx, total, jumlahTrx, terbesar : INTEGER\ntotal ← 0\njumlahTrx ← 0\nFOR i ← 1 TO 5 DO\n    INPUT trx\n    total ← total + trx\n    jumlahTrx ← jumlahTrx + 1\n    IF i = 1 OR trx > terbesar THEN\n        terbesar ← trx\n    ENDIF\nENDFOR\nOUTPUT \"Total    : \", total\nOUTPUT \"Transaksi: \", jumlahTrx\nOUTPUT \"Rata-rata: \", total / jumlahTrx\nOUTPUT \"Terbesar : \", terbesar",
+    "out": "Masukan 125000, 48000, 310000, 76500, 220000\nTotal    : 779500\nTransaksi: 5\nRata-rata: 155900\nTerbesar : 310000"
+   }
+  ]
+ },
+ "pseudo-3-8": {
+  "exs": [
+   {
+    "t": "Kasus: BREAK saat pembagi pertama ditemukan",
+    "code": "DECLARE n, i, pembagi : INTEGER\nn ← 91\npembagi ← n\nFOR i ← 2 TO n - 1\n    IF n MOD i = 0 THEN\n        pembagi ← i\n        BREAK\n    ENDIF\nENDFOR\nOUTPUT \"Pembagi terkecil \", n, \" adalah \", pembagi",
+    "out": "Pembagi terkecil 91 adalah 7"
+   },
+   {
+    "t": "Kasus: CONTINUE untuk melewati kelipatan 3",
+    "code": "DECLARE i, total : INTEGER\ntotal ← 0\nFOR i ← 1 TO 10\n    IF i MOD 3 = 0 THEN CONTINUE\n    total ← total + i\nENDFOR\nOUTPUT \"Jumlah 1-10 tanpa kelipatan 3: \", total",
+    "out": "Jumlah 1-10 tanpa kelipatan 3: 37"
+   },
+   {
+    "t": "Kasus: FOR EACH total keranjang belanja",
+    "code": "harga ← [12000, 5000, 8000, 15500]\ntotal ← 0\nFOR EACH h IN harga\n    total ← total + h\nENDFOR\nOUTPUT \"Total keranjang: Rp\", total",
+    "out": "Total keranjang: Rp40500"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Memproses antrean pesanan dengan CONTINUE dan BREAK",
+    "b": "Gudang memproses pesanan berurutan. Pesanan batal dilewati (CONTINUE), dan begitu stok habis, proses dihentikan (BREAK) agar tidak ada pesanan yang dijanjikan tanpa barang.",
+    "code": "status ← [\"OK\", \"BATAL\", \"OK\", \"OK\", \"OK\"]\nstok ← 2\nno ← 0\nFOR EACH s IN status\n    no ← no + 1\n    IF s = \"BATAL\" THEN\n        OUTPUT no, \". dilewati (batal)\"\n        CONTINUE\n    ENDIF\n    IF stok = 0 THEN\n        OUTPUT no, \". stok habis, berhenti\"\n        BREAK\n    ENDIF\n    stok ← stok - 1\n    OUTPUT no, \". diproses, sisa stok \", stok\nENDFOR",
+    "out": "1. diproses, sisa stok 1\n2. dilewati (batal)\n3. diproses, sisa stok 0\n4. stok habis, berhenti"
+   }
+  ]
+ },
+ "pseudo-4-1": {
+  "exs": [
+   {
+    "t": "Kasus: rapor siswa dipecah per tugas",
+    "code": "START\n    rata ← HitungRata(80, 72, 91)\n    predikat ← TentukanPredikat(rata)\n    CALL CetakRapor(\"Nadia\", rata, predikat)\nEND\n\nFUNCTION HitungRata(a : INTEGER, b : INTEGER, c : INTEGER) RETURNS REAL\n    RETURN (a + b + c) / 3\nENDFUNCTION\n\nFUNCTION TentukanPredikat(rata : REAL) RETURNS CHAR\n    IF rata >= 85 THEN\n        RETURN 'A'\n    ELSE IF rata >= 70 THEN\n        RETURN 'B'\n    ENDIF\n    RETURN 'C'\nENDFUNCTION\n\nPROCEDURE CetakRapor(nama : STRING, rata : REAL, predikat : CHAR)\n    OUTPUT nama, \": rata-rata \", rata, \", predikat \", predikat\nENDPROCEDURE",
+    "out": "Nadia: rata-rata 81, predikat B",
+    "d": "Program utama hanya tiga baris; detailnya ada di modul masing-masing."
+   },
+   {
+    "t": "Kasus: memecah \"hitung ongkos kirim\"",
+    "code": "// Level 1: HitungOngkir\n// Level 2: ├─ HitungBeratTagih  (pakai yang lebih besar: berat asli atau volume)\n//          └─ TarifPerKg        (tergantung zona)\nSTART\n    berat ← HitungBeratTagih(2, 40, 30, 20)\n    ongkir ← berat * TarifPerKg(2)\n    OUTPUT \"Ongkir: Rp\", ongkir\nEND\n\nFUNCTION HitungBeratTagih(asli : INTEGER, p : INTEGER, l : INTEGER, t : INTEGER) RETURNS INTEGER\n    volume ← p * l * t DIV 6000\n    IF volume > asli THEN\n        RETURN volume\n    ENDIF\n    RETURN asli\nENDFUNCTION\n\nFUNCTION TarifPerKg(zona : INTEGER) RETURNS INTEGER\n    IF zona = 1 THEN\n        RETURN 9000\n    ENDIF\n    RETURN 15000\nENDFUNCTION",
+    "out": "Ongkir: Rp60000",
+    "d": "Berat volume 40 × 30 × 20 / 6000 = 4 kg, lebih besar dari 2 kg, lalu 4 × 15.000."
+   },
+   {
+    "t": "Kasus: kerangka dulu, isi belakangan",
+    "code": "// Langkah pertama dekomposisi: tulis program utama dan nama modul\n// sebelum isinya. Setiap modul bisa dikerjakan orang yang berbeda.\nSTART\n    CALL TampilkanMenu()\n    pilihan ← BacaPilihan()\n    CALL JalankanPilihan(pilihan)\nEND\n\nPROCEDURE TampilkanMenu()\n    OUTPUT \"1. Daftar  2. Masuk\"\nENDPROCEDURE\n\nFUNCTION BacaPilihan() RETURNS INTEGER\n    INPUT p\n    RETURN p\nENDFUNCTION\n\nPROCEDURE JalankanPilihan(p : INTEGER)\n    OUTPUT \"Menjalankan pilihan \", p\nENDPROCEDURE",
+    "out": "Masukan 2\n1. Daftar  2. Masuk\nMenjalankan pilihan 2"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Checkout toko daring dipecah menjadi fungsi kecil",
+    "b": "Di tim e-commerce, aturan diskon dan ongkir sering berubah. Karena masing-masing ada di fungsi sendiri, perubahan aturan ongkir tidak menyentuh kode diskon.",
+    "code": "START\n    OUTPUT \"Total: \", Checkout(335000)\n    OUTPUT \"Total: \", Checkout(45000)\nEND\n\nFUNCTION Checkout(subtotal : INTEGER) RETURNS INTEGER\n    diskon ← HitungDiskon(subtotal)\n    ongkir ← HitungOngkir(subtotal - diskon)\n    RETURN subtotal - diskon + ongkir\nENDFUNCTION\n\nFUNCTION HitungDiskon(s : INTEGER) RETURNS INTEGER\n    IF s >= 300000 THEN\n        RETURN s * 10 DIV 100\n    ENDIF\n    RETURN 0\nENDFUNCTION\n\nFUNCTION HitungOngkir(s : INTEGER) RETURNS INTEGER\n    IF s >= 150000 THEN\n        RETURN 0\n    ENDIF\n    RETURN 12000\nENDFUNCTION",
+    "out": "Total: 301500\nTotal: 57000"
+   }
+  ]
+ },
+ "pseudo-4-2": {
+  "exs": [
+   {
+    "t": "Kasus: konversi suhu",
+    "code": "FUNCTION KeFahrenheit(c : REAL) RETURNS REAL\n    RETURN c * 9 / 5 + 32\nENDFUNCTION\n\nSTART\n    OUTPUT KeFahrenheit(100)\n    OUTPUT KeFahrenheit(37)\nEND",
+    "out": "212\n98.6"
+   },
+   {
+    "t": "Kasus: fungsi yang mengembalikan BOOLEAN",
+    "code": "FUNCTION IsGenap(n : INTEGER) RETURNS BOOLEAN\n    RETURN n MOD 2 = 0\nENDFUNCTION\n\nSTART\n    IF IsGenap(28) THEN\n        OUTPUT \"28 genap\"\n    ENDIF\n    OUTPUT IsGenap(7)\nEND",
+    "out": "28 genap\nFALSE",
+    "d": "Nilai kembali bisa langsung dipakai sebagai kondisi IF."
+   },
+   {
+    "t": "Kasus: nilai terbesar dari dua angka",
+    "code": "FUNCTION Maks(a : INTEGER, b : INTEGER) RETURNS INTEGER\n    IF a > b THEN\n        RETURN a        // fungsi langsung selesai di sini\n    ENDIF\n    RETURN b\nENDFUNCTION\n\nSTART\n    OUTPUT Maks(17, 42)\n    OUTPUT Maks(Maks(5, 9), 3)\nEND",
+    "out": "42\n9"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Fungsi murni BMI dan kategorinya",
+    "b": "Aplikasi kesehatan memisahkan rumus (fungsi murni) dari tampilan. Fungsi Bmi(70, 175) selalu memberi hasil yang sama, jadi mudah diuji otomatis.",
+    "code": "FUNCTION Bmi(berat : REAL, tinggiCm : REAL) RETURNS REAL\n    t ← tinggiCm / 100\n    RETURN berat / (t * t)\nENDFUNCTION\n\nFUNCTION Kategori(b : REAL) RETURNS STRING\n    IF b < 18.5 THEN\n        RETURN \"kurus\"\n    ELSE IF b < 25 THEN\n        RETURN \"normal\"\n    ELSE IF b < 30 THEN\n        RETURN \"berlebih\"\n    ENDIF\n    RETURN \"obesitas\"\nENDFUNCTION\n\nSTART\n    OUTPUT Kategori(Bmi(50, 170))\n    OUTPUT Kategori(Bmi(70, 175))\n    OUTPUT Kategori(Bmi(88, 172))\nEND",
+    "out": "kurus      (BMI 17.3)\nnormal     (BMI 22.9)\nberlebih   (BMI 29.7)"
+   }
+  ]
+ },
+ "pseudo-4-3": {
+  "exs": [
+   {
+    "t": "Kasus: mencetak kartu nama peserta",
+    "code": "PROCEDURE CetakKartu(nama : STRING, kelas : STRING)\n    OUTPUT \"+------------------+\"\n    OUTPUT \"  \", nama\n    OUTPUT \"  Kelas \", kelas\n    OUTPUT \"+------------------+\"\nENDPROCEDURE\n\nSTART\n    CALL CetakKartu(\"Raka\", \"XI IPA 2\")\n    CALL CetakKartu(\"Wulan\", \"X IPS 1\")\nEND",
+    "out": "+------------------+\n  Raka\n  Kelas XI IPA 2\n+------------------+\n+------------------+\n  Wulan\n  Kelas X IPS 1\n+------------------+"
+   },
+   {
+    "t": "Kasus: prosedur dengan loop di dalamnya",
+    "code": "PROCEDURE CetakSegitiga(n : INTEGER)\n    DECLARE i, j : INTEGER\n    DECLARE baris : STRING\n    FOR i ← 1 TO n DO\n        baris ← \"\"\n        FOR j ← 1 TO i DO\n            baris ← baris & \"*\"\n        ENDFOR\n        OUTPUT baris\n    ENDFOR\nENDPROCEDURE\n\nSTART\n    CALL CetakSegitiga(3)\nEND",
+    "out": "*\n**\n***"
+   },
+   {
+    "t": "Kasus: hitung dengan fungsi, tampilkan dengan prosedur",
+    "code": "FUNCTION HitungTotal(harga : INTEGER, jumlah : INTEGER) RETURNS INTEGER\n    RETURN harga * jumlah\nENDFUNCTION\n\nPROCEDURE CetakStruk(barang : STRING, total : INTEGER)\n    OUTPUT barang, \" ........ Rp\", total\nENDPROCEDURE\n\nSTART\n    total ← HitungTotal(3500, 4)\n    CALL CetakStruk(\"Air mineral\", total)\nEND",
+    "out": "Air mineral ........ Rp14000",
+    "d": "x ← CetakStruk(...) salah, karena prosedur tidak mengembalikan nilai."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Fungsi menghitung, prosedur mencetak rapor",
+    "b": "Pola \"query dan command\" dipakai di aplikasi sekolah: fungsi TotalNilai bisa dipakai ulang oleh halaman web dan laporan PDF, sedangkan prosedur CetakRapor hanya untuk tampilan konsol.",
+    "code": "FUNCTION TotalNilai(a : INTEGER, b : INTEGER, c : INTEGER) RETURNS INTEGER\n    RETURN a + b + c          // query: tanpa efek samping\nENDFUNCTION\n\nPROCEDURE CetakRapor(nama : STRING, a : INTEGER, b : INTEGER, c : INTEGER)\n    OUTPUT \"Rapor \", nama      // command: hanya mencetak\n    OUTPUT \"  Matematika: \", a\n    OUTPUT \"  IPA       : \", b\n    OUTPUT \"  B. Indo   : \", c\n    OUTPUT \"  Total     : \", TotalNilai(a, b, c)\nENDPROCEDURE\n\nSTART\n    CALL CetakRapor(\"Sinta\", 88, 92, 79)\nEND",
+    "out": "Rapor Sinta\n  Matematika: 88\n  IPA       : 92\n  B. Indo   : 79\n  Total     : 259"
+   }
+  ]
+ },
+ "pseudo-4-4": {
+  "exs": [
+   {
+    "t": "Kasus: BYVAL melindungi data asli",
+    "code": "PROCEDURE TampilkanDiskon(BYVAL harga : INTEGER)\n    harga ← harga - harga * 20 DIV 100\n    OUTPUT \"Harga promo: \", harga\nENDPROCEDURE\n\nSTART\n    hargaAsli ← 50000\n    CALL TampilkanDiskon(hargaAsli)\n    OUTPUT \"Harga asli tetap: \", hargaAsli\nEND",
+    "out": "Harga promo: 40000\nHarga asli tetap: 50000"
+   },
+   {
+    "t": "Kasus: BYREF untuk mengembalikan dua hasil",
+    "code": "PROCEDURE Bagi(BYVAL a : INTEGER, BYVAL b : INTEGER, BYREF hasil : INTEGER, BYREF sisa : INTEGER)\n    hasil ← a DIV b\n    sisa ← a MOD b\nENDPROCEDURE\n\nSTART\n    h ← 0\n    s ← 0\n    CALL Bagi(47, 6, h, s)\n    OUTPUT \"47 : 6 = \", h, \" sisa \", s\nEND",
+    "out": "47 : 6 = 7 sisa 5",
+    "d": "Fungsi hanya bisa RETURN satu nilai; BYREF memberi jalan keluar untuk dua."
+   },
+   {
+    "t": "Kasus: BYREF mengubah saldo pemanggil",
+    "code": "PROCEDURE IsiSaldo(BYREF saldo : INTEGER, BYVAL jumlah : INTEGER)\n    saldo ← saldo + jumlah\nENDPROCEDURE\n\nSTART\n    saldoEmoney ← 20000\n    CALL IsiSaldo(saldoEmoney, 50000)\n    CALL IsiSaldo(saldoEmoney, 25000)\n    OUTPUT \"Saldo e-money: \", saldoEmoney\nEND",
+    "out": "Saldo e-money: 95000"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Konversi durasi video dengan parameter BYREF",
+    "b": "Platform video menampilkan durasi sebagai jam:menit:detik. Satu prosedur mengisi tiga variabel pemanggil sekaligus lewat BYREF, sedangkan total detik dikirim BYVAL agar tidak ikut berubah.",
+    "code": "PROCEDURE PecahDurasi(BYVAL total : INTEGER, BYREF jam : INTEGER, BYREF menit : INTEGER, BYREF detik : INTEGER)\n    jam ← total DIV 3600\n    total ← total MOD 3600\n    menit ← total DIV 60\n    detik ← total MOD 60\nENDPROCEDURE\n\nSTART\n    durasi ← 3725\n    j ← 0\n    m ← 0\n    d ← 0\n    CALL PecahDurasi(durasi, j, m, d)\n    OUTPUT durasi, \" detik = \", j, \" jam \", m, \" menit \", d, \" detik\"\nEND",
+    "out": "3725 detik = 1 jam 2 menit 5 detik"
+   }
+  ]
+ },
+ "pseudo-4-5": {
+  "exs": [
+   {
+    "t": "Kasus: nama lokal yang sama tidak bertabrakan",
+    "code": "PROCEDURE CetakAngka()\n    DECLARE i : INTEGER        // i milik CetakAngka\n    FOR i ← 1 TO 3 DO\n        OUTPUT \"angka \", i\n    ENDFOR\nENDPROCEDURE\n\nPROCEDURE CetakHuruf()\n    DECLARE i : INTEGER        // i lain, milik CetakHuruf\n    i ← 100\n    OUTPUT \"i di CetakHuruf: \", i\nENDPROCEDURE\n\nSTART\n    CALL CetakAngka()\n    CALL CetakHuruf()\nEND",
+    "out": "angka 1\nangka 2\nangka 3\ni di CetakHuruf: 100"
+   },
+   {
+    "t": "Kasus: variabel lokal hilang setelah modul selesai",
+    "code": "FUNCTION HitungPajak(harga : INTEGER) RETURNS INTEGER\n    DECLARE pajak : INTEGER      // lokal\n    pajak ← harga * 11 DIV 100\n    RETURN pajak\nENDFUNCTION\n\nSTART\n    total ← 200000 + HitungPajak(200000)\n    OUTPUT total\n    // OUTPUT pajak   ← SALAH: pajak tidak dikenal di luar fungsi\nEND",
+    "out": "222000"
+   },
+   {
+    "t": "Kasus: nomor antrean hanya diubah lewat satu prosedur",
+    "code": "DECLARE nomorAntrean : INTEGER    // state\nnomorAntrean ← 0\n\nFUNCTION AmbilNomor() RETURNS INTEGER\n    nomorAntrean ← nomorAntrean + 1\n    RETURN nomorAntrean\nENDFUNCTION\n\nSTART\n    OUTPUT \"Pasien 1: nomor \", AmbilNomor()\n    OUTPUT \"Pasien 2: nomor \", AmbilNomor()\n    OUTPUT \"Pasien 3: nomor \", AmbilNomor()\nEND",
+    "out": "Pasien 1: nomor 1\nPasien 2: nomor 2\nPasien 3: nomor 3",
+    "d": "Tidak ada bagian lain yang menulis nomorAntrean, jadi nomor tidak mungkin terlewat atau dobel."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Kuota data ponsel yang terenkapsulasi",
+    "b": "Aplikasi operator seluler tidak mengizinkan layar mana pun mengubah kuota langsung. Semua perubahan lewat Pakai dan Tambah, yang menjaga aturan: kuota tidak boleh negatif.",
+    "code": "DECLARE kuotaMb : INTEGER         // state, hanya diubah lewat Pakai dan Tambah\nkuotaMb ← 1000\n\nPROCEDURE Pakai(mb : INTEGER)\n    IF mb > kuotaMb THEN\n        OUTPUT \"Kuota tidak cukup untuk \", mb, \" MB\"\n    ELSE\n        kuotaMb ← kuotaMb - mb\n    ENDIF\nENDPROCEDURE\n\nPROCEDURE Tambah(mb : INTEGER)\n    IF mb > 0 THEN\n        kuotaMb ← kuotaMb + mb\n    ENDIF\nENDPROCEDURE\n\nSTART\n    CALL Pakai(700)\n    CALL Pakai(500)\n    CALL Tambah(2000)\n    CALL Pakai(500)\n    OUTPUT \"Sisa kuota: \", kuotaMb, \" MB\"\nEND",
+    "out": "Kuota tidak cukup untuk 500 MB\nSisa kuota: 1800 MB"
+   }
+  ]
+ },
+ "pseudo-4-6": {
+  "exs": [
+   {
+    "t": "Kasus: hitung mundur rekursif",
+    "code": "PROCEDURE HitungMundur(n : INTEGER)\n    IF n = 0 THEN              // base case\n        OUTPUT \"Selesai!\"\n    ELSE\n        OUTPUT n\n        CALL HitungMundur(n - 1)   // mendekati base case\n    ENDIF\nENDPROCEDURE\n\nSTART\n    CALL HitungMundur(3)\nEND",
+    "out": "3\n2\n1\nSelesai!"
+   },
+   {
+    "t": "Kasus: jumlah 1 sampai n",
+    "code": "FUNCTION Jumlah(n : INTEGER) RETURNS INTEGER\n    IF n = 1 THEN\n        RETURN 1\n    ENDIF\n    RETURN n + Jumlah(n - 1)\nENDFUNCTION\n\nSTART\n    OUTPUT Jumlah(4)      // 4 + 3 + 2 + 1\nEND",
+    "out": "10"
+   },
+   {
+    "t": "Kasus: jumlah digit sebuah angka",
+    "code": "FUNCTION JumlahDigit(n : INTEGER) RETURNS INTEGER\n    IF n < 10 THEN\n        RETURN n\n    ENDIF\n    RETURN n MOD 10 + JumlahDigit(n DIV 10)\nENDFUNCTION\n\nSTART\n    OUTPUT JumlahDigit(2026)\nEND",
+    "out": "10",
+    "d": "Setiap panggilan membuang digit terakhir, jadi angkanya pasti mengecil sampai satu digit."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Menara Hanoi: memindahkan tumpukan piring",
+    "b": "Menara Hanoi adalah contoh klasik yang sulit ditulis dengan loop tetapi pendek dengan rekursi. Untuk n piring dibutuhkan 2^n - 1 langkah; 3 piring butuh 7 langkah.",
+    "code": "PROCEDURE Hanoi(n : INTEGER, asal : CHAR, bantu : CHAR, tujuan : CHAR)\n    IF n = 0 THEN                 // base case: tidak ada piring\n        RETURN\n    ENDIF\n    CALL Hanoi(n - 1, asal, tujuan, bantu)\n    OUTPUT \"Pindah piring \", n, \" dari \", asal, \" ke \", tujuan\n    CALL Hanoi(n - 1, bantu, asal, tujuan)\nENDPROCEDURE\n\nSTART\n    CALL Hanoi(3, 'A', 'B', 'C')\nEND",
+    "out": "Pindah piring 1 dari A ke C\nPindah piring 2 dari A ke B\nPindah piring 1 dari C ke B\nPindah piring 3 dari A ke C\nPindah piring 1 dari B ke A\nPindah piring 2 dari B ke C\nPindah piring 1 dari A ke C"
+   }
+  ]
+ },
+ "pseudo-5-1": {
+  "exs": [
+   {
+    "t": "Kasus: berapa siswa yang mencapai KKM",
+    "code": "DECLARE nilai : ARRAY[0..5] OF INTEGER\nDECLARE i, tuntas : INTEGER\nnilai ← [72, 88, 65, 90, 79, 58]\ntuntas ← 0\nFOR i ← 0 TO 5 DO\n    IF nilai[i] >= 75 THEN\n        tuntas ← tuntas + 1\n    ENDIF\nENDFOR\nOUTPUT tuntas, \" dari 6 siswa tuntas\"",
+    "out": "3 dari 6 siswa tuntas"
+   },
+   {
+    "t": "Kasus: nilai terendah",
+    "code": "DECLARE nilai : ARRAY[0..5] OF INTEGER\nDECLARE i, minimum : INTEGER\nnilai ← [72, 88, 65, 90, 79, 58]\nminimum ← nilai[0]          // isi pertama sebagai awal\nFOR i ← 1 TO 5 DO\n    IF nilai[i] < minimum THEN\n        minimum ← nilai[i]\n    ENDIF\nENDFOR\nOUTPUT \"Nilai terendah: \", minimum",
+    "out": "Nilai terendah: 58"
+   },
+   {
+    "t": "Kasus: mengisi array dari input",
+    "code": "DECLARE pengeluaran : ARRAY[0..2] OF INTEGER\nDECLARE i, total : INTEGER\ntotal ← 0\nFOR i ← 0 TO 2 DO\n    INPUT pengeluaran[i]\n    total ← total + pengeluaran[i]\nENDFOR\nOUTPUT \"Pengeluaran hari pertama: \", pengeluaran[0]\nOUTPUT \"Total tiga hari: \", total",
+    "out": "Masukan 25000, 18000, 32000\nPengeluaran hari pertama: 25000\nTotal tiga hari: 75000"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Suhu harian: rata-rata dan hari di atas rata-rata",
+    "b": "Dasbor cuaca menyorot hari yang lebih panas dari rata-rata minggu itu. Datanya dibaca dua kali: sekali untuk rata-rata, sekali untuk membandingkan.",
+    "code": "DECLARE hari : ARRAY[0..6] OF STRING\nDECLARE suhu : ARRAY[0..6] OF REAL\nDECLARE i : INTEGER\nDECLARE total, rata : REAL\nhari ← [\"Sen\", \"Sel\", \"Rab\", \"Kam\", \"Jum\", \"Sab\", \"Min\"]\nsuhu ← [31.2, 32.5, 30.8, 33.1, 34.0, 29.9, 30.4]\ntotal ← 0\nFOR i ← 0 TO 6 DO\n    total ← total + suhu[i]\nENDFOR\nrata ← total / 7\nOUTPUT \"Rata-rata: \", rata\nFOR i ← 0 TO 6 DO\n    IF suhu[i] > rata THEN\n        OUTPUT \"Di atas rata-rata: \", hari[i]\n    ENDIF\nENDFOR",
+    "out": "Rata-rata: 31.7\nDi atas rata-rata: Sel\nDi atas rata-rata: Kam\nDi atas rata-rata: Jum"
+   }
+  ]
+ },
+ "pseudo-5-2": {
+  "exs": [
+   {
+    "t": "Kasus: menampilkan antrean dari belakang",
+    "code": "DECLARE antre : ARRAY[0..3] OF STRING\nDECLARE i : INTEGER\nantre ← [\"Ani\", \"Budi\", \"Cici\", \"Dodi\"]\nFOR i ← 3 TO 0 STEP -1 DO\n    OUTPUT i, \": \", antre[i]\nENDFOR",
+    "out": "3: Dodi\n2: Cici\n1: Budi\n0: Ani"
+   },
+   {
+    "t": "Kasus: diskon 20% untuk semua harga",
+    "code": "DECLARE harga : ARRAY[0..3] OF INTEGER\nDECLARE i : INTEGER\nharga ← [50000, 125000, 80000, 30000]\nFOR i ← 0 TO 3 DO\n    harga[i] ← harga[i] - harga[i] * 20 DIV 100\nENDFOR\nOUTPUT harga",
+    "out": "[40000, 100000, 64000, 24000]"
+   },
+   {
+    "t": "Kasus: nilai di bawah KKM dinaikkan setelah remedial",
+    "code": "DECLARE nilai : ARRAY[0..4] OF INTEGER\nDECLARE i : INTEGER\nnilai ← [80, 62, 75, 70, 91]\nFOR i ← 0 TO 4 DO\n    IF nilai[i] < 75 THEN\n        nilai[i] ← 75\n    ENDIF\nENDFOR\nOUTPUT nilai",
+    "out": "[80, 75, 75, 75, 91]",
+    "d": "Hanya isi yang memenuhi syarat yang diperbarui."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Membalik urutan array di tempat (two-pointer)",
+    "b": "Fitur \"urutkan terbaru dulu\" kadang cukup membalik array tanpa membuat array baru. Dua penunjuk bergerak dari ujung ke tengah sambil menukar isi.",
+    "code": "DECLARE a : ARRAY[0..5] OF INTEGER\nDECLARE kiri, kanan, t : INTEGER\na ← [3, 8, 1, 9, 4, 7]\nkiri ← 0\nkanan ← 5\nWHILE kiri < kanan DO\n    t ← a[kiri]\n    a[kiri] ← a[kanan]\n    a[kanan] ← t\n    kiri ← kiri + 1\n    kanan ← kanan - 1\nENDWHILE\nOUTPUT \"Dibalik: \", a",
+    "out": "Dibalik: [7, 4, 9, 1, 8, 3]"
+   }
+  ]
+ },
+ "pseudo-5-3": {
+  "exs": [
+   {
+    "t": "Kasus: kursi bioskop yang sudah terisi",
+    "code": "DECLARE kursi : ARRAY[0..1, 0..3] OF BOOLEAN\nDECLARE b, k, terisi : INTEGER\nkursi ← [[TRUE, FALSE, TRUE, TRUE],\n         [FALSE, FALSE, TRUE, FALSE]]\nterisi ← 0\nFOR b ← 0 TO 1 DO\n    FOR k ← 0 TO 3 DO\n        IF kursi[b][k] THEN\n            terisi ← terisi + 1\n        ENDIF\n    ENDFOR\nENDFOR\nOUTPUT terisi, \" dari 8 kursi terisi\"",
+    "out": "4 dari 8 kursi terisi"
+   },
+   {
+    "t": "Kasus: mengisi tabel perkalian ke matriks",
+    "code": "DECLARE tabel : ARRAY[1..3, 1..3] OF INTEGER\nDECLARE b, k : INTEGER\nFOR b ← 1 TO 3 DO\n    FOR k ← 1 TO 3 DO\n        tabel[b][k] ← b * k\n    ENDFOR\nENDFOR\nOUTPUT \"tabel[2][3] = \", tabel[2][3]\nOUTPUT \"tabel[3][3] = \", tabel[3][3]",
+    "out": "tabel[2][3] = 6\ntabel[3][3] = 9"
+   },
+   {
+    "t": "Kasus: total penjualan per hari (per kolom)",
+    "code": "// baris = cabang toko, kolom = hari (Sen, Sel, Rab)\nDECLARE jual : ARRAY[0..1, 0..2] OF INTEGER\nDECLARE b, k, total : INTEGER\njual ← [[12, 15, 9],\n        [8, 11, 14]]\nFOR k ← 0 TO 2 DO\n    total ← 0\n    FOR b ← 0 TO 1 DO\n        total ← total + jual[b][k]\n    ENDFOR\n    OUTPUT \"Hari \", k + 1, \": \", total, \" barang\"\nENDFOR",
+    "out": "Hari 1: 20 barang\nHari 2: 26 barang\nHari 3: 23 barang",
+    "d": "Untuk total per kolom, loop luar menjadi kolom."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Nilai siswa per mapel: total per baris, rata per kolom",
+    "b": "Sistem rapor membaca satu matriks nilai dua kali: per baris untuk total tiap siswa, per kolom untuk rata-rata tiap mata pelajaran.",
+    "code": "DECLARE nama : ARRAY[0..2] OF STRING\nDECLARE nilai : ARRAY[0..2, 0..2] OF INTEGER\nDECLARE s, m, total : INTEGER\nnama ← [\"Ayu\", \"Bima\", \"Citra\"]\nnilai ← [[85, 90, 78],      // MTK, IPA, BIN\n         [70, 65, 88],\n         [95, 92, 90]]\nFOR s ← 0 TO 2 DO\n    total ← 0\n    FOR m ← 0 TO 2 DO\n        total ← total + nilai[s][m]\n    ENDFOR\n    OUTPUT nama[s], \" total \", total\nENDFOR\nFOR m ← 0 TO 2 DO\n    total ← 0\n    FOR s ← 0 TO 2 DO\n        total ← total + nilai[s][m]\n    ENDFOR\n    OUTPUT \"Rata mapel \", m + 1, \": \", total / 3\nENDFOR",
+    "out": "Ayu total 253\nBima total 223\nCitra total 277\nRata mapel 1: 83.33\nRata mapel 2: 82.33\nRata mapel 3: 85.33"
+   }
+  ]
+ },
+ "pseudo-5-4": {
+  "exs": [
+   {
+    "t": "Kasus: record buku perpustakaan",
+    "code": "TYPE Buku\n    judul    : STRING\n    penulis  : STRING\n    tahun    : INTEGER\n    dipinjam : BOOLEAN\nENDTYPE\n\nDECLARE b : Buku\nb ← Buku(\"Laskar Pelangi\", \"Andrea Hirata\", 2005, FALSE)\nb.dipinjam ← TRUE          // memperbarui satu field\nOUTPUT b.judul, \" (\", b.tahun, \") dipinjam: \", b.dipinjam",
+    "out": "Laskar Pelangi (2005) dipinjam: TRUE"
+   },
+   {
+    "t": "Kasus: stok menipis di gudang",
+    "code": "TYPE Produk\n    nama : STRING\n    stok : INTEGER\nENDTYPE\n\nDECLARE gudang : ARRAY[0..2] OF Produk\nDECLARE i : INTEGER\ngudang[0] ← Produk(\"Kopi 250g\", 3)\ngudang[1] ← Produk(\"Teh celup\", 40)\ngudang[2] ← Produk(\"Gula 1kg\", 5)\nFOR i ← 0 TO 2 DO\n    IF gudang[i].stok <= 5 THEN\n        OUTPUT \"Pesan ulang: \", gudang[i].nama\n    ENDIF\nENDFOR",
+    "out": "Pesan ulang: Kopi 250g\nPesan ulang: Gula 1kg"
+   },
+   {
+    "t": "Kasus: total nilai pesanan dari record",
+    "code": "TYPE Item\n    nama   : STRING\n    harga  : INTEGER\n    jumlah : INTEGER\nENDTYPE\n\nDECLARE keranjang : ARRAY[0..1] OF Item\nDECLARE i, total : INTEGER\nkeranjang[0] ← Item(\"Buku tulis\", 5000, 6)\nkeranjang[1] ← Item(\"Pulpen\", 3500, 4)\ntotal ← 0\nFOR i ← 0 TO 1 DO\n    total ← total + keranjang[i].harga * keranjang[i].jumlah\nENDFOR\nOUTPUT \"Total: Rp\", total",
+    "out": "Total: Rp44000",
+    "d": "Tanpa record, kita butuh tiga array terpisah yang harus selalu sejajar."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Record produk dengan batas minimum masing-masing",
+    "b": "Sistem gudang menyimpan batas pesan ulang per produk, karena gula lebih cepat habis daripada kopi. Field minimum ikut di dalam record, bukan angka tetap di kode.",
+    "code": "TYPE Produk\n    sku     : STRING\n    nama    : STRING\n    stok    : INTEGER\n    minimum : INTEGER\nENDTYPE\n\nDECLARE gudang : ARRAY[0..2] OF Produk\nDECLARE i : INTEGER\ngudang[0] ← Produk(\"K-01\", \"Kopi 250g\", 3, 5)\ngudang[1] ← Produk(\"T-02\", \"Teh celup\", 40, 5)\ngudang[2] ← Produk(\"G-03\", \"Gula 1kg\", 5, 10)\nFOR i ← 0 TO 2 DO\n    IF gudang[i].stok <= gudang[i].minimum THEN\n        OUTPUT \"Pesan ulang \", gudang[i].sku, \" \", gudang[i].nama,\n               \": stok \", gudang[i].stok, \", minimum \", gudang[i].minimum\n    ENDIF\nENDFOR",
+    "out": "Pesan ulang K-01 Kopi 250g: stok 3, minimum 5\nPesan ulang G-03 Gula 1kg: stok 5, minimum 10"
+   }
+  ]
+ },
+ "pseudo-5-5": {
+  "exs": [
+   {
+    "t": "Kasus: mencari nama di daftar hadir (linear)",
+    "code": "DECLARE hadir : ARRAY[0..4] OF STRING\nDECLARE i, posisi : INTEGER\nDECLARE cari : STRING\nhadir ← [\"Rina\", \"Joko\", \"Maya\", \"Agus\", \"Lina\"]\nINPUT cari\ni ← 0\nposisi ← -1\nWHILE i < 5 AND posisi = -1 DO\n    IF hadir[i] = cari THEN\n        posisi ← i\n    ENDIF\n    i ← i + 1\nENDWHILE\nIF posisi = -1 THEN\n    OUTPUT cari, \" tidak hadir\"\nELSE\n    OUTPUT cari, \" hadir, urutan ke-\", posisi + 1\nENDIF",
+    "out": "Masukan Maya → Maya hadir, urutan ke-3\nMasukan Tono → Tono tidak hadir"
+   },
+   {
+    "t": "Kasus: menghitung kemunculan",
+    "code": "DECLARE jawaban : ARRAY[0..7] OF CHAR\nDECLARE i, banyakA : INTEGER\njawaban ← ['A', 'C', 'A', 'B', 'A', 'D', 'B', 'A']\nbanyakA ← 0\nFOR i ← 0 TO 7 DO\n    IF jawaban[i] = 'A' THEN\n        banyakA ← banyakA + 1\n    ENDIF\nENDFOR\nOUTPUT \"Jawaban A dipilih \", banyakA, \" kali\"",
+    "out": "Jawaban A dipilih 4 kali",
+    "d": "Linear search versi \"jangan berhenti\": seluruh array tetap diperiksa."
+   },
+   {
+    "t": "Kasus: jejak binary search mencari 23",
+    "code": "// data = [3, 8, 12, 17, 23, 31, 40, 52], cari = 23\n// langkah | kiri | kanan | tengah | data[tengah] | keputusan\n//    1    |  0   |   7   |   3    |     17       | 17 < 23, kiri ← 4\n//    2    |  4   |   7   |   5    |     31       | 31 > 23, kanan ← 4\n//    3    |  4   |   4   |   4    |     23       | ketemu, posisi ← 4\nOUTPUT \"23 ada di indeks 4, ditemukan dalam 3 langkah\"",
+    "out": "23 ada di indeks 4, ditemukan dalam 3 langkah"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Jumlah langkah linear vs binary pada 1 juta data",
+    "b": "Pencarian nomor resi di 1 juta data terurut. Penghitung langkah ditambahkan ke kedua algoritma untuk membandingkan kerja yang dilakukan.",
+    "code": "// data: 1.000.000 angka genap terurut 0, 2, 4, ..., 1999998\n// cari ← 1999998 (data paling akhir)\n\n// Linear search\ni ← 0\nposisi ← -1\nlangkahLinear ← 0\nWHILE i < n AND posisi = -1 DO\n    langkahLinear ← langkahLinear + 1\n    IF data[i] = cari THEN\n        posisi ← i\n    ENDIF\n    i ← i + 1\nENDWHILE\n\n// Binary search\nkiri ← 0\nkanan ← n - 1\nposisi ← -1\nlangkahBiner ← 0\nWHILE kiri <= kanan AND posisi = -1 DO\n    langkahBiner ← langkahBiner + 1\n    tengah ← (kiri + kanan) DIV 2\n    IF data[tengah] = cari THEN\n        posisi ← tengah\n    ELSE IF data[tengah] < cari THEN\n        kiri ← tengah + 1\n    ELSE\n        kanan ← tengah - 1\n    ENDIF\nENDWHILE\nOUTPUT \"Linear: \", langkahLinear, \" langkah, binary: \", langkahBiner, \" langkah\"",
+    "out": "Linear: 1000000 langkah, binary: 20 langkah"
+   }
+  ]
+ },
+ "pseudo-5-6": {
+  "exs": [
+   {
+    "t": "Kasus: peringkat nilai dari terbesar (bubble sort menurun)",
+    "code": "DECLARE a : ARRAY[0..4] OF INTEGER\nDECLARE i, j, t : INTEGER\na ← [78, 92, 65, 88, 70]\nFOR i ← 0 TO 3 DO\n    FOR j ← 0 TO 3 - i DO\n        IF a[j] < a[j + 1] THEN       // tanda dibalik: < untuk menurun\n            t ← a[j]\n            a[j] ← a[j + 1]\n            a[j + 1] ← t\n        ENDIF\n    ENDFOR\nENDFOR\nOUTPUT a",
+    "out": "[92, 88, 78, 70, 65]"
+   },
+   {
+    "t": "Kasus: bubble sort yang berhenti lebih awal",
+    "code": "DECLARE a : ARRAY[0..4] OF INTEGER\nDECLARE i, j, t, putaran : INTEGER\nDECLARE adaTukar : BOOLEAN\na ← [1, 2, 4, 3, 5]\nputaran ← 0\nREPEAT\n    adaTukar ← FALSE\n    putaran ← putaran + 1\n    FOR j ← 0 TO 3 DO\n        IF a[j] > a[j + 1] THEN\n            t ← a[j]\n            a[j] ← a[j + 1]\n            a[j + 1] ← t\n            adaTukar ← TRUE\n        ENDIF\n    ENDFOR\nUNTIL NOT adaTukar\nOUTPUT a, \" setelah \", putaran, \" putaran\"",
+    "out": "[1, 2, 3, 4, 5] setelah 2 putaran",
+    "d": "Putaran kedua tidak menukar apa pun, jadi algoritma berhenti."
+   },
+   {
+    "t": "Kasus: insertion sort nama siswa",
+    "code": "DECLARE nama : ARRAY[0..3] OF STRING\nDECLARE i, j : INTEGER\nDECLARE kunci : STRING\nnama ← [\"Dewi\", \"Bayu\", \"Citra\", \"Andi\"]\nFOR i ← 1 TO 3 DO\n    kunci ← nama[i]\n    j ← i - 1\n    WHILE j >= 0 AND nama[j] > kunci DO\n        nama[j + 1] ← nama[j]\n        j ← j - 1\n    ENDWHILE\n    nama[j + 1] ← kunci\nENDFOR\nOUTPUT nama",
+    "out": "[\"Andi\", \"Bayu\", \"Citra\", \"Dewi\"]",
+    "d": "Teks dibandingkan menurut urutan abjad."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Menghitung pertukaran: data acak vs hampir terurut",
+    "b": "Tim data menambahkan penghitung geser ke insertion sort untuk melihat kenapa algoritma ini cepat pada data yang hampir terurut, misalnya daftar transaksi yang hanya ditambah sedikit data baru.",
+    "code": "// a ← [9, 4, 7, 1, 8, 2, 6, 3, 5]     (acak)\n// a ← [1, 2, 3, 5, 4, 6, 7, 9, 8]     (hampir terurut)\ngeser ← 0\nFOR i ← 1 TO n - 1 DO\n    kunci ← a[i]\n    j ← i - 1\n    WHILE j >= 0 AND a[j] > kunci DO\n        a[j + 1] ← a[j]\n        j ← j - 1\n        geser ← geser + 1\n    ENDWHILE\n    a[j + 1] ← kunci\nENDFOR\nOUTPUT \"Jumlah geser: \", geser",
+    "out": "Acak          → Jumlah geser: 22\nHampir terurut → Jumlah geser: 2"
+   }
+  ]
+ },
+ "pseudo-6-1": {
+  "exs": [
+   {
+    "t": "Kasus: trace table penjumlahan dengan FOR",
+    "code": "total ← 0\nFOR i ← 1 TO 4 DO\n    total ← total + i * 2\nENDFOR\nOUTPUT total\n\n// Trace table\n// langkah | i | total\n//  awal   | - |   0\n//    1    | 1 |   2\n//    2    | 2 |   6\n//    3    | 3 |  12\n//    4    | 4 |  20",
+    "out": "20"
+   },
+   {
+    "t": "Kasus: trace table WHILE dengan kolom kondisi",
+    "code": "n ← 345\njumlah ← 0\nWHILE n > 0 DO\n    jumlah ← jumlah + n MOD 10\n    n ← n DIV 10\nENDWHILE\nOUTPUT jumlah\n\n// n   | n > 0 ? | jumlah\n// 345 | benar   |   5\n// 34  | benar   |   9\n// 3   | benar   |  12\n// 0   | salah   |  (loop berhenti)",
+    "out": "12"
+   },
+   {
+    "t": "Kasus: soal ujian \"apa outputnya?\"",
+    "code": "a ← 3\nb ← 5\na ← a + b\nb ← a - b\na ← a - b\nOUTPUT a, \" \", b\n\n// a | b\n// 3 | 5\n// 8 | 5\n// 8 | 3\n// 5 | 3",
+    "out": "5 3",
+    "d": "Trace table membuktikan tiga baris ini menukar isi a dan b tanpa variabel bantu."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Trace table algoritma FPB (Euclid)",
+    "b": "Algoritma Euclid dipakai di kriptografi dan untuk menyederhanakan pecahan. Trace table memperlihatkan kenapa loop pasti berhenti: b selalu mengecil.",
+    "code": "a ← 84\nb ← 36\nWHILE b <> 0 DO\n    sisa ← a MOD b\n    a ← b\n    b ← sisa\nENDWHILE\nOUTPUT \"FPB = \", a\n\n// langkah | a  | b  | sisa\n//    1    | 84 | 36 |  12\n//    2    | 36 | 12 |   0\n//  akhir  | 12 |  0 |",
+    "out": "FPB = 12"
+   }
+  ]
+ },
+ "pseudo-6-2": {
+  "exs": [
+   {
+    "t": "Kasus: memperbaiki batas loop array",
+    "code": "nilai ← [70, 85, 62, 91, 78]     // 5 data, indeks 0..4\ntotal ← 0\n// SALAH: FOR i ← 0 TO 5   (nilai[5] tidak ada)\nFOR i ← 0 TO 4 DO              // BENAR: sampai n - 1\n    total ← total + nilai[i]\nENDFOR\nOUTPUT \"Total: \", total",
+    "out": "Total: 386"
+   },
+   {
+    "t": "Kasus: > tertukar dengan >=",
+    "code": "// Aturan: lulus jika nilai minimal 75\nINPUT nilai\n// SALAH: IF nilai > 75 THEN   (nilai tepat 75 dianggap gagal)\nIF nilai >= 75 THEN\n    OUTPUT \"Lulus\"\nELSE\n    OUTPUT \"Remedial\"\nENDIF",
+    "out": "Masukan 75 → Lulus  (versi salah menjawab Remedial)",
+    "d": "Bug ini hanya terlihat jika kamu menguji nilai tepat di batas."
+   },
+   {
+    "t": "Kasus: akumulator diisi di tempat yang salah",
+    "code": "// SALAH: total ← 0 ada DI DALAM loop, jadi selalu ter-reset\n// FOR i ← 1 TO 3 DO\n//     total ← 0\n//     total ← total + i\n// ENDFOR            → hasil 3\n\ntotal ← 0             // BENAR: sekali, sebelum loop\nFOR i ← 1 TO 3 DO\n    total ← total + i\nENDFOR\nOUTPUT total",
+    "out": "6"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Bug klasik: menghitung jumlah halaman",
+    "b": "Fitur pagination menampilkan 10 produk per halaman. Pembagian bulat biasa membuang sisa, sehingga produk terakhir tidak pernah tampil. Rumus pembulatan ke atas memperbaikinya.",
+    "code": "INPUT totalProduk\nperHalaman ← 10\n// SALAH : halaman ← totalProduk DIV perHalaman\nhalaman ← (totalProduk + perHalaman - 1) DIV perHalaman\nOUTPUT totalProduk, \" produk → \", halaman, \" halaman\"\n\n// Uji kasus batas: 0, 1, 10, 11, 20, 21",
+    "out": "0 produk → 0 halaman\n1 produk → 1 halaman   (versi salah: 0)\n10 produk → 1 halaman\n11 produk → 2 halaman  (versi salah: 1)\n20 produk → 2 halaman\n21 produk → 3 halaman  (versi salah: 2)"
+   }
+  ]
+ },
+ "pseudo-6-3": {
+  "exs": [
+   {
+    "t": "Kasus: O(1), akses langsung",
+    "code": "// Mengambil harga produk ke-3 tidak bergantung panjang array\nharga ← [12000, 8000, 15000, 5000, 20000]\nOUTPUT harga[2]        // 1 langkah, berapa pun panjang array",
+    "out": "15000"
+   },
+   {
+    "t": "Kasus: O(n), satu loop",
+    "code": "// Menjumlah n data: badan loop jalan n kali\nlangkah ← 0\ntotal ← 0\nFOR i ← 0 TO n - 1 DO\n    total ← total + data[i]\n    langkah ← langkah + 1\nENDFOR\nOUTPUT \"n = \", n, \", langkah = \", langkah",
+    "out": "n = 10 → langkah = 10\nn = 20 → langkah = 20"
+   },
+   {
+    "t": "Kasus: O(n²), membandingkan setiap pasangan",
+    "code": "// Cek duplikat dengan membandingkan setiap pasangan\nlangkah ← 0\nFOR i ← 0 TO n - 1 DO\n    FOR j ← i + 1 TO n - 1 DO\n        langkah ← langkah + 1\n    ENDFOR\nENDFOR\nOUTPUT \"n = \", n, \", langkah = \", langkah    // n(n-1)/2",
+    "out": "n = 10 → langkah = 45\nn = 20 → langkah = 190",
+    "d": "n dua kali lipat, langkah sekitar empat kali lipat."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Cek NIK ganda: O(n²) vs O(n) pada data terurut",
+    "b": "Saat impor data pendaftar, sistem harus menolak NIK yang ganda. Jika data sudah terurut, NIK yang sama pasti bersebelahan, sehingga cukup satu loop.",
+    "code": "// Cara 1: bandingkan setiap pasangan → O(n²)\nganda ← FALSE\nFOR i ← 0 TO n - 1 DO\n    FOR j ← i + 1 TO n - 1 DO\n        IF nik[i] = nik[j] THEN\n            ganda ← TRUE\n        ENDIF\n    ENDFOR\nENDFOR\n\n// Cara 2: data sudah terurut, cek tetangga → O(n)\nganda ← FALSE\nFOR i ← 0 TO n - 2 DO\n    IF nik[i] = nik[i + 1] THEN\n        ganda ← TRUE\n    ENDIF\nENDFOR\n\n// Untuk n = 1000: cara 1 = 499500 perbandingan, cara 2 = 999 perbandingan",
+    "out": "n = 1000 → cara 1: 499500 perbandingan, cara 2: 999 perbandingan"
+   }
+  ]
+ },
+ "pseudo-6-4": {
+  "exs": [
+   {
+    "t": "Kasus: WHILE dengan sentinel",
+    "code": "# Pseudocode:\n# total ← 0\n# INPUT harga\n# WHILE harga <> 0 DO\n#     total ← total + harga\n#     INPUT harga\n# ENDWHILE\nmasukan = [12000, 8500, 20000, 0]   # pengganti INPUT\ni = 0\ntotal = 0\nharga = masukan[i]\nwhile harga != 0:                   # <> menjadi !=\n    total = total + harga\n    i = i + 1\n    harga = masukan[i]\nprint(\"Total belanja:\", total)",
+    "out": "Total belanja: 40500",
+    "d": "WHILE harga <> 0 menjadi while harga != 0. Masukan disimulasikan dengan daftar."
+   },
+   {
+    "t": "Kasus: REPEAT-UNTIL menjadi while True dan break",
+    "code": "# Pseudocode:\n# REPEAT\n#     INPUT dadu\n#     lemparan ← lemparan + 1\n# UNTIL dadu = 6\nlemparan_dadu = [3, 1, 6, 2]\nlemparan = 0\nwhile True:                          # REPEAT\n    dadu = lemparan_dadu[lemparan]\n    lemparan = lemparan + 1\n    if dadu == 6:                    # UNTIL dadu = 6\n        break\nprint(\"Angka 6 keluar di lemparan ke-\" + str(lemparan))",
+    "out": "Angka 6 keluar di lemparan ke-3"
+   },
+   {
+    "t": "Kasus: FUNCTION dan CASE",
+    "code": "# Pseudocode:\n# FUNCTION NamaHari(nomor : INTEGER) RETURNS STRING\n#     CASE OF nomor\n#         1 : RETURN \"Senin\"  ...  OTHERWISE : RETURN \"Tidak sah\"\ndef nama_hari(nomor):\n    if nomor == 1:\n        return \"Senin\"\n    elif nomor == 2:\n        return \"Selasa\"\n    elif nomor == 3:\n        return \"Rabu\"\n    else:\n        return \"Tidak sah\"\n\nprint(nama_hari(2))\nprint(nama_hari(9))\nprint(\"17 DIV 5 =\", 17 // 5, \"| 17 MOD 5 =\", 17 % 5)",
+    "out": "Selasa\nTidak sah\n17 DIV 5 = 3 | 17 MOD 5 = 2",
+    "d": "FUNCTION menjadi def, CASE menjadi if/elif/else, DIV menjadi //."
+   }
+  ]
+ },
+ "pseudo-6-5": {
+  "exs": [
+   {
+    "t": "Kasus: FUNCTION menjadi static method bertipe",
+    "code": "public class Main {\n    // FUNCTION Luas(p : INTEGER, l : INTEGER) RETURNS INTEGER\n    static int luas(int p, int l) {\n        return p * l;\n    }\n\n    // FUNCTION IsGenap(n : INTEGER) RETURNS BOOLEAN\n    static boolean isGenap(int n) {\n        return n % 2 == 0;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(luas(8, 5));\n        System.out.println(isGenap(7));\n    }\n}",
+    "out": "40\nfalse"
+   },
+   {
+    "t": "Kasus: jebakan pembagian bulat",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        int total = 370;\n        int n = 4;\n        System.out.println(total / n);            // 92, pecahan hilang\n        System.out.println((double) total / n);   // 92.5\n        System.out.println(total % n);            // MOD menjadi %\n    }\n}",
+    "out": "92\n92.5\n2",
+    "d": "REAL di pseudocode harus menjadi double, dan salah satu operan diubah agar tidak terjadi pembagian bulat."
+   },
+   {
+    "t": "Kasus: membandingkan STRING dengan equals",
+    "code": "public class Main {\n    public static void main(String[] args) {\n        String status = new String(\"PAID\");\n        // IF status = \"PAID\" THEN ...\n        if (status.equals(\"PAID\")) {\n            System.out.println(\"Pesanan dikemas\");\n        }\n        System.out.println(status == \"PAID\");      // membandingkan alamat, bukan isi\n    }\n}",
+    "out": "Pesanan dikemas\nfalse"
+   }
+  ]
+ },
+ "pseudo-6-6": {
+  "exs": [
+   {
+    "t": "Kasus: kepala algoritma lengkap",
+    "code": "// Nama   : HitungOngkir\n// Tujuan : menghitung ongkos kirim berdasarkan berat paket\n// Input  : beratKg (INTEGER, minimal 1)\n// Output : ongkir (INTEGER, rupiah)\n// Uji    : 1 -> 9000, 3 -> 27000\nFUNCTION HitungOngkir(beratKg : INTEGER) RETURNS INTEGER\n    CONSTANT TARIF_PER_KG ← 9000\n    RETURN beratKg * TARIF_PER_KG\nENDFUNCTION",
+    "out": "HitungOngkir(1) → 9000\nHitungOngkir(3) → 27000"
+   },
+   {
+    "t": "Kasus: nama yang bermakna",
+    "code": "// Sulit dibaca\nx ← y * z - y * z * w / 100\n\n// Mudah dibaca\nsubtotal ← hargaSatuan * jumlah\npotongan ← subtotal * persenDiskon / 100\ntotalBayar ← subtotal - potongan",
+    "d": "Kedua versi menghitung hal yang sama, tetapi versi kedua bisa diperiksa tanpa bertanya ke penulisnya."
+   },
+   {
+    "t": "Kasus: komentar menjelaskan kenapa",
+    "code": "// Tidak berguna: mengulang apa yang sudah terlihat\ni ← i + 1            // tambah 1 ke i\n\n// Berguna: menjelaskan alasan\nFOR i ← 0 TO n - 1 DO      // indeks mulai 0, jadi batas akhir n - 1\n    ...\nENDFOR\nbatasPin ← 3               // aturan bank: kartu diblokir setelah 3 kali salah"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Dokumentasi fungsi beserta contoh uji",
+    "b": "Di tim yang rapi, setiap fungsi disertai daftar uji (input dan hasil yang diharapkan). QA tinggal menjalankan daftar itu setiap ada perubahan, dan developer baru langsung paham perilaku fungsinya.",
+    "code": "// Nama   : TambahHariKerja\n// Tujuan : menghitung hari selesai setelah n hari kerja (Senin-Jumat)\n// Input  : hariMulai (INTEGER, 1 = Senin ... 7 = Minggu), n (INTEGER >= 0)\n// Output : nomor hari selesai (1..7)\n// Uji    : (5, 1) -> 1   Jumat + 1 hari kerja = Senin\n//          (1, 5) -> 1   Senin + 5 hari kerja = Senin berikutnya\n//          (4, 3) -> 2   Kamis + 3 hari kerja = Selasa\nFUNCTION TambahHariKerja(hariMulai : INTEGER, n : INTEGER) RETURNS INTEGER\n    DECLARE hari : INTEGER\n    hari ← hariMulai\n    WHILE n > 0 DO\n        hari ← hari MOD 7 + 1        // 7 (Minggu) kembali ke 1 (Senin)\n        IF hari <= 5 THEN            // hanya Senin-Jumat yang dihitung\n            n ← n - 1\n        ENDIF\n    ENDWHILE\n    RETURN hari\nENDFUNCTION",
+    "out": "TambahHariKerja(5, 1) → 1\nTambahHariKerja(1, 5) → 1\nTambahHariKerja(4, 3) → 2\n3 uji lolos"
+   }
+  ]
  }
 }

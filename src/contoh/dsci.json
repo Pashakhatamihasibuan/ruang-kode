@@ -936,7 +936,7 @@
    {
     "t": "Kasus: Pipeline dengan kolom angka dan kategori untuk harga rumah",
     "d": "ColumnTransformer menyiapkan setiap jenis kolom, lalu model regresi dilatih dalam satu objek.",
-    "code": "import numpy as np\nimport pandas as pd\nfrom sklearn.compose import ColumnTransformer\nfrom sklearn.pipeline import Pipeline\nfrom sklearn.preprocessing import OneHotEncoder, StandardScaler\nfrom sklearn.linear_model import Ridge\nfrom sklearn.model_selection import cross_val_score\n\nrng = np.random.default_rng(2)\nn = 300\ndf = pd.DataFrame({'luas': rng.uniform(30, 160, n), 'kamar': rng.integers(1, 5, n),\n                   'kota': rng.choice(['Depok', 'Bekasi', 'Tangerang'], n)})\ntambahan = df['kota'].map({'Depok': 0, 'Bekasi': -80, 'Tangerang': 60})\ndf['harga'] = 200 + 8 * df['luas'] + 30 * df['kamar'] + tambahan + rng.normal(0, 60, n)\n\npipe = Pipeline([('pra', ColumnTransformer([('angka', StandardScaler(), ['luas', 'kamar']),\n                                            ('kota', OneHotEncoder(handle_unknown='ignore'), ['kota'])])),\n                 ('model', Ridge(alpha=1.0))])\nfor nama, kolom in [('tanpa kota', ['luas', 'kamar']), ('dengan kota', ['luas', 'kamar', 'kota'])]:\n    if nama == 'tanpa kota':\n        p = Pipeline([('skala', StandardScaler()), ('model', Ridge(alpha=1.0))])\n    else:\n        p = pipe\n    s = cross_val_score(p, df[kolom], df['harga'], cv=5, scoring='r2')\n    print(f'{nama:12}: R2 cv = {s.mean():.3f}')",
+    "code": "import numpy as np\nimport pandas as pd\nfrom sklearn.compose import ColumnTransformer\nfrom sklearn.pipeline import Pipeline\nfrom sklearn.preprocessing import OneHotEncoder, StandardScaler\nfrom sklearn.linear_model import Ridge\nfrom sklearn.model_selection import cross_val_score\n\nrng = np.random.default_rng(2)\nn = 300\ndf = pd.DataFrame({'luas': rng.uniform(30, 160, n), 'kamar': rng.integers(1, 5, n),\n                   'kota': rng.choice(['Depok', 'Bekasi', 'Tangerang'], n)})\ntambahan = df['kota'].map({'Depok': 0, 'Bekasi': -80, 'Tangerang': 60})\ndf['harga'] = 200 + 8 * df['luas'] + 30 * df['kamar'] + tambahan + rng.normal(0, 60, n)\n\ntanpa_kota = Pipeline([('skala', StandardScaler()), ('model', Ridge(alpha=1.0))])\ndengan_kota = Pipeline([('pra', ColumnTransformer([('angka', StandardScaler(), ['luas', 'kamar']),\n                                                   ('kota', OneHotEncoder(handle_unknown='ignore'), ['kota'])])),\n                        ('model', Ridge(alpha=1.0))])\nfor nama, p, kolom in [('tanpa kota', tanpa_kota, ['luas', 'kamar']),\n                       ('dengan kota', dengan_kota, ['luas', 'kamar', 'kota'])]:\n    s = cross_val_score(p, df[kolom], df['harga'], cv=5, scoring='r2')\n    print(f'{nama:12}: R2 cv = {s.mean():.3f}')",
     "out": "tanpa kota  : R2 cv = 0.919\ndengan kota : R2 cv = 0.957"
    },
    {
@@ -964,8 +964,8 @@
    {
     "t": "Kasus: learning rate dan jumlah pohon saling menukar",
     "d": "Learning rate kecil butuh lebih banyak pohon untuk mencapai skor yang sama.",
-    "code": "from sklearn.datasets import make_classification\nfrom sklearn.ensemble import HistGradientBoostingClassifier\nfrom sklearn.model_selection import cross_val_score\n\nX, y = make_classification(1000, n_features=8, n_informative=4, random_state=3)\nfor lr, pohon in [(0.3, 30), (0.1, 30), (0.1, 100), (0.03, 300)]:\n    m = HistGradientBoostingClassifier(learning_rate=lr, max_iter=pohon, early_stopping=False, random_state=0)\n    print(f'lr={lr:<4} pohon={pohon:3}: AUC cv = {cross_val_score(m, X, y, cv=4, scoring=\"roc_auc\").mean():.3f}')",
-    "out": "lr=0.3  pohon= 30: AUC cv = 0.986\nlr=0.1  pohon= 30: AUC cv = 0.984\nlr=0.1  pohon=100: AUC cv = 0.985\nlr=0.03 pohon=300: AUC cv = 0.986"
+    "code": "from sklearn.datasets import make_classification\nfrom sklearn.ensemble import HistGradientBoostingClassifier\nfrom sklearn.model_selection import cross_val_score\n\nX, y = make_classification(1000, n_features=8, n_informative=4, flip_y=0.1, random_state=3)\nfor lr, pohon in [(0.01, 30), (0.01, 300), (0.1, 30), (0.1, 300)]:\n    m = HistGradientBoostingClassifier(learning_rate=lr, max_iter=pohon, early_stopping=False, random_state=0)\n    print(f'lr={lr:<4} pohon={pohon:3}: AUC cv = {cross_val_score(m, X, y, cv=4, scoring=\"roc_auc\").mean():.3f}')",
+    "out": "lr=0.01 pohon= 30: AUC cv = 0.932\nlr=0.01 pohon=300: AUC cv = 0.937\nlr=0.1  pohon= 30: AUC cv = 0.937\nlr=0.1  pohon=300: AUC cv = 0.929"
    }
   ]
  },
@@ -985,7 +985,7 @@
    },
    {
     "t": "Kasus: PCA sebelum model untuk mempercepat",
-    "d": "Data 64 piksel diringkas menjadi 20 komponen; akurasinya hampir sama.",
+    "d": "Data 64 piksel diringkas menjadi 20 komponen; akurasinya hanya turun sedikit.",
     "code": "from sklearn.datasets import load_digits\nfrom sklearn.decomposition import PCA\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import cross_val_score\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\n\nX, y = load_digits(return_X_y=True)\nfor nama, m in [('64 fitur asli', make_pipeline(StandardScaler(), LogisticRegression(max_iter=2000))),\n                ('20 komponen PCA', make_pipeline(StandardScaler(), PCA(20), LogisticRegression(max_iter=2000)))]:\n    print(f'{nama:16}: akurasi cv = {cross_val_score(m, X, y, cv=5).mean():.3f}')",
     "out": "64 fitur asli   : akurasi cv = 0.920\n20 komponen PCA : akurasi cv = 0.899"
    }
@@ -1024,8 +1024,8 @@
    {
     "t": "Kasus: AdaBoost dengan pohon satu tingkat",
     "d": "Setiap \"stump\" lemah, tetapi gabungan berbobotnya kuat.",
-    "code": "from sklearn.datasets import make_classification\nfrom sklearn.ensemble import AdaBoostClassifier\nfrom sklearn.model_selection import cross_val_score\nfrom sklearn.tree import DecisionTreeClassifier\n\nX, y = make_classification(800, n_features=8, n_informative=5, random_state=1)\nprint('1 stump   :', cross_val_score(DecisionTreeClassifier(max_depth=1), X, y, cv=5).mean().round(3))\nfor n in [10, 50, 200]:\n    m = AdaBoostClassifier(DecisionTreeClassifier(max_depth=1), n_estimators=n, random_state=0)\n    print(f'{n:3} stump :', cross_val_score(m, X, y, cv=5).mean().round(3))",
-    "out": "1 stump   : 0.614\n 10 stump : 0.696\n 50 stump : 0.7\n200 stump : 0.724"
+    "code": "from sklearn.datasets import make_classification\nfrom sklearn.ensemble import AdaBoostClassifier\nfrom sklearn.model_selection import cross_val_score\nfrom sklearn.tree import DecisionTreeClassifier\n\nX, y = make_classification(800, n_features=8, n_informative=5, random_state=1)\nprint(f'  1 stump : {cross_val_score(DecisionTreeClassifier(max_depth=1), X, y, cv=5).mean():.3f}')\nfor n in [10, 50, 200]:\n    m = AdaBoostClassifier(DecisionTreeClassifier(max_depth=1), n_estimators=n, random_state=0)\n    print(f'{n:3} stump : {cross_val_score(m, X, y, cv=5).mean():.3f}')",
+    "out": "  1 stump : 0.614\n 10 stump : 0.696\n 50 stump : 0.700\n200 stump : 0.724"
    },
    {
     "t": "Kasus: hard voting tiga model untuk deteksi pinjaman berisiko",
@@ -1062,8 +1062,8 @@
    {
     "t": "Kasus: DBSCAN untuk titik kumpul ojek daring",
     "d": "DBSCAN menemukan area padat tanpa harus menentukan jumlah kelompok, dan menandai titik terpencil.",
-    "code": "import numpy as np\nfrom sklearn.cluster import DBSCAN\n\nrng = np.random.default_rng(0)\nstasiun = rng.normal([0, 0], 0.15, (40, 2))\nmal = rng.normal([2, 1], 0.2, (40, 2))\nkampus = rng.normal([1, 3], 0.15, (30, 2))\nacak = np.array([[3.5, 3.5], [-1.5, 2.5], [4, -1]])\nX = np.vstack([stasiun, mal, kampus, acak])           # koordinat (km)\n\nlab = DBSCAN(eps=0.3, min_samples=5).fit_predict(X)\nprint('kelompok:', sorted(set(lab) - {-1}), '| noise:', (lab == -1).sum())\nfor k in sorted(set(lab) - {-1}):\n    print(f'titik kumpul {k}: {np.sum(lab == k)} penjemputan, pusat {X[lab == k].mean(axis=0).round(2)}')",
-    "out": "kelompok: [np.int64(0), np.int64(1), np.int64(2)] | noise: 3\ntitik kumpul 0: 40 penjemputan, pusat [0.01 0.03]\ntitik kumpul 1: 40 penjemputan, pusat [1.95 1.01]\ntitik kumpul 2: 30 penjemputan, pusat [0.98 3.03]"
+    "code": "import numpy as np\nfrom sklearn.cluster import DBSCAN\n\nrng = np.random.default_rng(0)\nstasiun = rng.normal([0, 0], 0.15, (40, 2))\nmal = rng.normal([2, 1], 0.2, (40, 2))\nkampus = rng.normal([1, 3], 0.15, (30, 2))\nacak = np.array([[3.5, 3.5], [-1.5, 2.5], [4, -1]])\nX = np.vstack([stasiun, mal, kampus, acak])           # koordinat (km)\n\nlab = DBSCAN(eps=0.3, min_samples=5).fit_predict(X)\nprint('kelompok:', sorted(int(k) for k in set(lab) - {-1}), '| noise:', (lab == -1).sum())\nfor k in sorted(set(lab) - {-1}):\n    print(f'titik kumpul {k}: {np.sum(lab == k)} penjemputan, pusat {X[lab == k].mean(axis=0).round(2)}')",
+    "out": "kelompok: [0, 1, 2] | noise: 3\ntitik kumpul 0: 40 penjemputan, pusat [0.01 0.03]\ntitik kumpul 1: 40 penjemputan, pusat [1.95 1.01]\ntitik kumpul 2: 30 penjemputan, pusat [0.98 3.03]"
    },
    {
     "t": "Kasus: pengaruh eps pada DBSCAN",
@@ -1161,6 +1161,245 @@
     "t": "Kasus: segmentasi pelanggan untuk kampanye",
     "d": "Masalah tanpa label: kelompokkan dulu, lalu beri nama segmen bersama tim bisnis.",
     "code": "Masalah: kelompok pelanggan seperti apa yang kita punya?\n\nTarget ada?           tidak -> unsupervised\nPersiapan             fitur RFM (recency, frequency, monetary), StandardScaler\nBentuk kelompok bulat K-Means, pilih k dengan silhouette\nBentuk tidak beraturan DBSCAN (sekaligus menandai pelanggan aneh)\nVisualisasi           PCA atau t-SNE ke 2D\nHasil                 profil tiap segmen + rencana promo yang berbeda"
+   }
+  ]
+ },
+ "dsci-10-1": {
+  "exs": [
+   {
+    "t": "Kasus: satu neuron memutuskan pemberian voucher",
+    "d": "Neuron = jumlah berbobot + bias, lalu fungsi aktivasi sigmoid.",
+    "code": "import numpy as np\n\ndef sigmoid(z):\n    return 1 / (1 + np.exp(-z))\n\nw = np.array([0.8, -0.05, 0.002])      # bobot: keluhan, lama_bulan, belanja (ribu)\nb = -1.0\npelanggan = np.array([[3, 4, 250],\n                      [0, 30, 600],\n                      [1, 12, 450]])\nz = pelanggan @ w + b\nprint('skor z     :', z.round(2))\nprint('peluang    :', sigmoid(z).round(2))\nprint('beri voucher:', sigmoid(z) >= 0.5)",
+    "out": "skor z     : [ 1.7 -1.3  0.1]\npeluang    : [0.85 0.21 0.52]\nberi voucher: [ True False  True]"
+   },
+   {
+    "t": "Kasus: forward pass dua lapisan dan bentuk array",
+    "d": "Setiap lapisan adalah perkalian matriks + bias + aktivasi; bentuk array harus cocok.",
+    "code": "import numpy as np\n\nrng = np.random.default_rng(0)\nX = rng.normal(size=(5, 4))                 # 5 pelanggan, 4 fitur\nW1, b1 = rng.normal(0, 0.5, (4, 8)), np.zeros(8)\nW2, b2 = rng.normal(0, 0.5, (8, 1)), np.zeros(1)\n\nH = np.maximum(0, X @ W1 + b1)              # ReLU\np = 1 / (1 + np.exp(-(H @ W2 + b2)))\nprint('X', X.shape, '-> H', H.shape, '-> p', p.shape)\nprint('neuron tersembunyi yang mati (0) untuk pelanggan pertama:', int((H[0] == 0).sum()), 'dari 8')\nprint('peluang:', p.ravel().round(3))",
+    "out": "X (5, 4) -> H (5, 8) -> p (5, 1)\nneuron tersembunyi yang mati (0) untuk pelanggan pertama: 2 dari 8\npeluang: [0.454 0.337 0.406 0.419 0.371]"
+   },
+   {
+    "t": "Kasus: jaringan kecil belajar kurva permintaan",
+    "d": "Satu lapisan tersembunyi dengan tanh cukup untuk mempelajari hubungan melengkung.",
+    "code": "import numpy as np\n\nrng = np.random.default_rng(2)\nx = np.linspace(-1, 1, 40).reshape(-1, 1)          # harga (dibakukan)\ny = 1 - x ** 2 + rng.normal(0, 0.03, x.shape)       # permintaan melengkung\n\nW1, b1 = rng.normal(0, 1, (1, 8)), np.zeros(8)\nW2, b2 = rng.normal(0, 1, (8, 1)), np.zeros(1)\nfor ep in range(4001):\n    h = np.tanh(x @ W1 + b1)\n    p = h @ W2 + b2\n    g = 2 * (p - y) / len(x)\n    gW2, gb2 = h.T @ g, g.sum(0)\n    gh = (g @ W2.T) * (1 - h ** 2)\n    gW1, gb1 = x.T @ gh, gh.sum(0)\n    W1 -= 0.1 * gW1; b1 -= 0.1 * gb1; W2 -= 0.1 * gW2; b2 -= 0.1 * gb2\n    if ep % 1000 == 0:\n        print(f'epoch {ep}: MSE = {np.mean((p - y) ** 2):.4f}')",
+    "out": "epoch 0: MSE = 4.4072\nepoch 1000: MSE = 0.0038\nepoch 2000: MSE = 0.0030\nepoch 3000: MSE = 0.0026\nepoch 4000: MSE = 0.0023"
+   }
+  ]
+ },
+ "dsci-10-2": {
+  "exs": [
+   {
+    "t": "Kasus: filter rata-rata untuk menghaluskan gambar",
+    "d": "Konvolusi yang sama dengan filter berbeda: semua bobot 1/9 meratakan piksel yang berisik.",
+    "code": "import numpy as np\n\ngambar = np.array([[10, 10, 10, 10, 10],\n                   [10, 90, 10, 10, 10],\n                   [10, 10, 10, 10, 10],\n                   [10, 10, 10, 50, 10]])\nfilter_rata = np.ones((3, 3)) / 9\n\nh, w = gambar.shape\nhasil = np.zeros((h - 2, w - 2))\nfor i in range(h - 2):\n    for j in range(w - 2):\n        hasil[i, j] = (gambar[i:i + 3, j:j + 3] * filter_rata).sum()\nprint(hasil.round(1))",
+    "out": "[[18.9 18.9 10. ]\n [18.9 23.3 14.4]]"
+   },
+   {
+    "t": "Kasus: max pooling memperkecil peta fitur",
+    "d": "Ambil nilai terbesar di setiap blok 2x2; ukuran menjadi separuh, ciri terkuat tetap.",
+    "code": "import numpy as np\n\npeta = np.array([[1, 3, 0, 2],\n                 [4, 2, 1, 0],\n                 [0, 1, 5, 6],\n                 [2, 2, 7, 1]])\nhasil = peta.reshape(2, 2, 2, 2).max(axis=(1, 3))\nprint('sebelum', peta.shape, '-> sesudah', hasil.shape)\nprint(hasil)",
+    "out": "sebelum (4, 4) -> sesudah (2, 2)\n[[4 2]\n [2 7]]"
+   },
+   {
+    "t": "Kasus: RNN membaca penjualan hari demi hari",
+    "d": "Hidden state h membawa ringkasan hari-hari sebelumnya ke langkah berikutnya.",
+    "code": "import numpy as np\n\npenjualan = np.array([0.2, 0.4, 0.9, 0.8, 0.1])     # dibakukan 0-1\nw_x, w_h, b = 1.5, 0.8, -0.5\n\nh = 0.0\nfor hari, x in enumerate(penjualan, 1):\n    h = np.tanh(w_x * x + w_h * h + b)\n    print(f'hari {hari}: masukan {x:.1f} -> h = {h:+.3f}')",
+    "out": "hari 1: masukan 0.2 -> h = -0.197\nhari 2: masukan 0.4 -> h = -0.058\nhari 3: masukan 0.9 -> h = +0.666\nhari 4: masukan 0.8 -> h = +0.843\nhari 5: masukan 0.1 -> h = +0.314"
+   }
+  ]
+ },
+ "dsci-10-3": {
+  "exs": [
+   {
+    "t": "Kasus: softmax dan temperature",
+    "d": "Temperature kecil membuat pilihan tajam, besar membuatnya merata (dipakai saat LLM membuat teks).",
+    "code": "import numpy as np\n\ndef softmax(z):\n    e = np.exp(z - z.max())\n    return e / e.sum()\n\nkata = ['enak', 'mahal', 'pedas']\nskor = np.array([2.0, 1.0, 0.5])\nfor suhu in [0.5, 1.0, 2.0]:\n    p = softmax(skor / suhu)\n    print(f'temperature {suhu}:', dict(zip(kata, p.round(2).tolist())))",
+    "out": "temperature 0.5: {'enak': 0.84, 'mahal': 0.11, 'pedas': 0.04}\ntemperature 1.0: {'enak': 0.63, 'mahal': 0.23, 'pedas': 0.14}\ntemperature 2.0: {'enak': 0.48, 'mahal': 0.29, 'pedas': 0.23}"
+   },
+   {
+    "t": "Kasus: mencari FAQ paling mirip dengan rata-rata embedding",
+    "d": "Embedding kalimat sederhana = rata-rata embedding kata-katanya.",
+    "code": "import numpy as np\n\nemb = {'bayar': np.array([0.9, 0.1, 0.0]), 'qris': np.array([0.8, 0.0, 0.1]),\n       'paket': np.array([0.0, 0.9, 0.1]), 'kirim': np.array([0.1, 0.8, 0.0]),\n       'sandi': np.array([0.0, 0.1, 0.9]), 'lupa': np.array([0.1, 0.0, 0.7])}\n\ndef kalimat(teks):\n    return np.mean([emb[k] for k in teks.split() if k in emb], axis=0)\n\ndef cos(a, b):\n    return a @ b / (np.linalg.norm(a) * np.linalg.norm(b))\n\nfaq = ['bayar qris', 'kirim paket', 'lupa sandi']\ntanya = kalimat('paket belum kirim')\nfor f in faq:\n    print(f'{f:12}: {cos(tanya, kalimat(f)):.2f}')",
+    "out": "bayar qris  : 0.12\nkirim paket : 1.00\nlupa sandi  : 0.12"
+   },
+   {
+    "t": "Kasus: self-attention untuk tiga kata",
+    "d": "Setiap kata membuat query, key, dan value; bobot setiap baris berjumlah 1.",
+    "code": "import numpy as np\n\ndef softmax(z):\n    e = np.exp(z - z.max(axis=1, keepdims=True))\n    return e / e.sum(axis=1, keepdims=True)\n\nrng = np.random.default_rng(0)\nX = np.array([[1.0, 0.0, 0.5, 0.2],      # \"kopi\"\n              [0.9, 0.1, 0.4, 0.3],      # \"susu\"\n              [0.0, 1.0, 0.1, 0.8]])     # \"laptop\"\nWq, Wk, Wv = (rng.normal(0, 1.5, (4, 4)) for _ in range(3))\nQ, K, V = X @ Wq, X @ Wk, X @ Wv\nA = softmax(Q @ K.T / np.sqrt(4))\nprint('bobot attention:')\nprint(A.round(2))\nprint('jumlah per baris:', A.sum(axis=1).round(6))\nprint('bentuk keluaran:', (A @ V).shape)",
+    "out": "bobot attention:\n[[0.47 0.43 0.1 ]\n [0.44 0.42 0.13]\n [0.29 0.37 0.34]]\njumlah per baris: [1. 1. 1.]\nbentuk keluaran: (3, 4)"
+   }
+  ]
+ },
+ "dsci-11-1": {
+  "exs": [
+   {
+    "t": "Kasus: menyimpan dan memuat ulang model dengan joblib",
+    "d": "Model yang dimuat ulang harus memberi prediksi yang persis sama.",
+    "code": "import os, tempfile\nimport joblib\nimport numpy as np\nfrom sklearn.datasets import make_classification\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\n\nX, y = make_classification(300, n_features=4, random_state=0)\npipe = make_pipeline(StandardScaler(), LogisticRegression()).fit(X, y)\npath = os.path.join(tempfile.mkdtemp(), 'model_churn_v1.joblib')\njoblib.dump(pipe, path)\ndimuat = joblib.load(path)\nprint('berkas tersimpan:', os.path.basename(path))\nprint('prediksi sama:', bool(np.array_equal(pipe.predict_proba(X), dimuat.predict_proba(X))))",
+    "out": "berkas tersimpan: model_churn_v1.joblib\nprediksi sama: True"
+   },
+   {
+    "t": "Kasus: validasi input dengan pydantic",
+    "d": "Data yang salah ditolak sebelum menyentuh model, persis seperti yang dilakukan FastAPI.",
+    "code": "from pydantic import BaseModel, Field, ValidationError\n\nclass Pelanggan(BaseModel):\n    umur: int = Field(ge=17, le=100)\n    lama_bulan: int = Field(ge=0)\n    belanja_bln: float = Field(ge=0)\n    kota: str\n\nprint(Pelanggan(umur=28, lama_bulan=5, belanja_bln=350.5, kota='Medan'))\ntry:\n    Pelanggan(umur=12, lama_bulan=-1, belanja_bln=100, kota='Medan')\nexcept ValidationError as e:\n    for err in e.errors():\n        print('ditolak:', err['loc'][0], '-', err['msg'])",
+    "out": "umur=28 lama_bulan=5 belanja_bln=350.5 kota='Medan'\nditolak: umur - Input should be greater than or equal to 17\nditolak: lama_bulan - Input should be greater than or equal to 0"
+   },
+   {
+    "t": "Kasus: fungsi prediksi yang meniru endpoint API",
+    "d": "Masukan dict (seperti JSON), keluaran dict berisi peluang dan versi model.",
+    "code": "import numpy as np\nimport pandas as pd\nfrom sklearn.linear_model import LogisticRegression\n\nrng = np.random.default_rng(1)\nlatih = pd.DataFrame({'lama_bulan': rng.integers(1, 48, 300), 'keluhan': rng.poisson(1.2, 300)})\ny = (rng.random(300) < 1 / (1 + np.exp(-(-1 + 0.9 * latih.keluhan - 0.06 * latih.lama_bulan)))).astype(int)\nmodel = LogisticRegression().fit(latih, y)\n\ndef prediksi(data):\n    X = pd.DataFrame([data])[['lama_bulan', 'keluhan']]\n    return {'peluang_churn': round(float(model.predict_proba(X)[0, 1]), 3), 'versi': 'v1'}\n\nprint(prediksi({'lama_bulan': 3, 'keluhan': 4, 'kota': 'Medan'}))\nprint(prediksi({'lama_bulan': 40, 'keluhan': 0, 'kota': 'Bandung'}))",
+    "out": "{'peluang_churn': 0.871, 'versi': 'v1'}\n{'peluang_churn': 0.02, 'versi': 'v1'}"
+   }
+  ]
+ },
+ "dsci-11-2": {
+  "exs": [
+   {
+    "t": "Kasus: drift pada kolom kategori (proporsi kota)",
+    "d": "PSI juga bisa dihitung dari proporsi kategori.",
+    "code": "import numpy as np\n\nkota = ['Jakarta', 'Bandung', 'Surabaya', 'Medan']\nlatih = np.array([0.40, 0.25, 0.20, 0.15])\nbulan_ini = np.array([0.22, 0.24, 0.20, 0.34])      # kampanye besar di Medan\n\npsi = ((bulan_ini - latih) * np.log(bulan_ini / latih)).sum()\nfor k, a, b in zip(kota, latih, bulan_ini):\n    print(f'{k:8}: {a:.0%} -> {b:.0%}')\nprint(f'PSI = {psi:.3f} ->', 'aman' if psi < 0.1 else 'waspada' if psi < 0.25 else 'LATIH ULANG')",
+    "out": "Jakarta : 40% -> 22%\nBandung : 25% -> 24%\nSurabaya: 20% -> 20%\nMedan   : 15% -> 34%\nPSI = 0.263 -> LATIH ULANG"
+   },
+   {
+    "t": "Kasus: memantau AUC per bulan setelah label datang",
+    "d": "Performa model dipantau, bukan hanya data masukannya.",
+    "code": "import numpy as np\nfrom sklearn.metrics import roc_auc_score\n\nrng = np.random.default_rng(3)\nfor bulan, kekuatan in [('Jan', 1.2), ('Feb', 1.1), ('Mar', 0.7), ('Apr', 0.4)]:\n    y = (rng.random(800) < 0.2).astype(int)\n    skor = y * kekuatan + rng.normal(0, 1, 800)       # skor model makin tidak tajam\n    auc = roc_auc_score(y, skor)\n    catatan = '  <- di bawah 0,70, periksa model' if auc < 0.70 else ''\n    print(f'{bulan}: AUC={auc:.3f}{catatan}')",
+    "out": "Jan: AUC=0.780\nFeb: AUC=0.743\nMar: AUC=0.656  <- di bawah 0,70, periksa model\nApr: AUC=0.637  <- di bawah 0,70, periksa model"
+   },
+   {
+    "t": "Kasus: uji kualitas model yang dijalankan CI",
+    "d": "Pipeline CI menjalankan cek seperti ini; jika gagal, model baru tidak dipasang.",
+    "code": "import numpy as np\nfrom sklearn.datasets import make_classification\nfrom sklearn.dummy import DummyClassifier\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.metrics import roc_auc_score\n\nX, y = make_classification(1000, n_features=6, random_state=0)\nX_tr, X_te, y_tr, y_te = train_test_split(X, y, random_state=0)\nmodel = LogisticRegression().fit(X_tr, y_tr)\npatokan = DummyClassifier().fit(X_tr, y_tr)\n\nauc = roc_auc_score(y_te, model.predict_proba(X_te)[:, 1])\nassert auc >= 0.80, f'AUC terlalu rendah: {auc:.3f}'\nassert model.score(X_te, y_te) > patokan.score(X_te, y_te), 'kalah dari patokan'\nassert np.allclose(model.predict_proba(X_te).sum(axis=1), 1), 'peluang tidak berjumlah 1'\nprint(f'semua cek lulus (AUC={auc:.3f})')",
+    "out": "semua cek lulus (AUC=0.963)"
+   }
+  ]
+ },
+ "dsci-11-3": {
+  "exs": [
+   {
+    "t": "Kasus: tabel lift per desil",
+    "d": "Pelanggan diurutkan menurut peluang, dibagi 10 kelompok, lalu churn rate tiap kelompok dibandingkan rata-rata.",
+    "code": "import numpy as np\nimport pandas as pd\n\nrng = np.random.default_rng(4)\np = rng.beta(2, 5, 1000)\nchurn = (rng.random(1000) < p).astype(int)\ndf = pd.DataFrame({'p': p, 'churn': churn}).sort_values('p', ascending=False)\ndf['desil'] = np.repeat(np.arange(1, 11), 100)\nlift = df.groupby('desil')['churn'].mean() / df['churn'].mean()\nprint(lift.round(2).head(4))\nprint('desil 10:', round(lift.iloc[-1], 2))",
+    "out": "desil\n1    1.79\n2    1.63\n3    1.50\n4    1.25\nName: churn, dtype: float64\ndesil 10: 0.25"
+   },
+   {
+    "t": "Kasus: kapasitas call center hanya 50 panggilan",
+    "d": "Ambang ditentukan dari kapasitas, bukan dari 0,5.",
+    "code": "import numpy as np\n\nrng = np.random.default_rng(5)\np = rng.beta(2, 6, 400)                      # peluang churn dari model\nchurn = rng.random(400) < p\nkapasitas = 50\nurut = np.argsort(-p)\ndipilih = urut[:kapasitas]\nprint(f'ambang efektif: p >= {p[urut[kapasitas - 1]]:.3f}')\nprint(f'churn tertangkap: {churn[dipilih].sum()} dari {churn.sum()} ({churn[dipilih].sum() / churn.sum():.0%})')\nprint(f'precision panggilan: {churn[dipilih].mean():.0%}')",
+    "out": "ambang efektif: p >= 0.443\nchurn tertangkap: 32 dari 120 (27%)\nprecision panggilan: 64%"
+   },
+   {
+    "t": "Kasus: logistic vs random forest untuk data churn",
+    "d": "Bandingkan dengan validasi silang yang sama sebelum memilih model produksi.",
+    "code": "import numpy as np\nimport pandas as pd\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import cross_val_score, StratifiedKFold\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\n\nrng = np.random.default_rng(7)\nn = 600\ndf = pd.DataFrame({'lama_bulan': rng.integers(1, 48, n), 'keluhan': rng.poisson(1.2, n),\n                   'belanja_bln': rng.normal(350, 120, n).clip(50)})\nskor = -1.2 + 0.9 * df.keluhan - 0.06 * df.lama_bulan - 0.003 * (df.belanja_bln - 350)\ny = (rng.random(n) < 1 / (1 + np.exp(-skor))).astype(int)\ncv = StratifiedKFold(5, shuffle=True, random_state=0)\nfor nama, m in [('logistic', make_pipeline(StandardScaler(), LogisticRegression())),\n                ('random forest', RandomForestClassifier(300, min_samples_leaf=10, random_state=0))]:\n    s = cross_val_score(m, df, y, cv=cv, scoring='roc_auc')\n    print(f'{nama:13}: AUC {s.mean():.3f} ± {s.std():.3f}')",
+    "out": "logistic     : AUC 0.759 ± 0.027\nrandom forest: AUC 0.729 ± 0.042"
+   }
+  ]
+ },
+ "dsci-12-1": {
+  "exs": [
+   {
+    "t": "Kasus: metrik toko daring (e-commerce)",
+    "d": "Conversion rate, AOV (nilai rata-rata pesanan), dan repeat rate dihitung dari data mentah.",
+    "code": "import numpy as np\n\npengunjung = 48_000\npesanan = np.array([125_000, 89_000, 240_000, 56_000, 310_000, 98_000, 175_000, 64_000])\ntotal_pesanan_bulan = 1_440\npembeli_ulang, pembeli_total = 310, 1_150\n\nprint(f'conversion rate : {total_pesanan_bulan / pengunjung:.1%}')\nprint(f'AOV (sampel)    : Rp{pesanan.mean():,.0f}')\nprint(f'median pesanan  : Rp{np.median(pesanan):,.0f}')\nprint(f'repeat rate     : {pembeli_ulang / pembeli_total:.1%}')",
+    "out": "conversion rate : 3.0%\nAOV (sampel)    : Rp144,625\nmedian pesanan  : Rp111,500\nrepeat rate     : 27.0%"
+   },
+   {
+    "t": "Kasus: metrik langganan (aplikasi streaming)",
+    "d": "Churn bulanan, ARPU, dan LTV dari rumus umur pelanggan rata-rata = 1 / churn.",
+    "code": "awal, berhenti, baru = 20_000, 900, 1_400\npendapatan = 1_050_000_000           # rupiah per bulan\nmargin = 0.6\n\nchurn = berhenti / awal\narpu = pendapatan / awal\numur_bulan = 1 / churn\nltv = arpu * margin * umur_bulan\nprint(f'churn bulanan : {churn:.1%}')\nprint(f'ARPU          : Rp{arpu:,.0f}')\nprint(f'umur rata-rata: {umur_bulan:.1f} bulan')\nprint(f'LTV           : Rp{ltv:,.0f}')\nprint(f'pelanggan akhir bulan: {awal - berhenti + baru:,}')",
+    "out": "churn bulanan : 4.5%\nARPU          : Rp52,500\numur rata-rata: 22.2 bulan\nLTV           : Rp700,000\npelanggan akhir bulan: 20,500"
+   },
+   {
+    "t": "Kasus: metrik rumah sakit",
+    "d": "Lama rawat rata-rata (ALOS), tingkat kembali dirawat 30 hari, dan keterisian tempat tidur (BOR).",
+    "code": "import numpy as np\n\nlama_rawat = np.array([3, 5, 2, 7, 4, 3, 10, 2, 6, 4])        # hari\nkembali_30_hari = np.array([0, 1, 0, 0, 0, 1, 1, 0, 0, 0])\ntempat_tidur, hari = 120, 30\nhari_rawat_terpakai = 2_950\n\nprint(f'ALOS        : {lama_rawat.mean():.1f} hari (median {np.median(lama_rawat):.1f})')\nprint(f'readmission : {kembali_30_hari.mean():.0%}')\nprint(f'BOR         : {hari_rawat_terpakai / (tempat_tidur * hari):.1%}')",
+    "out": "ALOS        : 4.6 hari (median 4.0)\nreadmission : 30%\nBOR         : 81.9%"
+   }
+  ]
+ },
+ "dsci-12-2": {
+  "exs": [
+   {
+    "t": "Kasus: ambang peluang agar menghubungi pelanggan menguntungkan",
+    "d": "Hubungi jika peluang x keberhasilan x nilai lebih besar dari biaya kontak.",
+    "code": "biaya, berhasil, nilai = 50_000, 0.35, 600_000\nambang = biaya / (berhasil * nilai)\nprint(f'hubungi pelanggan dengan peluang churn di atas {ambang:.1%}')\nfor p in [0.1, 0.25, 0.6]:\n    untung = p * berhasil * nilai - biaya\n    print(f'peluang {p:.0%}: nilai harapan Rp{untung:,.0f} ->', 'hubungi' if untung > 0 else 'lewati')",
+    "out": "hubungi pelanggan dengan peluang churn di atas 23.8%\npeluang 10%: nilai harapan Rp-29,000 -> lewati\npeluang 25%: nilai harapan Rp2,500 -> hubungi\npeluang 60%: nilai harapan Rp76,000 -> hubungi"
+   },
+   {
+    "t": "Kasus: anggaran hanya cukup untuk 40 kontak",
+    "d": "Urutkan menurut nilai harapan, bukan peluang saja, karena nilai pelanggan berbeda-beda.",
+    "code": "import numpy as np\n\nrng = np.random.default_rng(2)\np = rng.beta(2, 5, 300)                                  # peluang churn\nnilai = rng.choice([300_000, 600_000, 1_500_000], 300)  # nilai 12 bulan tiap pelanggan\nharapan = p * 0.35 * nilai - 50_000\n\npilih_p = np.argsort(-p)[:40]\npilih_rp = np.argsort(-harapan)[:40]\nprint(f'urut menurut peluang : Rp{harapan[pilih_p].sum():,.0f}')\nprint(f'urut menurut rupiah  : Rp{harapan[pilih_rp].sum():,.0f}')",
+    "out": "urut menurut peluang : Rp4,547,867\nurut menurut rupiah  : Rp7,538,250"
+   },
+   {
+    "t": "Kasus: seberapa peka hasil terhadap tingkat keberhasilan kampanye",
+    "d": "Asumsi bisnis yang tidak pasti diuji dengan beberapa nilai.",
+    "code": "import numpy as np\n\nrng = np.random.default_rng(7)\np = np.sort(rng.beta(2, 5, 300))[::-1]\nbiaya, nilai = 50_000, 600_000\nfor berhasil in [0.15, 0.25, 0.35, 0.50]:\n    laba = np.cumsum(p * berhasil * nilai - biaya)\n    k = laba.argmax()\n    print(f'keberhasilan {berhasil:.0%}: hubungi {k + 1:3} orang, laba Rp{laba[k]:,.0f}')",
+    "out": "keberhasilan 15%: hubungi  17 orang, laba Rp107,083\nkeberhasilan 25%: hubungi  88 orang, laba Rp1,659,742\nkeberhasilan 35%: hubungi 160 orang, laba Rp4,752,719\nkeberhasilan 50%: hubungi 216 orang, laba Rp10,786,151"
+   }
+  ]
+ },
+ "dsci-12-3": {
+  "exs": [
+   {
+    "t": "Kasus: expected loss = PD x LGD x EAD",
+    "d": "Kerugian yang diperkirakan untuk setiap peminjam dan seluruh portofolio.",
+    "code": "import pandas as pd\n\npinjaman = pd.DataFrame({'nama': ['Andi', 'Bunga', 'Cahyo', 'Dewi'],\n                         'PD': [0.02, 0.08, 0.15, 0.04],           # peluang gagal bayar\n                         'EAD': [10e6, 25e6, 8e6, 50e6]})           # sisa pinjaman (rupiah)\nlgd = 0.6                                                           # porsi yang hilang jika macet\npinjaman['EL'] = pinjaman['PD'] * lgd * pinjaman['EAD']\nprint(pinjaman.to_string(index=False, formatters={'EAD': '{:,.0f}'.format, 'EL': '{:,.0f}'.format}))\nprint(f\"total expected loss: Rp{pinjaman['EL'].sum():,.0f}\")",
+    "out": " nama   PD        EAD        EL\n Andi 0.02 10,000,000   120,000\nBunga 0.08 25,000,000 1,200,000\nCahyo 0.15  8,000,000   720,000\n Dewi 0.04 50,000,000 1,200,000\ntotal expected loss: Rp3,240,000"
+   },
+   {
+    "t": "Kasus: mengubah PD menjadi skor kredit dan sebaliknya",
+    "d": "Skala umum: 600 poin = odds 50:1, setiap 20 poin odds menjadi dua kali lipat.",
+    "code": "import numpy as np\n\ndef skor_dari_pd(pd_):\n    odds = (1 - pd_) / pd_\n    return 600 + 20 / np.log(2) * np.log(odds / 50)\n\ndef pd_dari_skor(skor):\n    odds = 50 * 2 ** ((skor - 600) / 20)\n    return 1 / (1 + odds)\n\nfor p in [0.20, 0.05, 0.0196, 0.01]:\n    print(f'PD {p:.4f} -> skor {skor_dari_pd(p):.0f}')\nprint(f'skor 640 -> PD {pd_dari_skor(640):.4f}')",
+    "out": "PD 0.2000 -> skor 527\nPD 0.0500 -> skor 572\nPD 0.0196 -> skor 600\nPD 0.0100 -> skor 620\nskor 640 -> PD 0.0050"
+   },
+   {
+    "t": "Kasus: approval rate vs bad rate dari daftar PD",
+    "d": "Tabel trade-off untuk rapat komite kredit.",
+    "code": "import numpy as np\nimport pandas as pd\n\nrng = np.random.default_rng(4)\npd_hat = rng.beta(1.5, 20, 5000)\nmacet = rng.random(5000) < pd_hat\nbaris = []\nfor ambang in [0.04, 0.08, 0.12, 0.20]:\n    setuju = pd_hat < ambang\n    baris.append([ambang, setuju.mean(), macet[setuju].mean()])\nprint(pd.DataFrame(baris, columns=['ambang_PD', 'approval', 'bad_rate']).round(3).to_string(index=False))",
+    "out": " ambang_PD  approval  bad_rate\n      0.04     0.337     0.020\n      0.08     0.649     0.036\n      0.12     0.833     0.054\n      0.20     0.970     0.068"
+   }
+  ]
+ },
+ "dsci-12-4": {
+  "exs": [
+   {
+    "t": "Kasus: menerjemahkan precision dan recall ke kalimat bisnis",
+    "d": "Angka metrik diubah menjadi \"dari 100 orang...\" yang mudah dipahami.",
+    "code": "dihubungi = 200\nbenar_churn = 84            # dari yang dihubungi, memang akan churn\ntotal_churn = 150           # semua pelanggan yang akan churn bulan ini\n\nprecision = benar_churn / dihubungi\nrecall = benar_churn / total_churn\nprint(f'precision {precision:.2f}, recall {recall:.2f}')\nprint(f'Dari setiap 100 pelanggan yang kita hubungi, sekitar {precision * 100:.0f} memang berniat berhenti.')\nprint(f'Kampanye ini menjangkau {recall:.0%} dari semua pelanggan yang akan berhenti bulan ini.')",
+    "out": "precision 0.42, recall 0.56\nDari setiap 100 pelanggan yang kita hubungi, sekitar 42 memang berniat berhenti.\nKampanye ini menjangkau 56% dari semua pelanggan yang akan berhenti bulan ini."
+   },
+   {
+    "t": "Kasus: melaporkan angka beserta ketidakpastiannya",
+    "d": "Bootstrap memberi rentang untuk \"menangkap X% pelanggan churn\".",
+    "code": "import numpy as np\n\nrng = np.random.default_rng(0)\nn = 300\ny = (rng.random(n) < 0.25).astype(int)\np = np.clip(0.25 + 0.3 * (y - 0.25) + rng.normal(0, 0.15, n), 0, 1)\n\ndef tangkap_20(y, p):\n    atas = np.argsort(-p)[:int(len(p) * 0.2)]\n    return y[atas].sum() / y.sum()\n\nboot = []\nfor _ in range(1000):\n    i = rng.integers(0, n, n)\n    boot.append(tangkap_20(y[i], p[i]))\nlo, hi = np.percentile(boot, [5, 95])\nprint(f'20% teratas menangkap {tangkap_20(y, p):.0%} pelanggan churn (kisaran 90%: {lo:.0%}-{hi:.0%})')",
+    "out": "20% teratas menangkap 76% pelanggan churn (kisaran 90%: 66%-83%)"
+   },
+   {
+    "t": "Kasus: ringkasan per segmen untuk eksekutif",
+    "d": "Satu tabel kecil: berapa pelanggan, berapa yang berisiko, dan potensi rupiahnya.",
+    "code": "import numpy as np\nimport pandas as pd\n\nrng = np.random.default_rng(3)\nn = 900\ndf = pd.DataFrame({'segmen': rng.choice(['baru', 'menengah', 'setia'], n, p=[0.3, 0.4, 0.3]),\n                   'nilai_12bln': rng.gamma(3, 200_000, n)})\ndf['p_churn'] = np.where(df.segmen == 'baru', 0.35, np.where(df.segmen == 'menengah', 0.18, 0.06))\ndf['potensi_hilang'] = df['p_churn'] * df['nilai_12bln']\nringkas = df.groupby('segmen').agg(pelanggan=('p_churn', 'size'),\n                                   peluang_churn=('p_churn', 'mean'),\n                                   potensi_hilang_juta=('potensi_hilang', 'sum'))\nringkas['potensi_hilang_juta'] = (ringkas['potensi_hilang_juta'] / 1e6).round(1)\nprint(ringkas)",
+    "out": "          pelanggan  peluang_churn  potensi_hilang_juta\nsegmen                                                 \nbaru            276           0.35                 59.4\nmenengah        368           0.18                 41.6\nsetia           256           0.06                  9.3"
+   }
+  ]
+ },
+ "dsci-12-5": {
+  "exs": [
+   {
+    "t": "Kasus: kerangka README proyek portofolio",
+    "d": "Urutan yang dibaca perekrut dalam 30 detik pertama.",
+    "code": "# Prediksi Paket Terlambat (Ekspedisi)\n\nMasalah     Gudang hanya bisa memprioritaskan 15% paket per hari.\nHasil       Model menangkap 48% paket telat di 15% teratas (acak: 15%);\n            perkiraan hemat kompensasi Rp120 juta per bulan.\nData        60.000 pengiriman fiktif, 14 kolom, 3 masalah kualitas yang dibersihkan.\nMetode      EDA -> fitur jarak, jam, cuaca -> HistGradientBoosting + validasi waktu.\nCara pakai  make install && make test && make serve\nBatasan     Data fiktif; belum diuji di musim Lebaran."
+   },
+   {
+    "t": "Kasus: menjawab \"ceritakan proyekmu\" dengan STAR",
+    "d": "Situation, Task, Action, Result, dengan angka di bagian hasil.",
+    "code": "S  Tim retensi aplikasi kehilangan 4% pelanggan per bulan.\nT  Saya diminta menentukan siapa yang dihubungi dengan kuota 2.000 panggilan.\nA  Membersihkan data 12 bulan, membuat fitur keluhan per bulan,\n   membandingkan logistic regression dan gradient boosting dengan validasi silang,\n   memilih ambang dari kurva laba, bukan dari 0,5.\nR  Kampanye uji A/B menurunkan churn 0,8 poin; dampak bersih Rp270 juta per bulan."
+   },
+   {
+    "t": "Kasus: daftar periksa sebelum mengumpulkan take-home test",
+    "d": "Hal-hal yang paling sering membuat kandidat gugur.",
+    "code": "[ ] Notebook berjalan dari atas ke bawah tanpa error (Restart & Run All)\n[ ] Ada patokan sederhana sebelum model rumit\n[ ] Data uji tidak dipakai untuk memilih fitur atau hyperparameter\n[ ] Metrik dipilih sesuai masalah bisnis dan dijelaskan alasannya\n[ ] Kesimpulan ditulis untuk orang non-teknis, maksimal satu halaman\n[ ] Asumsi dan batasan disebutkan terus terang\n[ ] Kode rapi: fungsi bernama jelas, tanpa sel yang tidak terpakai"
    }
   ]
  }

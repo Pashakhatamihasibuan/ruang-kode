@@ -1,0 +1,165 @@
+{
+ "aturan": [
+  [
+   "WHERE",
+   "(?i)\\bWHERE\\b",
+   "^WHERE"
+  ],
+  [
+   "ORDER BY",
+   "(?i)\\bORDER\\s+BY\\b",
+   "^ORDER BY"
+  ],
+  [
+   "LIMIT/OFFSET",
+   "(?i)\\b(LIMIT|OFFSET)\\s+\\d",
+   "^ORDER BY, LIMIT"
+  ],
+  [
+   "DISTINCT",
+   "(?i)\\bDISTINCT\\b",
+   "LIMIT & DISTINCT"
+  ],
+  [
+   "INSERT",
+   "(?i)\\bINSERT\\b",
+   "^INSERT"
+  ],
+  [
+   "UPDATE/DELETE",
+   "(?i)^\\s*(UPDATE|DELETE)\\b",
+   "^UPDATE & DELETE"
+  ],
+  [
+   "fungsi agregat",
+   "(?i)\\b(COUNT|SUM|AVG|MIN|MAX|GROUP_CONCAT)\\s*\\(",
+   "^Fungsi agregat"
+  ],
+  [
+   "GROUP BY",
+   "(?i)\\bGROUP\\s+BY\\b",
+   "^GROUP BY"
+  ],
+  [
+   "HAVING",
+   "(?i)\\bHAVING\\b",
+   "^HAVING"
+  ],
+  [
+   "CREATE TABLE",
+   "(?i)\\bCREATE\\s+TABLE\\b",
+   "^CREATE TABLE"
+  ],
+  [
+   "ALTER/DROP/TRUNCATE",
+   "(?i)\\bALTER\\s+TABLE\\b|\\bDROP\\s+(TABLE|VIEW|INDEX|COLUMN)\\b|\\bTRUNCATE\\b",
+   "^ALTER, DROP"
+  ],
+  [
+   "primary/foreign key",
+   "(?i)\\bPRIMARY\\s+KEY\\b|\\bFOREIGN\\s+KEY\\b|\\bREFERENCES\\b",
+   "^Primary key"
+  ],
+  [
+   "UNIQUE/NOT NULL/CHECK",
+   "(?i)\\bUNIQUE\\b|(?<!IS )\\bNOT\\s+NULL\\b|\\bCHECK\\s*\\(",
+   "^UNIQUE, NOT NULL"
+  ],
+  [
+   "JOIN",
+   "(?i)\\bJOIN\\b",
+   "^INNER JOIN"
+  ],
+  [
+   "outer join & UNION",
+   "(?i)\\b(LEFT|RIGHT|FULL)\\s+(OUTER\\s+)?JOIN\\b|\\bUNION\\b",
+   "^LEFT, RIGHT"
+  ],
+  [
+   "CROSS JOIN",
+   "(?i)\\bCROSS\\s+JOIN\\b",
+   "^Self join"
+  ],
+  [
+   "subquery",
+   "(?i)\\(\\s*SELECT\\b",
+   "^Subquery"
+  ],
+  [
+   "EXISTS",
+   "(?i)\\bEXISTS\\s*\\(",
+   "^Correlated subquery"
+  ],
+  [
+   "fungsi angka & teks",
+   "(?i)\\b(ROUND|ABS|CEIL|CEILING|FLOOR|MOD|UPPER|LOWER|LENGTH|SUBSTR|SUBSTRING|REPLACE|TRIM|LTRIM|RTRIM|CONCAT|INSTR|printf|format)\\s*\\(",
+   "^Fungsi angka"
+  ],
+  [
+   "fungsi tanggal",
+   "(?i)\\b(DATE|TIME|DATETIME|strftime|julianday|DATEADD|DATEDIFF|DATEPART|EXTRACT)\\s*\\(|\\bCURRENT_(DATE|TIMESTAMP|TIME)\\b",
+   "^Fungsi tanggal"
+  ],
+  [
+   "CASE",
+   "(?i)\\bCASE\\b",
+   "^CASE"
+  ],
+  [
+   "COALESCE/NULLIF",
+   "(?i)\\b(COALESCE|NULLIF|IFNULL)\\s*\\(",
+   "^CASE, COALESCE"
+  ],
+  [
+   "VIEW",
+   "(?i)\\bCREATE\\s+(OR\\s+REPLACE\\s+)?VIEW\\b",
+   "^View"
+  ],
+  [
+   "INDEX & EXPLAIN",
+   "(?i)\\bCREATE\\s+(UNIQUE\\s+)?INDEX\\b|\\bEXPLAIN\\b",
+   "^Index"
+  ],
+  [
+   "transaksi",
+   "(?i)^\\s*(BEGIN|COMMIT|ROLLBACK|SAVEPOINT)\\b",
+   "^BEGIN, COMMIT"
+  ],
+  [
+   "tingkat isolasi",
+   "(?i)\\bISOLATION\\s+LEVEL\\b",
+   "^ACID"
+  ],
+  [
+   "GRANT/REVOKE",
+   "(?i)^\\s*(GRANT|REVOKE)\\b|\\bCREATE\\s+(ROLE|USER)\\b",
+   "^GRANT, REVOKE"
+  ],
+  [
+   "procedure/function/trigger",
+   "(?i)\\bCREATE\\s+(OR\\s+REPLACE\\s+)?(PROCEDURE|FUNCTION|TRIGGER)\\b",
+   "^Stored procedure"
+  ],
+  [
+   "CTE (WITH)",
+   "(?i)^\\s*WITH\\b",
+   "^CTE"
+  ],
+  [
+   "RECURSIVE",
+   "(?i)\\bRECURSIVE\\b",
+   "^Query rekursif"
+  ],
+  [
+   "window function",
+   "(?i)\\bOVER\\s*\\(",
+   "^Window function"
+  ],
+  [
+   "LAG/LEAD",
+   "(?i)\\b(LAG|LEAD)\\s*\\(",
+   "^LEAD, LAG"
+  ]
+ ],
+ "abaikan": []
+}
