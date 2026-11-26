@@ -10,6 +10,14 @@ export function DoneMarks() {
       document.querySelectorAll<HTMLElement>("[data-lid]").forEach((a) => {
         if (s.done[a.dataset.lid!]) a.setAttribute("data-done", ""); else a.removeAttribute("data-done");
       });
+      // hitungan selesai per materi di sidebar, misalnya "3/7"; penuh diberi tanda centang
+      document.querySelectorAll<HTMLElement>("[data-ids]").forEach((c) => {
+        const ids = (c.dataset.ids || "").split(",").filter(Boolean);
+        const d = ids.filter((i) => s.done[i]).length;
+        c.textContent = d === ids.length && d > 0 ? "✓" : d ? `${d}/${ids.length}` : String(ids.length);
+        c.setAttribute("aria-label", d ? `${d} dari ${ids.length} sub materi selesai` : `${ids.length} sub materi`);
+        if (d === ids.length && d > 0) c.setAttribute("data-full", ""); else c.removeAttribute("data-full");
+      });
     };
     paint();
     window.addEventListener("rk-lms", paint);

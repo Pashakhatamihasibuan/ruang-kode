@@ -84,28 +84,36 @@ async function Files({ files }: { files: [string, string, string][] }) {
 }
 
 function Sidebar({ t, l }: { t: Track; l: Body }) {
-  const m = t.mods[l.mi];
+  const total = t.mods.reduce((n, m) => n + m.lessons.length, 0);
   return (
-    <nav className="clay side" id="side" aria-label={`Daftar pelajaran ${t.name}`}>
-      <span className="eyebrow">Modul {l.mi + 1} dari {t.mods.length}</span>
-      <h2>{m.t}</h2>
-      <ol>
-        {m.lessons.map((x, i) => (
-          <li key={x.id}>
-            <Link href={lessonHref(t, x)} prefetch={false} data-lid={x.k === "see" ? x.srcId : x.id} aria-current={x.id === l.id ? "page" : undefined}>
-              <span className="dot" aria-hidden="true">{i + 1}</span><span>{x.title}</span>
-            </Link>
-          </li>
-        ))}
+    <nav className="clay side" id="side" aria-label={`Daftar materi ${t.name}`}>
+      <span className="eyebrow">{t.name} · {t.mods.length} materi · {total} sub materi</span>
+      <ol className="mods">
+        {t.mods.map((m, mi) => {
+          const ids = m.lessons.map((x) => (x.k === "see" ? x.srcId : x.id)).filter(Boolean) as string[];
+          const now = mi === l.mi;
+          return (
+            <li key={mi}>
+              <details className="mod" open={now} data-now={now ? "" : undefined}>
+                <summary>
+                  <span className="mn" aria-hidden="true">{mi + 1}</span>
+                  <span className="mt">{m.t}</span>
+                  <span className="mc" data-ids={ids.join(",")} aria-label={`${m.lessons.length} sub materi`}>{m.lessons.length}</span>
+                </summary>
+                <ol>
+                  {m.lessons.map((x, i) => (
+                    <li key={x.id}>
+                      <Link href={lessonHref(t, x)} prefetch={false} data-lid={x.k === "see" ? x.srcId : x.id} aria-current={x.id === l.id ? "page" : undefined}>
+                        <span className="dot" aria-hidden="true">{i + 1}</span><span>{x.title}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ol>
+              </details>
+            </li>
+          );
+        })}
       </ol>
-      <div className="mods-mini">
-        <span className="eyebrow">Modul lain</span>
-        <ol>
-          {t.mods.map((mm, mi) => mi !== l.mi && mm.lessons[0] && (
-            <li key={mi}><Link href={lessonHref(t, mm.lessons[0])} prefetch={false}><span className="dot" aria-hidden="true">{mi + 1}</span><span>{mm.t}</span></Link></li>
-          ))}
-        </ol>
-      </div>
     </nav>
   );
 }
