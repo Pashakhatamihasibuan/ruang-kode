@@ -1,0 +1,225 @@
+{
+ "aturan": [
+  [
+   "dict",
+   "\\{\\s*['\\\"][^'\\\"\\n]*['\\\"]\\s*:\\s|\\bdict\\(",
+   "^Python inti untuk data"
+  ],
+  [
+   "for / comprehension",
+   "^\\s*for\\s|\\bfor\\s+\\w+(\\s*,\\s*\\w+)*\\s+in\\s",
+   "^Python inti untuk data"
+  ],
+  [
+   "while",
+   "^\\s*while\\s",
+   "^Python inti untuk data"
+  ],
+  [
+   "if/elif/else",
+   "^\\s*(if|elif|else)\\b|\\sif\\s.+\\selse\\s",
+   "^Python inti untuk data"
+  ],
+  [
+   "break/continue",
+   "^\\s*(break|continue)\\b",
+   "^Python inti untuk data"
+  ],
+  [
+   "fungsi (def/return)",
+   "^\\s*def\\s|\\breturn\\b",
+   "^Python inti untuk data"
+  ],
+  [
+   "enumerate/zip",
+   "\\b(enumerate|zip)\\(",
+   "^Python inti untuk data"
+  ],
+  [
+   "lambda",
+   "\\blambda\\b",
+   "^Menyaring dan menggabungkan"
+  ],
+  [
+   "NumPy",
+   "\\bnp\\.|\\bimport numpy|\\bfrom numpy",
+   "^NumPy"
+  ],
+  [
+   "pandas",
+   "\\bpd\\.|\\bimport pandas|\\bfrom pandas",
+   "^pandas: Series"
+  ],
+  [
+   "pandas: sort/rename/sample/to_csv/tanggal",
+   "\\.(sort_values|sort_index|rename|sample|to_csv|to_excel)\\(|\\bto_datetime\\(|\\.dt\\.",
+   "^pandas sehari-hari"
+  ],
+  [
+   "pandas: loc/iloc",
+   "\\.i?loc\\[",
+   "^Menyaring dan menggabungkan"
+  ],
+  [
+   "pandas: isin/apply/map",
+   "\\.(isin|apply|map)\\(",
+   "^Menyaring dan menggabungkan"
+  ],
+  [
+   "pandas: merge/concat",
+   "\\.merge\\(|\\bpd\\.concat\\(",
+   "^Menyaring dan menggabungkan"
+  ],
+  [
+   "pandas: groupby/agg",
+   "\\.(groupby|agg)\\(",
+   "^Menyaring dan menggabungkan"
+  ],
+  [
+   "pandas: nilai hilang & value_counts",
+   "\\.(isna|isnull|notna|fillna|dropna|value_counts|info)\\(",
+   "^Memahami data: info"
+  ],
+  [
+   "pandas: duplikat",
+   "\\.(duplicated|drop_duplicates)\\(",
+   "^Membersihkan data"
+  ],
+  [
+   "pandas: pivot/melt",
+   "\\.(pivot_table|pivot|melt)\\(",
+   "^EDA univariat"
+  ],
+  [
+   "deret waktu (resample/rolling/shift)",
+   "\\.(resample|rolling|shift)\\(|\\bpd\\.date_range\\(",
+   "^Deret waktu"
+  ],
+  [
+   "SciPy stats",
+   "\\bscipy\\b|\\bstats\\.",
+   "^Uji hipotesis dan p-value"
+  ],
+  [
+   "statsmodels",
+   "statsmodels",
+   "^Regresi linear: menarik"
+  ],
+  [
+   "Matplotlib",
+   "\\bplt\\.|\\bmatplotlib\\b",
+   "^Matplotlib: grafik garis"
+  ],
+  [
+   "scatter/anotasi",
+   "\\.(scatter|annotate)\\(",
+   "^Matplotlib: scatter"
+  ],
+  [
+   "korelasi & heatmap",
+   "\\.corr\\(|\\bimshow\\(",
+   "^Korelasi dan heatmap"
+  ],
+  [
+   "scikit-learn & train/test split",
+   "\\bsklearn\\b|\\btrain_test_split\\b",
+   "^Alur ML"
+  ],
+  [
+   "metrik regresi",
+   "\\b(mean_absolute_error|mean_squared_error|root_mean_squared_error|r2_score|mean_absolute_percentage_error)\\b",
+   "^Regresi dan metriknya"
+  ],
+  [
+   "LinearRegression/Ridge/Lasso",
+   "\\b(LinearRegression|Ridge|RidgeCV|Lasso|LassoCV)\\b",
+   "^Regresi dan metriknya"
+  ],
+  [
+   "metrik klasifikasi (confusion matrix, precision, recall)",
+   "\\b(confusion_matrix|precision_score|recall_score|f1_score|classification_report|roc_curve|precision_recall_curve|ConfusionMatrixDisplay)\\b",
+   "^Klasifikasi: logistic"
+  ],
+  [
+   "decision tree / random forest",
+   "\\b(DecisionTree\\w*|RandomForest\\w*|export_text|feature_importances_)\\b",
+   "^Decision tree dan random forest"
+  ],
+  [
+   "K-Means & standardisasi",
+   "\\b(KMeans|silhouette_score|StandardScaler)\\b",
+   "^Clustering K-Means"
+  ],
+  [
+   "validasi silang & Pipeline",
+   "\\b(cross_val_score|cross_val_predict|cross_validate|KFold|StratifiedKFold|GroupKFold|TimeSeriesSplit|Pipeline|make_pipeline)\\b",
+   "^Validasi silang"
+  ],
+  [
+   "encoding (OneHot/ColumnTransformer)",
+   "\\b(OneHotEncoder|OrdinalEncoder|ColumnTransformer|make_column_transformer|get_dummies)\\b",
+   "^Peta ML dan persiapan"
+  ],
+  [
+   "data tidak seimbang (class_weight, PR-AUC)",
+   "\\bclass_weight\\b|\\baverage_precision_score\\b|\\bSMOTE\\b",
+   "^Data tidak seimbang"
+  ],
+  [
+   "regresi polinomial",
+   "\\bPolynomialFeatures\\b",
+   "^Regresi polinomial"
+  ],
+  [
+   "KNN",
+   "\\b(KNeighbors\\w*|NearestNeighbors)\\b",
+   "K-Nearest Neighbors"
+  ],
+  [
+   "Naive Bayes & vektorisasi teks",
+   "\\b(MultinomialNB|GaussianNB|BernoulliNB|ComplementNB|CountVectorizer|TfidfVectorizer)\\b",
+   "^Naive Bayes"
+  ],
+  [
+   "gradient boosting & tuning",
+   "\\b(GradientBoosting\\w*|HistGradientBoosting\\w*|GridSearchCV|RandomizedSearchCV|XGB\\w*|LGBM\\w*)\\b",
+   "^Gradient boosting dan tuning"
+  ],
+  [
+   "PCA",
+   "\\bPCA\\b",
+   "^PCA"
+  ],
+  [
+   "SVM",
+   "\\b(SVC|SVR|LinearSVC)\\b",
+   "^Support Vector Machine"
+  ],
+  [
+   "ensemble (bagging/AdaBoost/stacking/voting)",
+   "\\b(Bagging\\w*|AdaBoost\\w*|Stacking\\w*|Voting\\w*)\\b",
+   "^Ensemble"
+  ],
+  [
+   "DBSCAN / hierarki",
+   "\\b(DBSCAN|AgglomerativeClustering|linkage)\\b",
+   "^Clustering lanjutan"
+  ],
+  [
+   "deteksi anomali",
+   "\\b(IsolationForest|LocalOutlierFactor)\\b",
+   "^Deteksi anomali"
+  ],
+  [
+   "t-SNE",
+   "\\bTSNE\\b",
+   "^t-SNE"
+  ],
+  [
+   "menyimpan model & API (joblib, FastAPI, class)",
+   "\\bjoblib\\b|\\bfastapi\\b|\\bFastAPI\\b|^\\s*class\\s",
+   "^Menyimpan model"
+  ]
+ ],
+ "abaikan": []
+}
