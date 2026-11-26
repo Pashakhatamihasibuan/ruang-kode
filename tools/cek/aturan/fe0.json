@@ -1,0 +1,150 @@
+{
+ "aturan": [
+  [
+   "variabel (const/let/var)",
+   "^\\s*(const|let|var)\\s",
+   "Variabel & tipe data"
+  ],
+  [
+   "typeof",
+   "\\btypeof\\b",
+   "Variabel & tipe data"
+  ],
+  [
+   "template literal",
+   "`[^`]*\\$\\{",
+   "Variabel & tipe data"
+  ],
+  [
+   "if/else/switch",
+   "^\\s*(if|else|switch)\\b|\\belse\\b|\\bif\\s*\\(|\\bswitch\\s*\\(",
+   "Operator & percabangan"
+  ],
+  [
+   "logika & kondisional (&& || ?? ?. ternary)",
+   "&&|\\|\\||\\?\\?|\\?\\.|\\s\\?\\s[^:\\n]+\\s:\\s",
+   "Operator & percabangan"
+  ],
+  [
+   "fungsi (function/arrow/return)",
+   "\\bfunction\\b|=>|\\breturn\\b",
+   "^Fungsi$"
+  ],
+  [
+   "timer (setTimeout/setInterval)",
+   "\\bset(Timeout|Interval)\\(",
+   "^Fungsi$"
+  ],
+  [
+   "array",
+   "\\[[^\\]\\n]*,[^\\]\\n]*\\]|\\.(push|pop|shift|unshift|splice)\\(|=\\s*\\[\\s*\\]",
+   "Array & objek"
+  ],
+  [
+   "object literal",
+   "\\{\\s*[\\\"'\\w$]+\\s*:\\s*",
+   "Array & objek"
+  ],
+  [
+   "metode array (map/filter/reduce/...)",
+   "\\.(map|filter|reduce|forEach|some|every|find|findIndex|sort|toSorted|flatMap)\\(",
+   "Array & objek"
+  ],
+  [
+   "destructuring/spread",
+   "[\\[(,{]\\s*\\.\\.\\.\\s*[\\w\\[$]|\\b(const|let|var)\\s*[\\[{]|^\\s*\\[\\w+(\\[\\w+\\])?\\s*,|\\(\\s*\\{\\s*\\w+\\s*[,=}]",
+   "Array & objek"
+  ],
+  [
+   "DOM & event",
+   "\\bdocument\\.|\\baddEventListener\\(|\\bwindow\\.",
+   "DOM & event"
+  ],
+  [
+   "JSON",
+   "\\bJSON\\.",
+   "Mengambil data"
+  ],
+  [
+   "fetch/Promise/async",
+   "\\bfetch\\(|\\bPromise\\b|\\.then\\(|\\basync\\b|\\bawait\\b",
+   "Mengambil data"
+  ],
+  [
+   "try/catch/throw",
+   "^\\s*try\\b|\\btry\\s*\\{|\\bcatch\\s*[({]|\\bthrow\\b|\\bfinally\\b",
+   "Mengambil data|try\\.\\.\\.catch"
+  ],
+  [
+   "for/while",
+   "^\\s*(for|while)\\b|[;{]\\s*(for|while)\\s*\\(",
+   "Perulangan: for"
+  ],
+  [
+   "do-while",
+   "^\\s*do\\s*\\{|\\bdo\\s*\\{",
+   "Semua jenis perulangan"
+  ],
+  [
+   "break/continue/label",
+   "\\b(break|continue)\\b\\s*\\w*;|^\\s*\\w+:\\s*for\\b",
+   "Semua jenis perulangan"
+  ],
+  [
+   "import/export",
+   "^\\s*(import|export)\\b|\\bimport\\(",
+   "Modul: import"
+  ],
+  [
+   "Math.random",
+   "\\bMath\\.random\\b|\\bcrypto\\.",
+   "Random number"
+  ],
+  [
+   "Intl",
+   "\\bIntl\\.",
+   "Format specifier"
+  ],
+  [
+   "vitest (describe/it/expect)",
+   "\\b(describe|it|expect|test)\\(",
+   "Vitest"
+  ],
+  [
+   "class",
+   "^\\s*class\\s|\\bclass\\s+\\w+\\s*(\\{|extends)",
+   "^$a"
+  ],
+  [
+   "generator",
+   "function\\s*\\*|\\byield\\b",
+   "^$a"
+  ],
+  [
+   "Map/Set",
+   "\\bnew (Map|Set|WeakMap|WeakSet)\\b",
+   "^$a"
+  ],
+  [
+   "typed array",
+   "\\b(Uint8|Int8|Uint16|Int16|Uint32|Int32|Float32|Float64)(Clamped)?Array\\b",
+   "^$a"
+  ],
+  [
+   "bigint",
+   "\\b\\d+n\\b|\\bBigInt\\b",
+   "^$a"
+  ],
+  [
+   "bitwise",
+   "\\w\\s*(<<|>>>?)\\s*\\w|[\\w)]\\s*[&|^]=|\\s[&|^]\\s(0x|\\d|~|\\()|~\\w|Math\\.imul",
+   "^$a"
+  ],
+  [
+   "RegExp",
+   "/[^/\\n*]+/[gimsuy]*\\.(test|exec)\\(|\\.(match|replace)\\(/",
+   "^$a"
+  ]
+ ],
+ "abaikan": []
+}

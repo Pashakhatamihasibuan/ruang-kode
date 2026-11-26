@@ -1,6 +1,31 @@
 {
  "aturan": [
   [
+   "typecasting & type()",
+   "\\b(int|float|str|bool|type)\\(",
+   "typecasting"
+  ],
+  [
+   "perbandingan",
+   "[\\w)\\]\\\"']\\s*(==|!=|<=|>=)\\s*[\\w(\\\"'-]",
+   "^Ekspresi & operator"
+  ],
+  [
+   "walrus :=",
+   ":=",
+   "walrus"
+  ],
+  [
+   "is / in",
+   "\\bis\\s+(not\\s+)?None\\b|\\w\\s+(not\\s+)?in\\s+[\\w\\\"'(\\[]",
+   "^Ekspresi & operator|Operator lengkap"
+  ],
+  [
+   "input()",
+   "\\binput\\(",
+   "Membaca input"
+  ],
+  [
    "fungsi (def)",
    "^\\s*def\\s",
    "^Fungsi"
@@ -11,19 +36,29 @@
    "Parameter & return"
   ],
   [
-   "input()",
-   "\\binput\\(",
-   "Membaca input"
+   "argumen default / *args / **kwargs",
+   "^\\s*def\\s+\\w+\\([^)]*(=|\\*)",
+   "Argumen default"
   ],
   [
-   "f-string",
-   "\\bf[\\\"']",
+   "global/nonlocal",
+   "^\\s*(global|nonlocal)\\s",
+   "Scope variabel"
+  ],
+  [
+   "indeks & slicing",
+   "[\\w)\\]]\\[",
+   "^String$"
+  ],
+  [
+   "f-string / format",
+   "\\bf[\\\"']|\\.format\\(",
    "f-string"
   ],
   [
    "method string",
-   "\\.(upper|lower|strip|split|replace|join|startswith|endswith|find|title)\\(",
-   "f-string, slicing|^String$"
+   "\\.(upper|lower|strip|lstrip|rstrip|split|replace|join|startswith|endswith|find|title|capitalize|casefold|count|isdigit|isalpha|isalnum|isupper|islower|zfill|center|ljust|rjust)\\(",
+   "^String$|f-string, slicing"
   ],
   [
    "if/else",
@@ -36,8 +71,18 @@
    "match-case"
   ],
   [
+   "and/or/not",
+   "[\\w)\\]\\\"']\\s+(and|or)\\s+[\\w(\\\"'\\[]|(^|[(=,]|(?<!\\bis)\\s)not\\s+(?!in\\b)[\\w(\\\"'\\[]",
+   "Perulangan Tak Pasti|Logika boolean"
+  ],
+  [
    "for",
    "^\\s*for\\s|\\sfor\\s\\w+\\sin\\s",
+   "Perulangan Pasti|Perulangan for"
+  ],
+  [
+   "range()",
+   "\\brange\\(",
    "Perulangan Pasti|Perulangan for"
   ],
   [
@@ -46,49 +91,54 @@
    "Perulangan Tak Pasti|Perulangan while"
   ],
   [
-   "range()",
-   "\\brange\\(",
-   "Perulangan Pasti|Perulangan for"
-  ],
-  [
    "enumerate/zip",
    "\\b(enumerate|zip)\\(",
    "enumerate, zip"
   ],
   [
    "break/continue",
-   "^\\s*(break|continue)\\b",
+   "^\\s*(break|continue)\\b|:\\s*(break|continue)\\s*$",
    "enumerate, zip|break"
   ],
   [
    "random",
-   "\\bimport random|\\brandom\\.",
+   "\\bimport random|\\bfrom random\\b|\\brandom\\.",
    "Random number"
   ],
   [
    "list",
-   "\\[[^\\]]*,[^\\]]*\\]|\\.append\\(|\\blist\\(",
+   "\\[[^\\]]*,[^\\]]*\\]|=\\s*\\[\\s*\\]|\\.(append|insert|pop|remove|extend|sort|reverse)\\(|\\blist\\(",
    "^List$"
   ],
   [
-   "tuple unpacking",
-   "^\\s*\\w+\\s*,\\s*\\w+\\s*=",
+   "tuple & unpacking",
+   "^\\s*\\w+\\s*,\\s*\\*?\\w+\\s*(,\\s*\\*?\\w+\\s*)*=|=\\s*\\(\\s*[^()]*,[^()]*\\)|\\breturn\\s+[\\w.]+\\s*,|\\btuple\\(",
    "Tuple & unpacking"
   ],
   [
    "set",
-   "\\bset\\(|\\{[^:{}]+,[^:{}]+\\}",
+   "\\bset\\(|\\{[^:{}]+,[^:{}]+\\}|\\.add\\(",
    "Koleksi|Set:"
   ],
   [
    "dict",
-   "\\{\\s*[\\\"'\\w]+\\s*:\\s*|\\bdict\\(",
+   "\\{\\s*[\\\"'][^\\\"']*[\\\"']\\s*:\\s|\\{\\s*\\w+\\s*:\\s+\\S|\\{\\s*\\}|\\bdict\\(|\\.(items|keys|values|setdefault)\\(",
    "Koleksi|Map:"
+  ],
+  [
+   "collections",
+   "\\bcollections\\b|\\b(Counter|defaultdict|deque|namedtuple)\\(",
+   "Dictionary lanjutan"
   ],
   [
    "file open",
    "\\bopen\\(",
    "Pemrosesan File"
+  ],
+  [
+   "with",
+   "^\\s*with\\s",
+   "Pemrosesan File|Context manager"
   ],
   [
    "try/except",
@@ -101,28 +151,38 @@
    "raise"
   ],
   [
-   "with",
-   "^\\s*with\\s",
-   "Context manager"
+   "kelas exception sendiri",
+   "^\\s*class\\s+\\w+\\(\\w*(Error|Exception)\\)",
+   "exception buatan sendiri"
+  ],
+  [
+   "pathlib/glob",
+   "\\b(pathlib|glob)\\b|\\bPath\\(",
+   "pathlib"
   ],
   [
    "import",
-   "^\\s*(import|from)\\s",
+   "^\\s*(import|from)\\s+(?!(random|pathlib|glob|collections)\\b)",
    "Import & modul"
   ],
   [
    "class",
-   "^\\s*class\\s",
+   "^\\s*class\\s+(?!\\w+\\(\\w*(Error|Exception)\\))",
+   "Kelas & Objek|Kelas, konstruktor"
+  ],
+  [
+   "self/super",
+   "\\bself\\b|\\bsuper\\(\\)",
    "Kelas & Objek|Kelas, konstruktor"
   ],
   [
    "@dataclass/@property",
-   "@(dataclass|property)",
+   "@(dataclass|property|\\w+\\.setter)\\b",
    "property & dataclass"
   ],
   [
    "comprehension",
-   "\\[[^\\]]+\\sfor\\s[^\\]]+\\]|\\{[^}]+\\sfor\\s[^}]+\\}",
+   "\\[[^\\]]+\\sfor\\s[^\\]]+\\]|\\{[^}]+\\sfor\\s[^}]+\\}|\\([^()\\n]*\\sfor\\s+\\w+(\\s*,\\s*\\w+)*\\s+in\\s",
    "comprehension"
   ],
   [
@@ -133,21 +193,21 @@
   [
    "lambda",
    "\\blambda\\b",
-   "^Lambda"
+   "^Lambda|Pemrograman Fungsional"
   ],
   [
    "map/filter/reduce",
    "\\b(map|filter|reduce)\\(",
-   "filter, map, reduce"
+   "filter, map, reduce|Pemrograman Fungsional"
   ],
   [
    "decorator",
-   "^\\s*@\\w",
-   "Decorator"
+   "^\\s*@(?!(dataclass|property|\\w+\\.setter)\\b)\\w",
+   "^Decorator"
   ],
   [
    "type hints",
-   "def \\w+\\([^)]*:\\s*\\w|->\\s*\\w",
+   "def \\w+\\([^)]*:\\s*\\w|\\)\\s*->\\s*\\w",
    "Anotasi tipe"
   ],
   [
