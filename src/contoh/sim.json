@@ -1,0 +1,72 @@
+{
+ "sim-1-1": {
+  "cx": [
+   {
+    "t": "SIM mini: dari catatan kasir menjadi laporan manajer toko",
+    "b": "Catatan kasir (hari, produk, jumlah, harga) dijumlahkan per hari dan per produk, lalu dibandingkan dengan target harian Rp 1 juta.",
+    "code": "CATATAN KASIR\n  Sen Kopi 42 x 18.000   Sen Teh 18 x 12.000\n  Sel Kopi 38 x 18.000   Sel Teh 25 x 12.000\n  Rab Kopi 51 x 18.000   Rab Teh 12 x 12.000\n  Kam Kopi 47 x 18.000   Kam Teh 20 x 12.000\n\nLAPORAN HARIAN (target Rp 1 juta)\n  Sen  Rp   972.000  DI BAWAH TARGET\n  Sel  Rp   984.000  DI BAWAH TARGET\n  Rab  Rp 1.062.000  tercapai\n  Kam  Rp 1.086.000  tercapai\n\nLAPORAN PRODUK MINGGU INI\n  Kopi 178 gelas · Teh 75 gelas",
+    "lang": "text"
+   }
+  ]
+ },
+ "sim-4-1": {
+  "cx": [
+   {
+    "t": "Empat jenis laporan dari data stok yang sama",
+    "b": "Data stok (jumlah, stok minimum) yang sama disajikan dalam empat bentuk laporan sesuai kebutuhan pembacanya.",
+    "code": "DATA STOK            STOK  MINIMUM\nBeras 5kg              42       50\nMinyak 2L               8       30\nGula 1kg              120       40\nTelur 1kg               5       25\nMi instan             300      100\n\nSCHEDULED (posisi stok harian)   : semua barang di atas, dikirim tiap pagi\nEXCEPTION (di bawah minimum)     : Beras 5kg 42 < 50 -> pesan 58\n                                   Minyak 2L  8 < 30 -> pesan 52\n                                   Telur 1kg  5 < 25 -> pesan 45\n                                   (jumlah pesan = 2 x minimum - stok)\nDEMAND (\"berapa stok telur?\")    : 5\nDRILL-DOWN                       : total 475 unit -> kategori sembako basah -> telur 5",
+    "lang": "text"
+   }
+  ]
+ },
+ "sim-4-2": {
+  "cx": [
+   {
+    "t": "Kartu desain laporan sebelum dibuat",
+    "code": "Nama laporan   : Piutang jatuh tempo mingguan\nPembaca        : Manajer keuangan, kepala sales area\nKeputusan      : pelanggan mana yang ditelepon minggu ini, siapa yang kreditnya dihentikan\nAngka utama    : piutang > 30 hari per pelanggan, umur piutang, limit kredit terpakai\nPembanding     : minggu lalu, rata-rata 3 bulan\nAmbang tindakan: > 60 hari = stop kirim; > 45 hari = telepon sales\nFrekuensi      : Senin 07.00, dikirim ke email + WA grup\nBukan isi      : total omzet tahunan, grafik pie seluruh pelanggan (tidak membantu keputusan ini)",
+    "lang": "text"
+   },
+   {
+    "t": "Laporan mana yang layak dipensiunkan?",
+    "b": "Lihat berapa kali setiap laporan dibuka per bulan. Laporan yang dibuka kurang dari 10 kali ditanyakan ke pemiliknya sebelum dihentikan.",
+    "code": "LAPORAN                    DIBUKA/BULAN  KEPUTUSAN\nRekap penjualan harian     412           pertahankan\nStok di bawah minimum      230           pertahankan\nPiutang jatuh tempo         96           pertahankan\nAbsensi lembur              58           pertahankan\nKunjungan web per jam        3           tanya pemilik, lalu pensiunkan\nTotal unduhan aplikasi       1           tanya pemilik, lalu pensiunkan",
+    "lang": "text"
+   }
+  ]
+ },
+ "sim-5-3": {
+  "exs": [
+   {
+    "t": "Kasus: laporan permintaan (demand) stok satu barang",
+    "code": "-- Manajer bertanya: \"Berapa stok telur di semua gudang sekarang?\"\nSELECT gudang, stok\nFROM persediaan\nWHERE nama_barang = 'Telur 1kg'\nORDER BY stok;",
+    "d": "Laporan demand dibuat saat ada pertanyaan, bukan terjadwal."
+   },
+   {
+    "t": "Kasus: drill-down omzet cabang ke produk",
+    "code": "-- Tingkat 1: omzet per cabang bulan ini\nSELECT cabang, SUM(total) AS omzet\nFROM penjualan\nWHERE tanggal >= '2026-11-01'\nGROUP BY cabang;\n\n-- Tingkat 2: cabang Medan turun, lihat per produk\nSELECT produk, SUM(qty) AS terjual, SUM(total) AS omzet\nFROM penjualan\nWHERE cabang = 'Medan' AND tanggal >= '2026-11-01'\nGROUP BY produk\nORDER BY omzet DESC;"
+   },
+   {
+    "t": "Kasus: laporan pengecualian stok di bawah minimum",
+    "code": "-- Hanya barang yang perlu dipesan ulang, bukan seluruh daftar stok\nSELECT nama_barang, stok, stok_minimum, stok_minimum * 2 - stok AS jumlah_pesan\nFROM persediaan\nWHERE stok < stok_minimum\nORDER BY jumlah_pesan DESC;"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Rekonsiliasi penjualan kasir dengan mutasi QRIS",
+    "b": "Cocokkan transaksi QRIS di catatan kasir dengan mutasi bank berdasarkan nomor transaksi. Yang hanya ada di satu sisi ditelusuri.",
+    "code": "KASIR (QRIS saja)         MUTASI BANK\nT-01  85.000              T-01  85.000\nT-03 120.000              T-03 120.000\nT-04  33.000              -\nT-05  57.000              T-05  57.000\n-                         T-09  40.000\n(T-02 42.000 tunai, tidak ikut dicocokkan)\n\ndi kasir, tidak ada di bank : T-04 Rp 33.000\ndi bank, tidak ada di kasir : T-09 Rp 40.000\ntotal bank Rp 302.000 - total kasir Rp 295.000 = selisih Rp 7.000 -> telusuri T-04 dan T-09",
+    "lang": "text"
+   }
+  ]
+ },
+ "sim-7-4": {
+  "cx": [
+   {
+    "t": "Before-after enam bulan setelah SIM diterapkan",
+    "b": "Perubahan = (sesudah - sebelum) / sebelum. Untuk metrik yang seharusnya turun, perubahan negatif berarti membaik.",
+    "code": "METRIK                                         SEBELUM  SESUDAH  PERUBAHAN  ARAH\nwaktu menyusun laporan bulanan (jam)           26       3        -88%       membaik\nselisih stok fisik vs sistem                   7,1%     1,8%     -75%       membaik\nkeputusan pembelian telat (kali/bln)           9        2        -78%       membaik\nmanajer yang membuka dashboard tiap minggu     30%      82%      +173%      membaik",
+    "lang": "text"
+   }
+  ]
+ }
+}

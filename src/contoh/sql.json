@@ -1,0 +1,1325 @@
+{
+ "sql-1-1": {
+  "exs": [
+   {
+    "t": "Kasus: daftar karyawan toko",
+    "d": "Setiap baris adalah satu karyawan, setiap kolom adalah satu keterangan tentangnya.",
+    "code": "SELECT * FROM karyawan;",
+    "out": "id | nama  | jabatan           | atasan_id | divisi    | gaji\n---+-------+-------------------+-----------+-----------+---------\n1  | Sari  | Direktur          | NULL      | Pusat     | 30000000\n2  | Tono  | Manajer Gudang    | 1         | Gudang    | 15000000\n3  | Umi   | Manajer Penjualan | 1         | Penjualan | 16000000\n4  | Vino  | Staf Gudang       | 2         | Gudang    | 7000000\n5  | Wati  | Staf Gudang       | 2         | Gudang    | 7500000\n6  | Yudi  | Sales             | 3         | Penjualan | 8000000\n7  | Zahra | Sales             | 3         | Penjualan | 8500000\n8  | Rio   | Sales             | 3         | Penjualan | 8000000"
+   },
+   {
+    "t": "Kasus: rincian barang di setiap pesanan",
+    "d": "Tabel detail_pesanan hanya berisi angka id dan jumlah, bukan nama, karena nama disimpan di tabelnya sendiri.",
+    "code": "SELECT * FROM detail_pesanan;",
+    "out": "pesanan_id | produk_id | jumlah\n-----------+-----------+-------\n101        | 1         | 2\n101        | 3         | 5\n102        | 2         | 3\n102        | 8         | 4\n103        | 6         | 1\n104        | 4         | 2\n104        | 3         | 3\n104        | 5         | 1\n105        | 1         | 1\n106        | 7         | 2\n106        | 2         | 2\n107        | 8         | 10\n108        | 1         | 1\n108        | 6         | 1\n109        | 5         | 6\n110        | 3         | 2"
+   },
+   {
+    "t": "Kasus: saldo rekening",
+    "d": "Tabel kecil dengan tiga kolom: id, pemilik, dan saldo.",
+    "code": "SELECT * FROM rekening;",
+    "out": "id | pemilik | saldo\n---+---------+-------\n1  | Andi    | 500000\n2  | Budi    | 300000"
+   }
+  ]
+ },
+ "sql-1-2": {
+  "exs": [
+   {
+    "t": "Kasus: data pelanggan tersimpan sekali saja",
+    "d": "Nama dan kota pelanggan hanya ada di tabel pelanggan.",
+    "code": "SELECT * FROM pelanggan;",
+    "out": "id | nama  | kota       | bergabung\n---+-------+------------+-----------\n1  | Andi  | Jakarta    | 2023-01-15\n2  | Budi  | Bandung    | 2023-03-02\n3  | Citra | Surabaya   | 2023-06-20\n4  | Dewi  | Jakarta    | 2024-01-08\n5  | Eko   | Medan      | 2024-02-14\n6  | Fitri | Bandung    | 2024-05-30\n7  | Gita  | NULL       | 2024-07-11\n8  | Hadi  | Yogyakarta | 2024-09-03"
+   },
+   {
+    "t": "Kasus: pesanan menunjuk pelanggan lewat id",
+    "d": "Kolom pelanggan_id berisi id dari tabel pelanggan, bukan salinan namanya. Inilah arti relasional.",
+    "code": "SELECT * FROM pesanan;",
+    "out": "id  | pelanggan_id | tanggal    | status\n----+--------------+------------+--------\n101 | 1            | 2024-10-01 | selesai\n102 | 2            | 2024-10-03 | selesai\n103 | 1            | 2024-10-07 | dikirim\n104 | 3            | 2024-10-12 | selesai\n105 | 4            | 2024-10-15 | batal\n106 | 2            | 2024-10-20 | selesai\n107 | 6            | 2024-11-02 | dikirim\n108 | 1            | 2024-11-05 | baru\n109 | 5            | 2024-11-09 | selesai\n110 | 8            | 2024-11-15 | baru"
+   },
+   {
+    "t": "Kasus: skema yang sama untuk setiap produk",
+    "d": "Semua baris produk punya kolom yang sama persis: id, nama, kategori, harga, stok.",
+    "code": "SELECT * FROM produk;",
+    "out": "id | nama             | kategori | harga  | stok\n---+------------------+----------+--------+-----\n1  | Kopi Gayo        | Minuman  | 85000  | 40\n2  | Teh Melati       | Minuman  | 25000  | 120\n3  | Keripik Singkong | Camilan  | 15000  | 200\n4  | Kacang Mete      | Camilan  | 60000  | 35\n5  | Sambal Bawang    | Bumbu    | 30000  | 80\n6  | Madu Hutan       | Minuman  | 120000 | 15\n7  | Rendang Kaleng   | Makanan  | 75000  | 0\n8  | Kerupuk Udang    | Camilan  | 20000  | 150"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Skema tetap menjaga bentuk data",
+    "b": "Di RDBMS, bentuk tabel ditentukan di awal. Setiap produk wajib punya kolom yang sama, dan tabel produk di database ini juga punya aturan harga harus lebih dari 0. Di pelajaran INSERT dan CHECK nanti kamu akan melihat database menolak data yang melanggar aturan itu.",
+    "code": "SELECT * FROM produk;",
+    "out": "id | nama             | kategori | harga  | stok\n---+------------------+----------+--------+-----\n1  | Kopi Gayo        | Minuman  | 85000  | 40\n2  | Teh Melati       | Minuman  | 25000  | 120\n3  | Keripik Singkong | Camilan  | 15000  | 200\n4  | Kacang Mete      | Camilan  | 60000  | 35\n5  | Sambal Bawang    | Bumbu    | 30000  | 80\n6  | Madu Hutan       | Minuman  | 120000 | 15\n7  | Rendang Kaleng   | Makanan  | 75000  | 0\n8  | Kerupuk Udang    | Camilan  | 20000  | 150"
+   }
+  ],
+  "ex": [
+   [
+    "Tabel pelanggan: data disimpan sekali",
+    "SELECT * FROM pelanggan;"
+   ],
+   [
+    "Tabel pesanan: pelanggan_id menunjuk ke pelanggan",
+    "SELECT * FROM pesanan;"
+   ]
+  ]
+ },
+ "sql-2-1": {
+  "exs": [
+   {
+    "t": "Kasus: huruf kecil pun berjalan",
+    "d": "Kata kunci tidak peka huruf besar-kecil, tetapi huruf besar lebih mudah dibaca.",
+    "code": "select nama, jabatan from karyawan;",
+    "out": "nama  | jabatan\n------+------------------\nSari  | Direktur\nTono  | Manajer Gudang\nUmi   | Manajer Penjualan\nVino  | Staf Gudang\nWati  | Staf Gudang\nYudi  | Sales\nZahra | Sales\nRio   | Sales"
+   },
+   {
+    "t": "Kasus: query beberapa baris dengan komentar",
+    "d": "Baris yang diawali -- adalah komentar dan tidak dijalankan.",
+    "code": "-- daftar harga untuk kasir\nSELECT nama,\n       harga\nFROM produk;",
+    "out": "nama             | harga\n-----------------+-------\nKopi Gayo        | 85000\nTeh Melati       | 25000\nKeripik Singkong | 15000\nKacang Mete      | 60000\nSambal Bawang    | 30000\nMadu Hutan       | 120000\nRendang Kaleng   | 75000\nKerupuk Udang    | 20000"
+   },
+   {
+    "t": "Kasus: teks diapit kutip tunggal",
+    "d": "Nilai teks ditulis dengan kutip tunggal dan ikut tampil di setiap baris.",
+    "code": "SELECT nama, 'pelanggan setia' FROM pelanggan;",
+    "out": "nama  | 'pelanggan setia'\n------+------------------\nAndi  | pelanggan setia\nBudi  | pelanggan setia\nCitra | pelanggan setia\nDewi  | pelanggan setia\nEko   | pelanggan setia\nFitri | pelanggan setia\nGita  | pelanggan setia\nHadi  | pelanggan setia"
+   },
+   {
+    "t": "Kasus: dua statement dipisah titik koma",
+    "d": "Titik koma menandai akhir satu statement. Konsol menampilkan hasil statement terakhir.",
+    "code": "SELECT nama FROM produk;\nSELECT nama FROM pelanggan;",
+    "out": "nama\n-----\nAndi\nBudi\nCitra\nDewi\nEko\nFitri\nGita\nHadi"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Query yang rapi sesuai style guide",
+    "b": "Kata kunci ditulis huruf besar, setiap kolom di baris sendiri, dan komentar menjelaskan tujuan query. Query pendek pun lebih mudah ditinjau rekan satu tim bila ditulis rapi.",
+    "code": "-- katalog untuk halaman toko\nSELECT nama,\n       kategori,\n       harga,\n       stok\nFROM produk;",
+    "out": "nama             | kategori | harga  | stok\n-----------------+----------+--------+-----\nKopi Gayo        | Minuman  | 85000  | 40\nTeh Melati       | Minuman  | 25000  | 120\nKeripik Singkong | Camilan  | 15000  | 200\nKacang Mete      | Camilan  | 60000  | 35\nSambal Bawang    | Bumbu    | 30000  | 80\nMadu Hutan       | Minuman  | 120000 | 15\nRendang Kaleng   | Makanan  | 75000  | 0\nKerupuk Udang    | Camilan  | 20000  | 150"
+   }
+  ],
+  "ex": [
+   [
+    "Huruf besar atau kecil sama saja",
+    "select nama, kota from pelanggan;"
+   ],
+   [
+    "Teks diapit kutip tunggal",
+    "SELECT nama, 'pelanggan setia' AS catatan FROM pelanggan;"
+   ],
+   [
+    "Komentar dan beberapa baris",
+    "-- nama dan stok semua produk\nSELECT nama,\n       stok\nFROM produk;"
+   ]
+  ]
+ },
+ "sql-2-2": {
+  "exs": [
+   {
+    "t": "Kasus: tipe kolom di tabel produk",
+    "d": "typeof memperlihatkan bahwa nama bertipe teks dan harga bertipe bilangan bulat.",
+    "code": "SELECT nama, typeof(nama), harga, typeof(harga) FROM produk;",
+    "out": "nama             | typeof(nama) | harga  | typeof(harga)\n-----------------+--------------+--------+--------------\nKopi Gayo        | text         | 85000  | integer\nTeh Melati       | text         | 25000  | integer\nKeripik Singkong | text         | 15000  | integer\nKacang Mete      | text         | 60000  | integer\nSambal Bawang    | text         | 30000  | integer\nMadu Hutan       | text         | 120000 | integer\nRendang Kaleng   | text         | 75000  | integer\nKerupuk Udang    | text         | 20000  | integer"
+   },
+   {
+    "t": "Kasus: NULL bukan nol dan bukan teks kosong",
+    "d": "Kota Gita belum diisi, jadi nilainya NULL dengan tipe null.",
+    "code": "SELECT nama, kota, typeof(kota) FROM pelanggan;",
+    "out": "nama  | kota       | typeof(kota)\n------+------------+-------------\nAndi  | Jakarta    | text\nBudi  | Bandung    | text\nCitra | Surabaya   | text\nDewi  | Jakarta    | text\nEko   | Medan      | text\nFitri | Bandung    | text\nGita  | NULL       | null\nHadi  | Yogyakarta | text"
+   },
+   {
+    "t": "Kasus: angka dari teks dengan CAST",
+    "d": "Data dari formulir sering berupa teks; CAST mengubahnya menjadi angka.",
+    "code": "SELECT CAST('15000' AS INTEGER) + 2000,\n       CAST(4.75 AS INTEGER),\n       CAST(85000 AS TEXT);",
+    "out": "CAST('15000' AS INTEGER) + 2000 | CAST(4.75 AS INTEGER) | CAST(85000 AS TEXT)\n--------------------------------+-----------------------+--------------------\n17000                           | 4                     | 85000"
+   }
+  ],
+  "ex": [
+   [
+    "Melihat tipe setiap nilai",
+    "SELECT typeof(42), typeof(3.14), typeof('teks'), typeof(NULL);"
+   ],
+   [
+    "Mengubah tipe dengan CAST",
+    "SELECT CAST('125' AS INTEGER) + 5 AS angka,\n       CAST(9.99 AS INTEGER) AS dipotong,\n       CAST(2024 AS TEXT) || '-10' AS teks;"
+   ],
+   [
+    "Tanggal disimpan sebagai teks berformat ISO",
+    "SELECT nama, bergabung, typeof(bergabung) FROM pelanggan;"
+   ]
+  ]
+ },
+ "sql-2-3": {
+  "exs": [
+   {
+    "t": "Kasus: nilai stok di gudang",
+    "d": "Operator aritmetika bisa dipakai langsung di daftar kolom.",
+    "code": "SELECT nama, harga, stok, harga * stok FROM produk;",
+    "out": "nama             | harga  | stok | harga * stok\n-----------------+--------+------+-------------\nKopi Gayo        | 85000  | 40   | 3400000\nTeh Melati       | 25000  | 120  | 3000000\nKeripik Singkong | 15000  | 200  | 3000000\nKacang Mete      | 60000  | 35   | 2100000\nSambal Bawang    | 30000  | 80   | 2400000\nMadu Hutan       | 120000 | 15   | 1800000\nRendang Kaleng   | 75000  | 0    | 0\nKerupuk Udang    | 20000  | 150  | 3000000"
+   },
+   {
+    "t": "Kasus: apakah produk termasuk mahal?",
+    "d": "Perbandingan menghasilkan 1 (benar) atau 0 (salah).",
+    "code": "SELECT nama, harga, harga >= 60000 FROM produk;",
+    "out": "nama             | harga  | harga >= 60000\n-----------------+--------+---------------\nKopi Gayo        | 85000  | 1\nTeh Melati       | 25000  | 0\nKeripik Singkong | 15000  | 0\nKacang Mete      | 60000  | 1\nSambal Bawang    | 30000  | 0\nMadu Hutan       | 120000 | 1\nRendang Kaleng   | 75000  | 1\nKerupuk Udang    | 20000  | 0"
+   },
+   {
+    "t": "Kasus: rentang harga, daftar kategori, dan pola nama",
+    "d": "BETWEEN, IN, dan LIKE juga menghasilkan 1 atau 0 untuk setiap baris.",
+    "code": "SELECT nama,\n       harga BETWEEN 20000 AND 60000,\n       kategori IN ('Minuman', 'Bumbu'),\n       nama LIKE 'K%'\nFROM produk;",
+    "out": "nama             | harga BETWEEN 20000 AND 60000 | kategori IN ('Minuman', 'Bumbu') | nama LIKE 'K%'\n-----------------+-------------------------------+----------------------------------+---------------\nKopi Gayo        | 0                             | 1                                | 1\nTeh Melati       | 1                             | 1                                | 0\nKeripik Singkong | 0                             | 0                                | 1\nKacang Mete      | 1                             | 0                                | 1\nSambal Bawang    | 1                             | 1                                | 0\nMadu Hutan       | 0                             | 1                                | 0\nRendang Kaleng   | 0                             | 0                                | 0\nKerupuk Udang    | 1                             | 0                                | 1"
+   },
+   {
+    "t": "Kasus: menyambung teks dan memeriksa NULL",
+    "d": "Menyambung teks dengan NULL menghasilkan NULL, dan IS NULL memeriksanya.",
+    "code": "SELECT nama || ' - ' || kota, kota IS NULL FROM pelanggan;",
+    "out": "nama || ' - ' || kota | kota IS NULL\n----------------------+-------------\nAndi - Jakarta        | 0\nBudi - Bandung        | 0\nCitra - Surabaya      | 0\nDewi - Jakarta        | 0\nEko - Medan           | 0\nFitri - Bandung       | 0\nNULL                  | 1\nHadi - Yogyakarta     | 0"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Menandai produk yang ikut promo",
+    "b": "Promo berlaku untuk minuman atau camilan yang harganya di bawah 50 ribu. Karena AND dikerjakan sebelum OR, kurung wajib dipakai. Hasil 1 berarti produk masuk promo. Di pelajaran WHERE nanti, kondisi yang sama dipakai untuk menyaring baris.",
+    "code": "SELECT nama,\n       kategori,\n       harga,\n       (kategori = 'Minuman' OR kategori = 'Camilan') AND harga < 50000 AS ikut_promo\nFROM produk;",
+    "out": "nama             | kategori | harga  | ikut_promo\n-----------------+----------+--------+-----------\nKopi Gayo        | Minuman  | 85000  | 0\nTeh Melati       | Minuman  | 25000  | 1\nKeripik Singkong | Camilan  | 15000  | 1\nKacang Mete      | Camilan  | 60000  | 0\nSambal Bawang    | Bumbu    | 30000  | 0\nMadu Hutan       | Minuman  | 120000 | 0\nRendang Kaleng   | Makanan  | 75000  | 0\nKerupuk Udang    | Camilan  | 20000  | 1"
+   }
+  ],
+  "ex": [
+   [
+    "Aritmetika: nilai stok",
+    "SELECT nama, harga, stok, harga * stok AS nilai_stok FROM produk;"
+   ],
+   [
+    "Perbandingan & logika (1 = benar, 0 = salah)",
+    "SELECT nama, kategori, harga,\n       (kategori = 'Minuman' OR kategori = 'Camilan') AND harga < 50000 AS promo\nFROM produk;"
+   ],
+   [
+    "BETWEEN, IN, LIKE",
+    "SELECT nama,\n       harga BETWEEN 20000 AND 90000 AS rentang,\n       kategori IN ('Minuman', 'Bumbu') AS kategori_pilihan,\n       nama LIKE '%a%' AS ada_a\nFROM produk;"
+   ],
+   [
+    "NULL perlu IS NULL",
+    "SELECT nama, kota, kota IS NULL AS kota_kosong FROM pelanggan;"
+   ]
+  ]
+ },
+ "sql-3-1": {
+  "exs": [
+   {
+    "t": "Kasus: daftar gaji karyawan",
+    "d": "Sebutkan hanya kolom yang dibutuhkan.",
+    "code": "SELECT nama, jabatan, gaji FROM karyawan;",
+    "out": "nama  | jabatan           | gaji\n------+-------------------+---------\nSari  | Direktur          | 30000000\nTono  | Manajer Gudang    | 15000000\nUmi   | Manajer Penjualan | 16000000\nVino  | Staf Gudang       | 7000000\nWati  | Staf Gudang       | 7500000\nYudi  | Sales             | 8000000\nZahra | Sales             | 8500000\nRio   | Sales             | 8000000"
+   },
+   {
+    "t": "Kasus: gaji setahun dengan alias",
+    "d": "Kolom hasil hitungan diberi nama yang jelas dengan AS.",
+    "code": "SELECT nama, gaji * 12 AS gaji_setahun FROM karyawan;",
+    "out": "nama  | gaji_setahun\n------+-------------\nSari  | 360000000\nTono  | 180000000\nUmi   | 192000000\nVino  | 84000000\nWati  | 90000000\nYudi  | 96000000\nZahra | 102000000\nRio   | 96000000"
+   },
+   {
+    "t": "Kasus: harga setelah diskon 10%",
+    "code": "SELECT nama,\n       harga AS harga_normal,\n       harga * 0.9 AS harga_diskon\nFROM produk;",
+    "out": "nama             | harga_normal | harga_diskon\n-----------------+--------------+-------------\nKopi Gayo        | 85000        | 76500\nTeh Melati       | 25000        | 22500\nKeripik Singkong | 15000        | 13500\nKacang Mete      | 60000        | 54000\nSambal Bawang    | 30000        | 27000\nMadu Hutan       | 120000       | 108000\nRendang Kaleng   | 75000        | 67500\nKerupuk Udang    | 20000        | 18000"
+   },
+   {
+    "t": "Kasus: alias tabel yang pendek",
+    "d": "Alias p dipakai untuk menyebut kolom milik tabel pelanggan.",
+    "code": "SELECT p.nama, p.kota, p.bergabung FROM pelanggan AS p;",
+    "out": "nama  | kota       | bergabung\n------+------------+-----------\nAndi  | Jakarta    | 2023-01-15\nBudi  | Bandung    | 2023-03-02\nCitra | Surabaya   | 2023-06-20\nDewi  | Jakarta    | 2024-01-08\nEko   | Medan      | 2024-02-14\nFitri | Bandung    | 2024-05-30\nGita  | NULL       | 2024-07-11\nHadi  | Yogyakarta | 2024-09-03"
+   }
+  ]
+ },
+ "sql-3-2": {
+  "exs": [
+   {
+    "t": "Kasus: karyawan divisi Gudang",
+    "code": "SELECT nama, jabatan FROM karyawan WHERE divisi = 'Gudang';",
+    "out": "nama | jabatan\n-----+---------------\nTono | Manajer Gudang\nVino | Staf Gudang\nWati | Staf Gudang"
+   },
+   {
+    "t": "Kasus: pesanan yang belum selesai",
+    "d": "Operator <> berarti tidak sama dengan.",
+    "code": "SELECT id, tanggal, status FROM pesanan WHERE status <> 'selesai';",
+    "out": "id  | tanggal    | status\n----+------------+--------\n103 | 2024-10-07 | dikirim\n105 | 2024-10-15 | batal\n107 | 2024-11-02 | dikirim\n108 | 2024-11-05 | baru\n110 | 2024-11-15 | baru"
+   },
+   {
+    "t": "Kasus: camilan di bawah 20 ribu",
+    "d": "Dua kondisi digabung dengan AND.",
+    "code": "SELECT nama, harga FROM produk WHERE kategori = 'Camilan' AND harga < 20000;",
+    "out": "nama             | harga\n-----------------+------\nKeripik Singkong | 15000"
+   },
+   {
+    "t": "Kasus: pelanggan 2024 dari Jakarta atau Bandung",
+    "d": "Tanggal ISO bisa dibandingkan seperti teks.",
+    "code": "SELECT nama, kota, bergabung\nFROM pelanggan\nWHERE bergabung >= '2024-01-01'\n  AND kota IN ('Jakarta', 'Bandung');",
+    "out": "nama  | kota    | bergabung\n------+---------+-----------\nDewi  | Jakarta | 2024-01-08\nFitri | Bandung | 2024-05-30"
+   }
+  ]
+ },
+ "sql-3-3": {
+  "exs": [
+   {
+    "t": "Kasus: tiga gaji tertinggi",
+    "code": "SELECT nama, jabatan, gaji FROM karyawan ORDER BY gaji DESC LIMIT 3;",
+    "out": "nama | jabatan           | gaji\n-----+-------------------+---------\nSari | Direktur          | 30000000\nUmi  | Manajer Penjualan | 16000000\nTono | Manajer Gudang    | 15000000"
+   },
+   {
+    "t": "Kasus: daftar divisi tanpa duplikat",
+    "code": "SELECT DISTINCT divisi FROM karyawan ORDER BY divisi;",
+    "out": "divisi\n---------\nGudang\nPenjualan\nPusat"
+   },
+   {
+    "t": "Kasus: pesanan terbaru lebih dulu",
+    "d": "Tanggal ISO diurutkan dengan benar seperti teks.",
+    "code": "SELECT id, tanggal, status FROM pesanan ORDER BY tanggal DESC LIMIT 5;",
+    "out": "id  | tanggal    | status\n----+------------+--------\n110 | 2024-11-15 | baru\n109 | 2024-11-09 | selesai\n108 | 2024-11-05 | baru\n107 | 2024-11-02 | dikirim\n106 | 2024-10-20 | selesai"
+   },
+   {
+    "t": "Kasus: stok paling tipis yang masih tersedia",
+    "d": "WHERE menyaring dulu, baru ORDER BY dan LIMIT.",
+    "code": "SELECT nama, stok FROM produk WHERE stok > 0 ORDER BY stok LIMIT 3;",
+    "out": "nama        | stok\n------------+-----\nMadu Hutan  | 15\nKacang Mete | 35\nKopi Gayo   | 40"
+   }
+  ]
+ },
+ "sql-3-4": {
+  "exs": [
+   {
+    "t": "Kasus: alias boleh dipakai di ORDER BY",
+    "d": "ORDER BY berjalan setelah SELECT, jadi alias sudah dikenal.",
+    "code": "SELECT nama, gaji * 12 AS gaji_setahun\nFROM karyawan\nORDER BY gaji_setahun DESC\nLIMIT 3;",
+    "out": "nama | gaji_setahun\n-----+-------------\nSari | 360000000\nUmi  | 192000000\nTono | 180000000"
+   },
+   {
+    "t": "Kasus: alias belum dikenal di WHERE",
+    "d": "Query ini gagal karena WHERE berjalan sebelum SELECT membuat alias nilai.",
+    "code": "SELECT nama, harga * stok AS nilai FROM produk WHERE nilai > 3000000;"
+   },
+   {
+    "t": "Kasus: tulis ulang ekspresinya di WHERE",
+    "d": "Perbaikannya: pakai ekspresi aslinya di WHERE, aliasnya tetap boleh di ORDER BY.",
+    "code": "SELECT nama, harga * stok AS nilai\nFROM produk\nWHERE harga * stok > 3000000\nORDER BY nilai DESC;",
+    "out": "nama      | nilai\n----------+--------\nKopi Gayo | 3400000"
+   },
+   {
+    "t": "Kasus: DISTINCT dulu, baru LIMIT",
+    "d": "Duplikat dibuang sebelum LIMIT memotong hasil.",
+    "code": "SELECT DISTINCT kota\nFROM pelanggan\nWHERE kota IS NOT NULL\nORDER BY kota\nLIMIT 3;",
+    "out": "kota\n-------\nBandung\nJakarta\nMedan"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Membaca query dari FROM sampai LIMIT",
+    "b": "Komentar di setiap baris menandai urutan logis database mengerjakan query: tabel diambil dulu, baris disaring, kolom dihitung, hasil diurutkan, lalu dipotong. Membaca query dengan urutan ini membantu menebak hasilnya sebelum dijalankan.",
+    "code": "SELECT nama, kategori, harga  -- 3) hitung kolom hasil\nFROM produk                   -- 1) ambil tabel\nWHERE stok > 0                -- 2) buang produk yang habis\nORDER BY harga DESC           -- 4) urutkan termahal dulu\nLIMIT 3;                      -- 5) ambil tiga teratas",
+    "out": "nama        | kategori | harga\n------------+----------+-------\nMadu Hutan  | Minuman  | 120000\nKopi Gayo   | Minuman  | 85000\nKacang Mete | Camilan  | 60000"
+   }
+  ],
+  "ex": [
+   [
+    "Query dengan WHERE, ORDER BY, dan LIMIT",
+    "SELECT nama, kategori, harga\nFROM produk\nWHERE stok > 0\nORDER BY harga DESC\nLIMIT 3;"
+   ],
+   [
+    "Alias di ORDER BY boleh",
+    "SELECT nama, harga * stok AS nilai FROM produk ORDER BY nilai DESC;"
+   ]
+  ]
+ },
+ "sql-3-5": {
+  "exs": [
+   {
+    "t": "Kasus: minuman dari yang termurah",
+    "code": "SELECT nama, harga FROM produk WHERE kategori = 'Minuman' ORDER BY harga;",
+    "out": "nama       | harga\n-----------+-------\nTeh Melati | 25000\nKopi Gayo  | 85000\nMadu Hutan | 120000"
+   },
+   {
+    "t": "Kasus: halaman pertama katalog",
+    "d": "Empat produk per halaman, diurutkan menurut nama.",
+    "code": "SELECT nama, kategori, harga FROM produk ORDER BY nama LIMIT 4;",
+    "out": "nama             | kategori | harga\n-----------------+----------+------\nKacang Mete      | Camilan  | 60000\nKeripik Singkong | Camilan  | 15000\nKerupuk Udang    | Camilan  | 20000\nKopi Gayo        | Minuman  | 85000"
+   },
+   {
+    "t": "Kasus: menu kategori untuk filter",
+    "code": "SELECT DISTINCT kategori FROM produk ORDER BY kategori;",
+    "out": "kategori\n--------\nBumbu\nCamilan\nMakanan\nMinuman"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Katalog siap tampil: tersedia dulu, lalu termurah",
+    "b": "Perbandingan stok = 0 menghasilkan 0 untuk produk tersedia dan 1 untuk yang habis. Mengurutkan dengan nilai itu menaruh produk habis di bawah, lalu harga mengurutkan sisanya dari yang termurah.",
+    "code": "SELECT nama,\n       kategori,\n       harga,\n       stok = 0 AS habis\nFROM produk\nORDER BY habis, harga;",
+    "out": "nama             | kategori | harga  | habis\n-----------------+----------+--------+------\nKeripik Singkong | Camilan  | 15000  | 0\nKerupuk Udang    | Camilan  | 20000  | 0\nTeh Melati       | Minuman  | 25000  | 0\nSambal Bawang    | Bumbu    | 30000  | 0\nKacang Mete      | Camilan  | 60000  | 0\nKopi Gayo        | Minuman  | 85000  | 0\nMadu Hutan       | Minuman  | 120000 | 0\nRendang Kaleng   | Makanan  | 75000  | 1"
+   }
+  ]
+ },
+ "sql-4-1": {
+  "exs": [
+   {
+    "t": "Kasus: karyawan baru bergabung",
+    "d": "Kolom id tidak disebut, jadi terisi otomatis.",
+    "code": "INSERT INTO karyawan (nama, jabatan, atasan_id, divisi, gaji)\nVALUES ('Lestari', 'Staf Gudang', 2, 'Gudang', 7000000);\nSELECT * FROM karyawan WHERE divisi = 'Gudang';",
+    "out": "id | nama    | jabatan        | atasan_id | divisi | gaji\n---+---------+----------------+-----------+--------+---------\n2  | Tono    | Manajer Gudang | 1         | Gudang | 15000000\n4  | Vino    | Staf Gudang    | 2         | Gudang | 7000000\n5  | Wati    | Staf Gudang    | 2         | Gudang | 7500000\n9  | Lestari | Staf Gudang    | 2         | Gudang | 7000000"
+   },
+   {
+    "t": "Kasus: pesanan baru memakai status bawaan",
+    "d": "Kolom status tidak diisi, jadi memakai DEFAULT 'baru'.",
+    "code": "INSERT INTO pesanan (pelanggan_id, tanggal) VALUES (3, '2024-11-20');\nSELECT * FROM pesanan ORDER BY id DESC LIMIT 2;",
+    "out": "id  | pelanggan_id | tanggal    | status\n----+--------------+------------+-------\n111 | 3            | 2024-11-20 | baru\n110 | 8            | 2024-11-15 | baru"
+   },
+   {
+    "t": "Kasus: tiga produk titipan sekaligus",
+    "d": "Satu INSERT, beberapa kelompok VALUES.",
+    "code": "INSERT INTO produk (nama, kategori, harga, stok) VALUES\n  ('Bika Ambon', 'Camilan', 45000, 20),\n  ('Kopi Toraja', 'Minuman', 95000, 25),\n  ('Bumbu Rendang', 'Bumbu', 22000, 60);\nSELECT id, nama, harga FROM produk WHERE id > 8;",
+    "out": "id | nama          | harga\n---+---------------+------\n9  | Bika Ambon    | 45000\n10 | Kopi Toraja   | 95000\n11 | Bumbu Rendang | 22000"
+   },
+   {
+    "t": "Kasus: ditolak karena harga tidak masuk akal",
+    "d": "Tabel produk punya aturan harga > 0, jadi baris ini tidak pernah masuk.",
+    "code": "INSERT INTO produk (nama, kategori, harga, stok) VALUES ('Teh Promo', 'Minuman', 0, 10);"
+   }
+  ]
+ },
+ "sql-4-2": {
+  "exs": [
+   {
+    "t": "Kasus: kenaikan gaji staf gudang",
+    "d": "Lihat dulu baris yang terkena dengan WHERE yang sama, baru ubah.",
+    "code": "UPDATE karyawan SET gaji = gaji + 500000 WHERE jabatan = 'Staf Gudang';\nSELECT nama, gaji FROM karyawan WHERE jabatan = 'Staf Gudang';",
+    "out": "nama | gaji\n-----+--------\nVino | 7500000\nWati | 8000000"
+   },
+   {
+    "t": "Kasus: rendang datang lagi dari pemasok",
+    "code": "UPDATE produk SET stok = stok + 50 WHERE id = 7;\nSELECT nama, stok FROM produk WHERE id = 7;",
+    "out": "nama           | stok\n---------------+-----\nRendang Kaleng | 50"
+   },
+   {
+    "t": "Kasus: melengkapi data pelanggan",
+    "d": "Dua kolom diubah sekaligus dengan koma.",
+    "code": "UPDATE pelanggan SET kota = 'Bogor', bergabung = '2024-07-12' WHERE id = 7;\nSELECT * FROM pelanggan WHERE id = 7;",
+    "out": "id | nama | kota  | bergabung\n---+------+-------+-----------\n7  | Gita | Bogor | 2024-07-12"
+   },
+   {
+    "t": "Kasus: menghapus rincian produk yang ditarik",
+    "d": "Hanya baris produk 7 yang dihapus; isi pesanan 106 yang lain tetap ada.",
+    "code": "DELETE FROM detail_pesanan WHERE produk_id = 7;\nSELECT * FROM detail_pesanan WHERE pesanan_id = 106;",
+    "out": "pesanan_id | produk_id | jumlah\n-----------+-----------+-------\n106        | 2         | 2"
+   }
+  ],
+  "ex": [
+   [
+    "Cek dulu dengan SELECT",
+    "SELECT nama, harga FROM produk WHERE kategori = 'Minuman';"
+   ],
+   [
+    "Lalu UPDATE",
+    "UPDATE produk SET harga = harga + 5000 WHERE kategori = 'Minuman';\nSELECT nama, harga FROM produk WHERE kategori = 'Minuman';"
+   ],
+   [
+    "Ubah beberapa kolom",
+    "UPDATE pesanan SET status = 'selesai' WHERE id = 107;\nSELECT * FROM pesanan WHERE id = 107;"
+   ],
+   [
+    "DELETE yang ditolak foreign key",
+    "DELETE FROM pelanggan WHERE id = 1;"
+   ],
+   [
+    "DELETE yang aman",
+    "DELETE FROM detail_pesanan WHERE pesanan_id = 105;\nSELECT * FROM detail_pesanan WHERE pesanan_id = 105;"
+   ]
+  ]
+ },
+ "sql-5-1": {
+  "exs": [
+   {
+    "t": "Kasus: ringkasan gaji seluruh karyawan",
+    "code": "SELECT COUNT(*) AS jumlah_karyawan,\n       SUM(gaji) AS total_gaji,\n       AVG(gaji) AS rata_gaji\nFROM karyawan;",
+    "out": "jumlah_karyawan | total_gaji | rata_gaji\n----------------+------------+----------\n8               | 100000000  | 12500000"
+   },
+   {
+    "t": "Kasus: gaji tertinggi dan terendah di Penjualan",
+    "d": "WHERE menyaring baris dulu, lalu agregat menghitung sisanya.",
+    "code": "SELECT MAX(gaji) AS tertinggi, MIN(gaji) AS terendah\nFROM karyawan\nWHERE divisi = 'Penjualan';",
+    "out": "tertinggi | terendah\n----------+---------\n16000000  | 8000000"
+   },
+   {
+    "t": "Kasus: pesanan yang masih dikirim",
+    "code": "SELECT COUNT(*) AS sedang_dikirim FROM pesanan WHERE status = 'dikirim';",
+    "out": "sedang_dikirim\n--------------\n2"
+   },
+   {
+    "t": "Kasus: total unit kerupuk yang pernah dipesan",
+    "code": "SELECT SUM(jumlah) AS unit_kerupuk FROM detail_pesanan WHERE produk_id = 8;",
+    "out": "unit_kerupuk\n------------\n14"
+   }
+  ],
+  "cx": [
+   {
+    "t": "KPI gudang dalam satu query",
+    "b": "Kepala gudang ingin satu baris angka untuk rapat pagi: berapa jenis produk yang masih ada, total unit, nilai persediaan dalam rupiah, serta rentang harganya. Produk yang stoknya habis disaring dulu dengan WHERE.",
+    "code": "SELECT COUNT(*) AS jenis_produk,\n       SUM(stok) AS total_unit,\n       SUM(harga * stok) AS nilai_persediaan,\n       MIN(harga) AS termurah,\n       MAX(harga) AS termahal\nFROM produk\nWHERE stok > 0;",
+    "out": "jenis_produk | total_unit | nilai_persediaan | termurah | termahal\n-------------+------------+------------------+----------+---------\n7            | 640        | 18700000         | 15000    | 120000"
+   }
+  ]
+ },
+ "sql-5-2": {
+  "exs": [
+   {
+    "t": "Kasus: total gaji per divisi",
+    "code": "SELECT divisi, COUNT(*) AS orang, SUM(gaji) AS total_gaji\nFROM karyawan\nGROUP BY divisi\nORDER BY total_gaji DESC;",
+    "out": "divisi    | orang | total_gaji\n----------+-------+-----------\nPenjualan | 4     | 40500000\nPusat     | 1     | 30000000\nGudang    | 3     | 29500000"
+   },
+   {
+    "t": "Kasus: jumlah pesanan per status",
+    "code": "SELECT status, COUNT(*) AS banyak FROM pesanan GROUP BY status;",
+    "out": "status  | banyak\n--------+-------\nselesai | 5\ndikirim | 2\nbatal   | 1\nbaru    | 2"
+   },
+   {
+    "t": "Kasus: pelanggan per kota",
+    "d": "Pelanggan tanpa kota membentuk kelompok NULL sendiri.",
+    "code": "SELECT kota, COUNT(*) AS pelanggan FROM pelanggan GROUP BY kota ORDER BY pelanggan DESC;",
+    "out": "kota       | pelanggan\n-----------+----------\nJakarta    | 2\nBandung    | 2\nSurabaya   | 1\nMedan      | 1\nNULL       | 1\nYogyakarta | 1"
+   },
+   {
+    "t": "Kasus: unit terjual per produk",
+    "code": "SELECT produk_id, SUM(jumlah) AS terjual\nFROM detail_pesanan\nGROUP BY produk_id\nORDER BY terjual DESC;",
+    "out": "produk_id | terjual\n----------+--------\n8         | 14\n3         | 10\n5         | 7\n2         | 5\n1         | 4\n6         | 2\n4         | 2\n7         | 2"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Profil penjualan setiap produk",
+    "b": "Tim gudang ingin tahu seberapa sering setiap produk muncul di pesanan, total unitnya, dan pembelian terbesar dalam satu pesanan. Hasilnya masih memakai produk_id; nama produk bisa ditempelkan setelah kamu belajar JOIN.",
+    "code": "SELECT produk_id,\n       COUNT(*) AS muncul_di_pesanan,\n       SUM(jumlah) AS unit,\n       MAX(jumlah) AS pembelian_terbesar\nFROM detail_pesanan\nGROUP BY produk_id\nORDER BY unit DESC;",
+    "out": "produk_id | muncul_di_pesanan | unit | pembelian_terbesar\n----------+-------------------+------+-------------------\n8         | 2                 | 14   | 10\n3         | 3                 | 10   | 5\n5         | 2                 | 7    | 6\n2         | 2                 | 5    | 3\n1         | 3                 | 4    | 2\n6         | 2                 | 2    | 1\n4         | 1                 | 2    | 2\n7         | 1                 | 2    | 2"
+   }
+  ],
+  "ex": [
+   [
+    "Jumlah produk per kategori",
+    "SELECT kategori, COUNT(*) AS jumlah, SUM(stok) AS total_stok\nFROM produk GROUP BY kategori;"
+   ],
+   [
+    "Pesanan per pelanggan",
+    "SELECT pelanggan_id, COUNT(*) AS banyak_pesanan\nFROM pesanan GROUP BY pelanggan_id ORDER BY banyak_pesanan DESC;"
+   ],
+   [
+    "Per status",
+    "SELECT status, COUNT(*) AS pesanan\nFROM pesanan GROUP BY status ORDER BY status;"
+   ],
+   [
+    "Dua kolom",
+    "SELECT pelanggan_id, status, COUNT(*) AS n FROM pesanan\nGROUP BY pelanggan_id, status ORDER BY pelanggan_id;"
+   ]
+  ]
+ },
+ "sql-5-3": {
+  "exs": [
+   {
+    "t": "Kasus: divisi dengan lebih dari dua orang",
+    "code": "SELECT divisi, COUNT(*) AS orang\nFROM karyawan\nGROUP BY divisi\nHAVING COUNT(*) > 2;",
+    "out": "divisi    | orang\n----------+------\nGudang    | 3\nPenjualan | 4"
+   },
+   {
+    "t": "Kasus: produk yang terjual minimal 5 unit",
+    "code": "SELECT produk_id, SUM(jumlah) AS terjual\nFROM detail_pesanan\nGROUP BY produk_id\nHAVING SUM(jumlah) >= 5\nORDER BY terjual DESC;",
+    "out": "produk_id | terjual\n----------+--------\n8         | 14\n3         | 10\n5         | 7\n2         | 5"
+   },
+   {
+    "t": "Kasus: kota dengan minimal dua pelanggan",
+    "d": "WHERE membuang kota kosong sebelum dikelompokkan, HAVING menyaring kelompoknya.",
+    "code": "SELECT kota, COUNT(*) AS pelanggan\nFROM pelanggan\nWHERE kota IS NOT NULL\nGROUP BY kota\nHAVING COUNT(*) >= 2;",
+    "out": "kota    | pelanggan\n--------+----------\nJakarta | 2\nBandung | 2"
+   }
+  ]
+ },
+ "sql-5-4": {
+  "exs": [
+   {
+    "t": "Kasus: nilai persediaan per kategori",
+    "code": "SELECT kategori, SUM(harga * stok) AS nilai\nFROM produk\nGROUP BY kategori\nORDER BY nilai DESC;",
+    "out": "kategori | nilai\n---------+--------\nMinuman  | 8200000\nCamilan  | 8100000\nBumbu    | 2400000\nMakanan  | 0"
+   },
+   {
+    "t": "Kasus: kategori yang stoknya menipis",
+    "code": "SELECT kategori, SUM(stok) AS total_stok\nFROM produk\nGROUP BY kategori\nHAVING SUM(stok) < 100;",
+    "out": "kategori | total_stok\n---------+-----------\nBumbu    | 80\nMakanan  | 0"
+   },
+   {
+    "t": "Kasus: daftar produk yang perlu dipesan ulang",
+    "code": "SELECT nama, kategori, stok FROM produk WHERE stok < 20 ORDER BY stok;",
+    "out": "nama           | kategori | stok\n---------------+----------+-----\nRendang Kaleng | Makanan  | 0\nMadu Hutan     | Minuman  | 15"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Laporan gudang dengan jumlah produk yang perlu dipesan ulang",
+    "b": "Perbandingan stok < 20 bernilai 1 atau 0, jadi SUM atas perbandingan itu menghitung berapa produk di setiap kategori yang stoknya di bawah 20.",
+    "code": "SELECT kategori,\n       COUNT(*) AS produk,\n       SUM(stok) AS total_stok,\n       SUM(harga * stok) AS nilai_persediaan,\n       SUM(stok < 20) AS perlu_pesan_ulang\nFROM produk\nGROUP BY kategori\nORDER BY nilai_persediaan DESC;",
+    "out": "kategori | produk | total_stok | nilai_persediaan | perlu_pesan_ulang\n---------+--------+------------+------------------+------------------\nMinuman  | 3      | 175        | 8200000          | 1\nCamilan  | 3      | 385        | 8100000          | 0\nBumbu    | 1      | 80         | 2400000          | 0\nMakanan  | 1      | 0          | 0                | 1"
+   }
+  ]
+ },
+ "sql-6-1": {
+  "exs": [
+   {
+    "t": "Kasus: tabel pemasok",
+    "d": "Setiap kolom diberi nama dan tipe data.",
+    "code": "CREATE TABLE pemasok (\n  id INTEGER,\n  nama TEXT,\n  kota TEXT,\n  telepon TEXT\n);\nINSERT INTO pemasok VALUES (1, 'CV Kopi Aceh', 'Takengon', '0812-1111-2222');\nSELECT * FROM pemasok;",
+    "out": "id | nama         | kota     | telepon\n---+--------------+----------+---------------\n1  | CV Kopi Aceh | Takengon | 0812-1111-2222"
+   },
+   {
+    "t": "Kasus: tabel ulasan dengan nilai DEFAULT",
+    "d": "Kolom tampil otomatis bernilai 1 bila tidak diisi.",
+    "code": "CREATE TABLE ulasan (\n  produk_id INTEGER,\n  bintang INTEGER,\n  komentar TEXT,\n  tampil INTEGER DEFAULT 1\n);\nINSERT INTO ulasan (produk_id, bintang, komentar) VALUES\n  (1, 5, 'Kopinya harum'),\n  (3, 4, 'Renyah, pas untuk teman nonton');\nSELECT * FROM ulasan;",
+    "out": "produk_id | bintang | komentar                       | tampil\n----------+---------+--------------------------------+-------\n1         | 5       | Kopinya harum                  | 1\n3         | 4       | Renyah, pas untuk teman nonton | 1"
+   },
+   {
+    "t": "Kasus: tabel dari hasil query",
+    "d": "CREATE TABLE ... AS menyalin struktur dan isi hasil SELECT.",
+    "code": "CREATE TABLE produk_habis AS\nSELECT id, nama FROM produk WHERE stok = 0;\nSELECT * FROM produk_habis;",
+    "out": "id | nama\n---+---------------\n7  | Rendang Kaleng"
+   },
+   {
+    "t": "Kasus: IF NOT EXISTS agar skrip aman diulang",
+    "d": "Tabel produk sudah ada, jadi perintah ini dilewati tanpa error.",
+    "code": "CREATE TABLE IF NOT EXISTS produk (id INTEGER, nama TEXT);\nSELECT COUNT(*) AS produk FROM produk;",
+    "out": "produk\n------\n8"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Tabel kupon belanja",
+    "b": "Tim pemasaran butuh tabel kupon. Tipe dipilih sesuai isinya: kode berupa teks, diskon berupa bilangan bulat persen, tanggal dengan DATE, dan aktif bernilai bawaan 1. Aturan seperti kode harus unik atau diskon tidak boleh lebih dari 90% ditambahkan di pelajaran constraint.",
+    "code": "CREATE TABLE kupon (\n  kode TEXT,\n  diskon_persen INTEGER,\n  berlaku_sampai DATE,\n  aktif INTEGER DEFAULT 1\n);\nINSERT INTO kupon (kode, diskon_persen, berlaku_sampai) VALUES\n  ('HARBOLNAS', 12, '2026-12-12'),\n  ('GAJIAN', 10, '2026-12-31');\nSELECT * FROM kupon;",
+    "out": "kode      | diskon_persen | berlaku_sampai | aktif\n----------+---------------+----------------+------\nHARBOLNAS | 12            | 2026-12-12     | 1\nGAJIAN    | 10            | 2026-12-31     | 1"
+   }
+  ],
+  "ex": [
+   [
+    "Buat tabel kategori",
+    "CREATE TABLE kategori (\n  id INTEGER,\n  nama TEXT,\n  aktif INTEGER DEFAULT 1\n);\nINSERT INTO kategori (id, nama) VALUES (1, 'Minuman'), (2, 'Camilan');\nSELECT * FROM kategori;"
+   ],
+   [
+    "Tabel dari hasil query",
+    "CREATE TABLE produk_mahal AS\nSELECT nama, harga FROM produk WHERE harga > 70000;\nSELECT * FROM produk_mahal;"
+   ]
+  ]
+ },
+ "sql-6-2": {
+  "exs": [
+   {
+    "t": "Kasus: menambah kolom email pelanggan",
+    "d": "Baris lama mendapat NULL di kolom baru.",
+    "code": "ALTER TABLE pelanggan ADD COLUMN email TEXT;\nUPDATE pelanggan SET email = 'andi@contoh.id' WHERE id = 1;\nSELECT id, nama, email FROM pelanggan LIMIT 3;",
+    "out": "id | nama  | email\n---+-------+---------------\n1  | Andi  | andi@contoh.id\n2  | Budi  | NULL\n3  | Citra | NULL"
+   },
+   {
+    "t": "Kasus: mengganti nama tabel",
+    "code": "ALTER TABLE rekening RENAME TO dompet;\nSELECT * FROM dompet;",
+    "out": "id | pemilik | saldo\n---+---------+-------\n1  | Andi    | 500000\n2  | Budi    | 300000"
+   },
+   {
+    "t": "Kasus: menghapus kolom yang tidak dipakai",
+    "code": "ALTER TABLE karyawan DROP COLUMN jabatan;\nSELECT * FROM karyawan LIMIT 3;",
+    "out": "id | nama | atasan_id | divisi    | gaji\n---+------+-----------+-----------+---------\n1  | Sari | NULL      | Pusat     | 30000000\n2  | Tono | 1         | Gudang    | 15000000\n3  | Umi  | 1         | Penjualan | 16000000"
+   },
+   {
+    "t": "Kasus: mengosongkan tabel log impor",
+    "d": "TRUNCATE membuang semua baris, tabelnya tetap ada.",
+    "code": "CREATE TABLE log_impor (baris INTEGER, pesan TEXT);\nINSERT INTO log_impor VALUES (1, 'harga kosong'), (7, 'kategori tidak dikenal');\nTRUNCATE TABLE log_impor;\nSELECT COUNT(*) AS sisa FROM log_impor;",
+    "out": "sisa\n----\n0"
+   }
+  ]
+ },
+ "sql-6-3": {
+  "exs": [
+   {
+    "t": "Kasus: id kategori terisi otomatis",
+    "d": "Kolom INTEGER PRIMARY KEY diberi nomor sendiri bila dikosongkan.",
+    "code": "CREATE TABLE kategori (\n  id INTEGER PRIMARY KEY,\n  nama TEXT\n);\nINSERT INTO kategori (nama) VALUES ('Minuman'), ('Camilan'), ('Bumbu');\nSELECT * FROM kategori;",
+    "out": "id | nama\n---+--------\n1  | Minuman\n2  | Camilan\n3  | Bumbu"
+   },
+   {
+    "t": "Kasus: primary key gabungan menolak rincian kembar",
+    "d": "Produk 1 sudah tercatat di pesanan 101; tambah jumlahnya dengan UPDATE, bukan baris baru.",
+    "code": "INSERT INTO detail_pesanan VALUES (101, 1, 3);"
+   },
+   {
+    "t": "Kasus: ulasan harus menunjuk produk yang ada",
+    "d": "Foreign key menolak produk_id 99 karena produk itu tidak ada.",
+    "code": "CREATE TABLE ulasan (\n  id INTEGER PRIMARY KEY,\n  produk_id INTEGER REFERENCES produk(id),\n  bintang INTEGER\n);\nINSERT INTO ulasan (produk_id, bintang) VALUES (99, 5);"
+   },
+   {
+    "t": "Kasus: menghapus pelanggan beserta alamatnya",
+    "d": "ON DELETE CASCADE ikut menghapus alamat milik pelanggan yang dihapus.",
+    "code": "CREATE TABLE alamat (\n  id INTEGER PRIMARY KEY,\n  pelanggan_id INTEGER REFERENCES pelanggan(id) ON DELETE CASCADE,\n  jalan TEXT\n);\nINSERT INTO pelanggan (id, nama) VALUES (50, 'Rahmat');\nINSERT INTO alamat (pelanggan_id, jalan) VALUES (50, 'Jl. Merdeka 1'), (50, 'Jl. Sudirman 9');\nDELETE FROM pelanggan WHERE id = 50;\nSELECT COUNT(*) AS alamat_tersisa FROM alamat;",
+    "out": "alamat_tersisa\n--------------\n0"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Tabel penghubung dengan kunci gabungan",
+    "b": "Satu produk bisa dipasok beberapa pemasok, dan satu pemasok memasok beberapa produk. Tabel penghubung produk_pemasok memakai primary key gabungan (produk_id, pemasok) sehingga pasangan yang sama tidak tercatat dua kali, dan produk_id wajib menunjuk produk yang ada.",
+    "code": "CREATE TABLE produk_pemasok (\n  produk_id INTEGER REFERENCES produk(id),\n  pemasok TEXT,\n  harga_beli INTEGER,\n  PRIMARY KEY (produk_id, pemasok)\n);\nINSERT INTO produk_pemasok VALUES\n  (1, 'CV Kopi Aceh', 60000),\n  (1, 'UD Gayo Lestari', 62000),\n  (6, 'Koperasi Madu Riau', 90000);\nSELECT * FROM produk_pemasok ORDER BY produk_id, harga_beli;",
+    "out": "produk_id | pemasok            | harga_beli\n----------+--------------------+-----------\n1         | CV Kopi Aceh       | 60000\n1         | UD Gayo Lestari    | 62000\n6         | Koperasi Madu Riau | 90000"
+   }
+  ]
+ },
+ "sql-6-4": {
+  "exs": [
+   {
+    "t": "Kasus: email anggota harus unik",
+    "d": "Insert kedua ditolak karena email sudah terdaftar.",
+    "code": "CREATE TABLE anggota (\n  id INTEGER PRIMARY KEY,\n  email TEXT NOT NULL UNIQUE\n);\nINSERT INTO anggota (email) VALUES ('rina@contoh.id');\nINSERT INTO anggota (email) VALUES ('rina@contoh.id');"
+   },
+   {
+    "t": "Kasus: bintang ulasan hanya 1 sampai 5",
+    "code": "CREATE TABLE ulasan (\n  id INTEGER PRIMARY KEY,\n  bintang INTEGER NOT NULL CHECK (bintang BETWEEN 1 AND 5)\n);\nINSERT INTO ulasan (bintang) VALUES (6);"
+   },
+   {
+    "t": "Kasus: saldo tidak boleh minus",
+    "d": "Saldo Budi 300 ribu, jadi penarikan 400 ribu ditolak CHECK (saldo >= 0).",
+    "code": "UPDATE rekening SET saldo = saldo - 400000 WHERE id = 2;"
+   },
+   {
+    "t": "Kasus: data yang lolos semua aturan",
+    "d": "Baris yang memenuhi semua constraint masuk seperti biasa, dan kolom DEFAULT terisi otomatis.",
+    "code": "CREATE TABLE voucher (\n  kode TEXT PRIMARY KEY,\n  nilai INTEGER NOT NULL CHECK (nilai > 0),\n  kuota INTEGER NOT NULL DEFAULT 100\n);\nINSERT INTO voucher (kode, nilai) VALUES ('ONGKIR10', 10000);\nSELECT * FROM voucher;",
+    "out": "kode     | nilai | kuota\n---------+-------+------\nONGKIR10 | 10000 | 100"
+   }
+  ]
+ },
+ "sql-7-1": {
+  "exs": [
+   {
+    "t": "Kasus: isi pesanan 104 dengan nama produk",
+    "d": "detail_pesanan hanya menyimpan produk_id; JOIN menempelkan nama dari tabel produk.",
+    "code": "SELECT d.pesanan_id, pr.nama, d.jumlah\nFROM detail_pesanan d\nJOIN produk pr ON pr.id = d.produk_id\nWHERE d.pesanan_id = 104;",
+    "out": "pesanan_id | nama             | jumlah\n-----------+------------------+-------\n104        | Kacang Mete      | 2\n104        | Keripik Singkong | 3\n104        | Sambal Bawang    | 1"
+   },
+   {
+    "t": "Kasus: pesanan yang sedang dikirim beserta pembelinya",
+    "code": "SELECT s.id, s.tanggal, p.nama, p.kota\nFROM pesanan s\nINNER JOIN pelanggan p ON p.id = s.pelanggan_id\nWHERE s.status = 'dikirim';",
+    "out": "id  | tanggal    | nama  | kota\n----+------------+-------+--------\n103 | 2024-10-07 | Andi  | Jakarta\n107 | 2024-11-02 | Fitri | Bandung"
+   },
+   {
+    "t": "Kasus: subtotal setiap baris rincian",
+    "d": "Kolom dari dua tabel bisa dihitung bersama.",
+    "code": "SELECT pr.nama, d.jumlah, pr.harga, d.jumlah * pr.harga AS subtotal\nFROM detail_pesanan d\nJOIN produk pr ON pr.id = d.produk_id\nWHERE d.pesanan_id = 101;",
+    "out": "nama             | jumlah | harga | subtotal\n-----------------+--------+-------+---------\nKopi Gayo        | 2      | 85000 | 170000\nKeripik Singkong | 5      | 15000 | 75000"
+   },
+   {
+    "t": "Kasus: unit terjual per nama produk",
+    "d": "JOIN lalu GROUP BY menghasilkan laporan yang bisa dibaca manusia.",
+    "code": "SELECT pr.nama, SUM(d.jumlah) AS terjual\nFROM detail_pesanan d\nJOIN produk pr ON pr.id = d.produk_id\nGROUP BY pr.id, pr.nama\nORDER BY terjual DESC;",
+    "out": "nama             | terjual\n-----------------+--------\nKerupuk Udang    | 14\nKeripik Singkong | 10\nSambal Bawang    | 7\nTeh Melati       | 5\nKopi Gayo        | 4\nMadu Hutan       | 2\nKacang Mete      | 2\nRendang Kaleng   | 2"
+   }
+  ]
+ },
+ "sql-7-2": {
+  "exs": [
+   {
+    "t": "Kasus: banyak pesanan setiap pelanggan, termasuk nol",
+    "d": "COUNT(s.id) tidak menghitung NULL, jadi pelanggan tanpa pesanan bernilai 0.",
+    "code": "SELECT p.nama, COUNT(s.id) AS pesanan\nFROM pelanggan p\nLEFT JOIN pesanan s ON s.pelanggan_id = p.id\nGROUP BY p.id, p.nama\nORDER BY pesanan DESC;",
+    "out": "nama  | pesanan\n------+--------\nAndi  | 3\nBudi  | 2\nCitra | 1\nDewi  | 1\nEko   | 1\nFitri | 1\nHadi  | 1\nGita  | 0"
+   },
+   {
+    "t": "Kasus: syarat di ON tetap mempertahankan semua pelanggan",
+    "d": "Syarat status ditaruh di ON, jadi pelanggan tanpa pesanan selesai tetap muncul dengan NULL.",
+    "code": "SELECT p.nama, s.id AS pesanan_selesai\nFROM pelanggan p\nLEFT JOIN pesanan s ON s.pelanggan_id = p.id AND s.status = 'selesai'\nORDER BY p.id;",
+    "out": "nama  | pesanan_selesai\n------+----------------\nAndi  | 101\nBudi  | 102\nBudi  | 106\nCitra | 104\nDewi  | NULL\nEko   | 109\nFitri | NULL\nGita  | NULL\nHadi  | NULL"
+   },
+   {
+    "t": "Kasus: pemilik rekening dicocokkan dengan pelanggan",
+    "d": "FULL OUTER JOIN menampilkan baris dari kedua sisi, cocok atau tidak.",
+    "code": "SELECT p.nama AS pelanggan, r.pemilik, r.saldo\nFROM pelanggan p\nFULL OUTER JOIN rekening r ON r.pemilik = p.nama\nORDER BY p.id;",
+    "out": "pelanggan | pemilik | saldo\n----------+---------+-------\nAndi      | Andi    | 500000\nBudi      | Budi    | 300000\nCitra     | NULL    | NULL\nDewi      | NULL    | NULL\nEko       | NULL    | NULL\nFitri     | NULL    | NULL\nGita      | NULL    | NULL\nHadi      | NULL    | NULL"
+   },
+   {
+    "t": "Kasus: daftar kontak gabungan dengan UNION ALL",
+    "d": "UNION ALL menumpuk hasil dua query yang kolomnya sama.",
+    "code": "SELECT nama, 'pelanggan' AS peran FROM pelanggan\nUNION ALL\nSELECT nama, 'karyawan' FROM karyawan\nORDER BY nama;",
+    "out": "nama  | peran\n------+----------\nAndi  | pelanggan\nBudi  | pelanggan\nCitra | pelanggan\nDewi  | pelanggan\nEko   | pelanggan\nFitri | pelanggan\nGita  | pelanggan\nHadi  | pelanggan\nRio   | karyawan\nSari  | karyawan\nTono  | karyawan\nUmi   | karyawan\nVino  | karyawan\nWati  | karyawan\nYudi  | karyawan\nZahra | karyawan"
+   }
+  ]
+ },
+ "sql-7-3": {
+  "exs": [
+   {
+    "t": "Kasus: atasan langsung setiap sales",
+    "d": "Tabel karyawan di-JOIN dengan dirinya sendiri memakai dua alias.",
+    "code": "SELECT k.nama AS sales, a.nama AS atasan\nFROM karyawan k\nJOIN karyawan a ON a.id = k.atasan_id\nWHERE k.jabatan = 'Sales';",
+    "out": "sales | atasan\n------+-------\nYudi  | Umi\nZahra | Umi\nRio   | Umi"
+   },
+   {
+    "t": "Kasus: jumlah bawahan setiap atasan",
+    "code": "SELECT a.nama AS atasan, COUNT(k.id) AS bawahan\nFROM karyawan a\nJOIN karyawan k ON k.atasan_id = a.id\nGROUP BY a.id, a.nama\nORDER BY bawahan DESC;",
+    "out": "atasan | bawahan\n-------+--------\nUmi    | 3\nSari   | 2\nTono   | 2"
+   },
+   {
+    "t": "Kasus: pasangan pelanggan yang sekota",
+    "d": "Syarat x.id < y.id mencegah pasangan dobel dan pasangan dengan diri sendiri.",
+    "code": "SELECT x.nama, y.nama AS sekota_dengan, x.kota\nFROM pelanggan x\nJOIN pelanggan y ON x.kota = y.kota AND x.id < y.id;",
+    "out": "nama | sekota_dengan | kota\n-----+---------------+--------\nAndi | Dewi          | Jakarta\nBudi | Fitri         | Bandung"
+   },
+   {
+    "t": "Kasus: setiap minuman dalam setiap ukuran kemasan",
+    "d": "CROSS JOIN memasangkan setiap baris kiri dengan setiap baris kanan.",
+    "code": "CREATE TABLE kemasan (ukuran TEXT);\nINSERT INTO kemasan VALUES ('Sachet'), ('Botol'), ('Kotak');\nSELECT pr.nama, k.ukuran\nFROM produk pr\nCROSS JOIN kemasan k\nWHERE pr.kategori = 'Minuman';",
+    "out": "nama       | ukuran\n-----------+-------\nKopi Gayo  | Sachet\nKopi Gayo  | Botol\nKopi Gayo  | Kotak\nTeh Melati | Sachet\nTeh Melati | Botol\nTeh Melati | Kotak\nMadu Hutan | Sachet\nMadu Hutan | Botol\nMadu Hutan | Kotak"
+   }
+  ],
+  "ex": [
+   [
+    "Karyawan dan atasannya",
+    "SELECT k.nama AS karyawan, k.jabatan, a.nama AS atasan\nFROM karyawan k\nLEFT JOIN karyawan a ON k.atasan_id = a.id;"
+   ],
+   [
+    "Rekan satu atasan",
+    "SELECT x.nama, y.nama AS rekan\nFROM karyawan x JOIN karyawan y\n  ON x.atasan_id = y.atasan_id AND x.id < y.id;"
+   ],
+   [
+    "Cross join: semua pasangan pelanggan dan minuman",
+    "SELECT pl.nama AS pelanggan, pr.nama AS minuman\nFROM pelanggan pl CROSS JOIN produk pr\nWHERE pr.kategori = 'Minuman'\nORDER BY pl.nama;"
+   ],
+   [
+    "Jumlah baris produk kartesius",
+    "SELECT COUNT(*) AS kombinasi FROM pelanggan CROSS JOIN produk;"
+   ]
+  ]
+ },
+ "sql-7-4": {
+  "exs": [
+   {
+    "t": "Kasus: siapa membeli apa di bulan November",
+    "d": "Empat tabel disambung berurutan mengikuti foreign key.",
+    "code": "SELECT s.tanggal, p.nama AS pembeli, pr.nama AS produk, d.jumlah\nFROM pesanan s\nJOIN pelanggan p ON p.id = s.pelanggan_id\nJOIN detail_pesanan d ON d.pesanan_id = s.id\nJOIN produk pr ON pr.id = d.produk_id\nWHERE s.tanggal >= '2024-11-01'\nORDER BY s.tanggal;",
+    "out": "tanggal    | pembeli | produk           | jumlah\n-----------+---------+------------------+-------\n2024-11-02 | Fitri   | Kerupuk Udang    | 10\n2024-11-05 | Andi    | Kopi Gayo        | 1\n2024-11-05 | Andi    | Madu Hutan       | 1\n2024-11-09 | Eko     | Sambal Bawang    | 6\n2024-11-15 | Hadi    | Keripik Singkong | 2"
+   },
+   {
+    "t": "Kasus: omzet per kategori dari pesanan selesai",
+    "code": "SELECT pr.kategori, SUM(d.jumlah * pr.harga) AS omzet\nFROM pesanan s\nJOIN detail_pesanan d ON d.pesanan_id = s.id\nJOIN produk pr ON pr.id = d.produk_id\nWHERE s.status = 'selesai'\nGROUP BY pr.kategori\nORDER BY omzet DESC;",
+    "out": "kategori | omzet\n---------+-------\nCamilan  | 320000\nMinuman  | 295000\nBumbu    | 210000\nMakanan  | 150000"
+   },
+   {
+    "t": "Kasus: kota mana membeli kategori apa",
+    "code": "SELECT DISTINCT p.kota, pr.kategori\nFROM pelanggan p\nJOIN pesanan s ON s.pelanggan_id = p.id\nJOIN detail_pesanan d ON d.pesanan_id = s.id\nJOIN produk pr ON pr.id = d.produk_id\nORDER BY p.kota, pr.kategori;",
+    "out": "kota       | kategori\n-----------+---------\nBandung    | Camilan\nBandung    | Makanan\nBandung    | Minuman\nJakarta    | Camilan\nJakarta    | Minuman\nMedan      | Bumbu\nSurabaya   | Bumbu\nSurabaya   | Camilan\nYogyakarta | Camilan"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Omzet per kota per kategori",
+    "b": "Tim pemasaran ingin tahu kategori apa yang laku di setiap kota. Empat tabel disambung: pesanan ke pelanggan untuk kota, pesanan ke detail_pesanan untuk jumlah, lalu ke produk untuk kategori dan harga. Pesanan batal dibuang dengan WHERE sebelum dikelompokkan.",
+    "code": "SELECT pl.kota, pr.kategori, SUM(d.jumlah * pr.harga) AS omzet\nFROM pesanan p\nJOIN pelanggan pl ON pl.id = p.pelanggan_id\nJOIN detail_pesanan d ON d.pesanan_id = p.id\nJOIN produk pr ON pr.id = d.produk_id\nWHERE p.status <> 'batal'\nGROUP BY pl.kota, pr.kategori\nORDER BY omzet DESC;",
+    "out": "kota       | kategori | omzet\n-----------+----------+-------\nJakarta    | Minuman  | 495000\nBandung    | Camilan  | 280000\nMedan      | Bumbu    | 180000\nSurabaya   | Camilan  | 165000\nBandung    | Makanan  | 150000\nBandung    | Minuman  | 125000\nJakarta    | Camilan  | 75000\nSurabaya   | Bumbu    | 30000\nYogyakarta | Camilan  | 30000"
+   }
+  ]
+ },
+ "sql-7-5": {
+  "exs": [
+   {
+    "t": "Kasus: total setiap pesanan",
+    "code": "SELECT s.id, s.status, SUM(d.jumlah * pr.harga) AS total\nFROM pesanan s\nJOIN detail_pesanan d ON d.pesanan_id = s.id\nJOIN produk pr ON pr.id = d.produk_id\nGROUP BY s.id, s.status\nORDER BY s.id;",
+    "out": "id  | status  | total\n----+---------+-------\n101 | selesai | 245000\n102 | selesai | 155000\n103 | dikirim | 120000\n104 | selesai | 195000\n105 | batal   | 85000\n106 | selesai | 200000\n107 | dikirim | 200000\n108 | baru    | 205000\n109 | selesai | 180000\n110 | baru    | 30000"
+   },
+   {
+    "t": "Kasus: pesanan terakhir setiap pelanggan",
+    "d": "LEFT JOIN menjaga pelanggan yang belum pernah memesan.",
+    "code": "SELECT p.nama, MAX(s.tanggal) AS pesanan_terakhir\nFROM pelanggan p\nLEFT JOIN pesanan s ON s.pelanggan_id = p.id\nGROUP BY p.id, p.nama\nORDER BY pesanan_terakhir DESC;",
+    "out": "nama  | pesanan_terakhir\n------+-----------------\nHadi  | 2024-11-15\nEko   | 2024-11-09\nAndi  | 2024-11-05\nFitri | 2024-11-02\nBudi  | 2024-10-20\nDewi  | 2024-10-15\nCitra | 2024-10-12\nGita  | NULL"
+   },
+   {
+    "t": "Kasus: tiga pesanan terbesar beserta pembeli",
+    "code": "SELECT s.id, p.nama, SUM(d.jumlah * pr.harga) AS total\nFROM pesanan s\nJOIN pelanggan p ON p.id = s.pelanggan_id\nJOIN detail_pesanan d ON d.pesanan_id = s.id\nJOIN produk pr ON pr.id = d.produk_id\nGROUP BY s.id, p.nama\nORDER BY total DESC\nLIMIT 3;",
+    "out": "id  | nama | total\n----+------+-------\n101 | Andi | 245000\n108 | Andi | 205000\n106 | Budi | 200000"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Ringkasan per pelanggan",
+    "b": "Laporan untuk tim CRM: banyak pesanan yang tidak batal, total belanja, dan tanggal pesanan terakhir setiap pelanggan. Syarat status ditaruh di ON agar pelanggan tanpa pesanan tetap muncul. Untuk mereka total bernilai NULL; di pelajaran COALESCE nanti NULL ini diubah menjadi 0.",
+    "code": "SELECT pl.nama,\n       COUNT(DISTINCT p.id) AS pesanan,\n       SUM(d.jumlah * pr.harga) AS total_belanja,\n       MAX(p.tanggal) AS terakhir\nFROM pelanggan pl\nLEFT JOIN pesanan p ON p.pelanggan_id = pl.id AND p.status <> 'batal'\nLEFT JOIN detail_pesanan d ON d.pesanan_id = p.id\nLEFT JOIN produk pr ON pr.id = d.produk_id\nGROUP BY pl.id, pl.nama\nORDER BY total_belanja DESC;",
+    "out": "nama  | pesanan | total_belanja | terakhir\n------+---------+---------------+-----------\nAndi  | 3       | 570000        | 2024-11-05\nBudi  | 2       | 355000        | 2024-10-20\nFitri | 1       | 200000        | 2024-11-02\nCitra | 1       | 195000        | 2024-10-12\nEko   | 1       | 180000        | 2024-11-09\nHadi  | 1       | 30000         | 2024-11-15\nDewi  | 0       | NULL          | NULL\nGita  | 0       | NULL          | NULL"
+   }
+  ]
+ },
+ "sql-8-1": {
+  "exs": [
+   {
+    "t": "Kasus: karyawan bergaji di atas rata-rata",
+    "d": "Subquery skalar menghasilkan satu nilai untuk dibandingkan.",
+    "code": "SELECT nama, gaji\nFROM karyawan\nWHERE gaji > (SELECT AVG(gaji) FROM karyawan);",
+    "out": "nama | gaji\n-----+---------\nSari | 30000000\nTono | 15000000\nUmi  | 16000000"
+   },
+   {
+    "t": "Kasus: produk yang ada di pesanan batal",
+    "d": "Subquery kolom dipakai bersama IN, dan bisa bersarang.",
+    "code": "SELECT nama FROM produk\nWHERE id IN (\n  SELECT produk_id FROM detail_pesanan\n  WHERE pesanan_id IN (SELECT id FROM pesanan WHERE status = 'batal')\n);",
+    "out": "nama\n---------\nKopi Gayo"
+   },
+   {
+    "t": "Kasus: rata-rata item per pesanan",
+    "d": "Subquery di FROM dihitung dulu menjadi tabel sementara bernama t.",
+    "code": "SELECT AVG(item) AS rata_item\nFROM (\n  SELECT pesanan_id, SUM(jumlah) AS item\n  FROM detail_pesanan\n  GROUP BY pesanan_id\n) AS t;",
+    "out": "rata_item\n---------\n4.6"
+   },
+   {
+    "t": "Kasus: selisih harga dengan produk termahal",
+    "d": "Subquery skalar juga bisa dipakai di daftar kolom.",
+    "code": "SELECT nama, harga, (SELECT MAX(harga) FROM produk) - harga AS selisih\nFROM produk\nORDER BY selisih;",
+    "out": "nama             | harga  | selisih\n-----------------+--------+--------\nMadu Hutan       | 120000 | 0\nKopi Gayo        | 85000  | 35000\nRendang Kaleng   | 75000  | 45000\nKacang Mete      | 60000  | 60000\nSambal Bawang    | 30000  | 90000\nTeh Melati       | 25000  | 95000\nKerupuk Udang    | 20000  | 100000\nKeripik Singkong | 15000  | 105000"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Produk di atas rata-rata harga",
+    "b": "Subquery skalar yang sama dipakai dua kali: sekali untuk ditampilkan sebagai pembanding, sekali untuk menyaring. Rata-rata harga seluruh produk adalah 53.750.",
+    "code": "SELECT nama,\n       harga,\n       (SELECT AVG(harga) FROM produk) AS rata_rata\nFROM produk\nWHERE harga > (SELECT AVG(harga) FROM produk)\nORDER BY harga DESC;",
+    "out": "nama           | harga  | rata_rata\n---------------+--------+----------\nMadu Hutan     | 120000 | 53750\nKopi Gayo      | 85000  | 53750\nRendang Kaleng | 75000  | 53750\nKacang Mete    | 60000  | 53750"
+   }
+  ]
+ },
+ "sql-8-2": {
+  "exs": [
+   {
+    "t": "Kasus: produk termurah di setiap kategori",
+    "d": "Subquery dijalankan ulang untuk kategori baris luar.",
+    "code": "SELECT kategori, nama, harga\nFROM produk p\nWHERE harga = (SELECT MIN(harga) FROM produk x WHERE x.kategori = p.kategori)\nORDER BY kategori;",
+    "out": "kategori | nama             | harga\n---------+------------------+------\nBumbu    | Sambal Bawang    | 30000\nCamilan  | Keripik Singkong | 15000\nMakanan  | Rendang Kaleng   | 75000\nMinuman  | Teh Melati       | 25000"
+   },
+   {
+    "t": "Kasus: produk yang pernah dibeli lebih dari 3 unit sekaligus",
+    "code": "SELECT nama FROM produk pr\nWHERE EXISTS (\n  SELECT 1 FROM detail_pesanan d\n  WHERE d.produk_id = pr.id AND d.jumlah > 3\n);",
+    "out": "nama\n----------------\nKeripik Singkong\nSambal Bawang\nKerupuk Udang"
+   },
+   {
+    "t": "Kasus: karyawan yang punya bawahan",
+    "code": "SELECT nama, jabatan FROM karyawan a\nWHERE EXISTS (SELECT 1 FROM karyawan k WHERE k.atasan_id = a.id);",
+    "out": "nama | jabatan\n-----+------------------\nSari | Direktur\nTono | Manajer Gudang\nUmi  | Manajer Penjualan"
+   },
+   {
+    "t": "Kasus: jumlah jenis barang di setiap pesanan",
+    "d": "Subquery berkorelasi di SELECT menghitung untuk setiap pesanan.",
+    "code": "SELECT s.id, s.status,\n  (SELECT COUNT(*) FROM detail_pesanan d WHERE d.pesanan_id = s.id) AS jenis_barang\nFROM pesanan s\nORDER BY jenis_barang DESC, s.id;",
+    "out": "id  | status  | jenis_barang\n----+---------+-------------\n104 | selesai | 3\n101 | selesai | 2\n102 | selesai | 2\n106 | selesai | 2\n108 | baru    | 2\n103 | dikirim | 1\n105 | batal   | 1\n107 | dikirim | 1\n109 | selesai | 1\n110 | baru    | 1"
+   }
+  ]
+ },
+ "sql-8-3": {
+  "exs": [
+   {
+    "t": "Kasus: produk di atas rata-rata harga kategorinya",
+    "code": "SELECT nama, kategori, harga\nFROM produk p\nWHERE harga > (SELECT AVG(harga) FROM produk x WHERE x.kategori = p.kategori);",
+    "out": "nama        | kategori | harga\n------------+----------+-------\nKopi Gayo   | Minuman  | 85000\nKacang Mete | Camilan  | 60000\nMadu Hutan  | Minuman  | 120000"
+   },
+   {
+    "t": "Kasus: produk dengan unit terjual terbanyak",
+    "d": "Subquery mencari produk_id juara, query luar mengambil namanya.",
+    "code": "SELECT nama FROM produk\nWHERE id = (\n  SELECT produk_id FROM detail_pesanan\n  GROUP BY produk_id\n  ORDER BY SUM(jumlah) DESC\n  LIMIT 1\n);",
+    "out": "nama\n-------------\nKerupuk Udang"
+   },
+   {
+    "t": "Kasus: produk yang belum pernah masuk pesanan selesai",
+    "code": "SELECT nama FROM produk pr\nWHERE NOT EXISTS (\n  SELECT 1 FROM detail_pesanan d\n  JOIN pesanan s ON s.id = d.pesanan_id\n  WHERE d.produk_id = pr.id AND s.status = 'selesai'\n);",
+    "out": "nama\n----------\nMadu Hutan"
+   }
+  ]
+ },
+ "sql-9-1": {
+  "exs": [
+   {
+    "t": "Kasus: gaji dalam juta rupiah",
+    "d": "Membagi dengan 1000000.0 menjaga desimal, ROUND membulatkan satu angka di belakang koma.",
+    "code": "SELECT nama, ROUND(gaji / 1000000.0, 1) AS gaji_juta FROM karyawan;",
+    "out": "nama  | gaji_juta\n------+----------\nSari  | 30\nTono  | 15\nUmi   | 16\nVino  | 7\nWati  | 7.5\nYudi  | 8\nZahra | 8.5\nRio   | 8"
+   },
+   {
+    "t": "Kasus: kode singkat kategori",
+    "code": "SELECT DISTINCT kategori, UPPER(SUBSTR(kategori, 1, 3)) AS kode FROM produk;",
+    "out": "kategori | kode\n---------+-----\nMinuman  | MIN\nCamilan  | CAM\nBumbu    | BUM\nMakanan  | MAK"
+   },
+   {
+    "t": "Kasus: nama produk yang terlalu panjang untuk struk",
+    "d": "Struk kasir hanya muat 12 huruf.",
+    "code": "SELECT nama, LENGTH(nama) AS panjang\nFROM produk\nWHERE LENGTH(nama) > 12;",
+    "out": "nama             | panjang\n-----------------+--------\nKeripik Singkong | 16\nSambal Bawang    | 13\nRendang Kaleng   | 14\nKerupuk Udang    | 13"
+   },
+   {
+    "t": "Kasus: merapikan input yang berantakan",
+    "code": "SELECT TRIM('  kopi gayo  ') AS rapi,\n       UPPER('kopi gayo') AS besar,\n       REPLACE('0812-3456-7890', '-', '') AS nomor_hp;",
+    "out": "rapi      | besar     | nomor_hp\n----------+-----------+-------------\nkopi gayo | KOPI GAYO | 081234567890"
+   }
+  ],
+  "ex": [
+   [
+    "Fungsi angka",
+    "SELECT ABS(-7) AS mutlak, ROUND(85000 * 1.11, -2) AS bulat_ratusan,\n       CEILING(4.1) AS atas, FLOOR(4.9) AS bawah, MOD(17, 5) AS sisa;"
+   ],
+   [
+    "Harga per 1000 dibulatkan",
+    "SELECT nama, ROUND(harga / 1000.0, 1) AS ribu FROM produk;"
+   ],
+   [
+    "Fungsi teks",
+    "SELECT UPPER(nama) AS besar, LOWER(kategori) AS kecil, LENGTH(nama) AS panjang,\n       SUBSTRING(nama, 1, 4) AS awal, REPLACE(nama, ' ', '_') AS slug\nFROM produk;"
+   ],
+   [
+    "Menyambung teks",
+    "SELECT CONCAT(nama, ' (', kota, ')') AS label, nama || ' - ' || kota AS label2\nFROM pelanggan\nWHERE kota IS NOT NULL;"
+   ]
+  ]
+ },
+ "sql-9-2": {
+  "exs": [
+   {
+    "t": "Kasus: perkiraan tanggal tiba",
+    "d": "Ongkir reguler butuh 3 hari.",
+    "code": "SELECT id, tanggal, DATE(tanggal, '+3 days') AS perkiraan_tiba\nFROM pesanan\nWHERE status = 'dikirim';",
+    "out": "id  | tanggal    | perkiraan_tiba\n----+------------+---------------\n103 | 2024-10-07 | 2024-10-10\n107 | 2024-11-02 | 2024-11-05"
+   },
+   {
+    "t": "Kasus: jumlah pesanan per bulan",
+    "code": "SELECT STRFTIME('%Y-%m', tanggal) AS bulan, COUNT(*) AS pesanan\nFROM pesanan\nGROUP BY bulan\nORDER BY bulan;",
+    "out": "bulan   | pesanan\n--------+--------\n2024-10 | 6\n2024-11 | 4"
+   },
+   {
+    "t": "Kasus: lama menjadi pelanggan",
+    "d": "Selisih hari dihitung dari dua tanggal.",
+    "code": "SELECT nama, bergabung,\n       DATEDIFF(day, bergabung, '2024-12-31') AS hari_menjadi_member\nFROM pelanggan\nORDER BY hari_menjadi_member DESC;",
+    "out": "nama  | bergabung  | hari_menjadi_member\n------+------------+--------------------\nAndi  | 2023-01-15 | 716\nBudi  | 2023-03-02 | 670\nCitra | 2023-06-20 | 560\nDewi  | 2024-01-08 | 358\nEko   | 2024-02-14 | 321\nFitri | 2024-05-30 | 215\nGita  | 2024-07-11 | 173\nHadi  | 2024-09-03 | 119"
+   },
+   {
+    "t": "Kasus: pelanggan yang bergabung di semester pertama",
+    "code": "SELECT nama, bergabung\nFROM pelanggan\nWHERE EXTRACT(MONTH FROM bergabung) <= 6;",
+    "out": "nama  | bergabung\n------+-----------\nAndi  | 2023-01-15\nBudi  | 2023-03-02\nCitra | 2023-06-20\nDewi  | 2024-01-08\nEko   | 2024-02-14\nFitri | 2024-05-30"
+   }
+  ]
+ },
+ "sql-9-3": {
+  "exs": [
+   {
+    "t": "Kasus: golongan gaji karyawan",
+    "code": "SELECT nama, gaji,\n  CASE WHEN gaji >= 15000000 THEN 'manajemen'\n       WHEN gaji >= 8000000 THEN 'senior'\n       ELSE 'staf' END AS golongan\nFROM karyawan;",
+    "out": "nama  | gaji     | golongan\n------+----------+----------\nSari  | 30000000 | manajemen\nTono  | 15000000 | manajemen\nUmi   | 16000000 | manajemen\nVino  | 7000000  | staf\nWati  | 7500000  | staf\nYudi  | 8000000  | senior\nZahra | 8500000  | senior\nRio   | 8000000  | senior"
+   },
+   {
+    "t": "Kasus: status stok untuk etalase",
+    "code": "SELECT nama, stok,\n  CASE WHEN stok = 0 THEN 'Habis'\n       WHEN stok < 40 THEN 'Menipis'\n       ELSE 'Aman' END AS status_stok\nFROM produk\nORDER BY stok;",
+    "out": "nama             | stok | status_stok\n-----------------+------+------------\nRendang Kaleng   | 0    | Habis\nMadu Hutan       | 15   | Menipis\nKacang Mete      | 35   | Menipis\nKopi Gayo        | 40   | Aman\nSambal Bawang    | 80   | Aman\nTeh Melati       | 120  | Aman\nKerupuk Udang    | 150  | Aman\nKeripik Singkong | 200  | Aman"
+   },
+   {
+    "t": "Kasus: atasan kosong diganti keterangan",
+    "d": "Direktur tidak punya atasan, jadi LEFT JOIN menghasilkan NULL. COALESCE mengambil nilai pertama yang bukan NULL.",
+    "code": "SELECT k.nama, COALESCE(a.nama, '(tidak ada)') AS atasan\nFROM karyawan k\nLEFT JOIN karyawan a ON a.id = k.atasan_id\nLIMIT 4;",
+    "out": "nama | atasan\n-----+------------\nSari | (tidak ada)\nTono | Sari\nUmi  | Sari\nVino | Tono"
+   },
+   {
+    "t": "Kasus: rasio terjual terhadap stok tanpa bagi nol",
+    "d": "NULLIF mengubah stok 0 menjadi NULL, sehingga pembagian menghasilkan NULL, bukan error.",
+    "code": "SELECT pr.nama, pr.stok, SUM(d.jumlah) AS terjual,\n       ROUND(SUM(d.jumlah) * 1.0 / NULLIF(pr.stok, 0), 2) AS rasio\nFROM produk pr\nJOIN detail_pesanan d ON d.produk_id = pr.id\nGROUP BY pr.id, pr.nama, pr.stok;",
+    "out": "nama             | stok | terjual | rasio\n-----------------+------+---------+------\nKopi Gayo        | 40   | 4       | 0.1\nTeh Melati       | 120  | 5       | 0.04\nKeripik Singkong | 200  | 10      | 0.05\nKacang Mete      | 35   | 2       | 0.06\nSambal Bawang    | 80   | 7       | 0.09\nMadu Hutan       | 15   | 2       | 0.13\nRendang Kaleng   | 0    | 2       | NULL\nKerupuk Udang    | 150  | 14      | 0.09"
+   }
+  ]
+ },
+ "sql-9-4": {
+  "exs": [
+   {
+    "t": "Kasus: label status berbahasa ramah",
+    "d": "Bentuk CASE kolom WHEN nilai cocok untuk menerjemahkan kode.",
+    "code": "SELECT id,\n  CASE status WHEN 'baru' THEN 'Menunggu pembayaran'\n              WHEN 'dikirim' THEN 'Dalam pengiriman'\n              WHEN 'selesai' THEN 'Selesai'\n              ELSE 'Dibatalkan' END AS keterangan\nFROM pesanan\nORDER BY id;",
+    "out": "id  | keterangan\n----+--------------------\n101 | Selesai\n102 | Selesai\n103 | Dalam pengiriman\n104 | Selesai\n105 | Dibatalkan\n106 | Selesai\n107 | Dalam pengiriman\n108 | Menunggu pembayaran\n109 | Selesai\n110 | Menunggu pembayaran"
+   },
+   {
+    "t": "Kasus: total belanja, nol bila belum pernah belanja",
+    "code": "SELECT p.nama, COALESCE(SUM(d.jumlah * pr.harga), 0) AS total_belanja\nFROM pelanggan p\nLEFT JOIN pesanan s ON s.pelanggan_id = p.id\nLEFT JOIN detail_pesanan d ON d.pesanan_id = s.id\nLEFT JOIN produk pr ON pr.id = d.produk_id\nGROUP BY p.id, p.nama\nORDER BY total_belanja DESC;",
+    "out": "nama  | total_belanja\n------+--------------\nAndi  | 570000\nBudi  | 355000\nFitri | 200000\nCitra | 195000\nEko   | 180000\nDewi  | 85000\nHadi  | 30000\nGita  | 0"
+   },
+   {
+    "t": "Kasus: daftar harga dalam ribuan",
+    "code": "SELECT UPPER(nama) AS produk, ROUND(harga / 1000.0) || ' rb' AS harga_ribuan\nFROM produk\nORDER BY harga DESC;",
+    "out": "produk           | harga_ribuan\n-----------------+-------------\nMADU HUTAN       | 120 rb\nKOPI GAYO        | 85 rb\nRENDANG KALENG   | 75 rb\nKACANG METE      | 60 rb\nSAMBAL BAWANG    | 30 rb\nTEH MELATI       | 25 rb\nKERUPUK UDANG    | 20 rb\nKERIPIK SINGKONG | 15 rb"
+   }
+  ]
+ },
+ "sql-10-1": {
+  "exs": [
+   {
+    "t": "Kasus: view produk yang masih tersedia",
+    "d": "Query yang sering dipakai disimpan dengan nama, lalu dibaca seperti tabel.",
+    "code": "CREATE VIEW v_tersedia AS\nSELECT nama, harga, stok FROM produk WHERE stok > 0;\nSELECT * FROM v_tersedia ORDER BY harga LIMIT 3;",
+    "out": "nama             | harga | stok\n-----------------+-------+-----\nKeripik Singkong | 15000 | 200\nKerupuk Udang    | 20000 | 150\nTeh Melati       | 25000 | 120"
+   },
+   {
+    "t": "Kasus: view rekap gaji per divisi",
+    "d": "View boleh berisi GROUP BY, dan hasilnya bisa disaring lagi.",
+    "code": "CREATE VIEW v_gaji_divisi AS\nSELECT divisi, COUNT(*) AS orang, SUM(gaji) AS total_gaji\nFROM karyawan\nGROUP BY divisi;\nSELECT * FROM v_gaji_divisi WHERE orang >= 3;",
+    "out": "divisi    | orang | total_gaji\n----------+-------+-----------\nGudang    | 3     | 29500000\nPenjualan | 4     | 40500000"
+   },
+   {
+    "t": "Kasus: view selalu mengikuti data terbaru",
+    "d": "View tidak menyimpan salinan data; setelah pesanan 103 selesai, ia hilang dari view.",
+    "code": "CREATE VIEW v_belum_selesai AS\nSELECT id, status FROM pesanan WHERE status IN ('baru', 'dikirim');\nUPDATE pesanan SET status = 'selesai' WHERE id = 103;\nSELECT * FROM v_belum_selesai;",
+    "out": "id  | status\n----+--------\n107 | dikirim\n108 | baru\n110 | baru"
+   }
+  ]
+ },
+ "sql-10-2": {
+  "exs": [
+   {
+    "t": "Kasus: index untuk mencari pesanan menurut status",
+    "d": "Setelah index dibuat, rencana eksekusi memakai index alih-alih membaca seluruh tabel.",
+    "code": "CREATE INDEX idx_pesanan_status ON pesanan(status);\nEXPLAIN QUERY PLAN SELECT id FROM pesanan WHERE status = 'baru';",
+    "out": "detail\n--------------------------------------------------------\nSEARCH pesanan USING INDEX idx_pesanan_status (status=?)"
+   },
+   {
+    "t": "Kasus: index gabungan kategori dan harga",
+    "d": "Kolom yang paling sering disaring dengan = ditaruh paling depan.",
+    "code": "CREATE INDEX idx_produk_kategori_harga ON produk(kategori, harga);\nEXPLAIN QUERY PLAN\nSELECT nama FROM produk WHERE kategori = 'Camilan' AND harga < 50000;",
+    "out": "detail\n----------------------------------------------------------------\nSEARCH produk USING INDEX idx_produk_kategori_harga (kategori=?)"
+   },
+   {
+    "t": "Kasus: UNIQUE index menolak pemilik rekening kembar",
+    "code": "CREATE UNIQUE INDEX idx_rekening_pemilik ON rekening(pemilik);\nINSERT INTO rekening (pemilik, saldo) VALUES ('Andi', 1000);"
+   }
+  ]
+ },
+ "sql-11-1": {
+  "exs": [
+   {
+    "t": "Kasus: bayar pesanan dari saldo",
+    "d": "Saldo berkurang dan status pesanan berubah dalam satu transaksi.",
+    "code": "BEGIN;\nUPDATE rekening SET saldo = saldo - 85000 WHERE id = 1;\nUPDATE pesanan SET status = 'dikirim' WHERE id = 108;\nCOMMIT;\nSELECT pemilik, saldo FROM rekening WHERE id = 1;",
+    "out": "pemilik | saldo\n--------+-------\nAndi    | 415000"
+   },
+   {
+    "t": "Kasus: salah ketik harga dibatalkan",
+    "d": "ROLLBACK membuang semua perubahan sejak BEGIN.",
+    "code": "BEGIN;\nUPDATE produk SET harga = 8500 WHERE id = 1;\nROLLBACK;\nSELECT nama, harga FROM produk WHERE id = 1;",
+    "out": "nama      | harga\n----------+------\nKopi Gayo | 85000"
+   },
+   {
+    "t": "Kasus: SAVEPOINT untuk membatalkan sebagian",
+    "d": "Pesanan baru tetap tersimpan, hanya diskon yang keliru dibatalkan.",
+    "code": "BEGIN;\nINSERT INTO pesanan (pelanggan_id, tanggal) VALUES (7, '2024-11-20');\nSAVEPOINT sebelum_diskon;\nUPDATE produk SET harga = harga / 2;\nROLLBACK TO sebelum_diskon;\nCOMMIT;\nSELECT (SELECT COUNT(*) FROM pesanan) AS pesanan, (SELECT harga FROM produk WHERE id = 1) AS harga_kopi;",
+    "out": "pesanan | harga_kopi\n--------+-----------\n11      | 85000"
+   }
+  ]
+ },
+ "sql-11-2": {
+  "exs": [
+   {
+    "t": "Kasus: consistency dijaga constraint",
+    "d": "Penarikan 600 ribu dari saldo 500 ribu melanggar CHECK, jadi perintahnya ditolak dan saldo tetap.",
+    "code": "BEGIN;\nUPDATE rekening SET saldo = saldo - 600000 WHERE id = 1;"
+   },
+   {
+    "t": "Kasus: durability setelah COMMIT",
+    "d": "Setelah COMMIT, rekening baru tersimpan permanen.",
+    "code": "BEGIN;\nINSERT INTO rekening (pemilik, saldo) VALUES ('Citra', 250000);\nCOMMIT;\nSELECT * FROM rekening;",
+    "out": "id | pemilik | saldo\n---+---------+-------\n1  | Andi    | 500000\n2  | Budi    | 300000\n3  | Citra   | 250000"
+   },
+   {
+    "t": "Kasus: laporan saldo yang konsisten (PostgreSQL)",
+    "d": "Di REPEATABLE READ, dua SELECT dalam satu transaksi melihat data yang sama walau transaksi lain sudah COMMIT.",
+    "code": "BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ;\nSELECT SUM(saldo) AS total FROM rekening;\n-- transaksi lain menambah saldo lalu COMMIT\nSELECT SUM(saldo) AS total FROM rekening;  -- angkanya tetap sama\nCOMMIT;"
+   },
+   {
+    "t": "Kasus: stok terakhir saat flash sale (PostgreSQL)",
+    "d": "SERIALIZABLE membatalkan salah satu dari dua transaksi yang berebut stok yang sama; aplikasi lalu mengulanginya.",
+    "code": "BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;\nSELECT stok FROM produk WHERE id = 6;\nUPDATE produk SET stok = stok - 1 WHERE id = 6 AND stok > 0;\nCOMMIT;"
+   }
+  ]
+ },
+ "sql-12-1": {
+  "exs": [
+   {
+    "t": "Kasus: hak akun kasir",
+    "d": "Kasir boleh membaca produk dan mencatat pesanan, tetapi tidak boleh menghapus.",
+    "code": "GRANT SELECT ON produk TO kasir;\nGRANT INSERT ON pesanan TO kasir;"
+   },
+   {
+    "t": "Kasus: mencabut hak dari akun magang",
+    "code": "REVOKE DELETE ON pelanggan FROM magang;"
+   },
+   {
+    "t": "Kasus: input login yang disisipi SQL",
+    "d": "Input x' OR '1'='1 yang disambung mentah membuat WHERE selalu benar, sehingga semua baris bocor.",
+    "code": "-- input pengguna: x' OR '1'='1\nSELECT * FROM pelanggan WHERE nama = 'x' OR '1'='1';",
+    "out": "id | nama  | kota       | bergabung\n---+-------+------------+-----------\n1  | Andi  | Jakarta    | 2023-01-15\n2  | Budi  | Bandung    | 2023-03-02\n3  | Citra | Surabaya   | 2023-06-20\n4  | Dewi  | Jakarta    | 2024-01-08\n5  | Eko   | Medan      | 2024-02-14\n6  | Fitri | Bandung    | 2024-05-30\n7  | Gita  | NULL       | 2024-07-11\n8  | Hadi  | Yogyakarta | 2024-09-03"
+   },
+   {
+    "t": "Kasus: query berparameter (PostgreSQL)",
+    "d": "Nilai dikirim terpisah dari teks query, jadi tidak pernah dibaca sebagai perintah SQL.",
+    "code": "PREPARE cari_pelanggan(text) AS\n  SELECT id, nama, kota FROM pelanggan WHERE nama = $1;\nEXECUTE cari_pelanggan('x'' OR ''1''=''1');  -- tidak ada baris yang cocok"
+   }
+  ]
+ },
+ "sql-12-2": {
+  "exs": [
+   {
+    "t": "Kasus: function harga setelah pajak (PostgreSQL)",
+    "d": "Function mengembalikan nilai dan bisa dipakai di dalam SELECT.",
+    "code": "CREATE FUNCTION harga_pajak(h integer) RETURNS integer\nLANGUAGE sql IMMUTABLE AS $$\n  SELECT ROUND(h * 1.11)::integer\n$$;\n\nSELECT nama, harga, harga_pajak(harga) FROM produk;"
+   },
+   {
+    "t": "Kasus: procedure menambah stok (PostgreSQL)",
+    "d": "Procedure dipanggil dengan CALL dan boleh mengubah data.",
+    "code": "CREATE PROCEDURE tambah_stok(p_id integer, p_jumlah integer)\nLANGUAGE plpgsql AS $$\nBEGIN\n  UPDATE produk SET stok = stok + p_jumlah WHERE id = p_id;\nEND;\n$$;\n\nCALL tambah_stok(7, 30);"
+   },
+   {
+    "t": "Kasus: meniru function dengan view di simulator",
+    "d": "SQLite tidak punya stored procedure; ekspresi di view bisa dipakai ulang seperti function.",
+    "code": "CREATE VIEW v_harga_pajak AS\nSELECT nama, harga, ROUND(harga * 1.11) AS harga_pajak FROM produk;\nSELECT * FROM v_harga_pajak WHERE harga_pajak > 80000;",
+    "out": "nama           | harga  | harga_pajak\n---------------+--------+------------\nKopi Gayo      | 85000  | 94350\nMadu Hutan     | 120000 | 133200\nRendang Kaleng | 75000  | 83250"
+   }
+  ]
+ },
+ "sql-13-1": {
+  "exs": [
+   {
+    "t": "Kasus: wildcard di depan LIKE tidak memakai index",
+    "d": "Pola '%Kopi' memaksa database membaca semua baris.",
+    "code": "CREATE INDEX idx_produk_nama ON produk(nama);\nEXPLAIN QUERY PLAN SELECT nama FROM produk WHERE nama LIKE '%Kopi';",
+    "out": "detail\n-----------\nSCAN produk"
+   },
+   {
+    "t": "Kasus: rentang tanggal alih-alih fungsi pada kolom",
+    "d": "Kolom tanggal dibandingkan apa adanya sehingga index bisa dipakai.",
+    "code": "CREATE INDEX idx_pesanan_tanggal ON pesanan(tanggal);\nEXPLAIN QUERY PLAN\nSELECT id FROM pesanan WHERE tanggal >= '2024-11-01' AND tanggal < '2024-12-01';",
+    "out": "detail\n----------------------------------------------------------\nSEARCH pesanan USING INDEX idx_pesanan_tanggal (tanggal>?)"
+   },
+   {
+    "t": "Kasus: saring dulu, baru gabung dan hitung",
+    "d": "WHERE membuang pesanan batal sebelum JOIN dan GROUP BY bekerja, dan hanya kolom yang perlu yang dipilih.",
+    "code": "SELECT pr.kategori, SUM(d.jumlah) AS unit\nFROM pesanan s\nJOIN detail_pesanan d ON d.pesanan_id = s.id\nJOIN produk pr ON pr.id = d.produk_id\nWHERE s.status <> 'batal'\nGROUP BY pr.kategori;",
+    "out": "kategori | unit\n---------+-----\nMinuman  | 10\nCamilan  | 26\nBumbu    | 7\nMakanan  | 2"
+   }
+  ]
+ },
+ "sql-14-1": {
+  "exs": [
+   {
+    "t": "Kasus: karyawan di atas rata-rata divisinya",
+    "d": "CTE rata menghitung rata-rata per divisi sekali, lalu dipakai seperti tabel.",
+    "code": "WITH rata AS (\n  SELECT divisi, AVG(gaji) AS rata_gaji FROM karyawan GROUP BY divisi\n)\nSELECT k.nama, k.divisi, k.gaji, r.rata_gaji\nFROM karyawan k\nJOIN rata r ON r.divisi = k.divisi\nWHERE k.gaji > r.rata_gaji;",
+    "out": "nama | divisi    | gaji     | rata_gaji\n-----+-----------+----------+------------------\nTono | Gudang    | 15000000 | 9833333.333333334\nUmi  | Penjualan | 16000000 | 10125000"
+   },
+   {
+    "t": "Kasus: nilai rata-rata pesanan per status",
+    "code": "WITH total_pesanan AS (\n  SELECT s.id, s.status, SUM(d.jumlah * pr.harga) AS total\n  FROM pesanan s\n  JOIN detail_pesanan d ON d.pesanan_id = s.id\n  JOIN produk pr ON pr.id = d.produk_id\n  GROUP BY s.id, s.status\n)\nSELECT status, COUNT(*) AS pesanan, AVG(total) AS rata_nilai\nFROM total_pesanan\nGROUP BY status\nORDER BY rata_nilai DESC;",
+    "out": "status  | pesanan | rata_nilai\n--------+---------+-----------\nselesai | 5       | 195000\ndikirim | 2       | 160000\nbaru    | 2       | 117500\nbatal   | 1       | 85000"
+   },
+   {
+    "t": "Kasus: tiga pelanggan paling royal",
+    "d": "Dua CTE berantai: hitung belanja, lalu tempelkan nama.",
+    "code": "WITH belanja AS (\n  SELECT s.pelanggan_id, SUM(d.jumlah * pr.harga) AS total\n  FROM pesanan s\n  JOIN detail_pesanan d ON d.pesanan_id = s.id\n  JOIN produk pr ON pr.id = d.produk_id\n  WHERE s.status <> 'batal'\n  GROUP BY s.pelanggan_id\n), bernama AS (\n  SELECT p.nama, b.total FROM belanja b JOIN pelanggan p ON p.id = b.pelanggan_id\n)\nSELECT * FROM bernama ORDER BY total DESC LIMIT 3;",
+    "out": "nama  | total\n------+-------\nAndi  | 570000\nBudi  | 355000\nFitri | 200000"
+   }
+  ]
+ },
+ "sql-14-2": {
+  "exs": [
+   {
+    "t": "Kasus: jadwal cicilan 6 bulan",
+    "d": "Setiap putaran mengurangi sisa utang 100 ribu sampai bulan ke-6.",
+    "code": "WITH RECURSIVE cicilan(bulan, sisa) AS (\n  SELECT 1, 500000\n  UNION ALL\n  SELECT bulan + 1, sisa - 100000 FROM cicilan WHERE bulan < 6\n)\nSELECT * FROM cicilan;",
+    "out": "bulan | sisa\n------+-------\n1     | 500000\n2     | 400000\n3     | 300000\n4     | 200000\n5     | 100000\n6     | 0"
+   },
+   {
+    "t": "Kasus: semua bawahan direktur beserta tingkatnya",
+    "code": "WITH RECURSIVE bawahan AS (\n  SELECT id, nama, 0 AS tingkat FROM karyawan WHERE id = 1\n  UNION ALL\n  SELECT k.id, k.nama, b.tingkat + 1\n  FROM karyawan k JOIN bawahan b ON k.atasan_id = b.id\n)\nSELECT tingkat, nama FROM bawahan ORDER BY tingkat, nama;",
+    "out": "tingkat | nama\n--------+------\n0       | Sari\n1       | Tono\n1       | Umi\n2       | Rio\n2       | Vino\n2       | Wati\n2       | Yudi\n2       | Zahra"
+   },
+   {
+    "t": "Kasus: pesanan harian awal November, termasuk hari kosong",
+    "d": "Deret tanggal dibuat dulu, lalu LEFT JOIN ke pesanan.",
+    "code": "WITH RECURSIVE hari(tgl) AS (\n  SELECT '2024-11-01'\n  UNION ALL\n  SELECT DATE(tgl, '+1 day') FROM hari WHERE tgl < '2024-11-07'\n)\nSELECT h.tgl, COUNT(s.id) AS pesanan\nFROM hari h\nLEFT JOIN pesanan s ON s.tanggal = h.tgl\nGROUP BY h.tgl\nORDER BY h.tgl;",
+    "out": "tgl        | pesanan\n-----------+--------\n2024-11-01 | 0\n2024-11-02 | 1\n2024-11-03 | 0\n2024-11-04 | 0\n2024-11-05 | 1\n2024-11-06 | 0\n2024-11-07 | 0"
+   }
+  ]
+ },
+ "sql-14-3": {
+  "exs": [
+   {
+    "t": "Kasus: peringkat gaji di setiap divisi",
+    "code": "SELECT nama, divisi, gaji,\n  RANK() OVER (PARTITION BY divisi ORDER BY gaji DESC) AS peringkat\nFROM karyawan\nORDER BY divisi, peringkat;",
+    "out": "nama  | divisi    | gaji     | peringkat\n------+-----------+----------+----------\nTono  | Gudang    | 15000000 | 1\nWati  | Gudang    | 7500000  | 2\nVino  | Gudang    | 7000000  | 3\nUmi   | Penjualan | 16000000 | 1\nZahra | Penjualan | 8500000  | 2\nYudi  | Penjualan | 8000000  | 3\nRio   | Penjualan | 8000000  | 3\nSari  | Pusat     | 30000000 | 1"
+   },
+   {
+    "t": "Kasus: pesanan keberapa bagi pelanggannya",
+    "code": "SELECT pelanggan_id, id, tanggal,\n  ROW_NUMBER() OVER (PARTITION BY pelanggan_id ORDER BY tanggal) AS pesanan_ke\nFROM pesanan\nORDER BY pelanggan_id, pesanan_ke;",
+    "out": "pelanggan_id | id  | tanggal    | pesanan_ke\n-------------+-----+------------+-----------\n1            | 101 | 2024-10-01 | 1\n1            | 103 | 2024-10-07 | 2\n1            | 108 | 2024-11-05 | 3\n2            | 102 | 2024-10-03 | 1\n2            | 106 | 2024-10-20 | 2\n3            | 104 | 2024-10-12 | 1\n4            | 105 | 2024-10-15 | 1\n5            | 109 | 2024-11-09 | 1\n6            | 107 | 2024-11-02 | 1\n8            | 110 | 2024-11-15 | 1"
+   },
+   {
+    "t": "Kasus: RANK dan DENSE_RANK pada gaji kembar",
+    "d": "Yudi dan Rio sama-sama 8 juta: RANK melompati angka berikutnya, DENSE_RANK tidak.",
+    "code": "SELECT nama, gaji,\n  RANK() OVER (ORDER BY gaji DESC) AS rank_biasa,\n  DENSE_RANK() OVER (ORDER BY gaji DESC) AS rank_rapat\nFROM karyawan\nWHERE divisi = 'Penjualan'\nORDER BY rank_biasa;",
+    "out": "nama  | gaji     | rank_biasa | rank_rapat\n------+----------+------------+-----------\nUmi   | 16000000 | 1          | 1\nZahra | 8500000  | 2          | 2\nYudi  | 8000000  | 3          | 3\nRio   | 8000000  | 3          | 3"
+   }
+  ]
+ },
+ "sql-14-4": {
+  "exs": [
+   {
+    "t": "Kasus: selisih gaji dengan orang di atasnya",
+    "code": "SELECT nama, gaji,\n  LAG(gaji) OVER (ORDER BY gaji DESC) - gaji AS selisih_dengan_atas\nFROM karyawan;",
+    "out": "nama  | gaji     | selisih_dengan_atas\n------+----------+--------------------\nSari  | 30000000 | NULL\nTono  | 15000000 | 1000000\nUmi   | 16000000 | 14000000\nVino  | 7000000  | 500000\nWati  | 7500000  | 500000\nYudi  | 8000000  | 500000\nZahra | 8500000  | 6500000\nRio   | 8000000  | 0"
+   },
+   {
+    "t": "Kasus: omzet harian dan totalnya berjalan",
+    "code": "WITH harian AS (\n  SELECT s.tanggal, SUM(d.jumlah * pr.harga) AS omzet\n  FROM pesanan s\n  JOIN detail_pesanan d ON d.pesanan_id = s.id\n  JOIN produk pr ON pr.id = d.produk_id\n  WHERE s.status <> 'batal'\n  GROUP BY s.tanggal\n)\nSELECT tanggal, omzet, SUM(omzet) OVER (ORDER BY tanggal) AS kumulatif\nFROM harian;",
+    "out": "tanggal    | omzet  | kumulatif\n-----------+--------+----------\n2024-10-01 | 245000 | 245000\n2024-10-03 | 155000 | 400000\n2024-10-07 | 120000 | 520000\n2024-10-12 | 195000 | 715000\n2024-10-20 | 200000 | 915000\n2024-11-02 | 200000 | 1115000\n2024-11-05 | 205000 | 1320000\n2024-11-09 | 180000 | 1500000\n2024-11-15 | 30000  | 1530000"
+   },
+   {
+    "t": "Kasus: kapan pelanggan memesan lagi",
+    "d": "LEAD mengambil tanggal pesanan berikutnya dari pelanggan yang sama.",
+    "code": "SELECT pelanggan_id, tanggal,\n  LEAD(tanggal) OVER (PARTITION BY pelanggan_id ORDER BY tanggal) AS pesanan_berikutnya\nFROM pesanan\nWHERE pelanggan_id IN (1, 2);",
+    "out": "pelanggan_id | tanggal    | pesanan_berikutnya\n-------------+------------+-------------------\n1            | 2024-10-01 | 2024-10-07\n2            | 2024-10-03 | 2024-10-20\n1            | 2024-10-07 | 2024-11-05\n2            | 2024-10-20 | NULL\n1            | 2024-11-05 | NULL"
+   }
+  ]
+ },
+ "sql-14-5": {
+  "exs": [
+   {
+    "t": "Kasus: jumlah karyawan per divisi menjadi kolom",
+    "code": "SELECT\n  SUM(CASE WHEN divisi = 'Pusat' THEN 1 ELSE 0 END) AS pusat,\n  SUM(CASE WHEN divisi = 'Gudang' THEN 1 ELSE 0 END) AS gudang,\n  SUM(CASE WHEN divisi = 'Penjualan' THEN 1 ELSE 0 END) AS penjualan\nFROM karyawan;",
+    "out": "pusat | gudang | penjualan\n------+--------+----------\n1     | 3      | 4"
+   },
+   {
+    "t": "Kasus: unit terjual per bulan per kategori",
+    "code": "SELECT STRFTIME('%Y-%m', s.tanggal) AS bulan,\n  SUM(CASE WHEN pr.kategori = 'Minuman' THEN d.jumlah ELSE 0 END) AS minuman,\n  SUM(CASE WHEN pr.kategori = 'Camilan' THEN d.jumlah ELSE 0 END) AS camilan,\n  SUM(CASE WHEN pr.kategori = 'Bumbu' THEN d.jumlah ELSE 0 END) AS bumbu\nFROM pesanan s\nJOIN detail_pesanan d ON d.pesanan_id = s.id\nJOIN produk pr ON pr.id = d.produk_id\nGROUP BY bulan\nORDER BY bulan;",
+    "out": "bulan   | minuman | camilan | bumbu\n--------+---------+---------+------\n2024-10 | 9       | 14      | 1\n2024-11 | 2       | 12      | 6"
+   },
+   {
+    "t": "Kasus: ringkasan produk diubah menjadi baris metrik",
+    "d": "Unpivot dengan UNION ALL: setiap metrik menjadi satu baris.",
+    "code": "SELECT 'jumlah produk' AS metrik, COUNT(*) AS nilai FROM produk\nUNION ALL\nSELECT 'total stok', SUM(stok) FROM produk\nUNION ALL\nSELECT 'produk habis', SUM(stok = 0) FROM produk;",
+    "out": "metrik        | nilai\n--------------+------\njumlah produk | 8\ntotal stok    | 640\nproduk habis  | 1"
+   }
+  ]
+ },
+ "sql-14-6": {
+  "exs": [
+   {
+    "t": "Kasus: tiga produk terlaris",
+    "code": "WITH jual AS (\n  SELECT pr.nama, SUM(d.jumlah) AS unit\n  FROM detail_pesanan d JOIN produk pr ON pr.id = d.produk_id\n  GROUP BY pr.id, pr.nama\n)\nSELECT * FROM (\n  SELECT nama, unit, RANK() OVER (ORDER BY unit DESC) AS peringkat FROM jual\n) AS t\nWHERE peringkat <= 3\nORDER BY peringkat;",
+    "out": "nama             | unit | peringkat\n-----------------+------+----------\nKerupuk Udang    | 14   | 1\nKeripik Singkong | 10   | 2\nSambal Bawang    | 7    | 3"
+   },
+   {
+    "t": "Kasus: tren omzet bulanan",
+    "d": "LAG membandingkan omzet bulan ini dengan bulan lalu.",
+    "code": "WITH bulanan AS (\n  SELECT STRFTIME('%Y-%m', s.tanggal) AS bulan, SUM(d.jumlah * pr.harga) AS omzet\n  FROM pesanan s\n  JOIN detail_pesanan d ON d.pesanan_id = s.id\n  JOIN produk pr ON pr.id = d.produk_id\n  WHERE s.status <> 'batal'\n  GROUP BY bulan\n)\nSELECT bulan, omzet, omzet - LAG(omzet) OVER (ORDER BY bulan) AS perubahan\nFROM bulanan;",
+    "out": "bulan   | omzet  | perubahan\n--------+--------+----------\n2024-10 | 915000 | NULL\n2024-11 | 615000 | -300000"
+   },
+   {
+    "t": "Kasus: produk termahal kedua di setiap kategori",
+    "code": "SELECT kategori, nama, harga FROM (\n  SELECT kategori, nama, harga,\n    ROW_NUMBER() OVER (PARTITION BY kategori ORDER BY harga DESC) AS urut\n  FROM produk\n) AS t\nWHERE urut = 2;",
+    "out": "kategori | nama          | harga\n---------+---------------+------\nMinuman  | Kopi Gayo     | 85000\nCamilan  | Kerupuk Udang | 20000"
+   }
+  ]
+ }
+}

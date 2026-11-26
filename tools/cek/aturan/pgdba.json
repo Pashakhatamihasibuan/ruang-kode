@@ -1,0 +1,85 @@
+{
+ "aturan": [
+  [
+   "schema & search_path",
+   "(?i)\\bCREATE\\s+SCHEMA\\b|\\bsearch_path\\b",
+   "^Database, schema"
+  ],
+  [
+   "identity",
+   "(?i)\\bGENERATED\\s+(ALWAYS|BY\\s+DEFAULT)\\s+AS\\s+IDENTITY",
+   "^Database, schema"
+  ],
+  [
+   "exclusion & range",
+   "(?i)\\bEXCLUDE\\s+USING\\b|\\btstzrange\\b",
+   "^Tipe data dan constraint"
+  ],
+  [
+   "JSONB",
+   "(?i)\\bjsonb\\b|->>|@>",
+   "^JSONB"
+  ],
+  [
+   "role & GRANT",
+   "(?i)\\bCREATE\\s+ROLE\\b|^\\s*(GRANT|REVOKE)\\b|\\bSET\\s+ROLE\\b",
+   "^Role, GRANT"
+  ],
+  [
+   "pg_hba & SSL",
+   "(?i)pg_hba|scram-sha-256|\\bhostssl\\b|sslmode=",
+   "^Autentikasi"
+  ],
+  [
+   "Row-Level Security",
+   "(?i)ROW\\s+LEVEL\\s+SECURITY|\\bCREATE\\s+POLICY\\b|\\bpg_policies\\b",
+   "^Row-Level Security"
+  ],
+  [
+   "tingkat isolasi",
+   "(?i)\\bISOLATION\\s+LEVEL\\b",
+   "^Transaksi dan tingkat isolasi"
+  ],
+  [
+   "lock & MVCC",
+   "(?i)\\bFOR\\s+UPDATE\\b|\\bSKIP\\s+LOCKED\\b|\\bpg_locks\\b|\\bpg_blocking_pids\\b|\\bLOCK\\s+TABLE\\b|\\bxmin\\b|\\bxmax\\b|\\bctid\\b",
+   "^MVCC"
+  ],
+  [
+   "VACUUM",
+   "(?i)\\bVACUUM\\b|\\bautovacuum\\w*|\\bn_dead_tup\\b|\\bpgstattuple\\b",
+   "^VACUUM"
+  ],
+  [
+   "EXPLAIN",
+   "(?i)\\bEXPLAIN\\b",
+   "^Membaca EXPLAIN"
+  ],
+  [
+   "jenis indeks lanjutan",
+   "(?i)INDEX[^;]*\\bUSING\\s+(gist|brin|hash)\\b|\\bCONCURRENTLY\\b|\\bINCLUDE\\s*\\(|\\bpg_stat_user_indexes\\b",
+   "^Jenis indeks"
+  ],
+  [
+   "pg_stat_statements & ALTER SYSTEM",
+   "(?i)\\bpg_stat_statements\\b|\\bALTER\\s+SYSTEM\\b",
+   "^pg_stat_statements"
+  ],
+  [
+   "backup",
+   "(?i)\\bpg_dump(all)?\\b|\\bpg_restore\\b|\\bpg_basebackup\\b|\\bpgbackrest\\b|\\barchive_command\\b",
+   "^Backup"
+  ],
+  [
+   "replikasi",
+   "(?i)\\bpg_stat_replication\\b|\\bCREATE\\s+(PUBLICATION|SUBSCRIPTION)\\b|\\bpg_replication_slots\\b|\\breplication_slot\\b|\\bpg_last_wal_\\w+|\\bpatroni",
+   "^Replikasi"
+  ],
+  [
+   "log query lambat",
+   "(?i)\\blog_min_duration_statement\\b|\\bpgbadger\\b|\\bpostgres_exporter\\b",
+   "^Pemantauan"
+  ]
+ ],
+ "abaikan": []
+}

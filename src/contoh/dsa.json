@@ -1,0 +1,554 @@
+{
+ "dsa-1-1": {
+  "exs": [
+   {
+    "t": "Kasus: mencari buku di rak perpustakaan",
+    "d": "Algoritma yang sama (periksa satu per satu) dibandingkan dengan rak yang sudah diberi indeks per huruf awal.",
+    "code": "rak = ['Laskar Pelangi', 'Bumi Manusia', 'Ronggeng Dukuh Paruk', 'Cantik Itu Luka', 'Negeri 5 Menara', 'Supernova']\n\n# algoritma 1: periksa buku satu per satu dari ujung rak\ndicari = 'Negeri 5 Menara'\nlangkah = 0\nfor judul in rak:\n    langkah += 1\n    if judul == dicari:\n        break\nprint('Periksa satu per satu:', langkah, 'langkah')\n\n# struktur data lain: indeks per huruf awal (dict huruf -> daftar judul)\nindeks = {}\nfor judul in rak:\n    indeks.setdefault(judul[0], []).append(judul)\nkandidat = indeks.get(dicari[0], [])\nprint('Lewat indeks, cukup periksa:', kandidat)\n",
+    "out": "Periksa satu per satu: 5 langkah\nLewat indeks, cukup periksa: ['Negeri 5 Menara']"
+   },
+   {
+    "t": "Kasus: cek nomor resi yang sudah dikirim",
+    "d": "Pertanyaan 'ada atau tidak' dijawab langsung oleh set, tanpa memeriksa seluruh daftar.",
+    "code": "terkirim = ['JNE001', 'JNE002', 'SCP117', 'JNT440', 'SCP118', 'JNE003']\ncek = ['SCP117', 'POS999', 'JNE003']\n\n# list: setiap pengecekan bisa memeriksa seluruh isi\nperbandingan = 0\nfor resi in cek:\n    for r in terkirim:\n        perbandingan += 1\n        if r == resi:\n            break\nprint('Perbandingan dengan list:', perbandingan)\n\n# set: langsung tahu ada atau tidak\nresi_set = set(terkirim)\nfor resi in cek:\n    print(resi, 'sudah dikirim?', resi in resi_set)\n",
+    "out": "Perbandingan dengan list: 15\nSCP117 sudah dikirim? True\nPOS999 sudah dikirim? False\nJNE003 sudah dikirim? True"
+   },
+   {
+    "t": "Kasus: jumlah 1 sampai n dengan dua algoritma",
+    "d": "Masalah yang sama bisa diselesaikan dengan banyak langkah atau satu langkah.",
+    "code": "n = 1000\n\n# algoritma 1: jumlahkan satu per satu (n langkah)\ntotal = 0\nfor i in range(1, n + 1):\n    total += i\nprint('Dengan loop  :', total, '| langkah:', n)\n\n# algoritma 2: rumus Gauss n(n+1)/2 (1 langkah)\nprint('Dengan rumus :', n * (n + 1) // 2, '| langkah: 1')\n",
+    "out": "Dengan loop  : 500500 | langkah: 1000\nDengan rumus : 500500 | langkah: 1"
+   }
+  ]
+ },
+ "dsa-1-2": {
+  "exs": [
+   {
+    "t": "Kasus: O(1) mengambil antrean ke-i vs O(n) mencari nama",
+    "d": "Mengambil berdasarkan indeks tidak bergantung pada panjang list; mencari nilai bergantung.",
+    "code": "for n in [10, 1000, 100000]:\n    antrean = ['pelanggan' + str(i) for i in range(n)]\n    ambil = antrean[n // 2]          # O(1): satu langkah, berapa pun n\n    langkah = 0\n    for nama in antrean:              # O(n): kasus terburuk memeriksa semua\n        langkah += 1\n        if nama == 'tidak-ada':\n            break\n    print(f'n={n:>6}: indeks 1 langkah, cari {langkah} langkah')\n",
+    "out": "n=    10: indeks 1 langkah, cari 10 langkah\nn=  1000: indeks 1 langkah, cari 1000 langkah\nn=100000: indeks 1 langkah, cari 100000 langkah"
+   },
+   {
+    "t": "Kasus: O(n²) membandingkan semua pasangan siswa",
+    "d": "Loop bersarang membuat langkah tumbuh kuadrat.",
+    "code": "def hitung_pasangan(n):\n    langkah = 0\n    for i in range(n):\n        for j in range(n):\n            langkah += 1\n    return langkah\n\nfor n in [10, 20, 40]:\n    print(f'{n} siswa -> {hitung_pasangan(n)} langkah')\nprint('n naik 2x, langkah naik 4x: ciri O(n²)')\n",
+    "out": "10 siswa -> 100 langkah\n20 siswa -> 400 langkah\n40 siswa -> 1600 langkah\nn naik 2x, langkah naik 4x: ciri O(n²)"
+   },
+   {
+    "t": "Kasus: O(log n) menebak angka 1 sampai 1000",
+    "d": "Setiap tebakan membuang separuh kemungkinan.",
+    "code": "rahasia = 737\nbawah, atas = 1, 1000\ntebakan = 0\nwhile True:\n    tengah = (bawah + atas) // 2\n    tebakan += 1\n    if tengah == rahasia:\n        break\n    if tengah < rahasia:\n        bawah = tengah + 1\n    else:\n        atas = tengah - 1\nprint('Ketemu', rahasia, 'dalam', tebakan, 'tebakan')\n\n# jumlah maksimum tebakan = berapa kali 1000 bisa dibagi 2\nn, maks = 1000, 0\nwhile n >= 1:\n    n //= 2\n    maks += 1\nprint('Paling banyak', maks, 'tebakan untuk 1000 angka')\n",
+    "out": "Ketemu 737 dalam 10 tebakan\nPaling banyak 10 tebakan untuk 1000 angka"
+   }
+  ]
+ },
+ "dsa-1-3": {
+  "exs": [
+   {
+    "t": "Kasus: total belanja tanpa memori tambahan",
+    "d": "Satu variabel penampung: O(n) waktu, O(1) ruang.",
+    "code": "belanja = [12000, 8500, 23000, 4000, 15500]\ntotal = 0                  # hanya satu variabel tambahan: O(1) ruang\nfor harga in belanja:      # dilewati sekali: O(n) waktu\n    total += harga\nprint('Total:', total)\n",
+    "out": "Total: 63000"
+   },
+   {
+    "t": "Kasus: menyimpan hasil agar tidak dihitung ulang",
+    "d": "Menukar memori dengan waktu: tabel pangkat disiapkan sekali, lalu dipakai berkali-kali.",
+    "code": "pertanyaan = [7, 3, 7, 9, 3, 7]\n\n# tanpa simpanan: hitung ulang setiap kali\nhitung = 0\nfor x in pertanyaan:\n    hasil = 1\n    for _ in range(x):\n        hasil *= 2\n        hitung += 1\nprint('Tanpa simpanan:', hitung, 'perkalian')\n\n# dengan simpanan dict: memori bertambah, perkalian berkurang\nsimpan = {}\nhitung = 0\nfor x in pertanyaan:\n    if x not in simpan:\n        hasil = 1\n        for _ in range(x):\n            hasil *= 2\n            hitung += 1\n        simpan[x] = hasil\nprint('Dengan simpanan:', hitung, 'perkalian, isi simpanan', simpan)\n",
+    "out": "Tanpa simpanan: 36 perkalian\nDengan simpanan: 19 perkalian, isi simpanan {7: 128, 3: 8, 9: 512}"
+   },
+   {
+    "t": "Kasus: membalik daftar dengan salinan vs di tempat",
+    "d": "Salinan baru butuh O(n) ruang; menukar di tempat cukup O(1).",
+    "code": "antrian = ['Ani', 'Budi', 'Cici', 'Dodi', 'Eka']\n\n# cara 1: membuat list baru -> O(n) ruang tambahan\nbaru = []\nfor i in range(len(antrian) - 1, -1, -1):\n    baru.append(antrian[i])\nprint('Salinan  :', baru)\n\n# cara 2: tukar ujung ke ujung di list yang sama -> O(1) ruang tambahan\na = antrian[:]\nfor i in range(len(a) // 2):\n    a[i], a[len(a) - 1 - i] = a[len(a) - 1 - i], a[i]\nprint('Di tempat:', a)\n",
+    "out": "Salinan  : ['Eka', 'Dodi', 'Cici', 'Budi', 'Ani']\nDi tempat: ['Eka', 'Dodi', 'Cici', 'Budi', 'Ani']"
+   }
+  ]
+ },
+ "dsa-2-1": {
+  "exs": [
+   {
+    "t": "Kasus: daftar nilai rapor yang terus bertambah",
+    "d": "append di akhir murah, akses indeks langsung, mencari dengan in harus menelusuri.",
+    "code": "nilai = []\nfor n in [78, 85, 92, 66, 88]:\n    nilai.append(n)             # rata-rata O(1)\nprint('Semua nilai :', nilai)\nprint('Nilai ke-3  :', nilai[2])  # O(1)\nprint('Ada 100?    :', 100 in nilai)  # O(n)\nnilai.pop()                     # hapus dari akhir: O(1)\nprint('Setelah pop :', nilai)\n",
+    "out": "Semua nilai : [78, 85, 92, 66, 88]\nNilai ke-3  : 92\nAda 100?    : False\nSetelah pop : [78, 85, 92, 66]"
+   },
+   {
+    "t": "Kasus: denah kursi bioskop sebagai matriks",
+    "d": "List berisi list, dibuat dengan comprehension agar tiap baris terpisah.",
+    "code": "baris, kolom = 3, 5\nkursi = [['.'] * kolom for _ in range(baris)]\nkursi[0][2] = 'X'      # baris A kursi 3 terjual\nkursi[2][4] = 'X'      # baris C kursi 5 terjual\nfor i, b in enumerate(kursi):\n    print('ABC'[i], ' '.join(b))\nterjual = sum(b.count('X') for b in kursi)\nprint('Terjual:', terjual, 'dari', baris * kolom)\n",
+    "out": "A . . X . .\nB . . . . .\nC . . . . X\nTerjual: 2 dari 15"
+   },
+   {
+    "t": "Kasus: melihat list dinamis membesar",
+    "d": "Python memesan ruang lebih setiap kali list penuh, jadi ukuran memori naik bertahap, bukan setiap append.",
+    "code": "import sys\n\ndata = []\nukuran_lama = sys.getsizeof(data)\nprint('kosong:', ukuran_lama, 'byte')\nfor i in range(20):\n    data.append(i)\n    ukuran = sys.getsizeof(data)\n    if ukuran != ukuran_lama:\n        print(f'saat isi {len(data):>2}: kapasitas diperbesar menjadi {ukuran} byte')\n        ukuran_lama = ukuran\n",
+    "out": "kosong: 56 byte\nsaat isi  1: kapasitas diperbesar menjadi 88 byte\nsaat isi  5: kapasitas diperbesar menjadi 120 byte\nsaat isi  9: kapasitas diperbesar menjadi 184 byte\nsaat isi 17: kapasitas diperbesar menjadi 248 byte"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Biaya sisip di depan vs di belakang",
+    "b": "insert(0, x) menggeser seluruh isi list sehingga makin lambat untuk data besar. Bila sering menyisip di depan, bangun list dari belakang lalu balik sekali di akhir.",
+    "code": "import time\n\nfor n in [20_000, 80_000]:\n    data = []\n    t0 = time.perf_counter()\n    for i in range(n):\n        data.insert(0, i)          # O(n) per sisip\n    depan = time.perf_counter() - t0\n\n    data = []\n    t0 = time.perf_counter()\n    for i in range(n):\n        data.append(i)             # O(1) rata-rata\n    data.reverse()                 # sekali O(n)\n    belakang = time.perf_counter() - t0\n    print(f\"n={n:>6,}: insert(0) lebih dari 5x lebih lambat: {depan > 5 * belakang}\".replace(\",\", \".\"))\nprint(\"hasil sama:\", data[:5])\n",
+    "out": "n=20.000: insert(0) lebih dari 5x lebih lambat: True\nn=80.000: insert(0) lebih dari 5x lebih lambat: True\nhasil sama: [79999, 79998, 79997, 79996, 79995]"
+   }
+  ]
+ },
+ "dsa-2-2": {
+  "exs": [
+   {
+    "t": "Kasus: memeriksa nama palindrom",
+    "d": "Pointer kiri dan kanan bergerak menuju tengah.",
+    "code": "def palindrom(kata):\n    k = kata.lower()\n    kiri, kanan = 0, len(k) - 1\n    while kiri < kanan:\n        if k[kiri] != k[kanan]:\n            return False\n        kiri += 1\n        kanan -= 1\n    return True\n\nfor kata in ['Malam', 'Sapi', 'Kodok', 'Budi']:\n    print(kata, '->', palindrom(kata))\n",
+    "out": "Malam -> True\nSapi -> False\nKodok -> True\nBudi -> False"
+   },
+   {
+    "t": "Kasus: membuang data ganda dari daftar terurut",
+    "d": "Pointer lambat menandai posisi tulis, pointer cepat membaca, semua di tempat.",
+    "code": "nomor_antrean = [101, 101, 102, 105, 105, 105, 108]\ntulis = 1\nfor baca in range(1, len(nomor_antrean)):\n    if nomor_antrean[baca] != nomor_antrean[tulis - 1]:\n        nomor_antrean[tulis] = nomor_antrean[baca]\n        tulis += 1\nprint('Unik:', nomor_antrean[:tulis])\n",
+    "out": "Unik: [101, 102, 105, 108]"
+   },
+   {
+    "t": "Kasus: menggabungkan dua daftar harga terurut",
+    "d": "Satu pointer per daftar, ambil yang lebih kecil lebih dulu.",
+    "code": "toko_a = [5000, 12000, 18000, 30000]\ntoko_b = [7000, 12000, 25000]\ni = j = 0\ngabung = []\nwhile i < len(toko_a) and j < len(toko_b):\n    if toko_a[i] <= toko_b[j]:\n        gabung.append(toko_a[i])\n        i += 1\n    else:\n        gabung.append(toko_b[j])\n        j += 1\ngabung += toko_a[i:] + toko_b[j:]\nprint(gabung)\n",
+    "out": "[5000, 7000, 12000, 12000, 18000, 25000, 30000]"
+   }
+  ]
+ },
+ "dsa-2-3": {
+  "exs": [
+   {
+    "t": "Kasus: rata-rata suhu 3 hari bergeser",
+    "d": "Jendela tetap berukuran 3: tambah yang masuk, kurangi yang keluar.",
+    "code": "suhu = [29, 31, 30, 33, 32, 28, 27]\nk = 3\njumlah = sum(suhu[:k])\nrata = [round(jumlah / k, 1)]\nfor i in range(k, len(suhu)):\n    jumlah += suhu[i] - suhu[i - k]\n    rata.append(round(jumlah / k, 1))\nprint('Rata-rata 3 hari:', rata)\n",
+    "out": "Rata-rata 3 hari: [30.0, 31.3, 31.7, 31.0, 29.0]"
+   },
+   {
+    "t": "Kasus: total pulsa terpakai di rentang tanggal",
+    "d": "Prefix sum disiapkan sekali, lalu setiap pertanyaan rentang dijawab dengan satu pengurangan.",
+    "code": "pakai = [5, 3, 0, 8, 2, 6, 4, 1, 7, 3]   # ribu rupiah per hari, hari 1-10\npre = [0]\nfor x in pakai:\n    pre.append(pre[-1] + x)\nfor a, b in [(1, 3), (4, 7), (1, 10)]:\n    print(f'hari {a}-{b}: Rp{pre[b] - pre[a - 1]} ribu')\n",
+    "out": "hari 1-3: Rp8 ribu\nhari 4-7: Rp20 ribu\nhari 1-10: Rp39 ribu"
+   },
+   {
+    "t": "Kasus: jendela terpendek dengan target setoran",
+    "d": "Jendela berukuran tidak tetap: perlebar ke kanan, persempit dari kiri selama target masih tercapai.",
+    "code": "setoran = [2, 3, 1, 2, 4, 3]   # juta rupiah per hari\ntarget = 7\nkiri = 0\njumlah = 0\nterpendek = len(setoran) + 1\nfor kanan in range(len(setoran)):\n    jumlah += setoran[kanan]\n    while jumlah >= target:\n        terpendek = min(terpendek, kanan - kiri + 1)\n        jumlah -= setoran[kiri]\n        kiri += 1\nprint('Paling sedikit', terpendek, 'hari berturut-turut untuk Rp7 juta')\n",
+    "out": "Paling sedikit 2 hari berturut-turut untuk Rp7 juta"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Penjualan 7 hari terbaik dan rate limiter",
+    "b": "Sliding window juga dipakai rate limiter: hanya permintaan dalam 10 detik terakhir yang dihitung.",
+    "code": "harian = [12, 15, 9, 22, 30, 18, 25, 40, 35, 10, 8, 28, 33, 31]\nk = 7\njendela = sum(harian[:k]); terbaik, mulai = jendela, 0\nfor i in range(k, len(harian)):\n    jendela += harian[i] - harian[i - k]\n    if jendela > terbaik:\n        terbaik, mulai = jendela, i - k + 1\nprint(f\"7 hari terbaik: hari {mulai + 1}-{mulai + k}, total {terbaik}\")\n\npre = [0]\nfor x in harian:\n    pre.append(pre[-1] + x)\nprint(\"jumlah hari 4-10 (prefix sum O(1)):\", pre[10] - pre[3])\n\n# rate limiter: maksimal 3 request dalam jendela 10 detik\nMAKS, DETIK = 3, 10\nditerima = []          # waktu request yang diterima, terurut\nkiri = 0               # awal jendela di dalam list diterima\nhasil = []\nfor t in [0, 2, 4, 5, 11, 12, 13, 14]:\n    while kiri < len(diterima) and diterima[kiri] <= t - DETIK:\n        kiri += 1                      # geser jendela, buang yang kedaluwarsa\n    if len(diterima) - kiri < MAKS:\n        diterima.append(t); hasil.append((t, \"200\"))\n    else:\n        hasil.append((t, \"429\"))\nprint(\"request:\", hasil)\n",
+    "out": "7 hari terbaik: hari 8-14, total 185\njumlah hari 4-10 (prefix sum O(1)): 180\nrequest: [(0, '200'), (2, '200'), (4, '200'), (5, '429'), (11, '200'), (12, '200'), (13, '429'), (14, '200')]"
+   }
+  ]
+ },
+ "dsa-3-1": {
+  "exs": [
+   {
+    "t": "Kasus: playlist lagu sebagai linked list",
+    "d": "Menambah lagu di akhir lewat penunjuk ekor, lalu menelusuri dari kepala.",
+    "code": "class Lagu:\n    def __init__(self, judul):\n        self.judul = judul\n        self.berikut = None\n\nkepala = ekor = None\nfor judul in ['Bengawan Solo', 'Rayuan Pulau Kelapa', 'Kopi Dangdut']:\n    baru = Lagu(judul)\n    if kepala is None:\n        kepala = ekor = baru\n    else:\n        ekor.berikut = baru     # sambung di akhir: O(1) karena ada ekor\n        ekor = baru\n\ns = kepala\nnomor = 1\nwhile s:\n    print(nomor, s.judul)\n    s = s.berikut\n    nomor += 1\n",
+    "out": "1 Bengawan Solo\n2 Rayuan Pulau Kelapa\n3 Kopi Dangdut"
+   },
+   {
+    "t": "Kasus: menghapus pesanan yang dibatalkan",
+    "d": "Menghapus simpul cukup mengubah satu penunjuk, tanpa menggeser elemen lain.",
+    "code": "class Node:\n    def __init__(self, data, berikut=None):\n        self.data = data\n        self.berikut = berikut\n\ndef tampil(kepala):\n    hasil = []\n    while kepala:\n        hasil.append(kepala.data)\n        kepala = kepala.berikut\n    return hasil\n\ndef hapus(kepala, nilai):\n    if kepala and kepala.data == nilai:\n        return kepala.berikut\n    s = kepala\n    while s and s.berikut:\n        if s.berikut.data == nilai:\n            s.berikut = s.berikut.berikut   # lewati simpul yang dihapus\n            break\n        s = s.berikut\n    return kepala\n\npesanan = Node('PSN-1', Node('PSN-2', Node('PSN-3', Node('PSN-4'))))\npesanan = hapus(pesanan, 'PSN-3')\nprint(tampil(pesanan))\npesanan = hapus(pesanan, 'PSN-1')\nprint(tampil(pesanan))\n",
+    "out": "['PSN-1', 'PSN-2', 'PSN-4']\n['PSN-2', 'PSN-4']"
+   },
+   {
+    "t": "Kasus: mencari simpul tengah dan mendeteksi siklus",
+    "d": "Pointer lambat melangkah satu, pointer cepat dua.",
+    "code": "class Node:\n    def __init__(self, data):\n        self.data = data\n        self.berikut = None\n\nsimpul = [Node(x) for x in ['Halte A', 'Halte B', 'Halte C', 'Halte D', 'Halte E']]\nfor a, b in zip(simpul, simpul[1:]):\n    a.berikut = b\nkepala = simpul[0]\n\nlambat = cepat = kepala\nwhile cepat and cepat.berikut:\n    lambat = lambat.berikut\n    cepat = cepat.berikut.berikut\nprint('Tengah rute:', lambat.data)\n\nsimpul[-1].berikut = simpul[1]      # rute melingkar: E kembali ke B\nlambat = cepat = kepala\nada_siklus = False\nwhile cepat and cepat.berikut:\n    lambat = lambat.berikut\n    cepat = cepat.berikut.berikut\n    if lambat is cepat:\n        ada_siklus = True\n        break\nprint('Rute melingkar?', ada_siklus)\n",
+    "out": "Tengah rute: Halte C\nRute melingkar? True"
+   }
+  ]
+ },
+ "dsa-3-2": {
+  "exs": [
+   {
+    "t": "Kasus: tombol Undo di aplikasi catatan",
+    "d": "Setiap perubahan di-push; Undo mengambil perubahan terakhir.",
+    "code": "teks = ''\nriwayat = []\nfor tambahan in ['Belanja: ', 'beras, ', 'telur, ', 'kecap']:\n    riwayat.append(teks)      # simpan keadaan sebelum diubah\n    teks += tambahan\nprint('Sekarang:', teks)\n\nfor _ in range(2):\n    teks = riwayat.pop()      # undo: kembali ke keadaan terakhir\n    print('Undo    :', teks)\n",
+    "out": "Sekarang: Belanja: beras, telur, kecap\nUndo    : Belanja: beras, telur, \nUndo    : Belanja: beras, "
+   },
+   {
+    "t": "Kasus: tombol Back di browser",
+    "d": "Halaman yang dikunjungi ditumpuk; Back membuka halaman sebelumnya.",
+    "code": "tumpukan = []\nsekarang = 'beranda'\nfor halaman in ['kategori-hp', 'produk-123', 'keranjang']:\n    tumpukan.append(sekarang)\n    sekarang = halaman\nprint('Sekarang di:', sekarang, '| tumpukan:', tumpukan)\n\nsekarang = tumpukan.pop()\nprint('Back ->', sekarang)\nsekarang = tumpukan.pop()\nprint('Back ->', sekarang)\nprint('Halaman teratas (peek):', tumpukan[-1])\n",
+    "out": "Sekarang di: keranjang | tumpukan: ['beranda', 'kategori-hp', 'produk-123']\nBack -> produk-123\nBack -> kategori-hp\nHalaman teratas (peek): beranda"
+   },
+   {
+    "t": "Kasus: kalkulator notasi postfix",
+    "d": "Angka di-push; operator mengambil dua angka teratas lalu push hasilnya.",
+    "code": "def hitung_postfix(ekspresi):\n    tumpukan = []\n    for token in ekspresi.split():\n        if token in '+-*/':\n            b = tumpukan.pop()\n            a = tumpukan.pop()\n            if token == '+': tumpukan.append(a + b)\n            elif token == '-': tumpukan.append(a - b)\n            elif token == '*': tumpukan.append(a * b)\n            else: tumpukan.append(a / b)\n        else:\n            tumpukan.append(int(token))\n    return tumpukan.pop()\n\nprint(hitung_postfix('3 4 + 2 *'))        # (3 + 4) * 2\nprint(hitung_postfix('15000 3 * 5000 -')) # 3 kopi lalu potongan 5000\n",
+    "out": "14\n40000"
+   }
+  ]
+ },
+ "dsa-3-3": {
+  "exs": [
+   {
+    "t": "Kasus: antrean cetak di printer kantor",
+    "d": "Dokumen dicetak sesuai urutan kirim.",
+    "code": "from collections import deque\n\ncetak = deque()\ncetak.append(('Rina', 'laporan.pdf', 4))\ncetak.append(('Joko', 'surat.docx', 1))\ncetak.append(('Sari', 'slide.pptx', 10))\nmenit = 0\nwhile cetak:\n    nama, berkas, halaman = cetak.popleft()\n    menit += halaman\n    print(f'menit {menit:>2}: {berkas} milik {nama} selesai')\n",
+    "out": "menit  4: laporan.pdf milik Rina selesai\nmenit  5: surat.docx milik Joko selesai\nmenit 15: slide.pptx milik Sari selesai"
+   },
+   {
+    "t": "Kasus: riwayat 3 pencarian terakhir",
+    "d": "deque dengan maxlen otomatis membuang elemen paling lama.",
+    "code": "from collections import deque\n\nterakhir = deque(maxlen=3)\nfor kata in ['sepatu', 'kaos', 'tas', 'jaket', 'topi']:\n    terakhir.append(kata)\n    print(f'cari {kata:<6} -> riwayat {list(terakhir)}')\n",
+    "out": "cari sepatu -> riwayat ['sepatu']\ncari kaos   -> riwayat ['sepatu', 'kaos']\ncari tas    -> riwayat ['sepatu', 'kaos', 'tas']\ncari jaket  -> riwayat ['kaos', 'tas', 'jaket']\ncari topi   -> riwayat ['tas', 'jaket', 'topi']"
+   },
+   {
+    "t": "Kasus: giliran main ular tangga (round robin)",
+    "d": "Pemain di depan jalan, lalu kembali ke belakang antrean.",
+    "code": "from collections import deque\n\ngiliran = deque(['Andi', 'Bela', 'Cahyo'])\nfor putaran in range(1, 6):\n    pemain = giliran.popleft()\n    print('giliran', putaran, ':', pemain)\n    giliran.append(pemain)\n\ngiliran.appendleft('Dina')    # pemain tamu disisipkan di depan, O(1)\nprint('antrean baru:', list(giliran))\n",
+    "out": "giliran 1 : Andi\ngiliran 2 : Bela\ngiliran 3 : Cahyo\ngiliran 4 : Andi\ngiliran 5 : Bela\nantrean baru: ['Dina', 'Cahyo', 'Andi', 'Bela']"
+   }
+  ]
+ },
+ "dsa-4-1": {
+  "exs": [
+   {
+    "t": "Kasus: melihat ember setiap kode produk",
+    "d": "Fungsi hash sederhana memetakan kunci ke indeks ember.",
+    "code": "def ember_dari(kunci, banyak_ember):\n    return sum(ord(c) for c in kunci) % banyak_ember\n\nfor kode in ['KOPI', 'TEH', 'GULA', 'SUSU', 'MADU']:\n    print(kode, '-> ember', ember_dari(kode, 4))\n",
+    "out": "KOPI -> ember 3\nTEH -> ember 1\nGULA -> ember 1\nSUSU -> ember 0\nMADU -> ember 3"
+   },
+   {
+    "t": "Kasus: load factor dan kapan tabel diperbesar",
+    "d": "Load factor = jumlah data / jumlah ember; di atas 0,75 tabel diperbesar.",
+    "code": "ember = 4\nisi = 0\nfor i in range(1, 13):\n    isi += 1\n    lf = isi / ember\n    if lf > 0.75:\n        ember *= 2\n        print(f'data ke-{i}: load factor {lf:.2f} > 0.75, ember diperbesar menjadi {ember}')\nprint('akhir:', isi, 'data di', ember, 'ember')\n",
+    "out": "data ke-4: load factor 1.00 > 0.75, ember diperbesar menjadi 8\ndata ke-7: load factor 0.88 > 0.75, ember diperbesar menjadi 16\nakhir: 12 data di 16 ember"
+   },
+   {
+    "t": "Kasus: kunci yang boleh dan tidak boleh di dict",
+    "d": "Kunci harus hashable: tuple boleh, list tidak.",
+    "code": "jarak = {}\njarak[('Bandung', 'Jakarta')] = 150      # tuple: boleh\nprint(jarak)\nprint('hash tuple:', hash(('Bandung', 'Jakarta')) == hash(('Bandung', 'Jakarta')))\ntry:\n    jarak[['Bandung', 'Bogor']] = 120   # list: bisa diubah, tidak hashable\nexcept TypeError as e:\n    print('Error:', e)\n",
+    "out": "{('Bandung', 'Jakarta'): 150}\nhash tuple: True\nError: unhashable type: 'list'"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Hash table sederhana dengan rehash otomatis",
+    "b": "Saat load factor melewati 0,75, semua pasangan dipindahkan ke ember yang dua kali lebih banyak sehingga rantai tetap pendek.",
+    "code": "class HashMap:\n    def __init__(self):\n        self.ember = [[] for _ in range(4)]\n        self.n = 0\n        self.rehash = 0\n\n    def _indeks(self, kunci, banyak):\n        h = 0\n        for c in str(kunci):\n            h = (h * 31 + ord(c)) % 2**32\n        return h % banyak\n\n    def put(self, kunci, nilai):\n        e = self.ember[self._indeks(kunci, len(self.ember))]\n        for p in e:\n            if p[0] == kunci:\n                p[1] = nilai\n                return\n        e.append([kunci, nilai])\n        self.n += 1\n        if self.n / len(self.ember) > 0.75:\n            self._perbesar()\n\n    def _perbesar(self):\n        baru = [[] for _ in range(len(self.ember) * 2)]\n        for e in self.ember:\n            for kunci, nilai in e:\n                baru[self._indeks(kunci, len(baru))].append([kunci, nilai])\n        self.ember = baru\n        self.rehash += 1\n\n    def get(self, kunci):\n        for k, v in self.ember[self._indeks(kunci, len(self.ember))]:\n            if k == kunci:\n                return v\n        return None\n\nm = HashMap()\nfor i in range(20):\n    m.put(f\"SKU-{i}\", i * 1000)\nprint(\"SKU-7:\", m.get(\"SKU-7\"), \"| SKU-99:\", m.get(\"SKU-99\"))\nprint(\"ember:\", len(m.ember), \"| rehash terjadi:\", m.rehash, \"kali | rantai terpanjang:\", max(len(e) for e in m.ember))\n",
+    "out": "SKU-7: 7000 | SKU-99: None\nember: 32 | rehash terjadi: 3 kali | rantai terpanjang: 1"
+   }
+  ]
+ },
+ "dsa-4-2": {
+  "exs": [
+   {
+    "t": "Kasus: menghitung menu terlaris di kantin",
+    "d": "Counter menghitung frekuensi dan most_common mengambil teratas.",
+    "code": "from collections import Counter\n\npesanan = ['bakso', 'mie ayam', 'bakso', 'nasi goreng', 'bakso', 'mie ayam', 'soto']\nhitung = Counter(pesanan)\nprint(hitung)\nprint('2 terlaris:', hitung.most_common(2))\n",
+    "out": "Counter({'bakso': 3, 'mie ayam': 2, 'nasi goreng': 1, 'soto': 1})\n2 terlaris: [('bakso', 3), ('mie ayam', 2)]"
+   },
+   {
+    "t": "Kasus: mengelompokkan siswa per kelas",
+    "d": "defaultdict(list) membuat list kosong otomatis untuk kunci baru.",
+    "code": "from collections import defaultdict\n\nsiswa = [('Ani', '7A'), ('Bima', '7B'), ('Citra', '7A'), ('Dani', '7C'), ('Eko', '7B')]\nper_kelas = defaultdict(list)\nfor nama, kelas in siswa:\n    per_kelas[kelas].append(nama)\nfor kelas in sorted(per_kelas):\n    print(kelas, per_kelas[kelas])\n",
+    "out": "7A ['Ani', 'Citra']\n7B ['Bima', 'Eko']\n7C ['Dani']"
+   },
+   {
+    "t": "Kasus: peserta yang hadir di dua acara",
+    "d": "Irisan, gabungan, dan selisih set.",
+    "code": "seminar = {'Ani', 'Budi', 'Cici', 'Dewi'}\nworkshop = {'Cici', 'Dewi', 'Eko'}\nprint('Ikut keduanya :', sorted(seminar & workshop))\nprint('Total peserta :', len(seminar | workshop))\nprint('Hanya seminar :', sorted(seminar - workshop))\n",
+    "out": "Ikut keduanya : ['Cici', 'Dewi']\nTotal peserta : 5\nHanya seminar : ['Ani', 'Budi']"
+   }
+  ]
+ },
+ "dsa-5-1": {
+  "exs": [
+   {
+    "t": "Kasus: total isi kardus bertingkat",
+    "d": "Kardus bisa berisi barang atau kardus lain; rekursi menelusuri sampai ke barang.",
+    "code": "def total_barang(isi):\n    jumlah = 0\n    for x in isi:\n        if isinstance(x, list):     # kardus di dalam kardus: rekursi\n            jumlah += total_barang(x)\n        else:                       # kasus dasar: barang biasa\n            jumlah += x\n    return jumlah\n\ngudang = [5, [3, 2], [4, [1, 1, [6]]], 2]\nprint('Total barang:', total_barang(gudang))\n",
+    "out": "Total barang: 24"
+   },
+   {
+    "t": "Kasus: hitung mundur peluncuran",
+    "d": "Setiap panggilan mengecilkan masalah satu langkah sampai kasus dasar.",
+    "code": "def hitung_mundur(n):\n    if n == 0:              # kasus dasar\n        print('Meluncur!')\n        return\n    print(n)\n    hitung_mundur(n - 1)    # langkah rekursif\n\nhitung_mundur(3)\n",
+    "out": "3\n2\n1\nMeluncur!"
+   },
+   {
+    "t": "Kasus: pangkat cepat untuk bunga majemuk",
+    "d": "x^n = (x^(n/2))^2 membuat jumlah panggilan O(log n).",
+    "code": "panggilan = 0\ndef pangkat(x, n):\n    global panggilan\n    panggilan += 1\n    if n == 0:\n        return 1\n    setengah = pangkat(x, n // 2)\n    if n % 2 == 0:\n        return setengah * setengah\n    return setengah * setengah * x\n\n# tabungan Rp1.000.000 dengan bunga 1% per bulan selama 24 bulan\nprint(round(1_000_000 * pangkat(1.01, 24)))\nprint('panggilan:', panggilan)\n",
+    "out": "1269735\npanggilan: 6"
+   }
+  ]
+ },
+ "dsa-5-2": {
+  "exs": [
+   {
+    "t": "Kasus: mencari NIS di daftar siswa terurut",
+    "d": "Binary search manual pada list terurut.",
+    "code": "nis = [1001, 1004, 1009, 1015, 1022, 1030, 1041, 1057]\n\ndef cari(data, target):\n    kiri, kanan = 0, len(data) - 1\n    while kiri <= kanan:\n        tengah = (kiri + kanan) // 2\n        if data[tengah] == target:\n            return tengah\n        if data[tengah] < target:\n            kiri = tengah + 1\n        else:\n            kanan = tengah - 1\n    return -1\n\nprint('NIS 1030 di indeks', cari(nis, 1030))\nprint('NIS 1010 di indeks', cari(nis, 1010))\n",
+    "out": "NIS 1030 di indeks 5\nNIS 1010 di indeks -1"
+   },
+   {
+    "t": "Kasus: menentukan tarif ongkir dari tabel jarak",
+    "d": "bisect mencari golongan jarak di batas yang terurut.",
+    "code": "import bisect\n\nbatas_km = [5, 10, 20, 50]                  # batas atas setiap golongan\ntarif = [9000, 12000, 18000, 25000, 40000]   # golongan terakhir: di atas 50 km\nfor jarak in [3, 5, 12, 49, 80]:\n    i = bisect.bisect_left(batas_km, jarak)\n    print(f'{jarak:>2} km -> Rp{tarif[i]}')\n",
+    "out": " 3 km -> Rp9000\n 5 km -> Rp9000\n12 km -> Rp18000\n49 km -> Rp25000\n80 km -> Rp40000"
+   },
+   {
+    "t": "Kasus: kapasitas truk minimum (binary search jawaban)",
+    "d": "Tebak kapasitas, periksa apakah cukup untuk D hari, lalu persempit.",
+    "code": "paket = [3, 2, 2, 4, 1, 4]   # kuintal, harus dikirim berurutan\nHARI = 3\n\ndef cukup(kapasitas):\n    hari, muatan = 1, 0\n    for p in paket:\n        if muatan + p > kapasitas:\n            hari += 1\n            muatan = 0\n        muatan += p\n    return hari <= HARI\n\nkiri, kanan = max(paket), sum(paket)\nwhile kiri < kanan:\n    tengah = (kiri + kanan) // 2\n    if cukup(tengah):\n        kanan = tengah\n    else:\n        kiri = tengah + 1\nprint('Kapasitas minimum:', kiri, 'kuintal')\n",
+    "out": "Kapasitas minimum: 6 kuintal"
+   }
+  ]
+ },
+ "dsa-5-3": {
+  "exs": [
+   {
+    "t": "Kasus: mengurutkan nilai ujian dengan bubble sort",
+    "d": "Berhenti lebih awal bila satu putaran tidak ada pertukaran.",
+    "code": "nilai = [72, 65, 88, 90, 95]\nputaran = 0\nfor i in range(len(nilai)):\n    putaran += 1\n    ada_tukar = False\n    for j in range(len(nilai) - 1 - i):\n        if nilai[j] > nilai[j + 1]:\n            nilai[j], nilai[j + 1] = nilai[j + 1], nilai[j]\n            ada_tukar = True\n    if not ada_tukar:\n        break\nprint(nilai, '| putaran:', putaran)\n",
+    "out": "[65, 72, 88, 90, 95] | putaran: 2"
+   },
+   {
+    "t": "Kasus: menyisipkan kartu remi ke tangan",
+    "d": "Insertion sort mencetak keadaan setiap langkah.",
+    "code": "kartu = [7, 3, 9, 2, 5]\nfor i in range(1, len(kartu)):\n    kunci = kartu[i]\n    j = i - 1\n    while j >= 0 and kartu[j] > kunci:\n        kartu[j + 1] = kartu[j]\n        j -= 1\n    kartu[j + 1] = kunci\n    print(f'sisip {kunci}: {kartu}')\n",
+    "out": "sisip 3: [3, 7, 9, 2, 5]\nsisip 9: [3, 7, 9, 2, 5]\nsisip 2: [2, 3, 7, 9, 5]\nsisip 5: [2, 3, 5, 7, 9]"
+   },
+   {
+    "t": "Kasus: urutan stabil daftar pelari",
+    "d": "Insertion sort menjaga urutan asli bila waktunya sama.",
+    "code": "pelari = [('Rudi', 52), ('Sinta', 48), ('Tono', 52), ('Umi', 48), ('Vera', 50)]\na = pelari[:]\nfor i in range(1, len(a)):\n    x = a[i]\n    j = i - 1\n    while j >= 0 and a[j][1] > x[1]:   # pakai > (bukan >=) agar stabil\n        a[j + 1] = a[j]\n        j -= 1\n    a[j + 1] = x\nfor nama, detik in a:\n    print(nama, detik)\n",
+    "out": "Sinta 48\nUmi 48\nVera 50\nRudi 52\nTono 52"
+   }
+  ]
+ },
+ "dsa-5-4": {
+  "exs": [
+   {
+    "t": "Kasus: mengurutkan produk menurut omzet dengan merge sort",
+    "d": "Merge sort stabil: Kopi dan Susu yang sama-sama 450 tetap pada urutan aslinya.",
+    "code": "def merge_sort(a):\n    if len(a) <= 1:\n        return a\n    t = len(a) // 2\n    kiri, kanan = merge_sort(a[:t]), merge_sort(a[t:])\n    hasil, i, j = [], 0, 0\n    while i < len(kiri) and j < len(kanan):\n        if kiri[i][1] >= kanan[j][1]:      # urut menurun berdasarkan omzet\n            hasil.append(kiri[i]); i += 1\n        else:\n            hasil.append(kanan[j]); j += 1\n    return hasil + kiri[i:] + kanan[j:]\n\nproduk = [('Kopi', 450), ('Teh', 120), ('Roti', 300), ('Susu', 450), ('Madu', 90)]\nfor nama, omzet in merge_sort(produk):\n    print(nama, omzet)\n",
+    "out": "Kopi 450\nSusu 450\nRoti 300\nTeh 120\nMadu 90"
+   },
+   {
+    "t": "Kasus: quick sort harga barang dengan partisi",
+    "d": "Pivot memisahkan harga yang lebih murah dan lebih mahal.",
+    "code": "def quick_sort(a, tingkat=0):\n    if len(a) <= 1:\n        return a\n    pivot = a[len(a) // 2]\n    kecil = [x for x in a if x < pivot]\n    sama = [x for x in a if x == pivot]\n    besar = [x for x in a if x > pivot]\n    print('  ' * tingkat + f'pivot {pivot}: {kecil} | {besar}')\n    return quick_sort(kecil, tingkat + 1) + sama + quick_sort(besar, tingkat + 1)\n\nprint(quick_sort([25000, 8000, 40000, 12000, 30000, 5000]))\n",
+    "out": "pivot 12000: [8000, 5000] | [25000, 40000, 30000]\n  pivot 5000: [] | [8000]\n  pivot 40000: [25000, 30000] | []\n    pivot 30000: [25000] | []\n[5000, 8000, 12000, 25000, 30000, 40000]"
+   },
+   {
+    "t": "Kasus: kapan pakai sorted() dengan key",
+    "d": "Di produksi pakai Timsort bawaan, tinggal tentukan kunci pengurutan.",
+    "code": "siswa = [('Ayu', 'XI-2', 88), ('Bayu', 'XI-1', 92), ('Citra', 'XI-2', 95), ('Dimas', 'XI-1', 88)]\n# kelas naik, lalu nilai turun\nfor s in sorted(siswa, key=lambda s: (s[1], -s[2])):\n    print(s)\n",
+    "out": "('Bayu', 'XI-1', 92)\n('Dimas', 'XI-1', 88)\n('Citra', 'XI-2', 95)\n('Ayu', 'XI-2', 88)"
+   }
+  ]
+ },
+ "dsa-6-1": {
+  "exs": [
+   {
+    "t": "Kasus: struktur organisasi sekolah",
+    "d": "Preorder mencetak jabatan dari atas ke bawah.",
+    "code": "class Simpul:\n    def __init__(self, v, kiri=None, kanan=None):\n        self.v, self.kiri, self.kanan = v, kiri, kanan\n\norg = Simpul('Kepala Sekolah',\n             Simpul('Wakasek Kurikulum', Simpul('Guru Matematika'), Simpul('Guru Bahasa')),\n             Simpul('Wakasek Kesiswaan', Simpul('Pembina OSIS')))\n\ndef cetak(s, tingkat=0):\n    if s is None:\n        return\n    print('  ' * tingkat + s.v)\n    cetak(s.kiri, tingkat + 1)\n    cetak(s.kanan, tingkat + 1)\n\ncetak(org)\n",
+    "out": "Kepala Sekolah\n  Wakasek Kurikulum\n    Guru Matematika\n    Guru Bahasa\n  Wakasek Kesiswaan\n    Pembina OSIS"
+   },
+   {
+    "t": "Kasus: menghitung ekspresi dari pohon (postorder)",
+    "d": "Anak dihitung dulu, baru operator di simpul induk.",
+    "code": "class Simpul:\n    def __init__(self, v, kiri=None, kanan=None):\n        self.v, self.kiri, self.kanan = v, kiri, kanan\n\n# (3 + 5) * (10 - 4)\npohon = Simpul('*', Simpul('+', Simpul(3), Simpul(5)), Simpul('-', Simpul(10), Simpul(4)))\n\ndef hitung(s):\n    if s.kiri is None:          # daun: angka\n        return s.v\n    a, b = hitung(s.kiri), hitung(s.kanan)\n    if s.v == '+': return a + b\n    if s.v == '-': return a - b\n    return a * b\n\ndef tulis(s):                   # inorder memberi bentuk yang biasa dibaca\n    if s.kiri is None:\n        return str(s.v)\n    return '(' + tulis(s.kiri) + ' ' + s.v + ' ' + tulis(s.kanan) + ')'\n\nprint(tulis(pohon), '=', hitung(pohon))\n",
+    "out": "((3 + 5) * (10 - 4)) = 48"
+   },
+   {
+    "t": "Kasus: jumlah daun dan tinggi pohon keluarga",
+    "d": "Dua fungsi rekursif kecil pada tree yang sama.",
+    "code": "class Simpul:\n    def __init__(self, v, kiri=None, kanan=None):\n        self.v, self.kiri, self.kanan = v, kiri, kanan\n\nkeluarga = Simpul('Kakek', Simpul('Ayah', Simpul('Rani'), Simpul('Rudi')), Simpul('Paman', None, Simpul('Sekar')))\n\ndef daun(s):\n    if s is None:\n        return []\n    if s.kiri is None and s.kanan is None:\n        return [s.v]\n    return daun(s.kiri) + daun(s.kanan)\n\ndef tinggi(s):\n    return 1 + max(tinggi(s.kiri), tinggi(s.kanan)) if s else 0\n\nprint('Cucu (daun):', daun(keluarga))\nprint('Generasi (tinggi):', tinggi(keluarga))\n",
+    "out": "Cucu (daun): ['Rani', 'Rudi', 'Sekar']\nGenerasi (tinggi): 3"
+   }
+  ]
+ },
+ "dsa-6-2": {
+  "exs": [
+   {
+    "t": "Kasus: kamus kata bahasa daerah",
+    "d": "BST dengan kunci kata dan nilai arti.",
+    "code": "class Simpul:\n    def __init__(self, kata, arti):\n        self.kata, self.arti, self.kiri, self.kanan = kata, arti, None, None\n\ndef sisip(akar, kata, arti):\n    if akar is None:\n        return Simpul(kata, arti)\n    if kata < akar.kata:\n        akar.kiri = sisip(akar.kiri, kata, arti)\n    else:\n        akar.kanan = sisip(akar.kanan, kata, arti)\n    return akar\n\ndef cari(akar, kata):\n    while akar and akar.kata != kata:\n        akar = akar.kiri if kata < akar.kata else akar.kanan\n    return akar.arti if akar else 'tidak ditemukan'\n\nakar = None\nfor kata, arti in [('maem', 'makan'), ('banyu', 'air'), ('omah', 'rumah'), ('turu', 'tidur'), ('dalan', 'jalan')]:\n    akar = sisip(akar, kata, arti)\nprint('omah  :', cari(akar, 'omah'))\nprint('sekolah:', cari(akar, 'sekolah'))\n",
+    "out": "omah  : rumah\nsekolah: tidak ditemukan"
+   },
+   {
+    "t": "Kasus: nilai terkecil dan terbesar di BST",
+    "d": "Minimum selalu paling kiri, maksimum paling kanan.",
+    "code": "class Simpul:\n    def __init__(self, v):\n        self.v, self.kiri, self.kanan = v, None, None\n\ndef sisip(akar, v):\n    if akar is None:\n        return Simpul(v)\n    if v < akar.v:\n        akar.kiri = sisip(akar.kiri, v)\n    else:\n        akar.kanan = sisip(akar.kanan, v)\n    return akar\n\nakar = None\nfor harga in [45000, 20000, 70000, 15000, 30000, 90000]:\n    akar = sisip(akar, harga)\n\ns = akar\nwhile s.kiri:\n    s = s.kiri\nprint('Termurah:', s.v)\ns = akar\nwhile s.kanan:\n    s = s.kanan\nprint('Termahal:', s.v)\n",
+    "out": "Termurah: 15000\nTermahal: 90000"
+   },
+   {
+    "t": "Kasus: BST miring karena data sudah terurut",
+    "d": "Data terurut membuat tinggi = n, pencarian jadi O(n).",
+    "code": "class Simpul:\n    def __init__(self, v):\n        self.v, self.kiri, self.kanan = v, None, None\n\ndef sisip(akar, v):\n    if akar is None:\n        return Simpul(v)\n    if v < akar.v:\n        akar.kiri = sisip(akar.kiri, v)\n    else:\n        akar.kanan = sisip(akar.kanan, v)\n    return akar\n\ndef tinggi(s):\n    return 1 + max(tinggi(s.kiri), tinggi(s.kanan)) if s else 0\n\nacak = None\nfor x in [4, 2, 6, 1, 3, 5, 7]:\n    acak = sisip(acak, x)\nurut = None\nfor x in [1, 2, 3, 4, 5, 6, 7]:\n    urut = sisip(urut, x)\nprint('tinggi dari urutan acak  :', tinggi(acak))\nprint('tinggi dari urutan terurut:', tinggi(urut))\n",
+    "out": "tinggi dari urutan acak  : 3\ntinggi dari urutan terurut: 7"
+   }
+  ]
+ },
+ "dsa-6-3": {
+  "exs": [
+   {
+    "t": "Kasus: antrean pesanan ojek prioritas",
+    "d": "Pelanggan prioritas diproses lebih dulu, sisanya sesuai urutan datang.",
+    "code": "import heapq\n\nantrean = []\nurutan = 0\nfor nama, prioritas in [('Rina', 2), ('Andi', 1), ('Sari', 2), ('Budi', 1), ('Tari', 3)]:\n    heapq.heappush(antrean, (prioritas, urutan, nama))   # urutan memutus seri\n    urutan += 1\nwhile antrean:\n    p, _, nama = heapq.heappop(antrean)\n    print('prioritas', p, ':', nama)\n",
+    "out": "prioritas 1 : Andi\nprioritas 1 : Budi\nprioritas 2 : Rina\nprioritas 2 : Sari\nprioritas 3 : Tari"
+   },
+   {
+    "t": "Kasus: 3 harga termurah dari banyak toko",
+    "d": "nsmallest dan heapify.",
+    "code": "import heapq\n\nharga = [15500, 14200, 16000, 13900, 15000, 14800, 13750]\nprint('3 termurah:', heapq.nsmallest(3, harga))\nheapq.heapify(harga)          # ubah list jadi heap di tempat, O(n)\nprint('harga terkecil di indeks 0:', harga[0])\n",
+    "out": "3 termurah: [13750, 13900, 14200]\nharga terkecil di indeks 0: 13750"
+   },
+   {
+    "t": "Kasus: max-heap nilai siswa dengan angka negatif",
+    "d": "heapq hanya min-heap; simpan -nilai untuk mengambil yang terbesar dulu.",
+    "code": "import heapq\n\nnilai = {'Ayu': 88, 'Bimo': 95, 'Cahya': 79, 'Dewa': 91}\nh = []\nfor nama, n in nilai.items():\n    heapq.heappush(h, (-n, nama))\nperingkat = 1\nwhile h:\n    n, nama = heapq.heappop(h)\n    print(peringkat, nama, -n)\n    peringkat += 1\n",
+    "out": "1 Bimo 95\n2 Dewa 91\n3 Ayu 88\n4 Cahya 79"
+   }
+  ]
+ },
+ "dsa-7-1": {
+  "exs": [
+   {
+    "t": "Kasus: jumlah transit KRL tersedikit (BFS)",
+    "d": "BFS pada graph tanpa bobot memberi jarak dalam jumlah sisi.",
+    "code": "from collections import deque\n\njalur = {\n    'Bogor': ['Depok'], 'Depok': ['Bogor', 'Manggarai'],\n    'Manggarai': ['Depok', 'Sudirman', 'Jatinegara'], 'Sudirman': ['Manggarai', 'Tanah Abang'],\n    'Jatinegara': ['Manggarai', 'Bekasi'], 'Tanah Abang': ['Sudirman'], 'Bekasi': ['Jatinegara'],\n}\njarak = {'Bogor': 0}\nq = deque(['Bogor'])\nwhile q:\n    s = q.popleft()\n    for t in jalur[s]:\n        if t not in jarak:\n            jarak[t] = jarak[s] + 1\n            q.append(t)\nfor stasiun, d in jarak.items():\n    print(f'{stasiun:<12} {d} stasiun dari Bogor')\n",
+    "out": "Bogor        0 stasiun dari Bogor\nDepok        1 stasiun dari Bogor\nManggarai    2 stasiun dari Bogor\nSudirman     3 stasiun dari Bogor\nJatinegara   3 stasiun dari Bogor\nTanah Abang  4 stasiun dari Bogor\nBekasi       4 stasiun dari Bogor"
+   },
+   {
+    "t": "Kasus: menghitung pulau di peta (DFS di grid)",
+    "d": "Setiap sel daratan yang belum dikunjungi memulai DFS baru.",
+    "code": "peta = [\n    '##..#',\n    '#...#',\n    '..#..',\n    '....#',\n]\nbaris, kolom = len(peta), len(peta[0])\ndikunjungi = set()\n\ndef dfs(r, c):\n    if not (0 <= r < baris and 0 <= c < kolom) or peta[r][c] != '#' or (r, c) in dikunjungi:\n        return\n    dikunjungi.add((r, c))\n    for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:\n        dfs(r + dr, c + dc)\n\npulau = 0\nfor r in range(baris):\n    for c in range(kolom):\n        if peta[r][c] == '#' and (r, c) not in dikunjungi:\n            dfs(r, c)\n            pulau += 1\nprint('Jumlah pulau:', pulau)\n",
+    "out": "Jumlah pulau: 4"
+   },
+   {
+    "t": "Kasus: akun yang terjangkau lewat rantai follow (graph berarah)",
+    "d": "Adjacency list berarah dan DFS dengan stack.",
+    "code": "mengikuti = {\n    'rina': ['toko_batik', 'budi'], 'budi': ['kopi_nusantara'],\n    'toko_batik': [], 'kopi_nusantara': ['toko_batik'], 'sari': ['rina'],\n}\n# semua akun yang terjangkau dari sari lewat rantai follow\nstack, terjangkau = ['sari'], []\nwhile stack:\n    u = stack.pop()\n    if u in terjangkau:\n        continue\n    terjangkau.append(u)\n    for v in reversed(mengikuti[u]):\n        stack.append(v)\nprint('Terjangkau dari sari:', terjangkau)\nprint('Jumlah sisi:', sum(len(v) for v in mengikuti.values()))\n",
+    "out": "Terjangkau dari sari: ['sari', 'rina', 'toko_batik', 'budi', 'kopi_nusantara']\nJumlah sisi: 5"
+   }
+  ]
+ },
+ "dsa-7-2": {
+  "exs": [
+   {
+    "t": "Kasus: ongkos tol termurah antar kota",
+    "d": "Bobot sisi berupa ongkos rupiah.",
+    "code": "import heapq\n\ntol = {\n    'Jakarta': {'Cikampek': 20000, 'Bogor': 15000},\n    'Cikampek': {'Cirebon': 60000, 'Bandung': 45000},\n    'Bogor': {'Bandung': 70000},\n    'Bandung': {'Cirebon': 30000},\n    'Cirebon': {},\n}\n\ndef dijkstra(g, awal):\n    jarak = {awal: 0}\n    pq = [(0, awal)]\n    while pq:\n        d, s = heapq.heappop(pq)\n        if d > jarak[s]:\n            continue\n        for t, w in g[s].items():\n            if d + w < jarak.get(t, float('inf')):\n                jarak[t] = d + w\n                heapq.heappush(pq, (d + w, t))\n    return jarak\n\nfor kota, ongkos in dijkstra(tol, 'Jakarta').items():\n    print(f'{kota:<9} Rp{ongkos}')\n",
+    "out": "Jakarta   Rp0\nCikampek  Rp20000\nBogor     Rp15000\nBandung   Rp65000\nCirebon   Rp80000"
+   },
+   {
+    "t": "Kasus: kenapa BFS saja tidak cukup",
+    "d": "Jalur dengan sisi paling sedikit belum tentu paling cepat.",
+    "code": "import heapq\n\nwaktu = {'A': {'B': 50, 'C': 10}, 'C': {'D': 10}, 'D': {'B': 10}, 'B': {}}\n# BFS memilih A -> B (1 sisi, 50 menit)\nprint('Jalur sisi tersedikit: A -> B =', waktu['A']['B'], 'menit')\n\njarak, asal, pq = {'A': 0}, {}, [(0, 'A')]\nwhile pq:\n    d, s = heapq.heappop(pq)\n    if d > jarak[s]:\n        continue\n    for t, w in waktu[s].items():\n        if d + w < jarak.get(t, float('inf')):\n            jarak[t], asal[t] = d + w, s\n            heapq.heappush(pq, (d + w, t))\nrute, s = ['B'], 'B'\nwhile s != 'A':\n    s = asal[s]\n    rute.append(s)\nprint('Dijkstra:', ' -> '.join(reversed(rute)), '=', jarak['B'], 'menit')\n",
+    "out": "Jalur sisi tersedikit: A -> B = 50 menit\nDijkstra: A -> C -> D -> B = 30 menit"
+   },
+   {
+    "t": "Kasus: waktu tempuh terpendek ke semua kecamatan",
+    "d": "Graph tak berarah: setiap jalan dicatat dua arah.",
+    "code": "import heapq\n\njalan = [('Pusat', 'Utara', 7), ('Pusat', 'Timur', 9), ('Utara', 'Timur', 3), ('Timur', 'Selatan', 4), ('Utara', 'Barat', 12)]\ng = {}\nfor a, b, w in jalan:\n    g.setdefault(a, {})[b] = w\n    g.setdefault(b, {})[a] = w\n\njarak, pq = {'Pusat': 0}, [(0, 'Pusat')]\nwhile pq:\n    d, s = heapq.heappop(pq)\n    if d > jarak[s]:\n        continue\n    for t, w in g[s].items():\n        if d + w < jarak.get(t, float('inf')):\n            jarak[t] = d + w\n            heapq.heappush(pq, (d + w, t))\nprint(dict(sorted(jarak.items(), key=lambda x: x[1])))\n",
+    "out": "{'Pusat': 0, 'Utara': 7, 'Timur': 9, 'Selatan': 13, 'Barat': 19}"
+   }
+  ]
+ },
+ "dsa-7-3": {
+  "exs": [
+   {
+    "t": "Kasus: urutan memasak rendang",
+    "d": "Langkah resep dengan prasyarat diurutkan dengan algoritma Kahn.",
+    "code": "from collections import deque\n\nsebelum = {   # langkah -> langkah yang harus menunggu langkah ini\n    'beli daging': ['potong daging'], 'giling bumbu': ['tumis bumbu'],\n    'potong daging': ['masak dengan santan'], 'tumis bumbu': ['masak dengan santan'],\n    'peras santan': ['masak dengan santan'], 'masak dengan santan': ['aduk sampai kering'],\n    'aduk sampai kering': [],\n}\nmasuk = {s: 0 for s in sebelum}\nfor s in sebelum:\n    for t in sebelum[s]:\n        masuk[t] += 1\nq = deque(s for s in sebelum if masuk[s] == 0)\nlangkah = 1\nwhile q:\n    s = q.popleft()\n    print(langkah, s)\n    langkah += 1\n    for t in sebelum[s]:\n        masuk[t] -= 1\n        if masuk[t] == 0:\n            q.append(t)\n",
+    "out": "1 beli daging\n2 giling bumbu\n3 peras santan\n4 potong daging\n5 tumis bumbu\n6 masak dengan santan\n7 aduk sampai kering"
+   },
+   {
+    "t": "Kasus: topological sort dengan DFS",
+    "d": "Simpul ditambahkan setelah semua yang bergantung padanya selesai, lalu urutan dibalik.",
+    "code": "paket = {'app': ['web', 'db'], 'web': ['utils'], 'db': ['utils'], 'utils': []}   # paket -> dependensinya\nselesai, urutan = set(), []\n\ndef kunjungi(p):\n    if p in selesai:\n        return\n    for dep in paket[p]:\n        kunjungi(dep)\n    selesai.add(p)\n    urutan.append(p)     # dependensi selalu masuk lebih dulu\n\nfor p in paket:\n    kunjungi(p)\nprint('Urutan install:', urutan)\n",
+    "out": "Urutan install: ['utils', 'web', 'db', 'app']"
+   },
+   {
+    "t": "Kasus: mendeteksi prasyarat mata kuliah yang melingkar",
+    "d": "Bila tidak semua simpul keluar dari antrean, berarti ada siklus.",
+    "code": "from collections import deque\n\ndef urutkan(g):\n    masuk = {s: 0 for s in g}\n    for s in g:\n        for t in g[s]:\n            masuk[t] += 1\n    q = deque(s for s in g if masuk[s] == 0)\n    hasil = []\n    while q:\n        s = q.popleft()\n        hasil.append(s)\n        for t in g[s]:\n            masuk[t] -= 1\n            if masuk[t] == 0:\n                q.append(t)\n    if len(hasil) < len(g):\n        return 'siklus pada: ' + ', '.join(sorted(s for s in g if masuk[s] > 0))\n    return hasil\n\nprint(urutkan({'Kalkulus 1': ['Kalkulus 2'], 'Kalkulus 2': ['Statistika'], 'Statistika': []}))\nprint(urutkan({'Kalkulus 1': ['Kalkulus 2'], 'Kalkulus 2': ['Statistika'], 'Statistika': ['Kalkulus 2']}))\n",
+    "out": "['Kalkulus 1', 'Kalkulus 2', 'Statistika']\nsiklus pada: Kalkulus 2, Statistika"
+   }
+  ]
+ },
+ "dsa-8-1": {
+  "exs": [
+   {
+    "t": "Kasus: jumlah jalur kurir di kompleks perumahan (grid)",
+    "d": "dp[r][c] = jalur dari atas + jalur dari kiri.",
+    "code": "baris, kolom = 4, 5\ndp = [[1] * kolom for _ in range(baris)]\nfor r in range(1, baris):\n    for c in range(1, kolom):\n        dp[r][c] = dp[r - 1][c] + dp[r][c - 1]\nfor b in dp:\n    print(b)\nprint('Jalur dari pojok kiri atas ke kanan bawah:', dp[-1][-1])\n",
+    "out": "[1, 1, 1, 1, 1]\n[1, 2, 3, 4, 5]\n[1, 3, 6, 10, 15]\n[1, 4, 10, 20, 35]\nJalur dari pojok kiri atas ke kanan bawah: 35"
+   },
+   {
+    "t": "Kasus: memoization fibonacci dengan lru_cache",
+    "d": "Membandingkan jumlah panggilan dengan dan tanpa cache.",
+    "code": "from functools import lru_cache\n\npanggil_polos = 0\ndef fib(n):\n    global panggil_polos\n    panggil_polos += 1\n    return n if n < 2 else fib(n - 1) + fib(n - 2)\n\npanggil_memo = 0\n@lru_cache(maxsize=None)\ndef fib_memo(n):\n    global panggil_memo\n    panggil_memo += 1\n    return n if n < 2 else fib_memo(n - 1) + fib_memo(n - 2)\n\nprint(fib(25), 'panggilan tanpa cache:', panggil_polos)\nprint(fib_memo(25), 'panggilan dengan cache:', panggil_memo)\n",
+    "out": "75025 panggilan tanpa cache: 242785\n75025 panggilan dengan cache: 26"
+   },
+   {
+    "t": "Kasus: tabungan maksimum tanpa mengambil dua hari berurutan",
+    "d": "dp[i] = max(lewati hari i, ambil hari i + dp[i-2]).",
+    "code": "# upah lembur per hari; aturan: tidak boleh lembur dua hari berturut-turut\nupah = [120, 200, 150, 90, 300, 80]\ndp = [0] * (len(upah) + 1)\ndp[1] = upah[0]\nfor i in range(2, len(upah) + 1):\n    dp[i] = max(dp[i - 1], dp[i - 2] + upah[i - 1])\nprint('Tabel dp:', dp)\nprint('Upah maksimum: Rp', dp[-1], 'ribu')\n",
+    "out": "Tabel dp: [0, 120, 200, 270, 290, 570, 570]\nUpah maksimum: Rp 570 ribu"
+   }
+  ]
+ },
+ "dsa-8-2": {
+  "exs": [
+   {
+    "t": "Kasus: memilih oleh-oleh dalam batas bagasi",
+    "d": "Knapsack 0/1 dengan tabel 2D dan penelusuran barang terpilih.",
+    "code": "barang = [('Bika Ambon', 2, 70), ('Bolu Meranti', 3, 90), ('Sirup Markisa', 4, 100), ('Kopi Sidikalang', 1, 40)]\nW = 6   # kg sisa bagasi\nn = len(barang)\ndp = [[0] * (W + 1) for _ in range(n + 1)]\nfor i in range(1, n + 1):\n    nama, berat, nilai = barang[i - 1]\n    for w in range(W + 1):\n        dp[i][w] = dp[i - 1][w]\n        if berat <= w:\n            dp[i][w] = max(dp[i][w], dp[i - 1][w - berat] + nilai)\npilih, w = [], W\nfor i in range(n, 0, -1):\n    if dp[i][w] != dp[i - 1][w]:\n        pilih.append(barang[i - 1][0])\n        w -= barang[i - 1][1]\nprint('Nilai suka:', dp[n][W], '| bawa:', pilih[::-1])\n",
+    "out": "Nilai suka: 200 | bawa: ['Bika Ambon', 'Bolu Meranti', 'Kopi Sidikalang']"
+   },
+   {
+    "t": "Kasus: kemiripan dua nama produk (panjang LCS)",
+    "d": "Panjang LCS dibandingkan panjang nama untuk skor kemiripan.",
+    "code": "def lcs(a, b):\n    dp = [[0] * (len(b) + 1) for _ in range(len(a) + 1)]\n    for i in range(1, len(a) + 1):\n        for j in range(1, len(b) + 1):\n            if a[i - 1] == b[j - 1]:\n                dp[i][j] = dp[i - 1][j - 1] + 1\n            else:\n                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])\n    return dp[-1][-1]\n\nfor a, b in [('indomie goreng', 'indomi gorng'), ('kopi susu', 'teh manis')]:\n    p = lcs(a, b)\n    print(f'{a!r} vs {b!r}: LCS {p}, kemiripan {p / max(len(a), len(b)):.0%}')\n",
+    "out": "'indomie goreng' vs 'indomi gorng': LCS 12, kemiripan 86%\n'kopi susu' vs 'teh manis': LCS 2, kemiripan 22%"
+   },
+   {
+    "t": "Kasus: menampilkan subsequence bersama",
+    "d": "Menelusuri tabel LCS dari pojok kanan bawah untuk mendapat hurufnya.",
+    "code": "a, b = 'SEMARANG', 'SAMARINDA'\ndp = [[0] * (len(b) + 1) for _ in range(len(a) + 1)]\nfor i in range(1, len(a) + 1):\n    for j in range(1, len(b) + 1):\n        dp[i][j] = dp[i - 1][j - 1] + 1 if a[i - 1] == b[j - 1] else max(dp[i - 1][j], dp[i][j - 1])\n\ni, j, huruf = len(a), len(b), []\nwhile i and j:\n    if a[i - 1] == b[j - 1]:\n        huruf.append(a[i - 1]); i -= 1; j -= 1\n    elif dp[i - 1][j] >= dp[i][j - 1]:\n        i -= 1\n    else:\n        j -= 1\nprint('LCS:', ''.join(reversed(huruf)), '| panjang', dp[-1][-1])\n",
+    "out": "LCS: SMARA | panjang 5"
+   }
+  ]
+ },
+ "dsa-8-3": {
+  "exs": [
+   {
+    "t": "Kasus: kembalian dengan pecahan rupiah (greedy benar)",
+    "d": "Untuk pecahan rupiah, mengambil pecahan terbesar dulu memberi jumlah lembar minimum.",
+    "code": "pecahan = [100000, 50000, 20000, 10000, 5000, 2000, 1000, 500]\nkembalian = 87500\nhasil = {}\nfor p in pecahan:\n    if kembalian >= p:\n        hasil[p] = kembalian // p\n        kembalian %= p\nprint(hasil)\nprint('Jumlah lembar/koin:', sum(hasil.values()))\n",
+    "out": "{50000: 1, 20000: 1, 10000: 1, 5000: 1, 2000: 1, 500: 1}\nJumlah lembar/koin: 6"
+   },
+   {
+    "t": "Kasus: mengisi karung 20 kg dengan beras paling bernilai (fractional knapsack)",
+    "d": "Greedy berdasarkan rasio nilai per berat benar bila barang boleh dipecah.",
+    "code": "# beras curah boleh diambil sebagian: (nama, kg tersedia, harga per kg)\nstok = [('Pandan Wangi', 10, 16000), ('IR64', 25, 12000), ('Rojolele', 8, 18000)]\nkapasitas = 20\ntotal = 0\nfor nama, kg, harga in sorted(stok, key=lambda s: -s[2]):\n    ambil = min(kg, kapasitas)\n    if ambil == 0:\n        break\n    kapasitas -= ambil\n    total += ambil * harga\n    print(f'ambil {ambil} kg {nama}')\nprint('Nilai muatan: Rp', total)\n",
+    "out": "ambil 8 kg Rojolele\nambil 10 kg Pandan Wangi\nambil 2 kg IR64\nNilai muatan: Rp 328000"
+   },
+   {
+    "t": "Kasus: memilih lauk dengan total harga pas (backtracking)",
+    "d": "Coba ambil atau lewati tiap lauk, mundur bila total sudah melebihi uang.",
+    "code": "lauk = [('ayam', 12000), ('tempe', 3000), ('telur', 5000), ('sayur', 4000), ('ikan', 10000)]\nuang = 15000\nhasil = []\n\ndef coba(i, pilih, total):\n    if total == uang:\n        hasil.append(list(pilih))\n        return\n    if i == len(lauk) or total > uang:     # pruning: berhenti, mundur\n        return\n    nama, harga = lauk[i]\n    pilih.append(nama)\n    coba(i + 1, pilih, total + harga)      # ambil lauk i\n    pilih.pop()                            # batalkan pilihan (backtrack)\n    coba(i + 1, pilih, total)              # lewati lauk i\n\ncoba(0, [], 0)\nfor h in hasil:\n    print(h)\n",
+    "out": "['ayam', 'tempe']\n['telur', 'ikan']"
+   }
+  ]
+ }
+}

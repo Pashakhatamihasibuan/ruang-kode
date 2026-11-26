@@ -1,0 +1,268 @@
+{
+ "ui-1-2": {
+  "cx": [
+   {
+    "t": "Memeriksa aturan proximity: jarak dalam grup < jarak antargrup",
+    "b": "Ukur jarak vertikal di form alamat. Proximity terjaga bila jarak label ke input lebih kecil dari jarak antarfield, dan keduanya lebih kecil dari jarak antargrup.",
+    "code": "JARAK                               NILAI\nlabel ke input                       4px\nantarfield dalam grup               12px\nantargrup (Data diri -> Alamat)     32px\n\n4 < 12 < 32 -> proximity terjaga, dua grup terbaca terpisah",
+    "lang": "text"
+   }
+  ]
+ },
+ "ui-1-3": {
+  "cx": [
+   {
+    "t": "Membulatkan nilai liar ke skala 4/8",
+    "b": "Ganti setiap nilai yang tidak ada di skala (0, 4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 80) dengan nilai skala terdekat; bila sama dekat, pilih yang lebih kecil.",
+    "code": "NILAI           LIAR    DI SKALA\npadding kartu   15px -> 16px\ngap ikon-teks    7px ->  8px\nmargin section  45px -> 48px\nradius          10px ->  8px   (8 dan 12 sama dekat, pilih yang kecil)\ntinggi tombol   46px -> 48px\n\nLebar kolom di layar 360px (margin 16, 4 kolom, gutter 16):\n(360 - 2 x 16 - 3 x 16) / 4 = 70px per kolom",
+    "lang": "text"
+   }
+  ]
+ },
+ "ui-2-2": {
+  "cx": [
+   {
+    "t": "Skala tipe dengan dua rasio",
+    "b": "Mulai dari body 16px, kalikan rasio untuk naik satu tingkat dan bagi rasio untuk turun, lalu bulatkan ke kelipatan 2px.",
+    "code": "PERAN      RASIO 1,2   RASIO 1,25\ncaption    14px        12px\nbody       16px        16px\ntitle-sm   20px        20px\ntitle      24px        24px\nheadline   28px        32px\ndisplay    34px        40px\n\nMobile biasanya memakai rasio lebih kecil (1,2), desktop lebih besar (1,25-1,333).",
+    "lang": "text"
+   }
+  ]
+ },
+ "ui-2-5": {
+  "cx": [
+   {
+    "t": "Menghitung clamp() dari ukuran di dua lebar layar",
+    "b": "Tentukan ukuran di layar 360px dan 1280px. Kemiringan = (maks - min) / (1280 - 360); bagian tetap = min - kemiringan x 360. Semua dibagi 16 menjadi rem, kemiringan dikali 100 menjadi vw.",
+    "code": ":root {\n  /* display: 32px di 360px -> 56px di 1280px */\n  --fs-display: clamp(2rem, 1.413rem + 2.609vw, 3.5rem);\n  /* headline: 24px -> 36px */\n  --fs-headline: clamp(1.5rem, 1.207rem + 1.304vw, 2.25rem);\n  /* body: 16px -> 18px */\n  --fs-body: clamp(1rem, 0.951rem + 0.217vw, 1.125rem);\n}",
+    "lang": "css"
+   }
+  ]
+ },
+ "ui-3-1": {
+  "cx": [
+   {
+    "t": "Satu warna dalam HEX, RGB, dan HSL",
+    "b": "HEX dan RGB adalah angka yang sama (setiap dua digit HEX = satu kanal 0-255). HSL lebih mudah diatur manusia: rona (derajat), saturasi, dan kecerahan.",
+    "code": ":root {\n  /* Hijau brand */\n  --hijau-hex: #0F766E;\n  --hijau-rgb: rgb(15 118 110);\n  --hijau-hsl: hsl(175 77% 26%);\n\n  /* Oranye aksen */\n  --oranye-hex: #EA580C;          /* rgb(234 88 12)  hsl(21 90% 48%) */\n\n  /* Abu teks */\n  --abu-hex: #334155;             /* rgb(51 65 85)   hsl(215 25% 27%) */\n\n  /* CSS modern: oklch, kira-kira setara hijau brand */\n  --hijau-oklch: oklch(51% 0.09 185);\n}",
+    "lang": "css"
+   }
+  ]
+ },
+ "ui-3-2": {
+  "cx": [
+   {
+    "t": "Membaca rasio kontras dan status AA",
+    "b": "Ukur setiap pasangan dengan WebAIM Contrast Checker atau plugin Stark, lalu catat statusnya: 4,5:1 untuk teks biasa, 3:1 untuk teks besar dan komponen UI.",
+    "code": "RASIO    STATUS             PASANGAN\n5,47:1   AA teks            teks putih #FFFFFF di tombol hijau #0F766E\n2,49:1   GAGAL              teks putih di hijau muda #14B8A6\n4,76:1   AA teks            teks abu #64748B di putih\n2,56:1   GAGAL              placeholder abu muda #94A3B8 di putih\n1,48:1   GAGAL              border input #CBD5E1 di putih (komponen UI butuh 3:1)",
+    "lang": "text"
+   }
+  ]
+ },
+ "ui-3-3": {
+  "cx": [
+   {
+    "t": "Skala tonal dari satu warna brand",
+    "b": "Tint dibuat dengan mencampur warna brand dan putih, shade dengan hitam. Catat kontras setiap tingkat agar jelas mana yang boleh dipakai untuk teks.",
+    "code": ":root {\n  --teal-50:  #ECF4F3; /* 92% putih · kontras vs putih 1,12  -> latar */\n  --teal-100: #D4E6E5; /* 82% putih · 1,29                    -> latar */\n  --teal-300: #87BAB6; /* 50% putih · 2,16                    -> dekorasi */\n  --teal-500: #338B84; /* 15% putih · 4,06                    -> teks besar saja */\n  --teal-600: #0F766E; /* warna brand · 5,47                  -> tombol, teks */\n  --teal-700: #0C5E58; /* 20% hitam · 7,62                    -> hover */\n  --teal-900: #083B37; /* 50% hitam · 12,42                   -> teks di latar terang */\n}",
+    "lang": "css"
+   }
+  ]
+ },
+ "ui-5-1": {
+  "cx": [
+   {
+    "t": "Dari token JSON ke CSS variables",
+    "b": "Nama token yang bersarang digabung dengan tanda hubung, dan rujukan {a.b.c} menjadi var(--a-b-c). Alat seperti Style Dictionary melakukan ini otomatis.",
+    "code": "/* sumber:\n   color.brand.600     = #0F766E\n   color.text.default  = {color.neutral.900}\n   color.neutral.900   = #0F172A\n   space.2 = 8px, space.4 = 16px, radius.md = 10px */\n:root {\n  --color-brand-600: #0F766E;\n  --color-text-default: var(--color-neutral-900);\n  --color-neutral-900: #0F172A;\n  --space-2: 8px;\n  --space-4: 16px;\n  --radius-md: 10px;\n}",
+    "lang": "css"
+   }
+  ]
+ },
+ "ui-5-2": {
+  "cx": [
+   {
+    "t": "Menelusuri rantai alias tiga lapis",
+    "b": "Ikuti setiap alias sampai ketemu nilai mentah. Saat rebrand, cukup ubah satu token global; semua alias ikut berubah.",
+    "code": "TOKEN               -> ALIAS                -> GLOBAL     = NILAI\nbutton.primary.bg   -> color.action.primary -> teal.600   = #0F766E\nlink.color          -> color.action.primary -> teal.600   = #0F766E\n\nRebrand: teal.600 diubah menjadi #0D9488\nbutton.primary.bg   = #0D9488\nlink.color          = #0D9488   (tidak ada komponen yang disentuh)",
+    "lang": "text"
+   }
+  ]
+ },
+ "ui-5-3": {
+  "cx": [
+   {
+    "t": "Menghitung ledakan varian dan cara menekannya",
+    "b": "Jumlah varian = hasil kali semua pilihan properti. Tekan dengan menjadikan sebagian properti boolean atau instance swap, dan menyerahkan state interaktif ke prototipe.",
+    "code": "PROPERTI    PILIHAN\nhierarchy   primary, secondary, tertiary, danger      (4)\nsize        sm, md, lg                                (3)\nstate       default, hover, focus, pressed,\n            disabled, loading                         (6)\nicon        none, start, end, only                    (4)\n\nSemua digambar                      : 4 x 3 x 6 x 4 = 288 varian\nIkon jadi boolean + instance swap   : 4 x 3 x 6     =  72 varian\nHover/pressed diserahkan ke prototipe: 4 x 3 x 4     =  48 varian",
+    "lang": "text"
+   }
+  ]
+ },
+ "ui-6-2": {
+  "cx": [
+   {
+    "t": "Memilih pola navigasi dari jumlah dan frekuensi tujuan",
+    "b": "Hitung tujuan yang sering dibuka. 3-5 tujuan sering: bottom nav (sisanya di \"Lainnya\"). Kurang dari 3: cukup satu layar utama. Lebih dari 5: drawer atau rail.",
+    "code": "APLIKASI BANK\n  sering : Beranda, Transfer, Riwayat, Profil      (4)\n  jarang : Kartu, Investasi, Bantuan               (3)\n  -> Bottom nav: Beranda, Transfer, Riwayat, Profil + menu \"Lainnya\" untuk 3 tujuan\n\nAPLIKASI KALKULATOR\n  sering : Kalkulator                              (1)\n  jarang : Riwayat                                 (1)\n  -> Satu layar utama + tombol/tautan; bottom nav berlebihan",
+    "lang": "text"
+   }
+  ]
+ },
+ "ui-6-5": {
+  "cx": [
+   {
+    "t": "Checklist definition of ready",
+    "b": "Desain baru boleh diserahkan bila semua butir terpenuhi. Butir yang belum menjadi daftar kerja sebelum sesi handoff.",
+    "code": "[x] semua state (kosong, memuat, error, sukses)\n[x] copy final disetujui\n[ ] memakai token, tanpa nilai liar\n[x] target sentuh >= 44/48\n[x] kontras AA dicek\n[ ] layout 360px dan 1280px\n[x] anotasi perilaku & validasi\n[x] aset diekspor\n\nSiap: 6/8 -> Status: belum siap diserahkan",
+    "lang": "text"
+   }
+  ]
+ },
+ "ui-7-2": {
+  "exs": [
+   {
+    "t": "Kasus: catatan wawancara menjadi insight",
+    "code": "CATATAN (5 pengguna)                         TEMA                 INSIGHT -> FITUR\n\"Saya selalu pesan es kopi susu\"   (4 org)   menu berulang        Pesan lagi di beranda\n\"Sering salah outlet\"              (2 org)   lokasi               outlet terdekat + konfirmasi\n\"Bingung kapan diambil\"            (3 org)   kepastian waktu      estimasi siap dalam menit"
+   },
+   {
+    "t": "Kasus: moodboard dalam kata-kata",
+    "code": "MOODBOARD · Kopi Kita\nSuasana    : hangat, cepat, ramah\nPalet      : coklat kopi #6F4E37, krem #F5EDE3, hijau daun #2F855A (aksen sukses)\nTipografi  : judul Fraunces (hangat), isi Inter (mudah dibaca di HP)\nFoto       : cahaya pagi, tangan memegang gelas, tanpa latar studio\nContoh UI  : kartu menu bersudut 12, ilustrasi garis sederhana\nHindari    : neon, gradien ungu, foto stok model tersenyum ke kamera"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Merangkum catatan riset cepat menjadi tema",
+    "b": "Tulis setiap catatan wawancara di satu kartu, kelompokkan ke tema (affinity mapping), lalu hitung kartu per tema. Tema terbesar menjadi insight utama.",
+    "code": "TEMA                  KARTU  CATATAN\nKecemasan giliran     6      takut kelewatan dipanggil (3), ingin tahu estimasi jam (2),\n                             datang subuh biar dapat nomor (1)\nDidampingi keluarga   2      anak yang daftarkan (2)\nLiterasi digital      1      tidak paham aplikasi\nAkses terbatas        1      HP sering habis kuota\n\nInsight: pasien datang subuh bukan karena suka, tetapi karena tidak ada kepastian jam giliran.",
+    "lang": "text"
+   }
+  ]
+ },
+ "ui-7-4": {
+  "cx": [
+   {
+    "t": "Memvalidasi semua pasangan warna style guide",
+    "b": "Periksa setiap pasangan teks-latar yang benar-benar dipakai di style guide (misalnya dengan plugin Stark), lalu catat hasilnya di halaman style guide.",
+    "code": "PASANGAN                   RASIO     HASIL\ntext #0F172A di bg          17,85:1   lolos AA\nmuted #475569 di bg          7,58:1   lolos AA\nmuted di surface #F1F5F9     6,92:1   lolos AA\non_primary di primary        5,47:1   lolos AA\ndanger #B91C1C di bg         6,47:1   lolos AA\nprimary #0F766E di surface   5,00:1   lolos AA",
+    "lang": "text"
+   }
+  ]
+ },
+ "ui-7-1": {
+  "exs": [
+   {
+    "t": "Kasus: brief aplikasi laundry kiloan",
+    "code": "BRIEF · Aplikasi Laundry Bersih Kilat\n\nPengguna     : mahasiswa kos di Yogyakarta, mencuci 1-2 kali seminggu\nMasalah      : harus datang dua kali (antar dan cek apakah sudah selesai)\nProblem statement:\n  Mahasiswa kos kesulitan mengetahui kapan cucian selesai karena laundry\n  hanya bisa ditanya lewat telepon, sehingga bolak-balik dengan sia-sia.\nTujuan bisnis: 200 pelanggan aktif aplikasi dalam 2 bulan\nMetrik       : % pesanan dengan notifikasi \"siap diambil\" dibuka, pertanyaan via telepon turun 50%\nPlatform     : web ponsel (tanpa instal)\nBatasan      : 4 minggu, 1 developer, bayar tunai atau QRIS\nDi luar lingkup: antar-jemput, langganan bulanan"
+   },
+   {
+    "t": "Kasus: problem statement lemah vs kuat",
+    "code": "Lemah : \"Aplikasi sekolah kurang bagus.\"\nKuat  : \"Orang tua siswa SD kesulitan mengetahui jadwal ujian anaknya karena\n         pengumuman hanya dibagikan di grup WhatsApp yang ramai, sehingga\n         anak tidak siap saat ujian.\"\nMetrik: % orang tua yang membuka jadwal ujian H-3"
+   }
+  ]
+ },
+ "ui-7-5": {
+  "exs": [
+   {
+    "t": "Kasus: komponen input teks",
+    "code": "Komponen: TextField\n  Properti : State = Default | Focus | Filled | Error | Disabled\n             Ikon kanan = ya | tidak (instance swap: ikon mata, ikon hapus)\n             Teks bantuan = ya | tidak\n  Auto layout: vertikal, gap 4 (label, kolom, teks bantuan); kolom: padding 16 x 14, fill container\n  Token    : garis = color/border/default, garis fokus = color/action/primary (2px),\n             error = color/feedback/danger, radius = radius/md (12)"
+   },
+   {
+    "t": "Kasus: chip kategori yang lebarnya mengikuti teks",
+    "code": "Komponen: Chip kategori\n  Properti : State = Default | Terpilih | Disabled\n             Ikon kiri = ya | tidak\n  Auto layout: horizontal, padding 12 x 8, gap 6, hug contents\n               (label \"Non-kopi\" dan \"Kopi susu gula aren\" tetap rapi)\n  Baris chip : horizontal, gap 8, scroll mendatar di HP\n  Nama layer : Chip/Kategori/Terpilih"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Inventaris komponen dari daftar layar",
+    "b": "Daftar komponen yang muncul di setiap layar, lalu hitung dipakai di berapa layar. Komponen yang paling sering dipakai dibangun lebih dulu.",
+    "code": "LAYAR           KOMPONEN\nLogin           AppBar, TextField, Button, Link\nPilih poli      AppBar, SearchField, ListItem, Chip, BottomNav\nKonfirmasi      AppBar, Card, RadioGroup, Button\nTiket antrean   AppBar, Card, QRCode, Button, Banner, BottomNav\nRiwayat         AppBar, ListItem, EmptyState, BottomNav\n\nDIPAKAI DI      AppBar 5 · Button 3 · BottomNav 3 · ListItem 2 · Card 2 · lainnya 1\nBangun dulu (>= 3 layar): AppBar, Button, BottomNav",
+    "lang": "text"
+   }
+  ]
+ },
+ "ui-7-6": {
+  "exs": [
+   {
+    "t": "Kasus: daftar state layar keranjang",
+    "code": "LAYAR KERANJANG\nIdeal        : 2 item, total Rp 56.000, tombol Bayar aktif\nKosong       : ilustrasi gelas + \"Keranjangmu masih kosong\" + tombol \"Lihat menu\"\nMemuat       : skeleton 3 baris item\nError bayar  : banner merah \"Pembayaran gagal. Saldo tidak terpotong.\" + \"Coba lagi\"\nOffline      : banner abu \"Tidak ada koneksi\" + tombol Bayar nonaktif\nTeks panjang : \"Es Kopi Susu Gula Aren Extra Shot Oat Milk\" dua baris, harga tetap sejajar"
+   },
+   {
+    "t": "Kasus: skenario tugas untuk usability test",
+    "code": "Tugas 1: \"Kamu ingin memesan menu yang sama seperti kemarin untuk diambil\n          di outlet dekat kantor. Silakan pesan.\"\nTugas 2: \"Kamu baru sadar salah pilih outlet. Ganti sebelum membayar.\"\nCatat  : berhasil/tidak, waktu, titik ragu, kutipan peserta\nJangan : menyebut nama tombol atau membantu saat peserta diam"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Matriks state yang wajib ada per layar",
+    "b": "Buat tabel layar x state. Setiap tanda - adalah layar yang belum didesain dan akan membuat developer menebak.",
+    "code": "LAYAR          IDEAL  KOSONG  MEMUAT  ERROR  OFFLINE  TEKS PANJANG\nPilih poli     v      -       v       v      -        v\nTiket antrean  v      -       v       -      v        -\nRiwayat        v      v       v       -      -        -\n\n8 state belum didesain",
+    "lang": "text"
+   }
+  ]
+ },
+ "ui-7-7": {
+  "exs": [
+   {
+    "t": "Kasus: anotasi layar pilih menu",
+    "code": "ANOTASI · Layar Detail menu\n- Pilihan gula: Normal (default) | Kurang | Tanpa; satu pilihan wajib\n- Pilihan es: Normal (default) | Sedikit | Panas; menu panas menyembunyikan pilihan es\n- Harga di tombol berubah langsung saat menambah topping (+Rp 5.000 per topping)\n- Maksimal 3 topping; topping ke-4 nonaktif dengan teks \"Maksimal 3 topping\"\n- Foto menu rasio 1:1, gagal dimuat: latar krem + ikon gelas"
+   },
+   {
+    "t": "Kasus: catatan design QA setelah build",
+    "code": "DESIGN QA · Build 0.4.2 (Android, Samsung A15)\n#  Layar      Desain                      Hasil build                 Tiket\n1  Keranjang  jarak item 16               12                          KK-88\n2  Beranda    judul 20 semibold           20 regular                  KK-89\n3  Bayar      tombol di atas keyboard     tertutup keyboard           KK-90 (prioritas)\n4  Semua      fokus keyboard terlihat     tidak ada outline           KK-91"
+   }
+  ]
+ },
+ "ui-8-1": {
+  "exs": [
+   {
+    "t": "Kasus: ringkasan studi kasus yang terlalu umum vs jelas",
+    "code": "Terlalu umum : \"Redesign aplikasi kopi. Saya membuat UI yang modern dan clean.\"\nJelas        : \"UI/UX Designer (solo) · 6 minggu · Figma.\n                Merancang ulang alur pesan agar waktu pesan turun dari 94 ke 48 detik\n                (proyek konsep, diuji dengan 5 peserta).\""
+   },
+   {
+    "t": "Kasus: menjelaskan satu keputusan desain",
+    "code": "KEPUTUSAN · Gula dan es tampil langsung di detail menu\nSebelum : tersembunyi di \"Lainnya\", 4 dari 5 peserta tidak menemukannya\nPilihan : (a) tetap di \"Lainnya\"  (b) tampil langsung  (c) ditanya setelah tambah ke keranjang\nDipilih : (b) karena dua pilihan ini diubah di 70% pesanan\nBukti   : putaran kedua 5/5 peserta berhasil, waktu turun 22 detik"
+   }
+  ]
+ },
+ "ui-8-3": {
+  "exs": [
+   {
+    "t": "Kasus: memilih platform untuk tiga keperluan",
+    "code": "KEPERLUAN                          PLATFORM\nTautan utama di CV dan lamaran     situs pribadi (Framer atau buatan sendiri)\nStudi kasus panjang + komunitas    Behance\nRingkasan + tautan untuk perekrut  profil LinkedIn (bagian Featured)\nDikirim saat diminta HR            PDF 10-15 halaman, < 10 MB"
+   },
+   {
+    "t": "Kasus: memperbaiki kesalahan umum",
+    "code": "Kesalahan                                   Perbaikan\nHanya layar akhir yang cantik               tambah masalah, proses, dan alasan keputusan\n\"Redesign Gojek\" tanpa riset                ganti dengan proyek berbasis wawancara nyata\n\"Konversi naik 200%\" tanpa sumber           tulis \"hasil uji 5 peserta\" atau hapus angka\nDesain klien NDA ditampilkan utuh           samarkan nama/logo atau minta izin tertulis"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Cek cepat kesalahan umum portofolio",
+    "b": "Jawab ya/tidak untuk setiap butir, hitung skornya, lalu kerjakan yang masih tidak.",
+    "code": "[x] ada ringkasan hasil di atas setiap studi kasus\n[x] peran pribadi dijelaskan\n[ ] minimal 1 proyek dengan riset pengguna nyata\n[x] proyek konsep diberi label \"konsep\"\n[ ] gambar < 500 KB dan berformat modern\n[x] kontras teks lolos AA\n[x] tautan prototipe berfungsi\n\nSkor 5/7\n  Perbaiki: minimal 1 proyek dengan riset pengguna nyata\n  Perbaiki: gambar < 500 KB dan berformat modern",
+    "lang": "text"
+   }
+  ]
+ },
+ "ui-2-3": {
+  "cx": [
+   {
+    "t": "Pengaturan teks artikel yang nyaman dibaca",
+    "b": "",
+    "lang": "css",
+    "code": ".artikel p {\n  font-size: 1rem;\n  line-height: 1.6;\n  max-width: 65ch;              /* ± 65 karakter per baris */\n  text-wrap: pretty;            /* kurangi kata yatim di akhir paragraf */\n}\n.artikel h1 { font-size: 2.25rem; line-height: 1.15; letter-spacing: -0.02em; text-wrap: balance; }\n.eyebrow    { font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; }"
+   }
+  ]
+ },
+ "ui-4-4": {
+  "cx": [
+   {
+    "t": "Dialog konfirmasi dengan elemen <dialog> bawaan",
+    "b": "Atribut commandfor dan command membuka dialog sebagai modal tanpa skrip: fokus terkunci di dalam dialog dan Esc menutupnya. Tombol di dalam form method=\"dialog\" menutup dialog dan mengirim nilainya.",
+    "lang": "html",
+    "code": "<button class=\"btn-danger\" commandfor=\"konfirmasi\" command=\"show-modal\">Hapus alamat</button>\n\n<dialog id=\"konfirmasi\" aria-labelledby=\"judul-k\">\n  <h2 id=\"judul-k\">Hapus alamat \"Rumah\"?</h2>\n  <p>Alamat ini tidak bisa dipulihkan. Pesanan yang sedang berjalan tidak terpengaruh.</p>\n  <form method=\"dialog\" class=\"aksi\">\n    <button value=\"batal\" autofocus>Batal</button>\n    <button value=\"hapus\" class=\"btn-danger\">Hapus</button>\n  </form>\n</dialog>"
+   }
+  ]
+ }
+}

@@ -1,0 +1,373 @@
+{
+ "git-1-1": {
+  "exs": [
+   {
+    "t": "Kasus: memeriksa identitas yang sudah tersimpan",
+    "code": "$ git config user.name\nSari Wulandari\n$ git config user.email\nsari@contoh.id\n$ git config --global --list\nuser.name=Sari Wulandari\nuser.email=sari@contoh.id\ninit.defaultbranch=main",
+    "d": "Tanpa nilai baru, git config hanya membaca pengaturan yang ada."
+   },
+   {
+    "t": "Kasus: mengganti email di laptop kantor",
+    "code": "$ git config --global user.email \"budi.santoso@kantor.co.id\"\n$ git config user.email\nbudi.santoso@kantor.co.id",
+    "d": "Menulis ulang kunci yang sama akan mengganti nilainya."
+   },
+   {
+    "t": "Kasus: memilih editor untuk menulis pesan",
+    "code": "$ git config --global core.editor \"code --wait\"\n$ git config --global core.editor\ncode --wait",
+    "d": "Git membuka editor ini saat butuh teks panjang darimu."
+   }
+  ]
+ },
+ "git-1-2": {
+  "exs": [
+   {
+    "t": "Kasus: semua perubahan sudah tersimpan",
+    "code": "$ git status\nOn branch main\nnothing to commit, working tree clean",
+    "d": "Working tree clean berarti tidak ada yang berubah sejak commit terakhir."
+   },
+   {
+    "t": "Kasus: status ringkas dua kolom",
+    "code": "$ git status -s\nM  index.html\n M gaya.css\n?? logo.svg\n\n# kolom kiri  = staging area   (M = sudah dipilih untuk commit)\n# kolom kanan = working directory (M = diubah, belum dipilih)\n# ??          = berkas baru yang belum dilacak"
+   },
+   {
+    "t": "Kasus: folder foto baru yang belum dilacak",
+    "code": "$ git status\nOn branch main\nUntracked files:\n  (use \"git add <file>...\" to include in what will be committed)\n        foto-produk/\n\nnothing added to commit but untracked files present",
+    "d": "Git menampilkan folder baru sebagai satu baris sampai isinya dilacak."
+   }
+  ]
+ },
+ "git-2-1": {
+  "exs": [
+   {
+    "t": "Kasus: catatan resep warung dalam repositori",
+    "code": "$ mkdir resep-warung && cd resep-warung\n$ git init\nInitialized empty Git repository in /home/dimas/resep-warung/.git/\n\n$ echo \"# Nasi goreng kampung\" > resep.md\n$ git add resep.md\n$ git commit -m \"docs: resep nasi goreng kampung\"\n[main (root-commit) 8b21f0d] docs: resep nasi goreng kampung\n 1 file changed, 1 insertion(+)\n create mode 100644 resep.md"
+   },
+   {
+    "t": "Kasus: memasukkan beberapa berkas sekaligus",
+    "code": "$ git status -s\n?? gaya.css\n?? kontak.html\n$ git add .\n$ git status -s\nA  gaya.css\nA  kontak.html\n$ git commit -m \"feat: halaman kontak dan gaya dasar\"\n[main 5c2d9e1] feat: halaman kontak dan gaya dasar\n 2 files changed, 18 insertions(+)",
+    "d": "Titik berarti semua perubahan di folder ini."
+   },
+   {
+    "t": "Kasus: commit kedua setelah mengubah berkas",
+    "code": "$ echo \"<p>Jl. Malioboro 12, Yogyakarta</p>\" >> index.html\n$ git add index.html\n$ git commit -m \"feat: alamat toko di halaman awal\"\n[main a71be04] feat: alamat toko di halaman awal\n 1 file changed, 1 insertion(+)",
+    "d": "Alurnya sama untuk setiap perubahan: ubah, add, commit."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Commit dengan pesan Conventional Commits",
+    "b": "Awalan feat, fix, docs, atau chore di depan pesan memberi tahu jenis perubahan; teks dalam kurung menyebut bagian yang diubah.",
+    "code": "git add src/keranjang.js\ngit commit -m \"feat(keranjang): hitung ongkir berdasarkan berat\"",
+    "lang": "bash",
+    "out": "[main 7c1e9a2] feat(keranjang): hitung ongkir berdasarkan berat\n 1 file changed, 14 insertions(+), 2 deletions(-)"
+   }
+  ]
+ },
+ "git-2-2": {
+  "exs": [
+   {
+    "t": "Kasus: siapa dan kapan sebuah commit dibuat",
+    "code": "$ git log -2\ncommit a71be04c9e1f... (HEAD -> main)\nAuthor: Sari Wulandari <sari@contoh.id>\nDate:   Mon Nov 23 09:14:02 2026 +0700\n\n    style: warna tombol beli\n\ncommit 5c2d9e1a7b30...\nAuthor: Dimas Pratama <dimas@contoh.id>\nDate:   Sat Nov 21 16:40:55 2026 +0700\n\n    feat: daftar produk"
+   },
+   {
+    "t": "Kasus: memeriksa isi staging sebelum commit",
+    "code": "$ git add README.md\n$ git diff --staged\ndiff --git a/README.md b/README.md\n@@ -1,2 +1,3 @@\n # Toko Nusantara\n Toko online produk UMKM.\n+Ongkir gratis untuk pembelian di atas Rp 100.000.",
+    "d": "Tanpa --staged, git diff kosong karena perubahannya sudah di staging."
+   },
+   {
+    "t": "Kasus: melihat berkas yang berubah di satu commit",
+    "code": "$ git show 5c2d9e1 --stat\ncommit 5c2d9e1a7b30...\nAuthor: Dimas Pratama <dimas@contoh.id>\n\n    feat: daftar produk\n\n produk.html | 24 ++++++++++++++++++++++++\n gaya.css    |  6 ++++++\n 2 files changed, 30 insertions(+)"
+   }
+  ]
+ },
+ "git-2-3": {
+  "exs": [
+   {
+    "t": "Kasus: tugas kuliah dengan Python",
+    "code": "# lingkungan virtual dan cache Python\n.venv/\n__pycache__/\n*.pyc\n\n# data pribadi responden survei\ndata/mentah/*.csv\n\n# kata sandi database\n.env"
+   },
+   {
+    "t": "Kasus: pengecualian dengan tanda !",
+    "code": "# abaikan semua log, tapi folder logs/ tetap ada di repositori\nlogs/*\n!logs/.gitkeep\n\n# abaikan PDF hasil ekspor, kecuali panduan resmi\n*.pdf\n!docs/panduan-pengguna.pdf",
+    "d": "Baris ! harus ditulis setelah pola yang ia kecualikan."
+   },
+   {
+    "t": "Kasus: memeriksa apakah berkas benar-benar diabaikan",
+    "code": "$ git status -s\n?? .gitignore\n$ git check-ignore -v .env node_modules/\n.gitignore:6:.env\t.env\n.gitignore:2:node_modules/\tnode_modules/",
+    "d": ".env tidak muncul di status karena cocok dengan baris 6 di .gitignore."
+   }
+  ]
+ },
+ "git-2-4": {
+  "exs": [
+   {
+    "t": "Kasus: salah edit harga, kembalikan ke commit terakhir",
+    "code": "$ git status -s\n M harga.csv\n$ git restore harga.csv\n$ git status\nOn branch main\nnothing to commit, working tree clean"
+   },
+   {
+    "t": "Kasus: berkas .env terlanjur di-stage",
+    "code": "$ git add .\n$ git status -s\nA  .env\nM  index.html\n$ git restore --staged .env\n$ git status -s\nM  index.html\n?? .env",
+    "d": "Isi .env tidak hilang, hanya batal ikut commit. Setelah itu tambahkan .env ke .gitignore."
+   },
+   {
+    "t": "Kasus: pesan commit salah ketik, belum dikirim ke mana-mana",
+    "code": "$ git log --oneline -1\nc4e8b21 (HEAD -> main) feat: tombol bli\n$ git reset --soft HEAD~1\n$ git commit -m \"feat: tombol beli\"\n[main d93a6f0] feat: tombol beli\n 1 file changed, 4 insertions(+)"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Membatalkan commit yang sudah di-push dengan aman",
+    "code": "git revert 7c1e9a2 --no-edit\ngit log --oneline -2",
+    "lang": "bash",
+    "out": "b40d2c9 (HEAD -> main) Revert \"feat(keranjang): hitung ongkir berdasarkan berat\"\n7c1e9a2 feat(keranjang): hitung ongkir berdasarkan berat"
+   },
+   {
+    "t": "Menemukan commit yang hilang setelah reset",
+    "b": "reflog mencatat setiap pergerakan HEAD, termasuk commit yang sudah tidak terlihat di git log. Kembalikan dengan reset ke hash yang tercatat.",
+    "code": "git reflog -3\ngit reset --hard 9e2f1aa\ngit log --oneline -2",
+    "lang": "bash",
+    "out": "3f0b5d1 HEAD@{0}: reset: moving to HEAD~2\n9e2f1aa HEAD@{1}: commit: feat: validasi kode kupon\n4b77c02 HEAD@{2}: commit: feat: tabel kupon\nHEAD is now at 9e2f1aa feat: validasi kode kupon\n9e2f1aa (HEAD -> main) feat: validasi kode kupon\n4b77c02 feat: tabel kupon"
+   }
+  ]
+ },
+ "git-2-5": {
+  "code": "git log --oneline -3\ngit tag -a v1.4.0 -m \"Fitur filter harga\"\ngit tag --list \"v1.*\"\ngit show v1.4.0 --stat\n\n# contoh urutan versi\n# 1.3.2 -> 1.3.3   perbaikan bug total keranjang      (PATCH)\n# 1.3.3 -> 1.4.0   fitur filter harga                 (MINOR)\n# 1.4.0 -> 2.0.0   format API /pesanan diubah         (MAYOR)",
+  "exs": [
+   {
+    "t": "Kasus: menandai commit lama yang terlewat",
+    "code": "$ git log --oneline -4\ne02f7aa (HEAD -> main) feat: filter harga\nb7c1d40 fix: total keranjang saat jumlah 0\n5c2d9e1 feat: daftar produk\n3f9a1c2 feat: halaman awal toko\n$ git tag -a v1.3.3 b7c1d40 -m \"Perbaikan total keranjang\"\n$ git tag --list\nv1.3.2\nv1.3.3",
+    "d": "Tulis hash di belakang nama tag untuk menandai commit selain HEAD."
+   },
+   {
+    "t": "Kasus: menentukan nomor versi berikutnya",
+    "code": "# versi sekarang: 2.1.4\n# isi rilis berikutnya:\n#   fix: format tanggal invoice          -> cukup PATCH: 2.1.5\n#   feat: ekspor laporan ke PDF          -> MINOR: 2.2.0 (fitur baru, kompatibel)\n#   endpoint /v1/produk dihapus          -> MAYOR: 3.0.0 (merusak klien lama)\n# pilih yang tertinggi: 3.0.0\ngit tag -a v3.0.0 -m \"Rilis 3.0.0: hapus API /v1/produk\"",
+    "d": "Satu rilis memakai kenaikan tertinggi dari semua perubahannya."
+   },
+   {
+    "t": "Kasus: salah menulis nama tag",
+    "code": "$ git tag -a v1.40 -m \"Fitur filter harga\"\n$ git tag -d v1.40\nDeleted tag 'v1.40' (was 6a2f9c1)\n$ git tag -a v1.4.0 -m \"Fitur filter harga\"",
+    "d": "Hapus dan buat ulang tag selama tag itu belum dibagikan ke orang lain."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Membuat tag rilis dan membaca posisinya",
+    "b": "git describe menyebut tag terdekat. Setelah ada commit baru, ia menambahkan jumlah commit sejak tag dan hash singkat, berguna untuk menamai build percobaan.",
+    "code": "git tag -a v1.4.0 -m \"Rilis 1.4.0: kupon diskon\"\ngit describe --tags\n# ... dua commit perbaikan kemudian ...\ngit describe --tags",
+    "lang": "bash",
+    "out": "v1.4.0\nv1.4.0-2-g9d0e3f7"
+   }
+  ]
+ },
+ "git-3-1": {
+  "exs": [
+   {
+    "t": "Kasus: melihat dan berpindah cabang",
+    "code": "$ git branch\n  fitur-kupon\n* main\n$ git switch fitur-kupon\nSwitched to branch 'fitur-kupon'\n$ git branch\n* fitur-kupon\n  main",
+    "d": "Tanda * menunjukkan cabang yang sedang aktif."
+   },
+   {
+    "t": "Kasus: merge commit karena main juga berubah",
+    "code": "$ git switch main\n$ git merge fitur-ongkir -m \"Merge cabang fitur-ongkir\"\nMerge made by the 'ort' strategy.\n ongkir.js | 12 ++++++++++++\n 1 file changed, 12 insertions(+)\n$ git log --oneline --graph -4\n*   f81c2a0 (HEAD -> main) Merge cabang fitur-ongkir\n|\\\n| * 2d4e6b1 (fitur-ongkir) feat: ongkir per kota\n* | 9a3c7d5 fix: teks tombol checkout\n|/\n* c4e8b21 feat: tombol tambah ke keranjang",
+    "d": "Kedua cabang punya commit baru, jadi Git membuat commit dengan dua induk."
+   },
+   {
+    "t": "Kasus: cabang percobaan yang dibuang",
+    "code": "$ git switch -c coba-tema-gelap\n$ git commit -am \"coba: latar gelap\"\n$ git switch main\n$ git branch -d coba-tema-gelap\nerror: the branch 'coba-tema-gelap' is not fully merged.\n$ git branch -D coba-tema-gelap\nDeleted branch coba-tema-gelap (was 7e1b3c9).",
+    "d": "-d menolak menghapus cabang yang belum digabung; -D memaksa karena percobaannya memang dibuang."
+   }
+  ]
+ },
+ "git-3-2": {
+  "exs": [
+   {
+    "t": "Kasus: konflik harga di berkas data",
+    "code": "<<<<<<< HEAD\nKopi Gayo 250 g,85000\n=======\nKopi Gayo 250 g,89000\n>>>>>>> perbarui-harga\n\n# diskusi dengan pemilik toko: harga baru berlaku mulai bulan ini\nKopi Gayo 250 g,89000\n\n$ git add harga.csv\n$ git commit -m \"merge: harga baru Kopi Gayo\""
+   },
+   {
+    "t": "Kasus: kedua perubahan sama-sama dipakai",
+    "code": "<<<<<<< HEAD\n.tombol { background: #b4532a; }\n=======\n.tombol { border-radius: 12px; }\n>>>>>>> fitur-sudut-bulat\n\n# keduanya benar, jadi digabung:\n.tombol { background: #b4532a; border-radius: 12px; }"
+   },
+   {
+    "t": "Kasus: membaca status saat konflik dan membatalkan merge",
+    "code": "$ git status\nOn branch main\nYou have unmerged paths.\n  (fix conflicts and run \"git commit\")\n  (use \"git merge --abort\" to abort the merge)\nUnmerged paths:\n        both modified:   index.html\n\n$ git merge --abort      # kembali ke keadaan sebelum merge"
+   }
+  ]
+ },
+ "git-3-3": {
+  "exs": [
+   {
+    "t": "Kasus: memberi nama stash dan memilih yang dipakai",
+    "code": "$ git stash push -m \"form alamat setengah jadi\"\n$ git stash list\nstash@{0}: On fitur-alamat: form alamat setengah jadi\nstash@{1}: WIP on main: c4e8b21 feat: tombol tambah ke keranjang\n$ git stash apply stash@{0}\n$ git stash drop stash@{0}\nDropped stash@{0}",
+    "d": "apply mengembalikan isi tanpa menghapus stash; pop = apply + drop."
+   },
+   {
+    "t": "Kasus: rebase berhenti karena konflik",
+    "code": "$ git rebase main\nCONFLICT (content): Merge conflict in ongkir.js\nerror: could not apply 2d4e6b1... feat: ongkir per kota\n# edit ongkir.js sampai benar, lalu:\n$ git add ongkir.js\n$ git rebase --continue\nSuccessfully rebased and updated refs/heads/fitur-ongkir.",
+    "d": "Kalau ragu, git rebase --abort mengembalikan cabang seperti semula."
+   },
+   {
+    "t": "Kasus: riwayat sebelum dan sesudah rebase",
+    "code": "# sebelum: cabang dibuat dari commit lama\n$ git log --oneline --graph --all -4\n* 9a3c7d5 (main) fix: teks tombol checkout\n| * 2d4e6b1 (HEAD -> fitur-ongkir) feat: ongkir per kota\n|/\n* c4e8b21 feat: tombol tambah ke keranjang\n\n$ git rebase main\n\n# sesudah: lurus, hash commit fitur berubah\n$ git log --oneline --graph -3\n* 5f0a8e2 (HEAD -> fitur-ongkir) feat: ongkir per kota\n* 9a3c7d5 (main) fix: teks tombol checkout\n* c4e8b21 feat: tombol tambah ke keranjang"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Memperbarui cabang fitur dengan main terbaru",
+    "b": "Simpan dulu pekerjaan yang belum selesai, pindahkan cabang ke atas main terbaru, lalu kembalikan pekerjaanmu.",
+    "code": "git stash push -m \"setengah jadi\"\ngit rebase main\ngit stash pop",
+    "lang": "bash",
+    "out": "Saved working directory and index state On fitur/kupon: setengah jadi\nSuccessfully rebased and updated refs/heads/fitur/kupon.\nOn branch fitur/kupon\nChanges not staged for commit:\n\tmodified:   src/kupon.js\nDropped refs/stash@{0}"
+   }
+  ]
+ },
+ "git-3-4": {
+  "code": "# GitHub Flow sehari-hari (versi lokal; push dan pull request dibahas di modul berikutnya)\ngit switch main\ngit switch -c fitur/filter-harga      # nama cabang: jenis/ringkasan\n# ... ubah kode, commit kecil-kecil ...\ngit commit -am \"feat: filter harga minimum\"\ngit commit -am \"test: filter harga saat harga 0\"\n# setelah ditinjau rekan:\ngit switch main\ngit merge fitur/filter-harga\ngit branch -d fitur/filter-harga",
+  "exs": [
+   {
+    "t": "Kasus: nama cabang yang mudah dibaca tim",
+    "code": "$ git switch -c perbaikan/total-keranjang-nol\n$ git switch main && git switch -c docs/cara-instalasi\n$ git switch main && git switch -c fitur/kupon-ongkir\n$ git branch\n  docs/cara-instalasi\n  fitur/kupon-ongkir\n* main\n  perbaikan/total-keranjang-nol",
+    "d": "Awalan jenis pekerjaan membuat daftar cabang langsung bisa dipahami."
+   },
+   {
+    "t": "Kasus: trunk-based dengan feature flag",
+    "code": "# pagi: cabang kecil, fitur kupon belum selesai tapi aman digabung\ngit switch -c fitur/kupon\ngit commit -am \"feat: hitung diskon kupon (disembunyikan, KUPON_AKTIF=false)\"\n# siang: digabung ke main di hari yang sama\ngit switch main\ngit merge fitur/kupon\ngit branch -d fitur/kupon\n# pengguna belum melihat kupon sampai flag diubah menjadi true",
+    "d": "Kode masuk main setiap hari; fitur dinyalakan belakangan lewat flag."
+   },
+   {
+    "t": "Kasus: hotfix ala Git Flow untuk rilis berversi",
+    "code": "git switch -c hotfix/1.4.1 v1.4.0     # mulai dari tag rilis yang bermasalah\ngit commit -am \"fix: aplikasi kasir crash saat stok kosong\"\ngit tag -a v1.4.1 -m \"Hotfix stok kosong\"\ngit switch main\ngit merge hotfix/1.4.1\ngit branch -d hotfix/1.4.1",
+    "d": "Perbaikan dimulai dari tag rilis agar fitur yang belum siap tidak ikut."
+   }
+  ]
+ },
+ "git-4-1": {
+  "exs": [
+   {
+    "t": "Kasus: memeriksa remote yang terhubung",
+    "code": "$ git remote -v\norigin  git@github.com:sariw/toko-nusantara.git (fetch)\norigin  git@github.com:sariw/toko-nusantara.git (push)"
+   },
+   {
+    "t": "Kasus: fetch dulu, periksa, baru gabung",
+    "code": "$ git fetch\n$ git log --oneline main..origin/main\ne02f7aa docs: cara menjalankan proyek\n$ git merge origin/main\nUpdating c4e8b21..e02f7aa\nFast-forward\n README.md | 12 ++++++++++++",
+    "d": "fetch aman: cabangmu belum berubah sampai kamu memutuskan untuk merge."
+   },
+   {
+    "t": "Kasus: push ditolak karena remote lebih baru",
+    "code": "$ git push\n ! [rejected]        main -> main (fetch first)\nerror: failed to push some refs to 'github.com:sariw/toko-nusantara.git'\nhint: Updates were rejected because the remote contains work that you do not have locally.\n$ git pull\n$ git push\nTo github.com:sariw/toko-nusantara.git\n   e02f7aa..f81c2a0  main -> main",
+    "d": "Ambil dulu commit rekan, baru kirim commitmu."
+   }
+  ]
+ },
+ "git-4-2": {
+  "exs": [
+   {
+    "t": "Kasus: memperbarui PR setelah direview",
+    "code": "# reviewer meminta nama variabel diperjelas\n$ git switch tambah-bahasa-sunda\n$ git commit -am \"refactor: nama variabel kosakata lebih jelas\"\n$ git push\nTo github.com:sariw/kamus-daerah.git\n   4a1c2e0..8d7f3b9  tambah-bahasa-sunda -> tambah-bahasa-sunda\n# PR yang sama otomatis berisi commit baru ini",
+    "d": "Tidak perlu membuka PR baru; push ke cabang yang sama."
+   },
+   {
+    "t": "Kasus: menyelaraskan main di fork dengan proyek asal",
+    "code": "$ git switch main\n$ git fetch upstream\n$ git merge upstream/main\nFast-forward\n$ git push origin main",
+    "d": "origin = fork milikmu, upstream = proyek asal."
+   },
+   {
+    "t": "Kasus: mencoba PR rekan di laptop sendiri",
+    "code": "$ gh pr checkout 57\nSwitched to branch 'fix/keranjang-nol'\n$ npm test\n  ✓ keranjang menghapus item berjumlah 0\n$ gh pr review 57 --approve --body \"Sudah dicoba lokal, tes lulus.\""
+   }
+  ],
+  "cx": [
+   {
+    "t": "Membuat PR dari terminal dengan GitHub CLI",
+    "code": "gh pr create --base main --title \"feat: kupon diskon\" --body \"Menambah kupon diskon di keranjang. Cara uji: tambahkan kupon HARBOLNAS di keranjang.\"\ngh pr checks",
+    "lang": "bash",
+    "out": "https://github.com/sari/toko/pull/57\nAll checks were successful\n✓  build   1m12s\n✓  test    2m03s"
+   }
+  ]
+ },
+ "git-4-3": {
+  "exs": [
+   {
+    "t": "Kasus: issue permintaan fitur",
+    "code": "Judul: Filter produk berdasarkan asal daerah\n\nMasalah: pembeli dari Medan ingin mencari produk khas Sumatra,\ntapi harus menggulir 200 produk.\nUsulan: pilihan \"Asal daerah\" di halaman katalog.\nSelesai bila: filter bisa digabung dengan filter harga.\n\nLabel: fitur, katalog"
+   },
+   {
+    "t": "Kasus: satu PR menutup dua issue",
+    "code": "PR #61: fix: validasi kupon dan ongkir di checkout\n\nCloses #44\nCloses #47\n\nPerubahan:\n- kupon kedaluwarsa ditolak dengan pesan yang jelas\n- ongkir dihitung ulang saat alamat diganti",
+    "d": "Tulis kata kunci di setiap baris agar kedua issue ikut tertutup."
+   },
+   {
+    "t": "Kasus: papan proyek untuk satu sprint",
+    "code": "Project: Toko Nusantara - Sprint 12\n\nTodo              In progress          Done\n#47 ongkir ulang  #44 kupon kedaluwarsa  #42 total keranjang 0\n#50 filter asal   (Dimas)                #39 logo baru\n#52 dark mode\n\nAturan: maksimal 2 kartu \"In progress\" per orang"
+   }
+  ]
+ },
+ "git-5-1": {
+  "exs": [
+   {
+    "t": "Kasus: README profil GitHub",
+    "code": "# Halo, saya Rina\n\nMahasiswa Sistem Informasi, sedang belajar web dan desain antarmuka.\n\n- Sedang mengerjakan: [Toko Nusantara](https://github.com/rinas/toko-nusantara)\n- Belajar: Git, JavaScript, Figma\n- Kontak: rina@contoh.id"
+   },
+   {
+    "t": "Kasus: README tugas kelompok",
+    "code": "# Aplikasi Presensi Kelas\n\nTugas besar mata kuliah Rekayasa Perangkat Lunak, kelompok 4.\n\n## Anggota\n| Nama            | NIM       | Bagian        |\n|-----------------|-----------|---------------|\n| Andi Wijaya     | 220101001 | backend       |\n| Putu Ayu Lestari| 220101014 | desain UI     |\n| Fajar Nugroho   | 220101022 | dokumentasi   |\n\n## Menjalankan\n1. Salin `.env.example` menjadi `.env`\n2. Jalankan `npm install` lalu `npm run dev`"
+   },
+   {
+    "t": "Kasus: bagian kontribusi dengan tautan dan blok kode",
+    "code": "## Berkontribusi\n\n1. Baca [panduan kontribusi](CONTRIBUTING.md)\n2. Buat cabang baru dari `main`\n3. Pastikan tes lulus:\n\n```bash\nnpm test\n```\n\nLihat juga [daftar issue untuk pemula](https://github.com/sariw/toko-nusantara/labels/good%20first%20issue)."
+   }
+  ]
+ },
+ "git-5-2": {
+  "exs": [
+   {
+    "t": "Kasus: menerbitkan situs statis ke GitHub Pages",
+    "code": "# .github/workflows/pages.yml\nname: Terbitkan situs\non:\n  push:\n    branches: [main]\npermissions:\n  contents: read\n  pages: write\n  id-token: write\njobs:\n  deploy:\n    runs-on: ubuntu-latest\n    environment: github-pages\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/upload-pages-artifact@v3\n        with:\n          path: .\n      - uses: actions/deploy-pages@v4"
+   },
+   {
+    "t": "Kasus: tes Python di setiap pull request",
+    "code": "# .github/workflows/tes-python.yml\nname: Tes Python\non: [pull_request]\njobs:\n  tes:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-python@v5\n        with:\n          python-version: \"3.13\"\n      - run: pip install -r requirements.txt\n      - run: pytest"
+   },
+   {
+    "t": "Kasus: memeriksa tautan rusak setiap pagi",
+    "code": "# .github/workflows/cek-tautan.yml\nname: Cek tautan\non:\n  schedule:\n    - cron: \"0 23 * * *\"     # 06.00 WIB (cron memakai UTC)\n  workflow_dispatch:          # bisa juga dijalankan manual\njobs:\n  cek:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - run: npx linkinator . --recurse",
+    "d": "Selain push dan PR, workflow bisa dipicu jadwal."
+   }
+  ]
+ },
+ "git-5-3": {
+  "exs": [
+   {
+    "t": "Kasus: Dependabot memeriksa paket npm setiap minggu",
+    "code": "# .github/dependabot.yml\nversion: 2\nupdates:\n  - package-ecosystem: \"npm\"\n    directory: \"/\"\n    schedule:\n      interval: \"weekly\"\n  - package-ecosystem: \"github-actions\"\n    directory: \"/\"\n    schedule:\n      interval: \"monthly\""
+   },
+   {
+    "t": "Kasus: CODEOWNERS mewajibkan review tim tertentu",
+    "code": "# .github/CODEOWNERS\n*                    @toko-nusantara/inti\n/src/pembayaran/     @toko-nusantara/pembayaran\n/.github/workflows/  @toko-nusantara/devops\n\n# aturan cabang: [x] Require review from Code Owners",
+    "d": "Perubahan di folder pembayaran tidak bisa digabung tanpa persetujuan tim pembayaran."
+   },
+   {
+    "t": "Kasus: token deploy dari Secrets",
+    "code": "# Settings → Secrets and variables → Actions → New repository secret\n#   Nama : NETLIFY_TOKEN\n\n# di workflow\n- run: npx netlify deploy --prod --dir=dist\n  env:\n    NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_TOKEN }}\n\n# di log Actions nilainya tampil sebagai ***"
+   }
+  ]
+ },
+ "git-5-4": {
+  "exs": [
+   {
+    "t": "Kasus: bisect manual pada halaman checkout",
+    "code": "$ git bisect start\n$ git bisect bad\n$ git bisect good v1.3.0\nBisecting: 15 revisions left to test after this (roughly 4 steps)\n[6c1a9e3] feat: kupon ongkir\n# buka checkout di browser: total masih benar\n$ git bisect good\nBisecting: 7 revisions left to test after this (roughly 3 steps)\n[b20f7d4] refactor: rumus pajak\n# total salah\n$ git bisect bad\n...\nb20f7d4 is the first bad commit\n$ git bisect reset"
+   },
+   {
+    "t": "Kasus: skrip pemeriksa untuk bisect run",
+    "code": "$ cat cek-judul.sh\n#!/bin/sh\n# keluar 0 (baik) bila judul toko masih ada, 1 (buruk) bila hilang\ngrep -q \"<h1>Toko Nusantara</h1>\" index.html\n\n$ chmod +x cek-judul.sh\n$ git bisect start HEAD v1.3.0\n$ git bisect run ./cek-judul.sh\n...\ne3d4c5b is the first bad commit\n$ git bisect reset",
+    "d": "bisect run membaca kode keluar skrip: 0 baik, 1 sampai 127 buruk."
+   },
+   {
+    "t": "Kasus: melewati commit yang tidak bisa diuji",
+    "code": "$ git bisect start HEAD v2.0.0\nBisecting: 10 revisions left to test after this (roughly 3 steps)\n[91aa0c2] wip: migrasi database\n# commit ini tidak bisa dijalankan sama sekali\n$ git bisect skip\nBisecting: 10 revisions left to test after this (roughly 3 steps)\n[4f7e2b8] feat: laporan bulanan",
+    "d": "skip membuat Git memilih commit lain di dekatnya."
+   }
+  ]
+ }
+}

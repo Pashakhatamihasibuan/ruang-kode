@@ -1,0 +1,150 @@
+{
+ "aturan": [
+  [
+   "tipe array dan tuple",
+   ":\\s*\\w+\\[\\]|:\\s*\\[\\s*(\\w+\\??:\\s*)?(string|number|boolean|bigint)\\b",
+   "^Primitif, array & tuple"
+  ],
+  [
+   "bigint",
+   "\\b\\d+n\\b|\\bbigint\\b",
+   "^Primitif, array & tuple"
+  ],
+  [
+   "type alias",
+   "^\\s*(export\\s+)?type\\s+\\w+(<[^=]*>)?\\s*=",
+   "^Objek, literal & enum"
+  ],
+  [
+   "literal / union type",
+   "(:|=)\\s*(\\\"[^\\\"\\n]*\\\"|'[^'\\n]*'|\\w+(\\[\\])?)\\s*\\|\\s*(\\\"|'|\\w)",
+   "^Objek, literal & enum"
+  ],
+  [
+   "properti opsional (?:)",
+   "\\b\\w+\\?:",
+   "^Objek, literal & enum"
+  ],
+  [
+   "readonly",
+   "\\breadonly\\b",
+   "^Objek, literal & enum"
+  ],
+  [
+   "enum",
+   "\\benum\\s+\\w+\\s*\\{",
+   "^Objek, literal & enum"
+  ],
+  [
+   "any/unknown/never/void",
+   ":\\s*(unknown|never|void|any)\\b|<(unknown|any)>|\\bas\\s+(unknown|any)\\b|\\b(unknown|any)\\[\\]",
+   "^any, unknown"
+  ],
+  [
+   "tipe fungsi",
+   "\\btype\\s+\\w+(<[^>]*>)?\\s*=\\s*\\(|:\\s*\\(\\w*\\??:?\\s*[^()]*\\)\\s*=>\\s*(number|string|boolean|void|unknown|\\w+\\[\\]|[A-Z]\\w*)\\s*[;,)=]",
+   "^Menulis tipe fungsi"
+  ],
+  [
+   "overload",
+   "^\\s*(export\\s+)?function\\s+\\w+(<[^>]*>)?\\([^)]*\\)\\s*:\\s*[^{]*;\\s*$",
+   "^Overload fungsi"
+  ],
+  [
+   "interface",
+   "\\binterface\\s+\\w+",
+   "^Interface & extends"
+  ],
+  [
+   "intersection (&)",
+   "\\btype\\s+\\w+[^=\\n]*=[^;\\n]*[\\w}]\\s*&\\s*[\\w{]",
+   "^Type alias, union & intersection"
+  ],
+  [
+   "type predicate (is)",
+   "\\)\\s*:\\s*\\w+\\s+is\\s+\\w",
+   "^Type guard"
+  ],
+  [
+   "as (type assertion)",
+   "^(?!\\s*(import|export)\\b).*[\\w)\\]]\\s+as\\s+(?!const\\b)[A-Za-z{\\[(]",
+   "^as, as const"
+  ],
+  [
+   "as const",
+   "\\bas\\s+const\\b",
+   "^as, as const"
+  ],
+  [
+   "satisfies",
+   "\\bsatisfies\\b",
+   "^as, as const"
+  ],
+  [
+   "non-null assertion (!)",
+   "[\\w\\])]!(?=\\.\\w|;)",
+   "^as, as const"
+  ],
+  [
+   "typeof di posisi tipe",
+   "\\btype\\s+\\w+\\s*=\\s*\\(?typeof\\b|<typeof\\b|keyof\\s+typeof|:\\s*typeof\\s+\\w",
+   "^as, as const"
+  ],
+  [
+   "modifier akses",
+   "\\b(private|protected|public)\\s+(readonly\\s+|static\\s+)?#?\\w+\\s*[:(=;?]",
+   "^Kelas & modifier akses"
+  ],
+  [
+   "abstract/override",
+   "\\babstract\\s+\\w|\\boverride\\s+\\w",
+   "^Kelas abstrak"
+  ],
+  [
+   "generik",
+   "\\b(function\\s+\\w+|type\\s+\\w+|interface\\s+\\w+|class\\s+\\w+)\\s*<\\s*[A-Z]|=\\s*<[A-Z]\\w*(\\s+extends[^>]*)?>\\s*\\(|\\bnew\\s+(Map|Set|Array|Promise)<|:\\s*Promise<",
+   "^Fungsi & tipe generik"
+  ],
+  [
+   "keyof",
+   "\\bkeyof\\b",
+   "^Constraint generik"
+  ],
+  [
+   "utility Partial/Pick/Omit/Readonly/Record",
+   "\\b(Partial|Pick|Omit|Readonly|Record|Required)<",
+   "^Partial, Pick"
+  ],
+  [
+   "utility Exclude/Extract/ReturnType/...",
+   "\\b(Exclude|Extract|NonNullable|ReturnType|Parameters|InstanceType|Awaited|ConstructorParameters)<",
+   "^Exclude, Extract"
+  ],
+  [
+   "mapped type",
+   "\\[\\s*\\w+\\s+in\\s+(keyof\\b|[A-Z\\\"'])",
+   "^keyof, mapped"
+  ],
+  [
+   "conditional type / infer",
+   "\\btype\\s+\\w+<[^=]*=\\s*\\w+\\s+extends\\s|\\binfer\\s+[A-Z]",
+   "^keyof, mapped"
+  ],
+  [
+   "template literal type",
+   "\\btype\\s+\\w+(<[^>]*>)?\\s*=\\s*`|\\b(Capitalize|Uncapitalize|Uppercase|Lowercase)<",
+   "^Template literal"
+  ],
+  [
+   "import type / declare / namespace",
+   "\\bimport\\s+type\\b|\\{\\s*type\\s+\\w|^\\s*(export\\s+)?declare\\s|\\bnamespace\\s+\\w",
+   "^Modul, deklarasi"
+  ],
+  [
+   "decorator",
+   "^\\s*@\\w+",
+   "^Decorator"
+  ]
+ ],
+ "abaikan": []
+}

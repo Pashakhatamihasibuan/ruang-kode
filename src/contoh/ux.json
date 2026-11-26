@@ -1,0 +1,441 @@
+{
+ "ux-1-1": {
+  "exs": [
+   {
+    "t": "Kasus: memesan ojek online",
+    "code": "Sistem 1 (otomatis)                  Sistem 2 (sadar)\n- alamat rumah & kantor tersimpan    - cek titik jemput di peta saat di tempat baru\n- tombol \"Pesan\" di bawah, besar     - bandingkan tarif motor vs mobil saat hujan\n- metode bayar terakhir terpilih     - baca biaya tambahan tol\nRutin pulang kantor cukup 2 ketukan; Sistem 2 dibangunkan hanya saat ada yang berbeda."
+   },
+   {
+    "t": "Kasus: layar yang memaksa Sistem 2 tanpa alasan",
+    "code": "Layar top up pulsa (sebelum)\n- label \"Denominasi\" dan \"Provider\"          -> istilah asing\n- 14 pilihan nominal dalam satu daftar        -> harus dibandingkan satu per satu\n- ikon tanpa teks                             -> harus ditebak\nPerbaikan\n- \"Nominal\" dan operator terdeteksi dari nomor\n- 6 nominal yang paling sering dibeli, sisanya \"Lainnya\"\n- ikon + label pendek"
+   },
+   {
+    "t": "Kasus: membangunkan Sistem 2 sebelum aksi besar",
+    "code": "Layar konfirmasi tarik dana Rp 7.500.000\n  Penerima : BCA •••• 4821 a.n. Dewi Lestari\n  Nominal  : Rp 7.500.000    (ditulis besar)\n  Biaya    : Rp 6.500\n  [ ] Saya sudah memeriksa nama penerima\n  [ Tarik dana ]  <- aktif setelah kotak dicentang"
+   }
+  ]
+ },
+ "ux-1-2": {
+  "exs": [
+   {
+    "t": "Kasus: default effect pada tabungan pensiun karyawan",
+    "code": "Pilihan lama : kosong, karyawan harus memilih sendiri    -> 22% ikut\nPilihan baru : otomatis 3% gaji, bisa diubah/dimatikan     -> 81% ikut\nEtis karena  : membantu tujuan karyawan sendiri, mudah dibatalkan,\n               dijelaskan jelas di layar pertama"
+   },
+   {
+    "t": "Kasus: loss aversion yang jujur vs yang menjebak",
+    "code": "Jujur   : \"Poin 2.400 kamu kedaluwarsa 30 November. Tukar sekarang?\"\n          (benar, tanggal pasti, ada tombol tukar)\nMenjebak: \"Penawaran hilang dalam 00:04:59!\"\n          (timer diulang setiap halaman dibuka -> dark pattern)"
+   },
+   {
+    "t": "Kasus: anchoring pada pilihan paket",
+    "code": "Paket internet rumah\n  20 Mbps   Rp 250.000\n  50 Mbps   Rp 345.000   ← \"Paling banyak dipilih\"\n  100 Mbps  Rp 525.000\nPaket 100 Mbps menjadi jangkar sehingga 50 Mbps terasa wajar.\nTetap etis bila semua harga lengkap dan label \"paling banyak dipilih\" sesuai data.",
+    "d": "Bias: anchoring, angka pertama yang terlihat menjadi patokan."
+   }
+  ]
+ },
+ "ux-1-3": {
+  "exs": [
+   {
+    "t": "Kasus: menu bawah aplikasi sekolah (Hick)",
+    "code": "Sebelum : 9 ikon di bilah bawah (Jadwal, Nilai, Tugas, Absen, SPP, Pengumuman,\n          Perpus, Ekskul, Profil)\nSesudah : Beranda · Jadwal · Tugas · Nilai · Lainnya\n          (SPP, Perpus, Ekskul, Absen dipindah ke \"Lainnya\")\nAlasan  : 4 tujuan paling sering dipakai siswa tampil langsung"
+   },
+   {
+    "t": "Kasus: tombol hapus yang terlalu dekat (Fitts)",
+    "code": "Masalah : ikon \"Hapus\" 24px tepat di sebelah \"Edit\" di kartu alamat\n          -> sering tertekan tidak sengaja\nPerbaikan\n- target sentuh 48px, jarak antartombol minimal 8px\n- \"Hapus\" dipindah ke menu ⋮ dan diberi konfirmasi\n- \"Edit\" tetap besar karena paling sering dipakai"
+   },
+   {
+    "t": "Kasus: chunking kode pembayaran (Miller)",
+    "code": "Sulit dibaca : 7203918462501 (13 digit)\nLebih baik   : 720 3918 4625 01  [Salin]\nKode OTP     : 482 913 (dua kelompok tiga angka)"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Menghitung Hick dan Fitts untuk dua rancangan",
+    "b": "Rumus Hick: waktu = a + b x log2(n + 1). Rumus Fitts: waktu = a + b x log2(2D / W), D jarak ke target, W lebar target. Konstanta a dan b di sini hanya contoh.",
+    "code": "HICK (a = 0,2 s, b = 0,15 s)\n   3 pilihan -> 0,50 s\n   6 pilihan -> 0,62 s\n  12 pilihan -> 0,76 s\n  24 pilihan -> 0,90 s\n\nFITTS (a = 0,1 s, b = 0,12 s)\n  tombol Bayar 44px, 600px dari jempol   -> 0,67 s\n  tombol Bayar 56px full-width di bawah  -> 0,35 s\n\nMILLER (chunking)\n  8808 1234 5678 9012 lebih mudah dibaca dari 8808123456789012",
+    "lang": "text"
+   }
+  ]
+ },
+ "ux-2-1": {
+  "exs": [
+   {
+    "t": "Kasus: siswa tidak mengumpulkan tugas lewat aplikasi",
+    "code": "Motivasi  : sedang (takut nilai kosong)\nKemudahan : rendah (harus login ulang, unggah hanya PDF)\nPemicu    : tidak ada, hanya pengumuman di grup kelas\n\nPerbaikan:\n+ kemudahan: tetap masuk 30 hari, bisa unggah foto langsung dari kamera\n+ pemicu   : notifikasi H-1 pukul 19.00 dengan tombol \"Unggah sekarang\""
+   },
+   {
+    "t": "Kasus: pemicu yang datang di saat salah",
+    "code": "Pemicu : \"Ayo isi survei kepuasan!\" muncul saat pengguna sedang checkout\nM      : rendah (sedang fokus bayar)\nA      : rendah (10 pertanyaan)\n-> pemicu mengganggu dan diabaikan\n\nPerbaikan: 1 pertanyaan bintang 1-5, muncul setelah pesanan diterima"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Menaikkan kemudahan lebih efektif daripada menambah motivasi",
+    "b": "Anggap perilaku terjadi bila ada pemicu dan motivasi x kemudahan mencapai garis aksi (skor 25, skala 1-10). Bandingkan empat skenario:",
+    "code": "HASIL  M   A   PEMICU  SKENARIO\nTIDAK  6   3   ada     Onboarding lama: KTP + selfie + 12 field          (6 x 3 = 18)\nTIDAK  8   3   ada     Kampanye cashback, motivasi naik                 (8 x 3 = 24)\nYA     6   6   ada     Onboarding baru: nomor HP + OTP dulu             (6 x 6 = 36)\nTIDAK  6   6   tidak   Onboarding baru tanpa notifikasi lanjutan        (tanpa pemicu)\n\nPelajaran: cashback mahal dan tetap gagal; memangkas langkah berhasil, asal ada pemicu.",
+    "lang": "text"
+   }
+  ]
+ },
+ "ux-2-2": {
+  "exs": [
+   {
+    "t": "Kasus: hook aplikasi kasir UMKM",
+    "code": "Trigger   : eksternal  notifikasi \"Rekap hari ini siap\" pukul 21.00\n            internal   penasaran \"untung berapa hari ini?\"\nAction    : buka aplikasi, rekap langsung tampil\nReward    : laba bersih hari ini + perbandingan dengan kemarin (berbeda tiap hari)\nInvestment: mencatat stok yang habis -> besok muncul pengingat belanja"
+   },
+   {
+    "t": "Kasus: cue-routine-reward untuk mengganti kebiasaan",
+    "code": "Kebiasaan lama : cue bosan saat istirahat kantor\n                 routine scroll belanja online\n                 reward hiburan singkat\nKebiasaan baru : cue sama (bosan saat istirahat)\n                 routine buka celengan, lihat progres \"Liburan Bali 62%\"\n                 reward rasa senang melihat kemajuan"
+   },
+   {
+    "t": "Kasus: pertanyaan etis sebelum memakai hook",
+    "code": "Fitur usulan: streak harian di aplikasi pinjaman online\n1. Apakah kebiasaan ini membuat hidup pengguna lebih baik?   tidak, mendorong utang\n2. Apakah tim mau memakainya sendiri?                         tidak\nKeputusan: fitur ditolak; streak dipakai untuk \"bayar cicilan tepat waktu\""
+   }
+  ]
+ },
+ "ux-3-1": {
+  "exs": [
+   {
+    "t": "Kasus: memilih paket data",
+    "code": "Sebelum: 9 paket dalam satu daftar panjang\nSesudah:\n  Harian  1 GB    Rp 5.000\n  Mingguan 7 GB   Rp 25.000   ← paling banyak dipilih\n  Bulanan 30 GB   Rp 85.000\n  Lihat paket lain ▸\n  [ Beli Mingguan Rp 25.000 ]"
+   },
+   {
+    "t": "Kasus: form alamat dengan default",
+    "code": "Penerima  : Andi Wijaya          (dari profil)\nNo. HP    : 0812-3456-7890       (dari profil)\nKota      : Semarang             (dari lokasi terakhir)\nKode pos  : 50241                (terisi dari kelurahan)\nPatokan   : ____________         (satu-satunya yang diketik)\n[ Simpan alamat ]"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Menghitung beban form sebelum dan sesudah",
+    "b": "Hitung jumlah field dan perkiraan ketukan (2 per field: fokus + isi). OTP terisi otomatis dari SMS sehingga hemat satu ketukan.",
+    "code": "SEBELUM (12 field)\n  nama, email, hp, tgl_lahir, jenis_kelamin, alamat, kota, kode_pos,\n  pekerjaan, penghasilan, sumber_dana, ulang_password\nSESUDAH (3 field)\n  hp, otp, nama\n\nfield             : 12 -> 3\nperkiraan ketukan : 12 x 2 = 24 -> 3 x 2 - 1 = 5\nditunda           : email, tgl_lahir, jenis_kelamin, alamat, kota, kode_pos,\n                    pekerjaan, penghasilan, sumber_dana, ulang_password\n                    (ditanya saat benar-benar dibutuhkan)",
+    "lang": "text"
+   }
+  ]
+ },
+ "ux-3-2": {
+  "exs": [
+   {
+    "t": "Kasus: progres kelengkapan profil penjual",
+    "code": "Profil toko 40% lengkap  [■■□□□]\n✓ Nama toko (otomatis dari pendaftaran)\n✓ Nomor HP\n□ Foto toko         +20%  \"Toko dengan foto dikunjungi 2x lebih sering\"\n□ Jam buka          +20%\n□ Rekening pencairan +20%"
+   },
+   {
+    "t": "Kasus: bukti sosial yang jujur di halaman kursus",
+    "code": "Kursus \"Excel untuk Admin Kantor\"\n★ 4,7 dari 1.284 ulasan · 9.630 peserta\n\"Saya bisa membuat rekap gaji sendiri.\" Dita, staf HRD di Surabaya\nJangan: \"Terlaris!\" tanpa data, atau ulasan yang ditulis tim sendiri"
+   },
+   {
+    "t": "Kasus: pengingat dengan implementation intention",
+    "code": "Kapan kamu ingin latihan soal UTBK?\n  ( ) Pagi sebelum sekolah\n  (•) Setelah makan malam\nJam berapa? [ 19.30 ]\n→ \"Setelah makan malam, jam 19.30, aku latihan 20 soal.\"\n   Pengingat dikirim pukul 19.30 dengan kalimat itu."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Aturan pengingat yang menghormati pengguna",
+    "b": "Pengingat ditahan bila jatuh di jam tenang (21.00-07.00), sudah 3 kali minggu ini, atau kurang dari 20 jam dari pengingat terakhir. Riwayat: 17/11 19.00 dan 18/11 19.00.",
+    "code": "WAKTU         KEPUTUSAN   ALASAN\n19/11 06.00   tahan       jam tenang\n19/11 12.00   tahan       terlalu dekat dengan pengingat terakhir (17 jam)\n19/11 19.00   kirim       24 jam sejak terakhir, baru 2 kali minggu ini",
+    "lang": "text"
+   }
+  ]
+ },
+ "ux-4-1": {
+  "exs": [
+   {
+    "t": "Kasus: aplikasi perpustakaan sekolah",
+    "code": "Outcome : siswa kelas 7 membaca minimal 1 buku per bulan\nAktor   : siswa kelas 7 yang jarang ke perpustakaan\nAksi    : meminjam buku lewat aplikasi lalu mengambilnya saat istirahat\n\nMetrik utama : % siswa kelas 7 yang meminjam >= 1 buku per bulan\nMetrik jaga  : % buku terlambat dikembalikan"
+   },
+   {
+    "t": "Kasus: mengubah tujuan kabur menjadi aksi",
+    "code": "Kabur                               Aksi yang bisa diamati\n\"Pedagang lebih melek digital\"      \"Pedagang menerima pembayaran QRIS pertama dalam 3 hari\"\n\"Pasien lebih disiplin\"             \"Pasien membuka pengingat obat dan menekan 'Sudah minum'\"\n\"Warga peduli sampah\"               \"Warga menjadwalkan jemput sampah pilah 1x seminggu\""
+   }
+  ]
+ },
+ "ux-4-2": {
+  "exs": [
+   {
+    "t": "Kasus: SWOT aplikasi tabungan koperasi",
+    "code": "Kekuatan  : 12.000 anggota percaya pada koperasi, setoran bisa lewat kantor desa\nKelemahan : aplikasi lambat di HP murah, tim TI 2 orang\nPeluang   : QRIS makin umum di warung desa\nAncaman   : bank digital dengan bunga promo tinggi\n-> Fokus UX: aplikasi ringan + setor lewat QRIS warung"
+   },
+   {
+    "t": "Kasus: Lean Canvas satu halaman untuk aplikasi les privat",
+    "code": "Masalah        : orang tua sulit mencari guru les terpercaya di dekat rumah\nSegmen         : orang tua siswa SD-SMP di kota menengah\nNilai unik     : guru terverifikasi + laporan belajar setiap minggu\nSolusi         : cari guru per mapel & jarak, jadwal, laporan\nSaluran        : grup WA sekolah, kerja sama bimbel\nPendapatan     : komisi 10% per sesi\nBiaya          : verifikasi guru, server, pemasaran\nMetrik kunci   : sesi berulang per keluarga per bulan\nKeunggulan     : jaringan guru lokal yang sudah diverifikasi"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Matriks benchmark alur pendaftaran (skor 1-5)",
+    "b": "Beri skor setiap produk untuk lima kriteria, kalikan dengan bobot (langkah 0,30; kejelasan biaya 0,25; bantuan, aksesibilitas, kecepatan masing-masing 0,15), lalu jumlahkan.",
+    "code": "PRODUK            LANGKAH  KEJELASAN  BANTUAN  AKSES.  KECEPATAN   SKOR\nAplikasi global      5         4         3        4        5       4,30\nKompetitor A         4         4         3        3        4       3,70\nKompetitor B         3         5         4        2        3       3,50\nKita (sekarang)      2         3         2        2        3       2,40\n\nDua celah terbesar dibanding skor tertinggi tiap kriteria:\n  langkah (5 - 2 = 3) dan kejelasan biaya (5 - 3 = 2)",
+    "lang": "text"
+   }
+  ]
+ },
+ "ux-5-1": {
+  "exs": [
+   {
+    "t": "Kasus: persona pedagang pasar dari wawancara",
+    "code": "Persona: Pak Darto, 52, pedagang sayur di Pasar Johar (dari 6 wawancara)\nTujuan    : catatan utang pelanggan tidak hilang\nKonteks   : buka lapak 04.00-11.00, tangan basah, HP layar retak\nPerilaku  : mencatat di buku tulis, kadang lupa membawa\nHambatan  : \"Huruf di aplikasi kecil, saya tidak pakai kacamata di pasar.\"\nKebutuhan : catat utang dengan suara atau angka besar, tanpa banyak mengetik"
+   },
+   {
+    "t": "Kasus: persona buruk vs persona berguna",
+    "code": "Persona buruk                          Persona berguna\n- Hobi: traveling, kopi                - Menabung \"kalau sisa\", gagal 3 bulan terakhir\n- Foto stok tersenyum                  - Kutipan: \"Gajian tanggal 25, tanggal 10 sudah habis.\"\n- \"Melek teknologi\"                    - Android 3 GB RAM, kuota 10 GB per bulan\nTidak membantu keputusan apa pun.      Membantu memilih: autodebet di tanggal gajian."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Membentuk segmen perilaku dari data aktivitas",
+    "b": "Kelompokkan 12 pengguna menurut jumlah transaksi per bulan (1-5 = penabung santai, di atas 5 = pedagang aktif), lalu ringkas perilaku tiap segmen. Segmen inilah dasar persona, bukan tebakan tim.",
+    "code": "SEGMEN            JUMLAH  TRANSAKSI/BULAN  PAKAI FITUR TABUNGAN  JAM DOMINAN\nPenabung santai   6       rata-rata 2,2    83%                   malam\nPedagang aktif    6       rata-rata 30,7   17%                   siang\n\nJTBD Pedagang aktif: Ketika toko ramai siang hari, saya ingin menerima pembayaran\ntanpa uang kembalian, agar antrean cepat.",
+    "lang": "text"
+   }
+  ]
+ },
+ "ux-5-2": {
+  "exs": [
+   {
+    "t": "Kasus: user story pembayaran SPP",
+    "code": "User story\nSebagai orang tua siswa, saya ingin membayar SPP lewat QRIS dari rumah,\nagar tidak perlu antre di loket sekolah.\n\nKriteria penerimaan\n- tagihan menampilkan bulan, nominal, dan denda (bila ada)\n- setelah bayar, bukti muncul di aplikasi dan dikirim ke email\n- tagihan yang sudah dibayar tidak bisa dibayar dua kali"
+   },
+   {
+    "t": "Kasus: peta pengalaman mengurus SIM",
+    "code": "Tahap      Cari info      Daftar online     Datang ke Satpas    Ujian praktik\nLakukan    tanya teman    isi form, bayar   antre verifikasi    ujian zig-zag\nPikirkan   \"syaratnya?\"   \"berhasil belum?\" \"kenapa lama?\"      \"boleh ulang?\"\nRasakan    bingung        lega              kesal (terendah)    tegang\nPeluang    -              konfirmasi jelas  nomor antre + estimasi waktu di HP"
+   },
+   {
+    "t": "Kasus: flowchart dengan cabang error",
+    "code": "Mulai → Pilih tagihan SPP → Pilih QRIS → [Bayar dalam 15 menit?]\n   ya    → Bukti bayar → Selesai\n   tidak → \"Kode QR kedaluwarsa\" → [Buat kode baru] → Pilih QRIS"
+   }
+  ]
+ },
+ "ux-5-3": {
+  "exs": [
+   {
+    "t": "Kasus: panduan wawancara pengguna e-wallet",
+    "code": "Pembuka (5 menit)\n  \"Tidak ada jawaban benar atau salah. Kami menguji aplikasi, bukan kamu.\"\nPerilaku (20 menit)\n  \"Ceritakan terakhir kali kamu membayar sesuatu dengan e-wallet.\"\n  \"Lalu apa yang terjadi?\"  \"Kenapa memilih cara itu?\"\n  \"Pernah gagal bayar? Ceritakan.\"\nPenutup (5 menit)\n  \"Ada hal yang belum saya tanyakan tapi menurutmu penting?\""
+   },
+   {
+    "t": "Kasus: memperbaiki pertanyaan saat wawancara berlangsung",
+    "code": "Peserta: \"Saya jarang pakai fitur tabungan.\"\n✗ \"Karena fiturnya susah dicari, ya?\"        (mengarahkan)\n✓ \"Boleh ceritakan terakhir kali kamu membukanya?\"\n✓ (diam 3-5 detik, beri ruang peserta melanjutkan)"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Memeriksa pertanyaan yang mengarahkan di panduan wawancara",
+    "b": "Tandai pertanyaan yang berakhir dengan \"kan?\", meminta pendapat suka/setuju, memuji fitur sendiri, atau berandai-andai. Tulis ulang sebelum wawancara.",
+    "code": "STATUS    PERTANYAAN                                              PERBAIKAN\noke       Ceritakan terakhir kali kamu menabung untuk sesuatu.\nPERBAIKI  Fitur celengan ini memudahkan, kan?                     Bagian mana yang membuatmu berhenti sejenak?\nPERBAIKI  Apakah anda suka desain baru kami?                      Apa yang kamu lihat pertama kali di layar ini?\noke       Apa yang kamu lakukan sebelum membuka aplikasi tadi?\nPERBAIKI  Bagaimana jika ada fitur investasi emas?                Pernah menyisihkan uang untuk emas? Bagaimana caranya?\noke       Apa yang paling menyulitkan saat itu?",
+    "lang": "text"
+   }
+  ]
+ },
+ "ux-6-2": {
+  "exs": [
+   {
+    "t": "Kasus: alur pendaftaran beasiswa",
+    "code": "Minggu 1  sketsa kertas 3 alternatif alur   -> diskusi tim, pilih 1\nMinggu 2  wireframe abu-abu di Figma        -> cek kelengkapan langkah dengan admin beasiswa\nMinggu 3  prototipe klik mid-fi             -> usability test 5 siswa\nMinggu 4  hi-fi + teks final                -> tes kedua, lalu serah ke developer"
+   },
+   {
+    "t": "Kasus: fidelity terlalu tinggi terlalu cepat",
+    "code": "Situasi : tim langsung membuat hi-fi berwarna untuk 20 layar\nAkibat  : peserta tes berkomentar soal warna, bukan alur\n          3 layar dibuang setelah tes, kerja 4 hari hilang\nPelajaran: uji alur dengan wireframe dulu; warna dan ilustrasi belakangan"
+   }
+  ]
+ },
+ "ux-6-3": {
+  "exs": [
+   {
+    "t": "Kasus: skenario tugas untuk aplikasi puskesmas",
+    "code": "✗ Instruksi : \"Klik menu Antrean, pilih Poli Umum, tekan Ambil.\"\n✓ Skenario  : \"Besok pagi kamu ingin periksa batuk ke dokter umum.\n               Ambil nomor antrean untukmu.\"\nUkur       : berhasil/tidak, waktu, jumlah salah ketuk, skor SEQ 1-7"
+   },
+   {
+    "t": "Kasus: ulasan heuristik layar login",
+    "code": "#  Heuristik                    Temuan                                    Keparahan\n1  Cegah error                  Kolom HP menerima huruf                   2\n2  Bantu pulih dari error       \"Login gagal\" tanpa alasan                3\n3  Kendali pengguna             Tidak ada tombol tampilkan kata sandi      2\n4  Status sistem                Tombol tidak berubah saat memproses        3\nPrioritas: perbaiki temuan 2 dan 4 lebih dulu"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Menghitung skor SUS dari jawaban 5 peserta",
+    "b": "SUS punya 10 butir skala 1-5. Butir ganjil (positif) diberi skor jawaban - 1, butir genap (negatif) 5 - jawaban. Jumlahkan lalu kali 2,5 untuk skala 0-100.",
+    "code": "PESERTA  JAWABAN BUTIR 1-10          SKOR\nP1       4 2 4 1 5 2 4 2 4 2         80,0\nP2       3 3 3 2 4 3 3 3 3 3         55,0\nP3       5 1 5 1 5 1 5 1 4 2         95,0\nP4       2 4 3 4 3 4 2 4 3 3         35,0\nP5       4 2 4 2 4 2 4 1 4 2         77,5\n\nContoh P1: (3+3+3+4+4+3+3+3+3+3) x 2,5 = 32 x 2,5 = 80\nRata-rata: 68,5 -> sedikit di atas rata-rata industri (68)\nCatatan  : P4 jauh di bawah, tonton ulang rekamannya",
+    "lang": "text"
+   }
+  ]
+ },
+ "ux-7-1": {
+  "exs": [
+   {
+    "t": "Kasus: rencana A/B test halaman langganan",
+    "code": "Hipotesis : menampilkan harga per bulan pada paket tahunan (\"Rp 41.000/bln\")\n            menaikkan pilihan paket tahunan, karena perbandingannya lebih mudah\nMetrik    : % pembeli yang memilih paket tahunan\nMetrik jaga: tingkat pengembalian dana 30 hari\nSampel    : 2 x 5.200 pembeli (dihitung sebelum mulai)\nDurasi    : minimal 2 minggu penuh (mencakup gajian)"
+   },
+   {
+    "t": "Kasus: hasil yang belum signifikan",
+    "code": "Hasil hari ke-3 : A 8,1%  B 9,4%  p = 0,21\nGodaan          : \"B menang, rilis sekarang!\"\nKeputusan benar : lanjutkan sampai sampel yang direncanakan tercapai\nHasil akhir     : A 8,3%  B 8,6%  p = 0,48 -> tidak ada beda nyata",
+    "d": "Berhenti lebih awal karena grafik terlihat bagus adalah kesalahan paling umum."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Ukuran sampel dan uji dua proporsi",
+    "b": "Ukuran sampel dihitung sebelum tes dari konversi awal, selisih terkecil yang ingin dideteksi, alpha 0,05, dan power 80% (kalkulator sampel A/B online memakai rumus yang sama). Setelah tes, uji dua proporsi memberi p-value.",
+    "code": "RENCANA\n  konversi awal 12%, ingin mendeteksi +1,5 poin\n  -> butuh 7.484 pengguna per varian\n\nHASIL (9.000 pengguna per varian)\n  A  1.120 konversi  12,44%\n  B  1.265 konversi  14,06%\n  selisih +1,61 poin, p-value 0,0014 -> signifikan (p < 0,05)",
+    "lang": "text"
+   }
+  ]
+ },
+ "ux-7-2": {
+  "exs": [
+   {
+    "t": "Kasus: HEART untuk fitur pesan ulang di aplikasi kopi",
+    "code": "Kategori      Goal                       Signal                       Metric\nAdoption      Pelanggan mencoba          Menekan \"Pesan lagi\"          % pelanggan aktif yang memakai / minggu\nTask success  Pesan ulang cepat          Pesanan selesai < 60 detik    median waktu pesan ulang\nRetention     Kembali memakai            Memakai lagi minggu depan     % pemakai yang kembali dalam 7 hari\n\nNorth Star: jumlah pesanan yang diambil tepat waktu per minggu"
+   },
+   {
+    "t": "Kasus: memilih North Star yang tidak semu",
+    "code": "Aplikasi belajar\n✗ jumlah unduhan            (naik walau tidak ada yang belajar)\n✗ menit di aplikasi         (bisa naik karena bingung mencari menu)\n✓ jumlah pelajaran yang diselesaikan per minggu\n  (naik hanya bila pengguna benar-benar belajar)"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Tabel retensi kohort mingguan",
+    "b": "Kelompokkan pengguna menurut minggu daftar (kohort), lalu hitung berapa persen yang masih aktif di minggu-minggu berikutnya. Bandingkan kohort sebelum dan sesudah onboarding baru.",
+    "code": "KOHORT (PENGGUNA)                  MG 0   MG 1   MG 2   MG 3   MG 4\nM1 Okt (1.000)                     100%   52%    41%    36%    33%\nM2 Okt (1.200)                     100%   55%    45%    40%    -\nM3 Okt, onboarding baru (1.100)    100%   65%    55%    -      -\nM4 Okt, onboarding baru (1.050)    100%   66%    -      -      -\n\nRetensi minggu 1 naik dari ~53% ke ~65% setelah onboarding baru.",
+    "lang": "text"
+   }
+  ]
+ },
+ "ux-8-1": {
+  "cx": [
+   {
+    "t": "Funnel onboarding: lama vs baru",
+    "b": "Batas saldo tanpa eKYC penuh harus mengikuti ketentuan regulator; konfirmasikan ke tim kepatuhan.",
+    "code": "LAMA                                          PENGGUNA   DARI AWAL   TURUN\nBuka aplikasi                                 10.000     100%\nIsi data diri                                  6.200      62%        -38%\nFoto KTP                                       4.100      41%        -34%\nSelfie                                         3.500      35%        -15%\nBuat PIN                                       3.200      32%         -9%\nSetoran pertama                                1.400      14%        -56%\n\nBARU\nBuka aplikasi                                 10.000     100%\nNomor HP + OTP                                 8.300      83%        -17%\nPilih tujuan menabung                          7.600      76%         -8%\nBuat PIN                                       7.200      72%         -5%\nSetoran pertama (tanpa eKYC, maks Rp2 jt)      4.900      49%        -32%\neKYC saat saldo > Rp2 jt                       2.800      28%        -43%\n\nAktivasi (setoran pertama): 14% -> 49%",
+    "lang": "text"
+   }
+  ]
+ },
+ "ux-9-1": {
+  "exs": [
+   {
+    "t": "Kasus: token teks dan latar untuk kartu menu",
+    "code": "{\n  \"color\": {\n    \"krem\":  { \"50\":  { \"$type\": \"color\", \"$value\": \"#FBF6F1\" } },\n    \"abu\":   { \"900\": { \"$type\": \"color\", \"$value\": \"#2B2420\" } },\n    \"surface\": { \"card\": { \"$type\": \"color\", \"$value\": \"{color.krem.50}\" } },\n    \"text\":    { \"default\": { \"$type\": \"color\", \"$value\": \"{color.abu.900}\" } }\n  },\n  \"card\": {\n    \"menu\": {\n      \"background\": { \"$type\": \"color\", \"$value\": \"{color.surface.card}\" },\n      \"text\":       { \"$type\": \"color\", \"$value\": \"{color.text.default}\" }\n    }\n  }\n}"
+   },
+   {
+    "t": "Kasus: token jarak dan ukuran sentuh",
+    "code": "{\n  \"space\": {\n    \"200\": { \"$type\": \"dimension\", \"$value\": \"16px\" },\n    \"300\": { \"$type\": \"dimension\", \"$value\": \"24px\" }\n  },\n  \"size\": {\n    \"touch\": { \"$type\": \"dimension\", \"$value\": \"48px\",\n               \"$description\": \"Tinggi minimal semua target sentuh\" }\n  },\n  \"button\": {\n    \"height\":    { \"$type\": \"dimension\", \"$value\": \"{size.touch}\" },\n    \"padding-x\": { \"$type\": \"dimension\", \"$value\": \"{space.300}\" }\n  }\n}",
+    "d": "Aturan UX (target sentuh 48px) dikunci di token, jadi tidak bisa terlupa per layar."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Audit design debt: berapa variasi tombol yang ada?",
+    "b": "Catat warna, radius, dan tinggi tombol primer di 10 layar, lalu hitung variasinya. Setiap variasi adalah sesuatu yang harus dipelajari ulang pengguna.",
+    "code": "10 tombol primer di 10 layar -> 6 variasi warna/radius/tinggi\n  4x  #2563EB / 8px  / 44\n  2x  #2563EA / 6px  / 40\n  1x  #1D4ED8 / 8px  / 44\n  1x  #2563EB / 12px / 48\n  1x  #3B82F6 / 4px  / 36\n  1x  #1E40AF / 8px  / 44\n\nTarget: 1 komponen Button primary\n        (token color.action.primary, radius.md, size.touch = 44)",
+    "lang": "text"
+   }
+  ]
+ },
+ "ux-9-2": {
+  "exs": [
+   {
+    "t": "Kasus: aplikasi yang sama di Android dan iOS",
+    "code": "Aplikasi antrean bengkel \"ServisKu\"\n                 Android (Material 3)          iOS (Apple HIG)\nNavigasi utama   navigation bar bawah          tab bar bawah\nTombol kembali   tombol sistem / panah kiri     \"< Kembali\" kiri atas, usap dari tepi\nAksi utama       FAB \"Pesan servis\"             tombol di toolbar atau bawah layar\nHuruf            Roboto, skala M3              SF Pro, Dynamic Type\nIkon             Material Symbols              SF Symbols"
+   },
+   {
+    "t": "Kasus: memilih referensi untuk dasbor admin sekolah",
+    "code": "Kebutuhan : tabel nilai 40 siswa, filter, grafik kehadiran, ekspor\nPilihan   : IBM Carbon\nAlasan    : komponen data table dan grafik lengkap, aksesibilitas kuat\nBukan     : Apple HIG (untuk aplikasi Apple), Polaris (fokus e-commerce)"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Perbandingan aturan dasar beberapa design system",
+    "b": "Bandingkan aturan yang paling sering ditanya tim sebelum memilih referensi.",
+    "code": "SISTEM         TARGET SENTUH    GRID            FONT                  CIRI\nMaterial 3     48 dp            4 dp            Roboto / Google Sans  dynamic color dari wallpaper\nApple HIG      44 pt            8 pt (umum)     SF Pro                Dynamic Type, Liquid Glass\nFluent 2       44 px (sentuh)   4 px            Segoe UI Variable     token alias berlapis\nCarbon (IBM)   48 px (lg)       8 px (2x grid)  IBM Plex              fokus enterprise & data",
+    "lang": "text"
+   }
+  ]
+ },
+ "ux-9-3": {
+  "exs": [
+   {
+    "t": "Kasus: prototipe form pendaftaran dengan Bootstrap dari CDN",
+    "code": "<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css\">\n\n<form class=\"container py-4\" style=\"max-width: 420px\">\n  <div class=\"mb-3\">\n    <label for=\"nama\" class=\"form-label\">Nama lengkap</label>\n    <input id=\"nama\" class=\"form-control\" autocomplete=\"name\">\n  </div>\n  <div class=\"mb-3\">\n    <label for=\"hp\" class=\"form-label\">Nomor HP</label>\n    <input id=\"hp\" class=\"form-control\" type=\"tel\" aria-describedby=\"hp-bantu\">\n    <div id=\"hp-bantu\" class=\"form-text\">Kode OTP dikirim ke nomor ini.</div>\n  </div>\n  <button class=\"btn btn-primary w-100\">Daftar</button>\n</form>",
+    "d": "Cukup satu tag link untuk menguji alur dengan HTML sungguhan."
+   },
+   {
+    "t": "Kasus: ikon dan huruf dari Google Fonts",
+    "code": "<link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap\">\n<link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined\">\n\n<style>\n  body { font-family: \"Inter\", system-ui, sans-serif; }\n</style>\n\n<button class=\"tombol-ikon\" aria-label=\"Keranjang belanja\">\n  <span class=\"material-symbols-outlined\" aria-hidden=\"true\">shopping_cart</span>\n</button>",
+    "d": "Ikon tanpa teks tetap butuh aria-label."
+   },
+   {
+    "t": "Kasus: memasang lewat paket npm untuk produk jangka panjang",
+    "code": "<!-- terminal: npm install bootstrap@5.3.3 -->\n<!-- versi terkunci di package.json, berkas disajikan dari server sendiri -->\n<link rel=\"stylesheet\" href=\"/vendor/bootstrap/bootstrap.min.css\">\n\n<!-- keuntungan: tidak bergantung server pihak ketiga, IP pengunjung tidak terkirim ke CDN -->"
+   }
+  ]
+ },
+ "ux-9-4": {
+  "exs": [
+   {
+    "t": "Kasus: mengadaptasi Material 3 untuk brand koperasi",
+    "code": "Fondasi   : Material 3\nDiubah    : warna primer hijau #0F766E, radius 12, huruf Plus Jakarta Sans\nDitambah  : komponen \"Kartu simpanan anggota\", \"Struk setoran\"\nTetap     : navigation bar, dialog, text field (sudah lolos uji aksesibilitas)\nDicatat   : semua perubahan di changelog v1.1 design system koperasi"
+   },
+   {
+    "t": "Kasus: audit istilah yang tidak konsisten",
+    "code": "| Istilah ditemukan        | Layar                 | Diputuskan        |\n|--------------------------|-----------------------|-------------------|\n| Keranjang / Troli / Tas  | Beranda, Detail, Bayar| Keranjang         |\n| Checkout / Bayar         | Keranjang, Ringkasan  | Bayar             |\n| Voucher / Kupon / Promo  | Bayar, Profil         | Voucher           |\nTindakan: kamus istilah di dokumentasi + periksa di setiap review desain"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Skor kelayakan tiga kandidat design system",
+    "b": "Nilai tiap kandidat 1-5 per kriteria, kalikan bobot (cakupan komponen 0,30; aksesibilitas 0,25; kemudahan tema 0,20; dukungan framework 0,15; komunitas 0,10), lalu jumlahkan.",
+    "code": "KANDIDAT       SKOR   CAKUPAN  AKSES.  TEMA  FRAMEWORK  KOMUNITAS\nFluent UI      4,20   5        5       3     3          4\nshadcn/ui      4,00   4        4       5     2          5\nMaterial Web   3,85   3        4       4     5          4\n\nCatatan: \"dukungan framework\" bergantung stack tim (shadcn/ui khusus React).",
+    "lang": "text"
+   }
+  ]
+ },
+ "ux-10-1": {
+  "exs": [
+   {
+    "t": "Kasus: studi kasus aplikasi bank sampah",
+    "code": "STUDI KASUS UX · Bank Sampah Digital RW 05\n\nPeran    : UX designer (tim 2) · 6 minggu\nMasalah  : setoran sampah turun 40% setelah buku tabungan diganti aplikasi\nMetode   : 6 wawancara nasabah lansia, observasi 2 hari penimbangan\nInsight  : nasabah tidak tahu saldo bertambah karena struk kertas hilang\nKeputusan: struk cetak tetap ada + SMS saldo, aplikasi untuk pengurus saja\nDitolak  : gamifikasi poin (nasabah tidak memakai smartphone)\nDampak   : setoran kembali naik 35% dalam 2 bulan"
+   },
+   {
+    "t": "Kasus: menuliskan ide yang ditolak dan alasannya",
+    "code": "Ide              Kenapa ditolak                          Bukti\nChatbot daftar   lansia bingung mengetik, 4/5 gagal      usability test putaran 1\nLogin wajah      HP peserta tidak punya kamera depan     survei 40 nasabah\nNotifikasi push  60% nasabah tidak pakai smartphone      data pendaftaran"
+   }
+  ]
+ },
+ "ux-10-2": {
+  "exs": [
+   {
+    "t": "Kasus: dampak dari usability test",
+    "code": "Lemah : \"Navigasi jadi lebih intuitif.\"\nKuat  : \"Usability test 5 peserta: tugas mencari jadwal dokter berhasil\n         3/5 -> 5/5, waktu rata-rata 71 -> 29 detik, SEQ 4,2 -> 6,1.\""
+   },
+   {
+    "t": "Kasus: dampak kualitatif yang tetap konkret",
+    "code": "\"Setelah journey map dipresentasikan, tim CS mengubah skrip telepon\n untuk keluhan pengiriman; tiket berulang turun dari 18 ke 7 per minggu.\"\n\"Kutipan peserta: 'Akhirnya saya tahu uang saya ke mana.' (P3, 41 tahun)\""
+   }
+  ],
+  "cx": [
+   {
+    "t": "Mengubah klaim berlebihan menjadi klaim yang jujur",
+    "b": "Kenaikan dari 2,1% ke 3,1% bisa ditulis \"naik 48%\" (relatif) atau \"naik 1,0 poin\" (absolut). Tulis keduanya beserta sumber datanya.",
+    "code": "DATA       : konversi checkout 2,1% -> 3,1%\nABSOLUT    : 3,1 - 2,1 = +1,0 poin\nRELATIF    : (3,1 - 2,1) / 2,1 = +48%\n\nKlaim berlebihan : \"Konversi naik 48%!\"\nKlaim jujur      : \"Konversi checkout naik dari 2,1% ke 3,1% (+1,0 poin, relatif +48%)\n                    selama uji A/B 4 minggu (n = 18.000), p < 0,05;\n                    promo 11.11 dikecualikan dari periode.\"",
+    "lang": "text"
+   }
+  ]
+ },
+ "ux-10-3": {
+  "exs": [
+   {
+    "t": "Kasus: versi singkat 10 menit",
+    "code": "00-01  Peran dan konteks proyek\n01-02  Masalah + satu angka awal\n02-07  Satu insight riset dan satu keputusan kunci (dengan bukti)\n07-09  Demo prototipe alur utama\n09-10  Dampak dan refleksi"
+   },
+   {
+    "t": "Kasus: menjawab pertanyaan sulit dengan contoh nyata",
+    "code": "Pertanyaan: \"Bagaimana kamu menghadapi stakeholder yang tidak setuju?\"\nJawaban (STAR):\n  Situasi : PM ingin form daftar 12 kolom demi data marketing\n  Tugas   : menjaga tingkat selesai pendaftaran\n  Aksi    : uji 2 versi di 5 + 5 peserta, tunjukkan rekaman\n  Hasil   : disepakati 4 kolom, sisanya ditanya setelah transaksi pertama"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Membagi waktu presentasi 30 menit",
+    "b": "Tentukan durasi tiap bagian, lalu jumlahkan dari menit nol agar terlihat jam mulai dan selesainya.",
+    "code": "00:00 - 02:00  Perkenalan & peranmu\n02:00 - 06:00  Konteks & masalah\n06:00 - 12:00  Riset & insight\n12:00 - 20:00  Eksplorasi & keputusan\n20:00 - 24:00  Hasil & metrik\n24:00 - 26:00  Refleksi\n26:00 - 30:00  Tanya jawab\nTotal: 30 menit. Siapkan versi 10 menit jika panel kekurangan waktu.",
+    "lang": "text"
+   }
+  ]
+ }
+}

@@ -1,0 +1,303 @@
+{
+ "slw-1-1": {
+  "cx": [
+   {
+    "t": "Estimasi pekerjaan slicing landing page",
+    "b": "Pecah desain menjadi section, beri perkiraan jam per bagian, lalu tambahkan pekerjaan di luar section yang sering terlupa. Hari kerja efektif dihitung 6 jam.",
+    "code": "BAGIAN                               JAM\nnavbar                                 2\nhero                                   3\nfitur (grid 3)                         2\ntestimoni (scroll-snap)                3\nharga (3 paket)                        3\nFAQ (accordion)                        2\nfooter + newsletter                    2\n------------------------------------  ---\nsetup token & base CSS                 2\nresponsif 3 breakpoint                 4\nQA lintas browser & aksesibilitas      3\ndeploy                                 1\n------------------------------------  ---\nTOTAL                                 27 jam  (27 / 6 = 4,5 hari kerja efektif)",
+    "lang": "text"
+   }
+  ]
+ },
+ "slw-2-4": {
+  "cx": [
+   {
+    "t": "Perkiraan penghematan ukuran halaman",
+    "b": "Ukuran AVIF kira-kira 35% dari JPG dan 25% dari PNG untuk foto seperti ini (hasil nyata bergantung isi gambar). Waktu unduh = ukuran x 8 / kecepatan jaringan.",
+    "code": "GAMBAR    ASLI            AVIF (perkiraan)\nhero      1.850 KB jpg -> ~648 KB\nmenu-1      420 KB png -> ~105 KB\nmenu-2      390 KB png ->  ~98 KB\nmenu-3      410 KB png -> ~102 KB\nbarista     980 KB jpg -> ~343 KB\n-------------------------------------------\ntotal     4.050 KB     -> ~1.296 KB (hemat 68%)\n\nJaringan 3G 1,6 Mbps: 20,2 detik -> 6,5 detik",
+    "lang": "text"
+   }
+  ]
+ },
+ "slw-4-1": {
+  "cx": [
+   {
+    "t": "Menguji ukuran di antara breakpoint desain",
+    "b": "Desain hanya punya frame 360, 768, dan 1440. Uji juga lebar di antaranya; lebar konten = lebar layar dikurangi padding 2 x 16 px, maksimal 1200 px.",
+    "code": "LEBAR    LAYOUT    LEBAR KONTEN   SUMBER\n 320px   1 kolom      288px       uji tambahan\n 360px   1 kolom      328px       desain\n 414px   1 kolom      382px       uji tambahan\n 600px   1 kolom      568px       uji tambahan  <- tanyakan: masih 1 kolom?\n 768px   2 kolom      736px       desain\n 900px   2 kolom      868px       uji tambahan\n1024px   3 kolom      992px       uji tambahan\n1180px   3 kolom     1148px       uji tambahan\n1440px   3 kolom     1200px       desain\n1920px   3 kolom     1200px       uji tambahan  <- isi tetap 1200 di tengah",
+    "lang": "text"
+   }
+  ]
+ },
+ "slw-4-2": {
+  "cx": [
+   {
+    "t": "Menghitung file yang dipilih browser dari srcset",
+    "b": "Browser mengalikan lebar tampil (dari sizes) dengan kepadatan piksel layar (DPR), lalu memilih varian terkecil yang cukup. Varian tersedia: 480, 800, 1200, 1600.",
+    "code": "PERANGKAT          LEBAR TAMPIL x DPR   BUTUH     DIPILIH\nHP Android 360px   360 x 3              1080px    hero-1200.avif\niPhone 390px       390 x 3              1170px    hero-1200.avif\nTablet 768px       768 x 2              1536px    hero-1600.avif\nLaptop 1440px      720 x 1 (sizes 50vw)  720px    hero-800.avif",
+    "lang": "text"
+   }
+  ]
+ },
+ "slw-4-3": {
+  "cx": [
+   {
+    "t": "Membaca hasil visual diff antara desain dan build",
+    "b": "Alat visual diff (misalnya plugin overlay atau fitur screenshot test) membandingkan piksel dengan toleransi kecil untuk anti-aliasing. Yang penting adalah membaca laporannya dan menemukan penyebab.",
+    "code": "LAPORAN VISUAL DIFF · landing 1440px\nToleransi per piksel : 16 (abaikan anti-aliasing)\nPiksel berbeda       : 3,50%   (batas lolos 1%)  -> PERLU DICEK MANUAL\nArea berbeda         : x 5-99, y 10-69\n\nTEMUAN SETELAH DICEK\n1. Judul hero turun 4 px dan warnanya lebih terang   -> line-height 1.3, desain 1.2\n2. Ikon WhatsApp di kiri bawah hilang                -> path SVG salah (./img/wa.svg)",
+    "lang": "text"
+   }
+  ]
+ },
+ "slw-4-4": {
+  "cx": [
+   {
+    "t": "Pemeriksaan kecil: alt, label, dan heading",
+    "b": "Sebelum memakai alat otomatis, periksa empat hal ini dengan membaca HTML. Contoh potongan HTML dan temuannya:",
+    "code": "HTML YANG DIPERIKSA\n<h1>Kopi Kita</h1><h3>Menu</h3>\n<img src=\"a.jpg\"> <img src=\"b.jpg\" alt=\"\">\n<input id=\"e\" type=\"email\"> <label for=\"n\">Nama</label><input id=\"n\">\n<button></button>\n\nTEMUAN\nimg a.jpg tanpa alt              -> tulis alt deskriptif (b.jpg alt=\"\" boleh: gambar dekorasi)\nbutton tanpa teks/aria-label     -> tambah teks atau aria-label=\"Buka menu\"\ninput #e tanpa label             -> <label for=\"e\">Email</label>\nheading lompat h1 -> h3          -> ganti <h3>Menu</h3> menjadi <h2>",
+    "lang": "text"
+   }
+  ]
+ },
+ "slw-5-3": {
+  "cx": [
+   {
+    "t": "Ringkasan QA dari hasil pemeriksaan",
+    "b": "Tulis setiap pemeriksaan bersama targetnya. Satu saja yang gagal berarti serah terima ditunda sampai diperbaiki.",
+    "code": "STATUS  PEMERIKSAAN                            HASIL   TARGET\nLULUS   LCP (detik)                            2,1     <= 2,5\nLULUS   CLS                                    0,04    <= 0,1\nLULUS   INP (ms)                               180     <= 200\nLULUS   skor aksesibilitas Lighthouse          96      >= 90\nLULUS   ukuran halaman (KB)                    720     <= 1000\nLULUS   lebar 320px tanpa scroll horizontal    ya      ya\nGAGAL   Safari iOS diuji                       belum   sudah\n\nKeputusan: tunda serah terima, uji di Safari iOS dulu.",
+    "lang": "text"
+   }
+  ]
+ },
+ "slw-6-2": {
+  "cx": [
+   {
+    "t": "Mendeteksi nilai jarak yang tidak konsisten dari hasil inspeksi",
+    "b": "Catat semua jarak yang terbaca di Dev Mode, hitung berapa kali muncul, lalu tandai yang tidak ada di skala resmi 4/8/12/16/24/32/48/64.",
+    "code": "JARAK  DIPAKAI  DI SKALA?\n15px   1x       tidak  -> kemungkinan 16, tanyakan desainer\n16px   5x       ya\n17px   1x       tidak  -> kemungkinan 16\n23px   1x       tidak  -> kemungkinan 24\n24px   4x       ya\n32px   2x       ya\n48px   1x       ya\n64px   1x       ya\n\nPertanyaan ke desainer: \"15, 17, dan 23 px sengaja atau boleh dibulatkan ke 16 dan 24?\"",
+    "lang": "text"
+   }
+  ],
+  "exs": [
+   {
+    "t": "Kasus: inventaris halaman pendaftaran kursus",
+    "code": "INVENTARIS · Daftar Kursus Coding Anak\n\nSection  : header, form 3 langkah, ringkasan biaya, footer\nKomponen : Input teks (default, fokus, error), Dropdown kelas, Radio jadwal,\n           Tombol primer \"Lanjut\", tombol teks \"Kembali\", Stepper 1-2-3\nToken    : 5 warna, radius 8, jarak 8/16/24/32, isi 16/24\nAset     : logo SVG, ilustrasi anak belajar (SVG)\nFrame    : Mobile 360 (utama) + Desktop 1280"
+   },
+   {
+    "t": "Kasus: pertanyaan state yang belum ada di desain",
+    "code": "PERTANYAAN UNTUK DESAINER · Kartu produk\n1. Harga coret saat diskon: ukuran dan warnanya?\n2. Produk habis: kartu diredupkan atau diberi label \"Habis\"?\n3. Foto gagal dimuat: pakai warna latar apa?\n4. Tombol \"Tambah\" saat memuat: teks diganti spinner?\n5. Nama produk 3 baris: dipotong setelah 2 baris dengan elipsis?",
+    "d": "Daftar ini dibuat saat audit, sebelum menulis CSS."
+   },
+   {
+    "t": "Kasus: daftar aset yang harus diekspor",
+    "code": "ASET                 FORMAT   UKURAN EKSPOR          CATATAN\nlogo                 SVG      -                      warna dari currentColor\nikon (12 buah)       SVG      24 x 24                stroke 1.5, satu set\nfoto hero            WebP     1x 720, 2x 1440        maks 200 KB\nfoto produk (3)      WebP     1x 400, 2x 800         rasio 1:1\npola latar batik     SVG      -                      dekorasi, alt kosong"
+   }
+  ]
+ },
+ "slw-6-3": {
+  "cx": [
+   {
+    "t": "Dari daftar style Figma ke CSS variables",
+    "b": "Ubah nama style Figma menjadi nama variabel huruf kecil berstrip. Ukuran huruf dibagi 16 menjadi rem, line-height dibagi ukuran huruf menjadi angka tanpa satuan.",
+    "code": "STYLE FIGMA                      CSS VARIABLE\nWarna/Latar      #FFFBF5         --color-latar: #FFFBF5;\nWarna/Teks       #2B1D14         --color-teks: #2B1D14;\nWarna/Aksen      #B45309         --color-aksen: #B45309;\nWarna/Aksen Gelap #92400E        --color-aksen-gelap: #92400E;\nTeks/Judul H1    700 40/48       --type-judul-h1: 700 2.5rem/1.2 \"Fraunces\", system-ui, sans-serif;\nTeks/Isi         400 16/26       --type-isi: 400 1rem/1.62 \"Inter\", system-ui, sans-serif;\n\nhitungan: 40/16 = 2.5rem, 48/40 = 1.2; 26/16 = 1.62",
+    "lang": "text"
+   }
+  ]
+ },
+ "slw-6-4": {
+  "cx": [
+   {
+    "t": "Outline heading dari kerangka HTML",
+    "b": "Tulis ulang heading halaman sebagai kerangka berindentasi. Kalau ada tingkat yang melompat atau section tanpa judul, perbaiki sebelum menulis CSS.",
+    "code": "h1 Kopi Gayo diseduh pelan\n  h2 Menu favorit\n    h3 Kopi susu gula aren\n    h3 V60 Gayo\n  h2 Kenapa Kopi Kita\n  h2 Testimoni\n  h2 Lokasi & jam buka\n\nHasil: satu h1, tidak ada tingkat yang melompat.",
+    "lang": "text"
+   }
+  ]
+ },
+ "slw-6-8": {
+  "cx": [
+   {
+    "t": "Tangkapan layar tiga lebar untuk dibandingkan dengan frame Figma",
+    "b": "Ambil tangkapan halaman penuh di tiga lebar frame desain (DevTools: Device Toolbar, lalu Capture full size screenshot), tumpuk dengan frame Figma berlapis 50%, dan catat bedanya.",
+    "code": "LEBAR   BERKAS                 SELISIH   CATATAN\n 360px  landing-360.png        < 1%      lolos\n 768px  landing-768.png        2,4%      kartu produk 2 kolom, desain 3 kolom -> cek breakpoint\n1440px  landing-1440.png       < 1%      lolos\n\nBatas lolos: selisih piksel maksimal 1% per lebar.",
+    "lang": "text"
+   }
+  ]
+ },
+ "slw-5-2": {
+  "exs": [
+   {
+    "t": "Kasus: memperbarui situs setelah revisi klien",
+    "code": "# klien minta harga paket diganti\ngit add index.html\ngit commit -m \"Perbarui harga paket langganan\"\ngit push\n# GitHub Pages membangun ulang dalam 1-2 menit; cek di\n# https://namakamu.github.io/kopinusa/ (muat ulang tanpa cache: Ctrl+Shift+R)"
+   },
+   {
+    "t": "Kasus: merapikan nama berkas sebelum deploy",
+    "code": "ls img\n\"Foto Hero.JPG\"  Logo.png  menu-1.webp\n# server Linux membedakan huruf besar-kecil dan tidak suka spasi\ngit mv \"img/Foto Hero.JPG\" img/foto-hero.jpg\ngit mv img/Logo.png img/logo.png\n# cari path absolut yang tertinggal\ngrep -rn 'C:\\\\' index.html css/"
+   },
+   {
+    "t": "Kasus: deploy ke Netlify lewat terminal",
+    "code": "npx netlify-cli deploy --dir=.            # URL pratinjau untuk dicek dulu\nnpx netlify-cli deploy --dir=. --prod     # terbitkan ke alamat utama\n# kirim dua tautan ke klien: pratinjau saat revisi, utama saat disetujui"
+   }
+  ]
+ },
+ "slw-7-1": {
+  "exs": [
+   {
+    "t": "Kasus: kartu keunggulan di section fitur",
+    "code": "<article class=\"fitur-kartu\">\n  <img src=\"ikon/canting.svg\" alt=\"\" width=\"40\" height=\"40\">\n  <h3>Dibatik tangan</h3>\n  <p>Setiap lembar dikerjakan 2-3 minggu oleh pembatik di Laweyan.</p>\n</article>\n\n<style>\n.fitur-kartu {\n  background: var(--permukaan);\n  border: 1px solid var(--garis);\n  border-radius: var(--radius);\n  padding: var(--ruang-3);\n}\n.fitur-kartu h3 { margin: var(--ruang-2) 0 var(--ruang-1); color: var(--primer); }\n.fitur-kartu p  { margin: 0; color: var(--teks2); }\n</style>",
+    "d": "Satu kartu dari frame, diulang tiga kali di grid."
+   },
+   {
+    "t": "Kasus: tombol CTA WhatsApp",
+    "code": "<a class=\"tombol-wa\" href=\"https://wa.me/6281234567890?text=Halo%20Batik%20Sekar\">\n  Pesan motif custom\n</a>\n\n<style>\n.tombol-wa {\n  display: inline-flex; align-items: center; min-height: 44px;\n  padding: 0 var(--ruang-3);\n  background: var(--primer); color: #fff;\n  border-radius: var(--radius); text-decoration: none; font-weight: 600;\n}\n.tombol-wa:hover { background: var(--primer2); }\n.tombol-wa:focus-visible { outline: 3px solid var(--aksen); outline-offset: 2px; }\n</style>",
+    "d": "Tautan biasa yang tampil sebagai tombol, area sentuh minimal 44 px."
+   }
+  ]
+ },
+ "slw-7-2": {
+  "exs": [
+   {
+    "t": "Kasus: field nominal dengan state error",
+    "code": "<div class=\"field\">\n  <label for=\"total\">Total tagihan</label>\n  <input id=\"total\" inputmode=\"numeric\" aria-invalid=\"true\" aria-describedby=\"total-err\">\n  <p id=\"total-err\" class=\"field-err\">Isi total tagihan, minimal Rp 1.000.</p>\n</div>\n\n<style>\n.field { display: grid; gap: var(--ruang-1); }\n.field input {\n  min-height: 48px; padding: 0 var(--ruang-2);\n  border: 2px solid var(--garis); border-radius: var(--radius);\n}\n.field input[aria-invalid=\"true\"] { border-color: var(--bahaya); }\n.field-err { margin: 0; color: var(--bahaya); font-size: 14px; }\n</style>",
+    "d": "Pesan error terhubung ke input lewat aria-describedby."
+   },
+   {
+    "t": "Kasus: kartu hasil per orang",
+    "code": "<section class=\"hasil\" aria-live=\"polite\">\n  <p class=\"hasil-label\">Setiap orang membayar</p>\n  <p class=\"hasil-angka\">Rp 87.500</p>\n  <p class=\"hasil-rinci\">Total Rp 350.000 · pajak 10% · servis 5% · 4 orang</p>\n</section>\n\n<style>\n.hasil { background: var(--lembut); border-radius: var(--radius); padding: var(--ruang-4); text-align: center; }\n.hasil-label { margin: 0; color: var(--teks2); }\n.hasil-angka { margin: var(--ruang-1) 0; font-size: 40px; font-weight: 800; color: var(--primer); }\n.hasil-rinci { margin: 0; font-size: 14px; color: var(--teks2); }\n</style>",
+    "d": "Angka hasil paling besar, rinciannya lebih kecil."
+   }
+  ]
+ },
+ "slw-7-3": {
+  "exs": [
+   {
+    "t": "Kasus: skeleton saat data memuat",
+    "code": "<div class=\"kartu-cuaca\" aria-busy=\"true\">\n  <span class=\"skeleton\" style=\"width: 40%\"></span>\n  <span class=\"skeleton skeleton--besar\" style=\"width: 60%\"></span>\n  <span class=\"skeleton\" style=\"width: 80%\"></span>\n</div>\n\n<style>\n.skeleton {\n  display: block; height: 16px; margin-bottom: var(--ruang-1);\n  border-radius: 8px; background: var(--garis);\n  animation: denyut 1.2s ease-in-out infinite;\n}\n.skeleton--besar { height: 48px; }\n@keyframes denyut { 50% { opacity: .5; } }\n@media (prefers-reduced-motion: reduce) { .skeleton { animation: none; } }\n</style>",
+    "d": "Bentuk abu-abu seukuran konten asli agar layout tidak melompat."
+   },
+   {
+    "t": "Kasus: banner offline",
+    "code": "<div class=\"banner-offline\" role=\"status\">\n  Kamu sedang offline. Menampilkan data pukul 14.00.\n</div>\n\n<style>\n.banner-offline {\n  padding: var(--ruang-1) var(--ruang-2);\n  background: #FFF4D6; color: #6B4E00;\n  border-left: 4px solid var(--aksen);\n  border-radius: var(--radius);\n}\n</style>",
+    "d": "Muncul di atas data terakhir, tidak menutupi isi halaman."
+   }
+  ]
+ },
+ "slw-7-4": {
+  "exs": [
+   {
+    "t": "Kasus: kartu tugas yang bisa difokus dengan keyboard",
+    "code": "<li class=\"tugas\">\n  <button class=\"tugas-isi\" aria-describedby=\"tugas-12-status\">\n    <span class=\"tugas-judul\">Struk cetak ulang</span>\n    <span class=\"tugas-meta\">#12 · Bayu</span>\n  </button>\n  <span id=\"tugas-12-status\" class=\"sr-only\">Kolom: Dikerjakan</span>\n</li>\n\n<style>\n.tugas-isi {\n  display: grid; gap: 4px; width: 100%; text-align: left;\n  padding: var(--ruang-2); background: var(--permukaan);\n  border: 1px solid var(--garis); border-radius: var(--radius);\n}\n.tugas-isi:focus-visible { outline: 3px solid var(--primer); outline-offset: 2px; }\n.tugas-meta { font-size: 13px; color: var(--teks2); }\n.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }\n</style>",
+    "d": "Kartu memakai button agar Tab, Enter, dan Spasi bekerja tanpa skrip tambahan."
+   },
+   {
+    "t": "Kasus: kolom kanban dengan judul dan jumlah",
+    "code": "<section class=\"kolom\" aria-labelledby=\"kolom-dikerjakan\">\n  <h3 id=\"kolom-dikerjakan\">Dikerjakan <span class=\"jumlah\">3</span></h3>\n  <ul class=\"kolom-daftar\">…</ul>\n</section>\n\n<style>\n.kolom { background: var(--lembut); border-radius: var(--radius); padding: var(--ruang-2); }\n.kolom h3 { display: flex; justify-content: space-between; margin: 0 0 var(--ruang-2); font-size: 15px; }\n.jumlah { min-width: 24px; text-align: center; border-radius: 999px; background: var(--permukaan); }\n.kolom-daftar { display: grid; gap: var(--ruang-1); margin: 0; padding: 0; list-style: none; }\n</style>",
+    "d": "Setiap kolom adalah section berjudul, daftar tugasnya ul."
+   }
+  ]
+ },
+ "slw-7-5": {
+  "exs": [
+   {
+    "t": "Kasus: stepper tiga langkah",
+    "code": "<ol class=\"stepper\">\n  <li class=\"selesai\">Data diri</li>\n  <li aria-current=\"step\">Pilih kelas</li>\n  <li>Pembayaran</li>\n</ol>\n\n<style>\n.stepper { display: flex; gap: var(--ruang-1); margin: 0; padding: 0; list-style: none; counter-reset: langkah; }\n.stepper li { flex: 1; padding-top: var(--ruang-1); border-top: 4px solid var(--garis); font-size: 14px; color: var(--teks2); }\n.stepper li::before { counter-increment: langkah; content: counter(langkah) \". \"; }\n.stepper .selesai { border-color: var(--sukses); }\n.stepper [aria-current=\"step\"] { border-color: var(--primer); color: var(--teks); font-weight: 700; }\n</style>",
+    "d": "Langkah aktif ditandai aria-current, bukan hanya warna."
+   },
+   {
+    "t": "Kasus: tombol Kembali dan Lanjut di bawah form",
+    "code": "<div class=\"aksi-form\">\n  <button type=\"button\" class=\"tombol-teks\">Kembali</button>\n  <button type=\"submit\" class=\"tombol-primer\">Lanjut ke pembayaran</button>\n</div>\n\n<style>\n.aksi-form { display: flex; flex-direction: column-reverse; gap: var(--ruang-1); }\n.tombol-primer { min-height: 48px; background: var(--primer); color: #fff; border: 0; border-radius: var(--radius); }\n.tombol-teks   { min-height: 48px; background: none; border: 0; color: var(--primer); }\n@media (min-width: 768px) {\n  .aksi-form { flex-direction: row; justify-content: flex-end; }\n}\n</style>",
+    "d": "Aksi utama di kanan dan paling menonjol; di HP keduanya selebar layar."
+   }
+  ]
+ },
+ "slw-7-6": {
+  "exs": [
+   {
+    "t": "Kasus: kolom pencarian dengan label",
+    "code": "<form role=\"search\" class=\"cari\">\n  <label for=\"q\" class=\"sr-only\">Cari judul, penulis, atau ISBN</label>\n  <input id=\"q\" type=\"search\" placeholder=\"Cari judul, penulis, atau ISBN\">\n</form>\n\n<style>\n.cari input {\n  width: 100%; min-height: 48px;\n  padding: 0 var(--ruang-2) 0 44px;\n  border: 2px solid var(--garis); border-radius: 999px;\n  background: var(--permukaan) url(\"ikon/cari.svg\") no-repeat 14px center / 20px;\n}\n.cari input:focus-visible { outline: 3px solid var(--primer); outline-offset: 2px; }\n.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }\n</style>",
+    "d": "Label tetap ada untuk pembaca layar walau desain hanya menampilkan ikon kaca pembesar."
+   },
+   {
+    "t": "Kasus: state hasil kosong",
+    "code": "<div class=\"kosong\" role=\"status\">\n  <img src=\"ilustrasi/rak-kosong.svg\" alt=\"\" width=\"120\" height=\"120\">\n  <h3>Tidak ada buku untuk \"pemrograman kuantum\"</h3>\n  <p>Coba kata lain atau <a href=\"/usul\">usulkan buku ini</a> ke pustakawan.</p>\n</div>\n\n<style>\n.kosong { display: grid; justify-items: center; gap: var(--ruang-1); padding: var(--ruang-5) var(--ruang-2); text-align: center; }\n.kosong h3 { margin: 0; }\n.kosong p  { margin: 0; color: var(--teks2); }\n</style>",
+    "d": "Jelaskan kenapa kosong dan beri jalan keluar."
+   }
+  ]
+ },
+ "slw-7-7": {
+  "exs": [
+   {
+    "t": "Kasus: kartu produk kerajinan",
+    "code": "<article class=\"produk\">\n  <img src=\"foto/tas-anyaman.webp\" alt=\"Tas anyaman pandan warna natural\" width=\"400\" height=\"400\">\n  <h3>Tas anyaman pandan Tasikmalaya</h3>\n  <p class=\"harga\">Rp 145.000</p>\n  <a class=\"tombol-primer\" href=\"/produk/tas-anyaman\">Lihat detail</a>\n</article>\n\n<style>\n.produk { display: grid; gap: var(--ruang-1); }\n.produk img { width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; border-radius: var(--radius); }\n.produk h3 { margin: 0; font-size: 16px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }\n.harga { margin: 0; font-weight: 700; color: var(--primer); }\n</style>",
+    "d": "Foto rasio 1:1, nama maksimal dua baris, harga menonjol."
+   },
+   {
+    "t": "Kasus: kotak pembayaran QRIS",
+    "code": "<section class=\"qris\" aria-labelledby=\"qris-judul\">\n  <h2 id=\"qris-judul\">Bayar dengan QRIS</h2>\n  <p class=\"qris-nominal\">Rp 290.000</p>\n  <img src=\"qris/pesanan-1042.png\" alt=\"Kode QRIS untuk pesanan 1042\" width=\"240\" height=\"240\">\n  <p class=\"qris-waktu\">Berlaku sampai 14.35 WIB</p>\n  <ol>\n    <li>Buka aplikasi bank atau e-wallet</li>\n    <li>Pindai kode di atas</li>\n    <li>Periksa nama toko: Kriya Nusantara</li>\n  </ol>\n</section>\n\n<style>\n.qris { max-width: 360px; margin-inline: auto; padding: var(--ruang-4); text-align: center;\n        border: 1px solid var(--garis); border-radius: var(--radius); }\n.qris-nominal { margin: 0; font-size: 32px; font-weight: 800; }\n.qris-waktu { color: var(--bahaya); font-weight: 600; }\n.qris ol { text-align: left; color: var(--teks2); }\n</style>",
+    "d": "QR besar di tengah, nominal dan batas waktu jelas, instruksi bernomor."
+   }
+  ]
+ },
+ "slw-7-8": {
+  "exs": [
+   {
+    "t": "Kasus: kartu KPI di baris statistik",
+    "code": "<article class=\"kpi\">\n  <p class=\"kpi-label\">Pesanan dikirim hari ini</p>\n  <p class=\"kpi-angka\">1.284</p>\n  <p class=\"kpi-tren naik\">▲ 12% dari kemarin</p>\n</article>\n\n<style>\n.kpi { padding: var(--ruang-3); background: var(--permukaan); border: 1px solid var(--garis); border-radius: var(--radius); }\n.kpi-label { margin: 0; font-size: 14px; color: var(--teks2); }\n.kpi-angka { margin: 4px 0; font-size: 32px; font-weight: 700; font-variant-numeric: tabular-nums; }\n.kpi-tren { margin: 0; font-size: 13px; }\n.naik  { color: var(--sukses); }\n.turun { color: var(--bahaya); }\n</style>",
+    "d": "Angka besar, label kecil, perubahan diberi tanda dan teks, bukan warna saja."
+   },
+   {
+    "t": "Kasus: tabel pesanan dengan lencana status",
+    "code": "<div class=\"tabel-gulir\">\n  <table>\n    <thead><tr><th>No. pesanan</th><th>Tujuan</th><th class=\"angka\">Berat (kg)</th><th>Status</th></tr></thead>\n    <tbody>\n      <tr><td>GDG-88213</td><td>Bekasi</td><td class=\"angka\">12,5</td><td><span class=\"lencana lencana--jalan\">Dikirim</span></td></tr>\n      <tr><td>GDG-88214</td><td>Karawang</td><td class=\"angka\">3,0</td><td><span class=\"lencana lencana--tahan\">Tertahan</span></td></tr>\n    </tbody>\n  </table>\n</div>\n\n<style>\n.tabel-gulir { overflow-x: auto; }\ntable { width: 100%; border-collapse: collapse; }\nth, td { padding: 12px var(--ruang-2); border-bottom: 1px solid var(--garis); text-align: left; white-space: nowrap; }\n.angka { text-align: right; font-variant-numeric: tabular-nums; }\n.lencana { padding: 2px 10px; border-radius: 999px; font-size: 13px; }\n.lencana--jalan { background: #E3F4EA; color: var(--sukses); }\n.lencana--tahan { background: #FDE7EA; color: var(--bahaya); }\n</style>",
+    "d": "Angka rata kanan dan tabular; tabel bisa digulir mendatar di HP."
+   }
+  ]
+ },
+ "slw-7-9": {
+  "exs": [
+   {
+    "t": "Kasus: gelembung jawaban dengan sumber",
+    "code": "<article class=\"jawaban\">\n  <p>Fotosintesis terjadi di kloroplas dan membutuhkan cahaya, air, serta CO₂ <a href=\"#s1\">[1]</a>.</p>\n  <ol class=\"sumber\">\n    <li id=\"s1\"><a href=\"/buku/ipa-8/bab-3\">IPA Kelas 8, Bab 3, hlm. 54</a></li>\n  </ol>\n</article>\n\n<style>\n.jawaban { max-width: 68ch; padding: var(--ruang-2) var(--ruang-3); background: var(--permukaan);\n           border: 1px solid var(--garis); border-radius: var(--radius) var(--radius) var(--radius) 4px; }\n.jawaban p { margin: 0 0 var(--ruang-1); line-height: 1.6; }\n.sumber { margin: 0; padding-left: 20px; font-size: 13px; color: var(--teks2); }\n</style>",
+    "d": "Sumber ditampilkan sebagai tautan bernomor di bawah jawaban."
+   },
+   {
+    "t": "Kasus: kolom pertanyaan menempel di bawah",
+    "code": "<form class=\"tanya\">\n  <label for=\"pertanyaan\" class=\"sr-only\">Tulis pertanyaan</label>\n  <textarea id=\"pertanyaan\" rows=\"1\" placeholder=\"Tanya tentang materi IPA kelas 8\"></textarea>\n  <button type=\"submit\">Kirim</button>\n</form>\n\n<style>\n.tanya { position: sticky; bottom: 0; display: flex; gap: var(--ruang-1);\n         padding: var(--ruang-2); background: var(--latar); border-top: 1px solid var(--garis); }\n.tanya textarea { flex: 1; min-height: 48px; padding: 12px; border: 2px solid var(--garis); border-radius: var(--radius); resize: vertical; }\n.tanya button { min-width: 88px; background: var(--primer); color: #fff; border: 0; border-radius: var(--radius); }\n.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }\n</style>",
+    "d": "Tetap terlihat saat percakapan digulir."
+   }
+  ]
+ },
+ "slw-7-10": {
+  "exs": [
+   {
+    "t": "Kasus: lencana status sinkronisasi",
+    "code": "<p class=\"sinkron sinkron--lokal\" role=\"status\">● 3 transaksi belum terkirim</p>\n<p class=\"sinkron sinkron--kirim\" role=\"status\">● Mengirim…</p>\n<p class=\"sinkron sinkron--ok\" role=\"status\">● Semua data tersinkron</p>\n\n<style>\n.sinkron { display: inline-block; margin: 0; padding: 4px 12px; border-radius: 999px; font-size: 13px; }\n.sinkron--lokal { background: #FFF4D6; color: #6B4E00; }\n.sinkron--kirim { background: var(--lembut); color: var(--primer2); }\n.sinkron--ok    { background: #E3F4EA; color: var(--sukses); }\n</style>",
+    "d": "Tiga state dari desain: tersimpan di HP, sedang dikirim, sudah tersinkron."
+   },
+   {
+    "t": "Kasus: baris transaksi kas",
+    "code": "<li class=\"trx\">\n  <div>\n    <p class=\"trx-judul\">Simpanan wajib · Bu Suminah</p>\n    <p class=\"trx-waktu\">Senin, 23 Nov · 09.12</p>\n  </div>\n  <p class=\"trx-nominal masuk\">+ Rp 25.000</p>\n</li>\n\n<style>\n.trx { display: flex; justify-content: space-between; align-items: center; gap: var(--ruang-2);\n       padding: 12px 0; border-bottom: 1px solid var(--garis); list-style: none; }\n.trx p { margin: 0; }\n.trx-waktu { font-size: 13px; color: var(--teks2); }\n.trx-nominal { font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }\n.masuk  { color: var(--sukses); }\n.keluar { color: var(--bahaya); }\n</style>",
+    "d": "Nominal masuk dan keluar dibedakan dengan tanda dan teks, bukan warna saja."
+   }
+  ]
+ },
+ "slw-1-2": {
+  "cx": [
+   {
+    "t": "CSS dari Dev Mode vs CSS yang ditulis ulang",
+    "b": "Dev Mode memberi posisi absolut dan ukuran tetap. Tulis ulang agar mengalir dan responsif; angka dari desain tetap dipakai, hanya cara menulisnya yang berubah.",
+    "lang": "css",
+    "code": "/* Dev Mode (mentah) */\n.frame-12 { position: absolute; width: 343px; height: 56px; left: 16px; top: 612px;\n            background: #0F766E; border-radius: 12px; font-family: 'Plus Jakarta Sans'; font-size: 16px; }\n\n/* Ditulis ulang: mengalir dan responsif */\n.btn-primary {\n  display: inline-flex; align-items: center; justify-content: center;\n  width: 100%; min-height: 56px; padding-inline: 24px;\n  background: #0F766E; color: #FFFFFF;\n  border-radius: 12px; font: 600 16px/1.2 'Plus Jakarta Sans', system-ui, sans-serif;\n}"
+   }
+  ]
+ },
+ "slw-2-2": {
+  "cx": [
+   {
+    "t": "Hero yang cepat dimuat",
+    "b": "Gambar hero adalah elemen terbesar di layar pertama. Beri width dan height agar layout tidak melompat, fetchpriority=\"high\" agar diunduh lebih dulu, dan jangan lazy-load gambar ini.",
+    "lang": "html",
+    "code": "<section class=\"hero\">\n  <div class=\"hero-teks\">\n    <h1>Kopi Gayo, diseduh pelan untuk harimu</h1>\n    <p>Biji pilihan petani Aceh Tengah, dipanggang tiap Senin di Medan.</p>\n    <div class=\"cta\"><a class=\"btn-primary\" href=\"#pesan\">Pesan sekarang</a><a class=\"btn-ghost\" href=\"#menu\">Lihat menu</a></div>\n  </div>\n  <img src=\"hero-1200.avif\" width=\"1200\" height=\"900\"\n       alt=\"Barista menuang kopi V60 di meja kayu\" fetchpriority=\"high\" decoding=\"async\">\n</section>\n<style>\n  .hero { display: grid; gap: 32px; align-items: center; padding-block: 48px; }\n  @media (min-width: 1024px) { .hero { grid-template-columns: 1fr 1fr; padding-block: 96px; } }\n  .hero img { width: 100%; height: auto; border-radius: 24px; }\n  .cta { display: flex; flex-wrap: wrap; gap: 12px; }\n</style>"
+   }
+  ]
+ }
+}

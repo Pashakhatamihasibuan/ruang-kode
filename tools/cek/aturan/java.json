@@ -1,0 +1,335 @@
+{
+ "aturan": [
+  [
+   "operator gabungan (+=, ++)",
+   "\\b\\w+(?:\\+\\+|--)(?=[;)\\s])|(?:\\+\\+|--)\\w|[\\w\\]]\\s*[+\\-*/%]=(?!=)",
+   "Ekspresi & operator"
+  ],
+  [
+   "tipe long/char/boolean/byte/short/float",
+   "\\b(?:long|char|boolean|byte|short|float)(?:\\[\\])*\\s+\\w+\\s*[=;,)]",
+   "Tipe data primitif"
+  ],
+  [
+   "type casting",
+   "\\((?:int|long|double|float|short|byte|char)\\)\\s*[\\w(]",
+   "Tipe data primitif"
+  ],
+  [
+   "kelas Math",
+   "\\bMath\\.",
+   "Kelas Math"
+  ],
+  [
+   "import",
+   "^\\s*import\\s",
+   "Membaca input pengguna"
+  ],
+  [
+   "Scanner",
+   "\\bScanner\\b",
+   "Membaca input pengguna"
+  ],
+  [
+   "method buatan sendiri",
+   "^\\s*(?:(?:public|private|protected|static|final|abstract|synchronized)\\s+)*(?!(?:else|return|new|throw|case)\\b)[\\w<>\\[\\],.?]+\\s+(?!main\\b|if\\b|for\\b|while\\b|switch\\b|catch\\b)\\w+\\s*\\([^)]*\\)\\s*(?:throws\\s+[\\w, .]+)?\\{",
+   "^Method statis"
+  ],
+  [
+   "parameter method",
+   "^\\s*(?:(?:public|private|protected|static|final|abstract|synchronized)\\s+)*(?!(?:else|return|new|throw|case)\\b)[\\w<>\\[\\],.?]+\\s+(?!main\\b|if\\b|for\\b|while\\b|switch\\b|catch\\b)\\w+\\s*\\(\\s*(?:final\\s+)?[\\w<>\\[\\],.?]+(?:\\.\\.\\.)?\\s+\\w+\\s*[,)]",
+   "Parameter & return"
+  ],
+  [
+   "return",
+   "\\breturn\\b",
+   "Parameter & return"
+  ],
+  [
+   "method String",
+   "\\.(?:length|charAt|substring|toUpperCase|toLowerCase|indexOf|lastIndexOf|equals|equalsIgnoreCase|compareTo|trim|strip|replace|contains|startsWith|endsWith|isEmpty|isBlank|split|repeat|toCharArray)\\(|\\bString\\.valueOf\\(|\\bInteger\\.parseInt\\(",
+   "^String$"
+  ],
+  [
+   "StringBuilder / String.join",
+   "\\bStringBuilder\\b|\\bString\\.join\\(",
+   "StringBuilder"
+  ],
+  [
+   "if/else",
+   "\\bif\\s*\\(|\\belse\\b",
+   "^Eksekusi Bersyarat|^if / else"
+  ],
+  [
+   "switch",
+   "\\bswitch\\s*\\(",
+   "^switch"
+  ],
+  [
+   "operator ternary",
+   "\\s\\?\\s[^;\\n]*\\s:\\s",
+   "operator ternary"
+  ],
+  [
+   "for",
+   "\\bfor\\s*\\(",
+   "Perulangan Pasti|^Perulangan for"
+  ],
+  [
+   "while",
+   "\\bwhile\\s*\\(",
+   "Perulangan Tak Pasti|^Perulangan while"
+  ],
+  [
+   "logika && || !",
+   "&&|\\|\\||(?<=[\\s(=])!(?=[\\w(])",
+   "^Logika"
+  ],
+  [
+   "do-while",
+   "\\bdo\\s*\\{",
+   "^Semua jenis perulangan"
+  ],
+  [
+   "for-each",
+   "\\bfor\\s*\\([^;)]*\\s:\\s",
+   "^Semua jenis perulangan"
+  ],
+  [
+   "continue",
+   "\\bcontinue\\s*;",
+   "^Semua jenis perulangan"
+  ],
+  [
+   "Random",
+   "\\bRandom\\b",
+   "^Random number"
+  ],
+  [
+   "array",
+   "\\b\\w+\\[\\]\\s+(?!args\\b)\\w+|\\bnew\\s+\\w+\\s*\\[|\\w\\[[^\\]\\n]+\\]",
+   "^Array$"
+  ],
+  [
+   "kelas Arrays",
+   "\\bArrays\\.",
+   "Kelas Arrays"
+  ],
+  [
+   "array dua dimensi",
+   "\\[\\]\\s*\\[\\]|\\]\\[",
+   "dua dimensi"
+  ],
+  [
+   "kelas buatan sendiri",
+   "^\\s*(?:(?:public|private|protected|static|abstract|final)\\s+)*class\\s+\\w+[\\s\\S]*^\\s*(?:(?:public|private|protected|static|abstract|final)\\s+)*class\\s+\\w+",
+   "^Kelas & Objek|^Kelas, konstruktor"
+  ],
+  [
+   "this",
+   "\\bthis\\b",
+   "^Kelas & Objek|^Kelas, konstruktor"
+  ],
+  [
+   "private",
+   "\\bprivate\\b",
+   "^Kelas & Objek|enkapsulasi"
+  ],
+  [
+   "protected",
+   "\\bprotected\\b",
+   "^Access specifier"
+  ],
+  [
+   "final",
+   "\\bfinal\\b",
+   "static & final"
+  ],
+  [
+   "field static",
+   "^\\s*(?:(?:public|private|protected)\\s+)?static\\s+(?:final\\s+)?[\\w<>\\[\\],.?]+\\s+\\w+\\s*[=;]",
+   "static & final"
+  ],
+  [
+   "null",
+   "\\bnull\\b",
+   "^Siklus hidup objek"
+  ],
+  [
+   "pewarisan (extends/super)",
+   "\\bextends\\b|\\bsuper\\b",
+   "^Pewarisan"
+  ],
+  [
+   "@Override",
+   "@Override\\b",
+   "^Pewarisan"
+  ],
+  [
+   "interface",
+   "^\\s*(?:public\\s+)?interface\\s|\\bimplements\\b",
+   "Interface$"
+  ],
+  [
+   "kelas abstrak",
+   "\\babstract\\b",
+   "^Kelas abstrak"
+  ],
+  [
+   "enum",
+   "\\benum\\s+\\w+",
+   "^Enum"
+  ],
+  [
+   "record",
+   "\\brecord\\s+\\w+\\s*[(<]",
+   "record"
+  ],
+  [
+   "kelas bersarang / anonim",
+   "\\bstatic\\s+class\\b|\\bnew\\s+\\w+(?:<[^>]*>)?\\s*\\([^)]*\\)\\s*\\{|\\.new\\s+\\w+",
+   "^Kelas bersarang"
+  ],
+  [
+   "initializer block (static)",
+   "^\\s*static\\s*\\{",
+   "initializer block"
+  ],
+  [
+   "ArrayList/List",
+   "\\b(?:ArrayList|List)\\b",
+   "^ArrayList|^Array lawan ArrayList"
+  ],
+  [
+   "Collections",
+   "\\bCollections\\.",
+   "^Java Collections Framework"
+  ],
+  [
+   "Set",
+   "\\b(?:HashSet|TreeSet|LinkedHashSet|Set)\\s*[<.]",
+   "^Java Collections Framework|^Set"
+  ],
+  [
+   "Map",
+   "\\b(?:HashMap|TreeMap|LinkedHashMap|Map)\\s*[<.]",
+   "^Java Collections Framework|^Map"
+  ],
+  [
+   "Stack",
+   "\\bStack\\s*<|\\.push\\(|\\.pop\\(",
+   "^Stack"
+  ],
+  [
+   "Queue",
+   "\\b(?:Queue|LinkedList|ArrayDeque)\\s*<|\\.offer\\(|\\.poll\\(",
+   "^Stack & Queue|^Queue"
+  ],
+  [
+   "Deque/Iterator",
+   "\\b(?:Deque|Iterator)\\s*<",
+   "^Deque"
+  ],
+  [
+   "PriorityQueue",
+   "\\bPriorityQueue\\b",
+   "^Struktur Data Lanjutan|priority queue"
+  ],
+  [
+   "generics buatan sendiri",
+   "\\b(?:class|interface)\\s+\\w+\\s*<|\\bstatic\\s+<\\w",
+   "^Generics"
+  ],
+  [
+   "try/catch",
+   "\\btry\\s*[{(]|\\bcatch\\s*\\(",
+   "^Menangani error"
+  ],
+  [
+   "throw",
+   "\\bthrow\\s+new\\b",
+   "^Menangani error"
+  ],
+  [
+   "throws / exception buatan sendiri",
+   "\\bthrows\\b|\\bextends\\s+\\w*(?:Exception|Error)\\b",
+   "^Checked, unchecked"
+  ],
+  [
+   "anotasi selain @Override",
+   "^\\s*@(?!Override\\b)[A-Z]\\w*|\\s@(?:FunctionalInterface|SuppressWarnings|Deprecated|SafeVarargs)\\b",
+   "^Anotasi"
+  ],
+  [
+   "lambda",
+   "^(?!\\s*(?:case|default)\\b)(?:(?!//)[^\\n])*?(?:\\(\\s*(?:\\w+\\s*(?:,\\s*\\w+\\s*)*)?\\)|\\b[a-z]\\w*)\\s*->\\s*[\\w({!]",
+   "^Pemrograman Fungsional|^Lambda"
+  ],
+  [
+   "method reference",
+   "\\w::\\w|\\w::new\\b",
+   "^Pemrograman Fungsional|^Lambda|^Functional interface"
+  ],
+  [
+   "functional interface java.util.function",
+   "\\b(?:Function|BiFunction|Predicate|Consumer|Supplier|UnaryOperator|BinaryOperator)\\s*<|@FunctionalInterface",
+   "^Pemrograman Fungsional|^Lambda|^Functional interface"
+  ],
+  [
+   "stream",
+   "\\.stream\\(\\)|\\b(?:Stream|IntStream|LongStream|Collectors)\\.",
+   "^Pemrograman Fungsional|^filter, map, reduce"
+  ],
+  [
+   "Optional",
+   "\\bOptional(?:Int|Double|Long)?\\b",
+   "^Optional"
+  ],
+  [
+   "package",
+   "^\\s*package\\s",
+   "^Package"
+  ],
+  [
+   "file I/O",
+   "\\bnew\\s+(?:File|FileReader|FileWriter|PrintWriter|BufferedReader|BufferedWriter)\\s*\\(|\\b(?:Files|Paths|Path)\\.\\w|\\b(?:Path|BufferedReader|BufferedWriter)\\s+\\w+\\s*=",
+   "^Pemrosesan File"
+  ],
+  [
+   "java.time",
+   "\\b(?:LocalDate|LocalDateTime|LocalTime|ZonedDateTime|Duration|Period|Instant|DateTimeFormatter)\\b",
+   "^Tanggal & waktu"
+  ],
+  [
+   "regex",
+   "\\b(?:Pattern|Matcher)\\b|\\.(?:matches|replaceAll)\\(",
+   "^Regular expression"
+  ],
+  [
+   "Thread",
+   "\\bThread\\b|\\bsynchronized\\b|\\bRunnable\\b",
+   "^Thread"
+  ],
+  [
+   "ExecutorService",
+   "\\bExecutor(?:Service|s)\\b|\\bFuture\\b|CompletableFuture",
+   "^ExecutorService"
+  ],
+  [
+   "volatile",
+   "\\bvolatile\\b",
+   "^volatile"
+  ],
+  [
+   "atomic",
+   "\\bAtomic(?:Integer|Long|Boolean|Reference)\\b",
+   "^Thread"
+  ],
+  [
+   "printf / String.format",
+   "\\bprintf\\(|\\bString\\.format\\(|\\.formatted\\(",
+   "^Format specifier"
+  ]
+ ],
+ "abaikan": []
+}

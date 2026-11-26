@@ -1,0 +1,276 @@
+{
+ "vue-1-1": {
+  "exs": [
+   {
+    "t": "Kasus: isi folder proyek Vue",
+    "code": "tokoku-vue/\n├── index.html          # satu-satunya file HTML, berisi <div id=\"app\">\n├── src/\n│   ├── main.ts         # titik masuk: createApp(App).mount('#app')\n│   ├── App.vue         # komponen akar\n│   └── components/     # komponen .vue lainnya\n├── public/             # file statis seperti favicon\n├── vite.config.ts\n└── package.json"
+   },
+   {
+    "t": "Kasus: perintah sehari-hari",
+    "code": "npm run dev        # server pengembangan di http://localhost:5173, perubahan langsung tampil\nnpm run build      # membuat folder dist/ untuk produksi\nnpm run preview    # mencoba hasil build di komputer sendiri\nnpm run test:unit  # menjalankan tes Vitest\nnpm run lint       # memeriksa kode dengan ESLint"
+   },
+   {
+    "t": "Kasus: membuat proyek tanpa pertanyaan",
+    "d": "Opsi baris perintah berguna untuk skrip atau tutorial kelas.",
+    "code": "npm create vue@latest kas-kelas -- --typescript --router --eslint\ncd kas-kelas\nnpm install\nnpm run dev"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Membuat proyek dan komponen pertama",
+    "lang": "html",
+    "b": "Setelah proyek dibuat, setiap komponen ditulis dalam satu file .vue berisi tiga bagian: script untuk logika, template untuk tampilan, dan style scoped yang hanya berlaku di komponen itu.",
+    "code": "npm create vue@latest toko-vue      # pilih: TypeScript, Router, Pinia, Vitest, ESLint\ncd toko-vue && npm install && npm run dev\n\n<!-- src/components/SalamToko.vue -->\n<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nconst namaToko = ref(\"Toko Kopi Nusantara\");\nconsole.log(\"Komponen dibuat untuk\", namaToko.value);\n</script>\n\n<template>\n  <section class=\"salam\">\n    <h2>Selamat datang!</h2>\n    <p>Komponen pertama: script, template, dan style dalam satu file.</p>\n  </section>\n</template>\n\n<style scoped>\n.salam { padding: 1rem; border-radius: 12px; background: #ecfdf5; }\n</style>"
+   },
+   {
+    "t": "Options API vs Composition API (komponen yang sama)",
+    "lang": "html",
+    "b": "Dua gaya menulis logika yang sama. Proyek lama banyak memakai Options API; proyek baru memakai Composition API dengan script setup.",
+    "code": "<!-- Options API (Vue 2 / proyek lama) -->\n<script>\nexport default {\n  data() { return { qty: 1, harga: 45000 } },\n  computed: { total() { return this.qty * this.harga } },\n  methods: { tambah() { this.qty++ } },\n}\n</script>\n\n<!-- Composition API (Vue 3, direkomendasikan) -->\n<script setup lang=\"ts\">\nimport { ref, computed } from \"vue\";\nconst harga = 45000;\nconst qty = ref(1);\nconst total = computed(() => qty.value * harga);\nconst tambah = () => qty.value++;\n</script>"
+   }
+  ]
+ },
+ "vue-1-2": {
+  "exs": [
+   {
+    "t": "Kasus: jadwal pelajaran dengan v-for",
+    "code": "<script setup lang=\"ts\">\nimport { ref } from 'vue'\nconst jadwal = ref([\n  { id: 1, jam: '07.00', mapel: 'Matematika', guru: 'Bu Ani' },\n  { id: 2, jam: '08.30', mapel: 'Bahasa Indonesia', guru: 'Pak Joko' },\n  { id: 3, jam: '10.15', mapel: 'Fisika', guru: 'Bu Maya' },\n])\n</script>\n\n<template>\n  <h2>Jadwal Senin</h2>\n  <ol>\n    <li v-for=\"j in jadwal\" :key=\"j.id\">\n      {{ j.jam }} - <strong>{{ j.mapel }}</strong> ({{ j.guru }})\n    </li>\n  </ol>\n</template>"
+   },
+   {
+    "t": "Kasus: status toko buka atau tutup",
+    "d": "v-if memilih teks, :class mengganti warna, v-show menyembunyikan info tambahan.",
+    "code": "<script setup lang=\"ts\">\nimport { ref } from 'vue'\nconst jam = ref(new Date().getHours())\nconst buka = ref(jam.value >= 8 && jam.value < 21)\nconst adaPromo = ref(true)\n</script>\n\n<template>\n  <p :class=\"buka ? 'hijau' : 'merah'\">\n    <span v-if=\"buka\">Toko buka sampai 21.00</span>\n    <span v-else>Toko tutup, buka lagi pukul 08.00</span>\n  </p>\n  <p v-show=\"adaPromo\">Gratis ongkir untuk pesanan di atas Rp100.000</p>\n  <button @click=\"buka = !buka\">Ubah status (uji coba)</button>\n</template>\n\n<style scoped>\n.hijau { color: #15803d; }\n.merah { color: #b91c1c; }\n</style>"
+   },
+   {
+    "t": "Kasus: tombol jumlah dengan @click dan :disabled",
+    "code": "<script setup lang=\"ts\">\nimport { ref } from 'vue'\nconst jumlah = ref(1)\nconst stok = 5\n</script>\n\n<template>\n  <div class=\"jumlah\">\n    <button :disabled=\"jumlah <= 1\" @click=\"jumlah--\">−</button>\n    <span>{{ jumlah }}</span>\n    <button :disabled=\"jumlah >= stok\" @click=\"jumlah++\">+</button>\n  </div>\n  <small v-if=\"jumlah === stok\">Maksimal {{ stok }} pcs</small>\n</template>"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Daftar produk dengan filter dan kelas dinamis",
+    "lang": "html",
+    "b": "Daftar disaring dengan computed (bukan v-if di elemen yang sama dengan v-for), kelas CSS berubah sesuai stok, dan pesan stok menipis memakai v-show karena sering berganti.",
+    "code": "<script setup lang=\"ts\">\nimport { ref, computed } from \"vue\";\ntype Produk = { id: number; nama: string; harga: number; stok: number };\nconst produk = ref<Produk[]>([\n  { id: 1, nama: \"Kopi Gayo\", harga: 65000, stok: 4 },\n  { id: 2, nama: \"Teh Melati\", harga: 18000, stok: 0 },\n  { id: 3, nama: \"Kopi Toraja\", harga: 72000, stok: 12 },\n]);\nconst hanyaTersedia = ref(false);\nconst tampil = computed(() => produk.value.filter((p) => !hanyaTersedia.value || p.stok > 0));\nconst rp = (n: number) => \"Rp\" + n.toLocaleString(\"id-ID\");\n</script>\n\n<template>\n  <button @click=\"hanyaTersedia = !hanyaTersedia\">\n    {{ hanyaTersedia ? \"Tampilkan semua\" : \"Hanya yang tersedia\" }}\n  </button>\n  <p v-if=\"tampil.length === 0\">Tidak ada produk.</p>\n  <ul v-else>\n    <li v-for=\"p in tampil\" :key=\"p.id\" :class=\"{ habis: p.stok === 0, menipis: p.stok > 0 && p.stok < 5 }\">\n      {{ p.nama }} - {{ rp(p.harga) }}\n      <small v-show=\"p.stok > 0 && p.stok < 5\">Sisa {{ p.stok }}!</small>\n      <button :disabled=\"p.stok === 0\" @click=\"p.stok--\">Beli</button>\n    </li>\n  </ul>\n</template>"
+   },
+   {
+    "t": "Compiler template mini: dari {{ }} ke string",
+    "b": "Interpolasi Vue selalu meng-escape HTML. Hanya v-html yang menyisipkan HTML mentah, jadi jangan pernah mengisinya dengan data pengguna.",
+    "code": "function kompilasi(templat) {\n  return (ctx) => templat.replace(/\\{\\{\\s*([^}]+?)\\s*\\}\\}/g, (_, ekspr) => {\n    const nilai = new Function(...Object.keys(ctx), `return (${ekspr});`)(...Object.values(ctx));\n    return String(nilai).replace(/[<>&]/g, (c) => ({ \"<\": \"&lt;\", \">\": \"&gt;\", \"&\": \"&amp;\" })[c]);\n  });\n}\nconst render = kompilasi(\"<h2>Halo, {{ nama }}!</h2><p>Total: {{ (qty * harga).toLocaleString('id-ID') }}</p><p>{{ catatan }}</p>\");\nconsole.log(render({ nama: \"Rina\", qty: 3, harga: 45000, catatan: \"<script>alert(1)</script>\" }));",
+    "lang": "js",
+    "out": "<h2>Halo, Rina!</h2><p>Total: 135.000</p><p>&lt;script&gt;alert(1)&lt;/script&gt;</p>"
+   }
+  ]
+ },
+ "vue-1-3": {
+  "exs": [
+   {
+    "t": "Kasus: buku tamu dengan input dan textarea",
+    "code": "<script setup lang=\"ts\">\nimport { ref } from 'vue'\nconst nama = ref('')\nconst pesan = ref('')\nconst daftar = ref<string[]>([])\nfunction simpan() {\n  daftar.value.push(`${nama.value}: ${pesan.value}`)\n  pesan.value = ''\n}\n</script>\n\n<template>\n  <form @submit.prevent=\"simpan\">\n    <input v-model.trim=\"nama\" placeholder=\"Nama\" required />\n    <textarea v-model.trim=\"pesan\" placeholder=\"Kesan dan pesan\" required />\n    <button>Kirim</button>\n  </form>\n  <p>Pratinjau: {{ nama || 'Anonim' }} - {{ pesan }}</p>\n  <ul><li v-for=\"(d, i) in daftar\" :key=\"i\">{{ d }}</li></ul>\n</template>"
+   },
+   {
+    "t": "Kasus: memilih topping martabak (checkbox ke array)",
+    "d": "Beberapa checkbox dengan v-model yang sama mengisi satu array.",
+    "code": "<script setup lang=\"ts\">\nimport { ref, computed } from 'vue'\nconst topping = ref<string[]>([])\nconst hargaTopping: Record<string, number> = { keju: 8000, cokelat: 6000, kacang: 5000 }\nconst total = computed(() => 25000 + topping.value.reduce((s, t) => s + hargaTopping[t], 0))\n</script>\n\n<template>\n  <label><input type=\"checkbox\" value=\"keju\" v-model=\"topping\" /> Keju</label>\n  <label><input type=\"checkbox\" value=\"cokelat\" v-model=\"topping\" /> Cokelat</label>\n  <label><input type=\"checkbox\" value=\"kacang\" v-model=\"topping\" /> Kacang</label>\n  <p>Dipilih: {{ topping.join(', ') || 'tanpa topping' }}</p>\n  <p>Total: Rp{{ total.toLocaleString('id-ID') }}</p>\n</template>"
+   },
+   {
+    "t": "Kasus: pilihan pengiriman dengan radio, select, dan .number",
+    "code": "<script setup lang=\"ts\">\nimport { ref, computed } from 'vue'\nconst kurir = ref('reguler')\nconst kota = ref('Bandung')\nconst beratKg = ref(1)\nconst tarif = computed(() => (kurir.value === 'kilat' ? 18000 : 9000) * Math.ceil(beratKg.value))\n</script>\n\n<template>\n  <label><input type=\"radio\" value=\"reguler\" v-model=\"kurir\" /> Reguler</label>\n  <label><input type=\"radio\" value=\"kilat\" v-model=\"kurir\" /> Kilat</label>\n  <select v-model=\"kota\">\n    <option>Bandung</option>\n    <option>Semarang</option>\n    <option>Denpasar</option>\n  </select>\n  <input v-model.number=\"beratKg\" type=\"number\" min=\"0.1\" step=\"0.1\" />\n  <p>Kirim ke {{ kota }} via {{ kurir }}: Rp{{ tarif.toLocaleString('id-ID') }}</p>\n</template>"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Form pendaftaran kursus dengan validasi",
+    "lang": "html",
+    "b": "Setiap kolom terikat ke ref lewat v-model dengan modifier yang sesuai, pesan error dihitung dengan computed, dan tombol baru aktif saat semua isian valid.",
+    "code": "<script setup lang=\"ts\">\nimport { ref, computed } from \"vue\";\nconst nama = ref(\"\");\nconst email = ref(\"\");\nconst umur = ref<number | null>(null);\nconst kelas = ref(\"frontend\");\nconst setuju = ref(false);\n\nconst error = computed(() => ({\n  nama: nama.value.length < 3 ? \"Nama minimal 3 huruf\" : \"\",\n  email: /^[^@\\s]+@[^@\\s]+\\.[a-z]{2,}$/i.test(email.value) ? \"\" : \"Format email belum benar\",\n  umur: umur.value && umur.value >= 15 ? \"\" : \"Umur minimal 15 tahun\",\n  setuju: setuju.value ? \"\" : \"Centang persetujuan\",\n}));\nconst valid = computed(() => Object.values(error.value).every((e) => !e));\nfunction kirim() {\n  alert(`Pendaftaran ${nama.value} untuk kelas ${kelas.value} terkirim`);\n}\n</script>\n\n<template>\n  <form @submit.prevent=\"valid && kirim()\" novalidate>\n    <input v-model.trim=\"nama\" placeholder=\"Nama lengkap\" />\n    <small>{{ error.nama }}</small>\n    <input v-model.trim=\"email\" type=\"email\" />\n    <small>{{ error.email }}</small>\n    <input v-model.number=\"umur\" type=\"number\" min=\"10\" />\n    <small>{{ error.umur }}</small>\n    <select v-model=\"kelas\">\n      <option value=\"frontend\">Frontend</option>\n      <option value=\"backend\">Backend</option>\n    </select>\n    <label><input type=\"checkbox\" v-model=\"setuju\" /> Saya setuju data dipakai untuk pendaftaran</label>\n    <button :disabled=\"!valid\">Daftar</button>\n  </form>\n</template>"
+   },
+   {
+    "t": "Input Rupiah: v-model dibongkar menjadi :value dan @input",
+    "lang": "html",
+    "b": "v-model sebenarnya singkatan dari mengikat :value dan mendengarkan @input. Saat tampilan dan data perlu berbeda (angka 1500000 tampil sebagai 1.500.000), tulis kedua bagian itu sendiri.",
+    "code": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nconst harga = ref(0);\nconst tampil = (n: number) => n.toLocaleString(\"id-ID\");\nconst ubah = (e: Event) => {\n  harga.value = Number((e.target as HTMLInputElement).value.replace(/\\D/g, \"\")) || 0;\n};\n</script>\n\n<template>\n  <label>Harga Rp <input :value=\"tampil(harga)\" @input=\"ubah\" inputmode=\"numeric\" /></label>\n  <p>Disimpan sebagai angka: {{ harga }}</p>\n  <!-- v-model=\"x\" setara dengan :value=\"x\" @input=\"x = $event.target.value\" -->\n</template>"
+   }
+  ]
+ },
+ "vue-2-1": {
+  "exs": [
+   {
+    "t": "Kasus: reactive untuk formulir alamat",
+    "d": "Objek reactive diakses tanpa .value.",
+    "code": "<script setup lang=\"ts\">\nimport { reactive, computed } from 'vue'\nconst alamat = reactive({ jalan: '', kota: 'Malang', kodePos: '' })\nconst lengkap = computed(() => `${alamat.jalan}, ${alamat.kota} ${alamat.kodePos}`)\n// const { kota } = alamat   // hati-hati: hasil destructure tidak reaktif lagi\n</script>\n\n<template>\n  <input v-model=\"alamat.jalan\" placeholder=\"Jalan\" />\n  <input v-model=\"alamat.kota\" placeholder=\"Kota\" />\n  <input v-model=\"alamat.kodePos\" placeholder=\"Kode pos\" />\n  <p>Dikirim ke: {{ lengkap }}</p>\n</template>"
+   },
+   {
+    "t": "Kasus: computed untuk rata-rata rapor",
+    "d": "Rata-rata dan predikat dihitung ulang hanya saat nilai berubah.",
+    "code": "<script setup lang=\"ts\">\nimport { ref, computed } from 'vue'\nconst nilai = ref([\n  { mapel: 'Matematika', angka: 84 },\n  { mapel: 'IPA', angka: 90 },\n  { mapel: 'IPS', angka: 72 },\n])\nconst rata = computed(() => nilai.value.reduce((s, n) => s + n.angka, 0) / nilai.value.length)\nconst predikat = computed(() => (rata.value >= 85 ? 'A' : rata.value >= 75 ? 'B' : 'C'))\n</script>\n\n<template>\n  <div v-for=\"n in nilai\" :key=\"n.mapel\">\n    {{ n.mapel }} <input v-model.number=\"n.angka\" type=\"number\" min=\"0\" max=\"100\" />\n  </div>\n  <p>Rata-rata {{ rata.toFixed(1) }}, predikat {{ predikat }}</p>\n</template>"
+   },
+   {
+    "t": "Kasus: watch untuk pencarian buku perpustakaan",
+    "d": "watch dipakai karena tugasnya melakukan sesuatu: memanggil API.",
+    "code": "<script setup lang=\"ts\">\nimport { ref, watch } from 'vue'\nconst kata = ref('')\nconst hasil = ref<string[]>([])\n\nwatch(kata, async (baru) => {\n  if (baru.length < 3) { hasil.value = []; return }\n  const r = await fetch(`/api/buku?cari=${encodeURIComponent(baru)}`)\n  hasil.value = await r.json()\n})\n</script>\n\n<template>\n  <input v-model.trim=\"kata\" placeholder=\"Cari judul (min. 3 huruf)\" />\n  <ul><li v-for=\"judul in hasil\" :key=\"judul\">{{ judul }}</li></ul>\n</template>"
+   }
+  ]
+ },
+ "vue-2-2": {
+  "exs": [
+   {
+    "t": "Kasus: komponen Lencana dengan props bawaan",
+    "code": "<!-- components/Lencana.vue -->\n<script setup lang=\"ts\">\nconst props = withDefaults(defineProps<{ teks: string; warna?: 'hijau' | 'merah' }>(), { warna: 'hijau' })\n</script>\n\n<template>\n  <span :class=\"['lencana', props.warna]\">{{ props.teks }}</span>\n</template>\n\n<!-- Pemakaian -->\n<Lencana teks=\"Baru\" />\n<Lencana teks=\"Habis\" warna=\"merah\" />"
+   },
+   {
+    "t": "Kasus: penghitung pengunjung yang memancarkan event",
+    "d": "Anak tidak mengubah props; ia memberi tahu induk lewat event.",
+    "code": "<!-- components/Penghitung.vue -->\n<script setup lang=\"ts\">\nconst props = defineProps<{ nilai: number; maks: number }>()\nconst emit = defineEmits<{ ubah: [baru: number] }>()\n</script>\n\n<template>\n  <button :disabled=\"props.nilai === 0\" @click=\"emit('ubah', props.nilai - 1)\">−</button>\n  {{ props.nilai }} / {{ props.maks }}\n  <button :disabled=\"props.nilai === props.maks\" @click=\"emit('ubah', props.nilai + 1)\">+</button>\n</template>\n\n<!-- Induk -->\n<script setup lang=\"ts\">\nimport { ref } from 'vue'\nconst pengunjung = ref(0)\n</script>\n<template>\n  <Penghitung :nilai=\"pengunjung\" :maks=\"50\" @ubah=\"(n) => (pengunjung = n)\" />\n</template>"
+   },
+   {
+    "t": "Kasus: kartu pengumuman dengan default slot dan named slot",
+    "code": "<!-- components/KartuPengumuman.vue -->\n<template>\n  <article class=\"kartu\">\n    <header><slot name=\"judul\">Pengumuman</slot></header>\n    <slot />\n    <footer><slot name=\"aksi\" /></footer>\n  </article>\n</template>\n\n<!-- Pemakaian -->\n<KartuPengumuman>\n  <template #judul>Class Meeting 2026</template>\n  <p>Lomba futsal dan tarik tambang tanggal 15 Desember.</p>\n  <template #aksi><a href=\"/jadwal\">Lihat jadwal</a></template>\n</KartuPengumuman>"
+   },
+   {
+    "t": "Kasus: v-model pada komponen sendiri dengan defineModel",
+    "code": "<!-- components/PilihUkuran.vue -->\n<script setup lang=\"ts\">\nconst ukuran = defineModel<'S' | 'M' | 'L'>({ default: 'M' })\n</script>\n\n<template>\n  <button v-for=\"u in ['S', 'M', 'L'] as const\" :key=\"u\" :aria-pressed=\"ukuran === u\" @click=\"ukuran = u\">\n    {{ u }}\n  </button>\n</template>\n\n<!-- Pemakaian -->\n<PilihUkuran v-model=\"ukuranKaos\" />"
+   }
+  ]
+ },
+ "vue-2-3": {
+  "exs": [
+   {
+    "t": "Kasus: composable useJam dengan timer yang dibersihkan",
+    "code": "// composables/useJam.ts\nimport { ref, onMounted, onUnmounted } from 'vue'\n\nexport function useJam() {\n  const sekarang = ref(new Date())\n  let id: ReturnType<typeof setInterval> | undefined\n  onMounted(() => {\n    id = setInterval(() => (sekarang.value = new Date()), 1000)\n  })\n  onUnmounted(() => clearInterval(id))    // tanpa ini timer tetap jalan setelah komponen hilang\n  return { sekarang }\n}\n\n// dipakai di komponen\nconst { sekarang } = useJam()"
+   },
+   {
+    "t": "Kasus: composable useLocalStorage",
+    "d": "Nilai disimpan otomatis setiap kali berubah.",
+    "code": "// composables/useLocalStorage.ts\nimport { ref, watch } from 'vue'\n\nexport function useLocalStorage(kunci: string, awal: string) {\n  const nilai = ref(localStorage.getItem(kunci) ?? awal)\n  watch(nilai, (baru) => localStorage.setItem(kunci, baru))\n  return nilai\n}\n\n// dipakai di komponen pengaturan\nconst tema = useLocalStorage('tema', 'terang')\nconst bahasa = useLocalStorage('bahasa', 'id')"
+   },
+   {
+    "t": "Kasus: composable useOnline untuk status koneksi",
+    "code": "// composables/useOnline.ts\nimport { ref, onMounted, onUnmounted } from 'vue'\n\nexport function useOnline() {\n  const online = ref(navigator.onLine)\n  const perbarui = () => (online.value = navigator.onLine)\n  onMounted(() => {\n    window.addEventListener('online', perbarui)\n    window.addEventListener('offline', perbarui)\n  })\n  onUnmounted(() => {\n    window.removeEventListener('online', perbarui)\n    window.removeEventListener('offline', perbarui)\n  })\n  return { online }\n}\n\n// di komponen: <p v-if=\"!online\">Kamu sedang offline, data disimpan sementara</p>\nconst { online } = useOnline()"
+   }
+  ]
+ },
+ "vue-3-1": {
+  "code": "// src/router/index.ts\nimport { createRouter, createWebHistory } from 'vue-router'\nimport Beranda from '@/views/Beranda.vue'\n\nconst router = createRouter({\n  history: createWebHistory(),\n  routes: [\n    { path: '/', component: Beranda },\n    { path: '/produk/:slug', component: () => import('@/views/DetailProduk.vue') },\n    { path: '/pesanan', component: () => import('@/views/Pesanan.vue'), meta: { butuhLogin: true } },\n    { path: '/:pathMatch(.*)*', component: () => import('@/views/TidakDitemukan.vue') },\n  ],\n})\n\nrouter.beforeEach((to) => {\n  const sudahMasuk = localStorage.getItem('token') !== null\n  if (to.meta.butuhLogin && !sudahMasuk) {\n    return { path: '/masuk', query: { kembali: to.fullPath } }\n  }\n})\n\nexport default router",
+  "exs": [
+   {
+    "t": "Kasus: membaca parameter rute di halaman detail berita",
+    "code": "<!-- views/DetailBerita.vue  (rute: /berita/:slug) -->\n<script setup lang=\"ts\">\nimport { computed } from 'vue'\nimport { useRoute } from 'vue-router'\n\nconst route = useRoute()\nconst judul = computed(() => String(route.params.slug).replaceAll('-', ' '))\n</script>\n\n<template>\n  <h1>{{ judul }}</h1>\n  <RouterLink to=\"/berita\">← Semua berita</RouterLink>\n</template>"
+   },
+   {
+    "t": "Kasus: pindah halaman lewat kode setelah form dikirim",
+    "code": "<!-- views/Checkout.vue -->\n<script setup lang=\"ts\">\nimport { useRouter } from 'vue-router'\nconst router = useRouter()\n\nasync function bayar() {\n  const r = await fetch('/api/pesanan', { method: 'POST' })\n  const { id } = await r.json()\n  router.push({ path: `/pesanan/${id}`, query: { baru: '1' } })   // ke halaman terima kasih\n}\n</script>\n\n<template>\n  <button @click=\"bayar\">Bayar sekarang</button>\n</template>"
+   },
+   {
+    "t": "Kasus: mencocokkan pola rute dinamis",
+    "d": "Inilah yang dikerjakan router saat membaca /produk/:slug.",
+    "code": "function cocokkan(pola: string, path: string): Record<string, string> | null {\n  const a = pola.split(\"/\"), b = path.split(\"/\");\n  if (a.length !== b.length) return null;\n  const params: Record<string, string> = {};\n  for (let i = 0; i < a.length; i++) {\n    if (a[i].startsWith(\":\")) params[a[i].slice(1)] = decodeURIComponent(b[i]);\n    else if (a[i] !== b[i]) return null;\n  }\n  return params;\n}\n\nfor (const path of [\"/produk/kopi-gayo\", \"/produk/teh/ulasan\", \"/kategori/kopi\"]) {\n  console.log(path.padEnd(19), \"->\", JSON.stringify(cocokkan(\"/produk/:slug\", path)));\n}",
+    "out": "/produk/kopi-gayo   -> {\"slug\":\"kopi-gayo\"}\n/produk/teh/ulasan  -> null\n/kategori/kopi      -> null"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Router dengan guard login dan lazy loading",
+    "lang": "ts",
+    "b": "Setiap halaman dimuat malas agar bundel awal kecil, rute akun ditandai meta wajibLogin, dan guard global mengalihkan tamu ke halaman masuk sambil mengingat tujuan awalnya.",
+    "code": "// router/index.ts\nimport { createRouter, createWebHistory } from \"vue-router\";\n\nconst router = createRouter({\n  history: createWebHistory(),\n  routes: [\n    { path: \"/\", component: () => import(\"@/views/Beranda.vue\") },\n    { path: \"/produk/:slug\", component: () => import(\"@/views/DetailProduk.vue\"), props: true },\n    { path: \"/akun\", component: () => import(\"@/views/Akun.vue\"), meta: { wajibLogin: true } },\n    { path: \"/masuk\", component: () => import(\"@/views/Masuk.vue\") },\n    { path: \"/:pathMatch(.*)*\", component: () => import(\"@/views/Halaman404.vue\") },\n  ],\n  scrollBehavior: (_to, _from, simpan) => simpan ?? { top: 0 },\n});\n\nrouter.beforeEach((to) => {\n  const sudahMasuk = localStorage.getItem(\"token\") !== null;\n  if (to.meta.wajibLogin && !sudahMasuk) return { path: \"/masuk\", query: { lanjut: to.fullPath } };\n});\nexport default router;\n\n<!-- App.vue -->\n<template>\n  <nav><RouterLink to=\"/\">Beranda</RouterLink> <RouterLink to=\"/akun\">Akun</RouterLink></nav>\n  <RouterView />\n</template>"
+   },
+   {
+    "t": "Simulasi navigation guard",
+    "b": "",
+    "code": "const rute = [{ path: \"/\" }, { path: \"/akun\", meta: { wajibLogin: true } }, { path: \"/admin\", meta: { wajibLogin: true, peran: \"admin\" } }];\nfunction navigasi(ke, user) {\n  const r = rute.find((x) => x.path === ke);\n  if (!r) return \"404\";\n  if (r.meta?.wajibLogin && !user) return `redirect /masuk?lanjut=${encodeURIComponent(ke)}`;\n  if (r.meta?.peran && user?.peran !== r.meta.peran) return \"redirect / (tidak berwenang)\";\n  return `tampilkan ${ke}`;\n}\nfor (const [ke, user] of [[\"/\", null], [\"/akun\", null], [\"/akun\", { peran: \"user\" }], [\"/admin\", { peran: \"user\" }], [\"/admin\", { peran: \"admin\" }], [\"/promo\", null]])\n  console.log(`${ke.padEnd(7)} ${(user?.peran ?? \"tamu\").padEnd(6)} -> ${navigasi(ke, user)}`);",
+    "lang": "js",
+    "out": "/       tamu   -> tampilkan /\n/akun   tamu   -> redirect /masuk?lanjut=%2Fakun\n/akun   user   -> tampilkan /akun\n/admin  user   -> redirect / (tidak berwenang)\n/admin  admin  -> tampilkan /admin\n/promo  tamu   -> 404"
+   }
+  ]
+ },
+ "vue-3-2": {
+  "exs": [
+   {
+    "t": "Kasus: store pengguna yang sedang login",
+    "code": "// src/stores/pengguna.ts\nimport { defineStore } from 'pinia'\nimport { ref, computed } from 'vue'\n\nexport const usePengguna = defineStore('pengguna', () => {\n  const data = ref<{ nama: string; peran: 'siswa' | 'guru' } | null>(null)\n  const masuk = computed(() => data.value !== null)\n  const sapaan = computed(() => (data.value ? `Halo, ${data.value.nama}` : 'Halo, tamu'))\n\n  function login(nama: string, peran: 'siswa' | 'guru') { data.value = { nama, peran } }\n  function logout() { data.value = null }\n  return { data, masuk, sapaan, login, logout }\n})\n\n// di Navbar.vue dan Profil.vue memakai store yang sama\nconst pengguna = usePengguna()\npengguna.login('Sari', 'guru')"
+   },
+   {
+    "t": "Kasus: tema gelap untuk semua komponen",
+    "d": "storeToRefs menjaga reaktivitas saat state di-destructure.",
+    "code": "// src/stores/tema.ts\nimport { defineStore } from 'pinia'\nimport { ref } from 'vue'\n\nexport const useTema = defineStore('tema', () => {\n  const gelap = ref(false)\n  function alihkan() { gelap.value = !gelap.value }\n  return { gelap, alihkan }\n})\n\n// di komponen mana pun\nimport { storeToRefs } from 'pinia'\nconst tema = useTema()\nconst { gelap } = storeToRefs(tema)   // tetap reaktif\n// const { gelap } = tema            // SALAH: nilainya membeku\ntema.alihkan()"
+   },
+   {
+    "t": "Kasus: logika getter dan action diuji tanpa Vue",
+    "d": "Isi setup store hanyalah state, nilai turunan, dan fungsi; logikanya bisa dicoba di Node.",
+    "code": "function buatStoreAbsen() {\n  const hadir: string[] = [];\n  const jumlahHadir = () => hadir.length;                       // seperti getter\n  function absen(nama: string) {                                // seperti action\n    if (!hadir.includes(nama)) hadir.push(nama);\n  }\n  return { hadir, jumlahHadir, absen };\n}\n\nconst kelas = buatStoreAbsen();\nkelas.absen(\"Rani\");\nkelas.absen(\"Yoga\");\nkelas.absen(\"Rani\");     // tidak tercatat dua kali\nconsole.log(kelas.hadir.join(\", \"), \"| hadir:\", kelas.jumlahHadir());",
+    "out": "Rani, Yoga | hadir: 2"
+   }
+  ]
+ },
+ "vue-3-3": {
+  "exs": [
+   {
+    "t": "Kasus: daftar berita dengan tiga keadaan",
+    "code": "<script setup lang=\"ts\">\nimport { ref, onMounted } from 'vue'\nconst berita = ref<{ id: number; judul: string }[]>([])\nconst memuat = ref(true)\nconst error = ref('')\n\nonMounted(async () => {\n  try {\n    const r = await fetch('/api/berita')\n    if (!r.ok) throw new Error(`HTTP ${r.status}`)\n    berita.value = await r.json()\n  } catch (e) {\n    error.value = (e as Error).message\n  } finally {\n    memuat.value = false\n  }\n})\n</script>\n\n<template>\n  <p v-if=\"memuat\">Memuat berita…</p>\n  <p v-else-if=\"error\" role=\"alert\">Gagal memuat: {{ error }}</p>\n  <p v-else-if=\"berita.length === 0\">Belum ada berita.</p>\n  <ul v-else><li v-for=\"b in berita\" :key=\"b.id\">{{ b.judul }}</li></ul>\n</template>"
+   },
+   {
+    "t": "Kasus: tombol Coba lagi saat gagal",
+    "d": "Fungsi muat yang sama dipakai saat pertama tampil dan saat tombol ditekan.",
+    "code": "<script setup lang=\"ts\">\nimport { ref, onMounted } from 'vue'\nconst cuaca = ref<{ kota: string; suhu: number } | null>(null)\nconst status = ref<'memuat' | 'error' | 'siap'>('memuat')\n\nasync function muat() {\n  status.value = 'memuat'\n  try {\n    const r = await fetch('/api/cuaca?kota=Pontianak')\n    if (!r.ok) throw new Error()\n    cuaca.value = await r.json()\n    status.value = 'siap'\n  } catch {\n    status.value = 'error'\n  }\n}\nonMounted(muat)\n</script>\n\n<template>\n  <p v-if=\"status === 'memuat'\" aria-busy=\"true\">Memuat cuaca…</p>\n  <div v-else-if=\"status === 'error'\" role=\"alert\">\n    Gagal memuat cuaca. <button @click=\"muat\">Coba lagi</button>\n  </div>\n  <p v-else-if=\"cuaca\">{{ cuaca.kota }}: {{ cuaca.suhu }}°C</p>\n</template>"
+   },
+   {
+    "t": "Kasus: memuat ulang saat kategori berubah",
+    "d": "Permintaan lama dibatalkan agar hasil yang terlambat tidak menimpa hasil baru.",
+    "code": "<script setup lang=\"ts\">\nimport { ref, watch } from 'vue'\nimport { useRoute } from 'vue-router'\nconst route = useRoute()\nconst produk = ref<{ id: number; nama: string }[]>([])\nlet ctrl: AbortController | null = null\n\nwatch(() => route.params.kategori, async (kat) => {\n  ctrl?.abort()\n  ctrl = new AbortController()\n  try {\n    const r = await fetch(`/api/produk?kategori=${kat}`, { signal: ctrl.signal })\n    produk.value = await r.json()\n  } catch (e) {\n    if ((e as Error).name !== 'AbortError') console.error(e)\n  }\n}, { immediate: true })\n</script>\n\n<template>\n  <ul><li v-for=\"p in produk\" :key=\"p.id\">{{ p.nama }}</li></ul>\n</template>"
+   }
+  ]
+ },
+ "vue-4-1": {
+  "exs": [
+   {
+    "t": "Kasus: menguji form dengan v-model",
+    "code": "// src/components/__tests__/FormBukuTamu.spec.ts\nimport { describe, it, expect } from 'vitest'\nimport { mount } from '@vue/test-utils'\nimport FormBukuTamu from '../FormBukuTamu.vue'\n\ndescribe('FormBukuTamu', () => {\n  it('tombol aktif setelah nama diisi', async () => {\n    const w = mount(FormBukuTamu)\n    expect(w.get('button').attributes('disabled')).toBeDefined()\n    await w.get('input[name=nama]').setValue('Dimas')\n    expect(w.get('button').attributes('disabled')).toBeUndefined()\n  })\n\n  it('menampilkan pesan setelah dikirim', async () => {\n    const w = mount(FormBukuTamu)\n    await w.get('input[name=nama]').setValue('Dimas')\n    await w.get('form').trigger('submit')\n    expect(w.text()).toContain('Terima kasih, Dimas')\n  })\n})"
+   },
+   {
+    "t": "Kasus: menguji store Pinia",
+    "code": "// src/stores/__tests__/keranjang.spec.ts\nimport { describe, it, expect, beforeEach } from 'vitest'\nimport { setActivePinia, createPinia } from 'pinia'\nimport { useKeranjang } from '../keranjang'\n\ndescribe('store keranjang', () => {\n  beforeEach(() => setActivePinia(createPinia()))   // store baru untuk setiap tes\n\n  it('menambah qty jika produk sama', () => {\n    const k = useKeranjang()\n    k.tambah({ id: 1, nama: 'Kopi Gayo', harga: 85000 })\n    k.tambah({ id: 1, nama: 'Kopi Gayo', harga: 85000 })\n    expect(k.jumlah).toBe(2)\n    expect(k.total).toBe(170000)\n  })\n})"
+   },
+   {
+    "t": "Kasus: menguji fungsi format tanpa komponen",
+    "d": "Fungsi murni paling mudah diuji; di sini memakai node:assert agar bisa dijalankan langsung.",
+    "code": "import assert from \"node:assert/strict\";\n\nconst predikat = (nilai: number): string => (nilai >= 85 ? \"A\" : nilai >= 75 ? \"B\" : nilai >= 60 ? \"C\" : \"D\");\n\nconst kasus: [number, string][] = [[92, \"A\"], [85, \"A\"], [80, \"B\"], [60, \"C\"], [59, \"D\"]];\nfor (const [masuk, harap] of kasus) {\n  assert.equal(predikat(masuk), harap);\n  console.log(\"✓\", masuk, \"->\", harap);\n}\nconsole.log(`${kasus.length}/${kasus.length} lulus`);",
+    "out": "✓ 92 -> A\n✓ 85 -> A\n✓ 80 -> B\n✓ 60 -> C\n✓ 59 -> D\n5/5 lulus"
+   }
+  ]
+ },
+ "vue-4-2": {
+  "exs": [
+   {
+    "t": "Kasus: beranda Nuxt dengan useSeoMeta",
+    "d": "Tanpa import: ref, useSeoMeta, dan komponen diimpor otomatis oleh Nuxt.",
+    "code": "<!-- pages/index.vue  ->  / -->\n<script setup lang=\"ts\">\nuseSeoMeta({\n  title: 'Warung Kopi Bu Sari | Purwokerto',\n  description: 'Kopi lokal disangrai setiap pagi. Pesan antar di Purwokerto.',\n  ogImage: '/og-beranda.jpg',\n})\nconst promo = ref('Diskon 10% setiap Senin')\n</script>\n\n<template>\n  <main>\n    <h1>Warung Kopi Bu Sari</h1>\n    <p>{{ promo }}</p>\n    <NuxtLink to=\"/menu\">Lihat menu</NuxtLink>\n  </main>\n</template>"
+   },
+   {
+    "t": "Kasus: API server di folder server/",
+    "code": "// server/api/menu.get.ts  ->  GET /api/menu\nexport default defineEventHandler(() => {\n  return [\n    { id: 1, nama: 'Kopi tubruk', harga: 8000 },\n    { id: 2, nama: 'Es kopi susu gula aren', harga: 18000 },\n  ]\n})\n\n<!-- pages/menu.vue  ->  data diambil di server, HTML sudah berisi menu -->\n<script setup lang=\"ts\">\nconst { data: menu } = await useFetch('/api/menu')\n</script>\n<template>\n  <ul><li v-for=\"m in menu\" :key=\"m.id\">{{ m.nama }} - Rp{{ m.harga.toLocaleString('id-ID') }}</li></ul>\n</template>"
+   },
+   {
+    "t": "Kasus: campuran halaman statis, ISR, dan SPA",
+    "code": "// nuxt.config.ts\nexport default defineNuxtConfig({\n  routeRules: {\n    '/': { prerender: true },              // dibuat sekali saat build\n    '/blog/**': { isr: 3600 },             // statis, diperbarui tiap jam\n    '/dasbor/**': { ssr: false },          // SPA di balik login, tidak perlu SEO\n  },\n})"
+   }
+  ]
+ },
+ "vue-4-3": {
+  "exs": [
+   {
+    "t": "Kasus: alamat API lewat variabel VITE_",
+    "code": "# .env.development\nVITE_API_URL=http://localhost:8000\n\n# .env.production\nVITE_API_URL=https://api.tokoku.id\n\n# di kode: src/api.ts\n#   const BASE = import.meta.env.VITE_API_URL\n#   fetch(`${BASE}/produk`)\n# Ingat: semua VITE_* ikut ke bundel browser, jangan isi dengan kunci rahasia."
+   },
+   {
+    "t": "Kasus: deploy ke GitHub Pages di sub-folder",
+    "d": "Situs di username.github.io/kas-kelas/ butuh base path yang sesuai.",
+    "code": "# vite.config.ts\n#   export default defineConfig({ base: '/kas-kelas/', plugins: [vue()] })\n\nnpm run build\ncp dist/index.html dist/404.html     # fallback SPA ala GitHub Pages\nnpx gh-pages -d dist                 # unggah folder dist ke branch gh-pages"
+   },
+   {
+    "t": "Kasus: mencoba hasil build sebelum rilis",
+    "code": "npm run build\nnpm run preview\n#   ➜  Local:   http://localhost:4173/\n# buka /produk/kopi-gayo langsung di tab baru untuk memastikan fallback SPA bekerja"
+   }
+  ]
+ }
+}

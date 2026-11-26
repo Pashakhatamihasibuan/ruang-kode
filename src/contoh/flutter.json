@@ -1,0 +1,549 @@
+{
+ "flutter-1-1": {
+  "code": "import 'package:flutter/material.dart';\n\nvoid main() {\n  // runApp menampilkan pohon widget pertama ke layar\n  runApp(\n    const MaterialApp(\n      home: Scaffold(\n        body: Center(child: Text('Halo, Flutter!')),\n      ),\n    ),\n  );\n}",
+  "exs": [
+   {
+    "t": "Kasus: layar sambutan toko daring",
+    "d": "Scaffold menyediakan kerangka halaman: AppBar di atas dan body di tengah.",
+    "code": "import 'package:flutter/material.dart';\n\nvoid main() {\n  runApp(\n    MaterialApp(\n      debugShowCheckedModeBanner: false,\n      home: Scaffold(\n        appBar: AppBar(title: const Text('Toko Batik Laweyan')),\n        body: const Center(\n          child: Text('Selamat datang! Koleksi baru tiba hari ini.'),\n        ),\n      ),\n    ),\n  );\n}"
+   },
+   {
+    "t": "Kasus: teks bergaya untuk papan pengumuman",
+    "d": "Gaya teks juga widget berupa parameter: TextStyle mengatur ukuran, tebal, dan warna.",
+    "code": "import 'package:flutter/material.dart';\n\nvoid main() {\n  runApp(\n    const MaterialApp(\n      home: Scaffold(\n        body: Center(\n          child: Text(\n            'Ujian Tengah Semester\\nSenin, 7 Oktober',\n            textAlign: TextAlign.center,\n            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.indigo),\n          ),\n        ),\n      ),\n    ),\n  );\n}"
+   },
+   {
+    "t": "Kasus: tombol pesan di aplikasi kedai",
+    "d": "Tombol adalah widget yang menerima fungsi onPressed; widget anak di dalamnya menentukan tampilannya.",
+    "code": "import 'package:flutter/material.dart';\n\nvoid main() {\n  runApp(\n    MaterialApp(\n      home: Scaffold(\n        appBar: AppBar(title: const Text('Kedai Kopi Senja')),\n        body: Center(\n          child: FilledButton.icon(\n            onPressed: () => debugPrint('Tombol pesan ditekan'),\n            icon: const Icon(Icons.coffee),\n            label: const Text('Pesan sekarang'),\n          ),\n        ),\n      ),\n    ),\n  );\n}"
+   }
+  ]
+ },
+ "flutter-1-2": {
+  "exs": [
+   {
+    "t": "Kasus: menjalankan aplikasi di perangkat berbeda",
+    "d": "flutter devices menampilkan perangkat yang terhubung, lalu -d memilih salah satunya.",
+    "code": "# lihat emulator, ponsel, dan browser yang tersedia\nflutter devices\n\n# jalankan di Chrome untuk versi web\nflutter run -d chrome\n\n# jalankan di ponsel Android yang tersambung kabel USB\nflutter run -d R58N12ABCDE\n\n# saat aplikasi berjalan: tekan r untuk hot reload, R untuk hot restart, q untuk keluar"
+   },
+   {
+    "t": "Kasus: memperbarui Flutter dan membersihkan proyek",
+    "d": "Lakukan ini saat build gagal setelah ganti versi atau pindah komputer.",
+    "code": "# cek versi yang terpasang\nflutter --version\n\n# perbarui ke versi stabil terbaru\nflutter upgrade\n\n# hapus hasil build lama, lalu unduh ulang dependensi\nflutter clean\nflutter pub get"
+   },
+   {
+    "t": "Kasus: membuat proyek package dan proyek kosong",
+    "d": "flutter create punya beberapa template; --empty membuat main.dart yang paling sederhana.",
+    "code": "# aplikasi dengan main.dart minimal tanpa contoh penghitung\nflutter create --empty kasir_warung\n\n# package Dart murni untuk logika bersama (tanpa UI)\nflutter create --template=package hitung_ongkir\n\n# lihat semua pilihan template\nflutter create --help"
+   }
+  ]
+ },
+ "flutter-1-3": {
+  "code": "import 'package:flutter/material.dart';\n\nclass Penghitung extends StatefulWidget {\n  const Penghitung({super.key});\n\n  @override\n  State<Penghitung> createState() => _PenghitungState();\n}\n\nclass _PenghitungState extends State<Penghitung> {\n  int jumlah = 0; // data yang berubah disimpan di State\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: const Text('Keranjang')),\n      body: Center(\n        child: Text('$jumlah barang', style: const TextStyle(fontSize: 24)),\n      ),\n      floatingActionButton: FloatingActionButton(\n        // setState mengubah data lalu meminta build dipanggil ulang\n        onPressed: () => setState(() => jumlah++),\n        child: const Icon(Icons.add),\n      ),\n    );\n  }\n}\n\nvoid main() => runApp(const MaterialApp(home: Penghitung()));",
+  "exs": [
+   {
+    "t": "Kasus: kartu sapaan tanpa state (StatelessWidget)",
+    "d": "Tampilannya hanya bergantung pada parameter nama, jadi cukup StatelessWidget.",
+    "code": "import 'package:flutter/material.dart';\n\nclass Sapaan extends StatelessWidget {\n  const Sapaan({super.key, required this.nama});\n  final String nama;\n\n  @override\n  Widget build(BuildContext context) {\n    return Center(\n      child: Text('Selamat pagi, $nama!', style: const TextStyle(fontSize: 22)),\n    );\n  }\n}\n\nvoid main() {\n  runApp(const MaterialApp(home: Scaffold(body: Sapaan(nama: 'Ayu'))));\n}"
+   },
+   {
+    "t": "Kasus: tombol suka pada foto",
+    "d": "Nilai bool di State dibalik setiap kali ditekan, ikon ikut berubah.",
+    "code": "import 'package:flutter/material.dart';\n\nclass TombolSuka extends StatefulWidget {\n  const TombolSuka({super.key});\n\n  @override\n  State<TombolSuka> createState() => _TombolSukaState();\n}\n\nclass _TombolSukaState extends State<TombolSuka> {\n  bool disukai = false;\n\n  @override\n  Widget build(BuildContext context) {\n    return IconButton(\n      iconSize: 48,\n      onPressed: () => setState(() => disukai = !disukai),\n      icon: Icon(\n        disukai ? Icons.favorite : Icons.favorite_border,\n        color: disukai ? Colors.red : Colors.grey,\n      ),\n    );\n  }\n}\n\nvoid main() {\n  runApp(const MaterialApp(home: Scaffold(body: Center(child: TombolSuka()))));\n}"
+   },
+   {
+    "t": "Kasus: kuota absen dengan batas dari parameter",
+    "d": "State membaca parameter widget lewat widget.batas; onPressed null membuat tombol nonaktif.",
+    "code": "import 'package:flutter/material.dart';\n\nclass TombolAbsen extends StatefulWidget {\n  const TombolAbsen({super.key, required this.batas});\n  final int batas;\n\n  @override\n  State<TombolAbsen> createState() => _TombolAbsenState();\n}\n\nclass _TombolAbsenState extends State<TombolAbsen> {\n  int hadir = 0;\n\n  @override\n  Widget build(BuildContext context) {\n    final penuh = hadir >= widget.batas;\n    return Center(\n      child: FilledButton(\n        onPressed: penuh ? null : () => setState(() => hadir++),\n        child: Text(penuh ? 'Kuota penuh' : 'Absen ($hadir/${widget.batas})'),\n      ),\n    );\n  }\n}\n\nvoid main() {\n  runApp(const MaterialApp(home: Scaffold(body: TombolAbsen(batas: 3))));\n}"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Pengatur jumlah barang dengan batas minimum dan maksimum",
+    "b": "onPressed: null otomatis membuat tombol tampil nonaktif. Ini cara Flutter menangani batas minimum dan maksimum tanpa if tambahan di dalam onPressed.",
+    "code": "class PenghitungQty extends StatefulWidget {\n  const PenghitungQty({super.key, this.maks = 10});\n  final int maks;\n\n  @override\n  State<PenghitungQty> createState() => _PenghitungQtyState();\n}\n\nclass _PenghitungQtyState extends State<PenghitungQty> {\n  int qty = 1;\n\n  @override\n  Widget build(BuildContext context) {\n    return ListTile(\n      leading: IconButton(\n        onPressed: qty > 1 ? () => setState(() => qty--) : null,\n        icon: const Icon(Icons.remove),\n      ),\n      title: Text('$qty', textAlign: TextAlign.center, style: const TextStyle(fontSize: 20)),\n      trailing: IconButton(\n        onPressed: qty < widget.maks ? () => setState(() => qty++) : null,\n        icon: const Icon(Icons.add),\n      ),\n    );\n  }\n}"
+   }
+  ]
+ },
+ "flutter-2-1": {
+  "exs": [
+   {
+    "t": "Kasus: halaman profil yang tersusun vertikal",
+    "d": "Column menumpuk avatar, nama, dan kota; SizedBox memberi jarak.",
+    "code": "Widget profil() {\n  return const Padding(\n    padding: EdgeInsets.all(24),\n    child: Column(\n      mainAxisAlignment: MainAxisAlignment.center,\n      children: [\n        CircleAvatar(radius: 40, child: Icon(Icons.person, size: 40)),\n        SizedBox(height: 12),\n        Text('Putu Ardana', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),\n        SizedBox(height: 4),\n        Text('Denpasar, Bali'),\n      ],\n    ),\n  );\n}"
+   },
+   {
+    "t": "Kasus: baris ringkasan saldo, poin, dan voucher",
+    "d": "Expanded dengan flex membagi lebar: saldo mendapat dua bagian, sisanya satu bagian.",
+    "code": "Widget kotak(String label, String nilai, Color warna) {\n  return Container(\n    margin: const EdgeInsets.all(4),\n    padding: const EdgeInsets.all(12),\n    decoration: BoxDecoration(color: warna, borderRadius: BorderRadius.circular(12)),\n    child: Column(\n      crossAxisAlignment: CrossAxisAlignment.start,\n      children: [Text(label), Text(nilai, style: const TextStyle(fontWeight: FontWeight.bold))],\n    ),\n  );\n}\n\nWidget ringkasan() {\n  return Row(\n    children: [\n      Expanded(flex: 2, child: kotak('Saldo', 'Rp250.000', Colors.green.shade100)),\n      Expanded(child: kotak('Poin', '1.200', Colors.amber.shade100)),\n      Expanded(child: kotak('Voucher', '3', Colors.blue.shade100)),\n    ],\n  );\n}"
+   },
+   {
+    "t": "Kasus: label kategori yang turun baris dengan Wrap",
+    "d": "Row akan overflow jika labelnya banyak; Wrap memindahkan sisanya ke baris berikut.",
+    "code": "Widget labelKategori() {\n  const kategori = ['Makanan', 'Minuman', 'Camilan', 'Oleh-oleh', 'Kerajinan', 'Fesyen'];\n  return Wrap(\n    spacing: 8,      // jarak mendatar antarlabel\n    runSpacing: 8,   // jarak antarbaris\n    children: [\n      for (final k in kategori)\n        Container(\n          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),\n          decoration: BoxDecoration(\n            border: Border.all(color: Colors.teal),\n            borderRadius: BorderRadius.circular(20),\n          ),\n          child: Text(k),\n        ),\n    ],\n  );\n}"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Baris produk yang tidak overflow pada nama panjang",
+    "b": "Tanpa Expanded, nama produk yang panjang membuat Row lebih lebar dari layar dan muncul garis kuning-hitam. Expanded memberi sisa ruang ke kolom teks, lalu maxLines dan ellipsis memotong teksnya dengan rapi.",
+    "code": "Widget barisProduk(String nama, String harga, VoidCallback tambah) {\n  return Row(\n    children: [\n      Container(\n        width: 56,\n        height: 56,\n        decoration: BoxDecoration(color: Colors.brown.shade100, borderRadius: BorderRadius.circular(8)),\n        child: const Icon(Icons.coffee),\n      ),\n      const SizedBox(width: 12),\n      Expanded( // tanpa Expanded, nama panjang membuat overflow\n        child: Column(\n          crossAxisAlignment: CrossAxisAlignment.start,\n          children: [\n            Text(nama, maxLines: 2, overflow: TextOverflow.ellipsis),\n            Text(harga, style: const TextStyle(fontWeight: FontWeight.w700)),\n          ],\n        ),\n      ),\n      IconButton(onPressed: tambah, icon: const Icon(Icons.add_shopping_cart)),\n    ],\n  );\n}"
+   }
+  ]
+ },
+ "flutter-2-2": {
+  "exs": [
+   {
+    "t": "Kasus: riwayat transaksi dompet digital",
+    "d": "ListView.builder hanya membuat baris yang terlihat, cocok untuk riwayat yang panjang.",
+    "code": "class RiwayatTransaksi extends StatelessWidget {\n  const RiwayatTransaksi({super.key});\n\n  static const transaksi = [\n    (judul: 'Isi pulsa', nominal: -52000),\n    (judul: 'Gaji paruh waktu', nominal: 1500000),\n    (judul: 'Bayar listrik', nominal: -215000),\n  ];\n\n  @override\n  Widget build(BuildContext context) {\n    return ListView.builder(\n      itemCount: transaksi.length,\n      itemBuilder: (context, i) {\n        final t = transaksi[i];\n        final masuk = t.nominal > 0;\n        return ListTile(\n          leading: Icon(masuk ? Icons.arrow_downward : Icons.arrow_upward,\n              color: masuk ? Colors.green : Colors.red),\n          title: Text(t.judul),\n          trailing: Text('Rp${t.nominal}'),\n        );\n      },\n    );\n  }\n}"
+   },
+   {
+    "t": "Kasus: katalog oleh-oleh dalam grid dari aset lokal",
+    "d": "Gambar didaftarkan di pubspec.yaml, lalu GridView menyesuaikan jumlah kolom dengan lebar layar.",
+    "code": "// pubspec.yaml\n// flutter:\n//   assets:\n//     - assets/produk/\n\nclass KatalogOlehOleh extends StatelessWidget {\n  const KatalogOlehOleh({super.key});\n\n  static const produk = ['bakpia', 'pempek', 'dodol', 'keripik'];\n\n  @override\n  Widget build(BuildContext context) {\n    return GridView.builder(\n      padding: const EdgeInsets.all(12),\n      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(\n        maxCrossAxisExtent: 180, // kolom bertambah di layar lebar\n        mainAxisSpacing: 12,\n        crossAxisSpacing: 12,\n      ),\n      itemCount: produk.length,\n      itemBuilder: (context, i) => Column(\n        children: [\n          Expanded(child: Image.asset('assets/produk/${produk[i]}.jpg', fit: BoxFit.cover)),\n          Text(produk[i]),\n        ],\n      ),\n    );\n  }\n}"
+   },
+   {
+    "t": "Kasus: daftar kontak dengan garis pemisah",
+    "d": "ListView.separated menyisipkan widget pemisah di antara setiap baris.",
+    "code": "class DaftarKontak extends StatelessWidget {\n  const DaftarKontak({super.key});\n\n  static const kontak = ['Agus Salim', 'Bunga Citra', 'Daniel Sitompul', 'Fitri Handayani'];\n\n  @override\n  Widget build(BuildContext context) {\n    return ListView.separated(\n      itemCount: kontak.length,\n      separatorBuilder: (context, i) => const Divider(height: 1),\n      itemBuilder: (context, i) => ListTile(\n        leading: CircleAvatar(child: Text(kontak[i][0])),\n        title: Text(kontak[i]),\n        trailing: const Icon(Icons.call),\n      ),\n    );\n  }\n}"
+   }
+  ]
+ },
+ "flutter-2-3": {
+  "exs": [
+   {
+    "t": "Kasus: formulir masuk dengan email dan kata sandi",
+    "d": "Dua field divalidasi bersama; obscureText menyembunyikan kata sandi.",
+    "code": "class FormMasuk extends StatefulWidget {\n  const FormMasuk({super.key});\n  @override\n  State<FormMasuk> createState() => _FormMasukState();\n}\n\nclass _FormMasukState extends State<FormMasuk> {\n  final _form = GlobalKey<FormState>();\n\n  @override\n  Widget build(BuildContext context) {\n    return Form(\n      key: _form,\n      child: Column(children: [\n        TextFormField(\n          keyboardType: TextInputType.emailAddress,\n          decoration: const InputDecoration(labelText: 'Email'),\n          validator: (v) => (v == null || !v.contains('@')) ? 'Email harus memakai tanda @' : null,\n        ),\n        TextFormField(\n          obscureText: true,\n          decoration: const InputDecoration(labelText: 'Kata sandi'),\n          validator: (v) => (v == null || v.length < 8) ? 'Kata sandi minimal 8 karakter' : null,\n        ),\n        const SizedBox(height: 16),\n        FilledButton(\n          onPressed: () {\n            if (_form.currentState!.validate()) debugPrint('Masuk...');\n          },\n          child: const Text('Masuk'),\n        ),\n      ]),\n    );\n  }\n}"
+   },
+   {
+    "t": "Kasus: kalkulator kembalian di kasir",
+    "d": "TextEditingController membaca angka yang diketik, lalu hasilnya ditampilkan lewat setState.",
+    "code": "class Kembalian extends StatefulWidget {\n  const Kembalian({super.key, required this.tagihan});\n  final int tagihan;\n  @override\n  State<Kembalian> createState() => _KembalianState();\n}\n\nclass _KembalianState extends State<Kembalian> {\n  final _uang = TextEditingController();\n  String hasil = '';\n\n  @override\n  void dispose() {\n    _uang.dispose();\n    super.dispose();\n  }\n\n  void hitung() {\n    final uang = int.tryParse(_uang.text);\n    setState(() {\n      if (uang == null) {\n        hasil = 'Masukkan angka saja';\n      } else if (uang < widget.tagihan) {\n        hasil = 'Uang kurang Rp${widget.tagihan - uang}';\n      } else {\n        hasil = 'Kembalian Rp${uang - widget.tagihan}';\n      }\n    });\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    return Column(children: [\n      Text('Tagihan: Rp${widget.tagihan}'),\n      TextField(\n        controller: _uang,\n        keyboardType: TextInputType.number,\n        decoration: const InputDecoration(labelText: 'Uang dari pembeli'),\n      ),\n      FilledButton(onPressed: hitung, child: const Text('Hitung')),\n      Text(hasil),\n    ]);\n  }\n}"
+   },
+   {
+    "t": "Kasus: kode pos alamat pengiriman",
+    "d": "Validator memeriksa panjang dan isi; pesannya menjelaskan cara memperbaiki.",
+    "code": "TextFormField(\n  keyboardType: TextInputType.number,\n  maxLength: 5,\n  decoration: const InputDecoration(labelText: 'Kode pos', hintText: 'contoh: 40115'),\n  validator: (v) {\n    final isi = (v ?? '').trim();\n    if (isi.isEmpty) return 'Kode pos wajib diisi';\n    if (isi.length != 5 || int.tryParse(isi) == null) {\n      return 'Kode pos terdiri dari 5 angka';\n    }\n    return null; // valid\n  },\n)"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Validasi nomor HP Indonesia",
+    "b": "Spasi dan tanda hubung dibuang dulu, lalu nomor diperiksa: harus angka, diawali 8 (karena +62 sudah tertulis), dan panjangnya 9 sampai 12 digit. autovalidateMode menampilkan pesan begitu pengguna mulai mengetik.",
+    "code": "final formKey = GlobalKey<FormState>();\n\nForm(\n  key: formKey,\n  autovalidateMode: AutovalidateMode.onUserInteraction,\n  child: TextFormField(\n    decoration: const InputDecoration(labelText: 'Nomor HP', prefixText: '+62 ', hintText: '812 3456 7890'),\n    keyboardType: TextInputType.phone,\n    textInputAction: TextInputAction.done,\n    validator: (v) {\n      final angka = (v ?? '').replaceAll(' ', '').replaceAll('-', '');\n      if (angka.isEmpty) return 'Nomor HP wajib diisi';\n      if (int.tryParse(angka) == null) return 'Nomor HP hanya berisi angka';\n      if (!angka.startsWith('8')) return 'Mulai dengan 8, tanpa 0 di depan';\n      if (angka.length < 9 || angka.length > 12) return 'Nomor HP 9 sampai 12 digit';\n      return null;\n    },\n  ),\n)\n// tombol: if (formKey.currentState!.validate()) kirim();"
+   }
+  ]
+ },
+ "flutter-3-1": {
+  "exs": [
+   {
+    "t": "Kasus: Navigator bawaan untuk membuka detail dan menerima hasil",
+    "d": "Navigator.push membuka layar baru; Navigator.pop menutupnya sambil mengirim nilai kembali.",
+    "code": "class DaftarMenu extends StatelessWidget {\n  const DaftarMenu({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return ListTile(\n      title: const Text('Nasi goreng kampung'),\n      onTap: () async {\n        final jumlah = await Navigator.push<int>(\n          context,\n          MaterialPageRoute(builder: (_) => const PilihJumlah(menu: 'Nasi goreng kampung')),\n        );\n        if (jumlah != null) debugPrint('Dipesan $jumlah porsi');\n      },\n    );\n  }\n}\n\nclass PilihJumlah extends StatelessWidget {\n  const PilihJumlah({super.key, required this.menu});\n  final String menu;\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: Text(menu)),\n      body: Center(\n        child: FilledButton(\n          onPressed: () => Navigator.pop(context, 2), // kembali membawa angka 2\n          child: const Text('Pesan 2 porsi'),\n        ),\n      ),\n    );\n  }\n}"
+   },
+   {
+    "t": "Kasus: rute artikel dengan parameter dan query",
+    "d": "Nilai :slug dibaca dari pathParameters, sedangkan ?bagian=komentar dari queryParameters.",
+    "code": "final router = GoRouter(\n  routes: [\n    GoRoute(path: '/', builder: (context, state) => const BerandaBerita()),\n    GoRoute(\n      path: '/artikel/:slug',\n      builder: (context, state) => ArtikelPage(\n        slug: state.pathParameters['slug']!,\n        bagian: state.uri.queryParameters['bagian'], // boleh null\n      ),\n    ),\n  ],\n);\n\n// di daftar berita:\n// onTap: () => context.push('/artikel/banjir-jakarta'),\n// tombol komentar:\n// onPressed: () => context.push('/artikel/banjir-jakarta?bagian=komentar'),\n// di halaman artikel, tombol kembali:\n// onPressed: () => context.pop(),"
+   },
+   {
+    "t": "Kasus: halaman tidak ditemukan dan perbedaan go dengan push",
+    "d": "errorBuilder menangani alamat yang salah; go mengganti tumpukan, push menumpuk layar.",
+    "code": "final router = GoRouter(\n  routes: [\n    GoRoute(path: '/', builder: (context, state) => const BerandaPage()),\n    GoRoute(path: '/pesanan', builder: (context, state) => const PesananPage()),\n    GoRoute(path: '/sukses', builder: (context, state) => const SuksesBayarPage()),\n  ],\n  errorBuilder: (context, state) => Scaffold(\n    body: Center(child: Text('Halaman ${state.uri} tidak ditemukan')),\n  ),\n);\n\n// setelah bayar: ganti seluruh tumpukan, tombol kembali tidak membuka checkout lagi\n// context.go('/sukses');\n// dari beranda ke pesanan: tumpuk, tombol kembali ke beranda\n// context.push('/pesanan');"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Rute dengan parameter dan guard login",
+    "b": "redirect dijalankan sebelum layar dibuka. Jika pengguna belum masuk dan menuju keranjang, ia diarahkan ke /masuk sambil membawa alamat tujuan agar bisa kembali setelah login.",
+    "code": "bool sudahMasuk = false; // nanti diganti state management\n\nfinal router = GoRouter(\n  initialLocation: '/',\n  redirect: (context, state) {\n    final butuhLogin = state.matchedLocation.startsWith('/keranjang');\n    if (butuhLogin && !sudahMasuk) return '/masuk?lanjut=${state.matchedLocation}';\n    return null; // tidak dialihkan\n  },\n  routes: [\n    GoRoute(path: '/', builder: (_, __) => const BerandaPage()),\n    GoRoute(path: '/produk/:id', builder: (_, s) => ProdukPage(id: int.parse(s.pathParameters['id']!))),\n    GoRoute(path: '/keranjang', builder: (_, __) => const KeranjangPage()),\n    GoRoute(path: '/masuk', builder: (_, s) => MasukPage(lanjut: s.uri.queryParameters['lanjut'])),\n  ],\n);"
+   }
+  ]
+ },
+ "flutter-3-2": {
+  "exs": [
+   {
+    "t": "Kasus: nama profil yang tampil di beberapa layar",
+    "d": "Consumer membangun ulang hanya bagian kecil yang membaca Profil.",
+    "code": "class Profil extends ChangeNotifier {\n  String _nama = 'Tamu';\n  String get nama => _nama;\n\n  void ubahNama(String baru) {\n    _nama = baru;\n    notifyListeners(); // beri tahu semua pendengar\n  }\n}\n\nclass SapaanAppBar extends StatelessWidget {\n  const SapaanAppBar({super.key});\n  @override\n  Widget build(BuildContext context) {\n    return Consumer<Profil>(\n      builder: (context, profil, child) => Text('Halo, ${profil.nama}'),\n    );\n  }\n}\n\nclass TombolUbahNama extends StatelessWidget {\n  const TombolUbahNama({super.key});\n  @override\n  Widget build(BuildContext context) {\n    return TextButton(\n      onPressed: () => context.read<Profil>().ubahNama('Sinta'),\n      child: const Text('Masuk sebagai Sinta'),\n    );\n  }\n}"
+   },
+   {
+    "t": "Kasus: keranjang dan favorit sekaligus dengan MultiProvider",
+    "d": "Beberapa ChangeNotifier dipasang di atas MaterialApp agar semua layar bisa membacanya.",
+    "code": "class Favorit extends ChangeNotifier {\n  final Set<String> _isi = {};\n  bool ada(String id) => _isi.contains(id);\n  void ubah(String id) {\n    _isi.contains(id) ? _isi.remove(id) : _isi.add(id);\n    notifyListeners();\n  }\n}\n\nvoid main() {\n  runApp(\n    MultiProvider(\n      providers: [\n        ChangeNotifierProvider(create: (_) => Keranjang()),\n        ChangeNotifierProvider(create: (_) => Favorit()),\n      ],\n      child: const MaterialApp(home: KatalogPage()),\n    ),\n  );\n}\n\n// di kartu produk:\n// final suka = context.watch<Favorit>().ada(produk.id);\n// IconButton(\n//   onPressed: () => context.read<Favorit>().ubah(produk.id),\n//   icon: Icon(suka ? Icons.favorite : Icons.favorite_border),\n// )"
+   },
+   {
+    "t": "Kasus: saldo dompet, watch untuk tampil dan read untuk aksi",
+    "d": "watch di build agar teks ikut berubah; read di onPressed karena hanya memanggil method.",
+    "code": "class Dompet extends ChangeNotifier {\n  int saldo = 50000;\n  void isi(int nominal) {\n    saldo += nominal;\n    notifyListeners();\n  }\n}\n\nclass HalamanDompet extends StatelessWidget {\n  const HalamanDompet({super.key});\n  @override\n  Widget build(BuildContext context) {\n    final saldo = context.watch<Dompet>().saldo; // ikut diperbarui\n    return Scaffold(\n      body: Center(child: Text('Saldo Rp$saldo', style: const TextStyle(fontSize: 24))),\n      floatingActionButton: FloatingActionButton.extended(\n        onPressed: () => context.read<Dompet>().isi(20000), // sekali baca\n        label: const Text('Isi Rp20.000'),\n      ),\n    );\n  }\n}"
+   }
+  ]
+ },
+ "flutter-3-3": {
+  "exs": [
+   {
+    "t": "Kasus: daftar favorit dengan Riverpod Notifier",
+    "d": "State berupa List yang selalu diganti dengan list baru agar Riverpod tahu ada perubahan.",
+    "code": "class FavoritNotifier extends Notifier<List<String>> {\n  @override\n  List<String> build() => [];\n\n  void ubah(String menu) {\n    state = state.contains(menu)\n        ? state.where((m) => m != menu).toList()\n        : [...state, menu];\n  }\n}\n\nfinal favoritProvider = NotifierProvider<FavoritNotifier, List<String>>(FavoritNotifier.new);\n\nclass JumlahFavorit extends ConsumerWidget {\n  const JumlahFavorit({super.key});\n  @override\n  Widget build(BuildContext context, WidgetRef ref) {\n    final favorit = ref.watch(favoritProvider);\n    return TextButton(\n      onPressed: () => ref.read(favoritProvider.notifier).ubah('Es cendol'),\n      child: Text('Favorit: ${favorit.length}'),\n    );\n  }\n}"
+   },
+   {
+    "t": "Kasus: status masuk dengan Cubit",
+    "d": "Cubit mengeluarkan state baru dengan emit, BlocBuilder menggambar ulang sesuai state.",
+    "code": "class LoginCubit extends Cubit<String?> {\n  LoginCubit() : super(null); // null berarti belum masuk\n\n  Future<void> masuk(String nama) async {\n    await Future.delayed(const Duration(milliseconds: 300)); // pura-pura ke server\n    emit(nama);\n  }\n\n  void keluar() => emit(null);\n}\n\nclass HalamanAkun extends StatelessWidget {\n  const HalamanAkun({super.key});\n  @override\n  Widget build(BuildContext context) {\n    return BlocBuilder<LoginCubit, String?>(\n      builder: (context, nama) => nama == null\n          ? FilledButton(\n              onPressed: () => context.read<LoginCubit>().masuk('Rudi'),\n              child: const Text('Masuk'),\n            )\n          : Text('Masuk sebagai $nama'),\n    );\n  }\n}\n// main: BlocProvider(create: (_) => LoginCubit(), child: const MaterialApp(home: HalamanAkun()))"
+   },
+   {
+    "t": "Kasus: BLoC dengan event untuk stok gudang",
+    "d": "Tampilan mengirim event, BLoC memutuskan state baru di handler on<Event>.",
+    "code": "sealed class StokEvent {}\nclass BarangMasuk extends StokEvent {\n  final int jumlah;\n  BarangMasuk(this.jumlah);\n}\nclass BarangKeluar extends StokEvent {\n  final int jumlah;\n  BarangKeluar(this.jumlah);\n}\n\nclass StokBloc extends Bloc<StokEvent, int> {\n  StokBloc() : super(0) {\n    on<BarangMasuk>((e, emit) => emit(state + e.jumlah));\n    on<BarangKeluar>((e, emit) {\n      if (e.jumlah <= state) emit(state - e.jumlah); // stok tidak boleh minus\n    });\n  }\n}\n\n// tombol: context.read<StokBloc>().add(BarangMasuk(10));\n// tampilan: BlocBuilder<StokBloc, int>(builder: (context, stok) => Text('Stok: $stok'))"
+   }
+  ]
+ },
+ "flutter-4-1": {
+  "exs": [
+   {
+    "t": "Kasus: mengirim pesanan dengan http.post",
+    "d": "Body dikirim sebagai JSON dengan jsonEncode dan header Content-Type.",
+    "code": "Future<String> kirimPesanan(String menu, int jumlah) async {\n  final res = await http.post(\n    Uri.parse('https://api.contoh.id/pesanan'),\n    headers: {'Content-Type': 'application/json'},\n    body: jsonEncode({'menu': menu, 'jumlah': jumlah}),\n  );\n  if (res.statusCode != 201) {\n    throw Exception('Pesanan gagal (${res.statusCode})');\n  }\n  final data = jsonDecode(res.body) as Map<String, dynamic>;\n  return data['kode'] as String; // misalnya \"PSN-0192\"\n}"
+   },
+   {
+    "t": "Kasus: menampilkan jadwal sholat dengan FutureBuilder",
+    "d": "Future disimpan di initState agar tidak diminta ulang setiap build; snapshot memberi tiga keadaan layar.",
+    "code": "class JadwalSholat extends StatefulWidget {\n  const JadwalSholat({super.key});\n  @override\n  State<JadwalSholat> createState() => _JadwalSholatState();\n}\n\nclass _JadwalSholatState extends State<JadwalSholat> {\n  late Future<Map<String, dynamic>> _jadwal;\n\n  @override\n  void initState() {\n    super.initState();\n    _jadwal = ambilJadwal('bandung');\n  }\n\n  Future<Map<String, dynamic>> ambilJadwal(String kota) async {\n    final res = await http.get(Uri.parse('https://api.contoh.id/sholat/$kota'));\n    if (res.statusCode != 200) throw Exception('Server menjawab ${res.statusCode}');\n    return jsonDecode(res.body) as Map<String, dynamic>;\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    return FutureBuilder<Map<String, dynamic>>(\n      future: _jadwal,\n      builder: (context, snap) {\n        if (snap.connectionState == ConnectionState.waiting) {\n          return const Center(child: CircularProgressIndicator());\n        }\n        if (snap.hasError) {\n          return TextButton(\n            onPressed: () => setState(() => _jadwal = ambilJadwal('bandung')),\n            child: const Text('Gagal memuat. Coba lagi'),\n          );\n        }\n        final j = snap.data!;\n        return Text('Subuh ${j['subuh']}  Maghrib ${j['maghrib']}');\n      },\n    );\n  }\n}"
+   },
+   {
+    "t": "Kasus: mencari produk dengan dio dan menangani error",
+    "d": "dio menerima queryParameters dan melempar DioException untuk timeout atau status gagal.",
+    "code": "final dio = Dio(BaseOptions(\n  baseUrl: 'https://api.tokokopi.id/v1',\n  connectTimeout: const Duration(seconds: 10),\n));\n\nFuture<List<String>> cariProduk(String kata) async {\n  try {\n    final res = await dio.get('/produk', queryParameters: {'q': kata, 'batas': 20});\n    final daftar = res.data['data'] as List;\n    return [for (final p in daftar) p['nama'] as String];\n  } on DioException catch (e) {\n    if (e.type == DioExceptionType.connectionTimeout) {\n      throw Exception('Koneksi lambat, coba lagi');\n    }\n    throw Exception('Gagal mencari: ${e.response?.statusCode}');\n  }\n}"
+   }
+  ]
+ },
+ "flutter-4-2": {
+  "exs": [
+   {
+    "t": "Kasus: menandai onboarding sudah dilihat",
+    "d": "shared_preferences cocok untuk satu nilai kecil yang harus tetap ada setelah aplikasi ditutup.",
+    "code": "class PenyimpananOnboarding {\n  static const _kunci = 'onboarding_selesai';\n\n  Future<bool> sudahDilihat() async {\n    final prefs = await SharedPreferences.getInstance();\n    return prefs.getBool(_kunci) ?? false;\n  }\n\n  Future<void> tandaiSelesai() async {\n    final prefs = await SharedPreferences.getInstance();\n    await prefs.setBool(_kunci, true);\n  }\n}\n\n// di main():\n// final layarAwal = await PenyimpananOnboarding().sudahDilihat() ? const BerandaPage() : const OnboardingPage();"
+   },
+   {
+    "t": "Kasus: menyimpan token login dengan aman",
+    "d": "Token rahasia disimpan di Keychain/Keystore lewat flutter_secure_storage, bukan shared_preferences.",
+    "code": "class PenyimpananToken {\n  final _aman = const FlutterSecureStorage();\n\n  Future<void> simpan(String token) => _aman.write(key: 'token_akses', value: token);\n\n  Future<String?> baca() => _aman.read(key: 'token_akses');\n\n  Future<void> hapus() => _aman.delete(key: 'token_akses'); // saat keluar akun\n}"
+   },
+   {
+    "t": "Kasus: menyimpan dan membaca catatan pesanan di Firestore",
+    "d": "add membuat dokumen baru dengan id otomatis, where dan get membaca dokumen milik pengguna yang masuk.",
+    "code": "Future<void> buatPesanan(String menu, int total) async {\n  final uid = FirebaseAuth.instance.currentUser!.uid;\n  await FirebaseFirestore.instance.collection('pesanan').add({\n    'uid': uid,\n    'menu': menu,\n    'total': total,\n    'dibuat': FieldValue.serverTimestamp(),\n  });\n}\n\nFuture<List<String>> pesananSaya() async {\n  final uid = FirebaseAuth.instance.currentUser!.uid;\n  final hasil = await FirebaseFirestore.instance\n      .collection('pesanan')\n      .where('uid', isEqualTo: uid)\n      .get();\n  return [for (final doc in hasil.docs) doc['menu'] as String];\n}"
+   }
+  ]
+ },
+ "flutter-4-3": {
+  "exs": [
+   {
+    "t": "Kasus: unit test fungsi ongkos kirim",
+    "d": "Logika murni diuji dengan test dan expect tanpa merender widget.",
+    "code": "import 'package:test/test.dart';\n\nint ongkir(int beratGram) {\n  if (beratGram <= 1000) return 9000;\n  return 9000 + ((beratGram - 1000) / 1000).ceil() * 5000;\n}\n\nvoid main() {\n  group('ongkir', () {\n    test('sampai 1 kg tarif dasar', () {\n      expect(ongkir(800), 9000);\n      expect(ongkir(1000), 9000);\n    });\n    test('kelebihan dibulatkan ke atas per kg', () {\n      expect(ongkir(1200), 14000);\n      expect(ongkir(2500), 19000);\n    });\n  });\n}"
+   },
+   {
+    "t": "Kasus: widget test pesan error formulir",
+    "d": "enterText mengetik ke field, tap menekan tombol, lalu pesan error dicari dengan find.text.",
+    "code": "void main() {\n  testWidgets('email tanpa @ menampilkan pesan error', (tester) async {\n    await tester.pumpWidget(const MaterialApp(home: Scaffold(body: FormMasuk())));\n\n    await tester.enterText(find.byType(TextFormField).first, 'rina.gmail.com');\n    await tester.tap(find.text('Masuk'));\n    await tester.pump();\n\n    expect(find.text('Email harus memakai tanda @'), findsOneWidget);\n  });\n}"
+   },
+   {
+    "t": "Kasus: menguji ChangeNotifier keranjang",
+    "d": "Class state diuji langsung; addListener memastikan notifyListeners benar-benar dipanggil.",
+    "code": "void main() {\n  test('tambah menaikkan jumlah dan memberi tahu pendengar', () {\n    final k = Keranjang();\n    var diberiTahu = 0;\n    k.addListener(() => diberiTahu++);\n\n    k.tambah('Kopi Gayo');\n    k.tambah('Teh Tarik');\n\n    expect(k.jumlah, 2);\n    expect(diberiTahu, 2);\n  });\n}"
+   }
+  ]
+ },
+ "flutter-5-1": {
+  "exs": [
+   {
+    "t": "Kasus: kartu promo yang warnanya diambil dari tema",
+    "d": "Warna diambil dari colorScheme sehingga otomatis menyesuaikan mode terang dan gelap.",
+    "code": "class KartuPromo extends StatelessWidget {\n  const KartuPromo({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    final warna = Theme.of(context).colorScheme;\n    final teks = Theme.of(context).textTheme;\n    return Container(\n      padding: const EdgeInsets.all(16),\n      decoration: BoxDecoration(\n        color: warna.secondaryContainer,\n        borderRadius: BorderRadius.circular(16),\n      ),\n      child: Column(\n        crossAxisAlignment: CrossAxisAlignment.start,\n        children: [\n          Text('Promo Gajian', style: teks.titleLarge?.copyWith(color: warna.onSecondaryContainer)),\n          Text('Diskon 25% semua menu kopi', style: teks.bodyMedium),\n          const SizedBox(height: 8),\n          FilledButton(onPressed: () {}, child: const Text('Pakai voucher')), // warna dari tema\n        ],\n      ),\n    );\n  }\n}"
+   },
+   {
+    "t": "Kasus: sakelar mode gelap di halaman pengaturan",
+    "d": "ThemeMode disimpan di State aplikasi lalu diubah lewat Switch.",
+    "code": "class AplikasiBerita extends StatefulWidget {\n  const AplikasiBerita({super.key});\n  @override\n  State<AplikasiBerita> createState() => _AplikasiBeritaState();\n}\n\nclass _AplikasiBeritaState extends State<AplikasiBerita> {\n  ThemeMode mode = ThemeMode.light;\n\n  @override\n  Widget build(BuildContext context) {\n    const benih = Colors.teal;\n    return MaterialApp(\n      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: benih)),\n      darkTheme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: benih, brightness: Brightness.dark)),\n      themeMode: mode,\n      home: Scaffold(\n        appBar: AppBar(title: const Text('Pengaturan')),\n        body: SwitchListTile(\n          title: const Text('Mode gelap'),\n          value: mode == ThemeMode.dark,\n          onChanged: (gelap) => setState(() => mode = gelap ? ThemeMode.dark : ThemeMode.light),\n        ),\n      ),\n    );\n  }\n}"
+   },
+   {
+    "t": "Kasus: gaya komponen seragam untuk seluruh aplikasi",
+    "d": "Tema komponen mengatur bentuk tombol, kartu, dan input sekali saja untuk semua layar.",
+    "code": "ThemeData temaKlinik() {\n  final skema = ColorScheme.fromSeed(seedColor: const Color(0xFF0F766E));\n  return ThemeData(\n    colorScheme: skema,\n    filledButtonTheme: FilledButtonThemeData(\n      style: FilledButton.styleFrom(\n        minimumSize: const Size.fromHeight(48),\n        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),\n      ),\n    ),\n    inputDecorationTheme: const InputDecorationTheme(\n      border: OutlineInputBorder(),\n      filled: true,\n    ),\n    cardTheme: const CardThemeData(margin: EdgeInsets.all(8), elevation: 0),\n  );\n}\n\n// MaterialApp(theme: temaKlinik(), home: const JanjiTemuPage())"
+   }
+  ]
+ },
+ "flutter-5-2": {
+  "exs": [
+   {
+    "t": "Kasus: tips yang muncul perlahan",
+    "d": "AnimatedOpacity memudarkan teks saat nilai opacity berubah lewat setState.",
+    "code": "class TipsHemat extends StatefulWidget {\n  const TipsHemat({super.key});\n  @override\n  State<TipsHemat> createState() => _TipsHematState();\n}\n\nclass _TipsHematState extends State<TipsHemat> {\n  bool tampil = false;\n\n  @override\n  Widget build(BuildContext context) {\n    return Column(children: [\n      TextButton(\n        onPressed: () => setState(() => tampil = !tampil),\n        child: Text(tampil ? 'Sembunyikan tips' : 'Lihat tips hemat'),\n      ),\n      AnimatedOpacity(\n        opacity: tampil ? 1 : 0,\n        duration: const Duration(milliseconds: 400),\n        child: const Text('Sisihkan 10% uang saku di awal bulan.'),\n      ),\n    ]);\n  }\n}"
+   },
+   {
+    "t": "Kasus: angka keranjang yang berganti dengan animasi",
+    "d": "AnimatedSwitcher menganimasikan pergantian anak; key yang berbeda menandai anak baru.",
+    "code": "class BadgeKeranjang extends StatelessWidget {\n  const BadgeKeranjang({super.key, required this.jumlah});\n  final int jumlah;\n\n  @override\n  Widget build(BuildContext context) {\n    return AnimatedSwitcher(\n      duration: const Duration(milliseconds: 250),\n      transitionBuilder: (child, animasi) => ScaleTransition(scale: animasi, child: child),\n      child: Text(\n        '$jumlah',\n        key: ValueKey(jumlah), // angka baru = anak baru, jadi dianimasikan\n        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),\n      ),\n    );\n  }\n}"
+   },
+   {
+    "t": "Kasus: foto menu terbang ke halaman detail",
+    "d": "Hero dengan tag yang sama di dua layar membuat gambar berpindah dengan mulus saat Navigator.push.",
+    "code": "class KartuMenu extends StatelessWidget {\n  const KartuMenu({super.key, required this.id, required this.foto});\n  final String id, foto;\n\n  @override\n  Widget build(BuildContext context) {\n    return GestureDetector(\n      onTap: () => Navigator.push(\n        context,\n        MaterialPageRoute(builder: (_) => DetailMenu(id: id, foto: foto)),\n      ),\n      child: Hero(tag: 'menu-$id', child: Image.network(foto, width: 80)),\n    );\n  }\n}\n\nclass DetailMenu extends StatelessWidget {\n  const DetailMenu({super.key, required this.id, required this.foto});\n  final String id, foto;\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(),\n      body: Hero(tag: 'menu-$id', child: Image.network(foto)), // tag sama\n    );\n  }\n}"
+   }
+  ]
+ },
+ "flutter-5-3": {
+  "exs": [
+   {
+    "t": "Kasus: kolom katalog mengikuti orientasi ponsel",
+    "d": "MediaQuery memberi ukuran layar dan orientasinya.",
+    "code": "class KatalogAdaptif extends StatelessWidget {\n  const KatalogAdaptif({super.key, required this.produk});\n  final List<String> produk;\n\n  @override\n  Widget build(BuildContext context) {\n    final ukuran = MediaQuery.sizeOf(context);\n    final mendatar = ukuran.width > ukuran.height;\n    return GridView.count(\n      crossAxisCount: mendatar ? 4 : 2,\n      children: [for (final p in produk) Card(child: Center(child: Text(p)))],\n    );\n  }\n}"
+   },
+   {
+    "t": "Kasus: daftar dan detail berdampingan di tablet",
+    "d": "LayoutBuilder membaca ruang yang tersedia untuk widget ini, lalu memilih satu atau dua panel.",
+    "code": "class KotakMasuk extends StatelessWidget {\n  const KotakMasuk({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return LayoutBuilder(\n      builder: (context, batas) {\n        if (batas.maxWidth < 600) {\n          return const DaftarPesan(); // ponsel: satu panel, detail dibuka di layar baru\n        }\n        return const Row(children: [\n          SizedBox(width: 320, child: DaftarPesan()),\n          VerticalDivider(width: 1),\n          Expanded(child: DetailPesan()),\n        ]);\n      },\n    );\n  }\n}"
+   },
+   {
+    "t": "Kasus: formulir pendaftaran yang tetap nyaman di layar lebar",
+    "d": "ConstrainedBox membatasi lebar maksimum sehingga field tidak membentang selebar monitor.",
+    "code": "class HalamanDaftar extends StatelessWidget {\n  const HalamanDaftar({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      body: Center(\n        child: ConstrainedBox(\n          constraints: const BoxConstraints(maxWidth: 480),\n          child: ListView(\n            padding: const EdgeInsets.all(24),\n            children: const [\n              Text('Daftar Akun', style: TextStyle(fontSize: 24)),\n              TextField(decoration: InputDecoration(labelText: 'Nama lengkap')),\n              TextField(decoration: InputDecoration(labelText: 'Email')),\n            ],\n          ),\n        ),\n      ),\n    );\n  }\n}"
+   }
+  ]
+ },
+ "flutter-6-1": {
+  "exs": [
+   {
+    "t": "Kasus: memasang versi tertentu dan menghapus package",
+    "d": "Batasan versi menjaga proyek tetap bisa di-build saat package merilis versi besar baru.",
+    "code": "# pasang dengan batasan versi (boleh 5.x, tidak 6.0)\nflutter pub add 'dio:^5.7.0'\n\n# package khusus pengembangan (tidak ikut ke aplikasi rilis)\nflutter pub add --dev very_good_analysis\n\n# hapus package yang tidak dipakai lagi\nflutter pub remove http"
+   },
+   {
+    "t": "Kasus: memeriksa dan memperbarui dependensi",
+    "d": "outdated menunjukkan versi terbaru; upgrade --major-versions menaikkan batasan di pubspec.yaml.",
+    "code": "# tampilkan package yang punya versi lebih baru\nflutter pub outdated\n\n# perbarui dalam batasan yang ada di pubspec.yaml\nflutter pub upgrade\n\n# naikkan ke versi besar terbaru (periksa catatan perubahan dulu)\nflutter pub upgrade --major-versions\n\n# lihat pohon dependensi, berguna saat terjadi konflik versi\nflutter pub deps"
+   }
+  ]
+ },
+ "flutter-6-2": {
+  "exs": [
+   {
+    "t": "Kasus: model ulasan dengan json_serializable saja",
+    "d": "Tanpa freezed pun, json_serializable membuat fromJson dan toJson otomatis.",
+    "code": "import 'package:json_annotation/json_annotation.dart';\n\npart 'ulasan.g.dart';\n\n@JsonSerializable()\nclass Ulasan {\n  final String nama;\n  final int bintang;\n  @JsonKey(name: 'isi_ulasan')\n  final String isi;\n\n  const Ulasan({required this.nama, required this.bintang, required this.isi});\n\n  factory Ulasan.fromJson(Map<String, dynamic> json) => _$UlasanFromJson(json);\n  Map<String, dynamic> toJson() => _$UlasanToJson(this);\n}\n\n// dart run build_runner build -d"
+   },
+   {
+    "t": "Kasus: status pembayaran sebagai union freezed",
+    "d": "Beberapa factory constructor membuat sealed class; switch wajib menangani semua kemungkinan.",
+    "code": "import 'package:freezed_annotation/freezed_annotation.dart';\n\npart 'status_bayar.freezed.dart';\n\n@freezed\nsealed class StatusBayar with _$StatusBayar {\n  const factory StatusBayar.menunggu() = Menunggu;\n  const factory StatusBayar.lunas({required String kodeTransaksi}) = Lunas;\n  const factory StatusBayar.gagal(String alasan) = Gagal;\n}\n\nString label(StatusBayar s) => switch (s) {\n      Menunggu() => 'Menunggu pembayaran',\n      Lunas(:final kodeTransaksi) => 'Lunas ($kodeTransaksi)',\n      Gagal(:final alasan) => 'Gagal: $alasan',\n    };"
+   },
+   {
+    "t": "Kasus: pesanan yang berisi daftar item",
+    "d": "Model bersarang: Pesanan menyimpan List<Item>, dan freezed mengurus konversi JSON keduanya.",
+    "code": "@freezed\nclass Item with _$Item {\n  const factory Item({required String nama, required int qty, required int harga}) = _Item;\n  factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);\n}\n\n@freezed\nclass Pesanan with _$Pesanan {\n  const factory Pesanan({\n    required String kode,\n    @Default([]) List<Item> item,\n  }) = _Pesanan;\n  factory Pesanan.fromJson(Map<String, dynamic> json) => _$PesananFromJson(json);\n}\n\n// final p = Pesanan.fromJson({'kode': 'PSN-7', 'item': [{'nama': 'Kopi', 'qty': 2, 'harga': 18000}]});\n// final tambah = p.copyWith(item: [...p.item, const Item(nama: 'Roti', qty: 1, harga: 15000)]);"
+   }
+  ]
+ },
+ "flutter-6-3": {
+  "exs": [
+   {
+    "t": "Kasus: cache pengaturan dengan Hive",
+    "d": "Hive menyimpan nilai di box yang dibuka sekali saat aplikasi mulai.",
+    "code": "Future<void> main() async {\n  await Hive.initFlutter();\n  final box = await Hive.openBox('pengaturan');\n\n  await box.put('kota', 'Makassar');\n  await box.put('notifikasi', true);\n\n  final kota = box.get('kota', defaultValue: 'Jakarta');\n  debugPrint('Kota tersimpan: $kota');\n  runApp(const AplikasiCuaca());\n}"
+   },
+   {
+    "t": "Kasus: repository catatan dengan sqflite",
+    "d": "Query SQL dibungkus class repository, jadi tampilan cukup memanggil method.",
+    "code": "class CatatanRepository {\n  CatatanRepository(this.db);\n  final Database db;\n\n  static Future<CatatanRepository> buka() async {\n    final db = await openDatabase('catatan.db', version: 1, onCreate: (db, v) {\n      return db.execute('CREATE TABLE catatan(id INTEGER PRIMARY KEY, judul TEXT, selesai INTEGER)');\n    });\n    return CatatanRepository(db);\n  }\n\n  Future<int> tambah(String judul) => db.insert('catatan', {'judul': judul, 'selesai': 0});\n\n  Future<void> tandaiSelesai(int id) =>\n      db.update('catatan', {'selesai': 1}, where: 'id = ?', whereArgs: [id]);\n\n  Future<void> hapus(int id) => db.delete('catatan', where: 'id = ?', whereArgs: [id]);\n\n  Future<List<Map<String, Object?>>> semua() => db.query('catatan', orderBy: 'id DESC');\n}"
+   },
+   {
+    "t": "Kasus: menyimpan objek kontak dengan Isar",
+    "d": "Class diberi anotasi @collection, lalu disimpan dan dicari dengan query bertipe.",
+    "code": "@collection\nclass Kontak {\n  Id id = Isar.autoIncrement;\n  late String nama;\n  late String nomor;\n}\n\nFuture<void> contohKontak(Isar isar) async {\n  final baru = Kontak();\n  baru.nama = 'Wayan';\n  baru.nomor = '0813-2222-3333';\n  await isar.writeTxn(() => isar.kontaks.put(baru));\n\n  final hasil = await isar.kontaks.filter().namaStartsWith('Wa').findAll();\n  debugPrint('Ketemu ${hasil.length} kontak');\n}"
+   }
+  ]
+ },
+ "flutter-6-4": {
+  "exs": [
+   {
+    "t": "Kasus: tombol telepon dan email di halaman bantuan",
+    "d": "url_launcher membuka aplikasi telepon dan email dengan skema tel: dan mailto:.",
+    "code": "Future<void> teleponCs() async {\n  final uri = Uri(scheme: 'tel', path: '1500123');\n  if (!await launchUrl(uri)) debugPrint('Tidak bisa membuka aplikasi telepon');\n}\n\nFuture<void> emailCs() async {\n  final uri = Uri(\n    scheme: 'mailto',\n    path: 'bantuan@tokoku.id',\n    queryParameters: {'subject': 'Pesanan PSN-0192 belum sampai'},\n  );\n  await launchUrl(uri);\n}"
+   },
+   {
+    "t": "Kasus: membagikan kode referral",
+    "d": "share_plus membuka lembar berbagi bawaan ponsel, pengguna memilih WhatsApp, Telegram, dan lainnya.",
+    "code": "Future<void> bagikanReferral(String kode) async {\n  await SharePlus.instance.share(\n    ShareParams(\n      text: 'Pakai kode $kode di aplikasi Tokoku, dapat potongan Rp20.000!',\n      subject: 'Kode referral Tokoku',\n    ),\n  );\n}"
+   },
+   {
+    "t": "Kasus: memilih beberapa foto bukti dari galeri",
+    "d": "image_picker juga bisa mengambil banyak gambar dari galeri; ukuran diperkecil sebelum diunggah.",
+    "code": "Future<List<String>> pilihFotoBukti() async {\n  final foto = await ImagePicker().pickMultiImage(\n    maxWidth: 1280,\n    imageQuality: 75,\n    limit: 3,\n  );\n  if (foto.isEmpty) return []; // pengguna membatalkan\n  return [for (final f in foto) f.path];\n}"
+   }
+  ]
+ },
+ "flutter-7-1": {
+  "exs": [
+   {
+    "t": "Kasus: service locator dengan get_it",
+    "d": "Objek didaftarkan sekali di main, lalu diambil di mana pun tanpa membuatnya ulang.",
+    "code": "final getIt = GetIt.instance;\n\nvoid daftarDependensi() {\n  getIt.registerLazySingleton<Dio>(() => Dio(BaseOptions(baseUrl: 'https://api.tokoku.id')));\n  getIt.registerLazySingleton<ProdukApi>(() => ProdukApi(getIt<Dio>()));\n  getIt.registerLazySingleton<ProdukRepository>(() => ProdukRepository(getIt<ProdukApi>(), ProdukCache()));\n}\n\nvoid main() {\n  daftarDependensi();\n  runApp(const AplikasiToko());\n}\n\n// di ViewModel: final repo = getIt<ProdukRepository>();"
+   },
+   {
+    "t": "Kasus: ViewModel yang hanya bicara dengan repository",
+    "d": "Widget memanggil ViewModel; ViewModel tidak tahu data datang dari API atau cache.",
+    "code": "class ProdukViewModel extends AsyncNotifier<List<Produk>> {\n  @override\n  Future<List<Produk>> build() => ref.watch(produkRepoProvider).semua();\n\n  Future<void> segarkan() async {\n    state = const AsyncLoading();\n    state = await AsyncValue.guard(() => ref.read(produkRepoProvider).semua());\n  }\n}\n\nfinal produkVmProvider = AsyncNotifierProvider<ProdukViewModel, List<Produk>>(ProdukViewModel.new);\n\n// di widget:\n// final produk = ref.watch(produkVmProvider);\n// RefreshIndicator(onRefresh: () => ref.read(produkVmProvider.notifier).segarkan(), child: ...)"
+   },
+   {
+    "t": "Kasus: mengganti repository asli dengan versi palsu saat tes",
+    "d": "Karena repository diberikan dari luar, tes bisa memakai data tetap tanpa internet.",
+    "code": "class RepoPalsu implements ProdukRepository {\n  @override\n  Future<List<Produk>> daftar({bool paksaSegarkan = false}) async =>\n      [const Produk(id: 1, nama: 'Kopi Gayo', harga: 85000)];\n}\n\nvoid main() {\n  testWidgets('halaman produk menampilkan data dari repository', (tester) async {\n    await tester.pumpWidget(\n      ProviderScope(\n        overrides: [produkRepoProvider.overrideWithValue(RepoPalsu())],\n        child: const MaterialApp(home: ProdukPage()),\n      ),\n    );\n    await tester.pumpAndSettle();\n    expect(find.text('Kopi Gayo'), findsOneWidget);\n  });\n}"
+   }
+  ]
+ },
+ "flutter-7-2": {
+  "exs": [
+   {
+    "t": "Kasus: memeriksa simpan dan muat data tugas",
+    "d": "Bagian model bisa dijalankan sebagai Dart murni: ubah ke JSON, lalu baca kembali.",
+    "code": "import 'dart:convert';\n\nclass Tugas {\n  final String id, judul;\n  final bool selesai;\n  const Tugas(this.id, this.judul, {this.selesai = false});\n  Tugas toggle() => Tugas(id, judul, selesai: !selesai);\n  Map<String, Object> toJson() => {'id': id, 'judul': judul, 'selesai': selesai};\n  factory Tugas.fromJson(Map<String, dynamic> j) =>\n      Tugas(j['id'] as String, j['judul'] as String, selesai: j['selesai'] as bool);\n}\n\nvoid main() {\n  final daftar = [const Tugas('1', 'Kerjakan PR fisika'), const Tugas('2', 'Beli buku tulis').toggle()];\n  final teks = jsonEncode([for (final t in daftar) t.toJson()]);\n  print(teks);\n\n  final dimuat = [for (final j in jsonDecode(teks) as List) Tugas.fromJson(j as Map<String, dynamic>)];\n  for (final t in dimuat) {\n    print('${t.selesai ? '[x]' : '[ ]'} ${t.judul}');\n  }\n}",
+    "out": "[{\"id\":\"1\",\"judul\":\"Kerjakan PR fisika\",\"selesai\":false},{\"id\":\"2\",\"judul\":\"Beli buku tulis\",\"selesai\":true}]\n[ ] Kerjakan PR fisika\n[x] Beli buku tulis"
+   },
+   {
+    "t": "Kasus: filter semua, aktif, dan selesai",
+    "d": "Provider turunan menghitung daftar yang tampil dari dua provider lain.",
+    "code": "enum Filter { semua, aktif, selesai }\n\nfinal filterProvider = NotifierProvider<FilterNotifier, Filter>(FilterNotifier.new);\n\nclass FilterNotifier extends Notifier<Filter> {\n  @override\n  Filter build() => Filter.semua;\n  void pilih(Filter f) => state = f;\n}\n\nfinal tugasTampilProvider = Provider<List<Tugas>>((ref) {\n  final semua = ref.watch(tugasProvider);\n  return switch (ref.watch(filterProvider)) {\n    Filter.semua => semua,\n    Filter.aktif => semua.where((t) => !t.selesai).toList(),\n    Filter.selesai => semua.where((t) => t.selesai).toList(),\n  };\n});\n\n// tombol filter:\n// SegmentedButton<Filter>(\n//   segments: [for (final f in Filter.values) ButtonSegment(value: f, label: Text(f.name))],\n//   selected: {ref.watch(filterProvider)},\n//   onSelectionChanged: (s) => ref.read(filterProvider.notifier).pilih(s.first),\n// )"
+   },
+   {
+    "t": "Kasus: widget test menambah tugas",
+    "d": "Tes mengetik judul, menekan Enter, lalu memastikan tugas muncul di daftar.",
+    "code": "void main() {\n  testWidgets('mengetik lalu Enter menambah tugas', (tester) async {\n    SharedPreferences.setMockInitialValues({}); // penyimpanan palsu untuk tes\n    await tester.pumpWidget(const ProviderScope(child: MaterialApp(home: HalamanTugas())));\n\n    await tester.enterText(find.byType(TextField), 'Setor hafalan');\n    await tester.testTextInput.receiveAction(TextInputAction.done);\n    await tester.pump();\n\n    expect(find.text('Setor hafalan'), findsOneWidget);\n    expect(find.text('Tugas (1 aktif)'), findsOneWidget);\n  });\n}"
+   }
+  ]
+ },
+ "flutter-8-1": {
+  "exs": [
+   {
+    "t": "Kasus: context yang salah untuk menampilkan SnackBar",
+    "d": "Builder membuat context baru di bawah Scaffold, jadi pencarian ke atas menemukan Scaffold tersebut.",
+    "code": "class HalamanSimpan extends StatelessWidget {\n  const HalamanSimpan({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    // context di sini berada DI ATAS Scaffold di bawah ini\n    return Scaffold(\n      body: Builder(\n        // context milik Builder berada DI BAWAH Scaffold\n        builder: (context) => Center(\n          child: FilledButton(\n            onPressed: () => Scaffold.of(context).showBottomSheet(\n              (_) => const SizedBox(height: 120, child: Center(child: Text('Tersimpan'))),\n            ),\n            child: const Text('Simpan'),\n          ),\n        ),\n      ),\n    );\n  }\n}"
+   },
+   {
+    "t": "Kasus: mengosongkan form saat produk yang diedit berganti",
+    "d": "Key berbeda membuat Flutter membuang State lama dan membuat State baru.",
+    "code": "class EditProduk extends StatelessWidget {\n  const EditProduk({super.key, required this.produkId});\n  final int produkId;\n\n  @override\n  Widget build(BuildContext context) {\n    // tanpa key, isian form produk lama masih tertinggal saat pindah ke produk lain\n    return FormProduk(key: ValueKey(produkId), produkId: produkId);\n  }\n}"
+   },
+   {
+    "t": "Kasus: posisi gulir tiap tab tetap diingat",
+    "d": "PageStorageKey menyimpan posisi gulir setiap daftar saat tab berpindah.",
+    "code": "TabBarView(\n  children: [\n    ListView.builder(\n      key: const PageStorageKey('tab-makanan'),\n      itemCount: 50,\n      itemBuilder: (_, i) => ListTile(title: Text('Makanan $i')),\n    ),\n    ListView.builder(\n      key: const PageStorageKey('tab-minuman'),\n      itemCount: 50,\n      itemBuilder: (_, i) => ListTile(title: Text('Minuman $i')),\n    ),\n  ],\n)"
+   }
+  ]
+ },
+ "flutter-8-2": {
+  "exs": [
+   {
+    "t": "Kasus: batas waktu permintaan dan beberapa Future sekaligus",
+    "d": "timeout memberi nilai cadangan bila Future terlalu lama; Future.wait menunggu semuanya bersamaan.",
+    "code": "Future<String> ambil(String nama, int ms) async {\n  await Future.delayed(Duration(milliseconds: ms));\n  return nama;\n}\n\nFuture<void> main() async {\n  final promo = await ambil('promo', 500).timeout(\n    const Duration(milliseconds: 100),\n    onTimeout: () => 'promo (dari cache)',\n  );\n  print(promo);\n\n  final semua = await Future.wait([ambil('profil', 50), ambil('saldo', 30)]);\n  print(semua);\n}",
+    "out": "promo (dari cache)\n[profil, saldo]"
+   },
+   {
+    "t": "Kasus: aliran pesan chat dengan StreamController",
+    "d": "StreamController.broadcast boleh didengarkan banyak pendengar, misalnya daftar chat dan badge.",
+    "code": "import 'dart:async';\n\nFuture<void> main() async {\n  final chat = StreamController<String>.broadcast();\n  var belumDibaca = 0;\n\n  chat.stream.listen((p) => print('Daftar chat: $p'));\n  chat.stream.listen((_) => belumDibaca++);\n\n  chat.add('Dimas: sudah di jalan');\n  chat.add('Dimas: 5 menit lagi');\n  await chat.close();\n  await Future.delayed(Duration.zero);\n  print('Belum dibaca: $belumDibaca');\n}",
+    "out": "Daftar chat: Dimas: sudah di jalan\nDaftar chat: Dimas: 5 menit lagi\nBelum dibaca: 2"
+   },
+   {
+    "t": "Kasus: menghitung ringkasan transaksi besar di isolate",
+    "d": "Isolate.run memindahkan perhitungan berat agar thread UI tetap bebas.",
+    "code": "import 'dart:isolate';\n\nint totalTransaksi(int jumlah) {\n  var total = 0;\n  for (var i = 1; i <= jumlah; i++) {\n    total += (i % 7 + 1) * 1000; // nominal tiruan\n  }\n  return total;\n}\n\nFuture<void> main() async {\n  print('UI tetap jalan...');\n  final total = await Isolate.run(() => totalTransaksi(2000000));\n  print('Total 2 juta transaksi: $total');\n}",
+    "out": "UI tetap jalan...\nTotal 2 juta transaksi: 7999997000"
+   },
+   {
+    "t": "Kasus: posisi kurir di peta dengan StreamBuilder",
+    "d": "StreamBuilder menggambar ulang setiap kali stream mengirim lokasi baru.",
+    "code": "StreamBuilder<String>(\n  stream: lacakKurir('PSN-0192'), // Stream<String> dari server\n  builder: (context, snap) {\n    if (snap.hasError) return const Text('Pelacakan terputus');\n    if (!snap.hasData) return const CircularProgressIndicator();\n    return Text('Kurir di ${snap.data}');\n  },\n)"
+   }
+  ]
+ },
+ "flutter-8-3": {
+  "exs": [
+   {
+    "t": "Kasus: membaca langkah kaki dari sensor dengan EventChannel",
+    "d": "EventChannel mengalirkan data terus-menerus dari native sebagai Stream di Dart.",
+    "code": "import 'package:flutter/services.dart';\n\nclass Pedometer {\n  static const _ch = EventChannel('id.sehatku/langkah');\n\n  static Stream<int> langkah() =>\n      _ch.receiveBroadcastStream().map((n) => n as int);\n}\n\n// di widget:\n// StreamBuilder<int>(stream: Pedometer.langkah(), builder: (_, s) => Text('${s.data ?? 0} langkah'))"
+   },
+   {
+    "t": "Kasus: menangani error dari kode native",
+    "d": "Jika native memanggil result.error, Dart menerima PlatformException yang bisa ditangkap.",
+    "code": "import 'package:flutter/services.dart';\n\nclass PrinterKasir {\n  static const _ch = MethodChannel('id.tokoku/printer');\n\n  static Future<String> cetak(String struk) async {\n    try {\n      await _ch.invokeMethod<void>('cetak', {'isi': struk, 'lebar': 58});\n      return 'Struk dicetak';\n    } on PlatformException catch (e) {\n      return 'Printer error ${e.code}: ${e.message}'; // misalnya KERTAS_HABIS\n    } on MissingPluginException {\n      return 'Fitur printer belum ada di platform ini';\n    }\n  }\n}"
+   },
+   {
+    "t": "Kasus: definisi Pigeon untuk API native bertipe",
+    "d": "Satu berkas definisi menghasilkan kode channel Dart, Kotlin, dan Swift sekaligus.",
+    "code": "// pigeons/edc.dart\nimport 'package:pigeon/pigeon.dart';\n\nclass HasilBayar {\n  bool berhasil = false;\n  String? kodeApproval;\n}\n\n@HostApi()\nabstract class EdcApi {\n  @async\n  HasilBayar bayar(int nominal);\n}\n\n// dart run pigeon --input pigeons/edc.dart\n// di aplikasi: final hasil = await EdcApi().bayar(150000);"
+   }
+  ]
+ },
+ "flutter-9-1": {
+  "exs": [
+   {
+    "t": "Kasus: memecah layar besar dan memakai const",
+    "d": "Bagian yang tidak berubah dijadikan widget const sehingga tidak dibuat ulang saat state berubah.",
+    "code": "class HalamanKeranjang extends StatefulWidget {\n  const HalamanKeranjang({super.key});\n  @override\n  State<HalamanKeranjang> createState() => _HalamanKeranjangState();\n}\n\nclass _HalamanKeranjangState extends State<HalamanKeranjang> {\n  int qty = 1;\n\n  @override\n  Widget build(BuildContext context) {\n    return Column(children: [\n      const BannerPromo(), // const: dilewati saat qty berubah\n      Text('Jumlah: $qty'),\n      IconButton(onPressed: () => setState(() => qty++), icon: const Icon(Icons.add)),\n    ]);\n  }\n}\n\nclass BannerPromo extends StatelessWidget {\n  const BannerPromo({super.key});\n  @override\n  Widget build(BuildContext context) => const Text('Gratis ongkir hari ini');\n}"
+   },
+   {
+    "t": "Kasus: daftar foto produk yang ringan",
+    "d": "itemExtent memudahkan perhitungan gulir, cacheWidth mengecilkan gambar saat di-decode.",
+    "code": "ListView.builder(\n  itemCount: produk.length,\n  itemExtent: 88, // tinggi tiap baris sudah pasti\n  itemBuilder: (context, i) => ListTile(\n    leading: Image.network(\n      produk[i].foto,\n      width: 56,\n      cacheWidth: 112, // 56 dp x 2 (kerapatan layar), bukan ukuran asli 2000 px\n    ),\n    title: Text(produk[i].nama),\n  ),\n)"
+   },
+   {
+    "t": "Kasus: memisahkan animasi dari isi layar",
+    "d": "RepaintBoundary membuat animasi loading digambar di lapisan sendiri sehingga sisa layar tidak ikut digambar ulang.",
+    "code": "Stack(\n  children: [\n    const IsiHalaman(),\n    Positioned(\n      top: 16,\n      right: 16,\n      child: RepaintBoundary(\n        child: const CircularProgressIndicator(), // berputar terus\n      ),\n    ),\n  ],\n)\n// cek di DevTools: aktifkan \"Highlight repaints\" untuk melihat area yang digambar ulang"
+   }
+  ]
+ },
+ "flutter-9-2": {
+  "exs": [
+   {
+    "t": "Kasus: mencatat event tambah ke keranjang",
+    "d": "Event Analytics diberi parameter agar laporan bisa dipilah per produk.",
+    "code": "Future<void> catatTambahKeranjang(String id, String nama, int harga) {\n  return FirebaseAnalytics.instance.logAddToCart(\n    currency: 'IDR',\n    value: harga.toDouble(),\n    items: [AnalyticsEventItem(itemId: id, itemName: nama, price: harga)],\n  );\n}\n\nFuture<void> catatCari(String kata) {\n  return FirebaseAnalytics.instance.logEvent(\n    name: 'cari_produk',\n    parameters: {'kata': kata},\n  );\n}"
+   },
+   {
+    "t": "Kasus: membuka halaman pesanan saat notifikasi diketuk",
+    "d": "Tangani notifikasi yang membuka aplikasi dari keadaan tertutup dan dari latar belakang.",
+    "code": "Future<void> siapkanNotifikasi(GoRouter router) async {\n  // aplikasi tertutup lalu dibuka lewat notifikasi\n  final awal = await FirebaseMessaging.instance.getInitialMessage();\n  if (awal != null) router.push('/pesanan/${awal.data['id']}');\n\n  // aplikasi di latar belakang lalu notifikasi diketuk\n  FirebaseMessaging.onMessageOpenedApp.listen((pesan) {\n    router.push('/pesanan/${pesan.data['id']}');\n  });\n}"
+   },
+   {
+    "t": "Kasus: melaporkan error yang tidak membuat aplikasi tertutup",
+    "d": "Error yang sudah ditangani tetap dilaporkan sebagai non-fatal, lengkap dengan id pengguna.",
+    "code": "Future<void> muatSaldo(String uid) async {\n  await FirebaseCrashlytics.instance.setUserIdentifier(uid); // jangan email atau nama\n  try {\n    await api.saldo();\n  } catch (e, stack) {\n    await FirebaseCrashlytics.instance.recordError(e, stack, reason: 'gagal memuat saldo', fatal: false);\n    tampilkanPesan('Saldo belum bisa dimuat');\n  }\n}"
+   }
+  ]
+ },
+ "flutter-9-3": {
+  "exs": [
+   {
+    "t": "Kasus: menjalankan flavor dev dan prod",
+    "d": "Setiap flavor punya titik masuk dan berkas konfigurasi sendiri.",
+    "code": "# env/dev.json berisi {\"API_URL\": \"https://staging.api.tokoku.id\", \"NAMA_APP\": \"Tokoku Dev\"}\nflutter run --flavor dev -t lib/main_dev.dart --dart-define-from-file=env/dev.json\n\n# versi produksi untuk diuji sebelum rilis\nflutter run --flavor prod -t lib/main_prod.dart --dart-define-from-file=env/prod.json --release\n\n# di Dart: const apiUrl = String.fromEnvironment('API_URL');"
+   },
+   {
+    "t": "Kasus: build rilis yang siap diunggah",
+    "d": "Nomor build dinaikkan di setiap rilis; kode Dart diacak dengan obfuscate.",
+    "code": "# appbundle Android untuk Google Play, nomor build dari CI\nflutter build appbundle --flavor prod --release \\\n  --build-name=1.4.0 --build-number=23 \\\n  --obfuscate --split-debug-info=build/symbols\n\n# ipa iOS (di Mac) untuk TestFlight\nflutter build ipa --flavor prod --release --build-number=23"
+   },
+   {
+    "t": "Kasus: mengunggah ke tester lewat fastlane",
+    "d": "fastlane menjalankan langkah unggah yang sama setiap kali, baik di laptop maupun di CI.",
+    "code": "# sekali saja: siapkan fastlane di folder android\ncd android && fastlane init\n\n# unggah AAB ke jalur internal testing Google Play\nfastlane supply --aab ../build/app/outputs/bundle/prodRelease/app-prod-release.aab --track internal\n\n# secret seperti kunci JSON Play Console disimpan di secret CI, bukan di repositori"
+   }
+  ]
+ }
+}

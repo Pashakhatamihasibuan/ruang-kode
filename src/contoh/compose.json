@@ -1,0 +1,462 @@
+{
+ "compose-1-1": {
+  "exs": [
+   {
+    "t": "Kasus: pesan stok yang mengikuti data",
+    "d": "Composable hanya mendeskripsikan tampilan dari parameter; teks berubah jika datanya berubah.",
+    "code": "@Composable\nfun InfoStok(nama: String, stok: Int) {\n    val pesan = if (stok == 0) \"$nama habis\" else \"$nama tersisa $stok\"\n    Text(text = pesan)\n}\n\n@Preview(showBackground = true)\n@Composable\nfun InfoStokAdaPreview() {\n    InfoStok(nama = \"Kopi Gayo\", stok = 12)\n}\n\n@Preview(showBackground = true)\n@Composable\nfun InfoStokHabisPreview() {\n    InfoStok(nama = \"Kopi Toraja\", stok = 0)\n}"
+   },
+   {
+    "t": "Kasus: composable yang memanggil composable lain",
+    "d": "Tampilan besar disusun dari fungsi kecil yang bisa dipakai ulang.",
+    "code": "@Composable\nfun JudulHalaman(teks: String) {\n    Text(text = teks, style = MaterialTheme.typography.headlineSmall)\n}\n\n@Composable\nfun HalamanJadwal() {\n    // satu composable boleh memanggil composable lain\n    JudulHalaman(teks = \"Jadwal Kereta Bandara\")\n}\n\n@Preview(showBackground = true)\n@Composable\nfun HalamanJadwalPreview() {\n    MaterialTheme {\n        HalamanJadwal()\n    }\n}"
+   },
+   {
+    "t": "Kasus: memasang tampilan di Activity",
+    "d": "setContent menjadi pintu masuk; isi di dalamnya adalah pohon composable.",
+    "code": "class MainActivity : ComponentActivity() {\n    override fun onCreate(savedInstanceState: Bundle?) {\n        super.onCreate(savedInstanceState)\n        setContent {\n            MaterialTheme {\n                SapaPelanggan(nama = \"Pak Hasan\", poin = 1200)\n            }\n        }\n    }\n}\n\n@Composable\nfun SapaPelanggan(nama: String, poin: Int) {\n    Text(text = \"Selamat datang, $nama! Poin kamu: $poin\")\n}"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Composable dengan beberapa pratinjau",
+    "b": "Satu composable diberi beberapa @Preview dengan data berbeda dan ukuran huruf besar, sehingga tampilan bisa diperiksa untuk banyak kondisi tanpa menjalankan emulator.",
+    "code": "@Composable\nfun SapaPengguna(nama: String, poin: Int) {\n    Text(\"Halo, $nama! Kamu punya $poin poin\", style = MaterialTheme.typography.titleMedium)\n}\n\n@Preview(name = \"Poin banyak\", showBackground = true)\n@Composable\nfun SapaPoinBanyakPreview() = MaterialTheme { SapaPengguna(\"Sari\", 1200) }\n\n@Preview(name = \"Nama panjang\", showBackground = true, widthDp = 240)\n@Composable\nfun SapaNamaPanjangPreview() = MaterialTheme { SapaPengguna(\"Raden Ajeng Kartika Sari\", 0) }\n\n@Preview(name = \"Huruf besar\", showBackground = true, fontScale = 1.5f)\n@Composable\nfun SapaHurufBesarPreview() = MaterialTheme { SapaPengguna(\"Sari\", 1200) }"
+   }
+  ]
+ },
+ "compose-1-2": {
+  "exs": [
+   {
+    "t": "Kasus: kartu profil siswa dengan Column",
+    "d": "Column menyusun ke bawah; Spacer memberi jarak antarbagian.",
+    "code": "@Composable\nfun KartuSiswa(nama: String, kelas: String, nis: String) {\n    Column(\n        modifier = Modifier\n            .fillMaxWidth()\n            .padding(16.dp),\n        verticalArrangement = Arrangement.spacedBy(4.dp),\n    ) {\n        Text(nama, style = MaterialTheme.typography.titleLarge)\n        Text(\"Kelas $kelas\")\n        Spacer(Modifier.height(8.dp))\n        Text(\"NIS $nis\", style = MaterialTheme.typography.bodySmall)\n    }\n}"
+   },
+   {
+    "t": "Kasus: label diskon menumpuk di atas gambar dengan Box",
+    "d": "Box menumpuk anak; align menempatkan label di pojok kanan atas.",
+    "code": "@Composable\nfun GambarPromo() {\n    Box(\n        modifier = Modifier\n            .size(160.dp)\n            .background(MaterialTheme.colorScheme.secondaryContainer, RoundedCornerShape(12.dp)),\n    ) {\n        Text(\"Foto produk\", Modifier.align(Alignment.Center))\n        Text(\n            \"-20%\",\n            color = MaterialTheme.colorScheme.onError,\n            modifier = Modifier\n                .align(Alignment.TopEnd)\n                .padding(8.dp)\n                .background(MaterialTheme.colorScheme.error, RoundedCornerShape(50))\n                .padding(horizontal = 8.dp, vertical = 2.dp),\n        )\n    }\n}"
+   },
+   {
+    "t": "Kasus: urutan padding dan background",
+    "d": "Dua kotak dengan modifier sama tetapi urutan berbeda memberi hasil berbeda.",
+    "code": "@Composable\nfun BandingUrutanModifier() {\n    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {\n        // jarak di LUAR warna: warna hanya sebesar teks\n        Text(\n            \"Luar\",\n            Modifier\n                .padding(16.dp)\n                .background(Color(0xFFFFE0B2)),\n        )\n        // jarak di DALAM warna: warna ikut melebar\n        Text(\n            \"Dalam\",\n            Modifier\n                .background(Color(0xFFFFE0B2))\n                .padding(16.dp),\n        )\n    }\n}"
+   },
+   {
+    "t": "Kasus: baris harga yang membagi ruang dengan weight",
+    "d": "weight(1f) mengambil sisa lebar sehingga harga selalu menempel di kanan.",
+    "code": "@Composable\nfun BarisHarga(menu: String, harga: String) {\n    Row(\n        modifier = Modifier\n            .fillMaxWidth()\n            .padding(horizontal = 16.dp, vertical = 8.dp),\n        verticalAlignment = Alignment.CenterVertically,\n    ) {\n        Text(menu, modifier = Modifier.weight(1f))\n        Text(harga, style = MaterialTheme.typography.titleMedium)\n    }\n}"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Baris produk yang tidak meluber",
+    "b": "Nama produk di toko daring sering panjang. maxLines dan Ellipsis memotong teks, weight memberi ruang sisa ke nama, dan tombol tetap terlihat di kanan.",
+    "code": "@Composable\nfun BarisProduk(nama: String, harga: String, onTambah: () -> Unit) {\n    Row(\n        modifier = Modifier.fillMaxWidth().clickable { }.padding(horizontal = 16.dp, vertical = 12.dp),\n        verticalAlignment = Alignment.CenterVertically,\n        horizontalArrangement = Arrangement.spacedBy(12.dp),\n    ) {\n        Box(\n            Modifier.size(56.dp).clip(RoundedCornerShape(8.dp)).background(MaterialTheme.colorScheme.surfaceVariant),\n            contentAlignment = Alignment.Center,\n        ) { Icon(Icons.Default.ShoppingCart, contentDescription = null) }\n        Column(Modifier.weight(1f)) {\n            Text(nama, maxLines = 2, overflow = TextOverflow.Ellipsis)\n            Text(harga, fontWeight = FontWeight.Bold)\n        }\n        IconButton(onClick = onTambah) { Icon(Icons.Default.AddShoppingCart, contentDescription = \"Tambah $nama\") }\n    }\n}"
+   }
+  ]
+ },
+ "compose-2-1": {
+  "exs": [
+   {
+    "t": "Kasus: tombol suka yang berganti ikon",
+    "d": "State Boolean diingat dengan remember; mengubahnya memicu recomposition.",
+    "code": "@Composable\nfun TombolSuka() {\n    var disukai by remember { mutableStateOf(false) }\n    IconButton(onClick = { disukai = !disukai }) {\n        Icon(\n            imageVector = if (disukai) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,\n            contentDescription = if (disukai) \"Batal suka\" else \"Suka\",\n        )\n    }\n}"
+   },
+   {
+    "t": "Kasus: centang persetujuan yang mengaktifkan tombol",
+    "d": "Satu state dipakai dua composable: Checkbox mengubahnya, Button membacanya.",
+    "code": "@Composable\nfun PersetujuanDaftar(onLanjut: () -> Unit) {\n    var setuju by rememberSaveable { mutableStateOf(false) }\n    Column(Modifier.padding(16.dp)) {\n        Row(verticalAlignment = Alignment.CenterVertically) {\n            Checkbox(checked = setuju, onCheckedChange = { setuju = it })\n            Text(\"Saya menyetujui syarat dan ketentuan\")\n        }\n        Button(onClick = onLanjut, enabled = setuju) { Text(\"Lanjut\") }\n    }\n}"
+   },
+   {
+    "t": "Kasus: pemilih jumlah tiket kereta yang stateless",
+    "d": "Anak hanya menerima nilai dan onUbah; induk yang menyimpan state dan menghitung harga.",
+    "code": "@Composable\nfun PemilihPenumpang(label: String, jumlah: Int, onUbah: (Int) -> Unit) {\n    Row(verticalAlignment = Alignment.CenterVertically) {\n        Text(label, Modifier.weight(1f))\n        TextButton(onClick = { onUbah(jumlah - 1) }, enabled = jumlah > 0) { Text(\"-\") }\n        Text(\"$jumlah\")\n        TextButton(onClick = { onUbah(jumlah + 1) }) { Text(\"+\") }\n    }\n}\n\n@Composable\nfun PesanTiket() {\n    var dewasa by rememberSaveable { mutableIntStateOf(1) }\n    var anak by rememberSaveable { mutableIntStateOf(0) }\n    Column(Modifier.padding(16.dp)) {\n        PemilihPenumpang(\"Dewasa\", dewasa) { dewasa = it }\n        PemilihPenumpang(\"Anak\", anak) { anak = it }\n        Text(\"Total: Rp${dewasa * 80_000 + anak * 40_000}\")\n    }\n}"
+   }
+  ]
+ },
+ "compose-2-2": {
+  "exs": [
+   {
+    "t": "Kasus: daftar kontak dengan judul kelompok",
+    "d": "item { } untuk satu baris tetap, items(...) untuk isi daftar dengan key.",
+    "code": "data class Kontak(val id: Int, val nama: String, val nomor: String)\n\n@Composable\nfun DaftarKontak(keluarga: List<Kontak>, teman: List<Kontak>) {\n    LazyColumn(contentPadding = PaddingValues(16.dp)) {\n        item { Text(\"Keluarga\", style = MaterialTheme.typography.titleSmall) }\n        items(keluarga, key = { it.id }) { k ->\n            ListItem(headlineContent = { Text(k.nama) }, supportingContent = { Text(k.nomor) })\n        }\n        item { Text(\"Teman\", style = MaterialTheme.typography.titleSmall) }\n        items(teman, key = { it.id }) { k ->\n            ListItem(headlineContent = { Text(k.nama) }, supportingContent = { Text(k.nomor) })\n        }\n    }\n}"
+   },
+   {
+    "t": "Kasus: isian nomor HP dengan validasi",
+    "d": "keyboardOptions memunculkan papan angka; isError dan supportingText menampilkan kesalahan.",
+    "code": "@Composable\nfun IsianNomorHp() {\n    var nomor by rememberSaveable { mutableStateOf(\"\") }\n    val salah = nomor.isNotEmpty() && !nomor.startsWith(\"08\")\n    OutlinedTextField(\n        value = nomor,\n        onValueChange = { baru -> nomor = baru.filter { it.isDigit() }.take(13) },\n        label = { Text(\"Nomor HP\") },\n        placeholder = { Text(\"08xxxxxxxxxx\") },\n        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),\n        isError = salah,\n        supportingText = { if (salah) Text(\"Nomor harus diawali 08\") },\n        singleLine = true,\n        modifier = Modifier.fillMaxWidth().padding(16.dp),\n    )\n}"
+   },
+   {
+    "t": "Kasus: kategori menu yang digulir ke samping",
+    "d": "LazyRow adalah versi horizontal LazyColumn.",
+    "code": "@Composable\nfun KategoriMenu(kategori: List<String>, dipilih: String, onPilih: (String) -> Unit) {\n    LazyRow(\n        contentPadding = PaddingValues(horizontal = 16.dp),\n        horizontalArrangement = Arrangement.spacedBy(8.dp),\n    ) {\n        items(kategori, key = { it }) { k ->\n            FilterChip(\n                selected = k == dipilih,\n                onClick = { onPilih(k) },\n                label = { Text(k) },\n            )\n        }\n    }\n}"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Pencarian dengan daftar yang tersaring",
+    "b": "Kotak pencarian katalog toko: teks disimpan di state, daftar disaring setiap kali teks berubah, dan tombol Search di keyboard dipakai lewat imeAction.",
+    "code": "data class Produk(val id: Int, val nama: String, val harga: Int)\n\n@Composable\nfun CariProduk(semua: List<Produk>) {\n    var kata by rememberSaveable { mutableStateOf(\"\") }\n    val hasil = semua.filter { it.nama.contains(kata.trim(), ignoreCase = true) }\n    Column {\n        OutlinedTextField(\n            value = kata, onValueChange = { kata = it },\n            label = { Text(\"Cari produk\") }, singleLine = true,\n            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),\n            modifier = Modifier.fillMaxWidth().padding(16.dp),\n        )\n        if (hasil.isEmpty()) Text(\"Tidak ada produk \\\"$kata\\\"\", Modifier.padding(16.dp))\n        LazyColumn {\n            items(hasil, key = { it.id }) { p ->\n                ListItem(headlineContent = { Text(p.nama) }, supportingContent = { Text(\"Rp${p.harga}\") })\n            }\n        }\n    }\n}"
+   }
+  ]
+ },
+ "compose-3-1": {
+  "exs": [
+   {
+    "t": "Kasus: Scaffold dengan tombol tambah mengambang",
+    "d": "Scaffold memberi padding agar isi tidak tertutup TopAppBar dan FAB.",
+    "code": "@OptIn(ExperimentalMaterial3Api::class)\n@Composable\nfun LayarAntrean() {\n    var nomor by rememberSaveable { mutableIntStateOf(0) }\n    Scaffold(\n        topBar = { CenterAlignedTopAppBar(title = { Text(\"Antrean Puskesmas\") }) },\n        floatingActionButton = {\n            ExtendedFloatingActionButton(\n                onClick = { nomor++ },\n                icon = { Icon(Icons.Default.Add, contentDescription = null) },\n                text = { Text(\"Ambil nomor\") },\n            )\n        },\n    ) { padding ->\n        Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {\n            Text(if (nomor == 0) \"Belum ada antrean\" else \"Nomor terakhir: A-$nomor\",\n                style = MaterialTheme.typography.headlineMedium)\n        }\n    }\n}"
+   },
+   {
+    "t": "Kasus: tab bawah dengan NavigationBar",
+    "d": "State tab terpilih menentukan isi layar dan item yang disorot.",
+    "code": "@Composable\nfun AplikasiSekolah() {\n    val tab = listOf(\"Beranda\", \"Jadwal\", \"Profil\")\n    val ikon = listOf(Icons.Default.Home, Icons.Default.DateRange, Icons.Default.Person)\n    var dipilih by rememberSaveable { mutableIntStateOf(0) }\n    Scaffold(\n        bottomBar = {\n            NavigationBar {\n                tab.forEachIndexed { i, judul ->\n                    NavigationBarItem(\n                        selected = dipilih == i,\n                        onClick = { dipilih = i },\n                        icon = { Icon(ikon[i], contentDescription = null) },\n                        label = { Text(judul) },\n                    )\n                }\n            }\n        },\n    ) { padding ->\n        Text(\"Halaman ${tab[dipilih]}\", Modifier.padding(padding).padding(16.dp))\n    }\n}"
+   },
+   {
+    "t": "Kasus: alur daftar, detail, dan kembali",
+    "d": "Argumen rute dikirim lewat navigate dan dibaca di tujuan; popBackStack kembali ke layar sebelumnya.",
+    "code": "@Composable\nfun NavResep() {\n    val nav = rememberNavController()\n    NavHost(navController = nav, startDestination = \"daftar\") {\n        composable(\"daftar\") {\n            Column {\n                listOf(\"rendang\", \"soto-betawi\", \"gudeg\").forEach { slug ->\n                    TextButton(onClick = { nav.navigate(\"resep/$slug\") }) { Text(slug) }\n                }\n            }\n        }\n        composable(\"resep/{slug}\") { entry ->\n            val slug = entry.arguments?.getString(\"slug\").orEmpty()\n            Column(Modifier.padding(16.dp)) {\n                Text(\"Resep $slug\", style = MaterialTheme.typography.headlineSmall)\n                Button(onClick = { nav.popBackStack() }) { Text(\"Kembali\") }\n            }\n        }\n    }\n}"
+   }
+  ]
+ },
+ "compose-3-2": {
+  "code": "sealed interface CuacaState {\n    data object Memuat : CuacaState\n    data class Ok(val kota: List<String>) : CuacaState\n    data class Gagal(val pesan: String) : CuacaState\n}\n\ninterface CuacaRepository {\n    suspend fun daftar(): List<String>   // diisi dari API di modul berikutnya\n}\n\nclass CuacaViewModel(private val repo: CuacaRepository) : ViewModel() {\n    private val _state = MutableStateFlow<CuacaState>(CuacaState.Memuat)\n    val state: StateFlow<CuacaState> = _state.asStateFlow()\n\n    init { muat() }\n\n    fun muat() = viewModelScope.launch {\n        _state.value = CuacaState.Memuat\n        _state.value = try {\n            CuacaState.Ok(repo.daftar())\n        } catch (e: Exception) {\n            CuacaState.Gagal(e.message ?: \"Terjadi kesalahan\")\n        }\n    }\n}\n\n@Composable\nfun CuacaScreen(repo: CuacaRepository) {\n    val vm: CuacaViewModel = viewModel { CuacaViewModel(repo) }\n    val s by vm.state.collectAsStateWithLifecycle()\n    when (val st = s) {\n        CuacaState.Memuat -> CircularProgressIndicator()\n        is CuacaState.Gagal -> Button(onClick = { vm.muat() }) { Text(\"Coba lagi: ${st.pesan}\") }\n        is CuacaState.Ok -> LazyColumn { items(st.kota) { Text(it) } }\n    }\n}",
+  "exs": [
+   {
+    "t": "Kasus: penghitung langkah yang bertahan saat layar diputar",
+    "d": "State di ViewModel tidak hilang saat Activity dibuat ulang.",
+    "code": "class LangkahViewModel : ViewModel() {\n    private val _langkah = MutableStateFlow(0)\n    val langkah: StateFlow<Int> = _langkah.asStateFlow()\n\n    fun tambah() { _langkah.update { it + 1 } }\n    fun reset() { _langkah.value = 0 }\n}\n\n@Composable\nfun LayarLangkah(vm: LangkahViewModel = viewModel()) {\n    val langkah by vm.langkah.collectAsStateWithLifecycle()\n    Column(Modifier.padding(16.dp)) {\n        Text(\"$langkah langkah\", style = MaterialTheme.typography.displaySmall)\n        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {\n            Button(onClick = vm::tambah) { Text(\"Tambah\") }\n            OutlinedButton(onClick = vm::reset) { Text(\"Reset\") }\n        }\n    }\n}"
+   },
+   {
+    "t": "Kasus: formulir masuk dengan UiState data class",
+    "d": "Satu data class menampung seluruh state layar, diperbarui dengan copy.",
+    "code": "data class MasukUiState(\n    val email: String = \"\",\n    val sandi: String = \"\",\n    val pesanError: String? = null,\n) {\n    val bisaKirim: Boolean get() = email.contains(\"@\") && sandi.length >= 8\n}\n\nclass MasukViewModel : ViewModel() {\n    private val _state = MutableStateFlow(MasukUiState())\n    val state: StateFlow<MasukUiState> = _state.asStateFlow()\n\n    fun ubahEmail(e: String) = _state.update { it.copy(email = e.trim(), pesanError = null) }\n    fun ubahSandi(s: String) = _state.update { it.copy(sandi = s, pesanError = null) }\n    fun kirim() {\n        if (!_state.value.bisaKirim) _state.update { it.copy(pesanError = \"Email atau sandi belum valid\") }\n    }\n}"
+   },
+   {
+    "t": "Kasus: memuat jadwal bioskop dengan viewModelScope",
+    "d": "Coroutine di viewModelScope otomatis dibatalkan saat ViewModel dibersihkan.",
+    "code": "class JadwalViewModel(private val ambilJadwal: suspend () -> List<String>) : ViewModel() {\n    private val _jadwal = MutableStateFlow<List<String>>(emptyList())\n    val jadwal: StateFlow<List<String>> = _jadwal.asStateFlow()\n    private val _memuat = MutableStateFlow(false)\n    val memuat: StateFlow<Boolean> = _memuat.asStateFlow()\n\n    fun segarkan() = viewModelScope.launch {\n        _memuat.value = true\n        _jadwal.value = ambilJadwal()\n        _memuat.value = false\n    }\n}\n\n@Composable\nfun LayarJadwal(vm: JadwalViewModel) {\n    val jadwal by vm.jadwal.collectAsStateWithLifecycle()\n    val memuat by vm.memuat.collectAsStateWithLifecycle()\n    Column {\n        Button(onClick = { vm.segarkan() }, enabled = !memuat) { Text(if (memuat) \"Memuat...\" else \"Segarkan\") }\n        LazyColumn { items(jadwal) { ListItem(headlineContent = { Text(it) }) } }\n    }\n}"
+   }
+  ],
+  "cx": [
+   {
+    "t": "ViewModel dengan UiState",
+    "b": "Pola yang umum di aplikasi produksi: satu data class UiState berisi status memuat, data, dan pesan error. Repository dioper lewat constructor sehingga mudah diganti versi palsu saat pengujian.",
+    "code": "data class Produk(val id: Int, val nama: String)\ndata class ProdukUiState(val memuat: Boolean = true, val produk: List<Produk> = emptyList(), val error: String? = null)\n\ninterface ProdukRepository { suspend fun daftar(): Result<List<Produk>> }\n\nclass ProdukViewModel(private val repo: ProdukRepository) : ViewModel() {\n    private val _state = MutableStateFlow(ProdukUiState())\n    val state: StateFlow<ProdukUiState> = _state.asStateFlow()\n\n    init { muat() }\n\n    fun muat() = viewModelScope.launch {\n        _state.update { it.copy(memuat = true, error = null) }\n        repo.daftar()\n            .onSuccess { ps -> _state.update { it.copy(memuat = false, produk = ps) } }\n            .onFailure { e -> _state.update { it.copy(memuat = false, error = e.message ?: \"Gagal memuat\") } }\n    }\n}\n\n// di layar:\n// val vm: ProdukViewModel = viewModel { ProdukViewModel(repo) }\n// val state by vm.state.collectAsStateWithLifecycle()"
+   }
+  ]
+ },
+ "compose-4-1": {
+  "exs": [
+   {
+    "t": "Kasus: tipografi merek di Type.kt",
+    "d": "Typography mengganti gaya huruf bawaan Material 3 di seluruh aplikasi.",
+    "code": "val Poppins = FontFamily(\n    Font(R.font.poppins_regular, FontWeight.Normal),\n    Font(R.font.poppins_semibold, FontWeight.SemiBold),\n)\n\nval TokoTypography = Typography(\n    titleLarge = TextStyle(fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 22.sp),\n    bodyMedium = TextStyle(fontFamily = Poppins, fontSize = 14.sp, lineHeight = 20.sp),\n    labelLarge = TextStyle(fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp),\n)"
+   },
+   {
+    "t": "Kasus: kartu yang otomatis benar di mode gelap",
+    "d": "Warna diambil dari colorScheme, jadi berganti sendiri saat tema gelap aktif.",
+    "code": "@Composable\nfun KartuSaldo(saldo: String) {\n    Column(\n        Modifier\n            .fillMaxWidth()\n            .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(16.dp))\n            .padding(16.dp),\n    ) {\n        Text(\"Saldo\", color = MaterialTheme.colorScheme.onPrimaryContainer)\n        Text(saldo, style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.onPrimaryContainer)\n    }\n}\n\n@Preview(name = \"Terang\")\n@Preview(name = \"Gelap\", uiMode = Configuration.UI_MODE_NIGHT_YES)\n@Composable\nfun KartuSaldoPreview() = KopiTheme(warnaDinamis = false) { KartuSaldo(\"Rp1.250.000\") }"
+   },
+   {
+    "t": "Kasus: pilihan tema dari pengguna",
+    "d": "Pengguna boleh memilih terang, gelap, atau ikut sistem; isSystemInDarkTheme dipakai untuk pilihan sistem.",
+    "code": "enum class PilihanTema { SISTEM, TERANG, GELAP }\n\n@Composable\nfun AplikasiTema(pilihan: PilihanTema, content: @Composable () -> Unit) {\n    val gelap = when (pilihan) {\n        PilihanTema.SISTEM -> isSystemInDarkTheme()\n        PilihanTema.TERANG -> false\n        PilihanTema.GELAP -> true\n    }\n    MaterialTheme(\n        colorScheme = if (gelap) darkColorScheme() else lightColorScheme(),\n        content = content,\n    )\n}"
+   }
+  ]
+ },
+ "compose-4-2": {
+  "exs": [
+   {
+    "t": "Kasus: tombol favorit yang membesar saat ditekan",
+    "d": "animateDpAsState menganimasikan ukuran setiap kali targetnya berubah.",
+    "code": "@Composable\nfun TombolFavorit() {\n    var aktif by remember { mutableStateOf(false) }\n    val ukuran by animateDpAsState(if (aktif) 40.dp else 28.dp, label = \"ukuran\")\n    val warna by animateColorAsState(\n        if (aktif) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline,\n        label = \"warna\",\n    )\n    IconButton(onClick = { aktif = !aktif }) {\n        Icon(Icons.Default.Favorite, contentDescription = \"Favorit\", tint = warna, modifier = Modifier.size(ukuran))\n    }\n}"
+   },
+   {
+    "t": "Kasus: berganti tab dengan Crossfade",
+    "d": "Crossfade memudarkan konten lama dan memunculkan konten baru.",
+    "code": "@Composable\nfun TabPesanan() {\n    var tab by remember { mutableStateOf(\"Aktif\") }\n    Column {\n        Row {\n            listOf(\"Aktif\", \"Selesai\").forEach { t ->\n                TextButton(onClick = { tab = t }) { Text(t) }\n            }\n        }\n        Crossfade(targetState = tab, label = \"tab\") { t ->\n            when (t) {\n                \"Aktif\" -> Text(\"2 pesanan sedang dikirim\", Modifier.padding(16.dp))\n                else -> Text(\"15 pesanan selesai\", Modifier.padding(16.dp))\n            }\n        }\n    }\n}"
+   },
+   {
+    "t": "Kasus: kerangka memuat yang berdenyut",
+    "d": "rememberInfiniteTransition mengulang animasi terus-menerus selama data dimuat.",
+    "code": "@Composable\nfun KerangkaMemuat() {\n    val transisi = rememberInfiniteTransition(label = \"denyut\")\n    val alfa by transisi.animateFloat(\n        initialValue = 0.3f,\n        targetValue = 0.9f,\n        animationSpec = infiniteRepeatable(tween(800), RepeatMode.Reverse),\n        label = \"alfa\",\n    )\n    Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(16.dp)) {\n        repeat(3) {\n            Box(\n                Modifier.fillMaxWidth().height(20.dp)\n                    .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = alfa), RoundedCornerShape(4.dp)),\n            )\n        }\n    }\n}"
+   }
+  ]
+ },
+ "compose-4-3": {
+  "exs": [
+   {
+    "t": "Kasus: hitung mundur kirim ulang OTP",
+    "d": "LaunchedEffect menjalankan coroutine hitung mundur; mengganti kunci memulainya lagi.",
+    "code": "@Composable\nfun KirimUlangOtp(onKirimUlang: () -> Unit) {\n    var putaran by remember { mutableIntStateOf(0) }\n    var sisa by remember { mutableIntStateOf(30) }\n    LaunchedEffect(putaran) {        // berjalan ulang setiap putaran berubah\n        sisa = 30\n        while (sisa > 0) {\n            delay(1_000)\n            sisa--\n        }\n    }\n    TextButton(\n        onClick = { onKirimUlang(); putaran++ },\n        enabled = sisa == 0,\n    ) { Text(if (sisa > 0) \"Kirim ulang dalam $sisa detik\" else \"Kirim ulang kode\") }\n}"
+   },
+   {
+    "t": "Kasus: Snackbar setelah menghapus catatan",
+    "d": "Event klik memakai rememberCoroutineScope karena showSnackbar adalah fungsi suspend.",
+    "code": "@Composable\nfun LayarCatatan(onHapus: () -> Unit, onBatal: () -> Unit) {\n    val snackbar = remember { SnackbarHostState() }\n    val scope = rememberCoroutineScope()\n    Scaffold(snackbarHost = { SnackbarHost(snackbar) }) { padding ->\n        Button(\n            onClick = {\n                onHapus()\n                scope.launch {\n                    val hasil = snackbar.showSnackbar(\"Catatan dihapus\", actionLabel = \"Batalkan\")\n                    if (hasil == SnackbarResult.ActionPerformed) onBatal()\n                }\n            },\n            modifier = Modifier.padding(padding),\n        ) { Text(\"Hapus catatan\") }\n    }\n}"
+   },
+   {
+    "t": "Kasus: mendaftar dan melepas pemantau koneksi",
+    "d": "DisposableEffect mendaftar listener saat tampil dan wajib melepasnya di onDispose.",
+    "code": "@Composable\nfun BannerOffline(pemantau: PemantauJaringan) {\n    var online by remember { mutableStateOf(true) }\n    DisposableEffect(pemantau) {\n        val pendengar: (Boolean) -> Unit = { online = it }\n        pemantau.daftar(pendengar)\n        onDispose { pemantau.lepas(pendengar) }   // cegah kebocoran memori\n    }\n    AnimatedVisibility(!online) {\n        Text(\"Kamu sedang offline\", Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.errorContainer).padding(8.dp))\n    }\n}"
+   }
+  ]
+ },
+ "compose-5-1": {
+  "exs": [
+   {
+    "t": "Kasus: DAO tugas sekolah dengan parameter query",
+    "d": "Parameter fungsi dipakai di SQL dengan awalan titik dua; @Update mengubah baris yang ada.",
+    "code": "@Entity(tableName = \"tugas\")\ndata class Tugas(\n    @PrimaryKey(autoGenerate = true) val id: Long = 0,\n    val mapel: String,\n    val judul: String,\n    val selesai: Boolean = false,\n)\n\n@Dao\ninterface TugasDao {\n    @Query(\"SELECT * FROM tugas WHERE mapel = :mapel ORDER BY id DESC\")\n    fun perMapel(mapel: String): Flow<List<Tugas>>\n\n    @Query(\"SELECT COUNT(*) FROM tugas WHERE selesai = 0\")\n    fun jumlahBelumSelesai(): Flow<Int>\n\n    @Insert\n    suspend fun tambah(t: Tugas): Long\n\n    @Update\n    suspend fun ubah(t: Tugas)\n}"
+   },
+   {
+    "t": "Kasus: menyimpan tanggal dengan TypeConverter",
+    "d": "Room hanya mengenal tipe dasar; TypeConverter mengubah LocalDate menjadi teks dan sebaliknya.",
+    "code": "class Konverter {\n    @TypeConverter\n    fun dariTanggal(t: LocalDate?): String? = t?.toString()      // 2026-08-17\n\n    @TypeConverter\n    fun keTanggal(s: String?): LocalDate? = s?.let(LocalDate::parse)\n}\n\n@Entity\ndata class Jadwal(@PrimaryKey(autoGenerate = true) val id: Long = 0, val acara: String, val tanggal: LocalDate)\n\n@Database(entities = [Jadwal::class], version = 1)\n@TypeConverters(Konverter::class)\nabstract class JadwalDb : RoomDatabase() {\n    abstract fun jadwalDao(): JadwalDao\n}"
+   },
+   {
+    "t": "Kasus: data Room tampil di layar lewat ViewModel",
+    "d": "Flow dari DAO diubah menjadi StateFlow, jadi layar ikut berubah setiap tabel berubah.",
+    "code": "class TugasViewModel(private val dao: TugasDao) : ViewModel() {\n    val belumSelesai: StateFlow<Int> = dao.jumlahBelumSelesai()\n        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0)\n\n    fun tandaiSelesai(t: Tugas) = viewModelScope.launch { dao.ubah(t.copy(selesai = true)) }\n}\n\n@Composable\nfun RingkasanTugas(vm: TugasViewModel) {\n    val sisa by vm.belumSelesai.collectAsStateWithLifecycle()\n    Text(if (sisa == 0) \"Semua tugas selesai\" else \"$sisa tugas belum selesai\")\n}"
+   }
+  ]
+ },
+ "compose-5-2": {
+  "exs": [
+   {
+    "t": "Kasus: beberapa pengaturan sekaligus",
+    "d": "Setiap jenis nilai punya fungsi kunci sendiri: string, int, boolean.",
+    "code": "private val Context.dataStore by preferencesDataStore(\"pengaturan\")\n\nprivate val BAHASA = stringPreferencesKey(\"bahasa\")\nprivate val UKURAN_HURUF = intPreferencesKey(\"ukuran_huruf\")\nprivate val NOTIF_PROMO = booleanPreferencesKey(\"notif_promo\")\n\ndata class Pengaturan(val bahasa: String, val ukuranHuruf: Int, val notifPromo: Boolean)\n\nclass PengaturanRepo(private val ctx: Context) {\n    val pengaturan: Flow<Pengaturan> = ctx.dataStore.data.map { p ->\n        Pengaturan(\n            bahasa = p[BAHASA] ?: \"id\",\n            ukuranHuruf = p[UKURAN_HURUF] ?: 16,\n            notifPromo = p[NOTIF_PROMO] ?: true,\n        )\n    }\n    suspend fun setBahasa(kode: String) = ctx.dataStore.edit { it[BAHASA] = kode }\n}"
+   },
+   {
+    "t": "Kasus: saklar mode gelap yang tersimpan",
+    "d": "UI membaca Flow dari DataStore dan menulis lewat fungsi suspend di ViewModel.",
+    "code": "class PengaturanViewModel(private val repo: PengaturanRepo) : ViewModel() {\n    val gelap = repo.gelap.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)\n    fun ubahGelap(nilai: Boolean) = viewModelScope.launch { repo.setGelap(nilai) }\n}\n\n@Composable\nfun BarisModeGelap(vm: PengaturanViewModel) {\n    val gelap by vm.gelap.collectAsStateWithLifecycle()\n    ListItem(\n        headlineContent = { Text(\"Mode gelap\") },\n        trailingContent = { Switch(checked = gelap, onCheckedChange = vm::ubahGelap) },\n    )\n}"
+   },
+   {
+    "t": "Kasus: penanda onboarding sudah dilihat",
+    "d": "first() membaca satu nilai saat ini dari Flow, cocok untuk menentukan layar awal.",
+    "code": "private val SUDAH_ONBOARDING = booleanPreferencesKey(\"sudah_onboarding\")\n\nclass OnboardingRepo(private val ctx: Context) {\n    suspend fun sudahDilihat(): Boolean =\n        ctx.dataStore.data.map { it[SUDAH_ONBOARDING] ?: false }.first()\n\n    suspend fun tandaiSelesai() {\n        ctx.dataStore.edit { it[SUDAH_ONBOARDING] = true }\n    }\n\n    suspend fun reset() {\n        ctx.dataStore.edit { it.remove(SUDAH_ONBOARDING) }\n    }\n}"
+   }
+  ]
+ },
+ "compose-5-3": {
+  "exs": [
+   {
+    "t": "Kasus: bagian plugins di version catalog",
+    "d": "Plugin Gradle juga dicatat versinya di libs.versions.toml.",
+    "code": "[versions]\nagp = \"8.7.2\"\nkotlin = \"2.1.0\"\nksp = \"2.1.0-1.0.29\"\n\n[plugins]\nandroid-application = { id = \"com.android.application\", version.ref = \"agp\" }\nkotlin-android = { id = \"org.jetbrains.kotlin.android\", version.ref = \"kotlin\" }\nkotlin-compose = { id = \"org.jetbrains.kotlin.plugin.compose\", version.ref = \"kotlin\" }\nksp = { id = \"com.google.devtools.ksp\", version.ref = \"ksp\" }"
+   },
+   {
+    "t": "Kasus: mengelompokkan library dengan bundles",
+    "d": "bundles menggabungkan beberapa library yang selalu dipakai bersama.",
+    "code": "[versions]\nroom = \"2.6.1\"\nlifecycle = \"2.8.7\"\n\n[libraries]\nroom-runtime = { group = \"androidx.room\", name = \"room-runtime\", version.ref = \"room\" }\nroom-ktx = { group = \"androidx.room\", name = \"room-ktx\", version.ref = \"room\" }\nroom-compiler = { group = \"androidx.room\", name = \"room-compiler\", version.ref = \"room\" }\nlifecycle-runtime-compose = { group = \"androidx.lifecycle\", name = \"lifecycle-runtime-compose\", version.ref = \"lifecycle\" }\nlifecycle-viewmodel-compose = { group = \"androidx.lifecycle\", name = \"lifecycle-viewmodel-compose\", version.ref = \"lifecycle\" }\n\n[bundles]\nroom = [\"room-runtime\", \"room-ktx\"]\nlifecycle = [\"lifecycle-runtime-compose\", \"lifecycle-viewmodel-compose\"]"
+   },
+   {
+    "t": "Kasus: paket minimal aplikasi pertama",
+    "d": "Mulai dari sedikit library: Compose, ViewModel, Navigation, dan Coil untuk gambar.",
+    "code": "[versions]\ncomposeBom = \"2024.10.01\"\nnavigation = \"2.8.3\"\ncoil = \"2.7.0\"\n\n[libraries]\ncompose-bom = { group = \"androidx.compose\", name = \"compose-bom\", version.ref = \"composeBom\" }\ncompose-material3 = { group = \"androidx.compose.material3\", name = \"material3\" }\ncompose-ui-tooling-preview = { group = \"androidx.compose.ui\", name = \"ui-tooling-preview\" }\nnavigation-compose = { group = \"androidx.navigation\", name = \"navigation-compose\", version.ref = \"navigation\" }\ncoil-compose = { group = \"io.coil-kt\", name = \"coil-compose\", version.ref = \"coil\" }"
+   }
+  ]
+ },
+ "compose-5-4": {
+  "exs": [
+   {
+    "t": "Kasus: menguji kotak pencarian produk",
+    "d": "performTextInput mengetik di TextField, lalu hasil saringan diperiksa.",
+    "code": "class CariProdukTest {\n    @get:Rule\n    val rule = createComposeRule()\n\n    private val produk = listOf(Produk(1, \"Kopi Gayo\", 85_000), Produk(2, \"Teh Tarik\", 15_000))\n\n    @Test\n    fun mengetikKataMenyaringDaftar() {\n        rule.setContent { CariProduk(semua = produk) }\n        rule.onNodeWithText(\"Cari produk\").performTextInput(\"kopi\")\n        rule.onNodeWithText(\"Kopi Gayo\").assertIsDisplayed()\n        rule.onNodeWithText(\"Teh Tarik\").assertDoesNotExist()\n    }\n}"
+   },
+   {
+    "t": "Kasus: mencari node dengan testTag",
+    "d": "testTag dipakai untuk elemen yang tidak punya teks unik.",
+    "code": "@Composable\nfun TombolBayar(total: Int, onBayar: () -> Unit) {\n    Button(onClick = onBayar, enabled = total > 0, modifier = Modifier.testTag(\"tombol_bayar\")) {\n        Text(\"Bayar\")\n    }\n}\n\nclass TombolBayarTest {\n    @get:Rule val rule = createComposeRule()\n\n    @Test\n    fun nonaktifSaatKeranjangKosong() {\n        rule.setContent { TombolBayar(total = 0, onBayar = {}) }\n        rule.onNodeWithTag(\"tombol_bayar\").assertIsNotEnabled()\n    }\n}"
+   },
+   {
+    "t": "Kasus: menguji ViewModel dengan repository palsu",
+    "d": "Tanpa MockK pun bisa: buat class palsu yang mengimplementasikan interface repository.",
+    "code": "class RepoPalsu(private val hasil: Result<List<Produk>>) : ProdukRepository {\n    override suspend fun daftar() = hasil\n}\n\nclass ProdukViewModelTest {\n    @get:Rule val mainRule = MainDispatcherRule()   // mengganti Dispatchers.Main saat tes\n\n    @Test\n    fun gagalMemuatMenampilkanError() = runTest {\n        val vm = ProdukViewModel(RepoPalsu(Result.failure(IOException(\"offline\"))))\n        advanceUntilIdle()\n        assertEquals(\"offline\", vm.state.value.error)\n        assertFalse(vm.state.value.memuat)\n    }\n}"
+   }
+  ]
+ },
+ "compose-6-1": {
+  "exs": [
+   {
+    "t": "Kasus: layar tulis catatan dengan validasi judul",
+    "d": "Tombol simpan aktif hanya jika judul terisi; isi boleh kosong.",
+    "code": "@OptIn(ExperimentalMaterial3Api::class)\n@Composable\nfun LayarTulis(onSimpan: (judul: String, isi: String) -> Unit, onKembali: () -> Unit) {\n    var judul by rememberSaveable { mutableStateOf(\"\") }\n    var isi by rememberSaveable { mutableStateOf(\"\") }\n    Scaffold(\n        topBar = {\n            TopAppBar(\n                title = { Text(\"Catatan baru\") },\n                navigationIcon = { IconButton(onClick = onKembali) { Icon(Icons.AutoMirrored.Filled.ArrowBack, \"Kembali\") } },\n                actions = { TextButton(onClick = { onSimpan(judul.trim(), isi) }, enabled = judul.isNotBlank()) { Text(\"Simpan\") } },\n            )\n        },\n    ) { pad ->\n        Column(Modifier.padding(pad).padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {\n            OutlinedTextField(judul, { judul = it }, label = { Text(\"Judul\") }, singleLine = true, modifier = Modifier.fillMaxWidth())\n            OutlinedTextField(isi, { isi = it }, label = { Text(\"Isi\") }, modifier = Modifier.fillMaxWidth().weight(1f))\n        }\n    }\n}"
+   },
+   {
+    "t": "Kasus: menyambungkan daftar dan editor dengan navigasi",
+    "d": "Satu NavHost menghubungkan dua layar proyek; ViewModel dibagi lewat parameter.",
+    "code": "@Composable\nfun AplikasiCatatan(vm: CatatanViewModel) {\n    val nav = rememberNavController()\n    NavHost(nav, startDestination = \"daftar\") {\n        composable(\"daftar\") {\n            LayarCatatan(vm = vm, onTambah = { nav.navigate(\"tulis\") })\n        }\n        composable(\"tulis\") {\n            LayarTulis(\n                onSimpan = { judul, isi ->\n                    vm.tambah(judul, isi)\n                    nav.popBackStack()\n                },\n                onKembali = { nav.popBackStack() },\n            )\n        }\n    }\n}"
+   },
+   {
+    "t": "Kasus: membuat ViewModel proyek dari database",
+    "d": "Database dibuat sekali di Application, lalu DAO-nya dioper ke ViewModel.",
+    "code": "class CatatanApp : Application() {\n    val db by lazy { Room.databaseBuilder(this, AppDb::class.java, \"catatan.db\").build() }\n}\n\nclass MainActivity : ComponentActivity() {\n    override fun onCreate(savedInstanceState: Bundle?) {\n        super.onCreate(savedInstanceState)\n        val dao = (application as CatatanApp).db.catatanDao()\n        setContent {\n            MaterialTheme {\n                val vm: CatatanViewModel = viewModel { CatatanViewModel(dao) }\n                AplikasiCatatan(vm)\n            }\n        }\n    }\n}"
+   }
+  ]
+ },
+ "compose-7-1": {
+  "exs": [
+   {
+    "t": "Kasus: remember hilang, rememberSaveable bertahan saat diputar",
+    "d": "Saat layar diputar Activity dibuat ulang; hanya nilai rememberSaveable yang dipulihkan.",
+    "code": "@Composable\nfun BandingRotasi() {\n    var biasa by remember { mutableIntStateOf(0) }            // kembali 0 setelah rotasi\n    var tersimpan by rememberSaveable { mutableIntStateOf(0) } // tetap\n    Column(Modifier.padding(16.dp)) {\n        Text(\"remember: $biasa\")\n        Text(\"rememberSaveable: $tersimpan\")\n        Button(onClick = { biasa++; tersimpan++ }) { Text(\"Tambah keduanya\") }\n    }\n}"
+   },
+   {
+    "t": "Kasus: menjeda video saat aplikasi ke latar",
+    "d": "Composable bisa mengamati lifecycle Activity dengan LifecycleEventObserver di dalam DisposableEffect.",
+    "code": "@Composable\nfun PemutarVideo(pemutar: Pemutar) {\n    val lifecycleOwner = LocalLifecycleOwner.current\n    DisposableEffect(lifecycleOwner) {\n        val pengamat = LifecycleEventObserver { _, event ->\n            when (event) {\n                Lifecycle.Event.ON_PAUSE -> pemutar.jeda()\n                Lifecycle.Event.ON_RESUME -> pemutar.lanjut()\n                else -> Unit\n            }\n        }\n        lifecycleOwner.lifecycle.addObserver(pengamat)\n        onDispose { lifecycleOwner.lifecycle.removeObserver(pengamat) }\n    }\n    Text(\"Memutar: ${pemutar.judul}\")\n}"
+   },
+   {
+    "t": "Kasus: ViewModel hidup lebih lama dari Activity",
+    "d": "Log memperlihatkan ViewModel tidak dibuat ulang saat rotasi, dan onCleared baru dipanggil saat layar benar-benar ditutup.",
+    "code": "class KeranjangViewModel : ViewModel() {\n    init { Log.d(\"Siklus\", \"ViewModel dibuat\") }\n    override fun onCleared() { Log.d(\"Siklus\", \"ViewModel dibersihkan\") }\n}\n\nclass MainActivity : ComponentActivity() {\n    private val vm: KeranjangViewModel by viewModels()\n\n    override fun onCreate(savedInstanceState: Bundle?) {\n        super.onCreate(savedInstanceState)\n        Log.d(\"Siklus\", \"Activity onCreate, vm = ${vm.hashCode()}\")\n        setContent { Text(\"Keranjang\") }\n    }\n}\n// Logcat: putar layar -> onCreate dipanggil lagi dengan hashCode vm yang SAMA"
+   }
+  ]
+ },
+ "compose-7-2": {
+  "exs": [
+   {
+    "t": "Kasus: membuka peta dan menelepon toko",
+    "d": "Implicit intent menyebut aksi; sistem memilih aplikasi peta atau telepon.",
+    "code": "@Composable\nfun KontakToko(alamat: String, telepon: String) {\n    val context = LocalContext.current\n    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {\n        OutlinedButton(onClick = {\n            val peta = Intent(Intent.ACTION_VIEW, Uri.parse(\"geo:0,0?q=\" + Uri.encode(alamat)))\n            context.startActivity(peta)\n        }) { Text(\"Buka peta\") }\n        OutlinedButton(onClick = {\n            context.startActivity(Intent(Intent.ACTION_DIAL, Uri.parse(\"tel:$telepon\")))\n        }) { Text(\"Telepon\") }\n    }\n}"
+   },
+   {
+    "t": "Kasus: membuka Activity lain dengan data",
+    "d": "Explicit intent menyebut class tujuan; data dikirim lewat putExtra.",
+    "code": "class DetailActivity : ComponentActivity() {\n    override fun onCreate(savedInstanceState: Bundle?) {\n        super.onCreate(savedInstanceState)\n        val idPesanan = intent.getStringExtra(\"id_pesanan\") ?: \"-\"\n        setContent { Text(\"Detail pesanan $idPesanan\") }\n    }\n}\n\n@Composable\nfun TombolDetail(id: String) {\n    val context = LocalContext.current\n    Button(onClick = {\n        val ke = Intent(context, DetailActivity::class.java).putExtra(\"id_pesanan\", id)\n        context.startActivity(ke)\n    }) { Text(\"Lihat $id\") }\n}"
+   },
+   {
+    "t": "Kasus: memilih foto bukti transfer",
+    "d": "Photo Picker tidak butuh izin penyimpanan; hasilnya berupa Uri foto.",
+    "code": "@Composable\nfun UnggahBukti(onDipilih: (Uri) -> Unit) {\n    val pemilih = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->\n        if (uri != null) onDipilih(uri)\n    }\n    Button(onClick = {\n        pemilih.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))\n    }) { Text(\"Pilih foto bukti transfer\") }\n}"
+   }
+  ]
+ },
+ "compose-7-3": {
+  "exs": [
+   {
+    "t": "Kasus: worker dengan data masukan dan keluaran",
+    "d": "inputData membawa parameter; Result.success(workDataOf(...)) mengembalikan hasil.",
+    "code": "class UnggahFotoWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, params) {\n    override suspend fun doWork(): Result {\n        val uri = inputData.getString(\"uri\") ?: return Result.failure()\n        return try {\n            val url = layanan.unggah(uri)\n            Result.success(workDataOf(\"url\" to url))\n        } catch (e: IOException) {\n            Result.retry()\n        }\n    }\n}\n\nval unggah = OneTimeWorkRequestBuilder<UnggahFotoWorker>()\n    .setInputData(workDataOf(\"uri\" to fotoUri.toString()))\n    .setConstraints(Constraints(requiredNetworkType = NetworkType.UNMETERED)) // hanya Wi-Fi\n    .build()"
+   },
+   {
+    "t": "Kasus: menampilkan status sinkron di layar",
+    "d": "Status pekerjaan diamati sebagai Flow lalu ditampilkan di Compose.",
+    "code": "@Composable\nfun StatusSinkron(context: Context) {\n    val info by WorkManager.getInstance(context)\n        .getWorkInfosForUniqueWorkFlow(\"sinkron\")\n        .collectAsStateWithLifecycle(initialValue = emptyList())\n    val status = info.firstOrNull()?.state\n    Text(\n        when (status) {\n            WorkInfo.State.RUNNING -> \"Menyinkronkan...\"\n            WorkInfo.State.SUCCEEDED -> \"Data sudah terbaru\"\n            WorkInfo.State.ENQUEUED -> \"Menunggu koneksi internet\"\n            WorkInfo.State.FAILED -> \"Sinkron gagal\"\n            else -> \"Belum pernah sinkron\"\n        },\n    )\n}"
+   },
+   {
+    "t": "Kasus: pengingat harian minum obat",
+    "d": "PeriodicWorkRequest berulang minimal setiap 15 menit; di sini setiap 24 jam.",
+    "code": "class PengingatObatWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, params) {\n    override suspend fun doWork(): Result {\n        tampilkanNotifikasi(applicationContext, \"Waktunya minum obat\")\n        return Result.success()\n    }\n}\n\nfun jadwalkanPengingat(context: Context) {\n    val harian = PeriodicWorkRequestBuilder<PengingatObatWorker>(24, TimeUnit.HOURS).build()\n    WorkManager.getInstance(context)\n        .enqueueUniquePeriodicWork(\"pengingat_obat\", ExistingPeriodicWorkPolicy.KEEP, harian)\n}"
+   }
+  ]
+ },
+ "compose-8-1": {
+  "code": "@HiltAndroidApp\nclass TokoApp : Application()\n\n@Module\n@InstallIn(SingletonComponent::class)\nobject DatabaseModule {\n    @Provides @Singleton\n    fun database(@ApplicationContext ctx: Context): AppDb =\n        Room.databaseBuilder(ctx, AppDb::class.java, \"toko.db\").build()\n\n    @Provides\n    fun produkDao(db: AppDb): ProdukDao = db.produkDao()\n}\n\nclass ProdukRepository @Inject constructor(private val dao: ProdukDao) {\n    fun aliranProduk(): Flow<List<Produk>> = dao.semua()\n}\n\n@HiltViewModel\nclass ProdukViewModel @Inject constructor(\n    repo: ProdukRepository,\n) : ViewModel() {\n    val produk = repo.aliranProduk()\n        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())\n}\n\n@AndroidEntryPoint\nclass MainActivity : ComponentActivity() {\n    override fun onCreate(savedInstanceState: Bundle?) {\n        super.onCreate(savedInstanceState)\n        setContent { LayarProduk() }\n    }\n}\n\n@Composable\nfun LayarProduk(vm: ProdukViewModel = hiltViewModel()) {\n    val daftar by vm.produk.collectAsStateWithLifecycle()\n    LazyColumn { items(daftar, key = { it.id }) { KartuProduk(it) } }\n}",
+  "exs": [
+   {
+    "t": "Kasus: mengikat interface ke implementasi dengan @Binds",
+    "d": "ViewModel meminta interface; Hilt tahu class mana yang dipakai lewat @Binds.",
+    "code": "interface PengaturanRepository {\n    val gelap: Flow<Boolean>\n    suspend fun setGelap(nilai: Boolean)\n}\n\nclass PengaturanRepositoryImpl @Inject constructor(\n    @ApplicationContext private val ctx: Context,\n) : PengaturanRepository {\n    override val gelap = ctx.dataStore.data.map { it[KUNCI_GELAP] ?: false }\n    override suspend fun setGelap(nilai: Boolean) { ctx.dataStore.edit { it[KUNCI_GELAP] = nilai } }\n}\n\n@Module\n@InstallIn(SingletonComponent::class)\nabstract class RepositoryModule {\n    @Binds @Singleton\n    abstract fun pengaturan(impl: PengaturanRepositoryImpl): PengaturanRepository\n}"
+   },
+   {
+    "t": "Kasus: ViewModel yang menerima beberapa dependensi",
+    "d": "Semua parameter @Inject constructor diisi otomatis oleh Hilt.",
+    "code": "@HiltViewModel\nclass BerandaViewModel @Inject constructor(\n    private val produk: ProdukRepository,\n    private val pengaturan: PengaturanRepository,\n) : ViewModel() {\n    val state = combine(produk.aliranProduk(), pengaturan.gelap) { daftar, gelap ->\n        BerandaUiState(produk = daftar, gelap = gelap)\n    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), BerandaUiState())\n}\n\n@Composable\nfun LayarBeranda(vm: BerandaViewModel = hiltViewModel()) {\n    val state by vm.state.collectAsStateWithLifecycle()\n    Text(\"${state.produk.size} produk, mode gelap ${state.gelap}\")\n}"
+   },
+   {
+    "t": "Kasus: mengganti database dengan versi memori saat tes",
+    "d": "@TestInstallIn menukar modul asli dengan modul tes tanpa mengubah kode aplikasi.",
+    "code": "@Module\n@TestInstallIn(components = [SingletonComponent::class], replaces = [DatabaseModule::class])\nobject DatabaseTesModule {\n    @Provides @Singleton\n    fun database(@ApplicationContext ctx: Context): AppDb =\n        Room.inMemoryDatabaseBuilder(ctx, AppDb::class.java).build()\n\n    @Provides\n    fun produkDao(db: AppDb): ProdukDao = db.produkDao()\n}\n\n@HiltAndroidTest\nclass LayarProdukTest {\n    @get:Rule(order = 0) val hilt = HiltAndroidRule(this)\n    @get:Rule(order = 1) val rule = createAndroidComposeRule<MainActivity>()\n}"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Modul database dan repository Hilt",
+    "b": "Susunan modul yang umum: satu object untuk @Provides objek dari pustaka (Room, DAO), dan satu abstract class untuk @Binds yang menghubungkan interface repository dengan implementasinya.",
+    "code": "@Module\n@InstallIn(SingletonComponent::class)\nobject DatabaseModule {\n    @Provides @Singleton\n    fun db(@ApplicationContext ctx: Context): AppDb =\n        Room.databaseBuilder(ctx, AppDb::class.java, \"toko.db\")\n            .fallbackToDestructiveMigration()\n            .build()\n\n    @Provides fun produkDao(db: AppDb): ProdukDao = db.produkDao()\n    @Provides fun keranjangDao(db: AppDb): KeranjangDao = db.keranjangDao()\n}\n\n@Module @InstallIn(SingletonComponent::class)\nabstract class RepoModule {\n    @Binds abstract fun produkRepo(impl: ProdukRepositoryImpl): ProdukRepository\n    @Binds abstract fun keranjangRepo(impl: KeranjangRepositoryImpl): KeranjangRepository\n}"
+   }
+  ]
+ },
+ "compose-8-2": {
+  "exs": [
+   {
+    "t": "Kasus: menyisipkan token login lewat interceptor",
+    "d": "Interceptor OkHttp menambah header Authorization ke setiap permintaan.",
+    "code": "class AuthInterceptor @Inject constructor(private val sesi: SesiRepository) : Interceptor {\n    override fun intercept(chain: Interceptor.Chain): Response {\n        val token = sesi.tokenSaatIni()\n        val req = chain.request().newBuilder()\n            .apply { if (token != null) header(\"Authorization\", \"Bearer $token\") }\n            .build()\n        return chain.proceed(req)\n    }\n}\n\n@Module @InstallIn(SingletonComponent::class)\nobject JaringanModule {\n    @Provides @Singleton\n    fun api(auth: AuthInterceptor): ProdukApi = Retrofit.Builder()\n        .baseUrl(\"https://api.tokoku.id/\")\n        .client(OkHttpClient.Builder().addInterceptor(auth).build())\n        .addConverterFactory(Json.asConverterFactory(\"application/json\".toMediaType()))\n        .build()\n        .create(ProdukApi::class.java)\n}"
+   },
+   {
+    "t": "Kasus: memisahkan DTO, entity, dan model domain",
+    "d": "Bentuk JSON dari API tidak dibawa ke UI; fungsi pemetaan mengubahnya.",
+    "code": "@Serializable\ndata class ProdukDto(val id: Long, @SerialName(\"nama_produk\") val nama: String, val harga: Long)\n\n@Entity(tableName = \"produk\")\ndata class ProdukEntity(@PrimaryKey val id: Long, val nama: String, val harga: Long)\n\ndata class Produk(val id: Long, val nama: String, val hargaRupiah: String)\n\nfun ProdukDto.keEntity() = ProdukEntity(id, nama, harga)\nfun ProdukEntity.keDomain() = Produk(id, nama, \"Rp\" + \"%,d\".format(harga).replace(',', '.'))"
+   },
+   {
+    "t": "Kasus: tetap menampilkan data lama saat jaringan gagal",
+    "d": "UI membaca Room; kegagalan segarkan hanya menambah pesan, data lama tidak dihapus.",
+    "code": "@HiltViewModel\nclass KatalogViewModel @Inject constructor(private val repo: ProdukRepository) : ViewModel() {\n    val produk = repo.aliranProduk()\n        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())\n    private val _pesan = MutableStateFlow<String?>(null)\n    val pesan: StateFlow<String?> = _pesan.asStateFlow()\n\n    init { segarkan() }\n\n    fun segarkan() = viewModelScope.launch {\n        repo.segarkan().onFailure {\n            _pesan.value = \"Gagal memperbarui, menampilkan data terakhir\"\n        }\n    }\n}"
+   }
+  ]
+ },
+ "compose-8-3": {
+  "exs": [
+   {
+    "t": "Kasus: membuat Pager di ViewModel",
+    "d": "cachedIn menyimpan halaman yang sudah dimuat agar tidak diambil ulang saat layar diputar.",
+    "code": "@HiltViewModel\nclass KatalogViewModel @Inject constructor(private val api: ProdukApi) : ViewModel() {\n    val produk: Flow<PagingData<ProdukDto>> = Pager(\n        config = PagingConfig(pageSize = 20, prefetchDistance = 5),\n        pagingSourceFactory = { ProdukPagingSource(api) },\n    ).flow.cachedIn(viewModelScope)\n}"
+   },
+   {
+    "t": "Kasus: status memuat halaman pertama",
+    "d": "loadState.refresh menandai pemuatan awal: tampilkan indikator penuh atau pesan error.",
+    "code": "@Composable\nfun KatalogPenuh(vm: KatalogViewModel = hiltViewModel()) {\n    val item = vm.produk.collectAsLazyPagingItems()\n    when (val awal = item.loadState.refresh) {\n        is LoadState.Loading -> Box(Modifier.fillMaxSize(), Alignment.Center) { CircularProgressIndicator() }\n        is LoadState.Error -> Column(Modifier.padding(16.dp)) {\n            Text(\"Gagal memuat: ${awal.error.message}\")\n            Button(onClick = { item.retry() }) { Text(\"Coba lagi\") }\n        }\n        is LoadState.NotLoading -> LazyColumn {\n            items(item.itemCount, key = item.itemKey { it.id }) { i ->\n                item[i]?.let { ListItem(headlineContent = { Text(it.nama) }) }\n            }\n        }\n    }\n}"
+   },
+   {
+    "t": "Kasus: mengubah isi halaman dengan map",
+    "d": "PagingData bisa dipetakan seperti Flow biasa, misalnya DTO menjadi model tampilan.",
+    "code": "val produkTampil: Flow<PagingData<Produk>> = Pager(PagingConfig(pageSize = 20)) {\n    ProdukPagingSource(api)\n}.flow\n    .map { halaman -> halaman.map { dto -> dto.keEntity().keDomain() } }\n    .cachedIn(viewModelScope)"
+   }
+  ]
+ },
+ "compose-9-1": {
+  "exs": [
+   {
+    "t": "Kasus: aturan R8 untuk model JSON",
+    "d": "Class yang dibaca lewat refleksi atau serialisasi perlu dijaga agar tidak dihapus R8.",
+    "code": "// app/proguard-rules.pro (ditulis sebagai komentar karena bukan kode Kotlin)\n// -keepattributes *Annotation*, InnerClasses\n// -keep,includedescriptorclasses class id.tokoku.data.**$$serializer { *; }\n// -keepclassmembers class id.tokoku.data.** {\n//     *** Companion;\n// }\n\n// app/build.gradle.kts\nandroid {\n    buildTypes {\n        release {\n            isMinifyEnabled = true\n            proguardFiles(getDefaultProguardFile(\"proguard-android-optimize.txt\"), \"proguard-rules.pro\")\n        }\n    }\n}"
+   },
+   {
+    "t": "Kasus: membuat upload key dengan keytool",
+    "d": "Kunci dibuat sekali, disimpan aman, dan kata sandinya dibaca dari variabel lingkungan.",
+    "code": "// Terminal (sekali saja):\n// keytool -genkeypair -v -keystore upload.jks -alias upload -keyalg RSA -keysize 2048 -validity 10000\n\n// app/build.gradle.kts\nandroid {\n    signingConfigs {\n        create(\"rilis\") {\n            storeFile = file(System.getenv(\"KEYSTORE_PATH\") ?: \"upload.jks\")\n            storePassword = System.getenv(\"KEYSTORE_PASS\")\n            keyAlias = \"upload\"\n            keyPassword = System.getenv(\"KEY_PASS\")\n        }\n    }\n}\n// Simpan upload.jks di luar repositori dan masukkan ke .gitignore"
+   },
+   {
+    "t": "Kasus: versionCode otomatis dari CI",
+    "d": "Setiap unggahan wajib punya versionCode lebih besar; nomor build CI bisa dipakai.",
+    "code": "android {\n    defaultConfig {\n        applicationId = \"id.tokoku.app\"\n        versionCode = (System.getenv(\"NOMOR_BUILD\") ?: \"1\").toInt()\n        versionName = \"1.4.0\"\n    }\n    buildTypes {\n        release {\n            isMinifyEnabled = true\n            isShrinkResources = true\n            signingConfig = signingConfigs.getByName(\"rilis\")\n        }\n    }\n}\n// CI: NOMOR_BUILD=58 ./gradlew bundleRelease"
+   }
+  ]
+ },
+ "compose-9-2": {
+  "exs": [
+   {
+    "t": "Kasus: catatan rilis untuk penguji",
+    "d": "Catatan rilis singkat per jalur membantu penguji tahu apa yang harus dicoba.",
+    "code": "Versi 1.4.0 (versionCode 58) - jalur internal\n\nYang baru\n- Pembayaran QRIS di halaman checkout\n- Mode gelap mengikuti pengaturan ponsel\n\nPerbaikan\n- Keranjang tidak lagi kosong setelah layar diputar\n\nMohon dicoba\n- Bayar dengan QRIS memakai saldo uji\n- Buka aplikasi tanpa internet, pastikan katalog terakhir tetap tampil"
+   },
+   {
+    "t": "Kasus: rencana staged rollout",
+    "d": "Persentase pengguna dinaikkan bertahap sambil memantau Android vitals.",
+    "code": "Rencana rilis produksi 1.4.0\n\nHari 1   10% pengguna   pantau crash-free users >= 99,5%\nHari 3   50% pengguna   pantau ANR rate < 0,47% dan ulasan baru\nHari 5  100% pengguna   jika semua angka aman\n\nJika crash melonjak: hentikan rollout (Halt rollout),\nperbaiki, naikkan versionCode, unggah 1.4.1 ke internal testing dulu."
+   },
+   {
+    "t": "Kasus: isian formulir Data safety",
+    "d": "Formulir Data safety menjelaskan data apa yang dikumpulkan dan untuk apa.",
+    "code": "Data safety - Tokoku\n\nData yang dikumpulkan\n- Nama dan nomor HP        : untuk akun dan pengiriman, wajib\n- Alamat                   : untuk pengiriman, wajib\n- Riwayat pembelian        : fungsi aplikasi, tidak dibagikan\n- Laporan crash            : analitik (Crashlytics), anonim\n\nKeamanan\n- Data dienkripsi saat dikirim (HTTPS)\n- Pengguna bisa meminta penghapusan akun dari menu Profil"
+   }
+  ]
+ }
+}

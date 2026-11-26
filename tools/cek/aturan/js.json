@@ -1,0 +1,225 @@
+{
+ "aturan": [
+  [
+   "variabel (const/let/var)",
+   "^\\s*(const|let|var)\\s",
+   "var, let, dan const"
+  ],
+  [
+   "fungsi (function)",
+   "\\bfunction\\b|\\breturn\\b",
+   "Hoisting"
+  ],
+  [
+   "template literal",
+   "`[^`]*\\$\\{",
+   "Tipe primitif"
+  ],
+  [
+   "method string/number",
+   "\\.(toUpperCase|toLowerCase|trim|trimStart|trimEnd|padStart|padEnd|split|replace|replaceAll|slice|includes|startsWith|endsWith|repeat|indexOf|charAt|toFixed)\\(",
+   "Tipe primitif"
+  ],
+  [
+   "bigint",
+   "\\b\\d+n\\b|\\bBigInt\\(",
+   "bigint"
+  ],
+  [
+   "Symbol",
+   "\\bSymbol\\b",
+   "bigint, undefined, null, dan Symbol"
+  ],
+  [
+   "typeof",
+   "\\btypeof\\b",
+   "operator typeof"
+  ],
+  [
+   "object literal",
+   "\\{\\s*[\\\"'\\w$]+\\s*:\\s*|\\{\\s*\\w+\\s*,\\s*\\w+\\s*\\}",
+   "Object dan operator typeof"
+  ],
+  [
+   "prototype / new",
+   "\\bprototype\\b|Object\\.create\\(|getPrototypeOf|__proto__|\\bnew\\s+[A-Z]",
+   "Prototype"
+  ],
+  [
+   "this",
+   "\\bthis\\b",
+   "Prototype"
+  ],
+  [
+   "built-in (Math/Date/Intl/RegExp)",
+   "\\bMath\\.|\\bDate\\b|\\bIntl\\.|\\.toLocaleString\\(|\\bRegExp\\b|/[^/\\n]+/[gimsuy]*\\.(test|exec)\\(",
+   "Built-in objects"
+  ],
+  [
+   "konversi eksplisit",
+   "\\b(Number|String|Boolean)\\(|\\bparse(Int|Float)\\(",
+   "Konversi eksplisit"
+  ],
+  [
+   "array",
+   "\\[[^\\]\\n]*,[^\\]\\n]*\\]|\\.(push|pop|shift|unshift|splice)\\(|=\\s*\\[\\s*\\]",
+   "Array: dasar"
+  ],
+  [
+   "callback array (map/filter/reduce/...)",
+   "\\.(map|filter|reduce|reduceRight|forEach|some|every|find|findIndex|findLast|findLastIndex|flatMap|sort|toSorted)\\(",
+   "map, filter, reduce"
+  ],
+  [
+   "arrow function",
+   "=>",
+   "map, filter, reduce"
+  ],
+  [
+   "Map/Set",
+   "\\bnew (Map|Set)\\b",
+   "Map dan Set"
+  ],
+  [
+   "WeakMap/WeakSet/WeakRef",
+   "\\bWeak(Map|Set|Ref)\\b|FinalizationRegistry",
+   "WeakMap"
+  ],
+  [
+   "JSON",
+   "\\bJSON\\.",
+   "^JSON$"
+  ],
+  [
+   "== longgar",
+   "[^=!<>]==[^=]|!=[^=]",
+   "== versus ==="
+  ],
+  [
+   "Object.is",
+   "\\bObject\\.is\\(",
+   "Object\\.is"
+  ],
+  [
+   "for/while/do",
+   "^\\s*(for|while|do)\\b|\\}\\s*while\\s*\\(",
+   "for, while"
+  ],
+  [
+   "for...of/for...in",
+   "\\bfor\\s*\\(\\s*(const|let|var)\\s+[^;]+?\\s(of|in)\\s",
+   "for\\.\\.\\.in dan for\\.\\.\\.of"
+  ],
+  [
+   "break/continue",
+   "^\\s*(break|continue)\\b|[;{]\\s*(break|continue)\\b",
+   "break, continue"
+  ],
+  [
+   "if/else/switch",
+   "^\\s*(if|else|switch)\\b|\\belse\\b|\\bif\\s*\\(|\\bswitch\\s*\\(",
+   "break, continue|if\\.\\.\\.else"
+  ],
+  [
+   "try/catch/throw",
+   "^\\s*try\\b|\\btry\\s*\\{|\\bcatch\\s*[({]|\\bthrow\\b|\\bfinally\\b",
+   "throw, try"
+  ],
+  [
+   "Error object",
+   "\\bnew \\w*Error\\(|\\binstanceof\\b",
+   "throw, try|Error objects"
+  ],
+  [
+   "logika & kondisional (&& || ?? ?. ternary)",
+   "&&|\\|\\||\\?\\?|\\?\\.|\\s\\?\\s[^:\\n]+\\s:\\s",
+   "Operator logika"
+  ],
+  [
+   "bitwise",
+   "[\\w)]\\s*(<<|>>>?)\\s*\\w|[\\w)]\\s*[&|^]=|\\s[&|^]\\s(0x|\\d|~|\\()|(?<![\\w\"\\'^])~[A-Za-z_(]|\\w\\s+[&|^]\\s+[A-Z_]{2,}\\b",
+   "bitwise"
+  ],
+  [
+   "destructuring/spread/rest",
+   "[\\[(,{]\\s*\\.\\.\\.\\s*[\\w\\[$]|\\b(const|let|var)\\s*[\\[{]|^\\s*\\[\\w+\\s*,|\\(\\s*\\{\\s*\\w+\\s*[,=}]",
+   "Destructuring"
+  ],
+  [
+   "IIFE/arguments",
+   "\\barguments\\b|\\}\\)\\(\\)|\\)\\)\\(\\)",
+   "IIFE"
+  ],
+  [
+   "strict mode",
+   "['\\\"]use strict['\\\"]",
+   "Strict mode"
+  ],
+  [
+   "call/apply/bind",
+   "\\.(call|apply|bind)\\(",
+   "call, apply, bind"
+  ],
+  [
+   "timer (setTimeout/setInterval)",
+   "\\bset(Timeout|Interval|Immediate)\\(|\\bqueueMicrotask\\(",
+   "Event loop"
+  ],
+  [
+   "Promise",
+   "\\bPromise\\b|\\.then\\(",
+   "^Promise$|Event loop"
+  ],
+  [
+   "async/await",
+   "\\basync\\b|\\bawait\\b",
+   "async dan await"
+  ],
+  [
+   "fetch",
+   "\\bfetch\\(|\\bResponse\\b|\\bXMLHttpRequest\\b",
+   "Fetch API"
+  ],
+  [
+   "class",
+   "^\\s*class\\s|\\bclass\\s+\\w+\\s*(\\{|extends)",
+   "Class, constructor"
+  ],
+  [
+   "extends/super",
+   "\\bextends\\b|\\bsuper\\b",
+   "Pewarisan: extends"
+  ],
+  [
+   "iterator protocol",
+   "Symbol\\.(async)?[iI]terator|\\.next\\(",
+   "Protokol iterable"
+  ],
+  [
+   "generator",
+   "function\\s*\\*|\\*\\s*\\[Symbol|\\byield\\b",
+   "Generator"
+  ],
+  [
+   "import/export",
+   "^\\s*(import|export)\\b|\\bimport\\(",
+   "Modul ES"
+  ],
+  [
+   "CommonJS require",
+   "\\brequire\\(|module\\.exports",
+   "CommonJS"
+  ],
+  [
+   "konsol lanjut",
+   "console\\.(table|group|groupEnd|groupCollapsed|time|timeEnd|timeLog|count|countReset|assert|dir|trace)\\(",
+   "Konsol tingkat lanjut"
+  ],
+  [
+   "debugger",
+   "\\bdebugger\\b",
+   "breakpoint"
+  ]
+ ],
+ "abaikan": []
+}

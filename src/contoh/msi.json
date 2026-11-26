@@ -1,0 +1,492 @@
+{
+ "msi-1-2": {
+  "cx": [
+   {
+    "t": "Dari data transaksi menjadi informasi dan pengetahuan",
+    "b": "Data mentah toko bangunan baru berguna setelah diolah dan diberi konteks. Pengalaman pemilik mengubah informasi menjadi keputusan.",
+    "code": "DATA (tanggal, barang, qty, harga)\n  03/11 Semen 50kg 40 x 68.000   03/11 Cat 5L 6 x 245.000\n  10/11 Semen 50kg 55 x 68.000   10/11 Cat 5L 4 x 245.000\n  17/11 Semen 50kg 71 x 69.500   17/11 Cat 5L 3 x 245.000\n\nINFORMASI (per barang, per minggu)\n  Semen 50kg   40 -> 55 -> 71 unit   Rp 2.720.000 -> 3.740.000 -> 4.934.500\n  Cat 5L        6 ->  4 ->  3 unit   Rp 1.470.000 ->   980.000 ->   735.000\n  Semen naik 77% dalam 2 minggu, cat turun 50%.\n\nPENGETAHUAN : musim hujan = proyek cor naik, pengecatan ditunda.\nKEPUTUSAN   : tambah stok semen sebelum harga distributor naik, kurangi order cat bulan ini.",
+    "lang": "text"
+   }
+  ]
+ },
+ "msi-1-3": {
+  "cx": [
+   {
+    "t": "Audit kesiapan lima komponen sebelum go-live",
+    "b": "Kebanyakan kegagalan implementasi bukan karena software, tetapi prosedur dan orang yang belum siap. Beri skor 1-5 per komponen di setiap cabang; cabang dengan komponen di bawah 3 ditunda.",
+    "code": "KOMPONEN   PUSAT  MEDAN  KUPANG\nHardware     5      4      2\nSoftware     5      5      5\nData         4      3      3\nProsedur     4      2      2\nOrang        4      3      1\n\nPusat   SIAP\nMedan   TUNDA, perbaiki: Prosedur\nKupang  TUNDA, perbaiki: Hardware, Prosedur, Orang",
+    "lang": "text"
+   }
+  ]
+ },
+ "msi-1-4": {
+  "cx": [
+   {
+    "t": "Data yang sama, tiga tingkat laporan",
+    "b": "Penjualan harian tiga cabang selama empat minggu diringkas berbeda untuk setiap tingkat manajemen.",
+    "code": "OPERASIONAL (kepala toko): penjualan kemarin\n  Medan     Rp 20 jt\n  Bandung   Rp 10 jt\n  Surabaya  Rp 23 jt\n\nTAKTIS (manajer area): minggu ini vs rata-rata 3 minggu sebelumnya\n  Medan     114 jt vs 114 jt (+0%)\n  Bandung    60 jt vs  90 jt (-33%)  <-- turun > 20%, cek\n  Surabaya  129 jt vs 129 jt (+0%)\n\nSTRATEGIS (direksi): kontribusi cabang bulan ini\n  Medan 35%   Bandung 25%   Surabaya 40%",
+    "lang": "text"
+   }
+  ]
+ },
+ "msi-2-1": {
+  "cx": [
+   {
+    "t": "Menambah CS tanpa memperbaiki gudang",
+    "b": "Toko daring menerima 120 pesanan per hari: pesanan diproses CS, lalu dikemas gudang. Lihat sisa antrean setelah 10 hari untuk tiga pilihan kapasitas per hari. Menambah CS hanya memindahkan antrean ke gudang; berpikir sistem mencari hambatan (bottleneck) di seluruh alur.",
+    "code": "PILIHAN                    CS/HARI  GUDANG/HARI  ANTRE DI CS  ANTRE DI GUDANG  TOTAL TERTUNDA\nawal                       100      100          200            0              200\ntambah CS saja             150      100            0          200              200\nseimbangkan CS & gudang    130      130            0            0                0",
+    "lang": "text"
+   }
+  ]
+ },
+ "msi-2-2": {
+  "cx": [
+   {
+    "t": "Power-interest grid untuk proyek absensi wajah",
+    "b": "Beri skor pengaruh (P) dan kepentingan (K) 1-10 setiap pihak. P dan K tinggi (>= 6): kelola erat; hanya P tinggi: jaga kepuasan; hanya K tinggi: informasikan; keduanya rendah: pantau.",
+    "code": "PIHAK              P   K   STRATEGI                                  KEKHAWATIRAN\nDirektur SDM       9   8   Kelola erat (libatkan dalam keputusan)    data lembur akurat untuk penggajian\nSerikat pekerja    7   9   Kelola erat (libatkan dalam keputusan)    data dipakai untuk sanksi\nKaryawan pabrik    3   9   Informasikan (dengar & beri kabar)        privasi data wajah\nTim TI             6   6   Kelola erat (libatkan dalam keputusan)    integrasi ke sistem gaji\nDirektur keuangan  8   4   Jaga kepuasan (laporan berkala)           biaya lisensi\nSatpam             2   3   Pantau                                    antrean pagi",
+    "lang": "text"
+   }
+  ]
+ },
+ "msi-2-3": {
+  "cx": [
+   {
+    "t": "Pareto keluhan pelanggan untuk memilih masalah yang diselesaikan dulu",
+    "b": "Urutkan jenis keluhan dari yang terbanyak dan hitung persentase kumulatifnya. Biasanya sedikit penyebab menyumbang sebagian besar keluhan.",
+    "code": "KELUHAN                     JUMLAH  KUMULATIF\npaket terlambat              412      36%   #####################\naplikasi error saat bayar    288      61%   ##############\nrefund lama                  174      76%   #########\nsalah kirim barang            96      85%   #####\nCS lambat membalas            61      90%   ###\nbarang rusak                  53      95%   ###\npromo tidak berlaku           38      98%   ##\nlainnya                       22     100%   #\n\n3 penyebab teratas menyumbang 76% keluhan -> fokus di sini dulu",
+    "lang": "text"
+   },
+   {
+    "t": "5 Whys untuk \"paket terlambat\"",
+    "code": "Masalah : 412 keluhan paket terlambat bulan Oktober (naik 3x dari September)\nWhy 1   : Kenapa terlambat?            -> 70% paket baru diserahkan ke kurir H+2\nWhy 2   : Kenapa diserahkan H+2?       -> packing gudang menumpuk sore hari\nWhy 3   : Kenapa menumpuk sore?        -> picking list baru dicetak jam 14.00\nWhy 4   : Kenapa dicetak jam 14.00?    -> sistem menunggu konfirmasi pembayaran manual dari finance\nWhy 5   : Kenapa konfirmasi manual?    -> integrasi notifikasi bank (webhook) belum dibuat sejak ganti payment gateway\nAkar    : proses verifikasi pembayaran manual. Solusi: aktifkan webhook + picking list per jam.",
+    "lang": "text"
+   }
+  ]
+ },
+ "msi-2-4": {
+  "cx": [
+   {
+    "t": "Efek samping KPI \"jumlah tiket ditutup per hari\"",
+    "b": "CS ditargetkan menutup 220 tiket per hari, padahal kemampuan menyelesaikan dengan benar sekitar 180. Sisanya ditutup asal, dan 70% darinya kembali sebagai keluhan berulang.",
+    "code": "HARI  DITUTUP  DIBUKA ULANG  KEPUASAN\n1     200      14            4,44\n2     214      23            4,32\n3     220      28            4,16\n4     220      28            4,05\n5     220      28            3,94\n6     220      28            3,83\n7     220      28            3,72\n\nKPI \"ditutup\" terlihat bagus, tetapi tiket berulang menumpuk dan kepuasan turun.\nPerbaikan: ukur first contact resolution dan CSAT, bukan hanya jumlah tiket ditutup.",
+    "lang": "text"
+   }
+  ]
+ },
+ "msi-2-5": {
+  "cx": [
+   {
+    "t": "Membandingkan opsi solusi dengan skor berbobot",
+    "b": "Masalah: stok obat di 12 puskesmas sering kosong. Nilai tiap opsi 1-5 per kriteria, kalikan bobot (dampak 0,35; biaya 0,20; kemudahan 0,20; waktu 0,15; keberlanjutan 0,10), lalu jumlahkan.",
+    "code": "OPSI                                     DAMPAK BIAYA MUDAH WAKTU LANJUT  SKOR\nB. Aplikasi stok sederhana (web, offline)   4     3     4     3     4     3,65\nA. Template spreadsheet bersama             2     5     4     5     2     3,45\nC. Integrasi penuh ke SIMRS kabupaten       5     1     3     1     5     3,20\n\nContoh B: 4x0,35 + 3x0,20 + 4x0,20 + 3x0,15 + 4x0,10 = 3,65\nRencana: quick win A minggu ini, pilot B di 2 puskesmas 6 minggu, C masuk rencana tahun depan.",
+    "lang": "text"
+   }
+  ]
+ },
+ "msi-3-1": {
+  "cx": [
+   {
+    "t": "Dari TPS ke MIS ke DSS di toko roti",
+    "b": "TPS mencatat setiap penjualan selama 8 hari. MIS meringkasnya menjadi laporan laba kotor. DSS menjawab pertanyaan \"bagaimana jika\".",
+    "code": "TPS: transaksi satu per satu\n  11/11 Roti tawar 32 x 18.000 (HPP 11.000) · Donat 49 x 7.000 (HPP 3.500) · ...\n\nMIS: laporan laba kotor per produk (8 hari)\n  Kue ulang tahun    23 unit  laba kotor Rp 2.300.000\n  Roti tawar        296 unit  laba kotor Rp 2.072.000\n  Donat             372 unit  laba kotor Rp 1.302.000\n\nDSS: bagaimana jika harga donat naik 15% dan permintaan turun 8%?\n  laba = 372 x 0,92 x (7.000 x 1,15 - 3.500)\n  laba donat Rp 1.302.000 -> Rp 1.557.192 (+20%)",
+    "lang": "text"
+   }
+  ]
+ },
+ "msi-3-2": {
+  "exs": [
+   {
+    "t": "Kasus: silo data di perusahaan distribusi",
+    "code": "Bagian      Aplikasi sendiri     Angka stok \"Gula 1kg\"\nPenjualan   aplikasi order       1.240 karung\nGudang      Excel gudang         1.180 karung\nKeuangan    software akuntansi   1.300 karung (nilai persediaan)\nAkibat: sales menjanjikan 100 karung yang ternyata tidak ada"
+   },
+   {
+    "t": "Kasus: SI fungsional di sebuah sekolah",
+    "code": "Fungsi       Sistem                  Data utama\nAkademik     e-rapor, jadwal         nilai, mapel, kelas\nKesiswaan    data induk, BK          biodata, catatan konseling\nKeuangan     SPP & BOS               tagihan, pembayaran\nKepegawaian  data guru & TU          SK, jam mengajar, gaji\nAgar tidak jadi silo: semua merujuk data induk siswa dan guru yang sama"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Menemukan ketidakkonsistenan master data antar-silo",
+    "b": "Bandingkan data pegawai di HRIS, Payroll, dan Absensi berdasarkan ID. Solusinya: HRIS menjadi sumber master data pegawai, dan sistem lain mengambil data lewat integrasi, bukan mengetik ulang.",
+    "code": "ID     HRIS           PAYROLL          ABSENSI       CATATAN\nP-101  Rina Sari      Rina Sari        RINA SARI     (huruf besar beda, isi sama)\nP-102  Dodi Pratama   Dodi Pratama     -             tidak tercatat di sistem lain\nP-103  Ayu Lestari    -                Ayu Lestari   tidak tercatat di sistem lain\nP-104  Bagus W.       Bagus Wicaksono  Bagus W.      nama berbeda\nP-105  -              Fajar (kontrak)  Fajar         tidak ada di HRIS (digaji tanpa data pegawai!)",
+    "lang": "text"
+   }
+  ]
+ },
+ "msi-3-3": {
+  "cx": [
+   {
+    "t": "Fit-gap sederhana sebelum memilih ERP",
+    "b": "Tandai setiap kebutuhan: fit (ada di paket standar), config (cukup diatur), atau gap (butuh kustomisasi). Prinsipnya: adopsi proses standar, kustomisasi seminimal mungkin.",
+    "code": "KEBUTUHAN                                     PRIORITAS  STATUS  TINDAKAN\nPembelian dengan approval 3 tingkat           wajib      config\nFaktur pajak e-Faktur DJP                     wajib      fit\nStok multi-gudang + nomor batch               wajib      fit\nKomisi sales berjenjang khas perusahaan       penting    GAP     kustomisasi/add-on (hitung biaya)\nIntegrasi marketplace (Tokopedia, Shopee)     penting    GAP     kustomisasi/add-on (hitung biaya)\nLaporan konsolidasi 3 PT                      wajib      config\nCetak label rak custom                        opsional   GAP     ubah proses atau tunda\n\nfit 2 · config 2 · gap 3 -> cakupan standar + konfigurasi: 4/7 = 57%",
+    "lang": "text"
+   }
+  ]
+ },
+ "msi-4-1": {
+  "exs": [
+   {
+    "t": "Kasus: spreadsheet bersama vs database",
+    "code": "Spreadsheet \"data_pelanggan_FINAL_v3.xlsx\"\n- 3 salinan beredar di email, isinya berbeda\n- rumus total terhapus tidak sengaja, tidak ada yang tahu kapan\n- dua admin mengedit baris yang sama, satu perubahan hilang\n\nDatabase di DBMS (misalnya PostgreSQL)\n- satu sumber data, dipakai banyak orang sekaligus\n- hak akses: admin boleh ubah, sales hanya lihat\n- cadangan otomatis setiap malam"
+   },
+   {
+    "t": "Kasus: bertanya ke database toko",
+    "code": "Pertanyaan manajer: \"Produk apa yang stoknya tinggal di bawah 10?\"\nSELECT nama_produk, stok FROM produk WHERE stok < 10 ORDER BY stok;\n\nPertanyaan manajer: \"Berapa pesanan per kota bulan ini?\"\nSELECT kota, COUNT(*) FROM pesanan WHERE tanggal >= '2026-11-01' GROUP BY kota;",
+    "d": "Cukup paham bentuknya agar bisa meminta laporan dengan jelas ke tim data."
+   }
+  ]
+ },
+ "msi-4-2": {
+  "exs": [
+   {
+    "t": "Kasus: ERD perpustakaan sekolah",
+    "code": "SISWA (nis PK, nama, kelas)\nBUKU (kode_buku PK, judul, penulis, tahun)\nPEMINJAMAN (id PK, nis FK, kode_buku FK, tgl_pinjam, tgl_kembali)\n\nSISWA 1 ──< PEMINJAMAN       satu siswa, banyak peminjaman\nBUKU  1 ──< PEMINJAMAN       satu buku, dipinjam berkali-kali\nSISWA >──< BUKU lewat PEMINJAMAN (banyak-ke-banyak)"
+   },
+   {
+    "t": "Kasus: memperbaiki tabel yang belum dinormalisasi",
+    "code": "Sebelum: satu tabel SISWA\n  nis | nama  | kelas | wali_kelas   | hp_wali\n  101 | Andi  | 7A    | Bu Ratna     | 0812...\n  102 | Bella | 7A    | Bu Ratna     | 0812...   <- wali kelas ditulis berulang\n\nSesudah:\n  KELAS (kode_kelas PK, wali_kelas, hp_wali)\n  SISWA (nis PK, nama, kode_kelas FK)\n  -> ganti wali kelas 7A cukup di satu baris"
+   }
+  ]
+ },
+ "msi-4-3": {
+  "cx": [
+   {
+    "t": "Skor kualitas data pelanggan sebelum masuk warehouse",
+    "b": "Periksa lima baris data pelanggan untuk lima dimensi kualitas. Data yang gagal dibersihkan dulu sebelum dimuat ke warehouse.",
+    "code": "DATA\n  id 1  Rina    081234567890     rina@contoh.id   Medan\n  id 2  (kosong) 0812            dodi@contoh      Bandung\n  id 3  Ayu     +6281398765432   ayu@contoh.id    surabaya\n  id 3  Ayu L.  +6281398765432   ayu@contoh.id    Surabaya\n  id 5  Bagus   (kosong)         bagus@contoh.id  Makasar\n\nDIMENSI                            LOLOS\nkelengkapan (nama & hp terisi)     3/5 = 60%\nvaliditas hp (format Indonesia)    3/5 = 60%\nvaliditas email                    4/5 = 80%\nkonsistensi kota (daftar baku)     3/5 = 60%   (surabaya, Makasar)\nkeunikan id                        3/5 = 60%   (id 3 dobel)",
+    "lang": "text"
+   }
+  ]
+ },
+ "msi-5-1": {
+  "cx": [
+   {
+    "t": "Risiko waterfall dan agile saat kebutuhan berubah",
+    "b": "Anggap kebutuhan bergeser 8% per bulan dan setiap demo ke pengguna mengoreksi 85% dari selisihnya. Waterfall baru demo di bulan 9; agile demo setiap bulan. Angka menunjukkan seberapa sesuai sistem dengan kebutuhan.",
+    "code": "BULAN  WATERFALL  AGILE\n1      92%        99%\n3      78%        99%\n6      61%        99%\n8      51%        99%\n9      92%        99%   (waterfall baru terkoreksi di akhir, setelah 8 bulan menjauh)\n\nWaterfall tetap cocok jika kebutuhan stabil dan diatur regulasi (misalnya sistem pelaporan pajak).",
+    "lang": "text"
+   }
+  ]
+ },
+ "msi-5-2": {
+  "exs": [
+   {
+    "t": "Kasus: kebutuhan fungsional dan non-fungsional aplikasi kantin",
+    "code": "Fungsional\n- siswa bisa memesan makanan sebelum jam istirahat\n- penjual bisa menandai pesanan \"siap diambil\"\n- bendahara bisa mengunduh rekap penjualan harian\n\nNon-fungsional\n- halaman terbuka < 3 detik di jaringan sekolah\n- dapat dipakai 300 siswa bersamaan saat istirahat\n- data saldo siswa hanya bisa dilihat siswa dan orang tuanya"
+   },
+   {
+    "t": "Kasus: menghapus langkah sebelum mendigitalkan",
+    "code": "Proses lama pengajuan dana kegiatan OSIS (6 langkah)\n  tulis proposal -> TTD ketua -> TTD pembina -> TTD wakasek -> fotokopi 3 rangkap -> serahkan ke bendahara\nPertanyaan: langkah mana yang bisa dihapus?\n  - fotokopi 3 rangkap   -> tidak perlu bila dokumen digital\n  - TTD wakasek          -> cukup untuk dana > Rp 2 juta\nProses baru (3 langkah)\n  unggah proposal -> setujui pembina (dan wakasek bila > Rp 2 juta) -> bendahara cairkan"
+   }
+  ],
+  "cx": [
+   {
+    "t": "User story, acceptance criteria, dan prioritas MoSCoW",
+    "code": "US-07 [Must]  Sebagai staf gudang, saya ingin memindai barcode saat barang masuk,\n              agar stok bertambah otomatis tanpa input manual.\n  AC1: Pemindaian menambah stok sesuai qty di surat jalan dalam < 2 detik\n  AC2: Barcode tidak dikenal menampilkan pesan \"Barang belum terdaftar\" + tombol daftar\n  AC3: Bekerja offline dan sinkron saat koneksi kembali\nUS-08 [Should] Sebagai kepala gudang, saya ingin notifikasi stok di bawah minimum,\n               agar bisa membuat PO sebelum barang habis.\nUS-09 [Could]  Sebagai manajer, saya ingin grafik perputaran stok per kategori.\nUS-10 [Won't]  Integrasi RFID (ditunda ke tahun depan, biaya perangkat).\n\nNon-fungsional: tersedia 99,5% jam kerja, data tersimpan di pusat data Indonesia, akses per peran.",
+    "lang": "text"
+   },
+   {
+    "t": "Model proses as-is vs to-be: menghitung waktu siklus",
+    "b": "Jumlahkan waktu setiap langkah proses pesanan. Waktu tunggu approval paling besar; proses to-be menghapus langkah ketik ulang dan cek manual.",
+    "code": "AS-IS: 5 langkah, 195 menit\n   10 mnt  Sales tulis order di kertas\n   15 mnt  Admin ketik ulang ke Excel\n  120 mnt  Tunggu approval via WA\n   30 mnt  Gudang cek stok manual\n   20 mnt  Finance buat faktur\n\nTO-BE: 4 langkah, 7 menit\n    5 mnt  Sales input order di aplikasi\n    1 mnt  Approval otomatis jika < limit kredit\n    0 mnt  Stok tercek otomatis\n    1 mnt  Faktur terbit otomatis",
+    "lang": "text"
+   }
+  ]
+ },
+ "msi-5-3": {
+  "exs": [
+   {
+    "t": "Kasus: menilai kelayakan dengan TELOS",
+    "code": "Proyek: aplikasi presensi QR untuk 3 cabang klinik\nTechnical   : ya, cukup ponsel karyawan + layar QR di meja depan\nEconomic    : biaya Rp 24 jt/tahun, hemat rekap manual 20 jam/bulan\nLegal       : data lokasi karyawan = data pribadi, perlu persetujuan dan kebijakan privasi\nOperational : karyawan shift malam belum punya ponsel layak -> sediakan tablet bersama\nSchedule    : 6 minggu sebelum audit akreditasi, masih cukup\nKeputusan   : layak, dengan syarat tablet bersama dan kebijakan privasi"
+   },
+   {
+    "t": "Kasus: ROI dan payback aplikasi kasir",
+    "code": "Biaya tahun 1   : perangkat Rp 12 jt + langganan Rp 6 jt + pelatihan Rp 2 jt = Rp 20 jt\nManfaat tahun 1 : selisih kas berkurang Rp 9 jt + jam rekap hemat Rp 15 jt = Rp 24 jt\nROI tahun 1     = (24 - 20) / 20 = 20%\nPayback         ≈ 20 / (24 / 12 bulan) = 10 bulan\nTahun 2 biaya hanya langganan Rp 6 jt -> ROI jauh lebih tinggi"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Analisis biaya-manfaat sistem gudang 5 tahun",
+    "b": "Investasi awal Rp 450 juta, biaya tahunan Rp 60 juta, tingkat diskonto 10%. Arus bersih = manfaat - biaya tahunan; nilai kini = arus bersih / 1,1^tahun.",
+    "code": "THN  MANFAAT      ARUS BERSIH   NILAI KINI    KUMULATIF\n0    -            -450.000.000  -450.000.000  -450.000.000\n1    180.000.000   120.000.000   109.090.909  -330.000.000\n2    260.000.000   200.000.000   165.289.256  -130.000.000\n3    280.000.000   220.000.000   165.289.256    90.000.000\n4    290.000.000   230.000.000   157.093.095   320.000.000\n5    290.000.000   230.000.000   142.811.904   550.000.000\n\nNPV     = jumlah nilai kini = 289.574.421\nPayback = 2 + 130 / 220 = 2,6 tahun\nROI 5 thn = (1.300 jt manfaat - 750 jt biaya) / 750 jt = 73%",
+    "lang": "text"
+   }
+  ]
+ },
+ "msi-6-1": {
+  "exs": [
+   {
+    "t": "Kasus: memilih SaaS, PaaS, atau IaaS",
+    "code": "Kebutuhan                                   Pilihan  Contoh\nEmail & dokumen kantor                       SaaS     Google Workspace\nAplikasi pemesanan buatan tim sendiri        PaaS     platform hosting aplikasi terkelola\nServer khusus untuk sistem lama (legacy)     IaaS     mesin virtual yang disewa\nAkuntansi koperasi tanpa tim TI              SaaS     aplikasi akuntansi online"
+   },
+   {
+    "t": "Kasus: rencana jaringan cabang di daerah sinyal lemah",
+    "code": "Cabang  : toko bangunan di Kabupaten Toba\nMasalah : internet putus 2-3 kali sehari\nRancangan:\n- kasir tetap bisa mencatat saat offline, data dikirim saat sinyal kembali\n- koneksi utama fiber, cadangan modem seluler dari operator berbeda\n- laporan ke pusat dikirim sekali tiap malam, bukan setiap transaksi"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Membandingkan TCO server sendiri vs cloud selama 3 tahun",
+    "b": "Jumlahkan biaya awal (tahun 0) dan biaya tahunan x 3 untuk setiap pilihan.",
+    "code": "ON-PREMISE                                      CLOUD\nserver & storage (thn 0)            280 jt      migrasi (thn 0)                    40 jt\nUPS, rak, AC (thn 0)                 60 jt      VM + database      132 jt x 3  =  396 jt\nlistrik              36 jt x 3  =   108 jt      backup & egress     14 jt x 3  =   42 jt\nadmin 0,5 FTE        72 jt x 3  =   216 jt      admin 0,2 FTE       29 jt x 3  =   87 jt\nlisensi OS & backup  18 jt x 3  =    54 jt\npenggantian disk      6 jt x 3  =    18 jt\nTCO 3 tahun                     Rp 736 juta     TCO 3 tahun                    Rp 565 juta\n\nCatatan non-biaya: cloud = skala cepat & DR lebih mudah; on-prem = kendali penuh,\ncocok jika regulasi ketat & beban stabil.",
+    "lang": "text"
+   }
+  ]
+ },
+ "msi-6-2": {
+  "exs": [
+   {
+    "t": "Kasus: memetakan kejadian ke CIA triad",
+    "code": "Kejadian                                             Aspek yang terganggu\nFile nilai siswa bisa dibuka semua guru              Confidentiality\nStaf mengubah harga di sistem tanpa jejak            Integrity\nServer kasir mati saat promo 12.12                    Availability\nRansomware mengunci data pelanggan                    Availability (dan Confidentiality bila dicuri)"
+   },
+   {
+    "t": "Kasus: mengenali pesan phishing",
+    "code": "Pesan WhatsApp:\n  \"Yth. Nasabah, akun Anda diblokir. Verifikasi dalam 1x24 jam:\n   bit.ly/verif-akun-bank. Kirim kode OTP ke nomor ini.\"\nTanda bahaya: mendesak, tautan pendek, meminta OTP\nTindakan    : jangan klik, laporkan ke tim TI/bank lewat kanal resmi, hapus pesan\nAturan      : OTP tidak pernah diminta oleh petugas mana pun"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Register risiko keamanan dengan matriks 5x5",
+    "b": "Skor risiko = kemungkinan (1-5) x dampak (1-5). 15 ke atas tinggi, 8-14 sedang, di bawah 8 rendah. Urutkan dari skor terbesar.",
+    "code": "SKOR  LEVEL   RISIKO                                    KEMUNGKINAN x DAMPAK  KONTROL SAAT INI\n16    TINGGI  Akun email staf dibobol lewat phishing    4 x 4                 pelatihan setahun sekali\n15    TINGGI  Ransomware di PC keuangan                 3 x 5                 antivirus\n12    SEDANG  Laptop berisi data pelanggan hilang       3 x 4                 tidak ada enkripsi\n12    SEDANG  Mantan pegawai masih punya akses          4 x 3                 tidak ada offboarding checklist\n 6    RENDAH  Server down karena listrik                2 x 3                 UPS 15 menit\n\nTindakan prioritas: autentikasi dua faktor semua akun, backup offline teruji,\nenkripsi disk laptop, checklist offboarding.",
+    "lang": "text"
+   }
+  ]
+ },
+ "msi-6-3": {
+  "exs": [
+   {
+    "t": "Kasus: formulir PPDB yang sesuai prinsip UU PDP",
+    "code": "Dikumpulkan : nama, tanggal lahir, alamat, nama dan HP orang tua, nilai rapor\nTidak perlu : agama orang tua, penghasilan (kecuali jalur afirmasi), foto rumah\nTujuan      : \"untuk seleksi dan pendaftaran ulang siswa baru\"\nPersetujuan : kotak centang yang tidak tercentang otomatis\nPenyimpanan : hanya panitia PPDB yang bisa melihat, dihapus 1 tahun setelah seleksi\n              untuk pendaftar yang tidak diterima"
+   },
+   {
+    "t": "Kasus: aturan cadangan 3-2-1 di kantor kecil",
+    "code": "3 salinan  : data asli di server + 2 cadangan\n2 media    : hard disk eksternal + penyimpanan cloud\n1 di luar  : cadangan cloud berada di luar gedung\nJadwal     : harian otomatis pukul 23.00, disk eksternal ditukar tiap Jumat\nUji pulih  : setiap 3 bulan, pulihkan 1 folder dan catat berapa lama"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Business impact analysis: menentukan RTO/RPO per sistem",
+    "b": "Perkirakan kerugian per jam bila sistem mati, lalu tentukan RTO (berapa cepat harus pulih) dan RPO (berapa banyak data boleh hilang). Makin besar kerugian, makin ketat targetnya.",
+    "code": "SISTEM               RUGI/JAM  RTO       RPO\nKasir & pembayaran   85 jt     15 menit  0 (replikasi)\nAplikasi gudang      30 jt     4 jam     1 jam\nEmail & kolaborasi    8 jt     24 jam    24 jam\nAkuntansi             5 jt     24 jam    0 (replikasi, data keuangan tidak boleh hilang)\nWebsite profil        1 jt     24 jam    24 jam",
+    "lang": "text"
+   }
+  ]
+ },
+ "msi-7-1": {
+  "exs": [
+   {
+    "t": "Kasus: rantai nilai toko kue rumahan",
+    "code": "Aktivitas           Peran SI\nPembelian bahan     catat harga pemasok, pesan otomatis saat stok tepung < 10 kg\nProduksi            jadwal produksi dari pesanan H-2\nPemasaran           katalog online + data pelanggan ulang tahun\nPenjualan           pesanan via formulir, bayar QRIS\nLayanan             pengingat \"pesan lagi\" 11 bulan setelah pesanan kue ulang tahun\n-> diferensiasi: keintiman pelanggan, bukan harga termurah"
+   },
+   {
+    "t": "Kasus: memilih strategi bersaing",
+    "code": "Perusahaan                     Strategi              Peran SI\nMinimarket waralaba            keunggulan biaya      stok terpusat, pembelian massal\nToko kopi spesialti            diferensiasi          aplikasi pesan + profil rasa pelanggan\nKatering diet diabetes         fokus ceruk           menu dihitung otomatis dari kebutuhan kalori\nBengkel motor langganan        keintiman pelanggan   riwayat servis + pengingat ganti oli"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Efek jaringan pada marketplace dua sisi",
+    "b": "Penjual tertarik bila banyak pembeli, pembeli tertarik bila banyak penjual. Mulai dari 300 penjual dan 2.000 pembeli, perkiraan setelah 6 bulan:",
+    "code": "SKENARIO                                   PENJUAL   PEMBELI\ntanpa subsidi                               2.274    125.135\ndengan subsidi awal (gratis ongkir 2 bln)  15.547    844.979\n\nSubsidi kecil di awal membuat platform lebih dulu mencapai massa kritis.\nPlatform yang lebih dulu mencapai massa kritis cenderung terus tumbuh,\npesaing kecil sulit mengejar.",
+    "lang": "text"
+   }
+  ]
+ },
+ "msi-7-2": {
+  "exs": [
+   {
+    "t": "Kasus: membedakan tiga tingkat perubahan",
+    "code": "Organisasi          Digitisasi                Digitalisasi                   Transformasi digital\nPuskesmas           kartu pasien dipindai     antrean & rekam medis online   konsultasi jarak jauh untuk desa terpencil\nKoperasi            buku simpanan di Excel    setoran lewat aplikasi         pinjaman dinilai dari riwayat transaksi QRIS\nSekolah             rapor jadi PDF            e-rapor, presensi QR           kelas campuran daring-luring untuk siswa pulau"
+   },
+   {
+    "t": "Kasus: KPI yang SMART vs tidak",
+    "code": "Tidak SMART : \"Pelayanan lebih cepat.\"\nSMART       : \"Waktu proses klaim asuransi turun dari 4,5 hari ke 3 hari\n               paling lambat 31 Maret 2027, diukur dari sistem klaim.\"\nPerspektif  : proses internal (balanced scorecard)"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Balanced scorecard dengan capaian dan status",
+    "b": "Capaian = aktual / target (untuk biaya dan waktu: target / aktual, karena makin kecil makin baik). 100% ke atas hijau, di bawahnya merah.",
+    "code": "PERSPEKTIF    KPI                                  TARGET  AKTUAL  CAPAIAN  STATUS\nKeuangan      Pendapatan digital (Rp M)            12,0    10,4     87%     merah\n              Biaya per transaksi (Rp)             2.500   2.310   108%     hijau\nPelanggan     NPS                                  45      38       84%     merah\n              Pelanggan aktif aplikasi (ribu)      120     131     109%     hijau\nProses        Waktu proses klaim (hari)            3       4,5      67%     merah\n              Transaksi tanpa sentuhan manual      80%     72%      90%     merah\nPembelajaran  Pegawai lulus pelatihan data         60%     65%     108%     hijau",
+    "lang": "text"
+   }
+  ]
+ },
+ "msi-7-3": {
+  "exs": [
+   {
+    "t": "Kasus: scope creep di proyek aplikasi absensi",
+    "code": "Rencana  : absensi QR, 3 bulan, Rp 150 jt\nBulan 2  : direktur minta tambah \"pengajuan lembur\" dan \"slip gaji\"\nSalah    : langsung dikerjakan, jadwal tetap\nBenar    : permintaan perubahan tertulis -> hitung tambahan 6 minggu dan Rp 45 jt\n           -> diputuskan komite: slip gaji masuk tahap 2, lembur masuk sekarang"
+   },
+   {
+    "t": "Kasus: manajemen perubahan saat pindah ke sistem baru",
+    "code": "Minggu -4  jelaskan alasan: \"rekap manual 3 hari jadi 10 menit\"\nMinggu -2  pilih 1 perwakilan tiap bagian sebagai \"duta sistem\"\nMinggu -1  pelatihan 2 jam per bagian + panduan 1 halaman\nMinggu 0   pendamping di setiap lantai selama 3 hari pertama\nMinggu +4  umumkan hasil awal dan beri apresiasi bagian paling aktif"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Earned value: apakah proyek SI terlambat dan boros?",
+    "b": "BAC = anggaran total, PV = nilai pekerjaan yang direncanakan selesai, EV = nilai pekerjaan yang benar-benar selesai, AC = biaya yang sudah keluar.",
+    "code": "BAC Rp 1.200 jt   PV Rp 600 jt   EV Rp 480 jt (40% lingkup)   AC Rp 560 jt\n\nSPI = EV / PV = 480 / 600 = 0,80 -> terlambat dari jadwal\nCPI = EV / AC = 480 / 560 = 0,86 -> boros: tiap Rp1 menghasilkan pekerjaan senilai Rp0,86\nEAC = BAC / CPI = 1.200 / 0,857 = Rp 1.400 jt\n      -> melebihi anggaran Rp 200 jt",
+    "lang": "text"
+   },
+   {
+    "t": "Matriks RACI implementasi ERP",
+    "code": "Aktivitas                   Sponsor  PM   BA   Vendor  Key user  TI\nPersetujuan lingkup          A       R    C    C       C         I\nDesain proses to-be          I       A    R    C       R         C\nKonfigurasi sistem           I       A    C    R       C         C\nMigrasi data                 I       A    C    R       R         R\nUAT                          I       A    C    C       R         I\nKeputusan go-live            A       R    C    C       C         C",
+    "lang": "text"
+   }
+  ]
+ },
+ "msi-8-1": {
+  "exs": [
+   {
+    "t": "Kasus: alur pesanan setelah ERP di distributor",
+    "code": "1. Sales di toko membuka aplikasi -> stok gudang Medan terlihat langsung\n2. Pesanan masuk ERP -> limit kredit toko dicek otomatis\n3. Gudang menerima daftar ambil barang per rute\n4. Faktur terbit saat barang dimuat ke truk\n5. Direksi melihat penjualan harian per cabang di dashboard\nCatatan: angka adalah ilustrasi untuk latihan, bukan data perusahaan nyata."
+   },
+   {
+    "t": "Kasus: pembersihan data sebelum go-live",
+    "code": "Temuan di data pelanggan lama (600 toko)\n- 48 toko tercatat 2 kali dengan nama berbeda (\"Toko Maju\", \"TK Maju Jaya\")\n- 110 toko tanpa nomor HP\n- 3 kode barang berbeda untuk \"Minyak goreng 2L\" di 3 gudang\nTindakan: satu kode barang untuk semua gudang, gabungkan toko ganda,\n          sales melengkapi HP saat kunjungan berikutnya"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Three-way match sebelum pembayaran pemasok",
+    "b": "ERP mencocokkan tiga dokumen: purchase order (PO), penerimaan barang di gudang, dan faktur pemasok. Bila jumlah atau harga berbeda, pembayaran ditahan dan hanya barang yang diterima dengan harga PO yang dibayar.",
+    "code": "PO      BARANG            PO               DITERIMA  FAKTUR           HASIL\nPO-881  Minyak goreng 2L  500 x 31.000     500       500 x 31.000     COCOK -> bayar Rp 15.500.000\nPO-882  Gula 1kg          800 x 16.500     760       800 x 16.800     TAHAN: faktur 800 unit, diterima 760;\n                                                                       harga faktur 16.800 != PO 16.500\n                                                                       nilai wajar 760 x 16.500 = Rp 12.540.000",
+    "lang": "text"
+   }
+  ]
+ },
+ "msi-8-2": {
+  "exs": [
+   {
+    "t": "Kasus: sewa atau bangun sendiri",
+    "code": "Kebutuhan Dapur Sehat          Keputusan     Alasan\nPembayaran online              sewa (SaaS)   bukan pembeda, sudah banyak penyedia\nAkuntansi                      sewa (SaaS)   aturan pajak sudah diurus penyedia\nCRM pelanggan                  sewa (SaaS)   cukup paket standar\nMenu & kalori per pelanggan    bangun        inilah pembeda bisnis"
+   },
+   {
+    "t": "Kasus: membaca metrik startup",
+    "code": "Bulan ini\n  CAC   : Rp 120.000 per pelanggan baru\n  LTV   : Rp 900.000 (rata-rata 3 bulan x Rp 300.000)\n  Churn : 18% per bulan\n  Runway: 9 bulan\nBacaan: LTV/CAC = 7,5 (sehat), tetapi churn tinggi -> perbaiki alasan berhenti\n        sebelum menambah biaya iklan"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Kapan spreadsheet harus diganti? Pantau pemicu skala",
+    "b": "Tetapkan pemicu: lebih dari 1.500 pesanan per bulan, lebih dari 3 admin mengedit bersamaan, atau salah input di atas 2%.",
+    "code": "BULAN  PESANAN  ADMIN  SALAH INPUT  PEMICU\nJan       180   1      0,4%         spreadsheet masih memadai\nMar       420   1      0,6%         spreadsheet masih memadai\nMei       950   2      1,1%         spreadsheet masih memadai\nJul     1.800   3      1,8%         volume\nSep     3.100   4      2,4%         volume, banyak editor bersamaan, salah input (~74 pesanan)\nNov     5.200   6      3,1%         volume, banyak editor bersamaan, salah input (~161 pesanan)",
+    "lang": "text"
+   }
+  ]
+ },
+ "msi-8-3": {
+  "exs": [
+   {
+    "t": "Kasus: modul SIAKAD dan penggunanya",
+    "code": "Modul          Pengguna utama        Data yang dipakai bersama\nPPDB           panitia, calon siswa  data induk siswa\nPresensi QR    wali kelas            data induk siswa, jadwal\nE-rapor        guru mapel            nilai, data induk siswa\nKeuangan SPP   bendahara, orang tua  tagihan, data induk siswa\nPortal ortu    orang tua             presensi, nilai, tagihan (hanya anaknya sendiri)"
+   },
+   {
+    "t": "Kasus: hak akses data anak",
+    "code": "Peran        Lihat nilai   Lihat catatan BK   Ubah data induk\nGuru mapel   kelasnya      tidak              tidak\nWali kelas   kelasnya      ringkasan          tidak\nGuru BK      semua         semua              tidak\nOperator TU  tidak         tidak              ya (tercatat di log)\nOrang tua    anaknya       tidak              tidak"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Early warning: siswa yang perlu perhatian wali kelas",
+    "b": "Tandai siswa dengan kehadiran di bawah 85%, nilai turun 8 poin atau lebih, atau 3 tugas terlambat atau lebih. Dua tanda atau lebih: prioritas.",
+    "code": "SISWA  HADIR  NILAI LALU -> KINI  TUGAS TERLAMBAT  STATUS\nAndi   97%    82 -> 84            0                aman\nBella  78%    75 -> 64            4                PRIORITAS: hubungi orang tua & BK\nCitra  93%    88 -> 87            1                aman\nDimas  85%    70 -> 61            2                PANTAU: nilai turun\nEka    66%    72 -> 70            5                PRIORITAS: hubungi orang tua & BK\nFani   95%    91 -> 90            0                aman",
+    "lang": "text"
+   }
+  ]
+ },
+ "msi-8-4": {
+  "cx": [
+   {
+    "t": "Menghitung pembagian SHU koperasi berdasarkan jasa anggota",
+    "b": "SHU Rp 48 juta: 40% untuk jasa simpanan dan 30% untuk jasa transaksi (sisanya cadangan, pengurus, pendidikan). Bagian anggota = porsi x SHU x (simpanan atau belanjanya / total semua anggota). Total simpanan Rp 28 juta, total belanja Rp 67,9 juta.",
+    "code": "ANGGOTA   SIMPANAN    BELANJA      JASA SIMPANAN  JASA TRANSAKSI  TOTAL\nBu Siti    5.200.000  18.000.000   3.565.714      3.817.378       7.383.093\nPak Joko  12.000.000   6.500.000   8.228.571      1.378.498       9.607.069\nMas Rudi   2.500.000  31.000.000   1.714.286      6.574.374       8.288.660\nBu Ani     8.300.000  12.400.000   5.691.429      2.629.750       8.321.178\n\nContoh Bu Siti: 19,2 jt x 5,2/28 = 3.565.714 dan 14,4 jt x 18/67,9 = 3.817.378",
+    "lang": "text"
+   }
+  ]
+ },
+ "msi-9-1": {
+  "exs": [
+   {
+    "t": "Kasus: empat jenis analitik di toko daring",
+    "code": "Deskriptif  : \"Penjualan November Rp 840 juta, turun 6%.\"\nDiagnostik  : \"Turun karena ongkir ke Kalimantan naik, pesanan dari sana -40%.\"\nPrediktif   : \"Desember diperkirakan naik 25% karena musim liburan.\"\nPreskriptif : \"Tambah stok 300 unit dan beri subsidi ongkir Kalimantan Rp 10.000.\""
+   },
+   {
+    "t": "Kasus: memakai AI generatif dengan aman",
+    "code": "Boleh  : \"Rapikan draf pengumuman libur sekolah ini agar lebih singkat.\"\nBoleh  : \"Buat ringkasan notulen rapat dari catatan berikut (tanpa nama siswa).\"\nJangan : menempel daftar nilai dan nama siswa ke layanan AI publik\nJangan : memakai jawaban AI tentang aturan pajak tanpa memeriksa sumber resmi\nJangan : membiarkan AI memutuskan siapa yang diterima beasiswa"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Memilih proses yang layak diotomasi",
+    "b": "Hitung jam kerja per bulan (frekuensi x menit / 60) dan persentase langkah yang mengikuti aturan jelas. 90% ke atas: otomasi penuh (RPA); 40-89%: AI dengan review manusia; di bawah 40%: tetap manusia.",
+    "code": "PROSES                           FREKUENSI   JAM/BLN  ATURAN  COCOK\nInput faktur pemasok dari PDF    1.400 x 4m   93      80%     AI + review manusia\nRekonsiliasi mutasi bank           600 x 6m   60      95%     RPA/otomasi penuh\nMenjawab email keluhan             900 x 7m  105      40%     AI + review manusia\nRekap absensi ke payroll             4 x 240m 16      98%     RPA/otomasi penuh\nNegosiasi harga dengan pemasok      30 x 90m  45      10%     tetap manusia",
+    "lang": "text"
+   }
+  ]
+ },
+ "msi-9-2": {
+  "cx": [
+   {
+    "t": "Funnel e-commerce dan tahap dengan kebocoran terbesar",
+    "b": "Hitung persentase yang lanjut di setiap tahap dan berapa orang yang hilang. Tahap dengan kehilangan terbesar diperbaiki lebih dulu.",
+    "code": "TAHAP                                     LANJUT   HILANG\nKunjungan (120.000) -> Lihat produk        45,0%   66.000\nLihat produk        -> Tambah ke keranjang 18,0%   44.300\nTambah ke keranjang -> Mulai checkout      52,6%    4.600\nMulai checkout      -> Bayar               57,8%    2.150\n\nKonversi total: 2.950 / 120.000 = 2,46%\nKebocoran terbesar: dari lihat produk ke keranjang -> periksa foto, harga, dan ongkir di halaman produk",
+    "lang": "text"
+   }
+  ]
+ },
+ "msi-9-3": {
+  "cx": [
+   {
+    "t": "Memeriksa bias sederhana pada aturan persetujuan kredit otomatis",
+    "b": "Delapan pemohon (4 kota, 4 desa). Aturan lama: wajib slip gaji resmi dan penghasilan >= Rp 4 juta. Aturan baru: penghasilan >= Rp 4 juta dan (slip gaji ATAU riwayat bayar tepat waktu).",
+    "code": "ATURAN       WILAYAH  DISETUJUI\naturan lama  kota     3/4\naturan lama  desa     1/4\naturan baru  kota     3/4\naturan baru  desa     3/4\n\nSyarat slip gaji resmi menyingkirkan pekerja informal di desa yang riwayat bayarnya baik.",
+    "lang": "text"
+   }
+  ]
+ },
+ "msi-10-2": {
+  "exs": [
+   {
+    "t": "Kasus: alur aplikasi izin siswa dari masalah sampai rilis",
+    "code": "1 Masalah   : izin lewat surat kertas, BK tahu 3 minggu kemudian; target: BK tahu di hari yang sama\n2 Riset     : wawancara 4 wali kelas, 6 orang tua, 1 guru BK\n3 Kebutuhan : ajukan izin + foto surat, setujui, rekap BK (MoSCoW)\n4 Kelayakan : web ponsel, biaya hosting Rp 1 jt/tahun\n5 Rancang   : alur pengguna, wireframe, ERD (SISWA, IZIN, KELAS)\n6 Prototipe : uji ke 5 orang tua, 2 perbaikan label\n7 Bangun    : 2 sprint, uji di kelas 7A\n8 Rilis     : seluruh sekolah, pantau % izin yang tercatat di hari yang sama"
+   },
+   {
+    "t": "Kasus: gerbang keputusan lanjut atau perbaiki",
+    "code": "Gerbang setelah prototipe (aplikasi pendataan relawan)\nKriteria lanjut : 4 dari 5 peserta berhasil mendaftar < 3 menit\nHasil           : 2 dari 5 berhasil; 3 peserta bingung pilihan \"domisili\"\nKeputusan       : PERBAIKI -> ganti kolom bebas dengan pilihan kecamatan, uji ulang minggu depan"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Menyusun MVP dengan skor RICE",
+    "b": "Skor RICE = Reach x Impact x Confidence / Effort (orang-minggu). Urutkan dari skor terbesar, lalu masukkan ke MVP selama total usaha tidak melebihi kapasitas 12 orang-minggu.",
+    "code": "SKOR  FITUR                        R      I    C    E   KEPUTUSAN\n810   Pengajuan cuti dari HP       1.800  2    0,9  4   MVP              (total 4)\n480   Approval berjenjang          1.800  1    0,8  3   MVP              (total 7)\n270   Integrasi payroll otomatis   1.800  2    0,6  8   rilis berikutnya (15 > 12)\n140   Kalender tim                   600  1    0,7  3   MVP              (total 10)\n 60   Chatbot tanya saldo cuti     1.200  0,5  0,5  5   rilis berikutnya\n 20   Laporan cuti untuk HR           15  3    0,9  2   MVP              (total 12)",
+    "lang": "text"
+   }
+  ]
+ },
+ "msi-10-3": {
+  "exs": [
+   {
+    "t": "Kasus: lembar audit aplikasi lama",
+    "code": "Standar         Temuan                                         Bukti\nKegunaan        tombol \"Proses\" dan \"Submit\" untuk aksi sama    heuristik konsistensi\nAksesibilitas   form tanpa label, tidak bisa dipakai keyboard   WCAG 2.2 AA\nKeamanan        kata sandi dikirim lewat email                  OWASP Top 10\nPrivasi         NIK tampil utuh di daftar karyawan              UU PDP\nKinerja         halaman laporan 9 menit                         uji waktu muat"
+   },
+   {
+    "t": "Kasus: rencana perbaikan bertahap per rilis",
+    "code": "Rilis 1 (2 minggu)  : perbaiki kontras dan label form, samarkan NIK\nRilis 2 (3 minggu)  : autentikasi dua faktor, reset kata sandi lewat tautan sekali pakai\nRilis 3 (4 minggu)  : rancang ulang form pendaftaran bersama UX Designer, uji 5 pengguna\nRilis 4 (4 minggu)  : percepat laporan dengan ringkasan harian terjadwal\nSetiap rilis: aplikasi tetap berjalan, pengguna diberi catatan perubahan singkat"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Prioritas temuan audit aplikasi lama",
+    "b": "Skor = keparahan (1-4) x persentase pengguna terdampak / usaha perbaikan (1-5). Temuan keamanan dan hukum tetap wajib walau skornya kecil.",
+    "code": "SKOR  KATEGORI       TEMUAN                                             SEV  TERDAMPAK  USAHA\n3,00  aksesibilitas  Kontras teks abu-abu 2,8:1                          3    100%       1\n2,00  keamanan       Login tanpa autentikasi dua faktor                  4    100%       2\n1,00  UX writing     Istilah \"Submit\" dan \"Kirim\" bercampur              1    100%       1\n0,60  UX             Form pendaftaran 4 halaman tanpa simpan otomatis    3     60%       3\n0,07  kinerja        Laporan bulanan butuh 9 menit                       2     15%       4\n0,07  kepatuhan      Tidak ada jejak audit perubahan data                4      5%       3\n\nQuick win (usaha 1): kontras & istilah.\nWajib walau usaha besar: autentikasi dua faktor dan jejak audit (risiko hukum).",
+    "lang": "text"
+   }
+  ]
+ }
+}

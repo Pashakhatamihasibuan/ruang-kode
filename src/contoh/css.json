@@ -1,0 +1,501 @@
+{
+ "css-1-1": {
+  "exs": [
+   {
+    "t": "Kasus: judul dan paragraf blog sekolah",
+    "code": "/* HTML: <h1>Mading Digital</h1> <p>Berita terbaru dari OSIS.</p> */\nh1 {\n  color: #2E5E8C;\n  font-size: 36px;\n}\np {\n  color: #333333;\n  font-size: 18px;\n}",
+    "d": "Satu aturan = selector + blok deklarasi. Setiap deklarasi diakhiri titik koma."
+   },
+   {
+    "t": "Kasus: kotak pengumuman dengan class",
+    "code": "/* HTML: <p class=\"pengumuman\">Besok libur nasional.</p> */\n.pengumuman {\n  background: #FFF4D6;\n  color: #7A4B00;\n  padding: 12px;\n  font-weight: bold;\n}"
+   },
+   {
+    "t": "Kasus: komentar untuk menjelaskan aturan",
+    "code": "/* Warna utama toko batik: cokelat sogan */\nh2 {\n  color: #6B3E1F;\n}\n/* Harga dibuat lebih besar agar mudah dilihat */\n.harga {\n  font-size: 22px;\n  color: #2F7A52;\n}"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Satu file gaya untuk seluruh situs toko",
+    "b": "Toko daring menaruh semua aturan dasar di satu file. Setiap selector diberi komentar agar anggota tim lain tahu bagian mana yang diatur.",
+    "code": "/* ===== Dasar halaman ===== */\nbody {\n  font-family: Arial, sans-serif;\n  color: #1C1B19;\n  background: #FAFAF7;\n}\n/* ===== Judul ===== */\nh1 {\n  color: #B4532A;\n  font-size: 32px;\n}\n/* ===== Teks promo ===== */\n.promo {\n  background: #FBE7A8;\n  padding: 8px 12px;\n  font-weight: bold;\n}"
+   }
+  ]
+ },
+ "css-1-2": {
+  "exs": [
+   {
+    "t": "Kasus: selector elemen, class, dan id",
+    "code": "/* HTML: <h2>Menu</h2> <p class=\"menu\">Nasi goreng</p> <p id=\"favorit\">Sate ayam</p> */\nh2 { color: #B4532A; }\n.menu { color: #444444; }\n#favorit { color: #2F7A52; font-weight: bold; }"
+   },
+   {
+    "t": "Kasus: gabungan dengan koma",
+    "code": "/* semua judul memakai huruf yang sama */\nh1, h2, h3 {\n  font-family: Georgia, serif;\n  color: #1C1B19;\n}"
+   },
+   {
+    "t": "Kasus: syarat ganda tanpa spasi",
+    "code": "/* HTML: <p class=\"status lunas\">Lunas</p> <p class=\"status\">Belum bayar</p> */\n.status { color: #B23A2E; }\n.status.lunas { color: #2F7A52; }   /* elemen yang punya KEDUA class */\np.status { font-weight: bold; }    /* hanya p yang punya class status */"
+   },
+   {
+    "t": "Kasus: selector * untuk semua elemen",
+    "code": "* {\n  font-family: Arial, sans-serif;\n}"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Gaya status pesanan dengan class",
+    "b": "Aplikasi toko memberi class berbeda untuk setiap status pesanan. Satu class dasar mengatur bentuk, class kedua hanya mengganti warnanya.",
+    "code": "/* HTML: <span class=\"lencana lunas\">Lunas</span>\n         <span class=\"lencana pending\">Menunggu</span>\n         <span class=\"lencana gagal\">Gagal</span> */\n.lencana {\n  padding: 2px 8px;\n  border-radius: 999px;\n  font-size: 12px;\n  font-weight: bold;\n}\n.lencana.lunas   { background: #E6F4EA; color: #1E6B34; }\n.lencana.pending { background: #FFF4E5; color: #8A4B00; }\n.lencana.gagal   { background: #FDECEA; color: #A1281E; }"
+   }
+  ]
+ },
+ "css-1-3": {
+  "exs": [
+   {
+    "t": "Kasus: yang ditulis belakangan menang",
+    "code": "/* HTML: <p class=\"catatan\">Teks catatan</p> */\n.catatan { color: blue; }\n.catatan { color: green; }   /* specificity sama (0,1,0): yang terakhir menang → hijau */"
+   },
+   {
+    "t": "Kasus: class mengalahkan elemen",
+    "code": "/* HTML: <h2 class=\"judul-promo\">Promo</h2> */\n.judul-promo { color: #B23A2E; }  /* (0,1,0) menang */\nh2 { color: #1C1B19; }            /* (0,0,1) kalah walau ditulis belakangan */"
+   },
+   {
+    "t": "Kasus: id paling kuat, jadi hindari untuk gaya",
+    "code": "/* HTML: <p id=\"harga\" class=\"harga diskon\">Rp50.000</p> */\n#harga { color: black; }               /* (1,0,0) menang */\n.harga.diskon { color: red; }          /* (0,2,0) kalah */\np.harga.diskon { color: orange; }      /* (0,2,1) tetap kalah dari id */",
+    "d": "Untuk mengganti warna itu nanti, kita terpaksa memakai id lagi atau !important. Itulah sebabnya class lebih disukai."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Menghitung specificity sebelum menimpa gaya pustaka",
+    "b": "Saat memakai pustaka CSS orang lain, developer menghitung specificity selector pustaka dulu, lalu menulis selector yang cukup kuat, bukan memakai !important.",
+    "code": "/* Gaya bawaan pustaka */\n.tombol { background: gray; }                 /* (0,1,0) */\n.tombol.tombol-utama { background: navy; }    /* (0,2,0) */\n\n/* HTML kita: <button class=\"tombol tombol-utama tombol-beli\">Beli</button> */\n\n/* SALAH: kalah dari .tombol.tombol-utama */\n.tombol-beli { background: green; }           /* (0,1,0) */\n\n/* BENAR: specificity lebih tinggi, tanpa !important */\n.tombol.tombol-utama.tombol-beli { background: green; }   /* (0,3,0) */"
+   }
+  ]
+ },
+ "css-2-1": {
+  "exs": [
+   {
+    "t": "Kasus: kartu dengan padding, border, dan margin",
+    "code": "/* HTML: <div class=\"kartu\">Paket Hemat</div> */\n.kartu {\n  padding: 16px;                 /* jarak isi ke garis tepi */\n  border: 2px solid #2E5E8C;     /* garis tepi */\n  margin: 20px;                  /* jarak ke elemen lain */\n}"
+   },
+   {
+    "t": "Kasus: lebar total dengan border-box",
+    "code": "* { box-sizing: border-box; }\n.kolom {\n  width: 300px;      /* lebar total tetap 300px */\n  padding: 20px;     /* isi tersisa 300 - 40 - 4 = 256px */\n  border: 2px solid #ddd;\n}"
+   },
+   {
+    "t": "Kasus: margin vertikal yang runtuh",
+    "code": "/* HTML: <p class=\"a\">Paragraf A</p> <p class=\"b\">Paragraf B</p> */\n.a { margin-bottom: 30px; }\n.b { margin-top: 20px; }      /* jarak A ke B = 30px, bukan 50px */"
+   },
+   {
+    "t": "Kasus: outline untuk penanda tanpa menggeser tata letak",
+    "code": ".terpilih {\n  outline: 3px solid #F2A93B;   /* tidak menambah ukuran kotak */\n}"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Menghitung lebar kartu di layout produk",
+    "b": "Desainer memberi ukuran kartu 300px. Tanpa border-box, developer harus menghitung sendiri agar kartu tidak melebar dan merusak susunan tiga kolom.",
+    "code": "/* content-box (bawaan):  300 + 2×24 + 2×2 = 352px terlihat,\n                          ditambah margin 2×16 = 384px ruang terpakai */\n.kartu-lama {\n  box-sizing: content-box;\n  width: 300px; padding: 24px; border: 2px solid #ddd; margin: 16px;\n}\n\n/* border-box: lebar terlihat tepat 300px,\n               isi tersisa 300 - 48 - 4 = 248px */\n.kartu-baru {\n  box-sizing: border-box;\n  width: 300px; padding: 24px; border: 2px solid #ddd; margin: 16px;\n}"
+   }
+  ]
+ },
+ "css-2-2": {
+  "exs": [
+   {
+    "t": "Kasus: ukuran huruf dengan rem",
+    "code": "html { font-size: 16px; }\nh1 { font-size: 2rem; }      /* 32px */\np  { font-size: 1rem; }      /* 16px */\nsmall { font-size: 0.875rem; } /* 14px */",
+    "d": "Jika pengguna memperbesar ukuran huruf di pengaturan browser, semua ikut membesar."
+   },
+   {
+    "t": "Kasus: lebar persen dan panjang baris ch",
+    "code": ".artikel {\n  width: 90%;        /* 90% dari lebar induk */\n  max-width: 65ch;   /* paling lebar sekitar 65 karakter */\n}"
+   },
+   {
+    "t": "Kasus: calc() dan clamp()",
+    "code": ".isi {\n  width: calc(100% - 40px);               /* lebar induk dikurangi 40px */\n}\nh2 {\n  font-size: clamp(1.25rem, 5vw, 2rem);   /* min 20px, ideal 5% layar, maks 32px */\n}"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Tipografi fluid di berbagai lebar layar",
+    "b": "Judul halaman promo harus pas di ponsel 360px sampai monitor 1920px. clamp() menghitung ukuran yang mengikuti lebar layar, dengan batas bawah dan atas.",
+    "code": "h1 {\n  font-size: clamp(28px, 1.2rem + 2.5vw, 48px);\n}\n/* Perhitungan 1.2rem + 2.5vw (1rem = 16px):\n   layar  360px → 19.2 + 9   = 28.2px\n   layar  768px → 19.2 + 19.2 = 38.4px\n   layar 1280px → 19.2 + 32  = 51.2px → dibatasi 48px\n   layar 1920px → 19.2 + 48  = 67.2px → dibatasi 48px */\n.konten {\n  max-width: 65ch;\n  padding: 0 clamp(16px, 4vw, 48px);\n}"
+   }
+  ]
+ },
+ "css-3-1": {
+  "exs": [
+   {
+    "t": "Kasus: empat cara menulis warna yang sama",
+    "code": ".a { color: tomato; }\n.b { color: #FF6347; }\n.c { color: rgb(255 99 71); }\n.d { color: hsl(9 100% 64%); }"
+   },
+   {
+    "t": "Kasus: latar gradien untuk banner promo",
+    "code": ".banner {\n  background: linear-gradient(135deg, #B4532A, #F2A93B);\n  color: white;\n  padding: 24px;\n}"
+   },
+   {
+    "t": "Kasus: bayangan kartu dan latar transparan",
+    "code": ".kartu {\n  background: white;\n  box-shadow: 0 4px 12px rgb(0 0 0 / 15%);\n}\n.lapisan {\n  background: rgb(0 0 0 / 50%);   /* hitam 50% transparan */\n}\n.nonaktif {\n  opacity: 0.5;                    /* seluruh elemen ikut transparan */\n}"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Memeriksa kontras palet merek",
+    "b": "Sebelum warna merek dipakai untuk tombol, tim desain memeriksa rasio kontrasnya (bisa dengan panel kontras di DevTools atau webaim.org). Teks biasa butuh minimal 4.5:1.",
+    "code": "/* putih di hijau terang: 3.30:1 → hanya untuk teks besar */\n.tombol-kurang { background: #16A34A; color: #FFFFFF; }\n\n/* putih di hijau lebih gelap: 5.02:1 → lulus AA */\n.tombol { background: #15803D; color: #FFFFFF; }\n\n/* abu-abu di putih: 4.83:1 → lulus AA, tapi jangan lebih terang lagi */\n.keterangan { color: #6B7280; background: #FFFFFF; }\n\n/* hitam di kuning: 10.63:1 → sangat jelas */\n.peringatan { background: #FBBF24; color: #111827; }"
+   }
+  ]
+ },
+ "css-3-2": {
+  "exs": [
+   {
+    "t": "Kasus: paragraf yang nyaman dibaca",
+    "code": ".artikel-teks {\n  font-family: Georgia, serif;\n  font-size: 18px;\n  line-height: 1.7;\n  max-width: 65ch;\n}"
+   },
+   {
+    "t": "Kasus: label kecil huruf kapital berjarak",
+    "code": ".kategori {\n  text-transform: uppercase;\n  letter-spacing: 0.1em;\n  font-size: 0.75rem;\n  font-weight: 600;\n  color: #6E6B64;\n}"
+   },
+   {
+    "t": "Kasus: font dari Google Fonts dengan cadangan",
+    "code": "/* HTML head: <link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap\"> */\nbody {\n  font-family: \"Poppins\", Arial, sans-serif;   /* Arial dipakai jika Poppins gagal dimuat */\n}\nh1 { font-weight: 700; text-align: center; }\na { text-decoration: none; }"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Font variabel sendiri dan angka yang rata",
+    "b": "Situs berita menyimpan font di server sendiri agar cepat, memakai font-display: swap agar teks langsung tampil, dan angka tabular agar kolom harga rata.",
+    "code": "@font-face {\n  font-family: \"Inter\";\n  src: url(\"/fonts/inter-var.woff2\") format(\"woff2\");\n  font-weight: 100 900;\n  font-display: swap;\n}\nbody {\n  font-family: \"Inter\", system-ui, sans-serif;\n  font-size: 1rem;\n  line-height: 1.6;\n}\nh1, h2, h3 {\n  line-height: 1.15;\n  text-wrap: balance;          /* baris judul seimbang panjangnya */\n  letter-spacing: -0.01em;\n}\n.harga { font-variant-numeric: tabular-nums; }"
+   }
+  ]
+ },
+ "css-3-3": {
+  "code": "body {\n  color-scheme: light dark;              /* ikut tema terang/gelap sistem */\n  color: light-dark(#152033, #E4EAF2);\n  background: light-dark(#F2F4F8, #0C121B);\n}\n\n.tombol {\n  background: #255DA2;                   /* cadangan untuk browser lama */\n  background: oklch(55% 0.15 255);       /* biru */\n  color: white;\n}\n\n.badge {\n  /* latar lembut: 15% biru + 85% putih */\n  background: color-mix(in oklch, oklch(55% 0.15 255) 15%, white);\n  color: oklch(45% 0.15 255);\n}",
+  "exs": [
+   {
+    "t": "Kasus: skala warna dari satu hue",
+    "code": ".hijau-100 { background: oklch(95% 0.05 150); }\n.hijau-500 { background: oklch(65% 0.17 150); }\n.hijau-900 { background: oklch(30% 0.08 150); }\n/* hanya lightness yang diubah, terang-gelapnya terasa merata */"
+   },
+   {
+    "t": "Kasus: warna hover dengan color-mix",
+    "code": ".tombol { background: #2F7A52; }\n.tombol-gelap {\n  background: color-mix(in oklch, #2F7A52, black 15%);   /* 15% lebih gelap */\n}"
+   },
+   {
+    "t": "Kasus: kartu yang ikut tema dengan light-dark",
+    "code": ".kartu {\n  color-scheme: light dark;\n  background: light-dark(#FFFFFF, #1A2330);\n  color: light-dark(#1C1B19, #ECEAE4);\n  border: 1px solid light-dark(#DDDDDD, #33404F);\n}"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Palet merek dari satu hue",
+    "b": "Startup kopi membangun seluruh palet hijau dari satu angka hue. Saat merek berganti warna, cukup angka hue yang diganti di semua baris.",
+    "code": ".latar-lembut { background: oklch(97% 0.03 150); }\n.aksen        { background: oklch(62% 0.17 150); }\n.tombol       { background: oklch(48% 0.14 150); color: white; }\n.tombol-tekan { background: color-mix(in oklch, oklch(48% 0.14 150), black 12%); }\n.sorot        { background: color-mix(in srgb, oklch(62% 0.17 150) 15%, transparent); }\nbody {\n  color-scheme: light dark;\n  background: light-dark(#ffffff, oklch(20% 0.01 150));\n  color: light-dark(oklch(22% 0.02 150), oklch(95% 0.01 150));\n}"
+   }
+  ]
+ },
+ "css-4-1": {
+  "exs": [
+   {
+    "t": "Kasus: menu link inline-block yang bisa diberi ukuran",
+    "code": "/* HTML: <a class=\"menu\">Beranda</a> <a class=\"menu\">Produk</a> */\n.menu {\n  display: inline-block;\n  width: 100px;\n  padding: 8px;\n  text-align: center;\n  background: #F2F1EC;\n}"
+   },
+   {
+    "t": "Kasus: none vs hidden",
+    "code": ".sembunyi-total { display: none; }        /* hilang, ruangnya ikut hilang */\n.sembunyi-ruang { visibility: hidden; }   /* tak terlihat, ruangnya tetap ada */"
+   },
+   {
+    "t": "Kasus: span dijadikan block",
+    "code": "/* HTML: <span class=\"alamat\">Jl. Sudirman 1, Jakarta</span> */\n.alamat {\n  display: block;       /* sekarang mengambil satu baris penuh */\n  margin-top: 8px;\n}"
+   },
+   {
+    "t": "Kasus: float untuk teks yang mengalir di sekitar gambar",
+    "code": "/* HTML: <img class=\"foto-kiri\" src=\"...\"> <p>Teks artikel panjang...</p> */\n.foto-kiri {\n  float: left;\n  width: 120px;\n  margin: 0 12px 8px 0;\n}"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Menyembunyikan dengan benar sesuai tujuan",
+    "b": "Komponen dropdown, tab, dan pesan error memakai teknik menyembunyikan yang berbeda. Salah pilih bisa membuat tata letak melompat atau konten hilang dari pembaca layar.",
+    "code": "/* panel tab yang tidak aktif: tidak terlihat, tidak memakan ruang */\n.panel-tidak-aktif { display: none; }\n\n/* tempat pesan error: ruangnya tetap disediakan agar form tidak melompat */\n.pesan-error-kosong { visibility: hidden; }\n\n/* lencana kecil sebaris tetapi punya ukuran tetap */\n.lencana { display: inline-block; min-width: 24px; text-align: center; }\n\n/* gambar sampul artikel di kanan teks */\n.sampul { float: right; width: 40%; margin: 0 0 1rem 1rem; }"
+   }
+  ]
+ },
+ "css-4-2": {
+  "exs": [
+   {
+    "t": "Kasus: lencana \"DISKON\" di pojok kartu",
+    "code": ".kartu { position: relative; }\n.diskon {\n  position: absolute;\n  top: 8px;\n  right: 8px;\n  background: #B23A2E;\n  color: white;\n}",
+    "d": "Elemen absolute diposisikan terhadap induk yang position-nya relative."
+   },
+   {
+    "t": "Kasus: tombol chat yang selalu menempel di layar",
+    "code": ".tombol-chat {\n  position: fixed;\n  bottom: 16px;\n  right: 16px;\n  z-index: 10;\n}"
+   },
+   {
+    "t": "Kasus: judul kolom yang menempel saat digulir",
+    "code": ".judul-tabel {\n  position: sticky;\n  top: 0;\n  background: white;\n  z-index: 1;\n}"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Header sticky, angka keranjang, dan skala z-index",
+    "b": "Tim membuat daftar angka z-index tetap (100, 200, 1000) agar dropdown, header, dan modal tidak saling tumpuk secara acak.",
+    "code": "/* skala z-index tim: dropdown 100, header 200, modal 1000, toast 1100 */\n.header { position: sticky; top: 0; z-index: 200; background: white; }\n.dropdown { position: absolute; z-index: 100; }\n.modal { position: fixed; inset: 0; z-index: 1000; }\n\n.ikon-keranjang { position: relative; }\n.jumlah-keranjang {\n  position: absolute; top: -6px; right: -8px;\n  min-width: 1.25rem; padding: 0 .25rem; border-radius: 999px;\n  background: #B23A2E; color: white;\n}"
+   }
+  ]
+ },
+ "css-5-1": {
+  "exs": [
+   {
+    "t": "Kasus: tiga kartu sejajar dengan jarak",
+    "code": "/* HTML: <div class=\"baris\"><div class=\"item\">Paket A</div><div class=\"item\">Paket B</div><div class=\"item\">Paket C</div></div> */\n.baris {\n  display: flex;\n  gap: 16px;\n}\n.item { flex: 1; }   /* setiap kartu mengambil bagian sama */"
+   },
+   {
+    "t": "Kasus: memusatkan isi di tengah kotak",
+    "code": ".layar-sambutan {\n  display: flex;\n  justify-content: center;   /* tengah secara horizontal */\n  align-items: center;       /* tengah secara vertikal */\n  height: 300px;\n}"
+   },
+   {
+    "t": "Kasus: daftar tag yang turun baris otomatis",
+    "code": ".tag-list {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 8px;\n}\n.tag { padding: 4px 10px; border: 1px solid #ccc; border-radius: 999px; }"
+   },
+   {
+    "t": "Kasus: susunan kolom di kartu",
+    "code": ".kartu {\n  display: flex;\n  flex-direction: column;    /* susun ke bawah */\n  gap: 8px;\n}"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Pola flexbox sehari-hari",
+    "b": "Empat pola ini muncul di hampir setiap aplikasi: navbar, baris item keranjang, daftar tag, dan kartu dengan tombol yang selalu di bawah.",
+    "code": "/* navbar: logo kiri, tombol akun didorong ke kanan */\n.nav { display: flex; align-items: center; gap: 1rem; }\n.nav-akun { margin-left: auto; }\n\n/* baris keranjang: nama panjang dipotong, harga tidak terdorong keluar */\n.item { display: flex; gap: .75rem; align-items: center; }\n.item-nama { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }\n.item-harga { flex-shrink: 0; }\n\n/* tag yang turun baris otomatis */\n.tag-list { display: flex; flex-wrap: wrap; gap: .5rem; }\n\n/* tombol kartu selalu di bawah walau isi kartu beda tinggi */\n.kartu { display: flex; flex-direction: column; }\n.kartu-aksi { margin-top: auto; }"
+   }
+  ]
+ },
+ "css-5-2": {
+  "exs": [
+   {
+    "t": "Kasus: galeri tiga kolom sama lebar",
+    "code": ".galeri {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 12px;\n}"
+   },
+   {
+    "t": "Kasus: kolom sidebar tetap dan isi fleksibel",
+    "code": ".halaman {\n  display: grid;\n  grid-template-columns: 240px 1fr;   /* sidebar 240px, sisanya untuk isi */\n  gap: 24px;\n}"
+   },
+   {
+    "t": "Kasus: kartu produk yang menyesuaikan lebar layar",
+    "code": ".katalog {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));\n  gap: 16px;\n}\n.unggulan { grid-column: span 2; }"
+   },
+   {
+    "t": "Kasus: tata letak dengan nama area",
+    "code": ".dasbor {\n  display: grid;\n  grid-template-columns: 200px 1fr;\n  grid-template-areas:\n    \"atas  atas\"\n    \"sisi  utama\";\n}\n/* HTML: <div class=\"dasbor\"><header class=\"atas\">…</header><nav class=\"sisi\">…</nav><main class=\"utama\">…</main></div> */\n.atas  { grid-area: atas; }\n.sisi  { grid-area: sisi; }\n.utama { grid-area: utama; }"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Katalog tanpa media query dan subgrid untuk kartu sejajar",
+    "b": "Marketplace menampilkan kartu produk yang jumlah kolomnya menyesuaikan sendiri. Kontainer 720px menghasilkan 3 kolom, 1024px menghasilkan 4 kolom (min 220px, gap 24px).",
+    "code": ".katalog {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr));\n  gap: 24px;\n}\n/* subgrid: judul, harga, dan tombol sejajar di semua kartu */\n.kartu {\n  display: grid;\n  grid-row: span 3;\n  grid-template-rows: subgrid;\n  gap: 8px;\n}\n/* Jumlah kolom = bulat ke bawah((lebar + gap) / (220 + gap))\n   328px → 1 kolom, 720px → 3 kolom, 1024px → 4 kolom, 1232px → 5 kolom */"
+   }
+  ]
+ },
+ "css-6-1": {
+  "exs": [
+   {
+    "t": "Kasus: satu kolom di ponsel, dua kolom di tablet",
+    "code": ".produk {\n  display: grid;\n  gap: 16px;                        /* bawaan: 1 kolom untuk ponsel */\n}\n@media (min-width: 640px) {\n  .produk { grid-template-columns: 1fr 1fr; }\n}"
+   },
+   {
+    "t": "Kasus: ukuran judul bertambah di layar lebar",
+    "code": "h1 { font-size: 1.75rem; }\n@media (min-width: 1024px) {\n  h1 { font-size: 3rem; }\n}"
+   },
+   {
+    "t": "Kasus: mode gelap mengikuti pengaturan sistem",
+    "code": "body { background: #FFFFFF; color: #1C1B19; }\n@media (prefers-color-scheme: dark) {\n  body { background: #181816; color: #ECEAE4; }\n}"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Mobile-first plus preferensi pengguna",
+    "b": "Situs toko diatur untuk ponsel dulu, lalu ditambah aturan untuk layar besar, layar sentuh, pengguna yang tidak suka animasi, dan saat halaman dicetak.",
+    "code": ".produk { display: grid; gap: 1rem; }                          /* 1 kolom: ponsel */\n@media (width >= 40rem) { .produk { grid-template-columns: 1fr 1fr; } }\n@media (width >= 64rem) { .produk { grid-template-columns: 2fr 1fr; } }\n\n@media (pointer: coarse) { .tombol { min-height: 48px; } }    /* target sentuh besar */\n@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }\n@media print { nav, .tombol { display: none; } }"
+   }
+  ]
+ },
+ "css-6-2": {
+  "exs": [
+   {
+    "t": "Kasus: kartu menyamping jika wadahnya lebar",
+    "code": ".wadah-kartu { container-type: inline-size; }\n.kartu { display: grid; gap: 8px; }\n@container (min-width: 400px) {\n  .kartu { grid-template-columns: 140px 1fr; }\n}"
+   },
+   {
+    "t": "Kasus: wadah bernama di sidebar",
+    "code": ".sidebar { container: sisi / inline-size; }\n@container sisi (max-width: 250px) {\n  .detail-cuaca { display: none; }   /* sidebar sempit: sembunyikan detail */\n}"
+   },
+   {
+    "t": "Kasus: gambar yang tidak melebihi wadahnya",
+    "code": "img {\n  max-width: 100%;\n  height: auto;\n}"
+   }
+  ]
+ },
+ "css-6-3": {
+  "exs": [
+   {
+    "t": "Kasus: foto profil bulat dari foto persegi panjang",
+    "code": "<img class=\"avatar\" src=\"dewi.jpg\" alt=\"Foto Dewi\" width=\"96\" height=\"96\">\n<style>\n.avatar {\n  aspect-ratio: 1 / 1;\n  object-fit: cover;\n  border-radius: 50%;\n}\n</style>"
+   },
+   {
+    "t": "Kasus: video sematan 16:9",
+    "code": "<iframe class=\"video\" src=\"https://www.youtube-nocookie.com/embed/xxxx\" title=\"Cara menanam cabai\"></iframe>\n<style>\n.video { width: 100%; aspect-ratio: 16 / 9; border: 0; }\n</style>"
+   },
+   {
+    "t": "Kasus: srcset untuk banner",
+    "code": "<img src=\"banner-800.jpg\"\n     srcset=\"banner-480.jpg 480w, banner-800.jpg 800w, banner-1600.jpg 1600w\"\n     sizes=\"100vw\" alt=\"Promo akhir tahun\" width=\"1600\" height=\"600\">",
+    "d": "Ponsel kecil cukup mengunduh banner 480 piksel."
+   },
+   {
+    "t": "Kasus: logo mitra yang tidak terpotong",
+    "code": "<img class=\"logo\" src=\"logo-mitra.png\" alt=\"Logo Bank Mitra\">\n<style>\n.logo { width: 160px; aspect-ratio: 3 / 1; object-fit: contain; }\n</style>"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Thumbnail seragam dari foto berbagai ukuran",
+    "b": "Penjual mengunggah foto produk dengan ukuran acak. CSS ini membuat semua thumbnail berbentuk kotak sama, tanpa gambar gepeng, dan logo mitra tidak terpotong.",
+    "code": "<style>\nimg { max-width: 100%; height: auto; display: block; }\n.thumb {\n  aspect-ratio: 1;               /* kotak sempurna */\n  width: 100%;\n  object-fit: cover;             /* isi penuh, potong bagian berlebih */\n  object-position: 50% 30%;      /* utamakan bagian atas-tengah */\n  border-radius: .75rem;\n  background: #EEEEEE;           /* placeholder saat memuat */\n}\n.logo-mitra { aspect-ratio: 3 / 1; object-fit: contain; }\n</style>"
+   }
+  ]
+ },
+ "css-7-1": {
+  "exs": [
+   {
+    "t": "Kasus: hanya link di dalam menu",
+    "code": "nav a { color: #1C1B19; text-decoration: none; }   /* keturunan */\n.menu > li { display: inline-block; }              /* anak langsung saja */"
+   },
+   {
+    "t": "Kasus: baris tabel selang-seling dan hover",
+    "code": "tbody tr:nth-child(even) { background: #F2F1EC; }\ntbody tr:hover { background: #FBE7A8; }"
+   },
+   {
+    "t": "Kasus: paragraf pertama setelah judul",
+    "code": "h2 + p { font-size: 1.125rem; color: #444; }   /* hanya p tepat setelah h2 */\nh2 ~ p { margin-left: 8px; }                   /* semua p setelah h2 */"
+   },
+   {
+    "t": "Kasus: tanda wajib isi dan input email",
+    "code": ".wajib::after { content: \" *\"; color: #B23A2E; }\ninput[type=\"email\"] { border: 2px solid #2E5E8C; }\ninput:focus-visible { outline: 3px solid #F2A93B; }\na[href$=\".pdf\"]::after { content: \" (PDF)\"; }"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Pola umum dengan combinator dan pseudo",
+    "b": "Pola-pola ini ada di hampir semua design system: jarak antar anak, garis pemisah kecuali item terakhir, fokus keyboard, dan pesan saat daftar kosong.",
+    "code": ".tumpuk > * + * { margin-top: 1rem; }                 /* jarak antar anak, bukan sebelum anak pertama */\n.tabel tbody tr:nth-child(even) { background: #F7F7F5; }\n.daftar li:not(:last-child) { border-bottom: 1px solid #E5E5E5; }\n:is(h1, h2, h3):where(.artikel *) { scroll-margin-top: 5rem; }   /* :where = specificity 0 */\n\n.tombol:focus-visible { outline: 3px solid #2E5E8C; outline-offset: 2px; }\n.kotak:empty::before { content: \"Belum ada data\"; color: #888; }\n.wajib::after { content: \" *\"; color: #B23A2E; }\ninput[type=\"checkbox\"]:checked + label { text-decoration: line-through; }"
+   }
+  ]
+ },
+ "css-7-2": {
+  "exs": [
+   {
+    "t": "Kasus: tombol yang naik saat disentuh kursor",
+    "code": ".tombol { transition: transform 0.2s ease; }\n.tombol:hover { transform: translateY(-3px); }"
+   },
+   {
+    "t": "Kasus: ikon panah berputar saat menu dibuka",
+    "code": ".panah { transition: transform 0.3s; }\ndetails[open] .panah { transform: rotate(180deg); }"
+   },
+   {
+    "t": "Kasus: notifikasi yang berkedip lembut",
+    "code": "@keyframes denyut {\n  0%, 100% { opacity: 1; }\n  50%      { opacity: 0.4; }\n}\n.titik-baru { animation: denyut 1.5s ease-in-out infinite; }\n@media (prefers-reduced-motion: reduce) {\n  .titik-baru { animation: none; }\n}"
+   },
+   {
+    "t": "Kasus: gambar membesar di kartu produk",
+    "code": ".foto { transition: scale 0.3s; }\n.kartu:hover .foto { scale: 1.05; }"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Animasi yang mulus dan menghormati preferensi pengguna",
+    "b": "Tim aplikasi hanya menganimasikan transform dan opacity agar tetap 60 fps di ponsel murah, dan mematikan animasi untuk pengguna yang memintanya.",
+    "code": ".kartu { transition: transform 200ms cubic-bezier(.2,.8,.2,1), box-shadow 200ms; }\n.kartu:hover { transform: translateY(-4px); }\n\n@keyframes kerangka { from { background-position: 200% 0; } to { background-position: -200% 0; } }\n.skeleton {\n  background: linear-gradient(90deg, #EEE 25%, #DDD 50%, #EEE 75%);\n  background-size: 200% 100%; animation: kerangka 1.4s linear infinite;\n}\n/* hindari menganimasikan width/height/top/left: memicu layout setiap frame */\n.toast { translate: 0 120%; transition: translate 250ms ease-out; }\n.toast.tampil { translate: 0 0; }\n\n@media (prefers-reduced-motion: reduce) { .skeleton { animation: none; } }"
+   }
+  ]
+ },
+ "css-7-3": {
+  "code": "/* kartu dengan gambar memakai tata letak dua kolom */\n.kartu:has(img) { display: grid; grid-template-columns: 120px 1fr; gap: 12px; }\n\n/* tombol kirim redup selama ada isian yang salah */\nform:has(:invalid) button[type=\"submit\"] { opacity: .5; }\n\n/* label ikut tersorot saat pilihannya dicentang */\n.pilihan:has(input:checked) { border-color: #2E5E8C; background: #E9EFF5; }\n\n/* nesting bawaan CSS */\n.menu {\n  display: flex;\n  & a { padding: 8px 12px; }\n  & a:hover { text-decoration: underline; }\n}",
+  "exs": [
+   {
+    "t": "Kasus: kartu tanpa gambar diberi latar",
+    "code": ".kartu:not(:has(img)) { background: #F2F1EC; }"
+   },
+   {
+    "t": "Kasus: kolom isian ditandai saat input-nya salah",
+    "code": ".field:has(input:user-invalid) { border-left: 4px solid #B23A2E; }\n.field:has(input:user-invalid) label { color: #B23A2E; }"
+   },
+   {
+    "t": "Kasus: nesting untuk komponen tombol",
+    "code": ".tombol {\n  padding: 8px 16px;\n  background: #2F7A52;\n  color: white;\n  &:hover { background: #276644; }\n  &.besar { padding: 12px 24px; }\n  & .ikon { margin-right: 6px; }\n}",
+    "d": "& merujuk .tombol, jadi &:hover menjadi .tombol:hover dan &.besar menjadi .tombol.besar."
+   }
+  ],
+  "cx": [
+   {
+    "t": ":has() dan nesting tanpa JavaScript",
+    "b": "Fitur yang dulu butuh JavaScript (redupkan produk habis, kunci gulir saat modal terbuka, ubah grid sesuai jumlah foto) kini cukup CSS.",
+    "code": ".kartu {\n  padding: 1rem;\n  &:has(img) { padding-top: 0; }                  /* kartu bergambar */\n  &:has(.lencana-habis) { opacity: .6; }          /* produk habis tampak redup */\n  & .judul { font-weight: 600; }\n  &:hover .judul { text-decoration: underline; }\n  @media (width >= 40rem) { padding: 1.5rem; }\n}\nform:has(:user-invalid) button[type=\"submit\"] { opacity: .5; }\nbody:has(dialog[open]) { overflow: hidden; }       /* kunci gulir saat modal terbuka */\n.galeri:has(> :nth-child(5)) { grid-template-columns: repeat(3, 1fr); }  /* 5+ foto: 3 kolom */"
+   }
+  ]
+ },
+ "css-8-1": {
+  "exs": [
+   {
+    "t": "Kasus: warna merek di satu tempat",
+    "code": ":root {\n  --warna-utama: #B4532A;\n  --radius: 12px;\n}\n.tombol { background: var(--warna-utama); border-radius: var(--radius); }\n.judul  { color: var(--warna-utama); }"
+   },
+   {
+    "t": "Kasus: nilai cadangan di var()",
+    "code": ".kartu {\n  padding: var(--jarak-kartu, 16px);   /* 16px jika --jarak-kartu tidak ada */\n}"
+   },
+   {
+    "t": "Kasus: variabel ditimpa per komponen",
+    "code": ".tombol { --latar: #2F7A52; background: var(--latar); color: white; }\n.tombol.bahaya { --latar: #B23A2E; }    /* cukup ganti variabelnya */"
+   },
+   {
+    "t": "Kasus: tema gelap otomatis",
+    "code": ":root { --bg: #FFFFFF; --teks: #1C1B19; }\n@media (prefers-color-scheme: dark) {\n  :root { --bg: #181816; --teks: #ECEAE4; }\n}\nbody { background: var(--bg); color: var(--teks); }"
+   }
+  ]
+ },
+ "css-8-2": {
+  "exs": [
+   {
+    "t": "Kasus: penamaan BEM untuk kartu berita",
+    "code": "// Block: berita, Element: __judul/__tanggal, Modifier: --utama\n.berita { padding: 16px; }\n.berita__judul { font-weight: 700; }\n.berita__tanggal { color: #6E6B64; font-size: 14px; }\n.berita--utama { border-left: 4px solid #B4532A; }"
+   },
+   {
+    "t": "Kasus: variabel dan mixin Sass",
+    "code": "$hijau: #2F7A52;\n$radius: 8px;\n\n@mixin tengah {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n\n.lencana {\n  @include tengah;\n  background: $hijau;\n  border-radius: $radius;\n}"
+   },
+   {
+    "t": "Kasus: nesting Sass menghasilkan BEM",
+    "code": ".menu {\n  display: flex;\n  &__item { padding: 8px; }          // .menu__item\n  &__item--aktif { font-weight: 700; } // .menu__item--aktif\n}"
+   },
+   {
+    "t": "Kasus: @layer untuk mengatur urutan prioritas",
+    "code": "@layer reset, komponen, utilitas;\n\n@layer komponen {\n  .tombol { background: #2F7A52; }\n}\n@layer utilitas {\n  .sembunyi { display: none; }      // layer belakangan menang, apa pun specificity-nya\n}"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Satu komponen dalam tiga gaya penulisan",
+    "b": "Tim yang berbeda menulis komponen yang sama dengan BEM, Sass, atau CSS Modules. Hasil akhirnya tetap CSS biasa yang dibaca browser.",
+    "code": "/* BEM (CSS biasa) */\n.kartu { … }  .kartu__judul { … }  .kartu--unggulan { … }\n\n/* Sass: mixin dan partial */\n@use \"token\" as t;\n@mixin fokus { outline: 3px solid t.$fokus; outline-offset: 2px; }\n.tombol { &:focus-visible { @include fokus; } }\n\n/* CSS Modules: Kartu.module.css */\n.judul { font-weight: 600; }\n/* dipakai di komponen: class=\"judul\" otomatis menjadi class=\"Kartu_judul__x7a2q\" */"
+   },
+   {
+    "t": "Mengukur CSS yang tidak terpakai dengan panel Coverage",
+    "b": "Panel Coverage di Chrome DevTools menandai aturan yang tidak dipakai di halaman yang sedang dibuka. Hasilnya menjadi dasar memecah CSS per halaman.",
+    "code": "/* Hasil Coverage untuk halaman beranda (contoh):\n   dipakai      : .kartu  .kartu__judul  .tombol  .lencana\n   tidak dipakai: .tombol--besar  .modal  .carousel  .carousel__slide\n   → 4 dari 8 aturan (50%) tidak terpakai di beranda */\n\n/* Tindakan: pindahkan aturan yang jarang dipakai ke file terpisah */\n@layer komponen {\n  .kartu { padding: 1rem; }\n  .kartu__judul { font-weight: 600; }\n  .tombol { padding: .5rem 1rem; }\n  .lencana { font-size: .75rem; }\n}\n/* modal.css dan carousel.css dimuat hanya di halaman yang membutuhkannya */"
+   }
+  ]
+ }
+}

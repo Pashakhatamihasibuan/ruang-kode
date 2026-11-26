@@ -1,0 +1,285 @@
+{
+ "django-1-1": {
+  "code": "Browser  ->  GET /produk/12/\n   |\n   v\nMiddleware (sesi, CSRF, autentikasi)\n   |\n   v\nURLconf   mencocokkan pola produk/<id>/ -> view detail\n   |\n   v\nView      detail(request, pk=12)\n   |-- Model Produk: ambil produk nomor 12   (ORM -> SQL -> database)\n   |-- Template produk/detail.html diisi data produk\n   v\nResponse 200 (HTML) kembali ke browser",
+  "exs": [
+   {
+    "t": "Kasus: membuka halaman daftar produk",
+    "d": "Alur yang sama, kali ini untuk daftar.",
+    "code": "GET /produk/\n  -> URLconf: pola produk/ -> view daftar\n  -> View daftar: minta Model Produk semua produk yang aktif\n  -> Template produk/daftar.html: ulangi setiap produk menjadi kartu\n  -> Response 200 berisi HTML katalog"
+   },
+   {
+    "t": "Kasus: mengirim form ulasan",
+    "d": "Request POST melewati middleware CSRF sebelum sampai ke view.",
+    "code": "POST /produk/12/ulasan/   (isi: rating=5, komentar=\"Harum\")\n  -> Middleware CSRF: token cocok? ya\n  -> View tambah_ulasan: validasi isian\n       valid      -> Model Ulasan menyimpan baris baru -> redirect ke /produk/12/\n       tidak valid -> Template menampilkan form beserta pesan kesalahan"
+   },
+   {
+    "t": "Kasus: MTV di aplikasi perpustakaan sekolah",
+    "code": "Bagian     Isi di aplikasi perpustakaan\nModel      Buku, Anggota, Peminjaman (tabel di database)\nView       daftar buku, pinjam buku, kembalikan buku\nTemplate   halaman katalog, kartu anggota, struk peminjaman\nURLconf    /buku/, /buku/<id>/pinjam/, /anggota/<id>/"
+   }
+  ]
+ },
+ "django-1-2": {
+  "exs": [
+   {
+    "t": "Kasus: proyek perpustakaan sekolah dengan dua app",
+    "code": "python -m venv .venv\nsource .venv/bin/activate\npip install \"django>=5.2,<6\"\n\ndjango-admin startproject perpus .\npython manage.py startapp buku\npython manage.py startapp anggota\n# lalu tambahkan 'buku' dan 'anggota' ke INSTALLED_APPS di perpus/settings.py"
+   },
+   {
+    "t": "Kasus: perintah manage.py sehari-hari",
+    "code": "python manage.py check               # periksa konfigurasi tanpa menjalankan server\npython manage.py createsuperuser     # akun untuk masuk ke /admin\npython manage.py shell               # konsol Python dengan proyek sudah dimuat\npython manage.py runserver 8080      # server pengembangan di port lain"
+   },
+   {
+    "t": "Kasus: mencatat paket agar rekan bisa memasang yang sama",
+    "d": "File .venv tidak ikut masuk Git; daftar paketnya yang dibagikan.",
+    "code": "pip freeze > requirements.txt\necho \".venv/\" >> .gitignore\necho \".env\" >> .gitignore\n\n# di komputer rekan:\npython -m venv .venv && source .venv/bin/activate\npip install -r requirements.txt"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Membuat proyek toko dengan dua app",
+    "b": "Satu proyek (config) berisi pengaturan bersama, dan setiap fitur besar menjadi app sendiri. Setelah app dibuat, ia harus didaftarkan di INSTALLED_APPS agar model, template, dan perintahnya dikenali Django.",
+    "code": "# 1. lingkungan dan paket\npython -m venv .venv && source .venv/bin/activate     # Windows: .venv\\Scripts\\activate\npip install \"django>=5.2,<6\" python-dotenv\n\n# 2. proyek dan app\ndjango-admin startproject config .            # folder config/ berisi settings & urls\npython manage.py startapp katalog\npython manage.py startapp pesanan\n\n# 3. daftarkan di config/settings.py\nINSTALLED_APPS = [\n    \"django.contrib.admin\", \"django.contrib.auth\", \"django.contrib.contenttypes\",\n    \"django.contrib.sessions\", \"django.contrib.messages\", \"django.contrib.staticfiles\",\n    \"katalog\", \"pesanan\",\n]\n\n# 4. jalankan\npython manage.py migrate\npython manage.py createsuperuser\npython manage.py runserver                    # http://127.0.0.1:8000\n\n# Struktur\ntoko/\n├── manage.py\n├── config/   (settings.py, urls.py, wsgi.py, asgi.py)\n├── katalog/  (models.py, views.py, admin.py, tests.py, migrations/)\n└── pesanan/",
+    "lang": "bash"
+   }
+  ]
+ },
+ "django-1-3": {
+  "exs": [
+   {
+    "t": "Kasus: daftar host dari satu variabel lingkungan",
+    "d": "Nilai lingkungan selalu teks, jadi dipecah dan diubah tipenya sendiri.",
+    "code": "import os\n\nos.environ[\"DJANGO_ALLOWED_HOSTS\"] = \"toko.id,www.toko.id\"   # biasanya diisi oleh server\nos.environ[\"DJANGO_DEBUG\"] = \"0\"\n\nALLOWED_HOSTS = os.getenv(\"DJANGO_ALLOWED_HOSTS\", \"localhost\").split(\",\")\nDEBUG = os.getenv(\"DJANGO_DEBUG\", \"0\") == \"1\"\nprint(ALLOWED_HOSTS)\nprint(DEBUG)",
+    "out": "['toko.id', 'www.toko.id']\nFalse"
+   },
+   {
+    "t": "Kasus: SQLite saat belajar, PostgreSQL di server",
+    "code": "# config/settings.py\nimport os\n\nif os.getenv(\"DB_HOST\"):\n    DATABASES = {\"default\": {\n        \"ENGINE\": \"django.db.backends.postgresql\",\n        \"NAME\": os.environ[\"DB_NAME\"],\n        \"USER\": os.environ[\"DB_USER\"],\n        \"PASSWORD\": os.environ[\"DB_PASSWORD\"],\n        \"HOST\": os.environ[\"DB_HOST\"],\n    }}\nelse:\n    DATABASES = {\"default\": {\"ENGINE\": \"django.db.backends.sqlite3\", \"NAME\": BASE_DIR / \"db.sqlite3\"}}"
+   },
+   {
+    "t": "Kasus: USE_TZ menyimpan UTC, menampilkan WIB/WITA/WIT",
+    "d": "Satu waktu yang sama, ditampilkan sesuai zona waktu pembaca.",
+    "code": "from datetime import datetime, timezone\nfrom zoneinfo import ZoneInfo\n\ndisimpan = datetime(2026, 11, 5, 2, 0, tzinfo=timezone.utc)   # yang masuk database\nfor zona in [\"Asia/Jakarta\", \"Asia/Makassar\", \"Asia/Jayapura\"]:\n    print(zona, disimpan.astimezone(ZoneInfo(zona)).strftime(\"%H:%M\"))",
+    "out": "Asia/Jakarta 09:00\nAsia/Makassar 10:00\nAsia/Jayapura 11:00"
+   }
+  ]
+ },
+ "django-2-1": {
+  "exs": [
+   {
+    "t": "Kasus: buku dan penulis di perpustakaan",
+    "d": "Satu buku punya satu penerbit (ForeignKey) dan bisa ditulis beberapa penulis (ManyToMany).",
+    "code": "from django.db import models\n\nclass Penerbit(models.Model):\n    nama = models.CharField(max_length=100, unique=True)\n    def __str__(self):\n        return self.nama\n\nclass Penulis(models.Model):\n    nama = models.CharField(max_length=100)\n    def __str__(self):\n        return self.nama\n\nclass Buku(models.Model):\n    judul = models.CharField(max_length=200)\n    isbn = models.CharField(max_length=13, unique=True)\n    tahun = models.PositiveSmallIntegerField()\n    penerbit = models.ForeignKey(Penerbit, on_delete=models.PROTECT, related_name=\"buku\")\n    penulis = models.ManyToManyField(Penulis, related_name=\"buku\")\n\n    def __str__(self):\n        return f\"{self.judul} ({self.tahun})\""
+   },
+   {
+    "t": "Kasus: profil anggota satu-satu dengan user",
+    "d": "OneToOneField: setiap user punya tepat satu profil.",
+    "code": "from django.conf import settings\nfrom django.db import models\n\nclass Profil(models.Model):\n    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name=\"profil\")\n    kelas = models.CharField(max_length=10)          # misalnya \"XI IPA 2\"\n    no_hp = models.CharField(max_length=15, blank=True)\n\n    def __str__(self):\n        return f\"{self.user.username} - {self.kelas}\""
+   },
+   {
+    "t": "Kasus: status peminjaman dengan pilihan tetap",
+    "d": "TextChoices membatasi nilai kolom dan memberi label yang rapi.",
+    "code": "from django.db import models\n\nclass Peminjaman(models.Model):\n    class Status(models.TextChoices):\n        DIPINJAM = \"dipinjam\", \"Dipinjam\"\n        KEMBALI = \"kembali\", \"Sudah kembali\"\n        HILANG = \"hilang\", \"Hilang\"\n\n    buku = models.ForeignKey(\"Buku\", on_delete=models.PROTECT)\n    anggota = models.ForeignKey(\"Profil\", on_delete=models.CASCADE)\n    tanggal_pinjam = models.DateField(auto_now_add=True)\n    batas_kembali = models.DateField()\n    status = models.CharField(max_length=10, choices=Status, default=Status.DIPINJAM)\n\n    class Meta:\n        ordering = [\"-tanggal_pinjam\"]\n        verbose_name_plural = \"peminjaman\""
+   }
+  ]
+ },
+ "django-2-2": {
+  "exs": [
+   {
+    "t": "Kasus: mencari produk yang tersedia",
+    "d": "Filter bisa dirangkai; QuerySet baru dieksekusi saat hasilnya dipakai.",
+    "code": ">>> Produk.objects.filter(nama__icontains='kopi').exclude(stok=0).order_by('harga')\n<QuerySet [<Produk: Kopi Gayo (Rp85,000)>]>\n>>> Produk.objects.filter(harga__range=(20000, 90000)).count()\n1"
+   },
+   {
+    "t": "Kasus: jumlah produk dan rata-rata harga per kategori",
+    "code": ">>> from django.db.models import Count, Avg\n>>> Produk.objects.values('kategori__nama').annotate(jumlah=Count('id'), rata=Avg('harga'))\n<QuerySet [{'kategori__nama': 'Kopi', 'jumlah': 2, 'rata': Decimal('90000.000000')}]>"
+   },
+   {
+    "t": "Kasus: menambah kolom berat lewat migrasi",
+    "d": "Setelah field berat_gram ditambahkan di models.py:",
+    "code": "$ python manage.py makemigrations katalog\nMigrations for 'katalog':\n  katalog/migrations/0002_produk_berat_gram.py\n    + Add field berat_gram to produk\n$ python manage.py migrate katalog\n  Applying katalog.0002_produk_berat_gram... OK"
+   },
+   {
+    "t": "Kasus: mengurangi stok tanpa saling timpa",
+    "d": "F() membuat pengurangan dihitung di database, aman saat dua pembeli checkout bersamaan.",
+    "code": ">>> from django.db.models import F\n>>> Produk.objects.filter(slug='kopi-gayo', stok__gte=2).update(stok=F('stok') - 2)\n1\n>>> Produk.objects.get(slug='kopi-gayo').stok\n18"
+   }
+  ]
+ },
+ "django-2-3": {
+  "exs": [
+   {
+    "t": "Kasus: admin buku perpustakaan",
+    "code": "# buku/admin.py\nfrom django.contrib import admin\nfrom .models import Buku, Penerbit\n\n@admin.register(Buku)\nclass BukuAdmin(admin.ModelAdmin):\n    list_display = [\"judul\", \"penerbit\", \"tahun\"]\n    list_filter = [\"tahun\", \"penerbit\"]\n    search_fields = [\"judul\", \"isbn\"]\n    list_select_related = [\"penerbit\"]\n    filter_horizontal = [\"penulis\"]\n\nadmin.site.register(Penerbit)"
+   },
+   {
+    "t": "Kasus: item pesanan tampil di halaman pesanan",
+    "d": "Inline menampilkan model anak di halaman model induk.",
+    "code": "# pesanan/admin.py\nfrom django.contrib import admin\nfrom .models import Pesanan, ItemPesanan\n\nclass ItemInline(admin.TabularInline):\n    model = ItemPesanan\n    extra = 0\n    autocomplete_fields = [\"produk\"]\n\n@admin.register(Pesanan)\nclass PesananAdmin(admin.ModelAdmin):\n    list_display = [\"id\", \"pelanggan\", \"status\", \"dibuat\"]\n    list_filter = [\"status\"]\n    inlines = [ItemInline]"
+   },
+   {
+    "t": "Kasus: prefetch_related untuk penulis buku",
+    "d": "ManyToMany memakai prefetch_related: 2 query, bukan 1 + jumlah buku.",
+    "code": "# N+1: satu query untuk buku, lalu satu query lagi untuk penulis setiap buku\nfor b in Buku.objects.all():\n    print(b.judul, [p.nama for p in b.penulis.all()])\n\n# 2 query saja: buku, lalu semua penulisnya sekaligus\nfor b in Buku.objects.select_related(\"penerbit\").prefetch_related(\"penulis\"):\n    print(b.judul, b.penerbit.nama, [p.nama for p in b.penulis.all()])"
+   }
+  ]
+ },
+ "django-3-1": {
+  "exs": [
+   {
+    "t": "Kasus: URL ber-namespace untuk app katalog",
+    "d": "app_name membuat nama URL unik walau app lain punya nama 'detail' juga.",
+    "code": "# katalog/urls.py\nfrom django.urls import path\nfrom . import views\n\napp_name = 'katalog'\nurlpatterns = [\n    path('', views.DaftarProduk.as_view(), name='daftar'),\n    path('<slug:slug>/', views.detail, name='detail'),\n    path('kategori/<int:pk>/', views.per_kategori, name='per_kategori'),\n]\n\n# toko/urls.py (proyek)\nfrom django.urls import include, path\nurlpatterns = [path('produk/', include('katalog.urls'))]\n# reverse('katalog:detail', args=['kopi-gayo']) -> '/produk/kopi-gayo/'"
+   },
+   {
+    "t": "Kasus: endpoint JSON stok produk tanpa template",
+    "code": "# katalog/views.py\nfrom django.http import JsonResponse\nfrom django.shortcuts import get_object_or_404\nfrom .models import Produk\n\ndef stok(request, slug):\n    p = get_object_or_404(Produk, slug=slug)\n    return JsonResponse({'nama': p.nama, 'stok': p.stok, 'tersedia': p.stok > 0})\n\n# GET /produk/kopi-gayo/stok/ -> {\"nama\": \"Kopi Gayo\", \"stok\": 14, \"tersedia\": true}"
+   },
+   {
+    "t": "Kasus: DetailView dan redirect setelah aksi",
+    "d": "View berbasis kelas untuk detail, view fungsi untuk menonaktifkan produk lalu kembali ke daftar.",
+    "code": "from django.shortcuts import get_object_or_404, redirect\nfrom django.views.generic import DetailView\nfrom .models import Produk\n\nclass DetailProduk(DetailView):\n    model = Produk\n    slug_field = 'slug'\n    template_name = 'katalog/detail.html'\n    context_object_name = 'produk'\n\ndef nonaktifkan(request, slug):\n    if request.method != 'POST':\n        return redirect('katalog:detail', slug=slug)\n    p = get_object_or_404(Produk, slug=slug)\n    p.aktif = False\n    p.save(update_fields=['aktif'])\n    return redirect('katalog:daftar')"
+   }
+  ]
+ },
+ "django-3-2": {
+  "exs": [
+   {
+    "t": "Kasus: daftar pesanan dengan for, empty, dan if",
+    "code": "{% extends 'base.html' %}\n{% block konten %}\n<h1>Pesanan saya</h1>\n<ul>\n  {% for p in pesanan %}\n    <li>\n      #{{ p.id }} - {{ p.total }}\n      {% if p.status == 'dikirim' %}<span class=\"lencana\">Dalam perjalanan</span>\n      {% elif p.status == 'selesai' %}<span class=\"lencana hijau\">Selesai</span>\n      {% endif %}\n    </li>\n  {% empty %}\n    <li>Belum ada pesanan.</li>\n  {% endfor %}\n</ul>\n{% endblock %}"
+   },
+   {
+    "t": "Kasus: filter bawaan untuk merapikan tampilan",
+    "d": "Filter mengubah nilai saat ditampilkan, data aslinya tidak berubah.",
+    "code": "<article>\n  <h2>{{ artikel.judul|title }}</h2>\n  <p class=\"meta\">{{ artikel.dibuat|date:\"d M Y\" }} oleh {{ artikel.penulis|default:\"Redaksi\" }}</p>\n  <p>{{ artikel.isi|truncatewords:30 }}</p>\n  <p>{{ artikel.tag|join:\", \" }} - {{ artikel.komentar|length }} komentar</p>\n</article>"
+   },
+   {
+    "t": "Kasus: potongan kartu produk dipakai ulang lewat include",
+    "code": "{# templates/katalog/_kartu.html #}\n<div class=\"kartu\">\n  <a href=\"{% url 'katalog:detail' produk.slug %}\">{{ produk.nama }}</a>\n  <p>Rp{{ produk.harga }}</p>\n</div>\n\n{# templates/katalog/daftar.html #}\n{% extends 'base.html' %}\n{% block konten %}\n  {% for p in object_list %}\n    {% include 'katalog/_kartu.html' with produk=p %}\n  {% endfor %}\n{% endblock %}"
+   }
+  ]
+ },
+ "django-3-3": {
+  "exs": [
+   {
+    "t": "Kasus: form kontak tanpa model",
+    "d": "forms.Form cocok untuk isian yang tidak disimpan langsung ke tabel.",
+    "code": "# kontak/forms.py\nfrom django import forms\n\nclass KontakForm(forms.Form):\n    nama = forms.CharField(max_length=80)\n    email = forms.EmailField()\n    pesan = forms.CharField(widget=forms.Textarea, min_length=10)\n\n# kontak/views.py\nfrom django.shortcuts import render, redirect\nfrom .forms import KontakForm\n\ndef kontak(request):\n    form = KontakForm(request.POST or None)\n    if request.method == 'POST' and form.is_valid():\n        kirim_ke_cs(form.cleaned_data['email'], form.cleaned_data['pesan'])\n        return redirect('kontak:terima_kasih')\n    return render(request, 'kontak/form.html', {'form': form})"
+   },
+   {
+    "t": "Kasus: validasi lintas field pada form reservasi",
+    "d": "clean() dipakai saat aturan melibatkan dua field sekaligus.",
+    "code": "from django import forms\n\nclass ReservasiForm(forms.Form):\n    tanggal_masuk = forms.DateField()\n    tanggal_keluar = forms.DateField()\n    jumlah_tamu = forms.IntegerField(min_value=1, max_value=6)\n\n    def clean(self):\n        data = super().clean()\n        masuk, keluar = data.get('tanggal_masuk'), data.get('tanggal_keluar')\n        if masuk and keluar and keluar <= masuk:\n            raise forms.ValidationError('Tanggal keluar harus setelah tanggal masuk.')\n        return data"
+   },
+   {
+    "t": "Kasus: ModelForm dengan widget dan label sendiri",
+    "code": "from django import forms\nfrom .models import Ulasan\n\nclass UlasanForm(forms.ModelForm):\n    class Meta:\n        model = Ulasan\n        fields = ['rating', 'komentar']\n        labels = {'komentar': 'Ceritakan pengalamanmu'}\n        widgets = {\n            'rating': forms.RadioSelect(choices=[(i, i) for i in range(1, 6)]),\n            'komentar': forms.Textarea(attrs={'rows': 4}),\n        }\n\n    def clean_komentar(self):\n        k = self.cleaned_data['komentar']\n        if 'http' in k:\n            raise forms.ValidationError('Tautan tidak diizinkan di ulasan.')\n        return k"
+   }
+  ]
+ },
+ "django-4-1": {
+  "exs": [
+   {
+    "t": "Kasus: halaman riwayat pesanan khusus pengguna yang login",
+    "d": "Mixin untuk view berbasis kelas; queryset dibatasi milik pengguna sendiri.",
+    "code": "from django.contrib.auth.mixins import LoginRequiredMixin\nfrom django.views.generic import ListView\nfrom .models import Pesanan\n\nclass RiwayatPesanan(LoginRequiredMixin, ListView):\n    template_name = 'akun/riwayat.html'\n    login_url = '/akun/masuk/'\n\n    def get_queryset(self):\n        return Pesanan.objects.filter(pelanggan=self.request.user).order_by('-dibuat')"
+   },
+   {
+    "t": "Kasus: izin khusus untuk mengubah harga",
+    "d": "Izin didaftarkan di Meta model, lalu diperiksa di view.",
+    "code": "# katalog/models.py\nclass Produk(models.Model):\n    ...\n    class Meta:\n        permissions = [('ubah_harga', 'Boleh mengubah harga produk')]\n\n# katalog/views.py\nfrom django.contrib.auth.decorators import permission_required\n\n@permission_required('katalog.ubah_harga', raise_exception=True)\ndef ubah_harga(request, pk):\n    ...   # pengguna tanpa izin mendapat 403"
+   },
+   {
+    "t": "Kasus: membuat grup Kasir lewat shell",
+    "code": "# python manage.py shell\nfrom django.contrib.auth.models import Group, Permission, User\n\nkasir, _ = Group.objects.get_or_create(name='Kasir')\nkasir.permissions.add(\n    Permission.objects.get(codename='add_pesanan'),\n    Permission.objects.get(codename='view_produk'),\n)\nrina = User.objects.get(username='rina')\nrina.groups.add(kasir)\nprint(rina.has_perm('toko.add_pesanan'))      # True\nprint(rina.has_perm('katalog.ubah_harga'))   # False"
+   }
+  ]
+ },
+ "django-4-2": {
+  "exs": [
+   {
+    "t": "Kasus: daftar produk read-only dengan paginasi",
+    "code": "# settings.py\nREST_FRAMEWORK = {\n    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',\n    'PAGE_SIZE': 20,\n}\n\n# katalog/api.py\nfrom rest_framework import generics\nfrom .models import Produk\nfrom .serializers import ProdukSerializer\n\nclass DaftarProdukAPI(generics.ListAPIView):\n    queryset = Produk.objects.filter(aktif=True).select_related('kategori')\n    serializer_class = ProdukSerializer\n# GET /api/produk/?page=2 -> {\"count\": 57, \"next\": ..., \"results\": [...]}"
+   },
+   {
+    "t": "Kasus: router membuat URL CRUD otomatis",
+    "d": "Satu ViewSet + DefaultRouter menghasilkan /api/pesanan/ dan /api/pesanan/<pk>/.",
+    "code": "# toko/api.py\nfrom rest_framework import viewsets, permissions\nfrom .models import Pesanan\nfrom .serializers import PesananSerializer\n\nclass PesananViewSet(viewsets.ModelViewSet):\n    serializer_class = PesananSerializer\n    permission_classes = [permissions.IsAuthenticated]\n    def get_queryset(self):\n        return Pesanan.objects.filter(pelanggan=self.request.user)\n\n# toko/urls.py\nfrom rest_framework.routers import DefaultRouter\nrouter = DefaultRouter()\nrouter.register('pesanan', PesananViewSet, basename='pesanan')\nurlpatterns = router.urls"
+   },
+   {
+    "t": "Kasus: validasi harga di serializer",
+    "code": "from rest_framework import serializers\nfrom .models import Produk\n\nclass ProdukSerializer(serializers.ModelSerializer):\n    class Meta:\n        model = Produk\n        fields = ['id', 'nama', 'harga', 'stok']\n\n    def validate_harga(self, nilai):\n        if nilai < 1000:\n            raise serializers.ValidationError('Harga minimal Rp1.000.')\n        return nilai\n# POST {\"nama\": \"Pensil\", \"harga\": 500} -> 400 {\"harga\": [\"Harga minimal Rp1.000.\"]}"
+   }
+  ]
+ },
+ "django-4-3": {
+  "exs": [
+   {
+    "t": "Kasus: auto-escape melindungi komentar pengguna",
+    "d": "Tanpa |safe, tag script dari pengguna tampil sebagai teks biasa.",
+    "code": "{# komentar.isi = '<script>alert(1)</script>' #}\n<p>{{ komentar.isi }}</p>\n{# hasil: &lt;script&gt;alert(1)&lt;/script&gt; - aman #}\n\n<p>{{ komentar.isi|safe }}</p>\n{# hasil: skrip benar-benar dijalankan - JANGAN untuk isian pengguna #}\n\n<div>{{ halaman.isi_dari_admin|safe }}</div>\n{# |safe hanya untuk HTML tepercaya yang sudah dibersihkan #}"
+   },
+   {
+    "t": "Kasus: pengaturan keamanan untuk produksi",
+    "d": "python manage.py check --deploy memberi peringatan bila ada yang terlewat.",
+    "code": "# settings/produksi.py\nimport os\nDEBUG = False\nSECRET_KEY = os.environ['DJANGO_SECRET_KEY']\nALLOWED_HOSTS = ['tokokita.id', 'www.tokokita.id']\n\nSECURE_SSL_REDIRECT = True\nSESSION_COOKIE_SECURE = True\nCSRF_COOKIE_SECURE = True\nSECURE_HSTS_SECONDS = 31536000\nSECURE_CONTENT_TYPE_NOSNIFF = True\nX_FRAME_OPTIONS = 'DENY'"
+   },
+   {
+    "t": "Kasus: membatasi jenis dan ukuran berkas unggahan",
+    "code": "from django import forms\nfrom django.core.validators import FileExtensionValidator\n\nUKURAN_MAKS = 2 * 1024 * 1024   # 2 MB\n\nclass UnggahBuktiForm(forms.Form):\n    bukti = forms.FileField(validators=[FileExtensionValidator(['jpg', 'jpeg', 'png', 'pdf'])])\n\n    def clean_bukti(self):\n        f = self.cleaned_data['bukti']\n        if f.size > UKURAN_MAKS:\n            raise forms.ValidationError('Ukuran berkas maksimal 2 MB.')\n        return f"
+   }
+  ]
+ },
+ "django-5-1": {
+  "exs": [
+   {
+    "t": "Kasus: menguji method pada model",
+    "code": "from django.test import TestCase\nfrom katalog.models import Produk\n\nclass ProdukTest(TestCase):\n    def test_harga_diskon(self):\n        p = Produk.objects.create(nama='Kopi', slug='kopi', harga=50000, stok=3)\n        self.assertEqual(p.harga_setelah_diskon(10), 45000)\n\n    def test_stok_habis(self):\n        p = Produk.objects.create(nama='Teh', slug='teh', harga=20000, stok=0)\n        self.assertFalse(p.tersedia)"
+   },
+   {
+    "t": "Kasus: menguji form menolak isian salah",
+    "d": "Form bisa diuji langsung tanpa request.",
+    "code": "from django.test import SimpleTestCase\nfrom reservasi.forms import ReservasiForm\n\nclass ReservasiFormTest(SimpleTestCase):\n    def test_tanggal_keluar_sebelum_masuk(self):\n        form = ReservasiForm(data={'tanggal_masuk': '2026-12-10',\n                                   'tanggal_keluar': '2026-12-08',\n                                   'jumlah_tamu': 2})\n        self.assertFalse(form.is_valid())\n        self.assertIn('harus setelah', str(form.errors))"
+   },
+   {
+    "t": "Kasus: memastikan halaman daftar tidak kena N+1",
+    "d": "assertNumQueries gagal bila jumlah query bertambah saat data bertambah.",
+    "code": "from django.test import TestCase\nfrom django.urls import reverse\nfrom katalog.models import Kategori, Produk\n\nclass DaftarQueryTest(TestCase):\n    def test_jumlah_query_tetap(self):\n        k = Kategori.objects.create(nama='Minuman')\n        for i in range(20):\n            Produk.objects.create(nama=f'P{i}', slug=f'p{i}', harga=1000, kategori=k)\n        with self.assertNumQueries(2):   # 1 hitung paginasi + 1 ambil produk+kategori\n            self.client.get(reverse('katalog:daftar'))"
+   }
+  ]
+ },
+ "django-5-2": {
+  "exs": [
+   {
+    "t": "Kasus: hapus cache saat produk diubah",
+    "d": "Sinyal post_save menjaga cache tidak basi.",
+    "code": "from django.core.cache import cache\nfrom django.db.models.signals import post_save\nfrom django.dispatch import receiver\nfrom .models import Produk\n\ndef produk_terlaris():\n    data = cache.get('terlaris')\n    if data is None:\n        data = list(Produk.objects.order_by('-terjual')[:10].values('nama', 'terjual'))\n        cache.set('terlaris', data, timeout=600)\n    return data\n\n@receiver(post_save, sender=Produk)\ndef bersihkan_cache(sender, instance, **kwargs):\n    cache.delete('terlaris')"
+   },
+   {
+    "t": "Kasus: kirim email konfirmasi dengan percobaan ulang",
+    "code": "from celery import shared_task\nfrom django.core.mail import send_mail\n\n@shared_task(bind=True, autoretry_for=(ConnectionError,), retry_backoff=True, max_retries=5)\ndef kirim_konfirmasi(self, pesanan_id):\n    p = Pesanan.objects.select_related('pelanggan').get(pk=pesanan_id)\n    send_mail('Pesanan diterima', f'Pesanan #{p.id} sedang diproses.',\n              'toko@tokokita.id', [p.pelanggan.email])\n\n# di view, setelah pesanan disimpan:\n# kirim_konfirmasi.delay(pesanan.id)   -> respons tetap cepat"
+   },
+   {
+    "t": "Kasus: laporan harian terjadwal dengan Celery beat",
+    "code": "# settings.py\nfrom celery.schedules import crontab\n\nCELERY_BROKER_URL = 'redis://localhost:6379/0'\nCELERY_BEAT_SCHEDULE = {\n    'rekap-penjualan-harian': {\n        'task': 'laporan.tasks.rekap_harian',\n        'schedule': crontab(hour=6, minute=0),   # setiap hari pukul 06.00\n    },\n    'bersihkan-keranjang-lama': {\n        'task': 'toko.tasks.hapus_keranjang_kedaluwarsa',\n        'schedule': crontab(minute=0, hour='*/3'),\n    },\n}"
+   }
+  ]
+ },
+ "django-5-3": {
+  "exs": [
+   {
+    "t": "Kasus: Nginx sebagai reverse proxy di depan Gunicorn",
+    "d": "Nginx melayani berkas statis langsung, sisanya diteruskan ke Gunicorn.",
+    "code": "# /etc/nginx/sites-available/tokokita\nserver {\n    listen 80;\n    server_name tokokita.id;\n\n    location /static/ { alias /srv/tokokita/staticfiles/; }\n    location /media/  { alias /srv/tokokita/media/; }\n\n    location / {\n        proxy_pass http://127.0.0.1:8000;\n        proxy_set_header Host $host;\n        proxy_set_header X-Forwarded-Proto $scheme;\n    }\n}"
+   },
+   {
+    "t": "Kasus: daftar perintah sebelum rilis",
+    "code": "python manage.py check --deploy\npython manage.py test\npython manage.py migrate --noinput\npython manage.py collectstatic --noinput\nsudo systemctl restart gunicorn-tokokita\ncurl -I https://tokokita.id/   # harus HTTP/2 200"
+   },
+   {
+    "t": "Kasus: menjalankan Gunicorn sebagai layanan systemd",
+    "d": "Layanan hidup lagi otomatis bila proses mati atau server reboot.",
+    "code": "# /etc/systemd/system/gunicorn-tokokita.service\n[Unit]\nDescription=Gunicorn TokoKita\nAfter=network.target\n\n[Service]\nUser=www-data\nWorkingDirectory=/srv/tokokita\nEnvironmentFile=/srv/tokokita/.env\nExecStart=/srv/tokokita/.venv/bin/gunicorn toko.wsgi:application --workers 5 --bind 127.0.0.1:8000\nRestart=on-failure\n\n[Install]\nWantedBy=multi-user.target"
+   }
+  ]
+ }
+}

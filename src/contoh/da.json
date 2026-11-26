@@ -1,0 +1,334 @@
+{
+ "da-1-1": {
+  "exs": [
+   {
+    "t": "Kasus: pendaftar sekolah swasta turun",
+    "d": "Empat jenis analitik untuk pertanyaan kepala sekolah.",
+    "code": "Pertanyaan yayasan: \"Kenapa pendaftar kelas 7 tahun ini turun?\"\n\nDeskriptif  : pendaftar 312 -> 268 (-14%), penurunan terbesar dari SD mitra\nDiagnostik  : biaya pangkal naik 20%; sekolah negeri baru dibuka 2 km dari lokasi\nPrediktif   : tanpa perubahan, tahun depan diperkirakan ± 240 pendaftar\nPreskriptif : beri potongan biaya pangkal untuk SD mitra, buka jalur prestasi\n"
+   },
+   {
+    "t": "Kasus: pesanan katering kantor",
+    "d": "Dari angka masa lalu sampai saran tindakan.",
+    "code": "Pertanyaan pemilik: \"Berapa porsi yang harus disiapkan Senin depan?\"\n\nDeskriptif  : rata-rata pesanan Senin 4 minggu terakhir 180 porsi, sisa 12%\nDiagnostik  : sisa terbanyak saat hujan; pegawai memilih pesan lewat aplikasi\nPrediktif   : prakiraan cuaca hujan, perkiraan pesanan 165 porsi\nPreskriptif : masak 170 porsi, tawarkan diskon 10% via aplikasi mulai pukul 13.00\n"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Satu dataset, empat pertanyaan analitik",
+    "lang": "text",
+    "b": "Semakin ke bawah, nilai bisnisnya semakin tinggi, tetapi juga semakin butuh data yang bersih dan asumsi yang jelas. Di modul Python, hitungan seperti ini akan dikerjakan dengan kode.",
+    "code": "Data omzet (juta rupiah)   Jul   Agu   Sep   Okt   Nov\nTotal                     412   438   405   371   352\nJakarta                   190   196   188   185   182\nBandung                   120   131   117    92    80\nSurabaya                  102   111   100    94    90\n\n1. Deskriptif : omzet Nov 352 jt, turun 13,1% dari Sep (405 jt)\n2. Diagnostik : penurunan terbesar di Bandung (117 -> 80, -37 jt sejak Sep);\n                Jakarta hanya -6 jt, Surabaya -10 jt\n3. Prediktif  : tren rata-rata Jul-Nov -15 jt/bulan, Des diperkirakan ± 337 jt\n4. Preskriptif: prioritaskan investigasi Bandung (stok, kurir, kompetitor)\n                sebelum menambah anggaran iklan nasional\n"
+   }
+  ]
+ },
+ "da-1-2": {
+  "exs": [
+   {
+    "t": "Kasus: data pendaftaran puskesmas",
+    "d": "Menentukan jenis data setiap kolom formulir.",
+    "code": "Kolom               Jenis                Ringkasan yang tepat\nno_rekam_medis      nominal (pengenal)   hitung unik\njenis_kelamin       nominal              frekuensi, persentase\ngolongan_darah      nominal              modus\ntingkat_nyeri (0-10) ordinal             median, distribusi\njumlah_kunjungan    diskrit              rata-rata, median\nsuhu_tubuh_c        kontinu (interval)   rata-rata, std\nkeluhan             tidak terstruktur    kategori kata kunci\n"
+   },
+   {
+    "t": "Kasus: struktur data dari tiga sumber",
+    "d": "Terstruktur, semi-terstruktur, tidak terstruktur.",
+    "code": "Sumber                         Bentuk               Contoh isi\nTabel transaksi kasir          terstruktur          id, tanggal, total, metode_bayar\nLog aplikasi (JSON per baris)  semi-terstruktur     {\"event\": \"checkout\", \"device\": \"android\"}\nUlasan pelanggan               tidak terstruktur    \"kopinya enak tapi kirimnya lama\"\nFoto struk                     tidak terstruktur    gambar JPG\n"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Menentukan skala dan ringkasan yang tepat per kolom",
+    "lang": "text",
+    "b": "Skala ukur menentukan perhitungan yang sah. Rata-rata metode bayar tidak bermakna; rasio maks/min hanya sah pada skala rasio yang punya nol mutlak.",
+    "code": "Data 6 transaksi\nmetode_bayar  : QRIS, VA, QRIS, COD, QRIS, VA\nrating (1-5)  : 5, 4, 5, 2, 4, 3\nsuhu_gudang_c : 27,5  28,1  26,9  29,4  27,8  28,0\ntotal_belanja : 125.000  89.000  240.000  56.000  310.000  98.000\n\nKolom          Skala     Ringkasan\nmetode_bayar   nominal   modus = QRIS (3 dari 6)\nrating         ordinal   median = 4, modus = 4 dan 5\nsuhu_gudang_c  interval  rata-rata = 27,95 °C, beda maks-min = 2,5 °C\n                         (30 °C bukan \"dua kali lebih panas\" dari 15 °C)\ntotal_belanja  rasio     rata-rata = Rp153.000, maks/min = 5,5x\n\nCatatan: rata-rata rating ordinal sering dipakai di industri,\ntapi laporkan juga median dan sebarannya.\n"
+   }
+  ]
+ },
+ "da-2-1": {
+  "exs": [
+   {
+    "t": "Kasus: rekap nilai rapor satu kelas",
+    "d": "Agregat dan IF untuk status kelulusan (KKM 75).",
+    "code": "   A        B            C\n1  Nama     Nilai        Status\n2  Ayu      82           =IF(B2>=75;\"Tuntas\";\"Remedial\")\n...\nB32 =AVERAGE(B2:B31)                → rata-rata kelas\nB33 =MAX(B2:B31)                    → nilai tertinggi\nB34 =COUNTIF(B2:B31;\">=75\")         → jumlah siswa tuntas\nB35 =COUNTIF(C2:C31;\"Remedial\")     → jumlah siswa remedial\nB36 =COUNT(B2:B31)                  → siswa yang sudah punya nilai\nB37 =COUNTA(A2:A31)                 → jumlah siswa terdaftar\n"
+   },
+   {
+    "t": "Kasus: pengeluaran kas RT per kategori",
+    "d": "SUMIF dan AVERAGEIFS untuk ringkasan bersyarat.",
+    "code": "   A           B             C\n1  Tanggal     Kategori      Jumlah\n2  03/11/2026  Kebersihan    150000\n...\nF2 =SUM(C2:C40)                                   → total pengeluaran\nF3 =SUMIF(B2:B40;\"Keamanan\";C2:C40)               → biaya keamanan\nF4 =AVERAGEIFS(C2:C40;B2:B40;\"Kebersihan\")        → rata-rata per belanja kebersihan\nF5 =IF(F2>3000000;\"Melebihi anggaran\";\"Aman\")     → status anggaran bulan ini\n"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Rumus laporan penjualan harian",
+    "lang": "excel",
+    "code": "   A          B          C        D      E           F\n1  Tanggal    Kota       Produk   Qty    Harga       Total\n2  01/11/2026 Jakarta    Kopi     3      65000       =D2*E2\n...\nF2   =D2*E2\nH2   =SUM(F2:F500)                                   total omzet\nH3   =AVERAGE(F2:F500)                               rata-rata per transaksi\nH4   =COUNTA(A2:A500)                                jumlah transaksi\nH5   =SUMIFS(F:F, B:B, \"Bandung\", C:C, \"Kopi\")       omzet kopi di Bandung\nH6   =COUNTIFS(F:F, \">=200000\")                      transaksi besar\nH7   =IFERROR(H5/H2, 0)                              porsi Bandung, aman dari #DIV/0!\nG2   =IFS(F2>=200000, \"Besar\", F2>=100000, \"Sedang\", TRUE, \"Kecil\")\nI2   =F2*$K$1                                        $K$1 = tarif PPN 11% (absolut)\n\nGoogle Sheets: =QUERY(A1:F500, \"select B, sum(F) where C = 'Kopi' group by B order by sum(F) desc\")\n"
+   },
+   {
+    "t": "Komisi sales bertingkat",
+    "lang": "excel",
+    "b": "Target dan tarif komisi disimpan di sel terpisah dengan referensi absolut, sehingga cukup diubah di satu tempat.",
+    "code": "   A        B             C               D\n1  Sales    Omzet         Status          Komisi\n2  Rudi     48000000      =IF(B2>=$G$1;\"Capai\";\"Belum\")\n                          =IF(B2>=$G$1;B2*$G$2;B2*$G$3)\n...\nG1  40000000        target bulanan\nG2  5%              komisi bila target tercapai\nG3  2%              komisi bila belum\n\nG5  =COUNTIF(C2:C21;\"Capai\")              sales yang capai target\nG6  =SUM(D2:D21)                          total komisi dibayar\nG7  =AVERAGEIFS(B2:B21;C2:C21;\"Belum\")    rata-rata omzet yang belum capai\nG8  =MAX(B2:B21)-MIN(B2:B21)              rentang omzet tim\n"
+   }
+  ]
+ },
+ "da-2-2": {
+  "exs": [
+   {
+    "t": "Kasus: merapikan daftar nama peserta pelatihan",
+    "d": "TRIM, PROPER, dan CONCAT untuk label sertifikat.",
+    "code": "A2: \"  siti   NURHALIZA \"\nB2: \"bandung\"\n=PROPER(TRIM(A2))                         → \"Siti Nurhaliza\"\n=CONCAT(PROPER(TRIM(A2));\" (\";PROPER(B2);\")\")  → \"Siti Nurhaliza (Bandung)\"\n=UPPER(TRIM(A2))                          → \"SITI NURHALIZA\"\n"
+   },
+   {
+    "t": "Kasus: masa kerja karyawan dan umur",
+    "d": "DATEDIF dengan satuan Y, M, dan YM.",
+    "code": "C2: 01/03/2019   (tanggal masuk)\nD2: 26/11/2026   (hari ini, =TODAY())\n\n=DATEDIF(C2;D2;\"Y\")                       → 7 tahun\n=DATEDIF(C2;D2;\"YM\")                      → 8 bulan (sisa setelah tahun penuh)\n=DATEDIF(C2;D2;\"Y\")&\" th \"&DATEDIF(C2;D2;\"YM\")&\" bln\"   → \"7 th 8 bln\"\n=DATEDIF(C2;D2;\"D\")                       → selisih dalam hari kalender\n"
+   },
+   {
+    "t": "Kasus: harga teks dari marketplace menjadi angka",
+    "d": "SUBSTITUTE bertingkat lalu VALUE.",
+    "code": "E2: \"Rp1.250.000\"\n=VALUE(SUBSTITUTE(SUBSTITUTE(E2;\"Rp\";\"\");\".\";\"\"))   → 1250000\n\nF2: \"12 pcs\"\n=VALUE(SUBSTITUTE(F2;\" pcs\";\"\"))                     → 12\n=VALUE(SUBSTITUTE(SUBSTITUTE(E2;\"Rp\";\"\");\".\";\"\"))/VALUE(SUBSTITUTE(F2;\" pcs\";\"\"))  → 104166,67 per pcs\n"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Membersihkan nama, nomor HP, dan menghitung umur pelanggan",
+    "lang": "excel",
+    "code": "B2  =PROPER(TRIM(A2))                                   \"  rina   WIJAYA \" -> \"Rina Wijaya\"\nD2  =\"+62\" & MID(SUBSTITUTE(SUBSTITUTE(C2,\"-\",\"\"),\" \",\"\"), 2, 15)   \"0812-3456 7890\" -> \"+6281234567890\"\nF2  =DATEDIF(E2, TODAY(), \"Y\")                          umur dalam tahun\nG2  =NETWORKDAYS(H2, I2, Libur!A:A)                     hari kerja pesanan diproses\nJ2  =TEXT(E2, \"dd mmmm yyyy\")                           tampil \"17 Agustus 1995\" (lokal Indonesia)\nK2  =LEFT(L2, FIND(\"@\", L2) - 1)                        nama pengguna dari email\n"
+   },
+   {
+    "t": "Kode pesanan dan lama pengiriman",
+    "lang": "excel",
+    "b": "Kode pesanan sering menyimpan informasi cabang dan tanggal yang bisa dipecah dengan fungsi teks.",
+    "code": "A2: \"INV/MDN/20261103/0012\"      B2: 03/11/2026 (pesan)    C2: 07/11/2026 (terima)\n\nD2  =MID(A2, 5, 3)                                      \"MDN\"  kode cabang\nE2  =DATE(MID(A2,9,4), MID(A2,13,2), MID(A2,15,2))      03/11/2026 tanggal dari kode\nF2  =DATEDIF(B2, C2, \"D\")                               4 hari pengiriman\nG2  =IF(F2>3, \"Terlambat\", \"Tepat waktu\")               status SLA 3 hari\nH2  =SUBSTITUTE(A2, \"/\", \"-\")                           \"INV-MDN-20261103-0012\" untuk nama berkas\nI2  =PROPER(TRIM(J2)) & \" - \" & D2                      label \"Rina Wijaya - MDN\"\n"
+   }
+  ]
+ },
+ "da-2-3": {
+  "exs": [
+   {
+    "t": "Kasus: mengambil nama kelas dari NIS",
+    "d": "VLOOKUP dengan pencocokan persis dan IFERROR bila tidak ditemukan.",
+    "code": "Tabel Siswa (Siswa!A2:C400): NIS | Nama | Kelas\nA2: 24017\n=VLOOKUP(A2;Siswa!A2:C400;2;FALSE)                       → \"Rahmat Hidayat\"\n=VLOOKUP(A2;Siswa!A2:C400;3;FALSE)                       → \"8C\"\n=IFERROR(VLOOKUP(A9;Siswa!A2:C400;2;FALSE);\"NIS salah\")  → \"NIS salah\"\n"
+   },
+   {
+    "t": "Kasus: pivot penjualan per bulan dan kanal",
+    "d": "Menyusun PivotTable untuk membandingkan kanal penjualan.",
+    "code": "Data: Tanggal | Kanal (Toko/Shopee/Tokopedia) | Produk | Qty | Total\n\nPivotTable\n Baris  : Bulan (group dari Tanggal)\n Kolom  : Kanal\n Nilai  : Sum of Total, tampilkan sebagai \"% of Row Total\"\n Filter : Produk = Kopi Gayo\n\nHasil yang dibaca: porsi Shopee naik dari 38% (Agu) ke 51% (Okt)\n=XLOOKUP(\"Okt\";PivotBulan;PivotShopee;\"-\")    → ambil angka dari pivot untuk laporan\n"
+   }
+  ],
+  "cx": [
+   {
+    "t": "XLOOKUP dan pivot",
+    "lang": "excel",
+    "code": "=XLOOKUP(C2, Produk!A:A, Produk!C:C, \"tidak ada\")              harga dari tabel Produk berdasarkan SKU\n=VLOOKUP(C2, Produk!A:C, 3, FALSE)                              versi lama; FALSE = cocok persis\n=INDEX(Produk!C:C, MATCH(C2, Produk!A:A, 0))                   setara\n\nPivot: Insert > PivotTable\n  Rows    : Kota\n  Columns : Bulan\n  Values  : Sum of Total, Count of No_Pesanan\n  Filters : Kategori = Kopi\n"
+   },
+   {
+    "t": "Margin per kota dari tabel transaksi dan master produk",
+    "lang": "excel",
+    "b": "Lookup menambahkan harga dan modal ke tiap transaksi, lalu PivotTable meringkas omzet dan margin. SKU yang tidak ada di master ditandai, bukan dihapus diam-diam.",
+    "code": "Transaksi: A Bulan | B Kota | C SKU | D Qty\nProduk   : A SKU | B Nama | C Harga | D Modal\n\nE2  =XLOOKUP(C2, Produk!A:A, Produk!C:C, \"#N/A\")        harga jual\nF2  =XLOOKUP(C2, Produk!A:A, Produk!D:D, \"#N/A\")        modal\nG2  =IF(ISNUMBER(E2), D2*E2, 0)                         omzet\nH2  =IF(ISNUMBER(E2), D2*(E2-F2), 0)                    margin\nJ1  =COUNTIF(E2:E500, \"#N/A\")                           SKU tanpa pasangan (cek ke tim gudang)\n\nPivotTable\n  Rows    : Kota\n  Columns : Bulan\n  Values  : Sum of omzet, Sum of margin\n  Tambahan: Calculated Field margin_% = margin / omzet\n"
+   }
+  ]
+ },
+ "da-3-7": {
+  "exs": [
+   {
+    "t": "Kasus: menambah kolom total di R, pandas, dan SQL",
+    "d": "Membuat kolom turunan: mutate, kolom baru, dan ekspresi SELECT.",
+    "code": "# R + dplyr                          # Python + pandas\npesanan |>                            pesanan[\"total\"] = (\n  mutate(total = qty * harga)             pesanan[\"qty\"] * pesanan[\"harga\"])\n\n-- SQL\nSELECT *, qty * harga AS total FROM pesanan;\n"
+   },
+   {
+    "t": "Kasus: memilih kolom dan mengurutkan",
+    "d": "select/arrange di R, daftar kolom/sort_values di pandas.",
+    "code": "# R + dplyr                          # Python + pandas\nsiswa |>                              (siswa[[\"nama\", \"nilai\"]]\n  select(nama, nilai) |>                .sort_values(\"nilai\", ascending=False)\n  arrange(desc(nilai)) |>               .head(5))\n  head(5)\n\n-- SQL\nSELECT nama, nilai FROM siswa ORDER BY nilai DESC LIMIT 5;\n"
+   }
+  ]
+ },
+ "da-3-8": {
+  "exs": [
+   {
+    "t": "Kasus: membaca respons JSON API kurs",
+    "d": "Respons API diubah menjadi tabel dengan json.loads dan pd.json_normalize. Teksnya ditulis langsung agar contoh bisa dijalankan tanpa internet.",
+    "code": "import json\nimport pandas as pd\n\nrespons = \"\"\"{\"status\": \"ok\", \"data\": [\n  {\"tanggal\": \"2026-11-24\", \"mata_uang\": \"USD\", \"kurs\": {\"beli\": 15810, \"jual\": 15960}},\n  {\"tanggal\": \"2026-11-24\", \"mata_uang\": \"SGD\", \"kurs\": {\"beli\": 11790, \"jual\": 11920}},\n  {\"tanggal\": \"2026-11-24\", \"mata_uang\": \"JPY\", \"kurs\": {\"beli\": 103, \"jual\": 105}}\n]}\"\"\"\nisi = json.loads(respons)          # sama dengan r.json() pada requests\nkurs = pd.json_normalize(isi[\"data\"])\nkurs[\"selisih\"] = kurs[\"kurs.jual\"] - kurs[\"kurs.beli\"]\nprint(kurs)\n",
+    "out": "      tanggal mata_uang  kurs.beli  kurs.jual  selisih\n0  2026-11-24       USD      15810      15960      150\n1  2026-11-24       SGD      11790      11920      130\n2  2026-11-24       JPY        103        105        2"
+   },
+   {
+    "t": "Kasus: mengambil tabel harga pangan dari HTML",
+    "d": "BeautifulSoup membaca tabel HTML; di dunia nyata HTML-nya didapat dari requests.get(url).text.",
+    "code": "import pandas as pd\nfrom bs4 import BeautifulSoup\n\nhtml = \"\"\"<table id=\"harga\">\n<tr><th>Komoditas</th><th>Harga</th><th>Satuan</th></tr>\n<tr><td>Beras Medium</td><td>Rp13.900</td><td>kg</td></tr>\n<tr><td>Cabai Rawit</td><td>Rp58.500</td><td>kg</td></tr>\n<tr><td>Bawang Merah</td><td>Rp36.000</td><td>kg</td></tr>\n</table>\"\"\"\nsoup = BeautifulSoup(html, \"html.parser\")\nbaris = [[td.get_text(strip=True) for td in tr.select(\"td\")] for tr in soup.select(\"#harga tr\")[1:]]\npangan = pd.DataFrame(baris, columns=[\"komoditas\", \"harga\", \"satuan\"])\npangan[\"harga\"] = pangan[\"harga\"].str.replace(\"Rp\", \"\").str.replace(\".\", \"\").astype(int)\nprint(pangan)\n",
+    "out": "      komoditas  harga satuan\n0  Beras Medium  13900     kg\n1   Cabai Rawit  58500     kg\n2  Bawang Merah  36000     kg"
+   },
+   {
+    "t": "Kasus: API berhalaman dengan jeda dan batas waktu",
+    "d": "Pola mengambil semua halaman sambil menghormati rate limit; butuh koneksi internet.",
+    "code": "import time\nimport requests\nimport pandas as pd\n\nURL = \"https://api.contoh.id/v1/produk\"\nHEADER = {\"Authorization\": \"Bearer ISI_KUNCI_API\"}\nsemua, halaman = [], 1\nwhile halaman:\n    r = requests.get(URL, params={\"page\": halaman, \"per_page\": 100}, headers=HEADER, timeout=10)\n    if r.status_code == 429:              # terlalu sering: tunggu lalu ulangi\n        time.sleep(int(r.headers.get(\"Retry-After\", 5)))\n        continue\n    r.raise_for_status()\n    isi = r.json()\n    semua += isi[\"data\"]\n    halaman = isi.get(\"next_page\")        # None bila sudah halaman terakhir\n    time.sleep(1)                         # jeda sopan antar permintaan\npd.json_normalize(semua).to_csv(\"produk_mentah.csv\", index=False)   # simpan mentah dulu\n"
+   }
+  ]
+ },
+ "da-4-8": {
+  "exs": [
+   {
+    "t": "Kasus: membakukan nama provinsi dengan kamus",
+    "d": "Variasi singkatan dipetakan ke nama baku; yang tidak dikenal dilaporkan.",
+    "code": "import pandas as pd\n\ndf = pd.DataFrame({\"provinsi\": [\"jabar\", \"Jawa Barat\", \"JATENG\", \" jawa tengah\", \"DIY\", \"Sumut\", \"jabar \"]})\nbaku = {\"jabar\": \"Jawa Barat\", \"jawa barat\": \"Jawa Barat\", \"jateng\": \"Jawa Tengah\",\n        \"jawa tengah\": \"Jawa Tengah\", \"diy\": \"DI Yogyakarta\"}\nkunci = df[\"provinsi\"].str.strip().str.lower()\ndf[\"provinsi_baku\"] = kunci.map(baku)\nprint(df)\nprint(\"belum dikenali:\", df.loc[df[\"provinsi_baku\"].isna(), \"provinsi\"].tolist())\n",
+    "out": "       provinsi  provinsi_baku\n0         jabar     Jawa Barat\n1    Jawa Barat     Jawa Barat\n2        JATENG    Jawa Tengah\n3   jawa tengah    Jawa Tengah\n4           DIY  DI Yogyakarta\n5         Sumut            NaN\n6        jabar      Jawa Barat\nbelum dikenali: ['Sumut']"
+   },
+   {
+    "t": "Kasus: harga dengan format campur aduk",
+    "d": "Buang semua karakter selain angka, lalu ubah ke angka dengan to_numeric.",
+    "code": "import pandas as pd\n\nharga = pd.Series([\"Rp 12.500\", \"12500\", \"Rp12.500,-\", \"dua belas ribu\", \"15.000\"])\nangka = pd.to_numeric(harga.str.replace(r\",-$\", \"\", regex=True).str.replace(r\"\\D\", \"\", regex=True), errors=\"coerce\")\nprint(pd.DataFrame({\"mentah\": harga, \"angka\": angka}))\nprint(\"gagal dibakukan:\", int(angka.isna().sum()))\n",
+    "out": "           mentah    angka\n0       Rp 12.500  12500.0\n1           12500  12500.0\n2      Rp12.500,-  12500.0\n3  dua belas ribu      NaN\n4          15.000  15000.0\ngagal dibakukan: 1"
+   },
+   {
+    "t": "Kasus: aturan pembersihan sebagai fungsi",
+    "d": "Fungsi yang sama dipakai ulang untuk data bulan berikutnya, dengan laporan jumlah baris.",
+    "code": "import pandas as pd\n\ndef bersihkan(df):\n    hasil = df.copy()\n    hasil[\"nama\"] = hasil[\"nama\"].str.split().str.join(\" \").str.title()\n    hasil[\"kota\"] = hasil[\"kota\"].str.strip().str.title().str.replace(r\"^Kota \", \"\", regex=True)\n    hasil = hasil.drop_duplicates(subset=[\"nama\", \"kota\"])\n    print(f\"baris: {len(df)} -> {len(hasil)}\")\n    return hasil\n\noktober = pd.DataFrame({\"nama\": [\"rina  wati\", \"Rina Wati\", \"budi\"], \"kota\": [\"kota medan\", \"Medan \", \"BANDUNG\"]})\nnovember = pd.DataFrame({\"nama\": [\"SARI\", \"dodi  s\"], \"kota\": [\"ambon\", \"Kota Ambon\"]})\nprint(bersihkan(oktober).to_string(index=False))\nprint(bersihkan(november).to_string(index=False))\n",
+    "out": "baris: 3 -> 2\n     nama    kota\nRina Wati   Medan\n     Budi Bandung\nbaris: 2 -> 2\n  nama  kota\n  Sari Ambon\nDodi S Ambon"
+   }
+  ]
+ },
+ "da-5-2": {
+  "exs": [
+   {
+    "t": "Kasus: dua pemasok dengan rata-rata waktu kirim sama",
+    "d": "Rentang, varians, dan simpangan baku menunjukkan mana yang lebih bisa diandalkan.",
+    "code": "import pandas as pd\n\nkirim = pd.DataFrame({\"Pemasok A\": [3, 3, 4, 3, 2, 3, 3], \"Pemasok B\": [1, 6, 2, 5, 1, 4, 2]})\nprint(kirim.mean().round(2))\nprint(\"rentang :\", (kirim.max() - kirim.min()).to_dict())\nprint(\"varians :\", kirim.var().round(2).to_dict())\nprint(\"std     :\", kirim.std().round(2).to_dict())\n",
+    "out": "Pemasok A    3.0\nPemasok B    3.0\ndtype: float64\nrentang : {'Pemasok A': 2, 'Pemasok B': 5}\nvarians : {'Pemasok A': 0.33, 'Pemasok B': 4.0}\nstd     : {'Pemasok A': 0.58, 'Pemasok B': 2.0}"
+   },
+   {
+    "t": "Kasus: menghitung varians langkah demi langkah",
+    "d": "Varians sampel = jumlah kuadrat selisih dari mean dibagi (n - 1).",
+    "code": "nilai = [70, 75, 80, 85, 90]\nn = len(nilai)\nmean = sum(nilai) / n\nkuadrat = [(x - mean) ** 2 for x in nilai]\nvarians = sum(kuadrat) / (n - 1)\nprint(\"mean          :\", mean)\nprint(\"kuadrat selisih:\", kuadrat)\nprint(\"varians       :\", varians)\nprint(\"std           :\", round(varians ** 0.5, 2))\n",
+    "out": "mean          : 80.0\nkuadrat selisih: [100.0, 25.0, 0.0, 25.0, 100.0]\nvarians       : 62.5\nstd           : 7.91"
+   },
+   {
+    "t": "Kasus: kemiringan data gaji dan transformasi log",
+    "d": "Skew positif berarti ekor kanan panjang; log mengecilkannya.",
+    "code": "import numpy as np\nimport pandas as pd\n\ngaji = pd.Series([4.5, 5, 5.2, 5.5, 6, 6.5, 7, 8, 12, 25], name=\"juta\")\nprint(\"mean   :\", gaji.mean(), \"| median:\", gaji.median())\nprint(\"skew   :\", round(gaji.skew(), 2))\nprint(\"kurt   :\", round(gaji.kurt(), 2))\nprint(\"skew log:\", round(np.log(gaji).skew(), 2))\n",
+    "out": "mean   : 8.47 | median: 6.25\nskew   : 2.55\nkurt   : 6.84\nskew log: 1.78"
+   }
+  ]
+ },
+ "da-5-5": {
+  "exs": [
+   {
+    "t": "Kasus: jarak kirim dan ongkir",
+    "d": "np.polyfit derajat 1 memberi kemiringan dan titik potong.",
+    "code": "import numpy as np\n\njarak = np.array([2, 5, 8, 12, 15, 20])            # km\nongkir = np.array([9000, 12000, 15500, 19000, 23000, 28000])\nb, a = np.polyfit(jarak, ongkir, 1)\nprint(f\"ongkir = {a:.0f} + {b:.0f} x km\")\nprint(\"perkiraan 10 km:\", round(a + b * 10))\n",
+    "out": "ongkir = 6802 + 1059 x km\nperkiraan 10 km: 17397"
+   },
+   {
+    "t": "Kasus: menghitung koefisien dengan rumus",
+    "d": "b = kovarians(x, y) / varians(x), a = mean(y) - b·mean(x).",
+    "code": "jam_belajar = [1, 2, 3, 4, 5]\nnilai = [55, 62, 70, 74, 84]\nn = len(nilai)\nmx, my = sum(jam_belajar) / n, sum(nilai) / n\nkov = sum((x - mx) * (y - my) for x, y in zip(jam_belajar, nilai))\nvar = sum((x - mx) ** 2 for x in jam_belajar)\nb = kov / var\na = my - b * mx\nprint(f\"nilai = {a:.1f} + {b:.1f} x jam\")\n",
+    "out": "nilai = 48.0 + 7.0 x jam"
+   },
+   {
+    "t": "Kasus: R² rendah berarti x kurang menjelaskan y",
+    "d": "statistics.linear_regression dan R² pada data yang lebih acak.",
+    "code": "import statistics as st\n\nsuhu = [26, 28, 29, 30, 31, 32, 33, 34]\npenjualan_payung = [40, 12, 35, 18, 30, 15, 38, 20]\nb, a = st.linear_regression(suhu, penjualan_payung)\npred = [a + b * x for x in suhu]\nss_res = sum((y - p) ** 2 for y, p in zip(penjualan_payung, pred))\nss_tot = sum((y - st.mean(penjualan_payung)) ** 2 for y in penjualan_payung)\nprint(f\"kemiringan {b:.2f}, R² = {1 - ss_res / ss_tot:.3f}\")\nprint(\"suhu hampir tidak menjelaskan penjualan payung; cari variabel lain (hujan)\")\n",
+    "out": "kemiringan -0.86, R² = 0.043\nsuhu hampir tidak menjelaskan penjualan payung; cari variabel lain (hujan)"
+   }
+  ]
+ },
+ "da-5-6": {
+  "exs": [
+   {
+    "t": "Kasus: kuartil nilai ujian satu angkatan",
+    "d": "quantile untuk Q1, median, Q3, dan IQR.",
+    "code": "import pandas as pd\n\nnilai = pd.Series([45, 58, 62, 66, 70, 72, 75, 78, 80, 84, 88, 95])\nq1, q2, q3 = nilai.quantile([0.25, 0.5, 0.75])\nprint(\"Q1:\", q1, \"| median:\", q2, \"| Q3:\", q3)\nprint(\"IQR:\", q3 - q1)\nprint(\"ringkasan lima angka:\", nilai.min(), q1, q2, q3, nilai.max())\n",
+    "out": "Q1: 65.0 | median: 73.5 | Q3: 81.0\nIQR: 16.0\nringkasan lima angka: 45 65.0 73.5 81.0 95"
+   },
+   {
+    "t": "Kasus: P90 waktu respons layanan pelanggan",
+    "d": "Persentil untuk janji layanan: 90% chat dibalas dalam sekian menit.",
+    "code": "import pandas as pd\n\nrespons = pd.Series([2, 3, 3, 4, 5, 5, 6, 7, 8, 9, 12, 15, 18, 25, 40], name=\"menit\")\nprint(\"rata-rata:\", round(respons.mean(), 1), \"menit\")\nprint(\"median   :\", respons.median(), \"menit\")\nprint(\"P90      :\", round(respons.quantile(0.9), 1), \"menit\")\nprint(\"dibalas <= 10 menit:\", f\"{(respons <= 10).mean():.0%}\")\n",
+    "out": "rata-rata: 10.8 menit\nmedian   : 7.0 menit\nP90      : 22.2 menit\ndibalas <= 10 menit: 67%"
+   },
+   {
+    "t": "Kasus: peringkat persentil seorang siswa",
+    "d": "Berapa persen siswa yang nilainya di bawah Rina?",
+    "code": "import pandas as pd\n\nnilai = pd.Series({\"Ayu\": 72, \"Bima\": 85, \"Cici\": 64, \"Dani\": 90, \"Eka\": 78, \"Fajar\": 58, \"Rina\": 88, \"Sari\": 70})\nperingkat = (nilai.rank(pct=True) * 100).round(0)\nprint(peringkat.sort_values(ascending=False))\nprint(\"Rina lebih tinggi dari\", f\"{(nilai < nilai['Rina']).mean():.0%}\", \"siswa\")\n",
+    "out": "Dani     100.0\nRina      88.0\nBima      75.0\nEka       62.0\nAyu       50.0\nSari      38.0\nCici      25.0\nFajar     12.0\ndtype: float64\nRina lebih tinggi dari 75% siswa"
+   }
+  ]
+ },
+ "da-6-6": {
+  "exs": [
+   {
+    "t": "Kasus: funnel pendaftaran beasiswa",
+    "d": "Konversi dari tahap sebelumnya menunjukkan tahap yang paling banyak gugur.",
+    "code": "import pandas as pd\n\nfunnel = pd.DataFrame({\n    \"tahap\": [\"Buka formulir\", \"Isi data diri\", \"Unggah berkas\", \"Kirim\"],\n    \"orang\": [5200, 3900, 1400, 1250],\n})\nfunnel[\"dari_awal_%\"] = (funnel[\"orang\"] / funnel[\"orang\"].iloc[0] * 100).round(1)\nfunnel[\"dari_sebelumnya_%\"] = (funnel[\"orang\"] / funnel[\"orang\"].shift() * 100).round(1)\nprint(funnel.to_string(index=False))\n",
+    "out": "        tahap  orang  dari_awal_%  dari_sebelumnya_%\nBuka formulir   5200        100.0                NaN\nIsi data diri   3900         75.0               75.0\nUnggah berkas   1400         26.9               35.9\n        Kirim   1250         24.0               89.3"
+   },
+   {
+    "t": "Kasus: komposisi kanal penjualan per bulan (stacked)",
+    "d": "Versi jumlah dan versi 100% dari tabel yang sama.",
+    "code": "import pandas as pd\n\nkanal = pd.DataFrame({\"Toko\": [40, 38, 35], \"Shopee\": [30, 36, 45], \"Tokopedia\": [20, 22, 25]},\n                     index=[\"Agu\", \"Sep\", \"Okt\"])\nprint(\"total per bulan:\", kanal.sum(axis=1).to_dict())\npersen = (kanal.div(kanal.sum(axis=1), axis=0) * 100).round(1)\nprint(persen)\n",
+    "out": "total per bulan: {'Agu': 90, 'Sep': 96, 'Okt': 105}\n     Toko  Shopee  Tokopedia\nAgu  44.4    33.3       22.2\nSep  39.6    37.5       22.9\nOkt  33.3    42.9       23.8"
+   },
+   {
+    "t": "Kasus: menggambar stacked bar 100%",
+    "d": "Matplotlib dengan parameter stacked=True dari DataFrame persen.",
+    "code": "import pandas as pd\nimport matplotlib.pyplot as plt\n\nkanal = pd.DataFrame({\"Toko\": [40, 38, 35], \"Shopee\": [30, 36, 45], \"Tokopedia\": [20, 22, 25]},\n                     index=[\"Agu\", \"Sep\", \"Okt\"])\npersen = kanal.div(kanal.sum(axis=1), axis=0) * 100\nax = persen.plot(kind=\"bar\", stacked=True, figsize=(6, 3), rot=0)\nax.set_ylabel(\"% omzet\")\nax.set_title(\"Porsi Shopee naik tiap bulan\", loc=\"left\")\nax.legend(loc=\"upper left\", bbox_to_anchor=(1, 1))\nax.figure.tight_layout()\nax.figure.savefig(\"kanal.png\", dpi=120)\nprint(\"porsi Shopee:\", persen[\"Shopee\"].round(1).tolist())\n",
+    "out": "porsi Shopee: [33.3, 37.5, 42.9]"
+   }
+  ]
+ },
+ "da-6-7": {
+  "exs": [
+   {
+    "t": "Kasus: laporan singkat untuk kepala cabang",
+    "d": "Temuan, dampak, saran, dan keterbatasan dalam satu halaman.",
+    "code": "Judul  : Antrean kasir di atas 10 menit membuat 1 dari 5 pembeli batal\nTemuan : Pukul 17.00-19.00 rata-rata antrean 13 menit (pukul lain 4 menit).\n         Struk batal naik dari 3% menjadi 21% di jam itu.\nDampak : ± Rp41 juta/bulan omzet hilang di cabang ini.\nSaran  : Buka 1 kasir tambahan pukul 16.30-19.30 selama 4 minggu, ukur ulang.\nCatatan: Data dari CCTV hanya 3 minggu; antrean dihitung manual oleh staf.\n"
+   },
+   {
+    "t": "Kasus: mengubah judul grafik menjadi kalimat temuan",
+    "d": "Judul deskriptif diganti dengan pesan yang ingin diingat pembaca.",
+    "code": "Sebelum                                Sesudah\n\"Penjualan per bulan 2026\"             \"Penjualan turun 3 bulan berturut-turut sejak harga naik Juli\"\n\"Rating aplikasi\"                       \"Rating turun ke 3,9 setelah update versi 5.2\"\n\"Komposisi metode bayar\"                \"QRIS kini dipakai separuh pembeli, COD tinggal 12%\"\n\"Retensi pelanggan\"                     \"Hanya 1 dari 3 pembeli baru kembali di bulan kedua\"\n"
+   }
+  ]
+ },
+ "da-7-1": {
+  "exs": [
+   {
+    "t": "Kasus: total omzet per kota gaya MapReduce",
+    "d": "Map menghasilkan (kota, omzet), shuffle mengelompokkan, reduce menjumlahkan.",
+    "code": "from collections import defaultdict\n\npotongan = [\n    [\"Medan,120000\", \"Bandung,80000\", \"Medan,50000\"],     # server 1\n    [\"Bandung,95000\", \"Ambon,30000\"],                      # server 2\n    [\"Medan,70000\", \"Ambon,45000\", \"Bandung,20000\"],       # server 3\n]\n# map\npasangan = []\nfor bagian in potongan:\n    for baris in bagian:\n        kota, total = baris.split(\",\")\n        pasangan.append((kota, int(total)))\n# shuffle\nkelompok = defaultdict(list)\nfor kota, total in pasangan:\n    kelompok[kota].append(total)\n# reduce\nfor kota, nilai in sorted(kelompok.items()):\n    print(kota, sum(nilai))\n",
+    "out": "Ambon 75000\nBandung 195000\nMedan 240000"
+   },
+   {
+    "t": "Kasus: map dan reduce bawaan Python",
+    "d": "Fungsi map dan reduce tidak saling berbagi data, jadi setiap potongan bisa dikerjakan mesin yang berbeda.",
+    "code": "from collections import Counter\nfrom functools import reduce\n\ndef hitung_kata(teks):                 # fase map: satu potongan -> hitungan kata\n    return Counter(teks.split())\n\ndef gabung(a, b):                      # fase reduce: gabungkan dua hasil\n    return a + b\n\npotongan = [\"kopi enak kopi wangi\", \"kirim cepat kopi enak\", \"harga pas kirim lambat\"]\nhasil_map = list(map(hitung_kata, potongan))\nfor i, h in enumerate(hasil_map, 1):\n    print(\"potongan\", i, dict(h))\ntotal = reduce(gabung, hasil_map)\nprint(\"total:\", total.most_common(3))\n",
+    "out": "potongan 1 {'kopi': 2, 'enak': 1, 'wangi': 1}\npotongan 2 {'kirim': 1, 'cepat': 1, 'kopi': 1, 'enak': 1}\npotongan 3 {'harga': 1, 'pas': 1, 'kirim': 1, 'lambat': 1}\ntotal: [('kopi', 3), ('enak', 2), ('kirim', 2)]"
+   },
+   {
+    "t": "Kasus: omzet per kota di PySpark",
+    "d": "API DataFrame Spark mirip pandas; pekerjaan dibagi ke banyak mesin.",
+    "code": "from pyspark.sql import SparkSession, functions as F\n\nspark = SparkSession.builder.appName(\"omzet-kota\").getOrCreate()\ndf = spark.read.csv(\"s3://data-toko/transaksi/2026/*.csv\", header=True, inferSchema=True)\n(df.groupBy(\"kota\")\n   .agg(F.sum(\"total\").alias(\"omzet\"), F.count(\"*\").alias(\"order\"))\n   .orderBy(F.desc(\"omzet\"))\n   .show())\n"
+   }
+  ]
+ },
+ "da-7-2": {
+  "exs": [
+   {
+    "t": "Kasus: deteksi transaksi penipuan, akurasi bisa menipu",
+    "d": "Data tidak seimbang: model yang selalu menebak 'aman' akurasinya tinggi tapi recall nol.",
+    "code": "aktual = [0] * 95 + [1] * 5          # 5 dari 100 transaksi adalah penipuan\nprediksi = [0] * 100                   # model malas: selalu 'aman'\n\ntp = sum(a == 1 and p == 1 for a, p in zip(aktual, prediksi))\nfn = sum(a == 1 and p == 0 for a, p in zip(aktual, prediksi))\nbenar = sum(a == p for a, p in zip(aktual, prediksi))\nprint(\"akurasi:\", benar / len(aktual))\nprint(\"recall :\", tp / (tp + fn))\n",
+    "out": "akurasi: 0.95\nrecall : 0.0"
+   },
+   {
+    "t": "Kasus: presisi vs recall saat mengubah ambang skor",
+    "d": "Ambang rendah menangkap lebih banyak (recall naik) tapi lebih banyak salah tuduh (presisi turun).",
+    "code": "skor = [0.95, 0.9, 0.8, 0.7, 0.6, 0.55, 0.4, 0.3, 0.2, 0.1]\naktual = [1, 1, 0, 1, 0, 1, 0, 0, 1, 0]\nfor ambang in [0.75, 0.5, 0.25]:\n    pred = [int(s >= ambang) for s in skor]\n    tp = sum(a == 1 and p == 1 for a, p in zip(aktual, pred))\n    fp = sum(a == 0 and p == 1 for a, p in zip(aktual, pred))\n    fn = sum(a == 1 and p == 0 for a, p in zip(aktual, pred))\n    print(f\"ambang {ambang}: presisi {tp / (tp + fp):.2f}, recall {tp / (tp + fn):.2f}\")\n",
+    "out": "ambang 0.75: presisi 0.67, recall 0.40\nambang 0.5: presisi 0.67, recall 0.80\nambang 0.25: presisi 0.50, recall 0.80"
+   },
+   {
+    "t": "Kasus: segmentasi pelanggan dengan k-means",
+    "d": "Unsupervised: kelompok dibentuk dari kemiripan tanpa label.",
+    "code": "import numpy as np\nfrom sklearn.cluster import KMeans\n\n# [order per bulan, rata-rata belanja (ribu)]\npelanggan = np.array([[1, 50], [2, 60], [1, 45], [8, 70], [9, 80], [10, 65], [3, 400], [2, 380]])\nmodel = KMeans(n_clusters=3, n_init=10, random_state=0).fit(pelanggan)\nfor k in range(3):\n    anggota = pelanggan[model.labels_ == k]\n    print(f\"segmen {k}: {len(anggota)} pelanggan, rata-rata {anggota.mean(axis=0).round(1)}\")\n",
+    "out": "segmen 0: 3 pelanggan, rata-rata [ 9.  71.7]\nsegmen 1: 2 pelanggan, rata-rata [  2.5 390. ]\nsegmen 2: 3 pelanggan, rata-rata [ 1.3 51.7]"
+   }
+  ]
+ }
+}

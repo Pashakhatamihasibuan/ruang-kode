@@ -1,0 +1,150 @@
+{
+ "aturan": [
+  [
+   "interpolasi ekspresi ${}",
+   "\\$\\{",
+   "String, interpolasi"
+  ],
+  [
+   "method string/angka",
+   "\\.(toUpperCase|toLowerCase|padLeft|padRight|toStringAsFixed|toRadixString|substring|contains|split|trim|replaceAll|startsWith|endsWith|indexOf)\\(",
+   "String, interpolasi"
+  ],
+  [
+   "if/else",
+   "^\\s*(\\}\\s*)?(if|else)\\b|\\bif\\s*\\(",
+   "Percabangan dan perulangan"
+  ],
+  [
+   "switch",
+   "\\bswitch\\s*\\(",
+   "Percabangan dan perulangan"
+  ],
+  [
+   "operator ternary",
+   "\\s\\?\\s[^;:'\\n]+\\s:\\s",
+   "Percabangan dan perulangan"
+  ],
+  [
+   "for",
+   "\\bfor\\s*\\(",
+   "Percabangan dan perulangan"
+  ],
+  [
+   "while/do-while",
+   "\\bwhile\\s*\\(|\\bdo\\s*\\{",
+   "Percabangan dan perulangan"
+  ],
+  [
+   "break/continue",
+   "\\b(break|continue)\\b\\s*\\w*;",
+   "Percabangan dan perulangan"
+  ],
+  [
+   "list",
+   "(=|\\(|,|return)\\s*(<[\\w<>, ?]+>)?\\[|\\.add\\(",
+   "Percabangan dan perulangan"
+  ],
+  [
+   "operator logika && ||",
+   "&&|\\|\\|\\s*[!(A-Za-z_]",
+   "Boolean logic"
+  ],
+  [
+   "fungsi buatan sendiri",
+   "^\\s*(?!else\\b|return\\b|await\\b|if\\b|for\\b|while\\b|switch\\b|new\\b|const\\b|final\\b|var\\b)[A-Za-z_][\\w<>?, ]*\\s+(?!main\\b)[a-z_]\\w*\\s*\\([^;=]*\\)\\s*(async\\*?\\s*|sync\\*\\s*)?(\\{|=>)",
+   "^Fungsi"
+  ],
+  [
+   "fungsi anonim / arrow",
+   "\\((\\s*\\w+\\s*(,\\s*\\w+\\s*)*)?\\)\\s*=>",
+   "^Fungsi"
+  ],
+  [
+   "dart:math / Random",
+   "dart:math|\\bRandom\\b",
+   "Random number"
+  ],
+  [
+   "Map/Set",
+   "\\bMap<|\\bSet<|\\.toSet\\(|\\{\\s*'[^'$]*'\\s*:|<\\w+,\\s*\\w+>\\{|\\.entries\\b",
+   "List, Map, Set"
+  ],
+  [
+   "method koleksi",
+   "\\.(where|map|fold|reduce|forEach|any|every|sort|toList|firstWhere|expand|take|skip|indexWhere|removeWhere|generate)\\(",
+   "List, Map, Set"
+  ],
+  [
+   "collection if/for",
+   "[\\[,]\\s*(if|for)\\s*\\(|^\\s*(if|for)\\s*\\([^)]*\\)\\s*'",
+   "List, Map, Set"
+  ],
+  [
+   "class",
+   "^\\s*(abstract\\s+|sealed\\s+)?class\\s",
+   "Class, constructor"
+  ],
+  [
+   "getter",
+   "\\bget\\s+\\w+\\s*(=>|\\{)",
+   "Class, constructor"
+  ],
+  [
+   "inheritance/mixin",
+   "\\bextends\\s+[A-Z]\\w*\\s*(<[^>]*>)?\\s*(\\{|with|implements)|\\bwith\\s+[A-Z]|\\bimplements\\b|^\\s*mixin\\s|^\\s*abstract\\s+class|\\bsuper\\b",
+   "Inheritance"
+  ],
+  [
+   "sealed class",
+   "\\bsealed\\s+class",
+   "Inheritance"
+  ],
+  [
+   "Future/async/await",
+   "\\basync\\b|\\bawait\\b|\\bFuture\\b",
+   "Future, async"
+  ],
+  [
+   "Stream/generator",
+   "\\bStream\\b|async\\*|sync\\*|\\byield\\b",
+   "^Stream"
+  ],
+  [
+   "import package",
+   "^import\\s+'package:",
+   "Package dari pub.dev"
+  ],
+  [
+   "exception",
+   "\\btry\\s*\\{|\\bcatch\\s*\\(|^\\s*\\}?\\s*on\\s+[A-Z]\\w*(\\s+catch\\s*\\([^)]*\\))?\\s*\\{|\\bthrow\\b|\\brethrow\\b|\\.tryParse\\(",
+   "^Exception"
+  ],
+  [
+   "enum",
+   "^\\s*enum\\s",
+   "Enum, generics"
+  ],
+  [
+   "generics buatan sendiri",
+   "<[A-Z](\\s+extends\\b[^>]*)?(\\s*,\\s*[A-Z])*>",
+   "Enum, generics"
+  ],
+  [
+   "extension method",
+   "^\\s*extension\\s",
+   "Enum, generics"
+  ],
+  [
+   "records",
+   "^\\s*(final|var)\\s*\\(|^\\s*\\(\\w+,\\s*\\w+\\)\\s*=|^\\s*\\(\\{?\\s*[A-Za-z]\\w*\\??\\s+\\w*\\s*,|^\\s*\\(\\s*[A-Z]\\w*\\??\\s*,|(=|return|=>)\\s*\\(\\w+:\\s",
+   "Records dan pattern"
+  ],
+  [
+   "pattern matching",
+   "\\bif\\s*\\(.*\\bcase\\b|\\(\\s*:\\s*(final|var)|\\w\\(\\s*\\w+\\s*:\\s*final\\b|^\\s*(>=|<=|>|<)\\s*\\d+\\s*=>",
+   "Records dan pattern"
+  ]
+ ],
+ "abaikan": []
+}

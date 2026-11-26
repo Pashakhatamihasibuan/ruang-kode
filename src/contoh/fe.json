@@ -1,0 +1,456 @@
+{
+ "fe-1-2": {
+  "exs": [
+   {
+    "t": "Kasus: mengirim form pesanan dengan POST",
+    "code": "POST /api/pesanan HTTP/2\nHost: tokonusantara.id\ncontent-type: application/json\n\n{ \"produk\": \"kopi-gayo\", \"jumlah\": 2 }\n\nHTTP/2 201\ncontent-type: application/json\n\n{ \"id\": \"INV-0412\", \"status\": \"menunggu pembayaran\" }",
+    "d": "201 Created: data baru berhasil dibuat di server."
+   },
+   {
+    "t": "Kasus: alamat pindah (301) dan halaman tidak ada (404)",
+    "code": "GET /promo-lebaran HTTP/2\nHTTP/2 301\nlocation: /promo\n\nGET /produk/teh-hitam-xl HTTP/2\nHTTP/2 404\ncontent-type: text/html",
+    "d": "3xx menyuruh browser pindah ke alamat di header location; 4xx berarti permintaan klien yang salah."
+   },
+   {
+    "t": "Kasus: memeriksa ulang data dengan ETag",
+    "code": "# permintaan pertama\nGET /api/harga HTTP/2\nHTTP/2 200\netag: \"a1b2c3\"\ncache-control: no-cache\n\n{ \"kopi\": 45000 }\n\n# permintaan berikutnya membawa etag yang disimpan\nGET /api/harga HTTP/2\nif-none-match: \"a1b2c3\"\nHTTP/2 304",
+    "d": "304 Not Modified: isinya sama, browser memakai salinan di cache tanpa mengunduh ulang."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Server mini dengan Cache-Control dan ETag",
+    "b": "Server diganti fungsi biasa yang menerima permintaan dan mengembalikan status, header, dan body, supaya alurnya bisa dijalankan di satu blok. File ber-hash di-cache setahun, data API memakai ETag sehingga permintaan ulang yang isinya sama dijawab 304 tanpa body.",
+    "code": "const css = \"body{font-family:system-ui;color:#222}\";\nconst etag = '\"v7-harga\"';\n\nfunction server(req) {\n  if (req.url === \"/app.3f9a1c.css\")\n    return { status: 200, headers: { \"cache-control\": \"public, max-age=31536000, immutable\" }, body: css };\n  if (req.url === \"/api/harga\") {\n    if (req.headers[\"if-none-match\"] === etag) return { status: 304, headers: { etag }, body: \"\" };\n    return { status: 200, headers: { etag, \"cache-control\": \"no-cache\" }, body: JSON.stringify({ kopi: 45000 }) };\n  }\n  return { status: 404, headers: {}, body: \"tidak ditemukan\" };\n}\n\nconst permintaan = [\n  { url: \"/app.3f9a1c.css\", headers: {} },\n  { url: \"/api/harga\", headers: {} },\n  { url: \"/api/harga\", headers: { \"if-none-match\": etag } },\n  { url: \"/tidak-ada\", headers: {} },\n];\nfor (const req of permintaan) {\n  const r = server(req);\n  const isi = r.status === 304 ? \"(tanpa body)\" : r.body.slice(0, 24);\n  console.log(String(r.status).padEnd(4), req.url.padEnd(16), (r.headers[\"cache-control\"] ?? \"-\").padEnd(36), isi);\n}",
+    "out": "200  /app.3f9a1c.css  public, max-age=31536000, immutable  body{font-family:system-\n200  /api/harga       no-cache                             {\"kopi\":45000}\n304  /api/harga       -                                    (tanpa body)\n404  /tidak-ada       -                                    tidak ditemukan",
+    "lang": "js"
+   }
+  ]
+ },
+ "fe-1-3": {
+  "exs": [
+   {
+    "t": "Kasus: animasi murah dengan transform",
+    "code": "const kotak = document.querySelector(\".kotak\");\n// mahal: mengubah left memicu layout + paint di setiap frame\n// kotak.style.left = \"200px\";\n// murah: transform cukup diproses di tahap composite\nkotak.style.transition = \"transform 300ms\";\nkotak.style.transform = \"translateX(200px)\";"
+   },
+   {
+    "t": "Kasus: baca semua ukuran dulu, baru tulis",
+    "code": "const kartu = [...document.querySelectorAll(\".kartu\")];\n// baca dulu: satu kali layout\nconst tinggi = kartu.map((el) => el.offsetHeight);\n// lalu tulis: tidak memaksa layout di tengah loop\nkartu.forEach((el, i) => { el.style.minHeight = tinggi[i] + 10 + \"px\"; });",
+    "d": "Membaca offsetHeight setelah menulis gaya memaksa browser menghitung layout ulang saat itu juga."
+   },
+   {
+    "t": "Kasus: menunda perubahan ke frame berikutnya",
+    "code": "const bar = document.querySelector(\".progres\");\nlet persen = 0;\nfunction langkah() {\n  persen += 2;\n  bar.style.transform = `scaleX(${persen / 100})`;\n  if (persen < 100) requestAnimationFrame(langkah);   // tepat sebelum browser menggambar\n}\nrequestAnimationFrame(langkah);"
+   }
+  ]
+ },
+ "fe-3-7": {
+  "exs": [
+   {
+    "t": "Kasus: dua setTimeout dan satu Promise",
+    "code": "setTimeout(() => console.log(\"C. timeout 1\"), 0);\nsetTimeout(() => console.log(\"D. timeout 2\"), 0);\nPromise.resolve().then(() => console.log(\"B. promise\"));\nconsole.log(\"A. sinkron\");",
+    "out": "A. sinkron\nB. promise\nC. timeout 1\nD. timeout 2",
+    "d": "Microtask (promise) selalu didahulukan dari semua macrotask yang sudah antre."
+   },
+   {
+    "t": "Kasus: await membagi fungsi menjadi dua bagian",
+    "code": "async function muat() {\n  console.log(\"2. mulai muat\");\n  await null;\n  console.log(\"4. lanjutan setelah await\");\n}\nconsole.log(\"1. sebelum panggil\");\nmuat();\nconsole.log(\"3. setelah panggil\");",
+    "out": "1. sebelum panggil\n2. mulai muat\n3. setelah panggil\n4. lanjutan setelah await",
+    "d": "Bagian sesudah await dijadwalkan sebagai microtask, jadi kode sinkron di luar jalan duluan."
+   },
+   {
+    "t": "Kasus: setTimeout 0 tetap menunggu kode sinkron",
+    "code": "const mulai = Date.now();\nsetTimeout(() => console.log(\"timeout jalan setelah\", Date.now() - mulai >= 50 ? \">= 50 ms\" : \"< 50 ms\"), 0);\nwhile (Date.now() - mulai < 50) {}      // kode sinkron berat 50 ms\nconsole.log(\"kode sinkron selesai\");",
+    "out": "kode sinkron selesai\ntimeout jalan setelah >= 50 ms"
+   }
+  ]
+ },
+ "fe-3-8": {
+  "exs": [
+   {
+    "t": "Kasus: beberapa named export dari satu file",
+    "code": "// konfig.js\nexport const ONGKIR = 10000;\nexport const MATA_UANG = \"IDR\";\nexport function totalBayar(subtotal) { return subtotal + ONGKIR; }\n\n// keranjang.js\nimport { ONGKIR, totalBayar } from \"./konfig.js\";\nconsole.log(ONGKIR, totalBayar(85000));   // 10000 95000"
+   },
+   {
+    "t": "Kasus: satu pintu masuk dengan re-export",
+    "code": "// utils/rupiah.js\nexport const rupiah = (n) => \"Rp\" + n.toLocaleString(\"id-ID\");\n// utils/tanggal.js\nexport const tanggal = (d) => d.toLocaleDateString(\"id-ID\");\n// utils/index.js\nexport { rupiah } from \"./rupiah.js\";\nexport { tanggal } from \"./tanggal.js\";\n\n// main.js: cukup impor dari satu folder\nimport { rupiah, tanggal } from \"./utils/index.js\";",
+    "d": "Pola ini sering disebut barrel file."
+   },
+   {
+    "t": "Kasus: memuat terjemahan sesuai bahasa pengguna",
+    "code": "// id.js -> export default { sapa: \"Halo\" }\n// en.js -> export default { sapa: \"Hello\" }\nconst bahasa = navigator.language.startsWith(\"id\") ? \"id\" : \"en\";\nconst { default: teks } = await import(`./${bahasa}.js`);   // hanya satu file yang diunduh\ndocument.querySelector(\"h1\").textContent = teks.sapa;"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Memuat modul secara dinamis",
+    "b": "Agar bisa dijalankan dalam satu blok, isi \"file\" modul ditulis sebagai URL data:. Di proyek nyata kamu menulis import(\"./format.js\"). Modul grafik baru dimuat ketika benar-benar dibutuhkan, inilah dasar code splitting.",
+    "code": "const fileFormat = `\nexport const rupiah = (n) => \"Rp\" + n.toLocaleString(\"id-ID\");\nexport default { versi: \"1.2.0\" };`;\nconst fileGrafik = `\nconsole.log(\"  (modul grafik baru dimuat sekarang)\");\nexport function gambar(data) { return data.map((v) => \"#\".repeat(v)).join(\"\\\\n\"); }`;\nconst keUrl = (isi) => \"data:text/javascript,\" + encodeURIComponent(isi);\n\nconst format = await import(keUrl(fileFormat));\nconsole.log(format.rupiah(1250000), \"| v\" + format.default.versi);\n\nconst tombolDiklik = true;\nif (tombolDiklik) {\n  const { gambar } = await import(keUrl(fileGrafik));\n  console.log(gambar([3, 6, 4]));\n}",
+    "out": "Rp1.250.000 | v1.2.0\n  (modul grafik baru dimuat sekarang)\n###\n######\n####",
+    "lang": "js"
+   }
+  ]
+ },
+ "fe-3-9": {
+  "exs": [
+   {
+    "t": "Kasus: mengingat tema pilihan pengguna",
+    "code": "function simpanTema(tema) {\n  try { localStorage.setItem(\"tema\", tema); } catch { /* mode privat: abaikan */ }\n}\nfunction ambilTema() {\n  try { return localStorage.getItem(\"tema\") ?? \"terang\"; } catch { return \"terang\"; }\n}\ndocument.documentElement.dataset.tema = ambilTema();\ndocument.querySelector(\"#gelap\").onclick = () => { document.documentElement.dataset.tema = \"gelap\"; simpanTema(\"gelap\"); };"
+   },
+   {
+    "t": "Kasus: menyalin kode kupon",
+    "code": "document.querySelector(\"#salin\").addEventListener(\"click\", async () => {\n  if (!navigator.clipboard) return alert(\"Salin manual: HEMAT10\");\n  try {\n    await navigator.clipboard.writeText(\"HEMAT10\");\n    document.querySelector(\"#salin\").textContent = \"Tersalin!\";\n  } catch {\n    alert(\"Izin clipboard ditolak\");\n  }\n});",
+    "d": "Clipboard hanya jalan di HTTPS dan setelah aksi pengguna seperti klik."
+   },
+   {
+    "t": "Kasus: draf form yang hilang saat tab ditutup",
+    "code": "const area = document.querySelector(\"#ulasan\");\ntry { area.value = sessionStorage.getItem(\"draf-ulasan\") ?? \"\"; } catch {}\narea.addEventListener(\"input\", () => {\n  try { sessionStorage.setItem(\"draf-ulasan\", area.value); } catch {}\n});",
+    "d": "sessionStorage bertahan saat halaman dimuat ulang, tapi hilang ketika tab ditutup."
+   }
+  ]
+ },
+ "fe-3-10": {
+  "exs": [
+   {
+    "t": "Kasus: penghitung terpisah untuk dua tombol",
+    "code": "function buatPenghitung() {\n  let n = 0;\n  return () => ++n;\n}\nconst sukaKopi = buatPenghitung();\nconst sukaTeh = buatPenghitung();\nsukaKopi(); sukaKopi(); sukaTeh();\nconsole.log(\"kopi:\", sukaKopi(), \"| teh:\", sukaTeh());",
+    "out": "kopi: 3 | teh: 2",
+    "d": "Setiap pemanggilan buatPenghitung membuat variabel n baru."
+   },
+   {
+    "t": "Kasus: pabrik fungsi diskon",
+    "code": "const diskon = (persen) => (harga) => harga - (harga * persen) / 100;\nconst promoMember = diskon(10);\nconst promoLebaran = diskon(25);\nconsole.log(promoMember(80000), promoLebaran(80000));",
+    "out": "72000 60000"
+   },
+   {
+    "t": "Kasus: fungsi yang hanya boleh jalan sekali",
+    "code": "function sekali(fn) {\n  let sudah = false;\n  return (...args) => {\n    if (sudah) return \"diabaikan\";\n    sudah = true;\n    return fn(...args);\n  };\n}\nconst bayar = sekali((total) => `bayar Rp${total}`);\nconsole.log(bayar(95000));\nconsole.log(bayar(95000));",
+    "out": "bayar Rp95000\ndiabaikan",
+    "d": "Berguna untuk tombol Bayar yang tidak boleh terkirim dua kali."
+   }
+  ]
+ },
+ "fe-5-2": {
+  "exs": [
+   {
+    "t": "Kasus: alias @ untuk impor yang pendek",
+    "code": "// vite.config.js\nimport { defineConfig } from \"vite\";\nimport { fileURLToPath } from \"node:url\";\n\nexport default defineConfig({\n  resolve: { alias: { \"@\": fileURLToPath(new URL(\"./src\", import.meta.url)) } },\n});\n\n// sebelum: import Tombol from \"../../../components/Tombol.jsx\";\n// sesudah: import Tombol from \"@/components/Tombol.jsx\";"
+   },
+   {
+    "t": "Kasus: meneruskan /api ke backend lokal saat pengembangan",
+    "code": "// vite.config.js\nimport { defineConfig } from \"vite\";\n\nexport default defineConfig({\n  server: {\n    port: 5173,\n    proxy: { \"/api\": \"http://localhost:8000\" },   // fetch(\"/api/produk\") diteruskan ke :8000\n  },\n});"
+   },
+   {
+    "t": "Kasus: alamat API berbeda untuk dev dan produksi",
+    "code": "// .env.development\n// VITE_API_URL=http://localhost:8000\n// .env.production\n// VITE_API_URL=https://api.tokonusantara.id\n\n// src/api.js\nconst res = await fetch(`${import.meta.env.VITE_API_URL}/produk`);\n// hanya variabel berawalan VITE_ yang ikut ke kode browser"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Bundler mini: graf dependensi dan tree shaking",
+    "b": "Bundler mulai dari file masuk (main.js), mengikuti setiap import untuk membangun graf, lalu membuang ekspor yang tidak pernah diimpor dan file yang tidak terjangkau.",
+    "code": "const modul = {\n  \"main.js\": { impor: { \"util.js\": [\"rupiah\"], \"api.js\": [\"ambilProduk\"] }, ekspor: [] },\n  \"util.js\": { impor: {}, ekspor: [\"rupiah\", \"tanggal\", \"slugify\"] },\n  \"api.js\": { impor: { \"util.js\": [\"slugify\"] }, ekspor: [\"ambilProduk\", \"hapusProduk\"] },\n  \"lodash.js\": { impor: {}, ekspor: [\"chunk\", \"cloneDeep\"] },\n};\nconst dipakai = new Map(); const antre = [\"main.js\"]; const terlihat = new Set();\nwhile (antre.length) {\n  const f = antre.shift(); if (terlihat.has(f)) continue; terlihat.add(f);\n  for (const [dep, nama] of Object.entries(modul[f].impor)) {\n    dipakai.set(dep, new Set([...(dipakai.get(dep) ?? []), ...nama])); antre.push(dep);\n  }\n}\nfor (const [f, m] of Object.entries(modul)) {\n  if (f === \"main.js\") continue;\n  if (!terlihat.has(f)) { console.log(`${f.padEnd(10)} tidak diimpor -> tidak dibundel`); continue; }\n  const buang = m.ekspor.filter((e) => !dipakai.get(f)?.has(e));\n  console.log(`${f.padEnd(10)} pakai [${[...dipakai.get(f)].join(\", \")}]  buang [${buang.join(\", \")}]`);\n}",
+    "out": "util.js    pakai [rupiah, slugify]  buang [tanggal]\napi.js     pakai [ambilProduk]  buang [hapusProduk]\nlodash.js  tidak diimpor -> tidak dibundel",
+    "lang": "js"
+   },
+   {
+    "t": "vite.config.ts yang umum",
+    "code": "import { defineConfig } from \"vite\";\nimport react from \"@vitejs/plugin-react\";\n\nexport default defineConfig({\n  plugins: [react()],\n  resolve: { alias: { \"@\": \"/src\" } },\n  server: { port: 5173, proxy: { \"/api\": \"http://localhost:8000\" } },   // hindari CORS saat dev\n  build: {\n    sourcemap: true,\n    rollupOptions: { output: { manualChunks: { vendor: [\"react\", \"react-dom\"] } } },\n  },\n});\n\nnpm create vite@latest toko -- --template react-ts\nnpm run dev        # dev server + HMR\nnpm run build      # dist/ dengan file ber-hash\nnpm run preview    # uji hasil build",
+    "lang": "ts",
+    "b": "Konfigurasi yang sering dipakai: plugin React, alias @, port dan proxy dev server, sourcemap, serta pemisahan vendor chunk. Di bawahnya perintah sehari-hari."
+   }
+  ]
+ },
+ "fe-5-3": {
+  "exs": [
+   {
+    "t": "Kasus: aturan gaya tim di .prettierrc",
+    "code": "{\n  \"semi\": true,\n  \"singleQuote\": true,\n  \"tabWidth\": 2,\n  \"printWidth\": 100,\n  \"trailingComma\": \"all\"\n}",
+    "d": "Setelah npx prettier --write ., semua file memakai gaya yang sama."
+   },
+   {
+    "t": "Kasus: cek otomatis sebelum commit",
+    "code": "// package.json\n{\n  \"scripts\": {\n    \"lint\": \"eslint .\",\n    \"format\": \"prettier --write .\",\n    \"prepare\": \"husky\"\n  },\n  \"lint-staged\": {\n    \"*.{js,jsx}\": [\"eslint --fix\", \"prettier --write\"]\n  }\n}\n// .husky/pre-commit berisi: npx lint-staged"
+   },
+   {
+    "t": "Kasus: satu alat dengan biome.json",
+    "code": "{\n  \"formatter\": { \"enabled\": true, \"indentStyle\": \"space\", \"lineWidth\": 100 },\n  \"linter\": {\n    \"enabled\": true,\n    \"rules\": { \"recommended\": true, \"suspicious\": { \"noConsole\": \"warn\" } }\n  }\n}\n// $ npx @biomejs/biome check --write ."
+   }
+  ]
+ },
+ "fe-6-3": {
+  "exs": [
+   {
+    "t": "Kasus: penghitung klik di React",
+    "code": "import { useState } from \"react\";\n\nfunction Penghitung() {\n  const [n, setN] = useState(0);\n  return <button onClick={() => setN(n + 1)}>Diklik {n} kali</button>;\n}"
+   },
+   {
+    "t": "Kasus: penghitung yang sama di Vue",
+    "code": "<script setup>\nimport { ref } from \"vue\";\nconst n = ref(0);\n</script>\n\n<template>\n  <button @click=\"n++\">Diklik {{ n }} kali</button>\n</template>",
+    "d": "State di Vue dibuat dengan ref, dan template langsung memperbaruinya."
+   },
+   {
+    "t": "Kasus: penghitung yang sama di Svelte",
+    "code": "<script>\n  let n = $state(0);\n</script>\n\n<button onclick={() => n++}>Diklik {n} kali</button>",
+    "d": "Tiga framework, konsep yang sama: komponen, state, dan event."
+   }
+  ]
+ },
+ "fe-7-3": {
+  "exs": [
+   {
+    "t": "Kasus: login gagal menampilkan pesan",
+    "code": "import { test, expect } from \"@playwright/test\";\n\ntest(\"kata sandi salah ditolak\", async ({ page }) => {\n  await page.goto(\"/masuk\");\n  await page.getByLabel(\"Email\").fill(\"rina@contoh.id\");\n  await page.getByLabel(\"Kata sandi\").fill(\"salah123\");\n  await page.getByRole(\"button\", { name: \"Masuk\" }).click();\n  await expect(page.getByRole(\"alert\")).toHaveText(\"Email atau kata sandi salah\");\n});"
+   },
+   {
+    "t": "Kasus: membuka halaman yang sama sebelum setiap tes",
+    "code": "import { test, expect } from \"@playwright/test\";\n\ntest.beforeEach(async ({ page }) => {\n  await page.goto(\"/produk\");\n});\n\ntest(\"filter kategori teh\", async ({ page }) => {\n  await page.getByRole(\"checkbox\", { name: \"Teh\" }).check();\n  await expect(page.getByRole(\"article\")).toHaveCount(3);\n});\n\ntest(\"urutkan termurah\", async ({ page }) => {\n  await page.getByLabel(\"Urutkan\").selectOption(\"termurah\");\n  await expect(page.getByRole(\"article\").first()).toContainText(\"Rp18.000\");\n});"
+   },
+   {
+    "t": "Kasus: menguji tampilan ponsel",
+    "code": "import { test, expect, devices } from \"@playwright/test\";\n\ntest.use({ ...devices[\"Pixel 7\"] });\n\ntest(\"menu hamburger membuka navigasi\", async ({ page }) => {\n  await page.goto(\"/\");\n  await page.getByRole(\"button\", { name: \"Buka menu\" }).click();\n  await expect(page.getByRole(\"link\", { name: \"Kursus\" })).toBeVisible();\n});"
+   }
+  ]
+ },
+ "fe-8-1": {
+  "exs": [
+   {
+    "t": "Kasus: preflight sebelum PUT dengan JSON",
+    "code": "# Browser bertanya dulu (preflight):\nOPTIONS https://api.tokonusantara.id/produk/7\nOrigin: https://tokonusantara.id\nAccess-Control-Request-Method: PUT\nAccess-Control-Request-Headers: content-type\n\n# Server menjawab boleh:\nHTTP/2 204\nAccess-Control-Allow-Origin: https://tokonusantara.id\nAccess-Control-Allow-Methods: GET, POST, PUT\nAccess-Control-Allow-Headers: content-type\n\n# Baru permintaan aslinya dikirim:\nPUT https://api.tokonusantara.id/produk/7",
+    "d": "Permintaan dengan metode selain GET/POST sederhana atau header khusus selalu didahului preflight OPTIONS."
+   },
+   {
+    "t": "Kasus: origin yang tidak diizinkan",
+    "code": "GET https://api.tokonusantara.id/produk\nOrigin: https://situs-lain.example\n\nHTTP/2 200\ncontent-type: application/json\n# tidak ada Access-Control-Allow-Origin\n\n# Konsol browser:\n# Access to fetch at 'https://api.tokonusantara.id/produk' from origin\n# 'https://situs-lain.example' has been blocked by CORS policy",
+    "d": "Server tetap menjawab, tapi browser menolak memberikan respons itu ke JavaScript."
+   },
+   {
+    "t": "Kasus: CSP untuk situs dengan CDN gambar dan API",
+    "code": "Content-Security-Policy:\n  default-src 'self';\n  script-src 'self';\n  img-src 'self' https://cdn.tokonusantara.id data:;\n  connect-src 'self' https://api.tokonusantara.id;\n  frame-ancestors 'none'\n\n# <img src=\"https://cdn.tokonusantara.id/kopi.webp\">   -> boleh\n# fetch(\"https://api.tokonusantara.id/produk\")       -> boleh\n# <script src=\"https://cdn-jahat.example/x.js\">       -> diblokir"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Server API dengan CORS dan preflight",
+    "b": "Server ditulis sebagai fungsi biasa agar alurnya bisa dijalankan. Origin yang terdaftar dibalas dengan header Access-Control-Allow-Origin; origin lain tetap dijawab, tetapi tanpa header itu, sehingga browser memblokir respons.",
+    "code": "const izin = new Set([\"https://toko.example.id\", \"http://localhost:5173\"]);\n\nfunction server(req) {\n  const headers = {};\n  if (izin.has(req.origin)) {\n    headers[\"access-control-allow-origin\"] = req.origin;\n    headers[\"vary\"] = \"Origin\";\n  }\n  if (req.method === \"OPTIONS\") {\n    headers[\"access-control-allow-methods\"] = \"GET,POST,PUT\";\n    headers[\"access-control-allow-headers\"] = \"content-type,authorization\";\n    return { status: 204, headers };\n  }\n  return { status: 200, headers, body: '{\"ok\":true}' };\n}\n\nconst uji = [[\"OPTIONS\", \"http://localhost:5173\"], [\"PUT\", \"http://localhost:5173\"], [\"GET\", \"https://situs-jahat.example\"]];\nfor (const [method, origin] of uji) {\n  const r = server({ method, origin });\n  const allow = r.headers[\"access-control-allow-origin\"];\n  console.log(`${method.padEnd(7)} dari ${origin.padEnd(28)} -> ${r.status}, allow-origin: ${allow ?? \"(tidak ada: browser memblokir)\"}`);\n}",
+    "out": "OPTIONS dari http://localhost:5173        -> 204, allow-origin: http://localhost:5173\nPUT     dari http://localhost:5173        -> 200, allow-origin: http://localhost:5173\nGET     dari https://situs-jahat.example  -> 200, allow-origin: (tidak ada: browser memblokir)",
+    "lang": "js"
+   },
+   {
+    "t": "Membuat header CSP dengan nonce",
+    "b": "Nonce adalah angka acak baru di setiap respons. Hanya <script> yang membawa nonce yang sama boleh berjalan, sehingga script hasil injeksi tidak ikut jalan. crypto.getRandomValues tersedia di browser dan Node.",
+    "code": "const acak = crypto.getRandomValues(new Uint8Array(16));\nconst nonce = btoa(String.fromCharCode(...acak));\nconst csp = {\n  \"default-src\": [\"'self'\"],\n  \"script-src\": [\"'self'\", `'nonce-${nonce}'`, \"'strict-dynamic'\"],\n  \"style-src\": [\"'self'\", \"'unsafe-inline'\"],\n  \"img-src\": [\"'self'\", \"data:\", \"https://cdn.toko.id\"],\n  \"connect-src\": [\"'self'\", \"https://api.toko.id\"],\n  \"frame-ancestors\": [\"'none'\"],\n  \"object-src\": [\"'none'\"],\n  \"base-uri\": [\"'self'\"],\n};\nconst header = Object.entries(csp).map(([k, v]) => `${k} ${v.join(\" \")}`).join(\"; \");\nconsole.log(\"Content-Security-Policy:\", header.replace(nonce, \"<nonce-acak>\"));\nconsole.log(`<script nonce=\"<nonce-acak>\">...</script>  -> boleh jalan`);\nconsole.log(`<script>alert(1)</script> dari injeksi -> diblokir (tanpa nonce)`);",
+    "out": "Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-<nonce-acak>' 'strict-dynamic'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://cdn.toko.id; connect-src 'self' https://api.toko.id; frame-ancestors 'none'; object-src 'none'; base-uri 'self'\n<script nonce=\"<nonce-acak>\">...</script>  -> boleh jalan\n<script>alert(1)</script> dari injeksi -> diblokir (tanpa nonce)",
+    "lang": "js"
+   }
+  ]
+ },
+ "fe-8-2": {
+  "exs": [
+   {
+    "t": "Kasus: menampilkan nama pengguna dengan aman",
+    "code": "const nama = new URLSearchParams(location.search).get(\"nama\") ?? \"tamu\";\n// berbahaya: ?nama=<img src=x onerror=alert(1)> akan dijalankan\n// document.querySelector(\"#sapa\").innerHTML = \"Halo, \" + nama;\ndocument.querySelector(\"#sapa\").textContent = \"Halo, \" + nama;   // aman: tampil sebagai teks"
+   },
+   {
+    "t": "Kasus: escape sebelum menyusun HTML",
+    "code": "const escapeHtml = (s) => s.replace(/[&<>\"']/g, (c) => ({ \"&\": \"&amp;\", \"<\": \"&lt;\", \">\": \"&gt;\", '\"': \"&quot;\", \"'\": \"&#39;\" })[c]);\nconst komentar = `<script>alert(\"xss\")</script> Enak!`;\nconst html = `<li class=\"komentar\">${escapeHtml(komentar)}</li>`;\nconsole.log(html);",
+    "out": "<li class=\"komentar\">&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt; Enak!</li>",
+    "d": "Bila HTML harus disusun sebagai string, ubah karakter khusus menjadi entitas terlebih dulu."
+   },
+   {
+    "t": "Kasus: menolak tautan javascript:",
+    "code": "function tautanAman(url) {\n  try {\n    const u = new URL(url, \"https://tokonusantara.id\");\n    return [\"http:\", \"https:\"].includes(u.protocol) ? u.href : \"#\";\n  } catch {\n    return \"#\";\n  }\n}\nconsole.log(tautanAman(\"https://instagram.com/tokonusantara\"));\nconsole.log(tautanAman(\"javascript:alert(document.cookie)\"));\nconsole.log(tautanAman(\"/produk/kopi\"));",
+    "out": "https://instagram.com/tokonusantara\n#\nhttps://tokonusantara.id/produk/kopi",
+    "d": "Atribut href dari input pengguna juga bisa menjalankan script, jadi periksa protokolnya."
+   }
+  ]
+ },
+ "fe-8-3": {
+  "exs": [
+   {
+    "t": "Kasus: keluar dengan menghapus cookie sesi",
+    "code": "POST /keluar\nCookie: sid=8f2c1e...\n\nHTTP/2 303\nSet-Cookie: sid=; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=0\nLocation: /masuk",
+    "d": "Max-Age=0 menyuruh browser langsung membuang cookie; server juga menghapus sesinya."
+   },
+   {
+    "t": "Kasus: token akses kedaluwarsa lalu diperbarui",
+    "code": "GET /api/pesanan\nAuthorization: Bearer eyJhbGciOi...(lama)\n\nHTTP/2 401\n{ \"error\": \"token kedaluwarsa\" }\n\n# klien meminta token baru memakai refresh token di cookie HttpOnly\nPOST /api/token/refresh\nCookie: refresh=r_91af...\n\nHTTP/2 200\n{ \"accessToken\": \"eyJhbGciOi...(baru)\", \"expiresIn\": 900 }"
+   },
+   {
+    "t": "Kasus: cookie panel admin yang lebih ketat",
+    "code": "Set-Cookie: admin_sid=c41d...; HttpOnly; Secure; SameSite=Strict; Path=/admin; Max-Age=3600\n\n# SameSite=Strict: cookie tidak ikut terkirim bila admin datang dari tautan situs lain\n# Path=/admin   : cookie hanya dikirim ke alamat di bawah /admin\n# Max-Age=3600  : sesi habis setelah 1 jam"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Membuat dan memverifikasi JWT (HS256)",
+    "b": "Token terdiri dari kepala, isi, dan tanda tangan HMAC. Siapa pun bisa membaca isinya, tetapi tanpa kunci rahasia server tidak ada yang bisa mengubahnya. Contoh memakai Web Crypto (crypto.subtle) yang tersedia di browser dan Node.",
+    "code": "const enc = new TextEncoder();\nconst b64url = (bytes) => btoa(String.fromCharCode(...bytes)).replace(/\\+/g, \"-\").replace(/\\//g, \"_\").replace(/=+$/, \"\");\nconst teksKeB64 = (s) => b64url(enc.encode(s));\nconst b64KeTeks = (s) => atob(s.replace(/-/g, \"+\").replace(/_/g, \"/\"));\nconst kunci = await crypto.subtle.importKey(\"raw\", enc.encode(\"rahasia-server-minimal-32-karakter!!\"), { name: \"HMAC\", hash: \"SHA-256\" }, false, [\"sign\"]);\nconst tanda = async (data) => b64url(new Uint8Array(await crypto.subtle.sign(\"HMAC\", kunci, enc.encode(data))));\n\nasync function buatToken(payload) {\n  const kepala = teksKeB64(JSON.stringify({ alg: \"HS256\", typ: \"JWT\" }));\n  const isi = teksKeB64(JSON.stringify(payload));\n  return `${kepala}.${isi}.${await tanda(`${kepala}.${isi}`)}`;\n}\nasync function verifikasi(token, sekarang) {\n  const [k, i, s] = token.split(\".\");\n  if ((await tanda(`${k}.${i}`)) !== s) return \"tanda tangan tidak valid\";\n  const p = JSON.parse(b64KeTeks(i));\n  return sekarang > p.exp ? \"kedaluwarsa\" : `valid: user ${p.sub}, peran ${p.peran}`;\n}\n\nconst t0 = 1_800_000_000;\nconst token = await buatToken({ sub: \"u_42\", peran: \"user\", iat: t0, exp: t0 + 15 * 60 });\nconsole.log(\"token:\", token.slice(0, 50) + \"...\");\nconsole.log(\"cek sekarang      :\", await verifikasi(token, t0 + 60));\nconsole.log(\"cek 20 menit lagi :\", await verifikasi(token, t0 + 20 * 60));\nconst palsu = token.split(\".\");\npalsu[1] = teksKeB64(JSON.stringify({ sub: \"u_42\", peran: \"admin\", exp: t0 + 9999 }));\nconsole.log(\"peran diubah admin:\", await verifikasi(palsu.join(\".\"), t0 + 60));\nconsole.log(\"payload bisa dibaca siapa saja:\", b64KeTeks(token.split(\".\")[1]));",
+    "out": "token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1X...\ncek sekarang      : valid: user u_42, peran user\ncek 20 menit lagi : kedaluwarsa\nperan diubah admin: tanda tangan tidak valid\npayload bisa dibaca siapa saja: {\"sub\":\"u_42\",\"peran\":\"user\",\"iat\":1800000000,\"exp\":1800000900}",
+    "lang": "js"
+   }
+  ]
+ },
+ "fe-9-1": {
+  "exs": [
+   {
+    "t": "Kasus: melihat elemen LCP di konsol",
+    "code": "new PerformanceObserver((daftar) => {\n  const terakhir = daftar.getEntries().at(-1);\n  console.log(\"LCP:\", Math.round(terakhir.startTime), \"ms\", terakhir.element);\n}).observe({ type: \"largest-contentful-paint\", buffered: true });",
+    "d": "Tempel di konsol DevTools untuk tahu elemen mana yang menjadi konten terbesar."
+   },
+   {
+    "t": "Kasus: menjumlahkan pergeseran tata letak (CLS)",
+    "code": "let cls = 0;\nnew PerformanceObserver((daftar) => {\n  for (const e of daftar.getEntries()) {\n    if (!e.hadRecentInput) cls += e.value;   // geseran akibat klik pengguna tidak dihitung\n  }\n  console.log(\"CLS sejauh ini:\", cls.toFixed(3));\n}).observe({ type: \"layout-shift\", buffered: true });"
+   },
+   {
+    "t": "Kasus: memberi label baik, perlu perbaikan, atau buruk",
+    "code": "const ambang = { LCP: [2500, 4000], INP: [200, 500], CLS: [0.1, 0.25] };\nfunction nilai(metrik, v) {\n  const [baik, buruk] = ambang[metrik];\n  return v <= baik ? \"baik\" : v <= buruk ? \"perlu perbaikan\" : \"buruk\";\n}\nconsole.log(\"LCP 1800 ms :\", nilai(\"LCP\", 1800));\nconsole.log(\"INP 350 ms  :\", nilai(\"INP\", 350));\nconsole.log(\"CLS 0.31    :\", nilai(\"CLS\", 0.31));",
+    "out": "LCP 1800 ms : baik\nINP 350 ms  : perlu perbaikan\nCLS 0.31    : buruk"
+   }
+  ]
+ },
+ "fe-9-3": {
+  "exs": [
+   {
+    "t": "Kasus: throttle untuk menyimpan posisi scroll",
+    "code": "function throttle(fn, ms, jam) {\n  let terakhir = -Infinity;\n  return (...args) => {\n    if (jam() - terakhir >= ms) {\n      terakhir = jam();\n      fn(...args);\n    }\n  };\n}\nlet sekarang = 0;\nconst simpanPosisi = throttle((y) => console.log(`t=${sekarang}ms simpan posisi ${y}`), 100, () => sekarang);\nfor (let t = 0; t <= 300; t += 25) {     // event scroll setiap 25 ms\n  sekarang = t;\n  simpanPosisi(t * 2);\n}",
+    "out": "t=0ms simpan posisi 0\nt=100ms simpan posisi 200\nt=200ms simpan posisi 400\nt=300ms simpan posisi 600",
+    "d": "Jam dibuat manual agar hasilnya selalu sama: dari 13 event, hanya 4 yang dijalankan."
+   },
+   {
+    "t": "Kasus: menyimpan draf setelah berhenti mengetik",
+    "code": "function debounce(fn, ms) {\n  let t;\n  return (...args) => {\n    clearTimeout(t);\n    t = setTimeout(() => fn(...args), ms);\n  };\n}\nconst simpanDraf = debounce((teks) => console.log(\"draf disimpan:\", teks), 200);\n[\"Kopi\", \"Kopinya\", \"Kopinya enak\"].forEach((teks, i) => setTimeout(() => simpanDraf(teks), i * 40));\nsetTimeout(() => simpanDraf(\"Kopinya enak sekali\"), 500);",
+    "out": "draf disimpan: Kopinya enak\ndraf disimpan: Kopinya enak sekali"
+   },
+   {
+    "t": "Kasus: debounce yang bisa dibatalkan",
+    "code": "function debounce(fn, ms) {\n  let t;\n  const f = (...args) => {\n    clearTimeout(t);\n    t = setTimeout(() => fn(...args), ms);\n  };\n  f.batal = () => clearTimeout(t);\n  return f;\n}\nconst cari = debounce((kata) => console.log(\"cari:\", kata), 100);\ncari(\"teh\");\ncari.batal();                                  // misalnya pengguna menutup kotak pencarian\nsetTimeout(() => console.log(\"tidak ada pencarian yang terkirim\"), 200);",
+    "out": "tidak ada pencarian yang terkirim"
+   }
+  ]
+ },
+ "fe-10-1": {
+  "exs": [
+   {
+    "t": "Kasus: tag <sapa-pengguna> paling sederhana",
+    "code": "class SapaPengguna extends HTMLElement {\n  connectedCallback() {\n    this.textContent = `Halo, ${this.getAttribute(\"nama\") ?? \"tamu\"}!`;\n  }\n}\ncustomElements.define(\"sapa-pengguna\", SapaPengguna);\n// <sapa-pengguna nama=\"Rina\"></sapa-pengguna>",
+    "d": "Nama custom element wajib mengandung tanda hubung."
+   },
+   {
+    "t": "Kasus: slot untuk isi dari luar",
+    "code": "class KotakInfo extends HTMLElement {\n  connectedCallback() {\n    this.attachShadow({ mode: \"open\" }).innerHTML = `\n      <style>div{border-left:4px solid #2E5E8C;padding:8px 12px;background:#EEF4FA}</style>\n      <div><b><slot name=\"judul\">Info</slot></b><p><slot></slot></p></div>`;\n  }\n}\ncustomElements.define(\"kotak-info\", KotakInfo);\n// <kotak-info><span slot=\"judul\">Ongkir</span>Gratis di atas Rp100.000</kotak-info>"
+   },
+   {
+    "t": "Kasus: menyalin isi <template>",
+    "code": "// <template id=\"tpl-baris\"><li><b class=\"nama\"></b> <span class=\"harga\"></span></li></template>\nconst tpl = document.getElementById(\"tpl-baris\");\nconst daftar = document.querySelector(\"#daftar\");\nfor (const p of [{ nama: \"Kopi Gayo\", harga: 85000 }, { nama: \"Teh Melati\", harga: 25000 }]) {\n  const baris = tpl.content.cloneNode(true);\n  baris.querySelector(\".nama\").textContent = p.nama;\n  baris.querySelector(\".harga\").textContent = \"Rp\" + p.harga.toLocaleString(\"id-ID\");\n  daftar.append(baris);\n}",
+    "d": "Isi <template> tidak dirender sampai disalin dan ditempelkan ke halaman."
+   }
+  ]
+ },
+ "fe-10-2": {
+  "exs": [
+   {
+    "t": "Kasus: mendaftarkan service worker dan memeriksa hasilnya",
+    "code": "if (\"serviceWorker\" in navigator) {\n  window.addEventListener(\"load\", async () => {\n    try {\n      const reg = await navigator.serviceWorker.register(\"/sw.js\");\n      console.log(\"SW aktif untuk\", reg.scope);\n    } catch (err) {\n      console.log(\"SW gagal didaftarkan:\", err.message);\n    }\n  });\n}"
+   },
+   {
+    "t": "Kasus: data API selalu dari jaringan, cache hanya cadangan",
+    "code": "// sw.js — network first untuk /api/\nself.addEventListener(\"fetch\", (e) => {\n  if (!e.request.url.includes(\"/api/\")) return;\n  e.respondWith(\n    fetch(e.request)\n      .then((res) => {\n        const salinan = res.clone();\n        caches.open(\"api-v1\").then((c) => c.put(e.request, salinan));\n        return res;\n      })\n      .catch(() => caches.match(e.request))     // offline: pakai jawaban terakhir\n  );\n});"
+   },
+   {
+    "t": "Kasus: membersihkan cache versi lama",
+    "code": "// sw.js\nconst VERSI = \"toko-v2\";\nself.addEventListener(\"activate\", (e) => {\n  e.waitUntil(\n    caches.keys().then((semua) =>\n      Promise.all(semua.filter((k) => k !== VERSI).map((k) => caches.delete(k)))\n    )\n  );\n});",
+    "d": "Tanpa langkah ini, cache toko-v1 tetap menumpuk di perangkat pengguna."
+   }
+  ]
+ },
+ "fe-11-1": {
+  "exs": [
+   {
+    "t": "Kasus: SSG membuat satu halaman per artikel saat build",
+    "code": "const artikel = [\n  { slug: \"seduh-v60\", judul: \"Cara Seduh V60\" },\n  { slug: \"kopi-gayo\", judul: \"Mengenal Kopi Gayo\" },\n];\nconst halaman = (a) => `<h1>${a.judul}</h1>`;\nfor (const a of artikel) console.log(`dist/blog/${a.slug}.html -> ${halaman(a)}`);",
+    "out": "dist/blog/seduh-v60.html -> <h1>Cara Seduh V60</h1>\ndist/blog/kopi-gayo.html -> <h1>Mengenal Kopi Gayo</h1>",
+    "d": "File HTML jadi tinggal dikirim dari CDN, tanpa kerja di server saat diminta."
+   },
+   {
+    "t": "Kasus: SSR membuat HTML berbeda untuk setiap pengguna",
+    "code": "const keranjang = { rina: 2, budi: 0 };\nfunction renderPerRequest(pengguna) {\n  const n = keranjang[pengguna];\n  return `<header>Halo ${pengguna} · ${n ? n + \" barang di keranjang\" : \"keranjang kosong\"}</header>`;\n}\nconsole.log(renderPerRequest(\"rina\"));\nconsole.log(renderPerRequest(\"budi\"));",
+    "out": "<header>Halo rina · 2 barang di keranjang</header>\n<header>Halo budi · keranjang kosong</header>"
+   },
+   {
+    "t": "Kasus: CSR mengisi halaman setelah data datang",
+    "code": "// index.html hanya berisi <div id=\"root\">Memuat...</div>\nconst root = document.getElementById(\"root\");\nconst res = await fetch(\"/api/pesanan-saya\");\nconst pesanan = await res.json();\nroot.innerHTML = \"\";\nfor (const p of pesanan) {\n  const li = document.createElement(\"li\");\n  li.textContent = `${p.id} · ${p.status}`;\n  root.append(li);\n}",
+    "d": "Cocok untuk dasbor pribadi yang tidak perlu diindeks mesin pencari."
+   }
+  ]
+ },
+ "fe-11-2": {
+  "exs": [
+   {
+    "t": "Kasus: hanya meminta kolom yang dibutuhkan",
+    "code": "query {\n  daftarProduk { nama harga }\n}\n\n# respons: tidak ada kolom deskripsi, stok, atau gambar\n{ \"data\": { \"daftarProduk\": [\n  { \"nama\": \"Kopi Gayo\", \"harga\": 85000 },\n  { \"nama\": \"Teh Melati\", \"harga\": 25000 } ] } }"
+   },
+   {
+    "t": "Kasus: query dengan variabel",
+    "code": "query CariProduk($kata: String!) {\n  cari(kata: $kata) { id nama harga }\n}\n\n# variabel dikirim terpisah dari query\n{ \"kata\": \"kopi\" }",
+    "d": "Query tetap sama, hanya variabelnya yang berganti, sehingga mudah di-cache klien."
+   },
+   {
+    "t": "Kasus: mutation untuk menambah ulasan",
+    "code": "mutation {\n  tambahUlasan(produkId: 1, bintang: 5, komentar: \"Wangi!\") {\n    id\n    bintang\n  }\n}\n\n# respons\n{ \"data\": { \"tambahUlasan\": { \"id\": \"u_77\", \"bintang\": 5 } } }"
+   }
+  ]
+ },
+ "fe-12-1": {
+  "exs": [
+   {
+    "t": "Kasus: meminta perbaikan bug dengan pesan error lengkap",
+    "code": "Konteks: aplikasi React + Vite, file src/components/Keranjang.jsx.\nMasalah: saat jumlah barang diubah, total tidak ikut berubah.\nError di konsol: \"Warning: Each child in a list should have a unique key prop.\"\nYang sudah dicoba: memberi key={index}, total tetap tidak berubah.\nTugas: jelaskan penyebabnya, lalu beri perbaikan seminimal mungkin."
+   },
+   {
+    "t": "Kasus: meminta tes untuk fungsi yang sudah ada",
+    "code": "Konteks: fungsi hitungOngkir(berat, kota) di src/utils/ongkir.js (kode terlampir).\nTugas: tulis tes Vitest untuk kasus normal, berat 0, berat di atas 30 kg,\ndan kota yang tidak dikenal.\nBatasan: jangan ubah fungsi aslinya, satu describe, nama tes dalam bahasa Indonesia."
+   },
+   {
+    "t": "Kasus: meminta tinjauan kode sebelum merge",
+    "code": "Konteks: pull request ini menambah form checkout (diff terlampir).\nTugas: tinjau dari sisi keamanan (XSS, data sensitif), aksesibilitas (label, fokus),\ndan performa (render berulang).\nFormat jawaban: daftar temuan, masing-masing dengan baris, tingkat penting, dan saran perbaikan.",
+    "d": "Minta format jawaban yang jelas agar hasilnya mudah diperiksa."
+   }
+  ]
+ },
+ "fe-12-2": {
+  "exs": [
+   {
+    "t": "Kasus: membaca jawaban yang datang sepotong-sepotong",
+    "code": "// Response buatan sendiri dengan body stream, pengganti jawaban dari /api/tanya\nconst potongan = [\"Kopi \", \"Gayo \", \"berasal \", \"dari \", \"Aceh.\"];\nconst res = new Response(new ReadableStream({\n  start(c) { for (const p of potongan) c.enqueue(new TextEncoder().encode(p)); c.close(); },\n}));\n\nconst reader = res.body.getReader();\nconst dec = new TextDecoder();\nlet layar = \"\";\nwhile (true) {\n  const { value, done } = await reader.read();\n  if (done) break;\n  layar += dec.decode(value, { stream: true });\n  console.log(\"tampil:\", layar);\n}",
+    "out": "tampil: Kopi \ntampil: Kopi Gayo \ntampil: Kopi Gayo berasal \ntampil: Kopi Gayo berasal dari \ntampil: Kopi Gayo berasal dari Aceh.",
+    "d": "Setiap potongan langsung ditambahkan ke layar, tanpa menunggu jawaban selesai."
+   },
+   {
+    "t": "Kasus: tombol berhenti dengan AbortController",
+    "code": "let pengendali;\ndocument.querySelector(\"#kirim\").onclick = async () => {\n  pengendali = new AbortController();\n  try {\n    const res = await fetch(\"/api/tanya\", { method: \"POST\", body: JSON.stringify({ pertanyaan: \"Cara seduh V60?\" }), signal: pengendali.signal });\n    const reader = res.body.getReader();\n    // ... baca stream seperti biasa\n  } catch (err) {\n    if (err.name === \"AbortError\") console.log(\"dihentikan pengguna\");\n  }\n};\ndocument.querySelector(\"#berhenti\").onclick = () => pengendali?.abort();"
+   },
+   {
+    "t": "Kasus: kunci API hanya ada di server",
+    "code": "// app/api/tanya/route.js (Next.js) — berjalan di server, bukan di browser\nexport async function POST(req) {\n  const { pertanyaan } = await req.json();\n  const res = await fetch(\"https://api.penyedia-model.example/v1/messages\", {\n    method: \"POST\",\n    headers: { \"content-type\": \"application/json\", \"x-api-key\": process.env.AI_API_KEY },\n    body: JSON.stringify({ input: pertanyaan, stream: true }),\n  });\n  return new Response(res.body);   // teruskan stream ke browser\n}",
+    "d": "Browser hanya memanggil /api/tanya; kunci di process.env tidak pernah terkirim ke pengguna."
+   }
+  ],
+  "cx": [
+   {
+    "t": "Membaca stream Server-Sent Events seperti chat AI",
+    "b": "Banyak API chat mengirim jawaban dalam format SSE: baris \"data: ...\" dipisah baris kosong, diakhiri [DONE]. Respons dibuat sendiri dengan ReadableStream agar bisa dijalankan tanpa server; cara membacanya sama persis dengan respons fetch sungguhan.",
+    "code": "const jawaban = \"Untuk kopi V60, pakai rasio 1:15, air 92°C, dan waktu seduh sekitar 3 menit.\".split(\" \");\nconst enc = new TextEncoder();\nconst r = new Response(new ReadableStream({\n  async start(c) {\n    for (const kata of jawaban) {\n      c.enqueue(enc.encode(`data: ${JSON.stringify({ teks: kata + \" \" })}\\n\\n`));\n      await new Promise((ok) => setTimeout(ok, 5));\n    }\n    c.enqueue(enc.encode(\"data: [DONE]\\n\\n\"));\n    c.close();\n  },\n}), { headers: { \"content-type\": \"text/event-stream\" } });\n\nconst reader = r.body.pipeThrough(new TextDecoderStream()).getReader();\nlet sisa = \"\", tampil = \"\", potongan = 0;\nwhile (true) {\n  const { value, done } = await reader.read(); if (done) break;\n  sisa += value;\n  const event = sisa.split(\"\\n\\n\"); sisa = event.pop();\n  for (const e of event) {\n    const data = e.replace(/^data: /, \"\");\n    if (data === \"[DONE]\") continue;\n    tampil += JSON.parse(data).teks; potongan++;\n  }\n}\nconsole.log(`${potongan} potongan diterima -> \"${tampil.trim()}\"`);",
+    "out": "14 potongan diterima -> \"Untuk kopi V60, pakai rasio 1:15, air 92°C, dan waktu seduh sekitar 3 menit.\"",
+    "lang": "js"
+   },
+   {
+    "t": "Route handler dan komponen chat dengan Vercel AI SDK",
+    "code": "// app/api/chat/route.ts  (API key aman di server)\nimport { anthropic } from \"@ai-sdk/anthropic\";\nimport { streamText } from \"ai\";\nexport async function POST(req: Request) {\n  const { messages } = await req.json();\n  if (JSON.stringify(messages).length > 20_000) return new Response(\"Terlalu panjang\", { status: 413 });\n  const result = streamText({ model: anthropic(\"claude-sonnet-5-5\"), system: \"Kamu asisten barista toko kopi. Jawab ringkas dalam bahasa Indonesia.\", messages });\n  return result.toUIMessageStreamResponse();\n}\n\n// app/chat/page.tsx\n\"use client\";\nimport { useChat } from \"@ai-sdk/react\";\nexport default function Chat() {\n  const { messages, sendMessage, status, stop } = useChat();\n  return (\n    <>\n      {messages.map((m) => <p key={m.id}><b>{m.role === \"user\" ? \"Kamu\" : \"Barista AI\"}:</b> {m.parts.map((p) => p.type === \"text\" ? p.text : \"\").join(\"\")}</p>)}\n      {status === \"streaming\" && <button onClick={stop}>Hentikan</button>}\n      <form onSubmit={(e) => { e.preventDefault(); const f = new FormData(e.currentTarget); sendMessage({ text: String(f.get(\"q\")) }); e.currentTarget.reset(); }}>\n        <input name=\"q\" placeholder=\"Tanya soal seduh kopi...\" />\n      </form>\n      <small>Jawaban AI bisa keliru. Periksa kembali informasi penting.</small>\n    </>\n  );\n}",
+    "lang": "tsx",
+    "b": "Dengan Vercel AI SDK, route handler memegang kunci API dan meneruskan stream; komponen klien memakai useChat untuk daftar pesan, status streaming, dan tombol berhenti."
+   }
+  ]
+ }
+}

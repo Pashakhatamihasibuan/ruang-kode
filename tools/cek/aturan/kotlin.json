@@ -1,0 +1,190 @@
+{
+ "aturan": [
+  [
+   "val/var",
+   "\\b(val|var)\\s+\\w",
+   "^val, var"
+  ],
+  [
+   "null safety (?. ?: !! Tipe?)",
+   "\\?\\.|\\?:|!!|:\\s*[A-Z]\\w*(<[^>]*>)?\\?",
+   "null safety"
+  ],
+  [
+   "string template ekspresi ${}",
+   "\\$\\{",
+   "^String template"
+  ],
+  [
+   "format/pad/raw string",
+   "\\.format\\(|String\\.format|\\.pad(Start|End)\\(|trimIndent|trimMargin|\\\"\\\"\\\"",
+   "format keluaran"
+  ],
+  [
+   "import",
+   "^import\\s",
+   "format keluaran"
+  ],
+  [
+   "if/else",
+   "\\bif\\s*\\(|\\belse\\b",
+   "^if dan when"
+  ],
+  [
+   "when",
+   "\\bwhen\\b",
+   "^if dan when"
+  ],
+  [
+   "range",
+   "\\w\\s*\\.\\.<?\\s*\\w|\\b(until|downTo|step)\\b",
+   "range dan loop"
+  ],
+  [
+   "for",
+   "\\bfor\\s*\\(",
+   "range dan loop"
+  ],
+  [
+   "while/do-while",
+   "\\bwhile\\s*\\(|\\bdo\\s*\\{",
+   "range dan loop"
+  ],
+  [
+   "list dasar",
+   "\\b(listOf|mutableListOf|arrayOf|intArrayOf|emptyList|withIndex)\\b",
+   "range dan loop"
+  ],
+  [
+   "repeat",
+   "(?<![.\\w])repeat\\s*\\(",
+   "^Latihan algoritma"
+  ],
+  [
+   "fungsi sendiri",
+   "^\\s*((private|internal|public|protected|inline|suspend|operator|infix|override|open|abstract|tailrec)\\s+)*fun\\s+(?!main\\s*\\()",
+   "^Fungsi"
+  ],
+  [
+   "lambda",
+   "\\{[ \\t]*(\\w+|\\([\\w, ]+\\))([ \\t]*:[ \\t]*\\w+)?([ \\t]*,[ \\t]*\\w+)*[ \\t]*->|\\bit\\b",
+   "^Fungsi"
+  ],
+  [
+   "map/set/pair",
+   "\\b(mapOf|mutableMapOf|setOf|mutableSetOf|emptyMap|hashMapOf|Pair|Triple)\\b|\\w\\s+to\\s+[\\w\\\"]",
+   "koleksi"
+  ],
+  [
+   "operasi koleksi",
+   "\\.(filter|filterNot|map|mapNotNull|forEach|forEachIndexed|sumOf|groupBy|sortedBy|sortedByDescending|sortedWith|maxBy|minBy|maxOf|minOf|joinToString|any|all|none|count|mapValues|associate|associateBy|associateWith|fold|reduce|partition|flatMap|zip|chunked|windowed|firstOrNull|take|drop|distinct|sorted|sortedDescending|sum|average)\\s*[({]",
+   "koleksi"
+  ],
+  [
+   "break/continue/label",
+   "\\b(break|continue)\\b|\\b\\w+@\\s*(for|while|do)\\b",
+   "break, continue"
+  ],
+  [
+   "operator logika (&& || ! xor)",
+   "&&|\\|\\||\\b(xor|and|or)\\b(?=\\s*[\\w(!])|![\\w(]",
+   "^Boolean logic"
+  ],
+  [
+   "bilangan acak",
+   "\\bRandom\\b|\\.random\\(\\)|\\.shuffled?\\(",
+   "^Random number"
+  ],
+  [
+   "class",
+   "^\\s*((data|sealed|abstract|open|enum|inner|value|private|internal|annotation)\\s+)*class\\s",
+   "^Class, data class"
+  ],
+  [
+   "extension function",
+   "\\bfun\\s+(<[^>]+>\\s*)?[A-Z][\\w<>, ?]*\\.\\w+\\s*\\(",
+   "^Extension function"
+  ],
+  [
+   "scope function",
+   "\\.(let|apply|also|run|takeIf|takeUnless)\\s*\\{|\\bwith\\s*\\(|(?<![.\\w])run\\s*\\{|\\bbuild(String|List|Map)\\s*\\{",
+   "^Extension function dan scope"
+  ],
+  [
+   "coroutines",
+   "\\b(suspend|runBlocking|launch|async|await|delay|coroutineScope|withContext|Dispatchers|Job)\\b",
+   "^Coroutines"
+  ],
+  [
+   "exception/require/Result",
+   "\\btry\\s*\\{|\\bcatch\\s*\\(|\\bthrow\\b|\\b(require|check|requireNotNull|checkNotNull|error)\\s*\\(|\\brunCatching\\b|\\bResult\\b",
+   "^Exception"
+  ],
+  [
+   "deklarasi generik",
+   "\\bfun\\s*<|\\b(class|interface)\\s+\\w+\\s*<",
+   "^Generics"
+  ],
+  [
+   "enum class",
+   "\\benum\\s+class\\b",
+   "enum class"
+  ],
+  [
+   "object/companion/const",
+   "^\\s*((private|internal)\\s+)?object\\s+\\w|\\bcompanion\\s+object\\b|\\bobject\\s*:|\\bconst\\s+val\\b",
+   "^Generics, enum class, dan object"
+  ],
+  [
+   "flow",
+   "\\b(flow|flowOf|asFlow|Flow|StateFlow|MutableStateFlow|SharedFlow|MutableSharedFlow|collect|emit)\\b",
+   "^Flow"
+  ],
+  [
+   "interface",
+   "^\\s*((private|internal|fun)\\s+)*interface\\s",
+   "^Pewarisan"
+  ],
+  [
+   "pewarisan (open/abstract/override)",
+   "\\b(open|abstract|override|protected)\\s+(class|fun|val|var)\\b|\\bsuper\\.",
+   "^Pewarisan"
+  ],
+  [
+   "visibility",
+   "\\b(private|internal|protected)\\s+(val|var|fun|class|constructor|set|object)\\b",
+   "^Pewarisan"
+  ],
+  [
+   "delegation (by)",
+   "\\bby\\b",
+   "^Delegation"
+  ],
+  [
+   "destructuring",
+   "\\b(val|var)\\s*\\(|\\{\\s*\\(\\w+,\\s*\\w+\\)\\s*->",
+   "^Destructuring"
+  ],
+  [
+   "operator/infix fun",
+   "\\b(operator|infix)\\s+fun\\b",
+   "operator overloading"
+  ],
+  [
+   "tipe fungsi/inline/reified/referensi",
+   ":\\s*(suspend\\s+)?\\([^()]*\\)\\s*->|\\binline\\b|\\breified\\b|\\w::\\w|(?<![\\w:])::\\w",
+   "^Higher-order"
+  ],
+  [
+   "lambda dengan receiver/DSL",
+   "\\w\\.\\(\\)\\s*->|@DslMarker",
+   "^Type-safe builder"
+  ],
+  [
+   "pengujian",
+   "@Test\\b|\\bassert(Equals|True|False|FailsWith)\\b|\\bmockk\\b|\\bshouldBe\\b|\\bcoEvery\\b",
+   "^Pengujian"
+  ]
+ ],
+ "abaikan": []
+}

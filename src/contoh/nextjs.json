@@ -1,0 +1,276 @@
+{
+ "nextjs-1-1": {
+  "exs": [
+   {
+    "t": "Kasus: isi folder proyek baru",
+    "d": "Bagian terpenting proyek App Router ada di folder app/.",
+    "code": "tokoku/\n├── app/\n│   ├── layout.tsx      # kerangka HTML semua halaman\n│   ├── page.tsx        # halaman \"/\"\n│   └── globals.css\n├── public/             # gambar dan file statis, misalnya /logo.png\n├── next.config.ts      # pengaturan Next.js\n├── package.json\n└── tsconfig.json"
+   },
+   {
+    "t": "Kasus: perintah sehari-hari",
+    "code": "npm run dev      # server pengembangan di http://localhost:3000, otomatis muat ulang\nnpm run build    # membuat versi produksi (cek error dan ukuran setiap halaman)\nnpm run start    # menjalankan hasil build, seperti di server sungguhan\nnpm run lint     # memeriksa kode dengan ESLint"
+   },
+   {
+    "t": "Kasus: mencoba versi produksi di komputer sendiri",
+    "d": "Sebelum dipamerkan, pastikan build berhasil dan halaman tampil cepat.",
+    "code": "npm run build && npm run start\n# buka http://localhost:3000 di browser ponsel lewat Wi-Fi yang sama:\n#   http://192.168.1.7:3000  (alamat Network yang tampil saat npm run dev)"
+   }
+  ]
+ },
+ "nextjs-1-2": {
+  "code": "// app/layout.tsx\nimport Link from 'next/link';\nimport './globals.css';\n\nexport default function RootLayout({ children }: { children: React.ReactNode }) {\n  return (\n    <html lang=\"id\">\n      <body>\n        <nav className=\"flex gap-4 p-4\">\n          <Link href=\"/\">Beranda</Link>\n          <Link href=\"/produk\">Produk</Link>\n        </nav>\n        {children}\n      </body>\n    </html>\n  );\n}\n\n// app/produk/page.tsx  ->  /produk\nexport default function HalamanProduk() {\n  return <h1 className=\"text-2xl font-bold\">Semua produk</h1>;\n}",
+  "exs": [
+   {
+    "t": "Kasus: halaman Tentang di /tentang",
+    "d": "Cukup buat folder tentang dengan file page.tsx di dalamnya.",
+    "code": "// app/tentang/page.tsx  ->  /tentang\nexport default function Tentang() {\n  return (\n    <main className=\"p-4\">\n      <h1 className=\"text-2xl font-bold\">Tentang Warung Kopi Bu Sari</h1>\n      <p>Berdiri sejak 2012 di Purwokerto, menyangrai kopi lokal setiap pagi.</p>\n    </main>\n  );\n}"
+   },
+   {
+    "t": "Kasus: layout bersarang untuk halaman akun",
+    "d": "Menu samping tetap ada saat berpindah antarhalaman akun.",
+    "code": "// app/akun/layout.tsx  ->  membungkus /akun, /akun/pesanan, /akun/alamat\nimport Link from 'next/link';\n\nexport default function LayoutAkun({ children }: { children: React.ReactNode }) {\n  return (\n    <div className=\"flex gap-6 p-4\">\n      <aside className=\"flex flex-col gap-2\">\n        <Link href=\"/akun\">Profil</Link>\n        <Link href=\"/akun/pesanan\">Pesanan saya</Link>\n        <Link href=\"/akun/alamat\">Alamat</Link>\n      </aside>\n      <section>{children}</section>\n    </div>\n  );\n}\n\n// app/akun/pesanan/page.tsx  ->  /akun/pesanan\nexport default function Pesanan() {\n  return <h1>Pesanan saya</h1>;\n}"
+   },
+   {
+    "t": "Kasus: halaman 404 kustom dan route group",
+    "code": "// app/not-found.tsx  ->  tampil untuk URL yang tidak ada\nimport Link from 'next/link';\n\nexport default function TidakDitemukan() {\n  return (\n    <main className=\"p-4\">\n      <h1>Halaman tidak ditemukan</h1>\n      <Link href=\"/\">Kembali ke beranda</Link>\n    </main>\n  );\n}\n\n// app/(pemasaran)/promo/page.tsx  ->  /promo  (folder dalam kurung tidak masuk URL)\nexport default function Promo() {\n  return <h1>Promo Akhir Tahun</h1>;\n}"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Struktur folder dan layout bersarang",
+    "b": "",
+    "code": "app/\n├── layout.tsx                 -> <html> root, font, header\n├── page.tsx                   -> /\n├── (toko)/\n│   ├── layout.tsx             -> layout dengan sidebar kategori\n│   ├── produk/page.tsx        -> /produk\n│   └── keranjang/page.tsx     -> /keranjang\n├── (akun)/akun/page.tsx       -> /akun\n└── not-found.tsx\n\n// app/layout.tsx\nimport Link from \"next/link\";\nexport default function RootLayout({ children }: { children: React.ReactNode }) {\n  return (\n    <html lang=\"id\">\n      <body>\n        <header>\n          <Link href=\"/\">Beranda</Link>\n          <Link href=\"/produk\">Produk</Link>\n          <Link href=\"/keranjang\" prefetch={false}>Keranjang</Link>\n        </header>\n        <main>{children}</main>\n      </body>\n    </html>\n  );\n}",
+    "lang": "tsx"
+   },
+   {
+    "t": "Dari daftar file ke tabel rute",
+    "lang": "ts",
+    "b": "Skrip kecil ini meniru cara App Router membaca folder: hanya page.tsx yang menjadi rute, folder dalam kurung tidak masuk URL, dan folder berawalan garis bawah bersifat privat.",
+    "code": "const file = [\n  \"app/page.tsx\", \"app/(toko)/produk/page.tsx\", \"app/(toko)/keranjang/page.tsx\",\n  \"app/tentang/page.tsx\", \"app/(toko)/layout.tsx\", \"app/_komponen/Tombol.tsx\",\n];\nfor (const f of file) {\n  const m = f.match(/^app\\/(.*?)\\/?page\\.tsx$/);\n  if (!m) { console.log(f.padEnd(30), \"-> bukan rute (layout/privat)\"); continue; }\n  const url = \"/\" + m[1].split(\"/\").filter((s) => s && !/^\\(.*\\)$/.test(s) && !s.startsWith(\"_\")).join(\"/\");\n  console.log(f.padEnd(30), \"->\", url);\n}",
+    "out": "app/page.tsx                   -> /\napp/(toko)/produk/page.tsx     -> /produk\napp/(toko)/keranjang/page.tsx  -> /keranjang\napp/tentang/page.tsx           -> /tentang\napp/(toko)/layout.tsx          -> bukan rute (layout/privat)\napp/_komponen/Tombol.tsx       -> bukan rute (layout/privat)"
+   }
+  ]
+ },
+ "nextjs-1-3": {
+  "exs": [
+   {
+    "t": "Kasus: halaman profil penulis",
+    "code": "// app/penulis/[username]/page.tsx  ->  /penulis/rina-wulandari\nimport { notFound } from 'next/navigation';\n\nconst penulis = [\n  { username: 'rina-wulandari', nama: 'Rina Wulandari', artikel: 12 },\n  { username: 'budi-santoso', nama: 'Budi Santoso', artikel: 5 },\n];\n\nexport default async function Penulis({ params }: { params: Promise<{ username: string }> }) {\n  const { username } = await params;\n  const p = penulis.find((x) => x.username === username);\n  if (!p) notFound();\n  return <h1>{p.nama} ({p.artikel} artikel)</h1>;\n}"
+   },
+   {
+    "t": "Kasus: metadata statis dan dinamis untuk berita sekolah",
+    "code": "// app/berita/page.tsx  ->  judul tetap\nexport const metadata = {\n  title: 'Berita Sekolah | SMAN 3 Malang',\n  description: 'Kabar terbaru kegiatan siswa dan guru',\n};\n\n// app/berita/[slug]/page.tsx  ->  judul mengikuti URL\nexport async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {\n  const { slug } = await params;\n  const judul = slug.replaceAll('-', ' ');          // \"juara-olimpiade-fisika\" -> \"juara olimpiade fisika\"\n  return { title: `${judul} | Berita Sekolah` };\n}"
+   },
+   {
+    "t": "Kasus: halaman statis untuk setiap kota",
+    "d": "generateStaticParams membuat empat halaman saat build.",
+    "code": "// app/cuaca/[kota]/page.tsx\nconst KOTA = ['jakarta', 'surabaya', 'medan', 'makassar'];\n\nexport function generateStaticParams() {\n  return KOTA.map((kota) => ({ kota }));\n}\n\nexport default async function Cuaca({ params }: { params: Promise<{ kota: string }> }) {\n  const { kota } = await params;\n  return <h1>Cuaca hari ini di {kota[0].toUpperCase() + kota.slice(1)}</h1>;\n}"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Halaman produk dengan metadata dinamis",
+    "lang": "tsx",
+    "b": "Halaman produk populer dibuat saat build, dan setiap halaman punya judul, deskripsi, URL kanonis, serta gambar Open Graph sendiri agar tampil rapi di hasil pencarian dan saat dibagikan.",
+    "code": "// app/produk/[slug]/page.tsx\nimport type { Metadata } from \"next\";\nimport { notFound } from \"next/navigation\";\nimport { ambilProduk, slugTerlaris } from \"@/lib/produk\";\n\ntype Props = { params: Promise<{ slug: string }> };\n\nexport async function generateStaticParams() {\n  const daftar = await slugTerlaris(100);\n  return daftar.map((slug) => ({ slug }));           // 100 terlaris dibuat saat build\n}\n\nexport async function generateMetadata({ params }: Props): Promise<Metadata> {\n  const p = await ambilProduk((await params).slug);\n  if (!p) return {};\n  return {\n    title: `${p.nama} | Toko Kopi`,\n    description: p.ringkasan.slice(0, 155),\n    alternates: { canonical: `/produk/${p.slug}` },\n    openGraph: { images: [{ url: p.gambar, width: 1200, height: 630 }] },\n  };\n}\n\nexport default async function Halaman({ params }: Props) {\n  const p = await ambilProduk((await params).slug);\n  if (!p) notFound();\n  return <h1>{p.nama}</h1>;\n}"
+   },
+   {
+    "t": "Membuat slug dan memotong deskripsi untuk SEO",
+    "b": "",
+    "code": "const slugify = (s: string) => s.normalize(\"NFD\").replace(/[̀-ͯ]/g, \"\").toLowerCase()\n  .replace(/&/g, \" dan \").replace(/[^a-z0-9]+/g, \"-\").replace(/^-|-$/g, \"\");\nconst potong = (s: string, n = 155) => (s.length <= n ? s : s.slice(0, s.lastIndexOf(\" \", n - 1)) + \"…\");\n\nconst produk = [\"Kopi Arabika Gayo 250g\", \"Teh & Gula Aren — Paket Hemat\", \"Café Crème Spécial\"];\nproduk.forEach((p) => console.log(p.padEnd(32), \"->\", \"/produk/\" + slugify(p)));\nconst desk = \"Kopi arabika dari dataran tinggi Gayo, Aceh, diproses full wash dan disangrai medium. Rasa cokelat, jeruk, dan karamel dengan keasaman sedang yang cocok untuk V60 maupun espresso harian.\";\nconst d = potong(desk);\nconsole.log(d.length, \"karakter:\", d);",
+    "lang": "ts",
+    "out": "Kopi Arabika Gayo 250g           -> /produk/kopi-arabika-gayo-250g\nTeh & Gula Aren — Paket Hemat    -> /produk/teh-dan-gula-aren-paket-hemat\nCafé Crème Spécial               -> /produk/cafe-creme-special\n153 karakter: Kopi arabika dari dataran tinggi Gayo, Aceh, diproses full wash dan disangrai medium. Rasa cokelat, jeruk, dan karamel dengan keasaman sedang yang cocok…"
+   }
+  ]
+ },
+ "nextjs-2-1": {
+  "exs": [
+   {
+    "t": "Kasus: tombol suka di halaman resep",
+    "d": "Halaman tetap Server Component; hanya tombolnya yang dikirim sebagai JavaScript.",
+    "code": "// components/TombolSuka.tsx\n'use client';\nimport { useState } from 'react';\n\nexport default function TombolSuka() {\n  const [suka, setSuka] = useState(false);\n  return (\n    <button onClick={() => setSuka(!suka)} aria-pressed={suka}>\n      {suka ? '♥ Disukai' : '♡ Suka'}\n    </button>\n  );\n}\n\n// app/resep/rendang/page.tsx  (Server Component)\nimport TombolSuka from '@/components/TombolSuka';\nexport default function Rendang() {\n  return (\n    <article>\n      <h1>Resep Rendang Padang</h1>\n      <p>Bahan: daging sapi 1 kg, santan 1 liter, bumbu halus.</p>\n      <TombolSuka />\n    </article>\n  );\n}"
+   },
+   {
+    "t": "Kasus: Server Component membaca database",
+    "code": "// app/siswa/page.tsx  (Server Component, boleh async)\nexport default async function DaftarSiswa() {\n  const siswa = await db.siswa.findMany({ where: { kelas: 'XI IPA 1' }, orderBy: { nama: 'asc' } });\n  return (\n    <ul>\n      {siswa.map((s) => <li key={s.id}>{s.nama}</li>)}\n    </ul>\n  );\n}\n// kode query dan kredensial database tidak pernah dikirim ke browser"
+   },
+   {
+    "t": "Kasus: hitung mundur promo butuh Client Component",
+    "d": "useState, useEffect, dan timer hanya berjalan di browser.",
+    "code": "// components/HitungMundur.tsx\n'use client';\nimport { useEffect, useState } from 'react';\n\nexport default function HitungMundur({ detik }: { detik: number }) {\n  const [sisa, setSisa] = useState(detik);\n  useEffect(() => {\n    const id = setInterval(() => setSisa((s) => Math.max(0, s - 1)), 1000);\n    return () => clearInterval(id);\n  }, []);\n  return <p>Promo berakhir dalam {sisa} detik</p>;\n}"
+   }
+  ]
+ },
+ "nextjs-2-2": {
+  "exs": [
+   {
+    "t": "Kasus: tab interaktif berisi konten server",
+    "d": "Deskripsi dan ulasan dirender di server, lalu dikirim sebagai prop ke tab client.",
+    "code": "// app/produk/[slug]/Tab.tsx\n'use client';\nimport { useState, type ReactNode } from 'react';\n\nexport function Tab({ deskripsi, ulasan }: { deskripsi: ReactNode; ulasan: ReactNode }) {\n  const [aktif, setAktif] = useState<'deskripsi' | 'ulasan'>('deskripsi');\n  return (\n    <div>\n      <button onClick={() => setAktif('deskripsi')}>Deskripsi</button>\n      <button onClick={() => setAktif('ulasan')}>Ulasan</button>\n      {aktif === 'deskripsi' ? deskripsi : ulasan}\n    </div>\n  );\n}\n\n// app/produk/[slug]/page.tsx  (Server)\nimport { Tab } from './Tab';\nexport default async function Detail() {\n  return <Tab deskripsi={<Deskripsi />} ulasan={<DaftarUlasan />} />;   // keduanya Server Component\n}"
+   },
+   {
+    "t": "Kasus: hanya kirim props yang bisa diserialisasi",
+    "code": "// app/keranjang/page.tsx  (Server)\nimport { RingkasanKeranjang } from './RingkasanKeranjang';\n\nexport default async function Keranjang() {\n  const item = await db.keranjang.findMany();\n  // BENAR: objek biasa berisi string dan angka, tanggal dikirim sebagai teks ISO\n  return (\n    <RingkasanKeranjang\n      item={item.map((i) => ({ nama: i.nama, qty: i.qty, harga: i.harga }))}\n      dibuat={new Date().toISOString()}\n    />\n  );\n  // SALAH: <RingkasanKeranjang onHapus={(id) => hapus(id)} />  -> fungsi biasa tidak bisa dikirim ke client\n}"
+   },
+   {
+    "t": "Kasus: 'use client' sedalam mungkin",
+    "d": "Satu tombol interaktif tidak perlu membuat seluruh artikel menjadi kode client.",
+    "code": "// app/blog/[slug]/TombolBagikan.tsx\n'use client';\nexport function TombolBagikan({ url }: { url: string }) {\n  return <button onClick={() => navigator.clipboard.writeText(url)}>Salin tautan</button>;\n}\n\n// app/blog/[slug]/page.tsx  (Server, tanpa 'use client')\nimport { TombolBagikan } from './TombolBagikan';\nexport default async function Artikel({ params }: { params: Promise<{ slug: string }> }) {\n  const { slug } = await params;\n  const a = await db.artikel.findUnique({ where: { slug } });\n  return (\n    <article>\n      <h1>{a.judul}</h1>\n      <div>{a.isi}</div>\n      <TombolBagikan url={`https://sekolahku.id/blog/${slug}`} />\n    </article>\n  );\n}"
+   }
+  ]
+ },
+ "nextjs-2-3": {
+  "exs": [
+   {
+    "t": "Kasus: kode promo acak",
+    "d": "Buat nilai acak sekali di server, lalu kirim sebagai prop agar server dan browser sama.",
+    "code": "// SALAH: Math.random() saat render menghasilkan angka berbeda di server dan browser\n// export function KodePromo() {\n//   return <p>Kode: HEMAT{Math.floor(Math.random() * 1000)}</p>;\n// }\n\n// BENAR: app/promo/page.tsx (Server) menghitung sekali\nimport { KodePromo } from './KodePromo';\nexport default function HalamanPromo() {\n  const kode = 'HEMAT' + Math.floor(Math.random() * 1000);\n  return <KodePromo kode={kode} />;\n}\n\n// app/promo/KodePromo.tsx\n'use client';\nexport function KodePromo({ kode }: { kode: string }) {\n  return <button onClick={() => navigator.clipboard.writeText(kode)}>Salin kode {kode}</button>;\n}"
+   },
+   {
+    "t": "Kasus: membaca tema dari localStorage",
+    "code": "'use client';\nimport { useEffect, useState } from 'react';\n\nexport function LabelTema() {\n  const [tema, setTema] = useState<string | null>(null);   // render pertama sama dengan server\n  useEffect(() => {\n    setTema(localStorage.getItem('tema') ?? 'terang');      // baru dibaca setelah mount\n  }, []);\n  return <span>Tema: {tema ?? '...'}</span>;\n}"
+   },
+   {
+    "t": "Kasus: peta lokasi toko hanya di browser",
+    "d": "Pustaka peta butuh window, jadi dimuat tanpa SSR.",
+    "code": "'use client';\nimport dynamic from 'next/dynamic';\n\nconst PetaToko = dynamic(() => import('./PetaToko'), {\n  ssr: false,\n  loading: () => <p>Memuat peta…</p>,\n});\n\nexport function LokasiToko() {\n  return (\n    <section>\n      <h2>Lokasi kami</h2>\n      <PetaToko lat={-7.7956} lng={110.3695} />\n    </section>\n  );\n}"
+   }
+  ]
+ },
+ "nextjs-3-1": {
+  "exs": [
+   {
+    "t": "Kasus: jadwal sholat diperbarui tiap jam",
+    "d": "revalidate: 3600 menyimpan hasil dan memperbaruinya paling lama sejam sekali.",
+    "code": "// app/jadwal/page.tsx\ntype Jadwal = { subuh: string; dzuhur: string; ashar: string; maghrib: string; isya: string };\n\nasync function ambilJadwal(): Promise<Jadwal> {\n  const r = await fetch('https://api.contoh.id/jadwal-sholat?kota=bandung', { next: { revalidate: 3600 } });\n  if (!r.ok) throw new Error('Gagal memuat jadwal');\n  return r.json();\n}\n\nexport default async function HalamanJadwal() {\n  const j = await ambilJadwal();\n  return (\n    <ul>\n      <li>Subuh {j.subuh}</li>\n      <li>Dzuhur {j.dzuhur}</li>\n      <li>Maghrib {j.maghrib}</li>\n    </ul>\n  );\n}"
+   },
+   {
+    "t": "Kasus: saldo dompet digital selalu baru",
+    "d": "Data pribadi yang cepat berubah tidak boleh disimpan di cache.",
+    "code": "// app/dompet/page.tsx\nasync function ambilSaldo(idPengguna: number): Promise<{ saldo: number }> {\n  const r = await fetch(`https://api.dompetku.id/saldo/${idPengguna}`, { cache: 'no-store' });\n  return r.json();\n}\n\nexport default async function Dompet() {\n  const { saldo } = await ambilSaldo(42);\n  return <p>Saldo: Rp{saldo.toLocaleString('id-ID')}</p>;\n}"
+   },
+   {
+    "t": "Kasus: tiga data dasbor sekolah diambil paralel",
+    "code": "// app/dasbor/page.tsx\nconst API = 'https://api.sekolahku.id';\n\nexport default async function Dasbor() {\n  const [siswa, guru, pengumuman] = await Promise.all([\n    fetch(`${API}/siswa`, { next: { revalidate: 600 } }).then((r) => r.json()),\n    fetch(`${API}/guru`, { next: { revalidate: 600 } }).then((r) => r.json()),\n    fetch(`${API}/pengumuman`, { next: { tags: ['pengumuman'] } }).then((r) => r.json()),\n  ]);\n  return (\n    <main>\n      <p>{siswa.length} siswa, {guru.length} guru</p>\n      <ul>{pengumuman.map((p: { id: number; judul: string }) => <li key={p.id}>{p.judul}</li>)}</ul>\n    </main>\n  );\n}\n// setelah admin menambah pengumuman: revalidateTag('pengumuman') membuat daftar ini langsung segar"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Katalog dengan ISR dan revalidasi berbasis tag",
+    "lang": "tsx",
+    "b": "Katalog dibuat ulang paling lama tiap lima menit, data produk dan kategori diambil paralel, dan tag produk memungkinkan cache dihapus seketika saat harga diubah.",
+    "code": "// app/produk/page.tsx\nexport const revalidate = 300;                      // ISR: halaman dibuat ulang maksimal tiap 5 menit\n\nasync function ambilProduk(): Promise<Produk[]> {\n  const r = await fetch(\"https://api.toko.id/produk\", { next: { revalidate: 300, tags: [\"produk\"] } });\n  if (!r.ok) throw new Error(\"Gagal memuat produk\");\n  return r.json();\n}\n\nasync function ambilKategori(): Promise<string[]> {\n  const r = await fetch(\"https://api.toko.id/kategori\", { next: { revalidate: 3600 } });\n  return r.json();\n}\n\nexport default async function Halaman() {\n  const [produk, kategori] = await Promise.all([ambilProduk(), ambilKategori()]);   // paralel, bukan waterfall\n  return <Katalog produk={produk} kategori={kategori} />;\n}\n\n// Saat admin mengubah harga, kode server memanggil:\n//   revalidateTag(\"produk\");   -> katalog langsung segar tanpa menunggu 5 menit"
+   },
+   {
+    "t": "Simulasi stale-while-revalidate",
+    "b": "Pengunjung pertama setelah kedaluwarsa masih melihat data lama sekali, lalu pengunjung berikutnya mendapat versi baru. Pakai revalidateTag bila perubahan harus langsung terlihat.",
+    "code": "function buatCache(revalidateDetik: number, sumber: () => number) {\n  let isi: { nilai: number; waktu: number } | null = null; let generasi = 0;\n  return (t: number) => {\n    if (!isi) { isi = { nilai: sumber(), waktu: t }; return `t=${t}s MISS  -> render baru (harga ${isi.nilai})`; }\n    if (t - isi.waktu < revalidateDetik) return `t=${t}s HIT   -> dari cache (harga ${isi.nilai})`;\n    const basi = isi.nilai; isi = { nilai: sumber(), waktu: t }; generasi++;\n    return `t=${t}s STALE -> kirim cache lama (${basi}), regenerasi di belakang -> ${isi.nilai}`;\n  };\n}\nlet harga = 45000;\nconst ambil = buatCache(60, () => harga);\nconsole.log(ambil(0)); console.log(ambil(30));\nharga = 47000;                         // admin mengubah harga\nconsole.log(ambil(45)); console.log(ambil(70)); console.log(ambil(80));",
+    "lang": "ts",
+    "out": "t=0s MISS  -> render baru (harga 45000)\nt=30s HIT   -> dari cache (harga 45000)\nt=45s HIT   -> dari cache (harga 45000)\nt=70s STALE -> kirim cache lama (45000), regenerasi di belakang -> 47000\nt=80s HIT   -> dari cache (harga 47000)"
+   }
+  ]
+ },
+ "nextjs-3-2": {
+  "exs": [
+   {
+    "t": "Kasus: loading.tsx untuk halaman berita",
+    "code": "// app/berita/loading.tsx  ->  tampil otomatis selama page.tsx memuat\nexport default function Memuat() {\n  return (\n    <ul className=\"space-y-2\">\n      {[1, 2, 3].map((i) => <li key={i} className=\"h-6 w-full animate-pulse rounded bg-gray-200\" />)}\n    </ul>\n  );\n}\n\n// app/berita/page.tsx\nexport default async function Berita() {\n  const daftar = await ambilBerita();      // sekitar 1,5 detik\n  return <ul>{daftar.map((b) => <li key={b.id}>{b.judul}</li>)}</ul>;\n}"
+   },
+   {
+    "t": "Kasus: ulasan tamu hotel dimuat belakangan",
+    "d": "Nama dan tarif hotel tampil dulu; ulasan menyusul saat siap.",
+    "code": "// app/hotel/[id]/page.tsx\nimport { Suspense } from 'react';\n\nexport default async function Hotel({ params }: { params: Promise<{ id: string }> }) {\n  const { id } = await params;\n  const hotel = await ambilHotel(id);                       // cepat\n  return (\n    <main>\n      <h1>{hotel.nama}</h1>\n      <p>Rp{hotel.tarif.toLocaleString('id-ID')} / malam</p>\n      <Suspense fallback={<p>Memuat ulasan tamu…</p>}>\n        <UlasanTamu id={id} />\n      </Suspense>\n    </main>\n  );\n}\n\nasync function UlasanTamu({ id }: { id: string }) {\n  const ulasan = await ambilUlasan(id);                      // lambat\n  return <ul>{ulasan.map((u) => <li key={u.id}>{u.bintang}★ {u.isi}</li>)}</ul>;\n}"
+   },
+   {
+    "t": "Kasus: dua bagian lambat yang tidak saling menunggu",
+    "code": "// app/dompet/page.tsx\nimport { Suspense } from 'react';\n\nexport default function HalamanDompet() {\n  return (\n    <main>\n      <h1>Dompet Saya</h1>\n      <Suspense fallback={<div className=\"h-20 animate-pulse bg-gray-200\" />}>\n        <SaldoDompet />           {/* 300 ms */}\n      </Suspense>\n      <Suspense fallback={<div className=\"h-64 animate-pulse bg-gray-200\" />}>\n        <RiwayatTransaksi />      {/* 1,2 detik, tidak menahan saldo */}\n      </Suspense>\n    </main>\n  );\n}"
+   }
+  ]
+ },
+ "nextjs-3-3": {
+  "exs": [
+   {
+    "t": "Kasus: Server Action untuk pendaftaran ekskul",
+    "code": "// app/ekskul/actions.ts\n'use server';\nimport { z } from 'zod';\nimport { revalidatePath } from 'next/cache';\n\nconst Daftar = z.object({\n  nama: z.string().min(3, 'Nama minimal 3 huruf'),\n  ekskul: z.enum(['pramuka', 'futsal', 'paduan-suara']),\n});\n\nexport async function daftarEkskul(_: unknown, form: FormData) {\n  const hasil = Daftar.safeParse(Object.fromEntries(form));\n  if (!hasil.success) return { error: hasil.error.issues[0].message };\n  await db.pendaftar.create({ data: hasil.data });\n  revalidatePath('/ekskul');           // daftar peserta langsung diperbarui\n  return { error: null };\n}"
+   },
+   {
+    "t": "Kasus: Route Handler GET untuk aplikasi mobile",
+    "code": "// app/api/jadwal/route.ts  ->  GET /api/jadwal?kelas=XI-1\nexport async function GET(req: Request) {\n  const kelas = new URL(req.url).searchParams.get('kelas');\n  if (!kelas) return Response.json({ error: 'parameter kelas wajib diisi' }, { status: 400 });\n  const jadwal = await db.jadwal.findMany({ where: { kelas } });\n  return Response.json(jadwal);\n}"
+   },
+   {
+    "t": "Kasus: logika validasi Server Action diuji tanpa server",
+    "d": "Validasi ditulis sebagai fungsi biasa yang menerima FormData, jadi mudah diuji.",
+    "code": "function validasiUlasan(form: FormData): { error: string | null } {\n  const rating = Number(form.get(\"rating\"));\n  const komentar = String(form.get(\"komentar\") ?? \"\").trim();\n  if (!Number.isInteger(rating) || rating < 1 || rating > 5) return { error: \"Rating harus 1 sampai 5\" };\n  if (komentar.length < 5) return { error: \"Komentar minimal 5 karakter\" };\n  return { error: null };\n}\n\nfunction buatForm(rating: string, komentar: string): FormData {\n  const f = new FormData();\n  f.set(\"rating\", rating);\n  f.set(\"komentar\", komentar);\n  return f;\n}\n\nconsole.log(validasiUlasan(buatForm(\"5\", \"Kopinya enak sekali\")));\nconsole.log(validasiUlasan(buatForm(\"7\", \"Mantap\")));\nconsole.log(validasiUlasan(buatForm(\"4\", \"ok\")));",
+    "out": "{ error: null }\n{ error: 'Rating harus 1 sampai 5' }\n{ error: 'Komentar minimal 5 karakter' }"
+   }
+  ],
+  "cx": [
+   {
+    "t": "Form ulasan dengan Server Action dan webhook pembayaran",
+    "lang": "tsx",
+    "b": "Server Action menerima form ulasan, memvalidasi dengan Zod, lalu memperbarui halaman produk. Route Handler menerima webhook payment gateway dan memeriksa signature sebelum menandai pesanan lunas.",
+    "code": "// app/produk/[slug]/actions.ts\n\"use server\";\nimport { z } from \"zod\";\nimport { revalidatePath } from \"next/cache\";\n\nconst Ulasan = z.object({ produkId: z.coerce.number(), bintang: z.coerce.number().min(1).max(5), isi: z.string().min(10) });\n\nexport async function kirimUlasan(_: unknown, form: FormData) {\n  const user = await penggunaSaatIni();          // periksa izin: siapa yang mengirim?\n  if (!user) return { error: \"Silakan masuk dulu\" };\n  const hasil = Ulasan.safeParse(Object.fromEntries(form));\n  if (!hasil.success) return { error: hasil.error.issues[0].message };\n  await db.ulasan.create({ data: { ...hasil.data, userId: user.id } });\n  revalidatePath(`/produk/${hasil.data.produkId}`);\n  return { ok: true };\n}\n\n// FormUlasan.tsx\n\"use client\";\nimport { useActionState } from \"react\";\nexport function FormUlasan({ produkId }: { produkId: number }) {\n  const [state, action, pending] = useActionState(kirimUlasan, null);\n  return (\n    <form action={action}>\n      <input type=\"hidden\" name=\"produkId\" value={produkId} />\n      <select name=\"bintang\">{[5, 4, 3, 2, 1].map((b) => <option key={b}>{b}</option>)}</select>\n      <textarea name=\"isi\" required minLength={10} />\n      <button disabled={pending}>{pending ? \"Mengirim...\" : \"Kirim ulasan\"}</button>\n      {state?.error && <p role=\"alert\">{state.error}</p>}\n    </form>\n  );\n}\n\n// app/api/webhook/pembayaran/route.ts\nexport async function POST(req: Request) {\n  const body = await req.text();\n  if (!verifikasiSignature(body, req.headers.get(\"x-signature\"))) return new Response(\"invalid\", { status: 401 });\n  const ev = JSON.parse(body);\n  if (ev.status === \"settlement\") await tandaiLunas(ev.order_id);\n  return Response.json({ diterima: true });\n}"
+   },
+   {
+    "t": "Verifikasi signature webhook dengan HMAC",
+    "b": "",
+    "code": "import { createHmac, timingSafeEqual } from \"node:crypto\";\n\nconst RAHASIA = \"kunci-rahasia-dari-dashboard-payment\";\nconst tandatangan = (body: string) => createHmac(\"sha256\", RAHASIA).update(body).digest(\"hex\");\nfunction verifikasi(body: string, sig: string | null) {\n  if (!sig) return false;\n  const a = Buffer.from(tandatangan(body)), b = Buffer.from(sig);\n  return a.length === b.length && timingSafeEqual(a, b);     // tahan timing attack\n}\nconst body = JSON.stringify({ order_id: \"INV-2026-0042\", status: \"settlement\", gross_amount: \"148000\" });\nconst sigAsli = tandatangan(body);\nconsole.log(\"signature asli    :\", verifikasi(body, sigAsli) ? \"200 diterima\" : \"401 ditolak\");\nconsole.log(\"body diubah       :\", verifikasi(body.replace(\"148000\", \"1000\"), sigAsli) ? \"200 diterima\" : \"401 ditolak\");\nconsole.log(\"tanpa signature   :\", verifikasi(body, null) ? \"200 diterima\" : \"401 ditolak\");",
+    "lang": "ts",
+    "out": "signature asli    : 200 diterima\nbody diubah       : 401 ditolak\ntanpa signature   : 401 ditolak"
+   }
+  ]
+ },
+ "nextjs-4-1": {
+  "exs": [
+   {
+    "t": "Kasus: foto profil bulat",
+    "d": "Lebar dan tinggi wajib diisi agar tata letak tidak bergeser.",
+    "code": "import Image from 'next/image';\n\nexport function FotoProfil({ nama, foto }: { nama: string; foto: string }) {\n  return (\n    <figure className=\"flex items-center gap-3\">\n      <Image src={foto} alt={`Foto ${nama}`} width={64} height={64} className=\"rounded-full\" />\n      <figcaption>{nama}</figcaption>\n    </figure>\n  );\n}"
+   },
+   {
+    "t": "Kasus: galeri wisata dengan sizes",
+    "d": "Gambar di bawah layar dimuat malas secara otomatis.",
+    "code": "import Image from 'next/image';\n\nconst wisata = [\n  { id: 1, nama: 'Danau Toba', foto: '/wisata/toba.jpg' },\n  { id: 2, nama: 'Raja Ampat', foto: '/wisata/raja-ampat.jpg' },\n  { id: 3, nama: 'Bromo', foto: '/wisata/bromo.jpg' },\n];\n\nexport default function Galeri() {\n  return (\n    <ul className=\"grid grid-cols-1 gap-4 md:grid-cols-3\">\n      {wisata.map((w) => (\n        <li key={w.id}>\n          <Image src={w.foto} alt={w.nama} width={800} height={600}\n                 sizes=\"(min-width: 768px) 33vw, 100vw\" />\n          <p>{w.nama}</p>\n        </li>\n      ))}\n    </ul>\n  );\n}"
+   },
+   {
+    "t": "Kasus: font lokal untuk logo toko",
+    "code": "// app/layout.tsx\nimport localFont from 'next/font/local';\nimport { Inter } from 'next/font/google';\n\nconst logo = localFont({ src: './fonts/Batik-Bold.woff2', variable: '--font-logo' });\nconst teks = Inter({ subsets: ['latin'], display: 'swap' });\n\nexport default function RootLayout({ children }: { children: React.ReactNode }) {\n  return (\n    <html lang=\"id\" className={logo.variable}>\n      <body className={teks.className}>{children}</body>\n    </html>\n  );\n}"
+   }
+  ]
+ },
+ "nextjs-4-2": {
+  "exs": [
+   {
+    "t": "Kasus: middleware pengalih bahasa",
+    "code": "// middleware.ts\nimport { NextResponse, type NextRequest } from 'next/server';\n\nconst BAHASA = ['id', 'en'];\n\nexport function middleware(req: NextRequest) {\n  const { pathname } = req.nextUrl;\n  if (BAHASA.some((b) => pathname.startsWith(`/${b}`))) return NextResponse.next();\n  const pilihan = req.headers.get('accept-language')?.startsWith('en') ? 'en' : 'id';\n  return NextResponse.redirect(new URL(`/${pilihan}${pathname}`, req.url));\n}\n\nexport const config = { matcher: ['/((?!api|_next|.*\\\\..*).*)'] };   // lewati API dan file statis"
+   },
+   {
+    "t": "Kasus: tetap cek sesi di Route Handler",
+    "d": "Middleware hanya lapisan pertama; endpoint data pribadi memeriksa sesi lagi.",
+    "code": "// app/api/rapor/route.ts\nimport { auth } from '@/auth';\n\nexport async function GET() {\n  const sesi = await auth();\n  if (!sesi) return Response.json({ error: 'belum masuk' }, { status: 401 });\n  const nilai = await db.nilai.findMany({ where: { siswaId: sesi.user.id } });\n  return Response.json(nilai);\n}"
+   },
+   {
+    "t": "Kasus: menguji pola matcher",
+    "d": "Pola /akun/:path* cocok untuk /akun dan semua halaman di bawahnya, tapi tidak untuk /akunting.",
+    "code": "function cocok(pola: string, path: string): boolean {\n  if (pola.endsWith(\"/:path*\")) {\n    const dasar = pola.slice(0, -\"/:path*\".length);\n    return path === dasar || path.startsWith(dasar + \"/\");\n  }\n  return path === pola;\n}\n\nconst pola = [\"/akun/:path*\", \"/guru/:path*\"];\nfor (const p of [\"/\", \"/akun\", \"/akun/nilai\", \"/guru/absensi\", \"/akunting\"]) {\n  console.log(p.padEnd(14), pola.some((m) => cocok(m, p)) ? \"middleware jalan\" : \"dilewati\");\n}",
+    "out": "/              dilewati\n/akun          middleware jalan\n/akun/nilai    middleware jalan\n/guru/absensi  middleware jalan\n/akunting      dilewati"
+   }
+  ]
+ },
+ "nextjs-4-3": {
+  "exs": [
+   {
+    "t": "Kasus: memisahkan kunci server dan kunci browser",
+    "code": "# .env.local\nMIDTRANS_SERVER_KEY=SB-Mid-server-xxxx               # hanya terbaca di server\nNEXT_PUBLIC_MIDTRANS_CLIENT_KEY=SB-Mid-client-xxxx   # boleh tampil di browser\n\n# Di Server Component / Route Handler:\n#   process.env.MIDTRANS_SERVER_KEY              -> \"SB-Mid-server-xxxx\"\n# Di Client Component:\n#   process.env.MIDTRANS_SERVER_KEY              -> undefined (sengaja tidak dikirim)\n#   process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY  -> \"SB-Mid-client-xxxx\""
+   },
+   {
+    "t": "Kasus: deploy ke Vercel lewat terminal",
+    "code": "npm i -g vercel\nvercel link                               # hubungkan folder dengan proyek di Vercel\nvercel env add DATABASE_URL production    # isi rahasia di dashboard, bukan di Git\nvercel                                    # URL pratinjau untuk dicek\nvercel --prod                             # rilis ke domain utama"
+   },
+   {
+    "t": "Kasus: build standalone untuk VPS sendiri",
+    "code": "# next.config.ts\n#   export default { output: 'standalone' };\n\nnpm run build\ncp -r public .next/standalone/\ncp -r .next/static .next/standalone/.next/\nPORT=3000 node .next/standalone/server.js     # jalankan di balik Nginx atau PM2"
+   }
+  ]
+ }
+}
