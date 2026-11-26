@@ -49,6 +49,16 @@
     "code": "SELECT * FROM produk;",
     "out": "id | nama             | kategori | harga  | stok\n---+------------------+----------+--------+-----\n1  | Kopi Gayo        | Minuman  | 85000  | 40\n2  | Teh Melati       | Minuman  | 25000  | 120\n3  | Keripik Singkong | Camilan  | 15000  | 200\n4  | Kacang Mete      | Camilan  | 60000  | 35\n5  | Sambal Bawang    | Bumbu    | 30000  | 80\n6  | Madu Hutan       | Minuman  | 120000 | 15\n7  | Rendang Kaleng   | Makanan  | 75000  | 0\n8  | Kerupuk Udang    | Camilan  | 20000  | 150"
    }
+  ],
+  "ex": [
+   [
+    "Tabel pelanggan: data disimpan sekali",
+    "SELECT * FROM pelanggan;"
+   ],
+   [
+    "Tabel pesanan: pelanggan_id menunjuk ke pelanggan",
+    "SELECT * FROM pesanan;"
+   ]
   ]
  },
  "sql-2-1": {
@@ -85,6 +95,20 @@
     "code": "-- katalog untuk halaman toko\nSELECT nama,\n       kategori,\n       harga,\n       stok\nFROM produk;",
     "out": "nama             | kategori | harga  | stok\n-----------------+----------+--------+-----\nKopi Gayo        | Minuman  | 85000  | 40\nTeh Melati       | Minuman  | 25000  | 120\nKeripik Singkong | Camilan  | 15000  | 200\nKacang Mete      | Camilan  | 60000  | 35\nSambal Bawang    | Bumbu    | 30000  | 80\nMadu Hutan       | Minuman  | 120000 | 15\nRendang Kaleng   | Makanan  | 75000  | 0\nKerupuk Udang    | Camilan  | 20000  | 150"
    }
+  ],
+  "ex": [
+   [
+    "Huruf besar atau kecil sama saja",
+    "select nama, kota from pelanggan;"
+   ],
+   [
+    "Teks diapit kutip tunggal",
+    "SELECT nama, 'pelanggan setia' AS catatan FROM pelanggan;"
+   ],
+   [
+    "Komentar dan beberapa baris",
+    "-- nama dan stok semua produk\nSELECT nama,\n       stok\nFROM produk;"
+   ]
   ]
  },
  "sql-2-2": {
@@ -107,6 +131,20 @@
     "code": "SELECT CAST('15000' AS INTEGER) + 2000,\n       CAST(4.75 AS INTEGER),\n       CAST(85000 AS TEXT);",
     "out": "CAST('15000' AS INTEGER) + 2000 | CAST(4.75 AS INTEGER) | CAST(85000 AS TEXT)\n--------------------------------+-----------------------+--------------------\n17000                           | 4                     | 85000"
    }
+  ],
+  "ex": [
+   [
+    "Melihat tipe setiap nilai",
+    "SELECT typeof(42), typeof(3.14), typeof('teks'), typeof(NULL);"
+   ],
+   [
+    "Mengubah tipe dengan CAST",
+    "SELECT CAST('125' AS INTEGER) + 5 AS angka,\n       CAST(9.99 AS INTEGER) AS dipotong,\n       CAST(2024 AS TEXT) || '-10' AS teks;"
+   ],
+   [
+    "Tanggal disimpan sebagai teks berformat ISO",
+    "SELECT nama, bergabung, typeof(bergabung) FROM pelanggan;"
+   ]
   ]
  },
  "sql-2-3": {
@@ -143,6 +181,24 @@
     "code": "SELECT nama,\n       kategori,\n       harga,\n       (kategori = 'Minuman' OR kategori = 'Camilan') AND harga < 50000 AS ikut_promo\nFROM produk;",
     "out": "nama             | kategori | harga  | ikut_promo\n-----------------+----------+--------+-----------\nKopi Gayo        | Minuman  | 85000  | 0\nTeh Melati       | Minuman  | 25000  | 1\nKeripik Singkong | Camilan  | 15000  | 1\nKacang Mete      | Camilan  | 60000  | 0\nSambal Bawang    | Bumbu    | 30000  | 0\nMadu Hutan       | Minuman  | 120000 | 0\nRendang Kaleng   | Makanan  | 75000  | 0\nKerupuk Udang    | Camilan  | 20000  | 1"
    }
+  ],
+  "ex": [
+   [
+    "Aritmetika: nilai stok",
+    "SELECT nama, harga, stok, harga * stok AS nilai_stok FROM produk;"
+   ],
+   [
+    "Perbandingan & logika (1 = benar, 0 = salah)",
+    "SELECT nama, kategori, harga,\n       (kategori = 'Minuman' OR kategori = 'Camilan') AND harga < 50000 AS promo\nFROM produk;"
+   ],
+   [
+    "BETWEEN, IN, LIKE",
+    "SELECT nama,\n       harga BETWEEN 20000 AND 90000 AS rentang,\n       kategori IN ('Minuman', 'Bumbu') AS kategori_pilihan,\n       nama LIKE '%a%' AS ada_a\nFROM produk;"
+   ],
+   [
+    "NULL perlu IS NULL",
+    "SELECT nama, kota, kota IS NULL AS kota_kosong FROM pelanggan;"
+   ]
   ]
  },
  "sql-3-1": {
@@ -258,6 +314,16 @@
     "code": "SELECT nama, kategori, harga  -- 3) hitung kolom hasil\nFROM produk                   -- 1) ambil tabel\nWHERE stok > 0                -- 2) buang produk yang habis\nORDER BY harga DESC           -- 4) urutkan termahal dulu\nLIMIT 3;                      -- 5) ambil tiga teratas",
     "out": "nama        | kategori | harga\n------------+----------+-------\nMadu Hutan  | Minuman  | 120000\nKopi Gayo   | Minuman  | 85000\nKacang Mete | Camilan  | 60000"
    }
+  ],
+  "ex": [
+   [
+    "Query dengan WHERE, ORDER BY, dan LIMIT",
+    "SELECT nama, kategori, harga\nFROM produk\nWHERE stok > 0\nORDER BY harga DESC\nLIMIT 3;"
+   ],
+   [
+    "Alias di ORDER BY boleh",
+    "SELECT nama, harga * stok AS nilai FROM produk ORDER BY nilai DESC;"
+   ]
   ]
  },
  "sql-3-5": {
@@ -340,6 +406,28 @@
     "code": "DELETE FROM detail_pesanan WHERE produk_id = 7;\nSELECT * FROM detail_pesanan WHERE pesanan_id = 106;",
     "out": "pesanan_id | produk_id | jumlah\n-----------+-----------+-------\n106        | 2         | 2"
    }
+  ],
+  "ex": [
+   [
+    "Cek dulu dengan SELECT",
+    "SELECT nama, harga FROM produk WHERE kategori = 'Minuman';"
+   ],
+   [
+    "Lalu UPDATE",
+    "UPDATE produk SET harga = harga + 5000 WHERE kategori = 'Minuman';\nSELECT nama, harga FROM produk WHERE kategori = 'Minuman';"
+   ],
+   [
+    "Ubah beberapa kolom",
+    "UPDATE pesanan SET status = 'selesai' WHERE id = 107;\nSELECT * FROM pesanan WHERE id = 107;"
+   ],
+   [
+    "DELETE yang ditolak foreign key",
+    "DELETE FROM pelanggan WHERE id = 1;"
+   ],
+   [
+    "DELETE yang aman",
+    "DELETE FROM detail_pesanan WHERE pesanan_id = 105;\nSELECT * FROM detail_pesanan WHERE pesanan_id = 105;"
+   ]
   ]
  },
  "sql-5-1": {
@@ -406,6 +494,24 @@
     "code": "SELECT produk_id,\n       COUNT(*) AS muncul_di_pesanan,\n       SUM(jumlah) AS unit,\n       MAX(jumlah) AS pembelian_terbesar\nFROM detail_pesanan\nGROUP BY produk_id\nORDER BY unit DESC;",
     "out": "produk_id | muncul_di_pesanan | unit | pembelian_terbesar\n----------+-------------------+------+-------------------\n8         | 2                 | 14   | 10\n3         | 3                 | 10   | 5\n5         | 2                 | 7    | 6\n2         | 2                 | 5    | 3\n1         | 3                 | 4    | 2\n6         | 2                 | 2    | 1\n4         | 1                 | 2    | 2\n7         | 1                 | 2    | 2"
    }
+  ],
+  "ex": [
+   [
+    "Jumlah produk per kategori",
+    "SELECT kategori, COUNT(*) AS jumlah, SUM(stok) AS total_stok\nFROM produk GROUP BY kategori;"
+   ],
+   [
+    "Pesanan per pelanggan",
+    "SELECT pelanggan_id, COUNT(*) AS banyak_pesanan\nFROM pesanan GROUP BY pelanggan_id ORDER BY banyak_pesanan DESC;"
+   ],
+   [
+    "Per status",
+    "SELECT status, COUNT(*) AS pesanan\nFROM pesanan GROUP BY status ORDER BY status;"
+   ],
+   [
+    "Dua kolom",
+    "SELECT pelanggan_id, status, COUNT(*) AS n FROM pesanan\nGROUP BY pelanggan_id, status ORDER BY pelanggan_id;"
+   ]
   ]
  },
  "sql-5-3": {
@@ -489,6 +595,16 @@
     "code": "CREATE TABLE kupon (\n  kode TEXT,\n  diskon_persen INTEGER,\n  berlaku_sampai DATE,\n  aktif INTEGER DEFAULT 1\n);\nINSERT INTO kupon (kode, diskon_persen, berlaku_sampai) VALUES\n  ('HARBOLNAS', 12, '2026-12-12'),\n  ('GAJIAN', 10, '2026-12-31');\nSELECT * FROM kupon;",
     "out": "kode      | diskon_persen | berlaku_sampai | aktif\n----------+---------------+----------------+------\nHARBOLNAS | 12            | 2026-12-12     | 1\nGAJIAN    | 10            | 2026-12-31     | 1"
    }
+  ],
+  "ex": [
+   [
+    "Buat tabel kategori",
+    "CREATE TABLE kategori (\n  id INTEGER,\n  nama TEXT,\n  aktif INTEGER DEFAULT 1\n);\nINSERT INTO kategori (id, nama) VALUES (1, 'Minuman'), (2, 'Camilan');\nSELECT * FROM kategori;"
+   ],
+   [
+    "Tabel dari hasil query",
+    "CREATE TABLE produk_mahal AS\nSELECT nama, harga FROM produk WHERE harga > 70000;\nSELECT * FROM produk_mahal;"
+   ]
   ]
  },
  "sql-6-2": {
@@ -655,6 +771,24 @@
     "code": "CREATE TABLE kemasan (ukuran TEXT);\nINSERT INTO kemasan VALUES ('Sachet'), ('Botol'), ('Kotak');\nSELECT pr.nama, k.ukuran\nFROM produk pr\nCROSS JOIN kemasan k\nWHERE pr.kategori = 'Minuman';",
     "out": "nama       | ukuran\n-----------+-------\nKopi Gayo  | Sachet\nKopi Gayo  | Botol\nKopi Gayo  | Kotak\nTeh Melati | Sachet\nTeh Melati | Botol\nTeh Melati | Kotak\nMadu Hutan | Sachet\nMadu Hutan | Botol\nMadu Hutan | Kotak"
    }
+  ],
+  "ex": [
+   [
+    "Karyawan dan atasannya",
+    "SELECT k.nama AS karyawan, k.jabatan, a.nama AS atasan\nFROM karyawan k\nLEFT JOIN karyawan a ON k.atasan_id = a.id;"
+   ],
+   [
+    "Rekan satu atasan",
+    "SELECT x.nama, y.nama AS rekan\nFROM karyawan x JOIN karyawan y\n  ON x.atasan_id = y.atasan_id AND x.id < y.id;"
+   ],
+   [
+    "Cross join: semua pasangan pelanggan dan minuman",
+    "SELECT pl.nama AS pelanggan, pr.nama AS minuman\nFROM pelanggan pl CROSS JOIN produk pr\nWHERE pr.kategori = 'Minuman'\nORDER BY pl.nama;"
+   ],
+   [
+    "Jumlah baris produk kartesius",
+    "SELECT COUNT(*) AS kombinasi FROM pelanggan CROSS JOIN produk;"
+   ]
   ]
  },
  "sql-7-4": {
@@ -819,6 +953,24 @@
     "code": "SELECT TRIM('  kopi gayo  ') AS rapi,\n       UPPER('kopi gayo') AS besar,\n       REPLACE('0812-3456-7890', '-', '') AS nomor_hp;",
     "out": "rapi      | besar     | nomor_hp\n----------+-----------+-------------\nkopi gayo | KOPI GAYO | 081234567890"
    }
+  ],
+  "ex": [
+   [
+    "Fungsi angka",
+    "SELECT ABS(-7) AS mutlak, ROUND(85000 * 1.11, -2) AS bulat_ratusan,\n       CEILING(4.1) AS atas, FLOOR(4.9) AS bawah, MOD(17, 5) AS sisa;"
+   ],
+   [
+    "Harga per 1000 dibulatkan",
+    "SELECT nama, ROUND(harga / 1000.0, 1) AS ribu FROM produk;"
+   ],
+   [
+    "Fungsi teks",
+    "SELECT UPPER(nama) AS besar, LOWER(kategori) AS kecil, LENGTH(nama) AS panjang,\n       SUBSTRING(nama, 1, 4) AS awal, REPLACE(nama, ' ', '_') AS slug\nFROM produk;"
+   ],
+   [
+    "Menyambung teks",
+    "SELECT CONCAT(nama, ' (', kota, ')') AS label, nama || ' - ' || kota AS label2\nFROM pelanggan\nWHERE kota IS NOT NULL;"
+   ]
   ]
  },
  "sql-9-2": {

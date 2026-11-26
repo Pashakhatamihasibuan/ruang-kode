@@ -48,6 +48,7 @@ def cek(track, cfg, minimal=2):
         b = bodies.get(l["slug"], {})
         codes = [("contoh 1", b.get("code") or "")]
         codes += [(f"contoh {j + 2}", e.get("code", "")) for j, e in enumerate(b.get("exs") or [])]
+        codes += [(f"konsol {j + 1}", e[1]) for j, e in enumerate(b.get("ex") or []) if isinstance(e, list) and len(e) == 2]
         codes += [(f"pendalaman {j + 1}", e.get("code", "")) for j, e in enumerate((b.get("deep") or {}).get("cx") or [])]
         for label, code in codes:
             if not code:

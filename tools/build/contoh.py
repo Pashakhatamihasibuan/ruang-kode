@@ -6,14 +6,15 @@ Format (dikunci dengan id pelajaran, misalnya "python-1-3"):
     "code": "...", "out": "...",          # opsional: ganti contoh utama yang melompat materi
     "trs": [["kalimat", "baris kode"]],   # opsional: tabel "Dari kalimat ke kode" untuk contoh utama baru
     "exs": [{"t": "Judul kasus", "d": "penjelasan singkat (opsional)", "code": "...", "out": "..."}],
-    "cx":  [{"t": "Judul kasus nyata", "b": "penjelasan", "code": "...", "out": "..."}]  # ganti seluruh Pendalaman
+    "cx":  [{"t": "Judul kasus nyata", "b": "penjelasan", "code": "...", "out": "..."}],  # ganti seluruh Pendalaman
+    "ex":  [["Label tombol", "SELECT ..."]]  # opsional: ganti contoh kueri siap-klik di konsol SQL
   }
 }
 Semua contoh hanya boleh memakai konsep yang sudah diajarkan sampai pelajaran itu (dicek tools/cek/urutan.py)."""
 import json
 from pathlib import Path
 
-KUNCI = {"code", "out", "trs", "exs", "cx"}
+KUNCI = {"code", "out", "trs", "exs", "cx", "ex"}
 
 
 def muat(root, track):
@@ -52,6 +53,10 @@ def terapkan(data, bodies, nama="contoh"):
                 raise SystemExit(f"{nama}: {lid}: setiap exs butuh t dan code")
         if c.get("exs"):
             b["exs"] = [{"t": e["t"], "code": e["code"], "out": e.get("out"), "d": e.get("d")} for e in c["exs"]]
+        if "ex" in c:
+            if not all(isinstance(x, list) and len(x) == 2 for x in c["ex"]):
+                raise SystemExit(f"{nama}: {lid}: ex harus berisi pasangan [label, kueri]")
+            b["ex"] = c["ex"]
         if "cx" in c:
             deep = b.setdefault("deep", {"ist": [], "cx": []})
             deep["cx"] = [{"t": x["t"], "b": x.get("b", ""), "code": x["code"], "lang": x.get("lang", b.get("lang")), "out": x.get("out")}
